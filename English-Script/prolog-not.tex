@@ -552,7 +552,7 @@ Wir diskutieren dieses Programm nun Zeile für Zeile.
       nach der Überfahrt auf dem linken Ufer verbleiben und testen dann in Zeile 18, dass es
       für diese Zahlen kein Problem gibt.
       
-      Die zweite Klausel befaßt sich mit dem Fall, dass das Boot am rechten Ufer liegt.
+      Die zweite Klausel befasst sich mit dem Fall, dass das Boot am rechten Ufer liegt.
       Wir hätten diese Klausel mit \textsl{Copy \& Paste} aus der vorhergehenden Klausel
       erzeugen können, aber es ist eleganter, diesen Fall auf den vorhergehenden Fall
       zurück zu führen.  Da da Boot nun auf der rechten Seite liegt, berechnen wir daher
@@ -572,7 +572,7 @@ Wir diskutieren dieses Programm nun Zeile für Zeile.
 \end{enumerate}
 
 \section{Das 8-Damen-Problem in \textsl{Prolog}}
-In diesem Abschnitt zeigen wir, wie sich das 8-Damen-Problem in \textsl{Prolog} lösen läßt.  Wir beginnen mit
+In diesem Abschnitt zeigen wir, wie sich das 8-Damen-Problem in \textsl{Prolog} lösen lässt.  Wir beginnen mit
 einer naiven Implementierung, bei der es zunächst darum geht, ein möglichst einfaches Programm zu erstellen,
 bei dem die Effizienz noch keine Rolle spielt.  Die Grundidee bei dem Programm ist es, zunächst alle möglichen
 Lösungen zu generieren und anschließend zu testen, ob es sich tatsächlich um eine Lösung handelt.
@@ -640,15 +640,15 @@ Abbildung \ref{fig:queens.pl} zeigt nun unser Programm zur Lösung des $n$-Damen-
       Das dritte Argument $L$ ist eine Liste von Positionen von Damen.
       Die einzelnen Klauseln der Implementierung sind jetzt wie folgt zu verstehen:
       \begin{enumerate}
-      \item Falls die durch $C$ spezifizierte Dame in der selben Spalte steht wie die erste
+      \item Falls die durch $C$ spezifizierte Dame in derselben Spalte steht wie die erste
             Dame der Liste $L$, dann kann die durch $C$ spezifizierte Dame offenbar diese Dame angreifen
             und der Aufruf von \texttt{attack/3} liefert \texttt{true}.
-      \item Die nächste Klausel behandelt den Fall, dass die erste Dame der Liste $L$ in der selben 
+      \item Die nächste Klausel behandelt den Fall, dass die erste Dame der Liste $L$ in derselben 
             fallenden Diagonalen steht wie die durch $C$ spezifizierte Dame.
             Um die Implementierung zu verstehen ist nur zu beachten, dass die Spalten der fallenden Diagonale,
             die von $C$ ausgeht, sich dadurch ergeben, dass wir die Spalte für jede neue Zeile um 1 hochzählen
             müssen.  Das erklärt den Term \texttt{C + X}.
-      \item Analog behandelt die dritte Klausel den Fall, dass die erste Dame der Liste $L$ in der selben 
+      \item Analog behandelt die dritte Klausel den Fall, dass die erste Dame der Liste $L$ in derselben 
             steigenden  Diagonalen steht wie die durch $C$ spezifizierte Dame.
             Für eine steigende Diagonale müssen wir die Spalte für jede weitere Zeile um 1 dekrementieren.
             Das erklärt den Term \texttt{C - X}.
@@ -791,7 +791,7 @@ beiden Fakten zur Definition des Prädikats \texttt{mix/3}:
     mix( Xs, [], Xs ).
 \end{Verbatim}
 Für die Anfrage ``\texttt{mix([], [], L)}'' können beide Fakten verwendet werden.
-Das Ergebnis ist zwar immer das selbe, nämlich \texttt{L = []}, es wird aber zweimal ausgegeben:
+Das Ergebnis ist zwar immer dasselbe, nämlich \texttt{L = []}, es wird aber zweimal ausgegeben:
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
                   labelposition = bottomline,
@@ -1041,20 +1041,20 @@ sein.  In diesem Fall greift die zweite Klausel, die allerdings noch Überprüfen 
 Lösung berechnet werden.
 
 Das Problem bei dem obigen Programm ist die Effizienz.  Aufgrund der vielen Möglichkeiten
-eine Liste zu zerlegen, wird beim Backtracking immer wieder die selbe Lösung generiert. 
+eine Liste zu zerlegen, wird beim Backtracking immer wieder dieselbe Lösung generiert. 
 Beispielsweise liefert die Anfrage \\[0.1cm]
 \hspace*{1.3cm} \texttt{bubble\_sort( [ 4, 3, 2, 1 ], L ), write(L), nl, fail.} \\[0.1cm]
-16 mal die selbe Lösung.  Abbildung \ref{fig:bubble_sort_cut} zeigt eine Implementierung,
+16 mal dieselbe Lösung.  Abbildung \ref{fig:bubble_sort_cut} zeigt eine Implementierung,
 bei der nur eine Lösung berechnet wird.  Dies wird durch den Cut-Operator in Zeile 4
 erreicht.   Ist einmal eine Zerlegung der Liste \texttt{L} in \texttt{L1} und 
 \texttt{[X, Y | L2]} gefunden, bei der \texttt{Y} kleiner als \texttt{X} ist, so bringt es
 nichts mehr, nach anderen Zerlegungen zu suchen, denn die ursprünglich gegebene Liste
-\texttt{L} läßt sich ja auf jeden Fall dadurch sortieren, dass rekursiv die Liste \\[0.1cm]
+\texttt{L} lässt sich ja auf jeden Fall dadurch sortieren, dass rekursiv die Liste \\[0.1cm]
 \hspace*{1.3cm} $\mathtt{append(L_1, [Y,X|L_2])}$ \\[0.1cm]
 sortiert wird.  Dann kann auch der Aufruf der Prädikats \texttt{ordered/1} im Rumpf der zweiten
 Klausel des Prädikats \texttt{bubble\_sort} entfallen, denn diese wird beim Backtracking
 ja nur dann erreicht, wenn es keine Zerlegung der Liste \texttt{L} in  \texttt{L1} und 
-\texttt{[X, Y | L2]} gibt, bei der \texttt{Y} kleiner als \texttt{X} ist.  Dann muß aber
+\texttt{[X, Y | L2]} gibt, bei der \texttt{Y} kleiner als \texttt{X} ist.  Dann muss aber
 die Liste \texttt{L} schon sortiert sein.
 
 \begin{figure}[!h]
