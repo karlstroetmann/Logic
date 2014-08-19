@@ -1,0 +1,76 @@
+\documentclass{article}
+\usepackage{german}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{fancyvrb}
+\usepackage{alltt}
+
+\pagestyle{empty}
+
+\begin{document}
+\noindent
+{\Large \textbf{Exercise}: Converting the Infidels}
+\vspace{0.5cm}
+
+
+\noindent
+Three missionaries and three infidels have to cross a river. Their boat 
+only provides room for two passengers. The infidels are also cannibals
+and are quite hungry.  If there are fewer missionaries than infidels on a
+shore, then the missionaries have a problem.  Your task is to create a shedule
+that can be used to cross the river.  The constraint is that the 
+missionaries must not be consumed by the infidels.
+
+You will find a frame for this program on my web page at
+\\[0.1cm]
+\hspace*{0.8cm}      
+\texttt{http://www.ba-stuttgart.de/\symbol{126}stroetma/SETL2/missionare-frame.stl} 
+\\[0.1cm]
+Your task is to complete this frame to a running program solving the puzzle.
+\begin{enumerate}
+\item Define a procedure $\texttt{problem}(M, I)$ where $M$ is the number of missionaries
+      on the left shore and $I$ is the number of infidels on the left shore.
+      The procedure should return \texttt{true} if and only if there is a problem
+      on either the left or the right shore.
+
+      (Line 71 in \texttt{missionary-frame.stl})
+\item Define a set $P$ of points.  Every point has to describe a situation.  Represent a
+      situation as a triple $\langle M, I, B \rangle$,
+      where  $M$ is the number of missionaries on the left shore, $I$ is the number of
+      infidels on the left shore and $B$ is the number of Boats on the left shore.
+      The set $P$ shall contain only those states where there is no problem for the
+      missionaries.
+
+      (Line 17 in \texttt{missionary-frame.stl})
+\item Define a relation $R_{1}$ on the set $P$.
+      A pair
+      \[ \bigl\langle \langle M_1, I_1, B_1 \rangle, \langle M_2, I_2, B_2 \rangle \bigr\rangle \]
+      should be a member of
+      $R_{1}$ iff the state $\langle M_1, I_1, B_1\rangle$ can be transformed into the state
+      $\langle M_2, I_2, B_2\rangle$
+      by crossing the boat from the left shore to the right shore.
+      Additionally, the missionaries should not have a problem after the crossing.
+
+      (Line 28 in \texttt{missionary-frame.stl})
+\item In the same way, define the relation $R_{2}$ as the relation describing the
+      crossings from the right shore to the left shore.    
+
+  
+      (Line 43 in \texttt{missionary-frame.stl}.)
+\item Define the start state and the goal state.
+
+      (Line 61 und 63 in \texttt{missionary-frame.stl}.)
+
+      \textbf{Remark}:  The procedure  \texttt{reachable} is already a part of the file
+       \texttt{missionary-frame.stl}.  This procedure is called in line 65.  Furthermore,
+       the file contains a number of predefined procedures that are used to output
+       intermediary results.  If your program does not work immediately, then you
+       should better check these results.
+\end{enumerate}
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

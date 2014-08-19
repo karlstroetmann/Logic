@@ -1,0 +1,29 @@
+program main;
+    f := [ [ "p", "->", "q" ], "->", [ [ [ "-", "p" ], "->", "q" ], "->", "q" ] ];
+
+    I := { [ "p", true ], [ "q", true ] };
+    print( "eval(", f, ", ", I, ") = \n", eval(f, I) );
+    I := { [ "p", true ], [ "q", false ] };
+    print( "eval(", f, ", ", I, ") = \n", eval(f, I) );
+    I := { [ "p", false ], [ "q", true ] };
+    print( "eval(", f, ", ", I, ") = \n", eval(f, I) );
+    I := { [ "p", false ], [ "q", false ] };
+    print( "eval(", f, ", ", I, ") = \n", eval(f, I) );
+
+   
+    -- Die Prozedur eval(f, I) wertet die aussagen-logische Formel f unter
+    -- der aussagen-logischen Interpretation I aus.
+    procedure eval(f, I);
+        case
+            when f  = 1       =>  return TRUE;
+            when f  = 0       =>  return FALSE;
+            when is_string(f) =>  return I(f);
+            when f(1) = "-"   =>  return not eval(f(2), I);
+            when f(2) = "*"   =>  return eval(f(1), I) and  eval(f(3), I);
+            when f(2) = "+"   =>  return eval(f(1), I) or   eval(f(3), I);
+            when f(2) = "->"  =>  return not eval(f(1), I) or eval(f(3), I);
+            when f(2) = "<->" =>  return eval(f(1), I) = eval(f(3), I);
+            otherwise => print("eval: syntax error ", f);
+        end case;
+    end eval;
+end main;

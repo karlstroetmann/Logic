@@ -1,0 +1,197 @@
+program main;
+    -- Drei Missionare und drei Kannibalen wollen zusammen einen Fluß 
+    -- überqueren. Das Boot hat nur Platz für zwei Passagiere.  Die Kannibalen
+    -- sind hungrig, wenn die Missionare an einem Ufer in der Unterzahl sind, 
+    -- haben sie ein Problem.  Die Aufgabe besteht darin, einen Fahrplan zu 
+    -- erstellen, so dass hinterher alle am anderen Ufer ankommen und die
+    -- Missionare nicht gefressen werden.
+    
+    -- Die einzelnen Punkte werden durch Tripel beschrieben.  Das Tripel
+    -- [ M, K, B ] gibt an, dass M Missionare, K Kannibalen und B Boote am
+    -- linken Ufer sind. Die Zahl der Missionare am rechten Ufer ist damit
+    -- automatisch 3 - M, die Zahl der Kannibalen am rechten Ufer ist 3 - K
+    -- und die Zahl der Boote am rechten Ufer ist 1 - B.
+
+    -- P beschreibt alle möglichen Zustände bei denen die Missionare kein 
+    -- Problem haben.
+    P := "?";
+    print("Mögliche Zustände:\n");
+    for [M, K, B] in P loop
+        printState(M, K, B);
+    end loop;
+    print("\n");
+
+    -- R1 beschreibt Zustandsübergänge, bei denen das Boot vom linken Ufer
+    -- zum rechten Ufer fährt. PM ist die Anzahl der Missionare, die im Boot
+    -- übersetzen und PK ist die Anzahl der Kannibalen im Boot.
+    R1 := "?";
+
+    print("R1:\n");
+    for [[M1, K1, B1], [M2, K2, B2]] in R1 loop
+        print();
+        printState(M1, K1, B1);
+        printBoat(M1, K1, B1, M2, K2, B2);
+        printState(M2, K2, B2);
+    end loop;
+    print("\n");
+
+    -- R2 beschreibt Zustandsübergänge, bei denen das Boot vom rechten Ufer
+    -- zum linken Ufer fährt. PM ist die Anzahl der Missionare, die im Boot
+    -- übersetzen und PK ist die Anzahl der Kannibalen im Boot.
+    R2 := "?";
+
+    print("R2:\n");
+    for [[M1, K1, B1], [M2, K2, B2]] in R2 loop
+        print();
+        printState(M1, K1, B1);
+        printBoat(M1, K1, B1, M2, K2, B2);
+        printState(M2, K2, B2);
+    end loop;
+    print("\n");
+
+    -- R ist die Menge aller Verbindungen zwischen Punkten.
+    R := R1 + R2;
+
+    print("R:\n");
+    for [[M1, K1, B1], [M2, K2, B2]] in R loop
+        print();
+        printState(M1, K1, B1);
+        printBoat(M1, K1, B1, M2, K2, B2);
+        printState(M2, K2, B2);
+    end loop;
+    print("\n");
+
+    -- Am Anfang sind alle links.
+    start := "?";
+    -- Am Ende sollen alle rechts sein, links ist dann niemand mehr.
+    goal  := "?";
+    -- Berechne alle möglichen Pfade.
+    path  := reachable(start, goal, R);
+    -- und geben diesen Schritt für Schritt aus.
+    printPath(path);
+
+    -- Aufgabe 1:
+    -- Es gibt ein Problem, wenn es an einem Ufer weniger Missionare als 
+    -- sind, es sei denn, dass an dem Ufer überhaupt keine Missionare sind.
+    procedure problem(M, K);
+        return M > 0 and M < K;
+    end problem;
+
+    --------------------------------------------------------------------------
+    --                                                                      --
+    -- Die folgenden Prozeduren dienen nur dem Ausdrucken der Lösung.       --
+    --                                                                      --
+    --------------------------------------------------------------------------    
+
+    -- DiesesPrädikat durckt die Lösung aus.
+    procedure printPath(path);
+        print("Lösung:\n");
+        for i in {1 .. #path - 1} loop
+            [ M1, K1, B1 ] := path(i);
+            [ M2, K2, B2 ] := path(i+1);
+            printState(M1, K1, B1);
+            printBoat(M1, K1, B1, M2, K2, B2);
+        end loop;
+        [ M, K, B ] := path(#path);
+        printState(M, K, B);
+    end printPath;
+
+    -- Die Prozedur printState(M, K, B) druckt den Zustand, bei dem
+    -- M Missionare, K Kannibalen und B Boote am linken Ufer sind.
+    procedure printState(M, K, B);
+         print( fillCharsRight(M * "M", 6) + 
+                fillCharsRight(K * "K", 6) + 
+                fillCharsRight(B * "B", 3) + "    |~~~~~|    " + 
+                fillCharsLeft((3 - M) * "M", 6) + 
+                fillCharsLeft((3 - K) * "K", 6) + 
+                fillCharsLeft((1 - B) * "B", 3) 
+              );
+    end printState;
+    
+    -- Die Prozedur printBoat(M1, K1, B1, M2, K2, B2) druckt den Zustand des
+    -- Bootes, wenn der Zustand sich von [M1, K1, B1] zu [M2, K2, B2] ändert.
+    procedure printBoat(M1, K1, B1, M2, K2, B2);
+        if B1 = 1 then
+            print( 19 * " " + "> " + fillCharsBoth( (M1 - M2) * "M" + " " + (K1 - K2) * "K", 3 ) + " >" );
+        else
+            print( 19 * " " + "< " + fillCharsBoth( (M2 - M1) * "M" + " " + (K2 - K1) * "K", 3 ) + " <" );
+        end if;
+    end printBoat;
+
+    -- Die Prozedur fillCharsLeft(x, n) wandelt x in einen String der Länge n um.
+    -- Dabei wird der String von links mit Leerzeichen aufgefüllt.
+    procedure fillCharsLeft(x, n);
+        s := str(x);
+        m := n - #s;
+        return m * " " + s;
+    end fillCharsLeft;
+
+    -- Die Prozedur fillCharsRight(x, n) wandelt x in einen String der Länge n um.
+    -- Dabei wird der String von rechts mit Leerzeichen aufgefüllt.
+    procedure fillCharsRight(x, n);
+        s := str(x);
+        m := n - #s;
+        return s + m * " ";
+    end fillCharsRight;
+
+    -- Die Prozedur fillCharsBoth(x, n) wandelt x in einen String der Länge n um.
+    -- Dabei wird der String von links und rechts mit Leerzeichen aufgefüllt.
+    procedure fillCharsBoth(x, n);
+        s := str(x);
+        ml := (n     - #s) / 2;
+        mr := (n + 1 - #s) / 2;
+        return ml * " " + s + mr * " ";
+    end fillCharsBoth;
+
+    --------------------------------------------------------------------------
+    --                                                                      --
+    -- Die unten aufgeführten Prozeduren sind 1-zu-1 aus dem Programm zur   --
+    -- Lösung des Wolf-Ziege-Kohl-Problems kopiert.                         --
+    --                                                                      --
+    --------------------------------------------------------------------------
+
+    -- PS ist eine Menge von Pfaden, R ist eine binäre Relation.  Die Prozedur
+    -- verlängert alle Pfade aus PR, die mit einem Punkt y enden, für den es
+    -- ein Paar [y,z] in R gibt. 
+    procedure oneStep(PS, R);
+           return{ p + [ z ] : p in PS, [y, z] in R | p(#p) = y };
+    end oneStep;
+    
+    -- Entfernt alle Pfade aus PS die zyklisch sind.
+    procedure eliminateCycles(PS);
+       	return{ p in PS | not cyclic(p) };
+    end eliminateCycles;
+    
+    -- Liefert true, wenn der Pfad p einen Zyklus enthält.
+    procedure cyclic(p);
+        return #{ x : x in p } < #p;
+    end cyclic;
+
+    -- Berechnet eine Pfad von x nach y. Dabei beschreibt die Relation R die 
+    -- Verbindungen zwischen den Punkten.  Falls kein Pfad gefunden werden
+    -- kann wird Omega zurück gegeben.
+    procedure reachable(x, y, R);
+        PS := { [x] };
+        loop
+            old_PS := PS;
+            PS := eliminateCycles(PS + oneStep(PS, R));
+            -- P ist die Menge aller Pfade, die am Zielpunkt y enden.
+            P := { p in PS | p(#p) = y };
+            if P /= {} then
+                -- Wenn P nicht leer ist, geben wir ein beliebiges Element aus P
+                -- zurück.
+                return arb P;
+            end if;
+            if old_PS = PS then
+               -- Wenn das Programm bis hier kommt, sind alle möglichen Pfade 
+               -- berechnet worden.  Aufgrund des obigen Tests P /= {} wissen
+               -- wir, dass keiner dieser Pfade zum Ziel führt.  Daher können
+               -- wir jetzt Omega zurück geben.  Omega wird implizit dann zurück
+               -- gegeben, wenn hinter mdem "return" kein Wert steht.
+               return;
+           end if;
+        end loop;
+    end reachable;
+
+end main;
+

@@ -1,0 +1,33 @@
+% This is `chessf10.mf' version 1.2 as of 6/91
+% METAfounded by Piet Tutelaers (internet: rcpt@urc.tue.nl)
+
+% generates a font consisting of chess figurines
+
+mode_setup;
+input chessbase;
+
+def figurine(expr code) =
+   beginchar(code, d#, .8d#, .2d#);
+	pickup pencircle scaled thin;
+	thin_pen:=savepen ; % for drawing pieces
+	pickup pencircle scaled thick;
+	thick_pen:=savepen; % for drawing inside pieces
+	define_whole_pixels(d);
+	scantokens code(d, 0, -.2);
+   endchar;
+enddef;
+
+M=1; % number of squares
+d#:=10pt#/M;   % size per square
+thin#:=1/3pt#; thick#:=5/6pt#; define_blacker_pixels(thin, thick);
+light=0; dark=1; white=0; black=1;
+background:=light; color:=white;
+
+figurine("K");
+figurine("Q");
+figurine("R");
+figurine("B");
+figurine("N");
+figurine("p");
+
+end;

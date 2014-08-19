@@ -1,0 +1,36 @@
+program main;
+    
+    print( "both([1,2,3], [3,4,5]) = ", both([1,2,3], [3,4,5]) );
+
+    print( "either([1,2,3], [3,4,5]) = ", either([1,2,3], [3,4,5]) );
+
+    print( "perfekt(1000) = ", perfekt(1000) );
+    print( "quadrat(100) = ",  quadrat(100) );
+    print( "quadSum(100) = ",  quadSum(100) );
+
+    procedure both(l1, l2);
+        return { x : x in l1 } * { x : x in l2 };
+    end both;
+
+    procedure either(l1, l2);
+        s1 := { x : x in l1 };
+        s2 := { x : x in l2 };
+        return  s1 + s2 - s1 * s2;
+    end either;
+
+    procedure echteTeiler(n);
+        return { x in {1 .. n-1} | n mod x = 0 };
+    end echteTeiler;
+
+    procedure perfekt(m);
+        return { x in {1 .. m} | +/ echteTeiler(x) = x };
+    end perfekt;
+
+    procedure quadrat(n);
+        return { x * x : x in {1 .. n} | x * x <= n };
+    end quadrat;
+
+    procedure quadSum(n);
+        return { q + p : q in quadrat(n), p in quadrat(n) | p + q <= n };
+    end quadSum;
+end main;

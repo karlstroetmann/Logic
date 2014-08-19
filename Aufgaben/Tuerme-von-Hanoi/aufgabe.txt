@@ -1,0 +1,86 @@
+Aufgaben-Blatt: Die Türme von Hanoi
+
+Stellen Sie sich drei Türme vor, einen links, einen in der Mitte und
+einen rechts. Anfangs liegen auf dem linken Turm drei Scheiben der Größe 1, 2 und 3,
+wobei die größte Scheibe unten liegt, Scheibe 2 liegt in der Mitte und Scheibe 1 liegt
+oben. Die anderen beiden Türme sind leer.
+\begin{verbatim}                                                                
+                |                    |                   |           
+               111                   |                   |           
+              22222                  |                   |           
+             3333333                 |                   |           
+      ===============================================================
+\end{verbatim}
+Ihre Aufgabe besteht darin, die Scheiben so zu verschieben, dass am Ende die erste Scheibe
+auf dem zweiten Turm liegt, die zweite Scheibe auf dem ersten Turm und die dritte Scheibe
+auf dem dritten Turm liegt. Dabei dürfen Sie in jedem Zug eine Scheibe
+von einem Turm nehmen und auf einen anderen Turm legen, wobei Sie aber niemals
+eine Scheibe $x$ auf eine andere Scheibe $y$ legen dürfen, wenn die Scheibe $x$
+größer als $y$ ist.
+
+Sie sollen die Aufgabe mit Hilfe des Gerüstes, dass Sie unter 
+
+ http://www.ba-stuttgart.de/stroetmann/SETL2/hanoi-frame.stl
+
+finden, lösen. 
+\begin{enumerate}
+\item Definieren Sie eine Prozedur $partition(S_1, S_2, S_3, A)$ die genau dann 
+      true zurück liefert, wenn die Menge $\{ S_1, S_2, S_3 \}$
+      eine Partition der Menge A ist. 
+      (Zeile 108 in {hanoi-frame.stl})
+      {Hinweis:}
+      Der Begriff der Partition ist im Skript wie folgt definiert:
+      Definition:
+      Ist $P \subseteq 2^M$ eine Menge von Teilmengen von $M$, so sagen wir, dass $P$ eine 
+      Partition von $M$ ist, falls folgende Eigenschaften gelten:
+      \begin{enumerate}
+      \item $\forall x \in M : \exists K \in P : x \in K$,
+            jedes Element aus $M$ findet sich also in einer Menge aus $P$ wieder.
+      \item $\forall K \in P : \forall L \in P : K \cap L =\emptyset \vee K = L$,
+            zwei verschiedene Mengen aus $P$ sind also disjunkt.
+      \end{enumerate}
+      Beispiele: Es gilt also
+      \begin{enumerate}
+      \item $partition(\{1,3\}, \{\},\{2\},\{1,2,3\}) = true$,
+            denn jedes Element aus der Menge $\{1,2,3\}$ kommt in einer der drei Mengen,
+	    $S_1= \{1,3\}$, $S_2= \{\}$, $S_3= \{2\}$ genau einmal vor.
+	    \item $partition(\{1,3\}, \{1\},\{2\},\{1,2,3\}) = false$,
+	    denn das Element 1 aus der Menge $\{1,2,3\}$ kommt sowohl in der Menge
+	    $S_1= \{1,3\}$ als auch in der Menge $S_2= \{1\}$ vor.
+      \item $partition(\{1\}, \{\},\{2\},\{1,2,3\}) = false$,
+            denn das Element 3 aus der Menge $\{1,2,3\}$ kommt in keiner der Mengen
+	    $S_1= \{1\}$, $S_2= \{\}$, $S_3 = \{2\}$ vor.
+      \end{enumerate}
+      (Zeile 124 in {hanoi-frame.stl})
+
+\item Definieren Sie eine Menge $P$ von Punkten. Jeder Punkt aus $P$ soll einem
+      Zustand der drei Türme entsprechen. Zweckmäßig ist eine Darstellung
+      der verschiedenen Zustände durch ein Tripel $\langle S_1, S_2, S_3 \rangle$,
+      wobei die Komponenten $S_1$, $S_2$ und $S_3$ Mengen sind, die die Zustände
+      der einzelnen Türme repräsentieren. 
+      (Zeile 35 in {hanoi-frame.stl})
+\item Die Prozedur movePossible(Source, Target) nimmt als Argumente 
+      zwei Mengen, die jeweils den Zustand eines Turms repräsentieren. Die 
+      Funktion liefert das Ergebnis true, wenn die oberste Scheibe von dem 
+      Turm Source auf den Turm Target gelegt werden darf.
+      (Zeile 124 in {hanoi-frame.stl})
+\item Definieren Sie jetzt eine Relation $R_{12}$ auf der Menge $P$.
+      Ein Paar $\langle a, b \rangle$ soll genau dann in $R_{12}$ liegen, wenn
+      der Zustand $b$ aus dem Zustand $a$ dadurch hervorgeht, dass im Zustand $a$ 
+      die oberste Scheibe von dem Turm 1 auf den Turm 2 gelegt wird. Dabei soll natürlich
+      darauf geachtet werden, dass keine große Scheibe auf eine kleinere Scheibe gelegt
+      wird.
+      (Zeile 42 in {hanoi-frame.stl})
+\item Definieren Sie analog zu der letzten Teilaufgabe die fünf Relationen $R_{21}$,
+      $R_{31}$, $R_{13}$, $R_{23}$, $R_{32}$ so, dass die Relation 
+  
+      $R := R_{12} \cup R_{21} \cup R_{31} \cup R_{13} \cup R_{23} \cup R_{32}$ 
+
+       alle erlaubten Zustands-Übergange beschreibt. 
+\item Definieren Sie nun die Variablen start und goal so, dass
+      start die Situation beschreibt, bei der alle Scheiben auf dem linken Turm
+      liegen, während goal die Situation beschreibt, bei die erste Scheibe
+      auf dem zweiten Turm liegt, die zweite Scheibe auf dem ersten Turm und die dritte Scheibe
+      auf dem rechten Turm liegt.
+      (Zeile 80 und 83 in {hanoi-frame.stl})
+\end{enumerate}

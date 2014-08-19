@@ -1,0 +1,119 @@
+\documentclass{article}
+\usepackage{german}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{fancyvrb}
+\usepackage{alltt}
+
+\pagestyle{empty}
+
+\newcounter{aufgabe}
+\newcommand{\exercise}{\vspace*{0.1cm}
+\stepcounter{aufgabe}
+
+\noindent
+\textbf{Aufgabe \arabic{aufgabe}}: }
+
+\begin{document}
+\noindent
+{\Large \textbf{Aufgaben-Blatt}: \textsl{Prolog}}
+\vspace{0.5cm}
+
+
+
+\exercise \emph{Der Wein-Händler} \\[0.2cm]
+Ein Wein-Händler hat ein großes Faß Wein und
+zwei Eimer, von denen ein Eimer genau drei Liter faßt, während 
+der andere Eimer 5 Liter faßt.  Ziel ist es, den Eimer, der 
+fünf Liter faßt, mit genau vier Litern zu füllen.  Erlaubte
+Operationen sind:
+\begin{enumerate}
+\item Ein Eimer kann mit Wein aus dem Faß gefüllt werden.
+      Danach ist der Eimer vollständig gefüllt.
+\item Der Inhalt eines Eimers kann in das Faß zurück gegossen werden.
+      Danach ist der Eimer leer.
+\item Der Inhalt eines Eimers kann in den anderen Eimer umgefüllt
+      werden.  Dabei wird aber höchstens soviel umgefüllt, bis
+      der andere Eimer voll ist.
+\end{enumerate}
+Erstellen Sie ein \textsl{Prolog}-Programm, das die Aufgabe löst.  Unter
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{http://www.dhbw-stuttgart.de/stroetmann/Logic/Prolog/wein-frame.pl}
+\\[0.2cm]
+finden Sie ein Programm-Gerüst, in dem Sie nur noch das Prädikat \texttt{edge}
+implementieren müssen um das Problem zu lösen.
+\vspace{0.3cm} 
+
+\exercise \emph{Der Quick-Sort-Algorithmus}
+\begin{enumerate}
+\item Schreiben Sie ein Prädikat \texttt{small}, das mit der Typ-Spezifikation \\[0.1cm]
+      \hspace*{1.3cm} 
+      \texttt{small(+\textsl{Number}, +\textsl{List}(\textsl{Number}), -\textsl{List}(\textsl{Number}))} 
+      \\[0.1cm]
+      verträglich ist.  Der Aufruf  \\[0.1cm]
+      \hspace*{1.3cm}  $\mathtt{small}(x, l, \mathtt{S})$ \\[0.1cm]
+      soll für eine Zahl $x$  und eine Liste von Zahlen $l$ die Liste aller der Zahlen
+      aus $l$ berechnen, die kleiner oder gleich $x$ sind.
+\item Schreiben Sie ein Prädikat \texttt{big}, das mit der Typ-Spezifikation \\[0.1cm]
+      \hspace*{1.3cm} 
+      \texttt{big(+\textsl{Number}, +\textsl{List}(\textsl{Number}), -\textsl{List}(\textsl{Number}))} 
+      \\[0.1cm]
+      verträglich ist.  Der Aufruf  \\[0.1cm]
+      \hspace*{1.3cm}  $\mathtt{big}(x, l, \mathtt{S})$ \\[0.1cm]
+      soll für eine Zahl $x$  und eine Liste von Zahlen $l$ die Liste aller der Zahlen
+      aus $l$ berechnen, die größer als $x$ sind.
+\item Schreiben Sie ein Prädikat \texttt{quick\_sort}, das mit der Typ-Spezifikation \\[0.1cm]
+      \hspace*{1.3cm} 
+      \texttt{quick\_sort(+\textsl{List}(\textsl{Number}), -\textsl{List}(\textsl{Number}))} 
+      \\[0.1cm]
+      verträglich ist.  Der Aufruf  \\[0.1cm]
+      \hspace*{1.3cm}  $\mathtt{quick\_sort}(l, \mathtt{L})$ \\[0.1cm]
+      soll die Liste $l$ sortieren.
+
+      Das Prädikat \texttt{quick\_sort} soll nach der \emph{divide-and-conquer}-Methode
+      arbeiten:
+      \begin{enumerate}
+      \item Teilen Sie die zu sortierende Liste $l$ zunächst mit den Prädikaten
+            \texttt{small/3} und \texttt{big/3} in zwei Listen $s$ und $b$ auf.
+            Die  Liste $s$ soll dabei alle Elemente enthalten, die kleiner als
+            das erste Element der Liste $l$ sind, während die Liste $b$ die Elemente
+            aus $l$ enthält, die größer als das erste Element von $l$ sind.
+      \item Sortieren Sie die Listen $s$ und $b$ rekursiv.
+      \item Fassen Sie die beiden sortierten Listen zu einer sortierten Liste
+            zusammen.  Benutzen Sie dazu das vordefinierte Prädikat \texttt{append},
+            das zwei Listen aneinander hängt.
+      \end{enumerate}
+\end{enumerate}
+
+%\framebox{
+%\framebox{
+%\hspace*{0.3cm}
+%\begin{minipage}[c]{0.8\linewidth}
+%\vspace{0.3cm}
+
+
+%Auch bei dieser Aufgabe handelt es sich um eine Bonus-Abgabe, die nicht
+%abgegeben werden braucht und die dazu dient, den bisher erarbeiteten Stoff zu vertiefen.
+%Um die Sache etwas interessanter zu gestalten, werde ich
+%die beste bis zum 7.~März abgegebene Lösung (im Rahmen einer feierlichen Zeremonie)
+%mit einer Flasche Wein prämieren.  Werden mehrere gleichgute Lösungen abgegeben,
+%so gewinnt die Lösung, die als erstes abgegeben wurde.  
+%\vspace{0.3cm}
+
+%Sie können auch als Gruppe eine Lösung erarbeiten.  
+%\vspace{0.3cm}
+
+%\end{minipage}
+%\hspace*{0.3cm}
+
+%\vspace{0.3cm}
+%}}
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

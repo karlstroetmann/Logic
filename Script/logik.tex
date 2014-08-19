@@ -1,0 +1,152 @@
+\documentclass{report}
+\usepackage{ngerman}
+\usepackage{fleqn}
+\usepackage{epsfig}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{wasysym}
+\usepackage{fancyvrb}
+\usepackage{alltt}
+\usepackage{hyperref}
+\usepackage[all]{hypcap}
+\hypersetup{
+	colorlinks = true, % comment this to make xdvi work
+	linkcolor  = blue,
+	citecolor  = red,
+        filecolor  = Gold,
+        urlcolor   = [rgb]{0.5, 0.1, 0.0},
+	pdfborder  = {0 0 0} 
+}
+\setlength{\mathindent}{1.3cm}
+\setlength{\textwidth}{17cm}
+\addtolength{\oddsidemargin}{-1cm}
+\addtolength{\evensidemargin}{-1cm}
+\addtolength{\topmargin}{-1cm}
+
+
+\setlength{\mathindent}{1.3cm}
+\setlength{\topsep}{0.1cm plus0.1cm minus 0.0cm}
+\setlength{\partopsep}{0.0cm plus0.1cm minus 0.0cm}
+\setlength{\parsep}{0.1cm plus0.1cm minus 0.0cm}
+\setlength{\parskip}{0.1cm plus0.1cm minus 0.0cm}
+\newfont{\chess}{chess20}
+\newfont{\bigchess}{chess30}
+\newcommand{\chf}{\baselineskip20pt\lineskip0pt\chess}
+
+\newtheorem{Definition}{Definition}
+\newtheorem{Notation}[Definition]{Notation}
+\newtheorem{Korollar}[Definition]{Korollar}
+\newtheorem{Lemma}[Definition]{Lemma}
+\newtheorem{Satz}[Definition]{Satz}
+\newtheorem{Theorem}[Definition]{Theorem}
+
+\title{Theoretische Informatik \texttt{I} \\[0.1cm]
+       Logik und Mengenlehre              \\[0.3cm]
+      --- Wintersemester 2013/2014 ---    \\[0.3cm]
+      DHBW Mannheim}
+\author{Prof.~Dr.~Karl Stroetmann}
+
+\newcommand{\quoted}[1]{\texttt{\symbol{34}\texttt{#1}\symbol{34}}}
+\newcommand{\schluss}[2]{\frac{\displaystyle\quad \rule[-6pt]{0pt}{12pt}#1 \quad}{\displaystyle\quad \rule{0pt}{10pt}#2 \quad}}
+\newcommand{\bruch}[2]{\frac{\displaystyle#1}{\displaystyle #2}}
+\newcommand{\vschlus}[1]{{\displaystyle\rule[-6pt]{0pt}{12pt} \atop \rule{0pt}{10pt}#1}}
+
+\newcommand{\example}{\vspace*{0.2cm}
+
+\noindent
+\textbf{Beispiel}: \ }
+
+\newcommand{\examples}{\vspace*{0.2cm}
+
+\noindent
+\textbf{Beispiele}: \ }
+
+\newcommand{\next}{\vspace*{0.2cm}
+
+\noindent}
+
+\newcommand{\remark}{\vspace*{0.2cm}
+
+\noindent
+\textbf{Bemerkung}: }
+
+
+\newcounter{aufgabe}
+\newcommand{\exercise}{\vspace*{0.1cm}
+\stepcounter{aufgabe}
+
+\noindent
+\textbf{Aufgabe \arabic{aufgabe}}: }
+
+\newcommand{\qed}{\hspace*{\fill} $\Box$}
+\newcommand{\eox}{\hspace*{\fill} $\diamond$}
+\newcommand{\exend}{\hspace*{\fill} $\diamond$}
+\newcommand{\setl}{\textsc{SetlX}}
+\newcommand{\struct}{\mathcal{S}}
+\newcommand{\FV}{\textsl{FV}}
+\newcommand{\id}{\textrm{id}}
+\newcommand{\dom}{\textrm{dom}}
+\newcommand{\rng}{\textrm{rng}}
+\newcommand{\BV}{\textsl{BV}}
+\newcommand{\var}{\textsl{Var}}
+\newcommand{\el}{\!\in\!}
+\newcommand{\notel}{\!\not\in\!}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\verum}{\top}
+\newcommand{\falsum}{\bot}
+\newcommand{\gentzen}{\vdash}
+\newcommand{\komplement}[1]{\overline{#1}}
+\newcommand{\mathquote}[1]{\mbox{``}\mathtt{#1}\mbox{''}}
+\newcommand{\squote}[1]{\symbol{34}\texttt{#1}\symbol{34}}
+
+\newcommand{\circneg}{\mbox{$\bigcirc\hspace*{-0.3cm}\neg$}}
+\newcommand{\circwedge}{\mbox{$\bigcirc\hspace*{-0.3cm}\wedge$}}
+\newcommand{\circvee}{\mbox{$\bigcirc\hspace*{-0.3cm}\vee$}}
+\newcommand{\circright}{\mbox{$\bigcirc\hspace*{-0.45cm}\rightarrow$}}
+\newcommand{\circleftright}{\mbox{$\bigcirc\hspace*{-0.45cm}\leftrightarrow$}}
+\newcommand{\club }{\ensuremath{\clubsuit   }}
+\newcommand{\spade}{\ensuremath{\spadesuit  }}
+\newcommand{\heart}{\ensuremath{\heartsuit  }}
+\newcommand{\diamo}{\ensuremath{\diamondsuit}}
+
+\newcommand{\hoare}[3]{\bigl\{#1\bigr\}\quad\texttt{#2}\quad\bigl\{#3\bigr\}}
+\newcommand{\mod}{\;\texttt{\%}\;}
+\newcommand{\Oh}{\mathcal{O}}
+
+
+\def\pair(#1,#2){\langle #1, #2 \rangle}
+
+
+%\includeonly{prolog}
+%\includeonly{einleitung, grundlagen, setl, aussagenlogik, praedikatenlogik}
+\date{\today}
+
+\begin{document}
+
+
+\maketitle
+\tableofcontents
+\include{einleitung}
+\include{grundlagen}
+\include{setl}
+\include{grenzen}
+\include{aussagenlogik}
+%\include{aussagenlogik-alt}
+\include{praedikatenlogik}
+\include{prolog}
+\include{prolog-not}
+\include{prolog-cut}
+
+
+\bibliographystyle{alpha}
+\bibliography{/Users/stroetma/Dropbox/Kurse/cs}
+
+\end{document}
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "logik"
+%%% End: 

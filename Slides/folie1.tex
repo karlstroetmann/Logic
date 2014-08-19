@@ -1,0 +1,732 @@
+\documentclass{slides}
+\usepackage[latin1]{inputenc}
+\usepackage{german}
+\usepackage{epsfig}
+\usepackage{amssymb}
+
+\pagestyle{empty}
+\setlength{\textwidth}{17cm}
+\setlength{\textheight}{24cm}
+\setlength{\topmargin}{0cm}
+\setlength{\headheight}{0cm}
+\setlength{\headsep}{0cm}
+\setlength{\topskip}{0.2cm}
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\evensidemargin}{0.5cm}
+
+\newcommand{\verum}{\top}
+\newcommand{\falsum}{\bot}
+\newcommand{\schluss}[2]{\frac{\displaystyle\quad \rule[-6pt]{0pt}{12pt}#1 \quad}{\displaystyle\quad \rule{0pt}{10pt}#2 \quad}}
+\newcommand{\gentzen}{\vdash}
+\newcommand{\komplement}[1]{\overline{#1}}
+\newcommand{\mathquote}[1]{\mbox{``}\mathtt{#1}\mbox{''}}
+\newcommand{\is}{\;|\;}
+\newcommand{\circneg}{\mbox{$\bigcirc\hspace*{-0.5cm}\neg$}}
+\newcommand{\circwedge}{\mbox{$\bigcirc\hspace*{-0.5cm}\wedge$}}
+\newcommand{\circvee}{\mbox{$\bigcirc\hspace*{-0.5cm}\vee$}}
+\newcommand{\circright}{\mbox{$\bigcirc\hspace*{-0.8cm}\rightarrow$}}
+\newcommand{\circleftright}{\mbox{$\bigcirc\hspace*{-0.8cm}\leftrightarrow$}}
+
+\newcounter{mypage}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Aussagen-Logik
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+     \item Einfache Aussagen: Sätze, die
+       \begin{enumerate}
+       \item Tatbestand ausdrücken, (wahr oder falsch) 
+       \item keine \emph{Junktoren} enthalten.
+
+         Junktoren: ``\emph{und}'', ``\emph{oder}'', ``\emph{nicht}'', \\
+         ``\emph{wenn $\cdots$, dann}'', und ``\emph{genau dann, wenn}''
+       \end{enumerate}
+       Beispiele für einfache Aussagen:
+       \begin{enumerate}
+       \item ``{\em Die Sonne scheint.}''
+       \item ``{\em Es regnet.}''
+       \item ``{\em Am Himmel ist ein Regenbogen.}''
+       \end{enumerate}
+       einfache Aussagen = \emph{atomare} Aussagen
+\item Zusammengesetzte Aussagen
+  \begin{center}
+    ``\emph{\underline{Wenn} die Sonne scheint \underline{und} es regnet, \\
+            \underline{dann} ist ein Regenbogen am Himmel}.''
+  \end{center}
+\item Logische Schlüsse
+$$ \schluss{
+  \begin{array}{ll}
+  1. &\mathtt{SonneScheint} \\ 
+  2. & \mathtt{EsRegnet}     \\
+  3. & \mathtt{SonneScheint} \wedge \mathtt{EsRegnet} \rightarrow \mathtt{Regenbogen}
+  \end{array}
+   }{\mathtt{Regenbogen}} 
+$$
+     
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Schluss-Regeln
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item  Junktoren als Abkürzungen:
+\begin{enumerate}
+\item $\neg a$ \quad\quad\ für \quad \emph{nicht} $a$ 
+\item $a \wedge b$ \,\quad\ für \quad $a$ \emph{und} $b$
+\item $a \vee b$ \,\quad\ für \quad $a$ \emph{oder} $b$
+\item $a \rightarrow b$   \quad für \quad \emph{wenn} $a$, \emph{dann} $b$
+\item $a \leftrightarrow b$ \quad für \quad  $a$ \emph{genau dann, wenn} $b$
+\end{enumerate}
+
+\item Konkreter Schluß:
+$$ \schluss{
+  \begin{array}{ll}
+  1. &\mathtt{SonneScheint} \\ 
+  2. & \mathtt{EsRegnet}     \\
+  3. & \mathtt{SonneScheint} \wedge \mathtt{EsRegnet} \rightarrow \mathtt{Regenbogen}
+  \end{array}
+   }{\mathtt{Regenbogen}} 
+$$
+\item Schluss-Regel:
+$$ \frac{\;p \quad q \quad p \wedge q \rightarrow r\;}{\;r\;}  $$
+
+\textbf{Aufgabe:} Welche  Schluss-Regel wird in dem folgenden Argument verwendet?
+\begin{center}
+\begin{minipage}[c]{14.2cm}
+{\em  ``Wenn es regnet, ist die Straße nass.  Es regnet nicht.  Also ist die Straße nicht nass.''}
+\end{minipage}  
+\end{center}
+
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Kalkül, Herleitungsbegriff
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item $\textsl{Kalkül} = \textsl{Menge von Schluss-Regeln} $
+\item Scheibweise:  \quad $M \vdash r$
+     
+      lese:  Kalkül $\vdash$ leitet $r$ aus $M$ her.    
+      \begin{enumerate}
+      \item $\vdash$: Kalkül
+      \item $M$: Menge von aussagenlogischen Formeln
+      \item $r$: aussagenlogische Formel
+      \end{enumerate}
+\end{enumerate}
+
+\normalsize
+\begin{center}
+  Folgerungsbegriff
+\end{center}
+
+\footnotesize
+\begin{enumerate}
+\item $M \models r$  \qquad (lese: aus $M$ folgt $r$)
+
+      Interpretation: 
+      \begin{center}
+\begin{minipage}[c]{11.2cm}
+      \emph{Wenn alle Formeln aus $M$ wahr sind, dann ist auch $r$ wahr.}
+\end{minipage}          
+      \end{center}
+\end{enumerate}
+
+\normalsize
+\begin{center}
+Ziel: korrekter und vollständiger Kalkül 
+\end{center}
+
+\footnotesize
+\begin{enumerate}
+\item Korrektheit:
+  \begin{center}
+      Aus $M \vdash r$ folgt $M \models r$.     
+  \end{center}
+\item Vollständigkeit:
+  \begin{center}
+      Aus $M \models r$ folgt $M \vdash r$.     
+  \end{center}
+\end{enumerate}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Anwendung der Aussagenlogik 
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item Analyse und Design digitaler Schaltungen.
+
+      Pentium \texttt{IV}, Northwood Kernel: 55 Millionen Gatter
+  \begin{enumerate}
+  \item Schaltungsvergleich: Magma offeriert \\
+        \textsl{Quartz Formal} 
+        zum Preis von $150\,000\, \symbol{36}$ pro \\
+        Lizenz 
+  \item Timing Analyse
+  \item $\cdots$
+  \end{enumerate}
+\item Erstellung von Stundenplänen.
+
+      (diskrete Mathematik $\mapsto$ Aussagenlogik)
+
+\item Verschlußpläne für Weichen und Signale.
+
+      (Einstellung von Fahrstraßen)
+\item Kombinatorische Puzzle
+
+      (Beispiel: 8--Damen--Problem).
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Extensional vs. Intensional Interpretation
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+Interpretation  aussagenlogischer Junktoren  \emph{extensional}:
+
+Berechnung von  
+\begin{center}
+\hspace*{1.3cm}
+$\mathcal{I}(f \odot g)$ \quad mit $\odot \in \{\wedge, \vee, \rightarrow,\leftrightarrow \}$
+\end{center}
+\begin{enumerate}
+\item Werte $\mathcal{I}(f)$ und $\mathcal{I}(g)$ reichen aus,
+\item $f$ und $g$ nicht benötigt!
+\end{enumerate}
+
+
+\textbf{Problem}:  Umgangssprache
+\begin{center}
+Kausale Bedeutung von ``\emph{wenn $\cdots$, dann}'' 
+\end{center}
+
+\textbf{Beispiel}:
+\begin{center}
+``\emph{Wenn $3 \cdot 3 = 8$, dann schneit es Morgen.}''  
+\end{center}
+\begin{enumerate}
+\item Extensional: wahr
+\item Intensional: Unsinn, da kein Zusammenhang besteht.
+\end{enumerate}
+
+\textbf{Erkenntnis}
+\begin{itemize}
+\item extensionale Interpretation ist \emph{Abstraktion}
+
+      kausale Zusammenhänge bleiben unberücksichtigt
+\item mathematische Praxis
+  \begin{enumerate}
+  \item extensionale Interpretation ausreichend
+  \item intensionale Interpretation zu kompliziert
+  \end{enumerate}
+\end{itemize}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Aussagenlogische Formeln
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+Gegeben: $\mathcal{P}$ Menge 0--stelliger Prädikats--Zeichen\\[0.3cm]
+\hspace*{1.3cm} (Aussage-Variablen)
+\begin{enumerate}
+\item $\top \in \mathcal{F}$ und $\mathtt{\bot} \in \mathcal{F}$.
+
+      $\top$:  \emph{Verum},  immer wahr.
+
+      $\bot$:  \emph{Falsum}, immer falsch. 
+\item Wenn $p \in \mathcal{P}$, dann $p \in \mathcal{F}$.
+\item Wenn $f \in \mathcal{F}$, dann $\neg f \in \mathcal{F}$.
+\item Wenn $f_1, f_2 \in \mathcal{F}$, dann $(f_1 \vee f_2) \in \mathcal{F}$.
+\item Wenn $f_1, f_2 \in \mathcal{F}$, dann $(f_1 \wedge f_2) \in \mathcal{F}$.
+\item Wenn $f_1, f_2 \in \mathcal{F}$, dann $(f_1 \rightarrow f_2) \in \mathcal{F}$.
+\item Wenn $f_1, f_2 \in \mathcal{F}$, dann $(f_1 \leftrightarrow f_2) \in \mathcal{F}$.
+\end{enumerate}
+Beispiele: Sei $\mathcal{P} = \{ p, q, r \}$
+\begin{itemize}
+\item $(\neg p \rightarrow q)$
+\item $((p \wedge q) \rightarrow q))$
+\item $(p \leftrightarrow (q \wedge (q \wedge p)))$
+\end{itemize}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Klammern Sparen 
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item Äußere Klammern werden weggelassen:\\[0.3cm]
+      \hspace*{1.3cm} $p \wedge q$ \quad statt \quad $(p \wedge q)$.
+\item ``$\vee$'' und ``$\wedge$'' werden links geklammert:  \\[0.3cm]
+      \hspace*{1.3cm} $p \wedge q \wedge r$ \quad statt \quad $(p \wedge q) \wedge r$.
+\item ``$\rightarrow$'' wird rechts geklammert: \\[0.3cm]
+      \hspace*{1.3cm} $p \rightarrow q \rightarrow r$ \quad statt \quad $p \rightarrow (q \rightarrow r)$.
+\item ``$\vee$'' und ``$\wedge$'' binden stärker als ``$\rightarrow$'': \\[0.3cm]
+      \hspace*{1.3cm} $p \wedge q \rightarrow r$ \quad statt \quad $(p \wedge q) \rightarrow r$
+\item ``$\rightarrow$'' bindet stärker als ``$\leftrightarrow$'': \\[0.3cm]
+      \hspace*{1.3cm} $p \rightarrow q \leftrightarrow r$ \quad statt \quad $(p \rightarrow q) \leftrightarrow r$.
+\end{enumerate}
+Beispiele:
+\begin{itemize}
+\item $(\neg p \rightarrow q)$ \quad wird zu \quad $\neg p \rightarrow q$
+\item $((p \wedge q) \rightarrow (q \vee r))$  \quad wird zu \quad $p \wedge q \rightarrow
+  q \vee r$
+\item $(p \leftrightarrow ((q \wedge q) \wedge p))$ \quad wird zu \quad
+      $p \leftrightarrow q \wedge q \wedge p$
+\end{itemize}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Wahrheits--Tafel
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+
+  \begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+   $p$            & $q$            &  $\neg p$      &  $p \vee q$    & $p \wedge q$   & $p \rightarrow q$ & $p \leftrightarrow q$
+   \\
+\hline
+\hline
+   \texttt{true}  & \texttt{true}  & \texttt{false} & \texttt{true}  & \texttt{true}  & \texttt{true}     & \texttt{true}  \\
+\hline
+   \texttt{true}  & \texttt{false} & \texttt{false} & \texttt{true}  & \texttt{false} & \texttt{false}    & \texttt{false}  \\
+\hline
+   \texttt{false} & \texttt{true}  & \texttt{true}  & \texttt{true}  & \texttt{false} & \texttt{true}     & \texttt{false} \\
+\hline
+   \texttt{false} & \texttt{false} & \texttt{true}  & \texttt{false} & \texttt{false} & \texttt{true}     & \texttt{true}  \\
+\hline
+  \end{tabular}
+\vspace{0.5cm}
+
+Interpretiere Junktoren als Funktionen \\
+gemäß Wahrheits--Tafel:
+
+\begin{tabular}{|l|l|}
+\hline
+$\circneg: \mathbb{B} \rightarrow \mathbb{B}$                           &                                                             \\
+\hline
+$\circwedge: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$       & $\circvee: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$ \\
+\hline
+$\circright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$  & $\circleftright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$ \\
+\hline
+\end{tabular}
+
+\textbf{Definition:}  Semantik der Aussagenlogik \\[0.3cm]
+Gegeben: \ \quad $\mathcal{I}: \mathcal{P} \rightarrow \mathbb{B}$ \\[0.3cm]
+Erweitere: \quad $\mathcal{I}: \mathcal{F} \rightarrow \mathbb{B}$
+\begin{enumerate}
+\item $\mathcal{I}(\neg f)              :=\; \circneg       \left( \mathcal{I}(f)                 \rule{0pt}{14pt}\right)$
+\item $\mathcal{I}(f \wedge g)          :=\; \circwedge     \left( \mathcal{I}(f),\; \mathcal{I}(g) \rule{0pt}{16pt}\right)$
+\item $\mathcal{I}(f \vee g)            :=\; \circvee       \left( \mathcal{I}(f),\; \mathcal{I}(g) \rule{0pt}{16pt}\right)$
+\item $\mathcal{I}(f \rightarrow g)     :=\; \circright     \left( \mathcal{I}(f),\; \mathcal{I}(g) \rule{0pt}{16pt}\right)$
+\item $\mathcal{I}(f \leftrightarrow g) :=\; \circleftright \left( \mathcal{I}(f),\; \mathcal{I}(g) \rule{0pt}{16pt}\right)$
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Wahrheits--Tafeln 
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+
+Prinzip: 
+\begin{enumerate}
+\item Eine Spalte pro Teilformel.
+\item Teilformeln ordnen nach Komplexität.
+\item Eine Zeile pro aussagenlogische Interpretation.
+
+      ($n$ aussagenlogische Variablen $\Rightarrow$ $2^n$ Zeilen.)
+\end{enumerate}
+
+Wahrheits--Tafel für  $(\neg p \rightarrow q) \rightarrow q$
+
+Teilformeln: $\{ p, q, \neg p, \neg p \rightarrow q, (\neg p \rightarrow q) \rightarrow q \}$
+\vspace{0.5cm}
+
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+   $p$ & $q$ & $\neg p$ & $\neg p \rightarrow q$ & $(\neg p \rightarrow q) \rightarrow q$  
+   \\
+\hline
+\hline
+   \texttt{true}  & \texttt{true}  & \texttt{false} & \texttt{true}  & \texttt{true}   \\
+\hline
+   \texttt{true}  & \texttt{false} & \texttt{false} & \texttt{true} & \texttt{false}  \\
+\hline
+   \texttt{false} & \texttt{true}  & \texttt{true}  & \texttt{true} & \texttt{true}  \\
+\hline
+   \texttt{false} & \texttt{false} & \texttt{true}  & \texttt{false} & \texttt{true}   \\
+\hline
+  \end{tabular}
+
+
+\textbf{Aufgabe}: Wahrheits--Tafel für $(p \rightarrow \neg p) \rightarrow \neg p$
+
+\textbf{Lösung}: \\
+ Teilformeln $\{p, \neg p, p \rightarrow \neg p, (p \rightarrow \neg p) \rightarrow \neg p\}$
+
+\begin{tabular}{|l|l|l|l|}
+\hline
+                $p$ & $\neg p$             & $p \rightarrow \neg p$         & $ (p \rightarrow \neg p) \rightarrow \neg p $  
+   \\
+\hline
+\hline
+   \texttt{true}  & \texttt{false}  & \texttt{false} & \texttt{true}  \\
+\hline
+   \texttt{false} & \texttt{true}   & \texttt{true}  & \texttt{true}  \\
+\hline
+  \end{tabular}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Anwendung
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+Nach einem Einbruch: drei Verdächtige \\[0.3cm]
+\hspace*{2cm} Anton, Bruno, Claus 
+\begin{enumerate}
+\item Einer der drei ist schuldig: \\[0.1cm]
+      \hspace*{1.3cm} 
+      $f_1 := a \vee b \vee c$.
+\item Wenn Anton schuldig ist, dann hat er genau einen Komplizen. 
+      \begin{enumerate}
+      \item Wenn Anton schuldig, dann hat er mindestens einen Komplizen: \\[0.1cm]
+            \hspace*{1.3cm} $f_2 := a \rightarrow b \vee c$ 
+      \item Wenn Anton schuldig ist, dann hat er höch\-stens einen Komplizen: \\[0.1cm]
+           \hspace*{1.3cm} $f_3 := a \rightarrow \neg (b \wedge c)$
+      \end{enumerate}
+\item Wenn Bruno unschuldig ist, dann Claus auch: \\[0.1cm]
+      \hspace*{1.3cm} $f_4 :=  \neg b \rightarrow \neg c$ 
+\item Wenn genau zwei schuldig, dann Claus schuldig. 
+      \\[0.1cm]
+      \hspace*{1.3cm} $f_5 := \neg ( \neg c  \wedge a \wedge b )$ 
+\item Wenn Claus unschuldig ist, ist Anton schuldig. \\[0.1cm]
+      \hspace*{1.3cm} $f_6 := \neg c \rightarrow a$
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Äquivalenzen
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item $\models \neg \bot \leftrightarrow \top$ \quad und \quad $\models \neg \top \leftrightarrow \bot$
+\item Tertium--non--Datur \\[0.3cm]
+      \hspace*{1.3cm} $\models p \vee   \neg p \leftrightarrow \top$ \\[0.3cm]
+      \hspace*{1.3cm} $\models p \wedge \neg p \leftrightarrow \bot$ 
+\item Neutrales Element \\[0.3cm]
+      \hspace*{1.3cm} $\models p \vee   \bot \leftrightarrow p$ \\[0.3cm]
+      \hspace*{1.3cm} $\models p \wedge \top  \leftrightarrow p$ \\[0.3cm]
+      \hspace*{1.3cm} $\models p \vee   \top  \leftrightarrow \top$ \\[0.3cm]
+      \hspace*{1.3cm} $\models p \wedge \bot \leftrightarrow \bot$ 
+\item Idempotenz \\[0.3cm]
+      \hspace*{1.3cm} $\models p \wedge p \leftrightarrow p$ \\[0.3cm]
+      \hspace*{1.3cm} $\models p \vee p \leftrightarrow p$ 
+\item Kommutativität \\[0.3cm]
+      \hspace*{1.3cm} $\models p \wedge q \leftrightarrow q \wedge p$ \\[0.3cm]
+      \hspace*{1.3cm} $\models p \vee   q \leftrightarrow q \vee p$ 
+\item Assoziativität \\[0.3cm]
+      \hspace*{1.3cm} $\models (p \wedge q) \wedge r \leftrightarrow p \wedge (q \wedge r) $ \\[0.3cm]
+      \hspace*{1.3cm} $\models (p \vee   q) \wedge r \leftrightarrow p \vee   (q \wedge r) $ 
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Äquivalenzen
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item[7.] Elimination der Doppelnegation \\[0.3cm]
+      \hspace*{1.3cm} $\models \neg \neg p \leftrightarrow p$
+\item[8.] DeMorgan'sche Regeln \\[0.3cm]
+      \hspace*{1.3cm} $\models \neg (p \wedge q) \leftrightarrow  \neg p \vee   \neg q$ \\[0.3cm]
+      \hspace*{1.3cm} $\models \neg (p \vee   q) \leftrightarrow  \neg p \wedge \neg q$ 
+\item[9.] Absorption \\[0.3cm]
+      \hspace*{1.3cm} $\models p \wedge (p \vee q)   \leftrightarrow p$ \\[0.3cm]
+      \hspace*{1.3cm} $\models p \vee   (p \wedge q) \leftrightarrow p$ 
+\item[10.] Distributivität \\[0.3cm]
+      \hspace*{1.3cm} $\models p \wedge (q \vee r)   \leftrightarrow (p \wedge q) \vee   (p \wedge r)$ \\[0.3cm]
+      \hspace*{1.3cm} $\models p \vee   (q \wedge r) \leftrightarrow (p \vee q)   \wedge (p \vee   r)$ 
+\item[11.] Elimination von $\rightarrow$ \\[0.3cm]
+      \hspace*{1.3cm} $\models (p \rightarrow q) \leftrightarrow \neg p \vee q$
+\item[12.] Elimination von $\leftrightarrow$ \\[0.3cm]
+      \hspace*{1.3cm} $\models (p \leftrightarrow q) \leftrightarrow (\neg p \vee q) \wedge (\neg q \vee p)$
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Konjunktive Normalform
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Definition}:
+  $f \in \mathcal{F}$  ist \emph{Literal} g.d.w. 
+  \begin{itemize}
+  \item $f = \top$ oder $f = \bot$, \quad oder
+  \item $f = p$ \quad mit $p \in \mathcal{P}$, \quad oder
+
+  \item $f = \neg p$ \quad mit $p \in \mathcal{P}$.
+  \end{itemize}
+\vspace{0.5cm}
+
+\textbf{Definition}:
+  $f \in \mathcal{F}$ ist \emph{Klausel} g.d.w. \\[0.3cm]
+\hspace*{1.3cm} $f = L_1 \vee \cdots \vee L_r$ \\[0.3cm]
+mit Literalen $L_1$, $\cdots$, $L_r$. 
+
+Mengenschreibweise: \\[0.3cm]
+\hspace*{1.3cm} $f = \{ L_1, \cdots, L_r \}$ \quad 
+(statt $f = L_1 \vee \cdots \vee L_r$)
+\vspace{0.5cm}
+
+\textbf{Definition}: \\
+$f \in \mathcal{F}$ ist in \emph{konjunktiver Normalform} (kurz KNF)
+g.d.w. \\[0.3cm]
+\hspace*{1.3cm} $f = k_1 \wedge \cdots \wedge k_n$, \\[0.3cm]
+mit Klauseln $k_i$ für $i=1,\cdots,n$.
+\vspace{0.5cm}
+
+Mengenschreibweise: \\[0.3cm]
+\hspace*{1.3cm} $f = \{ k_1, \cdots, k_n \}$ \quad
+(statt $f = k_1 \wedge \cdots \wedge k_n$)
+\vspace{0.5cm}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Überführung in KNF
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item Eliminiere  ``$\leftrightarrow$'' mit  \\[0.3cm]
+      \hspace*{1.3cm} $(p \leftrightarrow q) \leftrightarrow (\neg p \vee q) \wedge (\neg q \vee p)$
+\item Eliminiere  ``$\rightarrow$'' mit \\[0.3cm]
+      \hspace*{1.3cm} $(p \rightarrow q) \leftrightarrow \neg p \vee q$
+\item Schiebe ``$\neg$'' nach innen mit 
+  \begin{enumerate}
+  \item $\neg \bot \leftrightarrow \top$
+  \item $\neg \top \leftrightarrow \bot$
+  \item $\neg \neg p \leftrightarrow p$
+  \item $\neg (p \wedge q) \leftrightarrow  \neg p \vee   \neg q$ 
+  \item $\neg (p \vee   q) \leftrightarrow  \neg p \wedge \neg q$ 
+  \end{enumerate}
+      Ergebnis in \emph{Negations--Normalform}:
+
+      ``$\neg$'' steht nur noch vor Aussage-Variablen.
+\item {Ausmultiplizieren} mit \\[0.3cm]
+      \hspace*{1.3cm}       $p \vee (q \wedge r) \leftrightarrow (p \vee q) \wedge (p
+\vee r)$ 
+       \vspace{0.2cm}
+
+      ``$\vee$'' steht nur noch innen.
+\item Mengen-Schreibweise:
+  \begin{enumerate}
+  \item Klausel: Menge von Literalen
+  \item Formel: Menge von Klauseln
+  \end{enumerate}
+\end{enumerate}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Beispiel zur Überführung in KNF 
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\[
+\begin{array}[t]{cl}
+                  & (p \rightarrow q) \rightarrow (\neg p \rightarrow \neg q)       \\[0.3cm]
+  \Leftrightarrow & \neg (p \rightarrow q) \vee (\neg p \rightarrow \neg q)        \\[0.3cm]
+  \Leftrightarrow & \neg (\neg p \vee q) \vee (\neg \neg p \vee \neg q)            \\[0.3cm]
+  \Leftrightarrow & (\neg \neg p \wedge \neg q) \vee (\neg \neg p \vee \neg q)            \\[0.3cm]
+  \Leftrightarrow & (p \wedge \neg q) \vee (p \vee \neg q)                         \\[0.3cm]
+  \Leftrightarrow & (p \vee (p \vee \neg q)) \wedge (\neg q \vee (p \vee \neg q))  \\[0.3cm]
+  \Leftrightarrow & \biggl\{ \{p, p, \neg q\},\, \{\neg q,  p,  \neg q\}\biggr\}   \\[0.3cm]
+  \Leftrightarrow & \biggl\{ \{p, \neg q\},\, \{\neg q,  p \} \biggr\}             \\[0.3cm]
+  \Leftrightarrow & \biggl\{ \{p, \neg q\} \biggr\}
+\end{array}
+\]
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Aussagenlogik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

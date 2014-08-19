@@ -1,0 +1,346 @@
+\documentclass{article}
+\usepackage{german}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{wasysym}
+\usepackage{fancyvrb}
+\usepackage{alltt}
+
+\def\pair(#1,#2){\langle #1, #2 \rangle}
+
+\begin{document}
+\noindent
+{\Large \textbf{Aufgaben-Blatt}:  \textsc{Setl}-Programmierung}
+\vspace{0.5cm}
+
+\noindent
+\textbf{Aufgabe 1:}
+Erstellen Sie eine \textsc{Setl2}-Funktion \textsl{ggt}, so dass für zwei positive natürliche Zahlen
+$a$ und $b$ der Aufruf $\textsl{ggt}(a,b)$ den größten gemeinsamen Teiler der Zahlen $a$ und $b$ berechnet.
+\vspace{0.1cm}
+
+\noindent
+\textbf{Lösung}:
+Es ist hier sinnvoll, eine Hilfsprozedur \texttt{teiler} zu implementieren, so dass
+$\mathtt{teiler}(n)$ für eine natürliche Zahl $n$ die Menge aller Teiler berechnet. 
+Denn größten gemeinsamen Teiler zweier Zahlen berechnen wir dann dadurch, dass wir 
+das Maximum der Menge aller gemeinsamen Teiler berechnen. Abbildung \ref{fig:ggt.stl} zeigt die Lösung.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    procedure ggt(a, b);
+        return max/ (teiler(a) * teiler(b));
+    end ggt;
+
+    procedure teiler(n);
+        return { i in { 1..n } | n mod i = 0 };
+    end teiler;
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Berechnung des größten gemeinsamen Teilers}
+\label{fig:ggt.stl}
+\end{figure}
+\vspace{0.3cm}
+
+\noindent
+\textbf{Aufgabe 2:}
+Für eine positive natürliche Zahl $n$ definieren wir eine \emph{Permutation} der Länge $n$ als eine
+Liste, die jede der Zahlen von $1$ bis $n$ genau einmal enthält.  Implementieren Sie eine Funktion 
+$\textsl{permutation}$, so dass der Aufruf $\textsl{permutation}(n)$ für eine positive natürliche
+Zahl $n$ die Menge aller Permutationen der Länge $n$ berechnet.  Beispielsweise soll der Aufruf
+$\textsl{permutation}(3)$ als Ergebnis die Menge
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bigl\{ [1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1] \bigr\}$
+\\[0.2cm]
+berechnen.
+\vspace{0.1cm}
+
+\noindent
+\textbf{Lösung}:  Falls $n$ den Wert 1 hat, gibt es nur die Permutation $[1]$.  Falls $n$ größer als 1 ist,
+berechnen wir zunächst alle Permutationen der Liste $[1,\cdots,n-1]$.  Die Permutationen der Liste 
+$[1,\cdots,n]$ erhalten wir, wenn wir in diesen Listen an allen möglichen Stellen die Zahl $n$ einfügen.
+Für eine Liste $l = [x_1, \cdots, x_{n-1}]$ der Länge $n-1$ gibt es $n$ verschiedene Stellen, wo wir ein
+Element einfügen können: 
+\begin{enumerate}
+\item Am Anfang der Liste, 
+\item nach dem ersten Element,
+\item nach dem zweiten Element,
+\item[] $\vdots$
+\item nach dem $(n-1)$-ten Element, also am Ende.
+\end{enumerate}
+Um in einer Liste $l$ die Zahl $n$ nach dem $k$-ten Element einzufügen, zerlegen wir die Liste
+in die beiden Teile $l(1 .. k)$ und $l(k+1 .. n-1)$ fügen zwischen diesen Teilen $n$ ein.  Das führt zu der in
+Abbildung \ref{fig:permutation.stl} gezeigten Lösung.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    procedure permutation(n);
+        if n = 1 then
+            return { [1] };
+        else
+            return { l(1 .. k) + [ n ] + l(k+1 .. n-1): 
+                     l in permutation(n-1), k in { 0..n-1 } };
+        end if;
+    end permutation;
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Berechnung aller Permutationen}
+\label{fig:permutation.stl}
+\end{figure}
+
+\pagebreak
+
+
+\noindent
+\textbf{Aufgabe 3:}
+Nehmen Sie an, dass Sie im Poker-Spiel die Karten $\langle 2, \clubsuit \rangle$ und $\langle 6, \clubsuit \rangle$
+erhalten haben.  Berechnen Sie die Wahrscheinlichkeit, dass Sie nach dem Flop eine \emph{Straße} haben.
+\noindent
+\vspace{0.1cm}
+
+\noindent
+\textbf{Lösung}:
+Eine Strasse nach dem Flop liegt genau dann vor, wenn die Karten im Flop die Werte 3, 4 und 5 haben.
+Das führt zu dem in Abbildung \ref{fig:strasse.stl} gezeigten Programm.  Die gesuchte Wahrscheinlichkeit hat
+den Wert $3,\!2653 \permil$.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.3cm,
+                  xrightmargin  = 0.3cm,
+                ]
+    program main;
+        Suits  := { "c", "h", "d", "s" };
+        Values := { "2", "3", "4", "5", "6", "7", "8", "9", 
+                    "T", "J", "Q", "K", "A" }; 
+        Deck  := { [ v, s ] : v in Values, s in Suits };
+        Hole  := { [ "2", "c" ], [ "6", "s" ] };
+        Rest  := Deck - Hole;
+        Flops := { { k1, k2, k3 } : k1 in Rest, k2 in Rest, k3 in Rest 
+                                  | #{ k1, k2, k3 } = 3 };
+        Straight := { f in Flops | { k(1) : k in f } = { "3", "4", "5" } };
+        print(1.0 * #Straight / #Flops);    
+    end main;
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Berechnung der Wahrscheinlichkeit einer Strasse.}
+\label{fig:strasse.stl}
+\end{figure}
+
+
+\noindent
+\textbf{Aufgabe 4:}
+Implementieren Sie ein \textsc{Setl2}-Prozedur \textsl{fakultaet}, so dass der Aufruf
+$\textsl{fakultaet}(n)$ für eine positive natürliche Zahl $n$ die Fakultät $n!$ berechnet.
+\vspace{0.1cm}
+
+\noindent
+\textbf{Lösung}:
+Die einfachste Lösung wendet den Operator ``\texttt{*}'' auf die Menge aller Zahlen von
+$1$ bis $n$ an und multipliziert damit diese Zahlen.  Abbildung \ref{fig:fakultaet.stl}
+zeigt die Umsetzung.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    procedure fakultaet(n);
+        return 1 */ { 1 .. n };
+    end fakultaet;
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Berechnung der Fakultät}
+\label{fig:fakultaet.stl}
+\end{figure}
+ 
+\pagebreak
+
+\noindent
+\textbf{Aufgabe 5:}
+Implementieren Sie eine \textsc{Setl2}-Prozedur \textsl{isFunctional}, so dass für eine Relation $R$ und
+eine Menge $M$ der Aufruf $\textsl{isFunctional}(R, M)$
+genau dann das Ergebnis \texttt{true} zurück gibt, wenn die
+Relation $R$ funktional auf $M$ ist.
+\vspace{0.1cm}
+
+\noindent
+\textbf{Lösung}:  Eine Relation $R$ ist funktional auf einer Menge $M$, wenn
+\begin{enumerate}
+\item $R$ links-total auf $M$ und
+\item $R$ rechts-eindeutig ist.
+\end{enumerate}
+Nun ist $R$ links-total auf $M$, wenn es für jedes $x$ in $M$ ein $y$ gibt, so dass
+$\pair(x,y) \in R$ ist. Dass ist aber genau dann der Fall, wenn die Menge
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{ x | \pair(x,y) \in R \}$
+\\[0.2cm]
+gleich der Menge $M$ ist.
+
+Die Relation $R$ ist rechts-eindeutig, wenn es zu jedem $x$ höchstens ein $y$ mit
+$\pair(x, y) \in R$ gibt.  Die Menge aller $y$, die einem $x$ durch die Relation $R$
+zugeordnet sind, läßt sich durch den Ausdruck $R\{x\}$ berechnen.  Die Menge aller $x$,
+denen die Relation $R$ ein $y$ zuordnet, ist durch $\textsl{dom}(R)$ gegeben.  Es wird
+genau dann jedem $x$ höchstens ein $y$ zugeordnet, wenn die Menge
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \{ x \in \textsl{dom}(R) \;|\; \textsl{card}(R) \leq 1 \}$
+\\[0.2cm]
+mit der Menge $\textsl{dom}(R)$ übereinstimmt.  Insgesamt führt dies zu dem in Abbildung
+\ref{fig:functional.stl} gezeigten Programm.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    procedure isFunctional(R, M);
+        return isLeftTotal(R, M) and isRightUnique(R);
+    end isFunctional;
+
+    procedure isLeftTotal(R, M);
+        return { x : [x,y] in R } = M;
+    end isLeftTotal;
+
+    procedure isRightUnique(R);
+        return { x : x in domain(R) | #R{x} <= 1 } = domain(R);
+    end isRightUnique;
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Ist die Relation $R$ funktional auf $M$?}
+\label{fig:functional.stl}
+\end{figure}
+
+
+
+\noindent
+\textbf{Aufgabe 6:}
+Implementieren Sie eine \textsc{Setl2}-Prozedur \textsl{powerSet}, so dass der Aufruf
+$\textsl{powerSet}(S)$ für eine gegebene Menge $S$ die Potenz-Menge $2^S$ berechnet.  Sie dürfen dabei
+den Operator \texttt{pow} nicht benutzen.
+\vspace{0.1cm}
+
+\noindent
+\textbf{Lösung}:
+Ist $S$ eine nicht-leere Menge, so wählen wir ein beliebiges Element $x$ aus $S$ und
+stellen $S$ in der Form
+\\[0.2cm]
+\hspace*{1.3cm}
+$S = \{ x \} + T$
+\\[0.2cm]
+dar.  Dabei soll das Element $x$ nicht in der Menge $M$ vorkommen.  Es gibt nun zwei Arten
+von Teilemengen von $S$: 
+\begin{enumerate}
+\item Teilmengen $K$, die $x$ nicht enthalten.  Solche Teilmengen sind offenbar Elemente der
+      Potenzmenge von $M$.
+\item Teilmengen $K$, die $x$ enthalten.  Solche Teilmengen lassen sich in der Form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $K = \{ x \} + M$
+      \\[0.2cm]
+      schreiben, wobei $x$ nicht in $M$ vorkommt.  Damit ist $M$ dann ebenfalls eine Teilmenge von $T$.
+\end{enumerate}
+Diese Überlegungen führen zu dem in Abbildung
+\ref{fig:powerSet.stl} gezeigten Programm.
+\vspace{0.3cm}
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    procedure powerSet(S);
+        if S = {} then
+            return { {} };
+        end if;            
+        x from S;
+        P := powerSet(S);
+        return P + { M + { x } : M in P };
+    end powerSet;
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Berechnung der Potenz-Menge}
+\label{fig:powerSet.stl}
+\end{figure}
+
+
+
+
+\noindent
+\textbf{Aufgabe 7:}
+Implementieren Sie eine \textsc{Setl2}-Prozedur \textsl{justOnce}, so dass der Aufruf
+$\textsl{justOnce}(L)$ für eine gegebene Liste $L$ genau dann den Wert \texttt{true} liefert,
+wenn in der Liste $L$ keine Elemente doppelt auftreten.
+\vspace{0.1cm}
+
+\noindent
+\textbf{Lösung}:  Wandeln wir die Liste $L$ in eine Menge $M$ um, so treten genau dann
+keine Elemente in $L$ mehrfach auf, wenn die Menge $M$ genau so viele Elemente hat, wie die
+Liste $L$ lang ist.  Das führt zu der in Abbildung
+\ref{fig:justOnce.stl} gezeigten Lösung.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    procedure justOnce(L);
+        return #L = #{ x : x in L };
+    end justOnce;
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Überprüfung von mehrfachem Auftreten}
+\label{fig:justOnce.stl}
+\end{figure}
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

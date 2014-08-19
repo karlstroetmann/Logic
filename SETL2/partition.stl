@@ -1,0 +1,18 @@
+program main;    
+
+    print( allPartitions({1,2,3}) );
+
+    procedure isPartition(P, M);
+        return P <= pow M and +/ P = M and disjoint(P);
+    end isPartition;
+
+    procedure disjoint(P);
+        return { a * b : a in P, b in P | a /= b } = { {} };
+    end disjoint;
+
+    procedure allPartitions(M);
+        return { P in pow pow M | isPartition(P, M) };
+    end allPartitions;
+end main;
+
+

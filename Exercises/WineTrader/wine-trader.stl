@@ -1,0 +1,131 @@
+program main;
+    -- A state is represented as a pair [x, y] beschrieben.  Here,
+    -- x is the number of litres of wine in the first bucket, while
+    -- y is the number of litres in the second bucket.
+    P := { [x, y] : x in {0..3}, y in {0..5} };
+
+    -- R1 describes transitions where the first bucket is filled from the barrel.
+    R1 := { [ [x, y], [3, y] ] : [x, y] in P | x /= 3 };
+    -- print("R1 = ", R1);
+    -- R2 describes transitions where the second bucket is filled from the barrel.
+    R2 := { [ [x, y], [x, 5] ] : [x, y] in P | y /= 5};
+    -- print("R2 = ", R2);
+    -- R3 describes transitions where the first bucket is emptied.
+    R3 := { [ [x, y], [0, y] ] : [x, y] in P | x /= 0 };
+    -- print("R3 = ", R3);
+    -- R4 describes transitions where the second bucket is emptied.
+    R4 := { [ [x, y], [x, 0] ] : [x, y] in P | y /= 0 };
+    -- print("R4 = ", R4);
+    -- R5 describes transitions where the first bucket is emptied into the 
+    -- second bucket and there is enough room in the second bucket.
+    R5 := { [ [x, y], [0, x + y] ] : [x, y] in P | x + y <= 5 and x /= 0  };
+    -- print("R5 = ", R5);
+    -- R6 describes transitions where the first bucket is emptied into the
+    -- second bucket but there is not enough room left in the second bucket
+    -- for all of the content of the first bucket.
+    R6 := { [ [x, y], [x - (5 - y), 5] ] : [x, y] in P | x + y > 5  and y /= 5 };
+    -- print("R6 = ", R6);
+    -- R7 and R( describe transitions where the second bucket is emptied
+    -- into the first bucket.
+    R7 := { [ [x, y], [x + y, 0] ] : [x, y] in P | x + y <= 3 and  y /= 0 };
+    -- print("R7 = ", R7);
+    R8 := { [ [x, y], [3, y - (3 - x)] ] : [x, y] in P | x + y > 3 and x /= 3 };
+    -- print("R8 = ", R8);
+
+    -- R is the set of all possible transitions.
+    R := R1 + R2 + R3 + R4 + R5 + R6 + R7 + R8;
+
+    -- In the beginning, both buckets are empty.
+    start := [0, 0];
+    -- In the end, the second bucket contains 4 litres, while the first bucket
+    -- is empty.
+    goal  := [0, 4];
+    -- Berechne eine Pfad zum Ziel.
+    path := reachable(start, goal, R);
+
+    printPath(path);
+
+    -- Check wether there is a path from x to y in R and compute it.
+    procedure reachable(x, y, R);
+        P := { [x] };
+        loop
+            Old_P := P;
+            P     := P + path_product(P, R);
+            Found := { p in P | p(#p) = y };
+            if Found /= {} then
+                return arb Found;
+            end if;
+            if P = Old_P then
+                return;
+            end if;
+        end loop;
+    end reachable;
+
+    -- The procedure call product(P, Q) computes the path product P * Q.
+    procedure path_product(P, Q);
+        return { add(p,q) : p in P, q in Q | p(#p) = q(1) and not cyclic(add(p,q)) };
+    end path_product;    
+
+    -- The procedure not_cyclic(p) checks whether the path p is cyclic.
+    procedure cyclic(p);
+        return #{ x : x in p } < #p;
+    end cyclic;
+
+    -- The product call add(p,q) computes the sum of the lists p and q.
+    -- The last point of p has to be the first point of q.
+    procedure add(p, q);
+        return p + q(2..);
+    end add;    
+
+    procedure printPath(p);
+        print("We start with:                         ", p(1));
+        for i in { 2 .. #p } loop
+            printTransition(p(i-1), p(i));
+        end loop;
+    end printPath;
+
+    -- P is the state before the transition, Q is the state after the transition.
+    procedure printTransition(P, Q);
+        -- print transitions from R1
+        if P(1) /= 3 and Q(1) = 3 and P(2) = Q(2) then
+            print("Fill first bucket:                     ", Q);
+            return;
+        end if;
+        -- print transitions from R2
+        if P(2) /= 5 and Q(2) = 5 and P(1) = Q(1) then
+            print("Fill second bucket:                    ", Q);
+            return;
+        end if;
+        -- print transitions from R3
+        if P(1) /= 0 and Q(1) = 0 and P(2) = Q(2) then
+            print("Empty first bucket:                    ", Q);
+            return;
+        end if;
+        -- print transitions from R4
+        if P(2) /= 0 and Q(2) = 0 and P(1) = Q(1) then
+            print("Empty second bucket:                   ", Q);
+            return;
+        end if;
+        -- print transitions from R5
+        if P(1) /= 0 and Q(1) = 0 and Q(2) = P(2) + P(1) and Q(2) <= 5 then
+            print("Fill first bucket into second bucket:  ", Q);
+            return;
+        end if;
+        -- print transitions from R6
+        if P(1) /= 0 and Q(2) = 5 and Q(1) = P(1) - (5 - P(2)) and Q(1) >= 0 then
+            print("Fill first bucket into second bucket:  ", Q);
+            return;
+        end if;
+        -- print transitions from R7
+        if P(2) /= 0 and Q(2) = 0 and Q(1) = P(2) + P(1) and Q(1) <= 3 then
+            print("Fill second bucket into first bucket:  ", Q);
+            return;
+        end if;
+        if P(2) /= 0 and Q(1) = 3 and Q(2) = P(2) - (3 - P(1)) and Q(2) >= 0 then
+            print("Fill second bucket into first bucket:  ", Q);
+            return;
+        end if;
+        print("Error: the transition from ", P, "  to  ", Q, " is not allowed!");    
+    end printTransition;
+end main;
+

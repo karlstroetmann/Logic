@@ -1,0 +1,196 @@
+\documentclass{article}
+\usepackage{german}
+\usepackage{a4wide}
+\usepackage{amssymb}
+
+\setlength{\topmargin}{-1cm}
+%\setlength{\evensidemargin}{-1cm}
+%\setlength{\oddsidemargin}{-1cm}
+%\setlength{\textwidth}{17cm}
+
+\newcommand{\schluss}[2]{\frac{\displaystyle\quad \rule[-6pt]{0pt}{12pt}#1 \quad}{\displaystyle\quad \rule{0pt}{10pt}#2 \quad}}
+\newcommand{\vschlus}[1]{{\displaystyle\rule[-6pt]{0pt}{12pt} \atop \rule{0pt}{10pt}#1}}
+
+\newcommand{\struct}{\mathcal{S}}
+\newcommand{\FV}{\textsl{FV}}
+\newcommand{\BV}{\textsl{BV}}
+\newcommand{\var}{\textsl{Var}}
+\newcommand{\el}{\!\in\!}
+\newcommand{\verum}{\top}
+\newcommand{\falsum}{\bot}
+\newcommand{\gentzen}{\vdash_{G}}
+\newcommand{\komplement}[1]{\overline{#1}}
+\newcommand{\mathquote}[1]{\mbox{``}\texttt{#1}\mbox{''}}
+
+\begin{document}
+
+
+\noindent
+{\large Kommentierte Lösungen zu den Prolog--Übungen}
+\vspace{1cm}
+
+\noindent
+\textbf{Aufgabe 1}: Gefragt war nach dem folgenden Programm:
+\begin{verbatim}
+    myMember( X, [ Head | Tail ] ) :-
+            X == Head.
+    
+    myMember( X, [ Head | Tail ] ) :-
+            myMember( X, Tail ).
+\end{verbatim}
+Ich habe hier statt dem Prädikats--Zeichen ``\texttt{member}'' den Name
+``\texttt{myMember}'' verwendet, weil ``\texttt{member}'' ein in Prolog fest eingebautes
+Prädikat ist, das nicht überdefiniert werden darf. 
+
+Um zu überprüfen, ob eine Zahl $x$ ein Element einer Liste $l$ ist, gehen wir wie folgt vor:
+\begin{enumerate}
+\item Zunächst prüfen wir, ob $x$ gleich dem ersten Element der Liste $l$ ist.
+      Falls das der Fall ist, ist $x$ natürlich eine Element von $l$.
+\item Andernfalls müssen wir rekursiv prüfen, ob $x$ in den restlichen Elementen von $l$ vorkommt.
+\end{enumerate}
+Die Zerlegung einer Liste in erstes Element und Rest erhalten wir durch die
+Notation ``\texttt{[ Head | Tail ]}''.  Wird ein Ziel, was die Form \\[0.1cm]
+\hspace*{1.3cm} $\texttt{myMember}(x,l)$ \\[0.1cm]
+hat, mit Hilfe der Relation $\leadsto_\mathcal{P}^*$ vom Prolog--System reduziert, so wird
+versucht, die syntaktische Gleichung \\[0.1cm]
+\hspace*{1.3cm} $\texttt{myMember}( \texttt{X}, [ \texttt{Head} | \texttt{Tail} ] ) \doteq \texttt{myMember}(x, l)$ \\[0.1cm]
+zu lösen.  Dies ist nur möglich, wenn die Liste $l$ nicht leer ist. In diesen Fall
+wird bei der Unifikation die Prolog--Variable ``$\texttt{X}$'' an die Zahl $x$ gebunden,
+die Prolog--Variable ``$\texttt{Head}$'' wird an das erste Element von $l$ gebunden und
+die Prolog--Variable ``$\texttt{Tail}$'' wird an die Liste der restlichen Elemente aus $l$ gebunden.
+
+In der ersten Klausel überprüfen wir daher mit Hilfe des eingebauten Prädikats ``\texttt{==}'', 
+ob ``$\texttt{X}$'' und ``$\texttt{Head}$'' gleich sind.  Analog überprüfen wir in der zweiten Klausel durch einen
+rekursiven Aufruf von ``$\texttt{myMember}$'' ob ``$\texttt{Head}$'' ein Element von ``$\texttt{Tail}$'' ist.
+Das führt zu den beiden oben angegebenen Klauseln.
+\vspace{0.5cm}
+
+\noindent
+\textbf{Aufgabe 2}: Gefragt war nach dem folgenden Programm:
+\begin{verbatim}
+    my_union( [], L, L ).
+    
+    my_union( [ X | Xs ], Ys, L ) :- 
+            member( X, Ys ),
+            my_union( Xs, Ys, L ).
+    
+    my_union( [ X | Xs ], Ys, [ X | L ] ) :-
+            not_member( X, Ys ),
+            my_union( Xs, Ys, L ).
+    
+    not_member( X, [] ).
+    
+    not_member( X, [ Y | Ys ] ) :-
+            X \== Y,
+            not_member( X, Ys ).
+\end{verbatim}
+Ich habe hier statt dem Prädikats--Zeichen ``\texttt{union}'' den Name
+``\texttt{my\_union}'' verwendet, weil ``\texttt{union}'' ein in Prolog fest eingebautes
+Prädikat ist, das nicht überdefiniert werden darf. 
+
+Um die Vereinigung der zweier Listen $l_1$ und $l_2$ zu bilden, führen wir eine Fallunterscheidung
+bezüglich der ersten Liste $l_1$ durch:
+
+\begin{enumerate}
+\item Falls die erste Liste leer ist, ist die Vereinigung durch $l_2$ gegeben.
+\item Falls die erste Liste nicht leer ist, bezeichnen wir das erste Element dieser Liste mit $x$ und
+      führen eine weitere Fallunterscheidung durch:
+      \begin{enumerate}
+      \item Falls $x$  bereits in $l_2$ vorkommt, so brauchen wir nur
+            den Rest der Liste $l_1$ mit der Liste $l_2$ zu vereinigen.  Das ist schon das Ergebnis.
+      \item Falls $x$ nicht in $l_2$ vorkommt, so vereinigen wir 
+            den Rest der Liste $l_1$ mit der Liste $l_2$ und fügen $x$ an den Anfang der so erzeugten Liste.
+      \end{enumerate}
+\end{enumerate}
+Dieses Vorgehen führt auf die drei Klauseln, die das Prädikat ``$\texttt{my\_union}$'' implementieren.
+Um den Fall 2.~(b) implementieren zu können, brauchen wir allerdings noch ein
+Prädikat, mit dem wir ermitteln können, ob ein Element \textbf{nicht} in einer Liste auftritt.
+Dies leistet das Prädikat ``$\texttt{not\_member}$'', dessen Implementierung oben ebenfalls angegeben ist.
+
+Um zu überprüfen, ob eine Zahl $x$ kein Element einer gegebenen Liste $l$ ist, führen wir
+eine Fallunterscheidung durch.
+\begin{enumerate}
+\item Falls $l$ leer ist, ist $x$ sicher kein Element von $l$.
+\item Falls $l$ nicht leer ist, müssen wir sicherstellen,
+      dass $x$ von dem ersten Element von $l$ verschieden ist.
+      Außerdem darf $x$ nicht in dem Rest der Liste $l$ vorkommen.
+\end{enumerate}
+Das führt auf die beiden Klauseln der Implementierung des Prädikats ``$\texttt{not\_member}$''.
+\vspace{0.5cm}
+
+\noindent
+\textbf{Aufgabe 3}: Gefragt war nach dem folgenden Programm:
+\begin{verbatim}
+    split_small_big( _X, [], [], [] ).
+    
+    split_small_big( X, [ Y | Ys ], [ Y | Small ], Big ) :-
+            Y < X,
+            split_small_big( X, Ys, Small, Big ).
+    
+    split_small_big( X, [ Y | Ys ], Small, [ Y | Big ] ) :-
+            Y >= X,
+            split_small_big( X, Ys, Small, Big ).
+\end{verbatim}
+Um eine Liste $l$ in zwei Listen $l_1$ und $l_2$ so aufzuteilen, dass $l_1$ alle Elemente von $l$
+enthält, die kleiner oder gleich $x$ sind und $l_2$ alle die Elemente enthält, die größer als $x$ sind,
+führen wir eine Fallunterscheidung durch:
+\begin{enumerate}
+\item Falls die Liste $l$ leer ist, sind natürlich auch die Liste $l_1$ und $l_2$ leer.
+\item Falls die Liste $l$ nicht leer ist, bezeichnen wir das erste Element von
+      $l$ mit $y$ und führen eine weitere Fallunterscheidung durch:
+      \begin{enumerate}
+      \item Falls $y$ kleiner oder gleich $x$ ist, werden wir die Zahl $y$ in die Liste $l_1$ stecken.
+            Wir spalten also rekursiv den Rest der Liste $l$ in zwei Listen $s_1$ und $s_2$ so auf,
+            dass $s_1$ alle Elemente des Restes von $l$
+            enthält, die kleiner oder gleich $x$ sind und $s_2$ alle die Elemente enthält, 
+            die größer als $x$ sind.  Dann bilden wir $l_1$, indem wir $y$ zu der Liste $s_1$ hinzunehmen.
+            $l_2$ ist einfach die Liste $s_2$.
+      \item Falls $y$ größer als $x$ ist, werden wir die Zahl $y$ in die Liste $l_2$ stecken.
+            Wir spalten also rekursiv den Rest der Liste $l$ in zwei Listen $s_1$ und $s_2$ so auf,
+            dass $s_1$ alle Elemente des Restes von $l$
+            enthält, die kleiner oder gleich $x$ sind und $s_2$ alle die Elemente enthält, 
+            die größer als $x$ sind.  Dann bilden wir $l_2$, indem wir $y$ zu der Liste $s_2$ hinzunehmen.
+            $l_1$ ist einfach die Liste $s_1$.
+      \end{enumerate}
+\end{enumerate}
+Das führt auf die drei Klauseln der Implementierung von ``$\texttt{split\_small\_big}$''.
+\vspace{2.5cm}
+
+\noindent
+\textbf{Aufgabe 4}: Gefragt war nach dem folgenden Programm:
+\begin{verbatim}
+quick_sort( [], [] ).
+
+quick_sort( [ X | Xs ], Sorted ) :-
+        split_small_big( X, Xs, Small, Big ),
+        quick_sort( Small, Small_Sorted ),
+        quick_sort( Big,   Big_Sorted   ),
+        concat( Small_Sorted, [ X | Big_Sorted ], Sorted ).
+\end{verbatim}
+Um eine Liste $l$ zu sortieren, führen wir eine Fallunterscheidung durch:
+\begin{enumerate}
+\item Falls die Liste $l$ leer ist, ist auch die Ergebnisliste leer.
+\item Andernfalls nehmen wir das erste Element von $l$, nennen es $x$ und führen die folgenden Schritte durch:
+      \begin{enumerate}
+      \item Wir teilen den Rest der  Liste $l$  mit dem Prädikat
+            \texttt{split\_small\_big} in zwei Listen auf.
+            Die erste Liste enthält alle die Elemente, die kleiner oder gleich $x$ sind.
+            Wir bezeichnen diese Liste mit $s$ (für \emph{small}).
+            Die zweite Liste enthält die Elemente, die größer als $x$ sind.
+            Wir bezeichnen diese Liste mit $b$ (für \emph{big}).
+      \item Wir sortieren die beiden Listen $s$ und $b$ und erhalten dabei die Listen 
+            $\hat{s}$ und $\hat{b}$.
+      \item Natürlich sind auch nach dem Sortieren alle Elemente in $\hat{s}$ kleiner oder gleich $x$
+            und alle Elemente aus $\hat{b}$ sind größer als $x$.
+            Darum können wir das Ergebnis dadurch bilden, dass wir zunächst die Liste $\hat{s}$ nehmen und
+            daran dann erst dass Element $x$ und anschließend die Liste $\hat{b}$ hängen.
+      \end{enumerate}
+\end{enumerate}
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

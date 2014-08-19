@@ -1,0 +1,48 @@
+Statt
+    P := { [M,K,B]: M in {0..3}, K in {0..3}, B in {0,1}| problem(3-M,3-K)=false and problem(M,K)=false };
+besser
+    P := { [M,K,B]: M in {0..3}, K in {0..3}, B in {0,1}| not problem(3-M,3-K) and not problem(M,K) };
+
+Statt
+    R1 := {[[M1,K1,B1],[M2,K2,B2]]:[M1,K1,B1] in P, [M2,K2,B2] in P|(B1-1)=B2 and (M1-M2) in {0..2} and (K1-K2) in {0..2} and ((M1-M2)+(K1-K2)) in {1..2}};
+besser
+    R1 := { [[M1,K1,1],[M2,K2,0]] : [M1,K1,B1] in P, [M2,K2,B2] in P |
+             (M1-M2) in {0..2} and (K1-K2) in {0..2} and ((M1-M2)+(K1-K2)) in {1..2}};
+
+Statt
+    procedure problem(M, K);
+    	if M<K then
+    		if M = 0 then
+	    		return false;
+	    	else
+	    		return true;	    		
+    		end if;    		
+    	else
+    		return false;
+    	end if;   	
+    end problem;
+
+Besser 
+    procedure problem(M, K);
+    	return M < K and M /= 0;
+    end problem;
+
+
+Statt
+
+    procedure gt(m,n);
+        Teiler1 := { teiler_m  : teiler_m in {1..m}  | (m mod teiler_m = 0) };
+        Teiler2 := { teiler_n  : teiler_n in {1..n}  | (n mod teiler_n = 0) };
+        gemTeiler := Teiler1 * Teiler2;
+        return gemTeiler;    
+    end gt;
+
+besser
+
+    procedure gt(m,n);
+        return gemTeiler := teiler(m) * teiler(n);    
+    end gt;
+
+    procedure teiler(m);
+       return { x : x in {1..m}  | m mod x = 0 };
+    end teiler;

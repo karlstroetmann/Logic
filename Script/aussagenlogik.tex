@@ -1,0 +1,3273 @@
+\chapter{Aussagenlogik}
+\section{Motivation}
+Die Aussagenlogik beschäftigt sich mit der Verknüpfung einfacher Aussagen durch
+\emph{Junktoren}.  Dabei sind Junktoren Worte wie ``\textsl{und}'', ``\textsl{oder}'',
+``\textsl{nicht}'', ``\textsl{wenn $\cdots$, dann}'', und ``\textsl{genau dann, wenn}''.
+Einfache Aussagen sind dabei Sätze, die 
+\begin{itemize}
+\item einen Tatbestand ausdrücken, der entweder wahr oder falsch ist und 
+\item selber keine Junktoren enthalten.
+\end{itemize}
+Beispiele für einfache Aussagen sind
+\begin{enumerate}
+\item ``\textsl{Die Sonne scheint.}''
+\item ``\textsl{Es regnet.}''
+\item ``\textsl{Am Himmel ist ein Regenbogen.}''
+\end{enumerate}
+Einfache Aussagen dieser Art bezeichnen wir auch als \emph{atomare} Aussagen, weil sie sich nicht weiter in Teilaussagen
+zerlegen lassen.  Atomare Aussagen lassen sich mit Hilfe der eben angegebenen Junktoren zu 
+\emph{zusammengesetzten Aussagen} verknüpfen.  
+Ein Beispiel für eine zusammengesetzte Aussage wäre \\[0.2cm]
+\hspace*{0.3cm} \textsl{Wenn die Sonne scheint und es regnet, dann ist ein Regenbogen am Himmel.} 
+\hspace*{\fill} (1)
+\\[0.2cm]
+Die Aussage ist aus den drei atomaren Aussagen ``\textsl{Die Sonne scheint.}'', ``\textsl{Es regnet.}'', und
+ ``\textsl{Am Himmel ist ein Regenbogen.}'' mit Hilfe der Junktoren ``\textsl{und}'' und ``\textsl{wenn $\cdots$, dann}''
+aufgebaut worden.
+Die Aussagenlogik untersucht, wie sich der Wahrheitswert zusammengesetzter Aussagen
+aus dem Wahrheitswert der einzelnen Teilaussagen berechnen läßt.  Darauf
+aufbauend wird dann gefragt, in welcher Art und Weise wir aus gegebenen Aussagen neue 
+Aussagen logisch folgern können.
+
+Um die Struktur komplexerer Aussagen übersichtlich werden zu lassen, führen wir in der Aussagenlogik zunächst sogenannte
+\emph{Aussage-Variablen} ein.  Diese stehen für atomare Aussagen.
+Zusätzlich führen wir für die Junktoren
+``\textsl{nicht}'', ``\textsl{und}'', ``\textsl{oder}'', ``\textsl{wenn, $\cdots$ dann}'', und ``\textsl{genau dann, wenn}'' die
+folgenden Abkürzungen ein:
+\begin{enumerate}
+\item $\neg a$ \quad\quad\ für \quad \textsl{nicht} $a$ 
+\item $a \wedge b$ \,\quad\ für \quad $a$ \textsl{und} $b$
+\item $a \vee b$ \,\quad\ für \quad $a$ \textsl{oder} $b$
+\item $a \rightarrow b$   \quad für \quad \textsl{wenn} $a$, \textsl{dann} $b$
+\item $a \leftrightarrow b$ \quad für \quad  $a$ \textsl{genau dann, wenn} $b$
+\end{enumerate}
+Aussagenlogische Formeln werden aus Aussage-Variablen mit Hilfe von Junktoren aufgebaut.
+Bestimmte aussagenlogische Formeln sind offenbar immer wahr, egal was
+ wir für die einzelnen Teilaussagen einsetzen.  Beispielsweise ist eine Formel der Art
+\\[0.2cm]
+\hspace*{1.3cm}
+$p \vee \neg p$
+\\[0.2cm]
+unabhängig von dem Wahrheitswert der Aussage $p$ immer wahr.  Eine aussagenlogische
+Formel, die immer wahr ist, bezeichnen wir als eine \emph{Tautologie}.  Andere
+aussagenlogische Formeln sind nie wahr, beispielsweise ist die Formel
+\\[0.2cm]
+\hspace*{1.3cm}
+$p \wedge \neg p$
+\\[0.2cm]
+immer falsch.  Eine Formel heißt \emph{erfüllbar}, wenn es wenigstens eine Möglichkeit
+gibt, bei der die Formel wahr wird.  Im Rahmen der Vorlesung werden wir verschiedene Verfahren
+entwickeln, mit denen es möglich ist zu entscheiden, ob eine aussagenlogische Formel eine
+Tautologie ist oder ob Sie wenigstens erfüllbar ist.  Solche Verfahren spielen
+in der Praxis eine wichtige Rolle.
+
+%Die Aussage (1) können wir jetzt  kürzer als
+% \\[0.2cm]
+%\hspace*{1.3cm} $\mathtt{SonneScheint} \wedge \mathtt{EsRegnet} \rightarrow \mathtt{Regenbogen}$ \\[0.2cm]
+%schreiben.   Das \emph{Beweis-Prinzip}, das wir oben
+%verwendet haben, ist dabei wie folgt: Aus den Aussagen
+%\begin{enumerate}
+%\item \texttt{SonneScheint}
+%\item \texttt{EsRegnet}
+%\item $\mathtt{SonneScheint} \wedge \mathtt{EsRegnet} \rightarrow \mathtt{Regenbogen}$
+%\end{enumerate}
+%\emph{folgt logisch} die Aussage \\[0.2cm]
+%\hspace*{1.3cm}  \texttt{Regenbogen}. \\[0.2cm]
+% Um Beweis-Prinzipien übersichtlicher angeben zu können,
+%führen wir die folgende Notation ein: 
+%$$ \schluss{\mathtt{SonneScheint} \quad\quad \mathtt{EsRegnet} \quad\quad \mathtt{SonneScheint} \wedge \mathtt{EsRegnet} \rightarrow
+%       \mathtt{Regenbogen}}{\mathtt{Regenbogen}} 
+%$$
+%Die Aussagen über dem Bruchstrich bezeichnen wir als \emph{Prämissen}, die Aussage unter dem Bruchstrich ist die \emph{Konklusion}.
+%Statt Beweis-Prinzip sagen wir oft auch \emph{Schluss-Regel}.
+
+% Wir stellen fest, dass die obige Schluss-Regel unabhängig von dem Wahrheitswert der Aussagen in dem folgenden Sinne
+%gültig ist: Wenn alle Prämissen gültig sind, dann folgt aus logischen Gründen auch die Gültigkeit der Konklusion.
+% Um dieses weiter formalisieren zu können, ersetzen wir die Aussage-Variablen
+% \texttt{SonneScheint}, \texttt{EsRegnet} und \texttt{Regenbogen} durch die
+% \emph{Meta-Variablen} $p$, $q$ und $r$, die für beliebige aussagenlogische Formeln stehen.
+%  Die obige Schluss-Regel ist dann eine Instanz der folgenden allgemeinen Schluss-Regel:
+%$$ \frac{\;p \quad q \quad p \wedge q \rightarrow r\;}{\;r\;}  $$
+
+%\noindent
+%\textbf{Aufgabe:} Formalisieren Sie die Schluss-Regel, die in dem folgenden Argument verwendet wird.
+%\begin{center}
+%\begin{minipage}[c]{8.2cm}
+%\textsl{ Wenn es regnet, ist die Straße nass.  Es regnet nicht.  Also ist die Straße nicht nass.}
+%\end{minipage}  
+%\end{center}
+%\textbf{Lösung:} Es wird die folgende Schluss-Regel verwendet: \\[0.2cm]
+%\hspace*{1.3cm} $\schluss{p \rightarrow q \quad\quad \neg p}{\neg q}$\\[0.2cm]
+%Diese Schluss-Regel ist nicht korrekt.  Wenn Sie das nicht einsehen, sollten Sie bei strahlendem Sonnenschein einen Eimer Wasser
+%auf die Straße kippen.  \qed
+%\vspace*{0.1cm}
+
+%Dadurch, dass wir ausgehend von Beobachtungen und als wahr erkannten Tatsachen und Zusammenhängen
+%mehrere \emph{logische Schlüsse} aneinander fügen, erhalten wir einen \emph{Beweis}. 
+%Die als wahr erkannten Tatsachen und Beobachtungen bezeichnet wir dabei als \emph{Axiome}.
+%Wir verwenden in diesem Zusammenhang die folgende  Notation: \\[0.2cm]
+%\hspace*{1.3cm} $M \vdash r$. \\[0.2cm]
+%Hierbei gilt:
+%\begin{itemize}
+%\item $M$ ist eine Menge von Aussagen.
+%\item $\vdash$ bezeichnet eine Menge von Schluss-Regeln.  Eine solche Menge bezeichnen wir
+%      auch als \emph{Kalkül}.
+%\item $r$ ist eine Aussage.  
+%\end{itemize}
+%Die obige Schreibweise wäre dann als \\[0.2cm]
+%\hspace*{1.3cm} ``\emph{Aus den Axiomen der Menge $M$ kann die Aussage $r$ hergeleitet werden}'' \\[0.2cm]
+%zu interpretieren.  Wir lesen  $M \vdash r$ als ``\emph{$M$ leitet $r$ her}''.
+%Damit ist gemeint, dass wir ausgehend von den Axiomen in $M$ durch sukzessives
+%Anwenden verschiedener Schluss-Regeln die Aussage $r$ beweisen können.
+%Das Zeichen $\vdash$ steht für die Menge aller Schluss-Regeln und symbolisiert damit den
+%\emph{Herleitungs-Begriff}, den wir auch als \emph{Kalkül} bezeichnen.  Wir werden  in einem
+%späteren Abschnitt den Kalkül formal definieren.
+%Parallel zu dem Herleitungsbegriff, der seiner Natur nach syntaktisch ist, gibt es auch
+%einen \emph{semantischen}, also inhaltlichen \emph{Folgerungs-Begriff}.  Wir schreiben \\[0.2cm]
+%\hspace*{1.3cm} $M \models r$, \\[0.2cm]
+%wenn die Aussage $r$ logisch aus den Aussagen $M$ folgt.  
+%Die Notation $M \models r$ wird gelesen als ``\emph{$r$ folgt aus $M$}''.
+%Das können wir anders auch so
+%formulieren:  Immer wenn alle Aussagen aus $M$ wahr sind, dann ist auch die Aussage $r$ wahr.
+%Wir können den Begriff der \emph{logischen Folgerung} aber
+%erst dann präzise definieren, wenn wir die Semantik der Junktoren mathematisch festgelegt haben.
+
+%Ziel der Aussagenlogik ist es, einen
+%Herleitungsbegriff zu finden, der die folgenden beiden Bedingungen erfüllt:
+%\begin{enumerate}
+%\item Der Herleitungsbegriff sollte {\bf korrekt} sein, es sollte also nicht möglich sein,
+%      Unsinn zu beweisen.  Es sollte also gelten \\[0.2cm]
+%      \hspace*{1.3cm} Aus $M \vdash r$ folgt $M \models r$. 
+%      \\[0.2cm]
+%      Wenn wir die Aussage $r$ aus den Axiomen der Menge $M$ herleiten können, dann 
+%      soll $r$ auch aus $M$ folgen.
+%\item Der Herleitungsbegriff sollte {\bf vollständig} sein, d.h.~wenn eine Aussage $r$
+%      aus einer Menge von anderen Aussagen $M$ logisch folgt, dann sollte sie
+%      auch aus $M$ beweisbar sein: \\[0.2cm]
+%      \hspace*{1.3cm} Aus $M \models r$ folgt $M \vdash r$. 
+%      \\[0.2cm]
+%      Wenn die Aussage $r$ aus $M$ folgt, dann soll $r$ auch aus der Menge $M$
+%      hergeleitet werden können.
+%\end{enumerate}
+
+\section{Anwendungen der Aussagenlogik}
+Die Aussagenlogik bildet nicht nur die Grundlage für die Prädikatenlogik, sondern sie hat auch wichtige praktische
+Anwendungen.  Aus der großen Zahl der industriellen Anwendungen möchte ich stellvertretend vier Beispiele nennen:
+\begin{enumerate}
+\item Analyse und Design digitaler Schaltungen.
+
+      Komplexe digitale Schaltungen bestehen heute aus mehreren Millionen logischen
+      Gattern\footnote{
+        Die Version des Pentium 4 Prozessors mit dem \textsl{Northwood}
+        Kernel enthält etwa 55 Millionen Transistoren.}.  
+      Ein Gatter ist dabei, aus logischer Sicht betrachtet, ein Baustein, der einen
+      der logischen Junktoren wie ``\textsl{und}'', ``\textsl{oder}'', ``\textsl{nicht}'',
+      etc.~auf elektronischer Ebene repräsentiert. 
+  
+      Die Komplexität solcher Schaltungen wäre ohne den Einsatz
+      rechnergestützter Verfahren zur Verifikation nicht mehr beherrschbar.  Die
+      dabei eingesetzten Verfahren sind Anwendungen der Aussagenlogik. 
+
+      Eine ganz konkrete Anwendung ist der Schaltungs-Vergleich.  Hier werden zwei
+      digitale Schaltungen als aussagenlogische Formeln dargestellt.
+      Anschließend wird versucht, mit aussagenlogischen Mitteln die Äquivalenz dieser
+      Formeln zu zeigen. Software-Werkzeuge, die für die Verifikation digitaler
+      Schaltungen eingesetzt werden, kosten heutzutage über $100\,000\,\symbol{36}$\footnote{
+        Die Firma Magma bietet beispielsweise den \emph{Equivalence-Checker}
+        \textsl{Quartz Formal} zum Preis von $150\,000\, \symbol{36}$ pro Lizenz an.
+      Eine solche Lizenz ist dann drei Jahre lang gültig.}.
+      Dies zeigt die wirtschaftliche Bedeutung der Aussagenlogik.
+
+\item Erstellung von Einsatzplänen (\emph{crew sheduling}).
+
+      International tätige Fluggesellschaften müssen bei der Einteilung Ihrer Crews
+      einerseits gesetzlich vorgesehene Ruhezeiten einhalten, wollen aber ihr Personal
+      möglichst effizient einsetzen.  Das führt zu Problemen, die sich mit Hilfe
+      aussagenlogischer Formeln beschreiben und lösen lassen.
+\item Erstellung von Verschlußplänen für die Weichen und Signale von Bahnhöfen.
+
+      Bei einem größeren Bahnhof gibt es einige hundert Weichen und Signale, die ständig
+      neu eingestellt werden müssen, um sogenannte \emph{Fahrstraßen} für die Züge zu
+      realisieren.  Verschiedene Fahrstraßen sollen sich natürlich nicht kreuzen.  
+      Die einzelnen Fahrstraßen werden durch sogenannte \emph{Verschlußpläne} beschrieben.
+      Die Korrektheit solcher Verschlußpläne kann durch aussagenlogische Formeln ausgedrückt werden.
+\item Eine Reihe kombinatorischer Puzzles lassen sich als aussagenlogische Formeln
+      kodieren und können dann mit Hilfe aussagenlogischer Methoden lösen.  Als ein
+      Beispiel werden wir in der Vorlesung das 8-Damen-Problem behandeln.  Dabei geht es um die Frage,
+      ob 8 Damen so auf einem Schachbrett angeordnet werden können, dass keine der Damen
+      eine andere Dame bedroht.
+\end{enumerate}
+
+\section{Formale Definition der aussagenlogischen Formeln}
+Wir behandeln zunächst die \emph{Syntax} der Aussagenlogik und besprechen anschließend die
+\emph{Semantik}.  Die \textsl{Syntax} gibt an, wie Formeln geschrieben werden.
+Die \emph{Semantik} befasst sich mit der Bedeutung der Formeln.
+Nachdem wir die Semantik der aussagenlogischen Formeln definiert haben, zeigen wir,
+wie sich diese Semantik in \textsc{SetlX} implementieren läßt.
+
+\subsection{Syntax der aussagenlogischen Formeln}
+Wir betrachten eine Menge $\mathcal{P}$ von  \emph{Aussage-Variablen} als gegeben.
+Aussagenlogische Formeln sind dann Wörter, die aus dem Alphabet
+\[ \mathcal{A} := \mathcal{P} \cup \bigl\{ \verum, \falsum, \neg, \vee, \wedge,
+   \rightarrow, \leftrightarrow, (, ) \bigr\}
+\]
+gebildet werden.  Wir definieren die Menge der aussagenlogischen Formeln
+$\mathcal{F}$ durch eine induktive Definition:
+\begin{enumerate}
+\item $\verum \in \mathcal{F}$ und $\mathtt{\falsum} \in \mathcal{F}$.
+
+      Hier steht $\verum$ für die Formel, die immer wahr ist, während $\falsum$ für die 
+      Formel steht, die immer falsch ist.  Die Formel $\verum$ trägt auch den Namen \textsl{Verum},
+      für $\falsum$ sagen wir auch \textsl{Falsum}.
+\item Ist $p \in \mathcal{P}$, so gilt auch $p \in \mathcal{F}$.
+
+      Jede aussagenlogische Variable ist also eine aussagenlogische Formel.
+\item Ist $f \in \mathcal{F}$, so gilt auch $\neg f \in \mathcal{F}$.
+\item Sind $f_1, f_2 \in \mathcal{F}$, so gilt auch
+      \begin{tabbing}
+        $(f_1 \vee f_2) \in \mathcal{F}$ \hspace*{0.5cm} \= (\textsl{gelesen}: \quad \= $f_1$ oder $f_2$),            \\
+        $(f_1 \wedge f_2) \in \mathcal{F}$                 \> (\textsl{gelesen}:       \> $f_1$ und $f_2$),             \\
+        $(f_1 \rightarrow f_2) \in \mathcal{F}$                \> (\textsl{gelesen}:       \> wenn $f_1$, dann $f_2$),      \\
+        $(f_1 \leftrightarrow f_2) \in \mathcal{F}$                \> (\textsl{gelesen}:       \> $f_1$ genau dann, wenn $f_2$).
+      \end{tabbing}
+\end{enumerate}
+Die Menge $\mathcal{F}$ ist nun die kleinste Teilmenge der aus dem Alphabet $\mathcal{A}$
+gebildeten Wörter, die den oben aufgestellten Forderungen genügt.
+
+\example 
+Gilt $\mathcal{P} = \{ p, q, r \}$, so haben wir beispielsweise:
+\begin{enumerate}
+\item $p \in \mathcal{F}$,
+\item $(p \wedge q) \in \mathcal{F}$,
+\item $((\neg p \rightarrow q) \vee (q \rightarrow \neg p)) \in \mathcal{F}$.  \qed
+\end{enumerate}
+
+\noindent
+Um Klammern zu sparen, vereinbaren wir:
+\begin{enumerate}
+\item Äußere Klammern werden weggelassen, wir schreiben also beispielsweise \\[0.2cm]
+      \hspace*{1.3cm} $p \wedge q$ \quad statt \quad $(p \wedge q)$.
+\item Die Junktoren  $\vee$ und $\wedge$ werden implizit links geklammert, d.h.~wir
+      schreiben 
+      \\[0.2cm]
+      \hspace*{1.3cm} $p \wedge q \wedge r$ \quad statt \quad $(p \wedge q) \wedge r$.
+      \\[0.2cm]
+      Operatoren, die implizit nach links geklammert werden, nennen wir \emph{links-assoziativ}.
+\item Der Junktor $\rightarrow$ wird implizit rechts geklammert, d.h.~wir
+      schreiben \\[0.2cm]
+      \hspace*{1.3cm} $p \rightarrow q \rightarrow r$ \quad statt \quad $p \rightarrow (q \rightarrow r)$.
+      \\[0.2cm]
+      Operatoren, die implizit nach rechts geklammert werden, nennen wir \emph{rechts-assoziativ}.
+\item Die Junktoren $\vee$ und $\wedge$ binden stärker als $\rightarrow$, wir schreiben
+      also \\[0.2cm]
+      \hspace*{1.3cm} $p \wedge q \rightarrow r$ \quad statt \quad $(p \wedge q) \rightarrow r$
+
+      \textbf{Beachten} Sie, dass die Junktoren $\wedge$ und $\vee$ gleich stark binden.  Dies ist
+      anders als in der Sprache \textsc{SetlX}, denn dort bindet der Operator ``\texttt{\&\&}'' stärker als
+      der Operator ``\texttt{||}''.
+\item Der Junktor $\rightarrow$ bindet stärker als $\leftrightarrow$, wir schreiben
+      also \\[0.2cm]
+      \hspace*{1.3cm} $p \rightarrow q \leftrightarrow r$ \quad statt \quad $(p \rightarrow q) \leftrightarrow r$.
+\end{enumerate}
+
+\subsection{Semantik der aussagenlogischen Formeln}
+Um aussagenlogischen Formeln einen Wahrheitswert zuordnen zu können, definieren wir
+zunächst die Menge $\mathbb{B}$ der Wahrheitswerte:  \\[0.2cm] 
+\hspace*{1.3cm} $\mathbb{B} := \{ \mathtt{true}, \mathtt{false} \}$. \\[0.2cm]
+Damit können wir nun
+den Begriff einer \emph{aussagenlogischen Interpretation} festlegen.
+
+\begin{Definition}[Aussagenlogische Interpretation]
+{\em Eine \emph{aussagenlogische Interpretation} ist eine Funktion \\[0.2cm]
+\hspace*{1.3cm} $\mathcal{I}:\mathcal{P} \rightarrow \mathbb{B}$, \\[0.2cm]
+die jeder Aussage-Variablen $p\in \mathcal{P}$ einen Wahrheitswert $\mathcal{I}(p) \in \mathbb{B}$ zuordnet.
+}   \qed
+\end{Definition}
+Eine aussagenlogische Interpretation wird oft auch als \emph{Belegung} der
+Aussage-Variablen mit Wahr\-heits-Werten bezeichnet.  
+
+Eine aussagenlogische Interpretation $\mathcal{I}$ interpretiert die Aussage-Variablen.
+Um nicht nur Variablen sondern auch aussagenlogische Formel interpretieren zu können, 
+benötigen wir eine
+Interpretation der Junktoren ``$\neg$'', ``$\wedge$'', ``$\vee$'', ``$\rightarrow$'' und
+``$\leftrightarrow$''.  Zu diesem Zweck definieren wir auf der Menge $\mathbb{B}$
+Funktionen
+$\circneg$, $\circwedge$, $\circvee$, $\circright$ und $\circleftright$
+mit deren Hilfe wir die aussagenlogischen Junktoren interpretieren können:
+\begin{enumerate}
+\item $\circneg: \mathbb{B} \rightarrow \mathbb{B}$
+\item $\circwedge: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$
+\item $\circvee: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$
+\item $\circright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$
+\item $\circleftright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$
+\end{enumerate}
+Wir haben in der Mengenlehre gesehen, dass Funktionen als spezielle Relationen
+aufgefaßt werden können.  Die Funktion $\circneg$ dreht die Wahrheits-Werte um und
+kann daher als Relation wie folgt geschrieben werden:
+\[ \circneg = \bigl\{ \pair(\texttt{true},\texttt{false}), \pair(\texttt{false},\texttt{true}) \bigr\}. \]
+Es ist anschaulicher, die
+Funktionen durch eine Tabelle zu definieren.  Diese Tabelle ist auf Seite
+\pageref{tab:aussagen-logik} abgebildet. 
+
+\begin{table}[!ht]
+  \centering
+\framebox{
+  \begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+   $p$            & $q$            & $\circneg\;(p)$ & $\circvee\;(p, q)$ & $\circwedge\;(p, q)$ & $\circright\;(p, q)$ & $\circleftright\;(p, q)$
+   \\
+\hline
+\hline
+   \texttt{true}  & \texttt{true}  & \texttt{false} & \texttt{true}  & \texttt{true}  & \texttt{true}     & \texttt{true}  \\
+\hline
+   \texttt{true}  & \texttt{false} & \texttt{false} & \texttt{true}  & \texttt{false} & \texttt{false}    & \texttt{false}  \\
+\hline
+   \texttt{false} & \texttt{true}  & \texttt{true}  & \texttt{true}  & \texttt{false} & \texttt{true}     & \texttt{false} \\
+\hline
+   \texttt{false} & \texttt{false} & \texttt{true}  & \texttt{false} & \texttt{false} & \texttt{true}     & \texttt{true}  \\
+\hline
+  \end{tabular}}
+  \caption{Interpretation der Junktoren.}
+  \label{tab:aussagen-logik}
+\end{table}
+Nun können wir den Wert, den eine aussagenlogische Formel $f$ unter einer
+aussagenlogischen Interpretation $\mathcal{I}$ annimmt, durch Induktion nach dem Aufbau
+der Formel $f$ definieren.  Wir werden diesen Wert mit $\widehat{\mathcal{I}}(f)$
+bezeichnen.  Wir setzen:
+\begin{enumerate}
+\item $\widehat{\mathcal{I}}(\falsum) := \mathtt{false}$.
+\item $\widehat{\mathcal{I}}(\verum) := \mathtt{true}$.
+\item $\widehat{\mathcal{I}}(p) := \mathcal{I}(p)$ für alle $p \in \mathcal{P}$.
+\item $\widehat{\mathcal{I}}(\neg f) := \circneg\;\bigl(\widehat{\mathcal{I}}(f)\bigr)$ für alle $f \in \mathcal{F}$.
+\item $\widehat{\mathcal{I}}(f \wedge g) := \circwedge\;\bigl(\widehat{\mathcal{I}}(f), \widehat{\mathcal{I}}(g)\bigr)$ 
+      für alle $f, g \in \mathcal{F}$.
+\item $\widehat{\mathcal{I}}(f \vee g) := \circvee\;\bigl(\widehat{\mathcal{I}}(f), \widehat{\mathcal{I}}(g)\bigr)$ 
+      für alle $f, g \in \mathcal{F}$.
+\item $\widehat{\mathcal{I}}(f \rightarrow g) := \circright\;\bigl(\widehat{\mathcal{I}}(f), \widehat{\mathcal{I}}(g)\bigr)$ 
+      für alle $f, g \in \mathcal{F}$.
+\item $\widehat{\mathcal{I}}(f \leftrightarrow g) := \circleftright\;\bigl(\widehat{\mathcal{I}}(f), \widehat{\mathcal{I}}(g)\bigr)$ 
+      für alle $f, g \in \mathcal{F}$.
+\end{enumerate}
+Um die Schreibweise nicht übermäßig kompliziert werden zu lassen, unterscheiden wir in
+Zukunft nicht  mehr zwischen $\widehat{\mathcal{I}}$ und $\mathcal{I}$, wir werden das Hütchen über dem
+$\mathcal{I}$ also weglassen.
+
+\noindent
+\textbf{Beispiel}: Wir zeigen, wie sich der Wahrheits-Wert der Formel
+$$  (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $$
+für die aussagenlogische Interpretation $\mathcal{I}$, die durch 
+$\mathcal{I}(p) = \mathtt{true}$ und $\mathcal{I}(q) = \mathtt{false}$ definiert ist,
+berechnen läßt: 
+\[
+  \begin{array}{lcl}
+   \mathcal{I}\Bigl( (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q  \Bigr) 
+   & = &  \circright\Bigl( \mathcal{I}\bigl( (p \rightarrow q) \bigr),\, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
+   & = & \circright\Bigl( \circright\bigl( \mathcal{I}(p), \mathcal{I}(q) \bigr),\, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
+   & = & \circright\Bigl( \circright\bigl( \mathtt{true}, \mathtt{false} \bigr),\, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
+   & = & \circright\Bigl( \mathtt{false}, \, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
+   & = & \mathtt{true} \\
+ \end{array}
+\]
+Beachten Sie, dass wir bei der Berechnung gerade soviele Teile der Formel ausgewertet
+haben, wie notwendig waren um den Wert der Formel zu bestimmen.  Trotzdem ist die
+eben durchgeführte Rechnung für die Praxis zu umständlich.  Stattdessen wird der Wert
+einer Formel direkt mit Hilfe der Tabelle \ref{tab:aussagen-logik} auf Seite
+\pageref{tab:aussagen-logik} berechnet.  Wir zeigen exemplarisch, wie wir den
+Wahrheits-Wert der Formel
+$$  (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $$
+für beliebige Belegungen $\mathcal{I}$ über diese Tabelle berechnen können.
+ Um nun die Wahrheitswerte 
+dieser Formel unter einer gegebenen Belegung der Aussage-Variablen bestimmen zu können,
+ bauen wir eine  Tabelle auf, die für jede in der Formel
+auftretende Teilformel eine Spalte enthält.  Tabelle \ref{tab:tautologie} auf Seite
+\pageref{tab:tautologie} zeigt die entstehende Tabelle.
+\begin{table}[!ht]
+  \centering
+\framebox{
+  \begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+   $p$ & $q$ & $\neg p$ & $p \rightarrow q$ & $\neg p \rightarrow q$ & $(\neg p \rightarrow q) \rightarrow q$ & $ (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q$
+   \\
+\hline
+\hline
+   \texttt{true}  & \texttt{true}  & \texttt{false} & \texttt{true}  & \texttt{true}  & \texttt{true}     & \texttt{true}  \\
+\hline
+   \texttt{true}  & \texttt{false} & \texttt{false} & \texttt{false}  & \texttt{true} & \texttt{false}    & \texttt{true}  \\
+\hline
+   \texttt{false} & \texttt{true}  & \texttt{true}  & \texttt{true}  & \texttt{true} & \texttt{true}     & \texttt{true} \\
+\hline
+   \texttt{false} & \texttt{false} & \texttt{true}  & \texttt{true} & \texttt{false} & \texttt{true}     & \texttt{true}  \\
+\hline
+  \end{tabular}}
+  \caption{Berechnung Der Wahrheitswerte von $(p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q$.}
+  \label{tab:tautologie}
+\end{table}
+
+Betrachten wir die letzte Spalte der Tabelle so sehen wir, dass dort immer der Wert
+\texttt{true} auftritt.  Also liefert die Auswertung der Formel
+$(p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $
+für jede aussagenlogische Belegung $\mathcal{I}$ den Wert \texttt{true}.  
+Formeln, die immer wahr sind, haben in der Aussagenlogik eine besondere Bedeutung und
+werden als \emph{Tautologien} bezeichnet.
+
+Wir erläutern die Aufstellung dieser Tabelle anhand der zweiten Zeile.  In dieser Zeile sind zunächst die
+aussagenlogischen Variablen $p$ auf \texttt{true} und $q$ auf \texttt{false} gesetzt.  Bezeichnen wir die
+aussagenlogische Interpretation mit $\mathcal{I}$, so gilt also\\[0.2cm]
+\hspace*{1.3cm} $\mathcal{I}(p) = \mathtt{true}$ und $\mathcal{I}(q) = \mathtt{false}$. \\[0.2cm]
+Damit erhalten wir folgende Rechnung:
+\begin{enumerate}
+\item $\mathcal{I}(\neg p) = \circneg\,(\mathcal{I}(p)) = \circneg\,( \mathtt{true}) = \mathtt{false}$
+\item $\mathcal{I}(p \rightarrow q) = \circright\,(\mathcal{I}(p), \mathcal{I}(q)) = \circright\,(\mathtt{true}, \mathtt{false}) = \mathtt{false}$
+\item $\mathcal{I}(\neg p \rightarrow q) = \circright\bigl( \mathcal{I}(\neg p), \mathcal{I}(q)\bigr) = \circright(\mathtt{false}, \mathtt{false}) = \mathtt{true}$
+\item $\mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) = 
+          \circright\bigl( \mathcal{I}(\neg p \rightarrow q), \mathcal{I}(q) \bigr) = 
+          \circright( \mathtt{true}, \mathtt{false} ) = \mathtt{false}$
+\item $\mathcal{I}\bigl((p \rightarrow q) \rightarrow  (\neg p \rightarrow q) \rightarrow q\bigr) = 
+      \circright\bigl( \mathcal{I}(p \rightarrow q),  \mathcal{I}((\neg p \rightarrow q) \rightarrow q)\bigr) = 
+       \circright\,( \mathtt{false},  \mathtt{false} ) = \mathtt{true}$
+\end{enumerate}
+Für komplexe Formeln ist die Auswertung von Hand viel zu mühsam und
+fehleranfällig um praktikabel zu sein.  Wir zeigen deshalb im übernächsten Abschnitt, wie
+sich dieser Prozeß automatisieren läßt.
+
+\subsection{Extensionale und intensionale Interpretationen der Aussagenlogik}
+Die Interpretation des aussagenlogischen Junktoren ist rein \emph{extensional}:
+Wenn wir den Wahrheitswert der Formel
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I}(f \rightarrow g)$ 
+\\[0.2cm]
+berechnen wollen, so müssen wir die Details der Teilformeln $f$ und $g$ nicht kennen, es reicht,
+wenn wir die Werte $\mathcal{I}(f)$ und $\mathcal{I}(g)$ kennen.   Das ist problematisch,
+denn in der Umgangssprache hat der Junktor
+``\textsl{wenn $\cdots$, dann}'' auch eine \emph{kausale} Bedeutung.  Mit der extensionalen
+Implikation wird der Satz
+\\[0.2cm]
+\hspace*{1.3cm}
+``\textsl{Wenn $3 \cdot 3 = 8$, dann schneit es.}''
+\\[0.2cm]
+als wahr interpretiert, denn die Formel $3 \cdot 3 = 8$ ist ja falsch.  Dass ist problematisch, weil wir diesen Satz in der Umgangssprache 
+als sinnlos erkennen.  Insofern ist die extensionale Interpretation des sprachlichen Junktors
+``\textsl{wenn $\cdots$, dann}'' nur eine Approximation der umgangssprachlichen Interpretation, die sich für die
+Mathematik und die Informatik aber als ausreichend erwiesen hat.
+
+\subsection{Implementierung in \textsc{SetlX}} 
+Um die bisher eingeführten Begriffe nicht zu abstrakt werden zu lassen,
+entwickeln wir in \textsc{SetlX} ein Programm, mit dessen Hilfe sich Formeln
+auswerten lassen.  
+Jedesmal, wenn wir ein Programm zur Berechnung irgendwelcher Wert entwickeln wollen,
+müssen wir uns als erstes fragen, wie wir die Argumente der zu implementierenden Funktion und die
+Ergebnisse dieser Funktion in der verwendeten Programmier-Sprache darstellen können.
+In diesem Fall müssen wir uns also überlegen, wie wir eine
+aussagenlogische Formel in \textsc{SetlX} repräsentieren können, denn Ergebnisswerte
+\texttt{true} und \texttt{false} stehen ja als Wahrheitswerte unmittelbar zur Verfügung.
+Zusammengesetzte Daten-Strukturen können in \textsc{SetlX} am einfachsten als
+Terme dargestellt werden und das ist auch der Weg, den wir für die aussagenlogischen
+Formeln  beschreiten werden.  Wir definieren die Repräsentation von
+aussagenlogischen Formeln formal dadurch, dass wir eine Funktion
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{rep}: \mathcal{F} \rightarrow \textsc{SetlX}$
+\\[0.2cm]
+definieren, die einer aussagenlogischen Formel $f$ einen Term $\textsl{rep}(f)$ zuordnet.  Wir
+werden dabei die in \textsc{SetlX} bereits vorhandenen logischen Operatoren
+``\texttt{!}'', ``\texttt{\&\&}'', ``\texttt{||}'', ``\texttt{=>}'' und
+``\texttt{<==>}'' benutzen, denn damit können wir die aussagenlogischen Formeln in sehr natürlicher
+Weise darstellen.
+\begin{enumerate}
+\item $\verum$ wird repräsentiert durch den Wahrheitswert \texttt{true}.
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\textsl{rep}(\verum) := \mathtt{true}$
+\item $\falsum$  wird repräsentiert durch den Wahrheitswert \texttt{false}.
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\textsl{rep}(\falsum) := \mathtt{false}$
+\item Eine aussagenlogische Variable $p \in \mathcal{P}$ repräsentieren wir 
+      durch einen Term der Form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{\symbol{94}variable(p)}.
+      \\[0.2cm]
+      Der Grund für diese zunächst seltsam anmutende Darstellung der Variable liegt darin,
+      dass \textsc{SetlX} intern Variablen in der obigen Form darstellt.  Wenn wir später
+      einen \texttt{String} mit Hilfe der \textsc{SetlX}-Funktion \texttt{parse} in eine
+      aussagenlogische Formel umwandeln wollen, so müssen wir Variablen in dieser Form repräsentieren.
+      Damit haben wir also
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\textsl{rep}(p) := \texttt{\symbol{94}variable}(p)$ \quad für alle $p \in \mathcal{P}$.
+\item Ist $f$ eine aussagenlogische Formel, so repräsentieren wir $\neg f$ mit Hilfe des Operators
+      ``\texttt{!}'': \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\textsl{rep}(\neg f) := \texttt{!} \textsl{rep}(f)$.
+\item Sind $f_1$ und $f_2$ aussagenlogische Formel, so repräsentieren wir $f_1 \vee f_2$ mit
+      Hilfe des Operators  ``\texttt{||}'': \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\textsl{rep}(f \vee g) := \textsl{rep}(f) \;\texttt{||}\; \textsl{rep}(g)$.
+\item Sind $f_1$ und $f_2$ aussagenlogische Formel, so repräsentieren wir $f_1 \wedge f_2$ mit
+      Hilfe des Operators ``\texttt{\&\&}'': \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\textsl{rep}(f \wedge g) := \textsl{rep}(f) \;\texttt{\&\&}\; \textsl{rep}(g)$.
+\item Sind $f_1$ und $f_2$ aussagenlogische Formel, so repräsentieren wir $f_1 \rightarrow f_2$ mit Hilfe
+      des Operators  ``\texttt{=>}'': \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\textsl{rep}(f \rightarrow g) := \textsl{rep}(f) \;\texttt{=>}\; \textsl{rep}(g)$.
+\item Sind $f_1$ und $f_2$ aussagenlogische Formel, so repräsentieren wir 
+      $f_1 \leftrightarrow f_2$ mit Hilfe des Operators ``\texttt{<==>}'': \\[0.2cm] 
+      \hspace*{1.3cm} 
+      $\textsl{rep}(f \leftrightarrow g) := 
+       \textsl{rep}(f) \;\texttt{<==>}\; \textsl{rep}(g)$.
+\end{enumerate}
+Bei der Wahl der Repräsentation, mit der wir eine Formel in \setl\ repäsentieren,
+sind wir weitgehend frei.  Wir hätten oben sicher auch eine andere Repräsentation
+verwenden können.  Beispielsweise wurden in einer früheren Version dieses Skriptes die
+aussagenlogischen Formeln als Listen repräsentiert.
+Eine gute Repräsentation sollte einerseits möglichst intuitiv sein, andererseits ist
+es auch wichtig, dass die Repräsentation für die zu entwickelnden Algorithmen \underline{adäquat}
+ist.  Im wesentlichen heißt dies, dass es einerseits einfach sein sollte, auf
+die Komponenten einer Formel zuzugreifen, andererseits sollte es auch leicht sein,
+die entsprechende Repräsentation zu erzeugen.  Da wir zur Darstellung der
+aussagenlogischen Formeln die selben Operatoren verwenden, die auch in \textsc{SetlX} selber
+benutzt werden, können wir die in \textsc{SetlX} vordefinierte Funktion \texttt{parse}
+benutzen um einen String in eine Formel umzuwandeln.  Beispielweise liefert der Aufruf
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{f := parse(\symbol{34}p => p || !q\symbol{34});}
+\\[0.2cm]
+für $f$ die Formel
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{p => p || !q}.
+\\[0.2cm]
+Mit Hilfe der \textsc{SetlX}-Funktion \texttt{canonical} können wir uns anschauen, wie die
+Formel in \textsc{SetlX} intern als Term dargestellt wird.  Die Eingabe
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{canonical(f);}
+\\[0.2cm]
+in der Kommandozeile liefert uns das Ergebnis
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\symbol{94}implication(\symbol{94}variable(\symbol{34}p\symbol{34}), \symbol{94}disjunction(\symbol{94}variable(\symbol{34}p\symbol{34}), \symbol{94}negation(\symbol{94}variable(\symbol{34}q\symbol{34}))))}
+\\[0.2cm]
+Wir erkennen beispielsweise, dass in \textsc{SetlX} der Operator ``\texttt{=>}'' intern
+durch das Funktions-Zeichen ``\texttt{\symbol{94}implication}'' dargestellt wird.
+
+Als nächstes geben wir an, wie wir eine aussagenlogische Interpretation in \textsc{SetlX}
+darstellen.  Eine aussagenlogische Interpretation ist eine Funktion \\[0.2cm]
+\hspace*{1.3cm} ${\cal I}: {\cal P} \rightarrow \mathbb{B}$ \\[0.2cm]
+von der Menge der Aussage-Variablen ${\cal P}$ in die Menge der Wahrheitswerte 
+$\mathbb{B}$.  Ist eine Formel $f$ gegeben, so ist klar, dass bei der
+Interpretation ${\cal I}$ nur die Aussage-Variablen $p$ eine Rolle spielen,
+die auch in der Formel $f$ auftreten.  Wir können daher die Interpretation
+${\cal I}$ durch eine funktionale Relation darstellen, also durch eine Menge von
+Paaren \texttt{[ $p$, $b$ ]}, für die $p$ eine Aussage-Variable ist und für die zusätzlich
+$b \in \mathbb{B}$ gilt:
+\[ \mathcal{I} \subseteq \mathcal{P} \times \mathbb{B}. \]
+Damit können wir jetzt eine einfache Funktion schreiben, dass den Wahrheitswert
+einer aussagenlogischen Formel $f$ unter einer gegebenen aussagenlogischen
+Interpretation ${\cal I}$ berechnet. Die Funktion
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/evaluate.stlx}{\texttt{evaluate.stlx}}
+ist in Abbildung \ref{fig:evaluate.stlx} auf Seite \pageref{fig:evaluate.stlx} gezeigt.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.3cm,
+                  xrightmargin  = 0.3cm
+                ]
+    evaluate := procedure(f, i) {
+        match (f) {
+            case true:         return true;
+            case false:        return false;
+            case ^variable(p): return i[p];
+            case !g:           return !evaluate(g, i);
+            case g && h:       return  evaluate(g, i) && evaluate(h, i);
+            case g || h:       return  evaluate(g, i) || evaluate(h, i);
+            case g => h:       return  evaluate(g, i) => evaluate(h, i);
+            case g <==> h:     return  evaluate(g, i) == evaluate(h, i);
+            default:           abort("syntax error in evaluate($f$, $i$)");
+        }
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Auswertung einer aussagenlogischen Formel.}
+  \label{fig:evaluate.stlx}
+\end{figure} 
+
+\noindent
+Wir diskutieren jetzt die Implementierung der Funktion \texttt{evaluate()} Zeile für
+Zeile:
+\begin{enumerate}
+\item Falls die Formel $f$ den Wert \texttt{true} hat, so repäsentiert $f$ die Formel $\verum$.
+      Also ist das Ergebnis der Auswertung unabhängig von der aussagenlogischen
+      Interpretation $i$ immer \texttt{true}. 
+\item Falls die Formel $f$ den Wert \texttt{false} hat, so repäsentiert $f$ die Formel
+      $\falsum$.  Also ist das Ergebnis der
+      Auswertung unabhängig von der aussagenlogischen Interpretation $i$ immer \texttt{false}.
+\item In Zeile 5 betrachten wir den Fall, dass das Argument $f$ eine aussagenlogische
+      Variable repräsentiert.   
+
+      In diesem Fall müssen wir die Belegung $i$, die ja eine Funktion
+      von den aussagenlogischen Variablen in die Wahrheitswerte ist, auf die Variable $f$
+      anwenden.  Da wir die Belegung als eine funktionale Relation dargestellt haben,
+      können wir diese Relation durch den Ausdruck $i[p]$ sehr einfach für die Variable 
+      $p$ auswerten.
+\item In Zeile 6 betrachten wir den Fall, dass $f$ die Form $\texttt{!}g$
+      hat und folglich die Formel $\neg g$ repräsentiert.
+      In diesem Fall werten wir erst $g$ unter der Belegung $i$ aus und negieren dann das Ergebnis.
+\item In Zeile 7 betrachten wir den Fall, dass $f$ die Form 
+      $g_1 \;\texttt{\&\&}\; g_2$ hat und folglich die 
+      Formel $g_1 \wedge g_2$ repräsentiert.
+      In diesem Fall werten wir zunächst $g_1$ und $g_2$ unter der Belegung $i$ 
+      aus und verknüpfen  das Ergebnis mit dem Operator ``\texttt{\&\&}''.
+\item In Zeile 8 betrachten wir den Fall, dass $f$ die Form 
+      $g_1 \;\texttt{||}\; g_2$ hat und folglich die Formel $g_1 \vee g_2$ repräsentiert.
+      In diesem Fall werten wir zunächst $g_1$ und $g_2$ unter der Belegung $i$ 
+      aus und verknüpfen  das Ergebnis mit dem Operator ``\texttt{||}''.
+\item In Zeile 9 betrachten wir den Fall, dass $f$ die Form 
+       $g_1 \;\texttt{=>}\; g_2$ hat und folglich die 
+      Formel $g_1 \rightarrow g_2$       repräsentiert.
+      In diesem Fall werten wir zunächst $g_1$ und $g_2$ unter der Belegung $i$ 
+      aus und benutzen dann den Operator ``\texttt{=>}'' der Sprache \textsc{SetlX}.
+\item In Zeile 10 führen wir die Auswertung einer Formel $g_1 \;\texttt{<==>}\; g_2$
+      auf die Gleichheit zurück: Die Formel $f \leftrightarrow g$ ist genau dann wahr,
+      wenn $f$ und $g$ den selben Wahrheitswert haben.
+\item Wenn keiner der vorhergehenden Fälle greift, liegt ein Syntax-Fehler vor, 
+      auf den wir in Zeile 11 hinweisen.
+\end{enumerate}
+
+
+\subsection{Eine Anwendung}
+Wir betrachten eine spielerische Anwendung der Aussagenlogik.  Inspektor Watson wird zu
+einem Juweliergeschäft gerufen, in das eingebrochen worden ist.
+In der unmittelbaren Umgebung werden drei Verdächtige Anton, Bruno und Claus festgenommen.
+Die Auswertung der Akten ergibt folgendes:
+\begin{enumerate}
+\item Einer der drei Verdächtigen muß die Tat begangen haben: \\[0.2cm]
+      \hspace*{1.3cm} 
+      $f_1 := a \vee b \vee c$.
+\item Wenn Anton schuldig ist, so hat er genau einen Komplizen. 
+
+      Diese Aussage zerlegen wir zunächst in zwei Teilaussagen:
+      \begin{enumerate}
+      \item Wenn Anton schuldig ist, dann hat er mindestens einen Komplizen: \\[0.2cm]
+            \hspace*{1.3cm} $f_2 := a \rightarrow b \vee c$ 
+      \item Wenn Anton schuldig ist, dann hat er höchstens einen Komplizen: \\[0.2cm]
+           \hspace*{1.3cm} $f_3 := a \rightarrow \neg (b \wedge c)$
+      \end{enumerate}
+\item Wenn Bruno unschuldig ist, dann ist auch Claus unschuldig: \\[0.2cm]
+      \hspace*{1.3cm} $f_4 :=  \neg b \rightarrow \neg c$ 
+\item Wenn genau zwei schuldig sind, dann ist Claus einer von ihnen.
+
+      Es ist nicht leicht zu sehen, wie diese Aussage sich aussagenlogisch
+      formulieren läßt.  Wir behelfen uns mit einem Trick und überlegen uns, wann die
+      obige Aussage falsch ist.  Wir sehen, die Aussage ist dann falsch,
+      wenn Claus nicht schuldig ist und wenn gleichzeitig Anton und Bruno schuldig sind.
+      Damit lautet die Formalisierung der obigen Aussage: \\[0.2cm]
+      \hspace*{1.3cm} $f_5 := \neg ( \neg c  \wedge a \wedge b )$ 
+\item Wenn Claus unschuldig ist, ist Anton schuldig. \\[0.2cm]
+      \hspace*{1.3cm} $f_6 := \neg c \rightarrow a$
+\end{enumerate}
+Wir haben nun eine Menge $F = \{ f_1, f_2, f_3, f_4, f_5, f_6 \}$ von Formeln.
+Wir fragen uns nun, für welche Belegungen $\mathcal{I}$ alle Formeln aus $F$ wahr werden.
+Wenn es genau eine Belegungen gibt, für die dies der Fall ist, dann liefert uns die
+Belegung den oder die Täter.  Eine Belegung entspricht dabei 1-zu-1 der Menge der Täter.
+Hätten wir beispielsweise \\[0.2cm]
+\hspace*{1.3cm} 
+$\mathcal{I} = \bigl\{ \pair(a,\mathtt{false}), \pair(b,\mathtt{false}), \pair(c,\mathtt{true}) \bigr\}$.
+\\[0.2cm]
+so wäre Claus der alleinige Täter.  Diese Belegung löst unser Problem offenbar
+nicht, denn Sie widerspricht der dritten Aussage: Da Bruno unschuldig wäre, wäre dann auch
+Claus unschuldig.  Da es zu zeitraubend ist, alle Belegungen von Hand auszuprobieren,
+schreiben wir besser ein Programm, das für uns die notwendige Berechnung durchführt.
+Abbildung \ref{fig:watson.stlx} zeigt das Programm
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/watson.stlx}{\texttt{watson.stlx}}.
+Wir diskutieren diese Programm nun Zeile für Zeile.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    // This procedure turns a subset m of set set of all variables 
+    // into a propositional valuation i, such that i(x) is true 
+    // iff x is an element of m.
+    createValuation := procedure(m, v) {
+        return { [ x, x in m ] : x in v };
+    };
+    // Austin, Brian, or Colin is guilty.
+    f1 := parse("a || b || c");
+    // If Austin is guilty, he has exactly one accomplice.
+    f2 := parse("a => b || c");    // at least one accomplice
+    f3 := parse("a => !(b && c)"); // at most  one accomplice
+    // If Brian is innocent, then Colin is innocent, too.
+    f4 := parse("!b => !c"); 
+    // If exactly two are guilty, then Colin is one of them.
+    f5 := parse("!(a && b && !c)"); 
+    // If Colin is innocent, then Austin is guilty.
+    f6 := parse("!c => a");
+    fs := { f1, f2, f3, f4, f5, f6 };
+    v  := { "a", "b", "c" };
+    p  := 2 ** v;
+    print("p = ", p);
+    // b is the set of all propositional valuations.
+    b  := { createValuation(m, v) : m in p };
+    s  := { i in b | forall (f in fs | evaluate(f, i)) };
+    print("Set of all valuations satisfying all facts: ", s);
+    if (#s == 1) {
+        i := arb(s);
+        taeter := { x in v | i[x] };
+        print("Set of culprits: ", taeter);
+    }
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Programm zur Aufkärung des Einbruchs.}
+  \label{fig:watson.stlx}
+\end{figure}
+
+\begin{enumerate}
+\item In den Zeilen 6 -- 16 definieren wir die Formeln $f_1$, $\cdots$, $f_6$      .
+      Wir müssen hier die Formeln in die \textsc{SetlX}-Repräsentation bringen.
+      Diese Arbeit wird uns durch die Benutzung der Funktion \texttt{parse} leicht gemacht.
+\item Als nächstes müssen wir uns überlegen, wie wir alle Belegungen aufzählen können. 
+      Wir hatten oben schon beobachtet, dass die Belegungen 1-zu-1 zu den möglichen Mengen der Täter
+      korrespondieren.  Die Mengen der möglichen Täter sind aber alle Teilmengen der Menge
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\{ \squote{a}, \squote{b}, \squote{c} \}$. 
+      \\[0.2cm]
+      Wir berechnen daher in Zeile 18 zunächst die Menge aller dieser Teilmengen.
+\item Wir brauchen jetzt eine Möglichkeit, eine Teilmenge in eine Belegung umzuformen.
+      In den Zeilen 3 -- 5 haben wir eine Prozedur implementiert, die genau dies
+      leistet.  Um zu verstehen, wie diese Funktion arbeitet, betrachten wir ein Beispiel
+      und nehmen an, dass wir aus der Menge \\[0.2cm]
+      \hspace*{1.3cm} $m = \{\squote{a}, \squote{c} \}$ \\[0.2cm]
+      eine Belegung $\mathcal{I}$ erstellen sollen.  Wir erhalten dann \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\mathcal{I} = \{ \pair(\squote{a},\mathtt{true}), 
+                        \pair(\squote{b},\mathtt{false}),
+                        \pair(\squote{c},\mathtt{true}) 
+       \bigr\}
+      $. 
+      \\[0.2cm]
+      Das allgemeine Prinzip ist offenbar, dass für eine aussagenlogische Variable
+      $x$ das Paar $\pair(x,\mathtt{true})$ genau dann in der Belegung $\mathcal{I}$
+      enthalten ist, wenn $x \el m$ ist, andernfalls ist das Paar $\pair(x,\mathtt{false})$
+      in $\mathcal{I}$.  Damit könnten wir die Menge aller Belegungen, die genau die
+      Elemente aus $m$ wahrmachen, wie folgt schreiben:
+      \\[0.2cm]
+      \hspace*{1.3cm}      
+      \texttt{\{ [ x, true ] : x in m \} + \{ [ x, false ] : x in A | !(x in m) \}}
+      \\[0.2cm]
+      Es geht aber einfacher, denn wir können beide Fälle zusammenfassen, indem wir fordern,
+      dass das Paar $\pair(x, x \el m)$ ein Element der Belegung $\mathcal{I}$ ist. Genau
+      das steht in Zeile 4.
+\item In Zeile 22 sammeln wir in der Menge $b$ alle möglichen Belegungen auf.
+\item In Zeile 23 berechnen wir die Menge $s$ aller der Belegungen $i$, für die alle 
+      Formeln aus der Menge $\textsl{fs}$ wahr werden. 
+\item Falls es genau eine Belegung gibt, die alle Formeln wahr macht, 
+      dann haben wir das Problem lösen können.  In diesem Fall
+      extrahieren wir in Zeile 26 diese Belegungen aus der Menge $s$ und geben
+      anschließemd die Menge der Täter aus.
+\end{enumerate}
+Lassen wir das Programm laufen, so erhalten wir als Ausgabe
+\begin{verbatim}
+    Set of culprits: {"b", "c"}
+\end{verbatim}
+Damit liefern unsere ursprünglichen Formeln ausreichende Information um die Täter zu überführen:
+Bruno und Claus sind schuldig.
+
+
+\section{Tautologien}
+Die Tabelle in Abbildung \ref{tab:tautologie} zeigt, dass die Formel
+$$  (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $$
+für jede aussagenlogische Interpretation wahr ist, denn in der letzten Spalte dieser Tabelle steht immer der
+Wert \texttt{true}.  Formeln mit dieser Eigenschaft  bezeichnen wir als \emph{Tautologie}.
+\begin{Definition}[Tautologie]
+{\em
+Ist $f$ eine aussagenlogische Formel und gilt \\[0.2cm]
+\hspace*{1.3cm} $\mathcal{I}(f) = \mathtt{true}$ \quad für jede aussagenlogische Interpretation $\mathcal{I}$, \\[0.2cm]
+dann ist $f$ eine \emph{Tautologie}.  In diesem Fall schreiben wir \\[0.2cm]
+\hspace*{1.3cm} $\models f$.
+}
+\qed
+\end{Definition}
+
+\noindent
+Ist eine Formel $f$ eine Tautologie, so sagen wir auch, dass $f$
+\emph{allgemeingültig} ist.
+
+\noindent
+\textbf{Beispiele}:
+\begin{enumerate}
+\item $\models p \vee \neg p$
+\item $\models p \rightarrow p$
+\item $\models p \wedge q \rightarrow p$
+\item $\models p \rightarrow p \vee q$
+\item $\models (p \rightarrow \falsum) \;\leftrightarrow\; \neg p$
+\item $\models p \wedge q \;\leftrightarrow\; q \wedge p$
+\end{enumerate}
+Wir können die Tatsache, dass es sich bei diesen Formeln um Tautologien handelt, durch
+eine Tabelle nachweisen, die analog zu der auf Seite \pageref{tab:tautologie} gezeigten
+Tabelle \ref{tab:tautologie} aufgebaut ist.  Dieses Verfahren ist zwar konzeptuell sehr
+einfach, allerdings zu ineffizient, wenn die Anzahl der aussagenlogischen Variablen groß
+ist.  Ziel dieses Kapitels ist daher die Entwicklung besserer Verfahren.
+
+Die letzten beiden Beispiele in der obigen Aufzählung geben Anlaß zu einer neuen Definition.
+\begin{Definition}[Äquivalent]
+{\em
+  Zwei Formeln $f$ und $g$ heißen \emph{äquivalent} g.d.w.  \\[0.2cm]
+\hspace*{1.3cm} $\models f \leftrightarrow g$ 
+\\[0.1cm]
+  gilt.
+} \qed
+\end{Definition}
+
+\noindent
+\textbf{Beispiele}:  Es gelten die folgenden Äquivalenzen: \\[0.3cm]
+\hspace*{0.3cm} 
+$\begin{array}{lll}
+\models \neg \falsum \leftrightarrow \verum & \models \neg \verum \leftrightarrow \falsum &  \\[0.2cm]
+ \models p \vee   \neg p \leftrightarrow \verum & \models p \wedge \neg p \leftrightarrow \falsum & \mbox{Tertium-non-Datur} \\[0.2cm]
+ \models p \vee   \falsum \leftrightarrow p & \models p \wedge \verum  \leftrightarrow p & \mbox{Neutrales Element}\\[0.2cm]
+ \models p \vee   \verum  \leftrightarrow \verum & \models p \wedge \falsum \leftrightarrow \falsum &  \\[0.2cm]
+ \models p \wedge p \leftrightarrow p  & \models p \vee p \leftrightarrow p &  \mbox{Idempotenz} \\[0.2cm]
+ \models p \wedge q \leftrightarrow q \wedge p & \models p \vee   q \leftrightarrow q \vee p & \mbox{Kommutativität} \\[0.2cm]
+ \models (p \wedge q) \wedge r \leftrightarrow p \wedge (q \wedge r) & \models (p \vee   q) \vee r \leftrightarrow p \vee   (q \vee r)  &
+ \mbox{Assoziativität} \\[0.2cm]
+ \models \neg \neg p \leftrightarrow p & & \mbox{Elimination von $\neg \neg$} \\[0.2cm]
+ \models p \wedge (p \vee q)   \leftrightarrow p & \models p \vee   (p \wedge q) \leftrightarrow p &  \mbox{Absorption} \\[0.2cm]
+ \models p \wedge (q \vee r)   \leftrightarrow (p \wedge q) \vee   (p \wedge r) & 
+ \models p \vee   (q \wedge r) \leftrightarrow (p \vee q)   \wedge (p \vee   r) & \mbox{Distributivität} \\[0.2cm]
+ \models \neg (p \wedge q) \leftrightarrow  \neg p \vee   \neg q &  \models \neg (p \vee   q) \leftrightarrow  \neg p \wedge \neg q &
+ \mbox{DeMorgan'sche Regeln}  \\[0.2cm]
+ \models (p \rightarrow q) \leftrightarrow \neg p \vee q & &  \mbox{Elimination von $\rightarrow$} \\[0.2cm]
+ \models (p \leftrightarrow q) \leftrightarrow (\neg p \vee q) \wedge (\neg q \vee p) & & \mbox{Elimination von $\leftrightarrow$}
+\end{array}$ \\[0.3cm]
+Wir können diese Äquivalenzen nachweisen, indem wir in einer Tabelle sämtliche Belegungen
+durchprobieren.  Eine solche Tabelle heißt auch \emph{Wahrheits-Tafel}.
+Wir demonstrieren dieses Verfahren anhand der ersten DeMorgan'schen Regel.
+\begin{table}[!ht]
+  \centering
+\framebox{
+  \begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+   $p$            & $q$            &  $\neg p$      &  $\neg q$    & $p \wedge q$   & $\neg (p \wedge q)$ & $\neg p \vee \neg q$ \\
+\hline
+\hline
+   \texttt{true}  & \texttt{true}  & \texttt{false} & \texttt{false}  & \texttt{true}  & \texttt{false}  & \texttt{false}  \\
+\hline
+   \texttt{true}  & \texttt{false} & \texttt{false} & \texttt{true}  & \texttt{false} & \texttt{true}    & \texttt{true}  \\
+\hline
+   \texttt{false} & \texttt{true}  & \texttt{true}  & \texttt{false}  & \texttt{false} & \texttt{true}     & \texttt{true} \\
+\hline
+   \texttt{false} & \texttt{false} & \texttt{true}  & \texttt{true} & \texttt{false} & \texttt{true}     & \texttt{true}  \\
+\hline
+  \end{tabular}}
+  \caption{Nachweis der ersten DeMorgan'schen Regel.}
+  \label{tab:deMorgan}
+\end{table}
+Wir erkennen, dass in Abbildung \ref{tab:deMorgan} in den letzten beiden Spalten in jeder Zeile die selben Werte
+stehen.  Daher sind die Formeln, die zu diesen Spalten gehören, äquivalent.
+
+\subsection{Testen der Allgemeingültigkeit in \textsc{SetlX}}
+\noindent
+ Die manuelle Überprüfung der Frage, ob eine gegebene Formel $f$ eine Tautologie ist, 
+läuft auf die Erstellung umfangreicher Wahrheitstafeln heraus.   Solche Wahrheitstafeln
+von Hand zu erstellen ist viel zu zeitaufwendig. 
+Wir wollen daher nun ein \textsc{SetlX}-Programm entwickeln, mit dessen Hilfe wir die
+obige Frage automatisch beantworten können.   Die Grundidee ist, dass wir die zu untersuchende
+Formel für alle möglichen Belegungen auswerten und überprüfen, dass sich bei der Auswertung
+jedesmal der Wert \texttt{true} ergibt.  Dazu müssen wir zunächst einen Weg finden, alle
+möglichen Belegungen einer Formel zu berechnen.  Wir haben früher schon gesehen, dass
+Belegungen $\mathcal{I}$ zu Teilmengen $M$ der Menge der aussagenlogischen Variablen
+$\mathcal{P}$ korrespondieren, denn für jedes $M \subseteq \mathcal{P}$ können wir eine
+aussagenlogische Belegung $\mathcal{I}(M)$ wie folgt definieren:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I}(M)(p) := \left\{
+\begin{array}[c]{ll}
+  \mathtt{true}  & \mbox{falls $p \in M$;} \\
+  \mathtt{false} & \mbox{falls $p \notin M$.}
+\end{array}
+\right.
+$
+\\[0.2cm]
+Um die aussagenlogische Belegung $\mathcal{I}$ in \textsc{SetlX} darstellen zu können,
+fassen wir die Belegung $\mathcal{I}$ als links-totale und rechts-eindeutige Relation
+$\mathcal{I} \subseteq \mathcal{P} \times \mathbb{B}$ auf.  Dann haben wir
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I} = \bigl\{ \pair(p, \mathtt{true} ) \mid p \in    M \bigr\} \cup 
+               \bigl\{ \pair(p, \mathtt{false}) \mid p \notin M \bigr\}
+$.
+\\[0.2cm]
+Dies läßt sich noch zu
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I} = \bigl\{ \langle p, p \el M\rangle \mid  p \in \mathcal{P} \bigr\}$
+\\[0.2cm]
+vereinfachen.  Mit dieser Idee können wir nun eine Prozedur implementieren, die für eine
+gegebene aussagenlogische Formel $f$ testet, of $f$ eine Tautologie ist.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm
+                ]
+    tautology := procedure(f) {
+        p := collectVars(f);
+        // a is the set of all propositional valuations.
+        a := { { [x, x in m] : x in p } : m in pow(p) };
+        if (forall (i in a | evaluate(f, i))) {
+            return {};
+        } else {
+            return arb({ i in a | !evaluate(f, i) });
+        }
+    };
+    collectVars := procedure(f) {
+        match (f) {
+            case true:         return {};
+            case false:        return {};
+            case ^variable(p): return { p };
+            case !g:           return collectVars(g);
+            case g && h:       return collectVars(g) + collectVars(h);
+            case g || h:       return collectVars(g) + collectVars(h);
+            case g => h:       return collectVars(g) + collectVars(h);
+            case g <==> h:     return collectVars(g) + collectVars(h);
+            default:           abort("syntax error in collectVars($f$)");
+        }
+    };    
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Überprüfung der Allgemeingültigkeit einer aussagenlogischen Formel.}
+  \label{fig:tautology.stlx}
+\end{figure} 
+
+\noindent
+Die in Abbildung \ref{fig:tautology.stlx} auf Seite \pageref{fig:tautology.stlx}
+gezeigte Funktion
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/tautology.stlx}{\texttt{tautology}}
+testet, ob die als Argument übergebene
+aussagenlogische Formel $f$ allgemeingültig ist.   
+Die Prozedur verwendet die Funktion 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/evaluate.stlx}{\texttt{evaluate}}
+aus dem in Abbildung
+\ref{fig:evaluate.stlx} auf Seite \pageref{fig:evaluate.stlx} gezeigten Programm.
+Wir diskutieren die Definition der Funktion $\textsl{tautology}$ nun Zeile für Zeile:
+\begin{enumerate}
+\item In Zeile 2 sammeln wir alle aussagenlogischen Variablen auf, die in der zu
+      überprüfenden Formel auftreten.  Die dazu benötigte Prozedur \texttt{collectVars}
+      ist in den Zeilen 11 -- 23 gezeigt.  Diese Prozedur ist durch Induktion über den
+      Aufbau einer Formel definiert und liefert als Ergebnis die Menge aller Aussage-Variablen,
+      die in der aussagenlogischen Formel $f$ auftreten.
+
+      Es ist klar, das bei der Berechnung von ${\cal I}(f)$ für eine Formel $f$
+      und eine aussagenlogische Interpretation ${\cal I}$ nur die Werte von
+      ${\cal I}(p)$ eine Rolle spielen, für die die Variable $p$ in $f$
+      auftritt.  Zur Analyse von $f$ können wir uns also auf aussagenlogische 
+      Interpretationen  der Form \\[0.2cm]
+      \hspace*{1.3cm} 
+      ${\cal I}:\mathcal{P} \rightarrow \mathbb{B}$ \quad mit \quad $\mathcal{P} = \mathtt{collectVars}(f)$ 
+      \\[0.2cm]
+      beschränken.
+\item In Zeile 4 berechnen wir die Menge aller aussagenlogischen
+      Interpretationen über der Menge $\mathcal{P}$ der aussagenlogischen Variablen.  
+      Wir berechnen für eine Menge $m$ von aussagenlogischen Variablen
+      die Interpretation ${\cal I}(m)$ wie oben diskutiert mit Hilfe der Formel
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      ${\cal I}(m) := \{ \pair(x, x \!\in\! m) \mid x \in V \}$.  
+      \\[0.2cm]
+      Betrachten wir zur Verdeutlichung als Beispiel die Formel \\[0.2cm]
+      \hspace*{1.3cm} $\neg (p \wedge q) \leftrightarrow \neg p \vee \neg q$. \\[0.2cm]
+      Die Menge $\mathcal{P}$ der aussagenlogischen Variablen, die in dieser Formel auftreten,
+      ist \\[0.2cm]
+      \hspace*{1.3cm} $\mathcal{P} = \{ p, q \}$. \\[0.2cm]
+      Die Potenz-Menge der Menge $\mathcal{P}$ ist \\[0.2cm]
+      \hspace*{1.3cm} $2^\mathcal{P} = \bigl\{ \{\}, \{p\}, \{q\}, \{p,q\} \bigr\}$. \\[0.2cm]
+      Wir bezeichnen die vier Elemente dieser Menge mit $m_1$, $m_2$, $m_3$, $m_4$: \\[0.2cm]
+      \hspace*{1.3cm} $m_1 := \{\},\; m_2 :=\{p\},\; m_3 :=\{q\},\; m_4 :=\{p,q\}$. \\[0.2cm]
+      Aus jeder dieser Mengen $m_i$ gewinnen wir nun eine aussagenlogische Interpretation 
+      $\mathcal{I}(m_i)$: 
+
+      ${\cal I}(m_1) := \bigl\{ \bigl\langle x, x \!\in\! \{\} \bigl\rangle\, |\, x \!\in\! \{p,q\} = \bigl\{ \bigl\langle p, p \!\in\! \{\} \bigl\rangle,\, \bigl\langle q, q \!\in\! \{\} \bigl\rangle \bigr\} = \bigl\{ \bigl\langle p, \mathtt{false} \bigl\rangle,\, \bigl\langle q, \mathtt{false} \bigl\rangle \bigr\}$.
+
+      ${\cal i}(m_2) := \bigl\{ \bigl\langle x, x \!\in\! \{p\} \bigl\rangle\, |\, x \!\in\! \{p,q\} \bigr\} = \bigl\{ \bigl\langle p, p \!\in\! \{p\} \bigl\rangle,\, \bigl\langle q, q \!\in\! \{p\} \bigl\rangle \bigr\} = \bigl\{ \bigl\langle p, \mathtt{true} \bigl\rangle,\, \bigl\langle q, \mathtt{false} \bigl\rangle \bigr\}$.
+
+      ${\cal I}(m_3) := \bigl\{ \bigl\langle x, x \!\in\! \{q\} \bigl\rangle\, |\, x \!\in\! \{p,q\} \bigr\} = \bigl\{ \bigl\langle p, p \!\in\! \{q\} \bigl\rangle,\, \bigl\langle q, q \!\in\! \{q\} \bigl\rangle \bigr\} = \bigl\{ \bigl\langle p, \mathtt{false} \bigl\rangle,\, \bigl\langle q, \mathtt{true} \bigl\rangle \bigr\}$.
+
+      ${\cal I}(m_4) := \bigl\{ \bigl\langle x, x \!\in\! \{p,q\} \bigl\rangle\, |\, x \!\in\! \{p,q\} \bigr\} = \bigl\{ \bigl\langle p, p \!\in\! \{p,q\} \bigl\rangle,\, \bigl\langle q, q \!\in\! \{p,q\} \bigl\rangle \bigr\} = \bigl\{ \bigl\langle p, \mathtt{true} \bigl\rangle,\, \bigl\langle q, \mathtt{true} \bigl\rangle \bigr\}$.
+
+      damit haben wir alle möglichen Interpretationen der Variablen $p$ und $q$. 
+\item In Zeile 5 testen wir, ob die Formel $f$ für alle möglichen Interpretationen $i$
+      aus der Menge $a$ aller Interpretationen wahr ist.  Ist dies der Fall,
+      so geben wir die leere Menge als Ergebnis zurück.
+
+      Falls es allerdings eine Belegungen $i$ in der Menge $a$ gibt, für die die
+      Auswertung von $f$ den Wert \textsl{false} liefert, so bilden wir in Zeile 8 die
+      Menge aller solcher Belegungen und wählen mit Hilfe der Funktion
+      $\textsl{arb}$ eine beliebige Belegungen aus dieser Menge aus, die wir dann
+      als Gegenbeispiel zurück geben.
+\end{enumerate}
+
+\subsection{Nachweis der Allgemeingültigkeit durch Äquivalenz-Umformungen}
+Wollen wir nachweisen, dass eine Formel eine Tautologie ist, können wir uns prinzipiell
+immer einer Wahrheits-Tafel bedienen. 
+Aber diese Methode hat einen Haken: Kommen in der Formel $n$
+verschiedene Aussage-Variablen vor, so hat die Tabelle $2^n$ Zeilen.  Beispielsweise hat
+die Tabelle zum Nachweis eines der Distributiv-Gesetze bereits 
+$8$ Zeilen, da hier 3 verschiedene Variablen auftreten.
+Eine andere Möglichkeit nachzuweisen, dass eine Formel eine Tautologie ist, ergibt sich dadurch, dass wir
+die Formel mit Hilfe der oben aufgeführten Äquivalenzen \emph{vereinfachen}.  Wenn es gelingt, eine Formel $F$ unter Verwendung
+dieser Äquivalenzen zu $\verum$ zu vereinfachen, dann ist gezeigt, dass $F$ eine Tautologie ist.  
+Wir demonstrieren das Verfahren zunächst an einem Beispiel. 
+Mit Hilfe einer Wahrheits-Tafel hatten wir schon gezeigt, dass die Formel \\[0.2cm]
+\hspace*{1.3cm} $(p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q$ \\[0.2cm]
+eine Tautologie ist.  Wir zeigen nun, wie wir diesen Tatbestand auch durch eine Kette von
+Äquivalenz-Umformungen einsehen können:\\[0.2cm]
+\hspace*{1.3cm} 
+$ 
+\begin{array}[c]{lcr}
+                 & (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q  & \quad(\mbox{Elimination von $\rightarrow$}) \\    
+ \leftrightarrow & (\neg p \vee q) \rightarrow (\neg p \rightarrow q) \rightarrow q    & \quad(\mbox{Elimination von $\rightarrow$})\\     
+ \leftrightarrow & (\neg p \vee q) \rightarrow (\neg \neg p \vee q) \rightarrow q      & \quad(\mbox{Elimination der Doppelnegation})\\    
+ \leftrightarrow & (\neg p \vee q) \rightarrow (p \vee q) \rightarrow q                & \quad(\mbox{Elimination von $\rightarrow$})\\     
+ \leftrightarrow & \neg(\neg p \vee q) \vee ((p \vee q) \rightarrow q)                 & \quad(\mbox{DeMorgan})\\                          
+ \leftrightarrow & (\neg\neg p \wedge \neg q) \vee ((p \vee q) \rightarrow q)          & \quad(\mbox{Elimination der Doppelnegation})\\    
+ \leftrightarrow & (p \wedge \neg q) \vee ((p \vee q) \rightarrow q)                   & \quad(\mbox{Elimination von $\rightarrow$})\\     
+ \leftrightarrow & (p \wedge \neg q) \vee (\neg(p \vee q) \vee q)                      & \quad(\mbox{DeMorgan})\\                          
+ \leftrightarrow & (p \wedge \neg q) \vee ((\neg p \wedge \neg q) \vee q)              & \quad(\mbox{Distributivität}) \\
+ \leftrightarrow & (p \wedge \neg q) \vee ((\neg p \vee q) \wedge (\neg q \vee q))     & \quad(\mbox{Tertium-non-Datur})\\               
+ \leftrightarrow & (p \wedge \neg q) \vee ((\neg p \vee q) \wedge \verum)                & \quad(\mbox{Neutrales Element})\\                 
+ \leftrightarrow & (p \wedge \neg q) \vee (\neg p \vee q)                              & \quad(\mbox{Distributivität})\\                   
+ \leftrightarrow & (p \vee (\neg p \vee q)) \wedge (\neg q \vee (\neg p \vee q))       & \quad(\mbox{Assoziativität}) \\                   
+ \leftrightarrow & ((p \vee \neg p) \vee q) \wedge (\neg q \vee (\neg p \vee q))       & \quad(\mbox{Tertium-non-Datur})\\               
+ \leftrightarrow & (\verum \vee q) \wedge (\neg q \vee (\neg p \vee q))                  & \quad(\mbox{Neutrales Element}) \\                
+ \leftrightarrow & \verum \wedge (\neg q \vee (\neg p \vee q))                           & \quad(\mbox{Neutrales Element}) \\                
+ \leftrightarrow & \neg q \vee (\neg p \vee q)                                         & \quad(\mbox{Assoziativität})\\                    
+ \leftrightarrow & (\neg q \vee \neg p) \vee q                                         & \quad(\mbox{Kommutativität})\\                    
+ \leftrightarrow & (\neg p \vee \neg q) \vee q                                         & \quad(\mbox{Assoziativität})\\                    
+ \leftrightarrow & \neg p \vee (\neg q  \vee q)                                        & \quad(\mbox{Tertium-non-Datur})\\               
+ \leftrightarrow & \neg p \vee \verum                                                    & \quad(\mbox{Neutrales Element}) \\                
+ \leftrightarrow & \verum \\
+\end{array}
+$
+
+Die Umformungen in dem obigen Beweis sind nach einem bestimmten System durchgeführt worden.  Um dieses System
+präzise formulieren zu können, benötigen wir noch einige Definitionen.
+
+\begin{Definition}[Literal]
+{\em
+  Eine aussagenlogische Formel $f$ heißt \emph{Literal} g.d.w. einer der folgenden Fälle vorliegt:
+  \begin{enumerate}
+  \item $f = \verum$ oder $f = \falsum$.
+  \item $f = p$, wobei $p$ eine aussagenlogische Variable ist.
+
+        In diesem Fall sprechen wir von einem \emph{positiven} Literal.
+  \item $f = \neg p$, wobei $p$ eine aussagenlogische Variable ist. 
+
+        In diesem Fall sprechen wir von einem \emph{negativen} Literal.
+  \end{enumerate}
+  Die Menge aller Literale bezeichnen wir mit $\mathcal{L}$.
+           \qed
+} 
+\end{Definition}
+
+Später werden wird noch den Begriff des \emph{Komplements} eines Literals benötigen.
+Ist $l$ ein Literal, so wird das Komplement von $l$ mit $\komplement{\,l\,}$
+bezeichnet.  Das Komplement wird durch Fall-Unterscheidung definiert:
+\begin{enumerate}
+\item $\komplement{\verum} = \falsum$ \quad und \quad $\komplement{\falsum} = \verum$. 
+\item $\komplement{p} := \neg p$, \quad falls $p \in \mathcal{P}$.
+\item $\komplement{\neg p} := p$, \quad falls $p \in \mathcal{P}$.
+\end{enumerate}
+Wir sehen, dass das Komplement $\komplement{\,l\,}$ eines Literals $l$ äquivalent zur
+Negation von $l$ ist, wir haben also
+\\[0.2cm]
+\hspace*{1.3cm}
+$\models \komplement{\,l\,} \leftrightarrow \neg l$.
+
+\begin{Definition}[Klausel]
+{\em
+  Eine aussagenlogische Formel $k$ ist eine \emph{Klausel} wenn $k$ die Form \\[0.2cm]
+\hspace*{1.3cm} $k = l_1 \vee \cdots \vee l_r$ \\[0.2cm]
+hat, wobei $l_i$ für alle $i=1,\cdots,r$ ein Literal ist.  Eine Klausel ist also eine
+Disjunktion von Literalen. 
+Die Menge aller Klauseln bezeichnen wir mit $\mathcal{K}$.
+\qed
+}
+\end{Definition}
+
+Oft werden Klauseln auch einfach als \emph{Mengen} von Literalen betrachtet.  
+Durch diese Sichtweise abstrahieren wir von der Reihenfolge und der Anzahl des Auftretens
+der Literale in der Disjunktion.  Dies ist möglich aufgrund der Assoziativität, Kommutativität und
+Idempotenz des Junktors ``$\vee$''.  Für die Klausel $l_1 \vee \cdots \vee l_r$ schreiben
+wir also in Zukunft auch 
+\\[0.2cm]
+\hspace*{1.3cm} $\{ l_1, \cdots, l_r \}$.
+\\[0.2cm]
+Das folgende Beispiel illustriert die Nützlichkeit der Mengen-Schreibweise von Klauseln.
+Wir betrachten die beiden Klauseln
+\\[0.2cm]
+\hspace*{1.3cm}
+$p \vee q \vee \neg r \vee p$ \quad und \quad $\neg r \vee q \vee \neg r \vee p$. 
+\\[0.2cm]
+Die beiden Klauseln sind zwar äquivalent, aber die Formeln sind verschieden.
+Überführen wir die beiden Klauseln in Mengen-Schreibweise, so erhalten wir
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{p, q, \neg r \}$ \quad und \quad $\{ \neg r, q, p \}$. 
+\\[0.2cm]
+In einer Menge kommt jedes Element höchstens einmal vor und die Reihenfolge, in der die
+Elemente auftreten, spielt auch keine Rolle.  Daher sind die beiden obigen Mengen gleich!
+Durch die Tatsache, dass Mengen von der Reihenfolge und der Anzahl der Elemente
+abstrahieren, implementiert die Mengen-Schreibweise die Assoziativität, Kommutativität und
+Idempotenz der Disjunktion.  Über\-tragen wir die  aussagenlogische Äquivalenz
+\\[0.2cm]
+\hspace*{1.3cm}
+$l_1 \vee \cdots \vee l_r \vee \falsum \leftrightarrow l_1 \vee \cdots \vee l_r$
+\\[0.2cm]
+in Mengen-Schreibweise, so erhalten wir
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{ l_1, \cdots, l_r, \falsum \} \leftrightarrow \{ l_1, \cdots, l_r \}$.
+\\[0.2cm]
+Dies zeigt, dass wir das Element $\falsum$ in einer Klausel getrost weglassen können.
+Betrachten wir die letzten Äquivalenz für den Fall, dass $r=0$ ist, so haben wir
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{\falsum \} \leftrightarrow \{\}$.
+\\[0.2cm]
+Damit sehen wir, dass die leere Menge von Literalen als $\falsum$ zu interpretieren ist.
+
+\begin{Definition}
+{\em 
+Eine Klausel $k$ ist \emph{trivial}, wenn einer der beiden folgenden Fälle vorliegt:
+\begin{enumerate}
+\item $\verum \in k$.
+\item Es existiert $p \in \mathcal{P}$ mit $p \in k$ und $\neg p \in k$.
+
+      In diesem Fall bezeichnen wir $p$ und $\neg p$ als \emph{komplementäre Literale}.
+ \qed
+\end{enumerate}
+} 
+\end{Definition}
+
+\begin{Satz} \label{satz:trivial}
+{\em
+Eine Klausel ist genau dann eine Tautologie, wenn sie trivial ist.}
+\end{Satz}
+\textbf{Beweis}:  Wir nehmen zunächst an, dass die Klausel $k$ trivial ist.
+Falls nun $\verum \el k$ ist, dann gilt wegen der Gültigkeit der Äquivalenz 
+$f \vee \verum \leftrightarrow \verum$
+offenbar $k \leftrightarrow \verum$.   Ist $p$ eine Aussage-Variable, so dass
+sowohl $p \el k$ als auch $\neg p \el k$ gilt, dann folgt aufgrund der Äquivalenz $p \vee
+\neg p \leftrightarrow \verum$ sofort $k \leftrightarrow \verum$.
+
+Wir nehmen nun an, dass die Klausel $k$ eine Tautologie ist.  Wir führen den Beweis
+indirekt und nehmen an, dass $k$ nicht trivial ist.  Damit gilt  $\verum \notin k$ und
+$k$ kann auch keine komplementären Literale enthalten.  Damit hat $k$ dann die Form
+\\[0.2cm]
+\hspace*{1.3cm} 
+$k = \{ \neg p_1, \cdots, \neg p_m, q_1, \cdots, q_n \}$ \quad mit $p_i
+\not= q_j$ für alle $i \in \{ 1,\cdots,m\}$ und $j \in \{1, \cdots, n\}$.
+\\[0.2cm]
+Dann könnten wir eine Interpretation $\mathcal{I}$ wie folgt definieren:
+\begin{enumerate}
+\item $\mathcal{I}(p_i) = \mathtt{true}$ für alle $i = 1, \cdots, m$ und
+\item $\mathcal{I}(q_j) = \mathtt{false}$ für alle $j = 1, \cdots, n$,
+\end{enumerate}
+Mit dieser Interpretation würde offenbar $\mathcal{I}(k) = \mathtt{false}$ gelten und damit könnte $k$ keine
+Tautologie sein.  Also ist die Annahme, dass $k$ nicht trivial ist, falsch.
+\hspace*{\fill}  $\Box$
+
+\begin{Definition}[Konjunktive Normalform]  
+{\em
+Eine Formel $f$ ist in \emph{konjunktiver Normalform} (kurz KNF)
+genau dann, wenn $f$ eine Konjunktion von Klauseln ist, wenn also gilt \\[0.2cm]
+\hspace*{1.3cm} $f = k_1 \wedge \cdots \wedge k_n$, \\[0.2cm]
+wobei die $k_i$ für alle $i=1,\cdots,n$ Klauseln sind. \qed
+}
+\end{Definition}
+
+\noindent
+Aus der Definition der KNF folgt sofort:
+\begin{Korollar} \label{korollar:knf}
+{\em
+Ist $f = k_1 \wedge \cdots \wedge k_n$ in konjunktiver Normalform, so gilt\\[0.2cm]
+\hspace*{1.3cm} $\models f$ \quad genau dann, wenn \quad $\models k_i$ \quad für alle $i=1,\cdots,n$. \qed
+}
+\end{Korollar}
+
+Damit können wir für eine Formel $f = k_1 \wedge \cdots \wedge k_n$ in konjunktiver
+Normalform leicht entscheiden, ob $f$ eine Tautologie ist, denn $f$ ist genau dann eine
+Tautologie, wenn alle Klauseln $k_i$ trivial sind.
+\vspace*{0.2cm}
+
+Da für die Konjunktion genau wie für die Disjunktion Assoziativit-Gesetz, Kommutativ-Gesetz und
+Idempotenz-Gesetz gilt, ist es zweckmäßig, auch für Formeln in konjunktiver Normalform eine
+Mengen-Schreibweise einzuführen.  Ist also die Formel
+\\[0.2cm]
+\hspace*{1.3cm} $f = k_1 \wedge \cdots \wedge k_n$
+\\[0.2cm]
+in konjunktiver Normalform, so repräsentieren wir diese
+Formel  durch die Menge ihrer Klauseln und schreiben \\[0.2cm]
+\hspace*{1.3cm} $f = \{ k_1, \cdots, k_n \}$. 
+\\[0.2cm]
+Wir geben ein Beispiel:  Sind $p$, $q$ und $r$ Aussage-Variablen, so ist die Formel
+\\[0.2cm]
+\hspace*{1.3cm}
+$(p \vee q \vee \neg r) \wedge (q \vee \neg r \vee p \vee q)\wedge (\neg r \vee p \vee \neg q)$
+\\[0.2cm]
+in konjunktiver Normalform.  In Mengen-Schreibweise wird daraus
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bigl\{ \{p, q, \neg r \},\, \{ p, \neg q, \neg r \} \bigr\}$.
+\\[0.2cm]
+Wir stellen nun ein Verfahren vor, mit dem sich jede Formel in KNF transformieren läßt.  Nach
+dem oben Gesagten können wir dann leicht entscheiden, ob $f$ eine Tautologie ist.
+\begin{enumerate}
+\item Eliminiere alle Vorkommen des Junktors ``$\leftrightarrow$'' mit Hilfe der Äquivalenz \\[0.2cm]
+      \hspace*{1.3cm} 
+      $(f \leftrightarrow g) \leftrightarrow (f \rightarrow g) \wedge (g \rightarrow f)$
+\item Eliminiere alle Vorkommen des Junktors ``$\rightarrow$'' mit Hilfe der Äquivalenz \\[0.2cm]
+      \hspace*{1.3cm} 
+      $(f \rightarrow g) \leftrightarrow \neg f \vee g$
+\item Schiebe die Negationszeichen soweit es geht nach innen.  Verwende dazu die folgenden Äquivalenzen:
+      \begin{enumerate}
+      \item $\neg \falsum \leftrightarrow \verum$
+      \item $\neg \verum \leftrightarrow \falsum$
+      \item $\neg \neg f \leftrightarrow f$
+      \item $\neg (f \wedge g) \leftrightarrow  \neg f \vee   \neg g$ 
+      \item $\neg (f \vee   g) \leftrightarrow  \neg f \wedge \neg g$ 
+      \end{enumerate}
+      In dem Ergebnis, das wir nach diesem Schritt erhalten, stehen die Negationszeichen
+      nur noch unmittelbar vor den aussagenlogischen Variablen.  Formeln mit dieser
+      Eigenschaft bezeichnen wir auch als Formeln in \emph{Negations-Normalform}.
+\item Stehen in der Formel jetzt ``$\vee$''-Junktoren über ``$\wedge$''-Junktoren, so können wir durch
+      \emph{Ausmultiplizieren}, sprich Verwendung der Distributiv-Gesetze \\[0.2cm]
+      \hspace*{1.3cm} 
+      $f \vee (g \wedge h) \leftrightarrow (f \vee g) \wedge (f \vee h)$ \quad und \quad
+      $(f \wedge g) \vee h \leftrightarrow (f \vee h) \wedge (g \vee h)$ 
+      \\[0.2cm]
+      diese Junktoren nach innen schieben.
+\item In einem letzten Schritt überführen wir die Formel nun in Mengen-Schreibweise, indem
+      wir zunächst die Disjunktionen aller Literale als Mengen zusammenfassen und anschließend
+      alle so entstandenen Klauseln wieder in einer Menge zusammen fassen.
+\end{enumerate}
+Hier sollten wir noch bemerken, dass die Formel beim Ausmultiplizieren stark anwachsen kann.
+Das liegt daran, dass die Formel $f$ auf der rechten Seite der Äquivalenz 
+$f \vee (g \wedge h) \leftrightarrow (f \vee g) \wedge (f \vee h)$ zweimal auftritt, während sie
+links nur einmal      vorkommt. 
+
+Wir demonstrieren das Verfahren am Beispiel der Formel\\[0.2cm]
+\hspace*{1.3cm} $(p \rightarrow q) \rightarrow (\neg p \rightarrow \neg q)$.
+\begin{enumerate}
+\item Da die Formel den Junktor ``$\leftrightarrow$'' nicht enthält,
+      ist im ersten Schritt nichts zu tun.
+\item Die Elimination von ``$\rightarrow$'' liefert \\[0.2cm]
+      \hspace*{1.3cm} $\neg (\neg p \vee q) \vee (\neg \neg p \vee \neg q)$.
+\item Die Umrechnung auf Negations-Normalform liefert \\[0.2cm]
+      \hspace*{1.3cm} $(p \wedge \neg q) \vee (p \vee \neg q)$.
+\item Durch ``Ausmultiplizieren'' erhalten wir \\[0.2cm]
+      \hspace*{1.3cm} $(p \vee (p \vee \neg q)) \wedge (\neg q \vee (p \vee \neg q))$.
+\item Die Überführung in die Mengen-Schreibweise ergibt zunächst als Klauseln die beiden Mengen \\[0.2cm]
+      \hspace*{1.3cm} $\{p, p, \neg q\}$ \quad und \quad $\{\neg q,  p,  \neg q\}$. \\[0.2cm]
+      Da die Reihenfolge der Elemente einer Menge aber unwichtig ist und außerdem eine Menge
+      jedes Element nur einmal enthält, stellen wir fest, dass diese beiden Klauseln gleich sind.
+      Fassen wir jetzt die Klauseln noch in einer Menge zusammen, so erhalten wir \\[0.2cm]
+      \hspace*{1.3cm} $\bigl\{ \{p, \neg q\} \bigr\}$. \\[0.2cm]
+      Beachten Sie, dass sich die Formel durch die Überführung in 
+      Mengen-Schreibweise noch einmal deutlich vereinfacht hat.
+\end{enumerate}
+Damit ist die Formel in KNF überführt.
+
+\subsection{Berechnung der konjunktiven Normalform in \textsc{SetlX}}
+Wir geben nun eine Reihe von Prozeduren an, mit deren Hilfe sich eine gegebene
+Formel $f$ in konjunktive Normalform überführen läßt.  Wir beginnen mit einer
+Prozedur 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{elimGdw}: \mathcal{F} \rightarrow \mathcal{F}$
+\\[0.2cm]
+die die Aufgabe hat, eine vorgegebene aussagenlogische Formel $f$ in eine äquivalente Formel
+umzuformen, die den Junktor ``$\leftrightarrow$'' nicht mehr enthält.  Die Funktion
+$\texttt{elimGdw}(f)$ wird durch Induktion über den Aufbau der aussagenlogischen Formel $f$ definiert.
+Dazu stellen wir zunächst rekursive Gleichungen auf,
+die das Verhalten der Funktion $\texttt{elimGdw}()$ beschreiben:
+\begin{enumerate}
+\item Wenn $f$ eine
+      Aussage-Variable $p$ ist, so ist nichts zu tun:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{elimGdw}(p) = p$ \quad für alle $p \in \mathcal{P}$.
+\item Hat $f$ die Form $f = \neg g$, so eliminieren wir den Junktor
+      ``$\leftrightarrow$'' aus der Formel $g$: \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\mathtt{elimGdw}(\neg g) = \neg \mathtt{elimGdw}(g)$.
+\item Im Falle $f = g_1 \wedge g_2$ eliminieren wir den Junktor
+      ``$\leftrightarrow$'' aus den Formeln $g_1$ und $g_2$: \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\mathtt{elimGdw}(g_1 \wedge g_2) = \mathtt{elimGdw}(g_1) \wedge \mathtt{elimGdw}(g_2)$.
+\item Im Falle $f = g_1 \vee g_2$ eliminieren wir den Junktor
+      ``$\leftrightarrow$'' aus den Formeln $g_1$ und $g_2$: \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\mathtt{elimGdw}(g_1 \vee g_2) = \mathtt{elimGdw}(g_1) \vee \mathtt{elimGdw}(g_2)$.
+\item Im Falle $f = g_1 \rightarrow g_2$ eliminieren wir den Junktor
+      ``$\leftrightarrow$'' aus den Formeln $g_1$ und $g_2$: \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\mathtt{elimGdw}(g_1 \rightarrow g_2) = \mathtt{elimGdw}(g_1) \rightarrow \mathtt{elimGdw}(g_2)$.
+\item Hat $f$ die Form $f = g_1 \leftrightarrow g_2$, so benutzen wir die
+      Äquivalenz \\[0.2cm]
+      \hspace*{1.3cm} 
+      $(g_1 \leftrightarrow g_2) \leftrightarrow \bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr)$.
+      \\[0.2cm]
+      Das führt auf die Gleichung:
+      \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\mathtt{elimGdw}(g_1 \leftrightarrow g_2) = \mathtt{elimGdw}\bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr)$. 
+      \\[0.2cm]
+      Der Aufruf von \texttt{elimGdw} auf der rechten Seite der Gleichung ist notwendig,
+      denn der Junktor ``$\leftrightarrow$'' kann ja noch in $g_1$ und $g_2$ auftreten.
+\end{enumerate}
+Abbildung
+\ref{fig:eliminate-gdw} auf Seite \pageref{fig:eliminate-gdw} zeigt die Implementierung der
+Prozedur 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/knf.stlx}{\texttt{elimGdw}}.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm
+                ]
+    elimGdw := procedure(f) {
+        match (f) {
+            case !g       : return !elimGdw(g);
+            case g && h   : return elimGdw(g) && elimGdw(h);
+            case g || h   : return elimGdw(g) || elimGdw(h);
+            case g => h   : return elimGdw(g) => elimGdw(h);
+            case g <==> h : return (elimGdw(g) => elimGdw(h)) && (elimGdw(h) => elimGdw(g));
+            default       : return f; 
+        }
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Elimination von $\leftrightarrow$.}
+  \label{fig:eliminate-gdw}
+\end{figure} 
+
+Als nächstes betrachten wir die Prozedur zur Elimination des Junktors ``$\rightarrow$''. 
+Abbildung
+\ref{fig:eliminate-folgt} auf Seite \pageref{fig:eliminate-folgt} zeigt die
+Implementierung der Funktion
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/knf.stlx}{\texttt{elimFolgt}}.
+Die der Implementierung zu Grunde liegende Idee ist die selbe wie bei der Elimination des
+Junktors ``$\leftrightarrow$''.  Der einzige Unterschied besteht darin, dass wir jetzt die
+Äquivalenz \\[0.2cm]
+\hspace*{1.3cm} $(g_1 \rightarrow g_2) \leftrightarrow (\neg g_1 \vee g_2)$ \\[0.2cm]
+benutzen.  Außerdem können wir schon voraussetzen, dass der Junktor ``$\leftrightarrow$''
+bereits vorher eliminiert wurde.  Dadurch entfällt ein Fall.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm
+                ]
+    elimFolgt := procedure(f) {
+        match (f) {
+            case !g     : return !elimFolgt(g);
+            case g && h : return  elimFolgt(g) && elimFolgt(h);
+            case g || h : return  elimFolgt(g) || elimFolgt(h);
+            case g => h : return !elimFolgt(g) || elimFolgt(h);
+            default     : return f; 
+        }
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Elimination von $\rightarrow$.}
+  \label{fig:eliminate-folgt}
+\end{figure}
+ 
+Als nächstes zeigen wir die Routinen zur Berechnung der Negations-Normalform.
+Abbildung
+\ref{fig:nnf} auf Seite \pageref{fig:nnf} zeigt die Implementierung der Funktionen
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/knf.stlx}{\texttt{nnf}} und
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/knf.stlx}{\texttt{neg}},
+die sich wechselseitig aufrufen.  Dabei berechnet \texttt{neg($f$)}
+die Negations-Normalform von $\neg f$, während \texttt{nnf($f$)} die
+Negations-Normalform von $f$ berechnet, es gilt also
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{neg}(f) = \mathtt{nnf}(\neg f)$.
+\\[0.2cm]
+  Die eigentliche Arbeit wird dabei in der
+Funktion \texttt{neg} erledigt, denn dort kommen die beiden DeMorgan'schen Gesetze \\[0.2cm]
+\hspace*{1.3cm} $\neg (f \wedge g) \leftrightarrow (\neg f \vee \neg g)$ \quad und \quad $\neg (f \vee g) \leftrightarrow (\neg f \wedge \neg g)$ \\[0.2cm]
+zur Anwendung.  Wir beschreiben die Umformung in Negations-Normalform durch 
+die folgenden Gleichungen:
+\begin{enumerate}
+\item $\texttt{nnf}(\neg f) = \mathtt{neg}(f)$,
+\item $\texttt{nnf}(f_1 \wedge f_2) = \mathtt{nnf}(f_1) \wedge \mathtt{nnf}(f_2)$,
+\item $\texttt{nnf}(f_1 \vee f_2) = \mathtt{nnf}(f_1) \vee \mathtt{nnf}(f_2)$.
+\end{enumerate}
+Die Hilfsprozedur \texttt{neg}, die die Negations-Normalform von $\neg f$ berechnet,
+spezifizieren wir ebenfalls durch rekursive Gleichungen:
+\begin{enumerate}
+\item $\texttt{neg}(p) = \mathtt{nnf}(\neg p) = \neg p$ für alle Aussage-Variablen $p$,
+\item $\texttt{neg}(\neg f) = \mathtt{nnf}(\neg \neg f) = \mathtt{nnf}(f)$,
+\item $\begin{array}[t]{cl}
+         & \texttt{neg}\bigl(f_1 \wedge f_2 \bigr) \\[0.1cm]
+       = & \mathtt{nnf}\bigl(\neg(f_1 \wedge f_2)\bigr) \\[0.1cm]
+       = & \mathtt{nnf}\bigl(\neg f_1 \vee \neg f_2\bigr) \\[0.1cm]
+       = & \mathtt{nnf}\bigl(\neg f_1\bigr) \vee \mathtt{nnf}\bigl(\neg f_2\bigr) \\[0.1cm]
+       = & \mathtt{neg}(f_1) \vee \mathtt{neg}(f_2),
+       \end{array}
+      $
+\item $\begin{array}[t]{cl}
+         & \texttt{neg}\bigl(f_1 \vee f_2 \bigr)        \\[0.1cm]
+       = & \texttt{nnf}\bigl(\neg(f_1 \vee f_2) \bigr)  \\[0.1cm]
+       = & \texttt{nnf}\bigl(\neg f_1 \wedge \neg f_2 \bigr)  \\[0.1cm]
+       = & \texttt{nnf}\bigl(\neg f_1\bigr) \wedge \mathtt{nnf}\bigl(\neg f_2 \bigr)  \\[0.1cm]
+       = & \mathtt{neg}(f_1) \wedge \mathtt{neg}(f_2). 
+       \end{array}
+      $
+\end{enumerate}
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                ]
+    nnf := procedure(f) {
+        match (f) {
+            case !g     : return neg(g);
+            case g && h : return nnf(g) && nnf(h);
+            case g || h : return nnf(g) || nnf(h);
+            default     : return f; 
+        }
+    };
+    neg := procedure(f) {
+        match (f) {
+            case !g     : return nnf(g);
+            case g && h : return neg(g) || neg(h);
+            case g || h : return neg(g) && neg(h);
+            default     : return !f; 
+        }
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Berechnung der Negations-Normalform.}
+  \label{fig:nnf}
+\end{figure}
+
+
+Als letztes stellen wir die Prozeduren vor, mit denen die Formeln, die bereits in
+Negations-Normalform sind, ausmultipliziert und dadurch in konjunktive
+Normalform gebracht werden.  Gleichzeitig werden  die zu normalisierende Formel dabei
+in die Mengen-Schreibweise transformiert, d.h.~die Formeln werden als Mengen von Mengen 
+von Literalen dargestellt.  Dabei interpretieren wir eine Menge von Literalen als
+Disjunktion der Literale und eine Menge von Klauseln interpretieren wir als Konjunktion
+der Klauseln.
+Abbildung \ref{fig:knf} auf Seite \pageref{fig:knf} zeigt die Implementierung der Funktion
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/knf.stlx}{\texttt{knf}}.
+\begin{enumerate}
+\item Falls die Formel $f$, die wir in KNF transformieren wollen, die Form \\[0.2cm]
+      \hspace*{1.3cm} $f = \neg g$ \\[0.2cm]
+      hat, so muss $g$ eine Aussage-Variable sein, denn $f$ ist ja bereits in
+      Negations-Normalform.  Damit können wir $f$ in eine Klausel transformieren, 
+      indem wir $\{\neg g\}$, also $\{f\}$ schreiben.  
+      Da eine KNF eine Menge von Klauseln ist, ist dann 
+      $\bigl\{\{f\}\bigr\}$ das Ergebnis, das wir in Zeile 3 zurück geben.
+\item Falls $f= f_1 \wedge f_2$ ist, transformieren wir zunächst $f_1$ und $f_2$ in KNF.
+      Dabei erhalten wir \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\mathtt{knf}(f_1) = \{ h_1, \cdots, h_m \}$ \quad und \quad
+      $\mathtt{knf}(f_2) = \{ k_1, \cdots, k_n \}$. \\[0.2cm]
+      Dabei sind die $h_i$ und die $k_j$ Klauseln.  Um nun die KNF von $f_1 \wedge f_2$ 
+      zu bilden, reicht es aus, die Vereinigung dieser beiden Mengen zu bilden,
+      wir haben also \\[0.2cm]
+      \hspace*{1.3cm} $\mathtt{knf}(f_1 \wedge f_2) = \mathtt{knf}(f_1) \cup  \mathtt{knf}(f_2)$.
+      \\[0.2cm]
+      Das liefert Zeile 4 der Implementierung.
+\item Falls $f= f_1 \vee f_2$ ist, transformieren wir zunächst $f_1$ und $f_2$ in KNF.
+      Dabei erhalten wir \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\mathtt{knf}(f_1) = \{ h_1, \cdots, h_m \}$ \quad und \quad
+      $\mathtt{knf}(f_2) = \{ k_1, \cdots, k_n \}$. \\[0.2cm]
+      Dabei sind die $h_i$ und die $k_j$ Klauseln.  Um nun die KNF von $f_1 \vee f_2$ zu
+      bilden, rechnen wir wie folgt: 
+      $$
+      \begin{array}[c]{ll}
+        & f_1 \vee f_2  \\[0.2cm]
+      \leftrightarrow & (h_1 \wedge \cdots \wedge h_m) \vee (k_1 \wedge \cdots \wedge k_n) \\[0.2cm]
+      \leftrightarrow & (h_1 \vee k_1) \quad \wedge \quad \cdots \quad \wedge \quad (h_m \vee k_1) \quad \wedge \\ 
+                      & \qquad \vdots     \hspace*{4cm} \vdots                \\
+                      & (h_1 \vee k_n) \quad \wedge \quad \cdots \quad \wedge \quad (h_m \vee k_n) \\[0.2cm] 
+      \leftrightarrow & \bigl\{ h_i \vee k_j : i \in \{ 1, \cdots, m\}, j \in \{ 1, \cdots, n \} \bigr\} \\ 
+      \end{array}
+      $$
+      Berücksichtigen wir noch, dass Klauseln in der Mengen-Schreibweise als Mengen von
+      Literalen aufgefaßt werden, die implizit disjunktiv verknüpft werden, so können wir
+      für $h_i \vee k_j$ auch $h_i \cup k_j$ schreiben.  
+      Insgesamt erhalten wir damit \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\mathtt{knf}(f_1 \vee f_2) = \bigl\{ h \cup k \mid h \in \mathtt{knf}(f_1) \;\wedge\; k \in \mathtt{knf}(f_2) \bigr\}$.
+      \\[0.2cm]
+      Das liefert die Zeile 5 der Implementierung der Prozedur \texttt{knf}.
+\item Falls die Formel $f$, die wir in KNF transformieren wollen, eine Aussage-Variable
+      ist, so transformieren wir $f$ zunächst in eine Klausel. Das liefert $\{f\}$.  
+      Da eine KNF eine Menge von Klauseln ist, ist die KNF dann $\bigl\{\{f\}\bigr\}$.
+      Dieses Ergebnis geben wir in Zeile 6 zurück.
+\end{enumerate}
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm
+                ]
+    knf := procedure(f) {
+        match (f) {
+            case !g     : return { { !g } };
+            case g && h : return knf(g) + knf(h);
+            case g || h : return { k1 + k2 : k1 in knf(g), k2 in knf(h) };
+            default     : return { { f } }; // f is a variable
+        }
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Berechnung der konjunktiven Normalform.}
+  \label{fig:knf}
+\end{figure}
+
+Zum Abschluß zeigen wir in Abbildung \ref{fig:normalize} auf Seite \pageref{fig:normalize}
+wie die einzelnen Funktionen zusammenspielen.  Die Funktion \texttt{normalize} eliminiert
+zunächst die Junktoren ``$\leftrightarrow$'' und ``$\rightarrow$'' und bringt die Formel
+in Negations-Normalform.  Die Negations-Normalform wird nun mit Hilfe der Funktion
+\texttt{knf} in konjunktive Normalform gebracht, wobei gleichzeitig die Formel in
+Mengen-Schreibweise überführt wird.  Im letzten Schritt entfernt die Funktion
+\texttt{simplify} alle Klauseln, die trivial sind.   Eine Klausel $k$ ist dann trivial,
+wenn es eine aussagenlogische Variablen $p$ gibt, so dass sowohl $p$ als auch $\neg p$
+in $k$ der Menge $k$ auftritt.  Daher berechnet die Funktion \texttt{isTrivial} für eine
+Klausel $c$ zunächst die Menge
+\\[0.2cm]
+\hspace*{1.3cm}
+\verb'{ p in c | fct(p) == "^variable" }'
+\\[0.2cm]
+aller Variablen, die in der Klausel $c$ auftreten.  Anschließend wird die Menge
+\\[0.2cm]
+\hspace*{1.3cm}
+\verb'{ args(l)[1] : l in c | fct(l) == "^negation" }'
+\\[0.2cm]
+berechnet.  Diese Menge enthält alle die aussagenlogischen Variablen $p$, für die $\neg p$
+ein Element der Klausel $c$ ist, denn die Formel $\neg p$ wird intern in \textsc{SetlX}
+durch den Term
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\symbol{94}negation(p)}
+\\[0.2cm]
+dargestellt.  Falls also das Literal $l$ die Form $l = \neg p$ hat, so hat der Term $l$
+das Funktions-Zeichen \texttt{\symbol{94}negation}.  Die Anwendung der Funktion
+\texttt{fct} auf $l$ liefert uns genau dieses Funktions-Zeichen.  Der Ausdruck
+$\texttt{args}(l)$ berechnet die Liste der Argumente des Funktions-Zeichens 
+\texttt{\symbol{94}negation} und diese Liste enthält als einziges Element gerade die
+aussagenlogische Variable $p$, die wir daher durch den Ausdruck
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{args(l)[1]}
+\\[0.2cm]
+aus dem Literal $l$ extrahieren können.  Falls nun die beiden oben berechneten Mengen ein
+gemeinsames Element haben, so ist die Klausel $c$ trivial.  Dies wird dadurch geprüft,
+dass der Schnitt der beiden Mengen berechnet wird.
+Das vollständige Programm zur Berechnung der konjunktiven Normalform finden Sie als die Datei
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/knf.stlx}{\texttt{knf.stlx}}
+auf meiner Webseite.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm
+                ]
+    normalize := procedure(f) {
+        n1 := elimGdw(f);
+        n2 := elimFolgt(n1);
+        n3 := nnf(n2);
+        n4 := knf(n3);
+        return simplify(n4);
+    };
+    simplify := procedure(k) {
+        return { c : c in k | !isTrivial(c) };
+    };
+    isTrivial := procedure(c) {
+        return { p : p in c | fct(p) == "^variable" } * 
+               { args(l)[1] : l in c | fct(l) == "^not" } != {};
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Normalisierung einer Formel}
+  \label{fig:normalize}
+\end{figure}
+\vspace*{\fill}
+
+
+
+\section{Der Herleitungs-Begriff}
+Ist $\{f_1,\cdots,f_n\}$ eine Menge von Formeln, und $g$ eine weitere Formel, so
+können wir uns fragen, ob  die  Formel $g$ aus $f_1$, $\cdots$, $f_n$ \emph{folgt}, ob
+also 
+\[ \models f_1 \wedge \cdots \wedge f_n \rightarrow g \]
+gilt.
+Es gibt verschiedene Möglichkeiten, diese Frage zu beantworten.  Ein Verfahren kennen wir
+schon: Zunächst überführen wir die Formel  $f_1 \wedge \cdots \wedge f_n \rightarrow g$ in
+konjunktive Normalform.  Wir erhalten dann eine Menge
+$\{k_1,\cdots,k_n\}$ von Klauseln, deren Konjunktion zu der  Formel
+\\[0.2cm]
+\hspace*{1.3cm} $f_1 \wedge \cdots \wedge f_n \rightarrow g$
+\\[0.2cm] 
+äquivalent ist.  Diese Formel ist nun genau dann eine Tautologie, wenn
+jede der Klauseln $k_1$, $\cdots$, $k_n$ trivial ist.  
+
+Das oben dargestellte Verfahren ist aber sehr aufwendig.  Wir zeigen dies an Hand eines
+Beispiels und wenden das Verfahren
+an, um zu entscheiden, ob $p \rightarrow r$ aus den beiden Formeln $p \rightarrow q$ und
+$q \rightarrow r$ folgt.   Wir bilden also die konjunktive Normalform der Formel 
+\[ h := (p \rightarrow q) \wedge (q \rightarrow r) \rightarrow p \rightarrow r
+\]
+und erhalten 
+\[
+   (p \vee \neg p \vee r \vee \neg r) \wedge (\neg q \vee \neg p \vee r \vee \neg r) \wedge
+   (\neg q \vee \neg p \vee q \vee r) \wedge (p \vee \neg p \vee q \vee r). 
+\]
+Zwar können wir jetzt sehen, dass die Formel $h$ eine Tautologie ist, aber angesichts der
+Tatsache, dass wir mit bloßem Auge sehen, dass  $p \rightarrow r$ aus den Formeln $p \rightarrow q$ und
+$q \rightarrow r$ folgt, ist die Rechnung  doch  sehr mühsam.
+
+Wir stellen daher nun eine weiteres Verfahren vor, mit dessen Hilfe wir entscheiden
+können, ob eine Formel aus einer gegebenen Menge von Formeln folgt.  Die Idee bei diesem Verfahren
+ist es, die Formel $f$ mit Hilfe von \emph{Schluss-Regeln} aus den gegebenen Formeln 
+$f_1, \cdots, f_n$ herzuleiten.
+  Das Konzept einer Schluss-Regel wird in der nun folgenden Definition festgelegt.
+\begin{Definition}[Schluss-Regel]
+{\em
+    Eine \emph{Schluss-Regel} ist eine Paar  $\langle \{f_1, \cdots, f_n\}, k \rangle$.
+    Dabei ist 
+    $\{f_1, \cdots, f_n\}$ eine Menge von Formeln und $k$ ist eine einzelne Formel.  
+    Die Formeln $f_1$, $\cdots$, $f_n$ bezeichnen wir als
+    \emph{Prämissen}, die Formel $k$ heißt die \emph{Konklusion} der Schluss-Regel.
+    Ist das Paar 
+    $\langle \{f_1, \cdots, f_n\}, k \rangle$ eine Schluss-Regel, so schreiben wir
+    dies als: 
+    \\[0.3cm]
+    \hspace*{1.3cm}      
+    $\schluss{f_1 \quad \cdots \quad f_n}{k}$.
+    \\[0.3cm]
+    Wir lesen diese Schluss-Regel wie folgt: 
+    ``\textsl{Aus $f_1$, $\cdots$, $f_n$ kann auf $k$ geschlossen werden.}''
+    \qed
+} 
+\end{Definition}
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Beispiele} für Schluss-Regeln: 
+\\[0.2cm]
+\hspace*{1.3cm}            
+\begin{tabular}[t]{|l|l|l|}
+\hline
+\rule{0pt}{15pt} \emph{Modus Ponens} & \emph{Modus Ponendo Tollens} & \emph{Modus Tollendo Tollens} \\[0.3cm]
+\hline
+$
+\rule[-15pt]{0pt}{40pt}\schluss{p \quad\quad p \rightarrow q}{q}$ &
+$\schluss{\neg q \quad\quad p \rightarrow q}{\neg p}$ &
+$\schluss{\neg p \quad\quad p \rightarrow q}{\neg q}$ \\[0.3cm]
+\hline
+\end{tabular}
+\\[0.3cm]
+
+\noindent
+Die Definition der Schluss-Regel schränkt zunächst die Formeln, die als Prämissen
+bzw.~Konklusion verwendet werden können, nicht weiter ein.  Es ist aber sicher nicht
+sinnvoll, beliebige Schluss-Regeln zuzulassen.  Wollen wir Schluss-Regeln in Beweisen
+verwenden, so sollten die Schluss-Regeln in dem in der folgenden Definition erklärten
+Sinne \emph{korrekt} sein.
+
+\begin{Definition}[Korrekte Schluss-Regel]
+{\em
+    Eine Schluss-Regel \\[0.2cm]
+    \hspace*{1.3cm} $\schluss{f_1 \quad \cdots \quad f_n}{k}$ \\[0.2cm]
+    ist genau dann \emph{korrekt}, wenn 
+     $\models f_1 \wedge \cdots \wedge f_n \rightarrow k$ gilt. \qed
+}
+\end{Definition}
+Mit dieser Definition sehen wir, dass 
+die oben als ``\emph{Modus Ponens}'' und ``\emph{Modus Ponendo Tollens}'' bezeichneten
+Schluss-Regeln korrekt sind, während die als  ``\emph{Modus Tollendo Tollens}'' bezeichnete
+Schluss-Regel nicht korrekt ist.
+
+Im Folgenden gehen wir davon aus, dass alle Formeln Klauseln sind.  Einerseits ist dies
+keine echte Einschränkung, denn wir können ja jede Formel in eine äquivalente Menge von
+Klauseln umrechnen.  Andererseits haben viele in der Praxis auftretende aussagenlogische
+Probleme die Gestalt von Klauseln.  Daher stellen wir jetzt eine Schluss-Regel vor, in der
+sowohl die Prämissen als auch die Konklusion Klauseln sind.
+     
+\begin{Definition}[Schnitt-Regel]
+{\em
+    Ist $p$ eine aussagenlogische Variable und sind $k_1$ und $k_2$ Mengen von Literalen,
+    die wir als Klauseln interpretieren, so bezeichnen wir die folgende Schluss-Regel
+    als die \emph{Schnitt-Regel}: 
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $\displaystyle \schluss{ k_1 \cup \{p\} \quad \{\neg p\} \cup k_2 }{k_1 \cup k_2}$. 
+    \eox
+}
+\end{Definition}
+
+\noindent
+Die Schnitt-Regel ist sehr allgemein.  Setzen wir in der obigen Definition für $k_1 =
+\{\}$ und  $k_2 = \{q\}$ 
+ein, so erhalten wir die folgende Regel als Spezialfall: \\[0.2cm]
+\hspace*{1.3cm} $\schluss{\{\} \cup \{p\} \quad\quad \{\neg p\} \cup \{ q \} }{ \{\} \cup \{q\} }$ \\[0.2cm]
+Interpretieren wir nun die Mengen als Disjunktionen, so haben wir: \\[0.2cm]
+\hspace*{1.3cm}  $\schluss{p \quad\quad \neg p \vee q }{ q }$ \\[0.2cm]
+Wenn wir jetzt noch berücksichtigen, dass die Formel $\neg p \vee q$ äquivalent ist zu der
+Formel $p \rightarrow q$, dann ist das nichts anderes als der \emph{Modus Ponens}.  
+Die Regel \emph{Modus Tollens} ist ebenfalls ein Spezialfall der Schnitt-Regel.  Wir
+erhalten diese Regel, wenn wir in der Schnitt-Regel $k_1 = \{ \neg q \}$ und $k_2 = \{\}$ setzen.
+
+\begin{Satz}
+{\em
+  Die Schnitt-Regel ist korrekt.
+}
+\end{Satz}
+\textbf{Beweis}:  Wir müssen zeigen, dass \\[0.2cm]
+\hspace*{1.3cm} $\models (k_1 \vee p) \wedge (\neg p \vee k_2) \rightarrow k_1 \vee k_2$ \\[0.2cm]
+gilt.  Dazu überführen wir die obige Formel in konjunktive Normalform:
+$$
+\begin{array}{ll}
+  & (k_1 \vee p) \wedge (\neg p \vee k_2) \rightarrow k_1 \vee k_2  \\[0.2cm]
+\leftrightarrow  & 
+    \neg \bigl( (k_1 \vee p) \wedge (\neg p \vee k_2) \bigr) \vee k_1 \vee k_2 \\[0.2cm]
+\leftrightarrow  & 
+    \neg (k_1 \vee p) \vee \neg (\neg p \vee k_2) \vee k_1 \vee k_2 \\[0.2cm]
+\leftrightarrow  & 
+     (\neg k_1 \wedge \neg p) \vee  (p \wedge \neg k_2) \vee k_1 \vee k_2 \\[0.2cm]
+\leftrightarrow  & 
+     (\neg k_1 \vee p \vee k_1 \vee k_2)  \wedge 
+     (\neg k_1 \vee \neg k_2 \vee k_1 \vee k_2)  \wedge 
+     (\neg p \vee p \vee k_1 \vee k_2)  \wedge 
+     (\neg p \vee \neg k_2 \vee k_1 \vee k_2) 
+      \\[0.2cm]
+\leftrightarrow  & 
+     \verum  \wedge 
+     \verum  \wedge 
+     \verum  \wedge 
+     \verum 
+      \\[0.2cm]
+\leftrightarrow  & 
+     \verum    \hspace*{13.5cm} _\Box
+      \\
+\end{array}
+$$
+
+
+
+\begin{Definition}[$\vdash$]
+{\em
+    Es sei $M$ eine Menge von Klauseln  und $f$ sei eine einzelne Klausel.  
+    Die Formeln aus $M$ bezeichnen wir als unsere Annahmen.  Unser Ziel ist es, mit diesen
+    Annahmen die Formel $f$ zu beweisen.  Dazu definieren wir induktiv die Relation \\[0.2cm]
+    \hspace*{1.3cm} $M \vdash f$. \\[0.2cm]
+    Wir lesen ``$M \vdash f$'' als ``$M$ leitet $f$ her''.  Die induktive Definition ist
+    wie folgt:
+    \begin{enumerate}
+    \item Aus einer Menge $M$ von Annahmen kann jede der Annahmen hergeleitet werden: \\[0.2cm]
+          \hspace*{1.3cm} 
+          Falls $f \el M$ ist, dann gilt  $M \vdash f$.
+    \item Sind $k_1 \cup \{p\}$ und $\{ \neg p \} \cup k_2$ Klauseln, die aus $M$
+          hergeleitet werden können, so kann mit der Schnitt-Regel auch die Klausel $k_1 \cup k_2$ aus $M$
+          hergeleitet werden: \\[0.2cm]
+          \hspace*{1.3cm} 
+          Falls sowohl $M \vdash k_1 \cup \{p\}$ als auch $M \vdash \{ \neg p \} \cup k_2$
+          gilt, dann gilt auch $M \vdash k_1 \cup k_2$.
+
+          Dies ist die Schnitt-Regel.
+    \qed
+    \end{enumerate}
+}
+\end{Definition}
+
+
+
+\noindent
+\textbf{Beispiel}:  Um den Beweis-Begriff zu veranschaulichen geben wir ein Beispiel und
+zeigen 
+\[ \bigl\{\; \{\neg p, q\},\; \{ \neg q, \neg p \},\; \{ \neg q, p \},\; \{ q, p \}\; \bigr\} \vdash \falsum.
+\]
+Gleichzeitig zeigen wir an Hand des Beispiels, wie wir Beweise zu Papier bringen:
+\begin{enumerate}
+\item Aus $\{\neg p, q \}$ und $\{ \neg q, \neg p \}$ folgt mit der Schnitt-Regel   
+      $\{ \neg p, \neg p \}$.   Wegen $\{ \neg p, \neg p \} = \{ \neg p \}$
+      schreiben wir dies als 
+      \[ \{\neg p, q \}, \{ \neg q, \neg p \} \;\vdash\; \{ \neg p \}. \]
+      Dieses Beispiel zeigt, dass die Klausel $k_1 \cup k_2$ durchaus auch weniger
+      Elemente enthalten kann als die Summe $\symbol{35}k_1 + \symbol{35}k_2$.  Dieser
+      Fall tritt genau dann ein, wenn es Literale gibt, die sowohl in $k_1$ als auch in
+      $k_2$ vorkommen.
+\item $\{\neg q, \neg p \},\; \{ p, \neg q \} \;\vdash\; \{ \neg q \}$. 
+\item $\{ p, q \},\; \{ \neg q \} \;\vdash\; \{ p \}$. 
+\item $\{ \neg p \},\; \{ p \} \;\vdash\; \{\}$. 
+\end{enumerate}
+Als weiteres Beipiel zeigen wir nun, dass $p \rightarrow r$ aus $p \rightarrow q$ und $q \rightarrow r$ 
+folgt.  Dazu überführen wir zunächst alle Formeln in Klauseln: 
+\[ \mathtt{knf}(p \rightarrow q) = \bigl\{ \{ \neg p, q \} \bigr\}, \quad
+   \mathtt{knf}(q \rightarrow r) = \bigl\{ \{ \neg q, r \} \bigr\}, \quad 
+   \mathtt{knf}(p \rightarrow r) = \bigl\{ \{ \neg p, r \} \bigr\}.
+\]
+Wir haben also $M = \bigl\{\, \{ \neg p, q \},\; \{ \neg q, r \}\,\bigr\}$ und müssen zeigen, dass
+\[ M \vdash  \{ \neg p, r \} \]
+folgt.  Der Beweis besteht aus einer einzigen Zeile: 
+\[ \{ \neg p, q \},\; \{ \neg q, r \} \;\vdash\; \{ \neg p, r \}. \]
+
+\subsection{Eigenschaften des Herleitungs-Begriffs}
+Die Relation $\vdash$ hat zwei wichtige Eigenschaften:
+
+\begin{Satz}[Korrektheit]
+{\em
+  Ist $\{k_1, \cdots, k_n \}$ eine Menge von Klauseln und $k$ eine einzelne Klausel,
+  so haben wir: \\[0.2cm]
+  \hspace*{3.3cm} Wenn $\{k_1, \cdots, k_n \} \vdash k$ gilt, \quad dann gilt auch $\models k_1 \wedge \cdots \wedge k_n \rightarrow k$.  
+}
+\end{Satz}
+
+\noindent
+\textbf{Beweis}:  Der Beweis verläuft durch eine Induktion nach der Definition der Relation $\vdash$. 
+\begin{enumerate}
+\item Fall: Es gilt $\{ k_1, \cdots, k_n \} \vdash k$ weil $k \in \{ k_1, \cdots, k_n \}$ ist.  
+      Dann gibt es also ein $i \in \{1,\cdots,n\}$, so dass $k = k_i$ ist.  In diesem Fall
+      müssen wir
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\models k_1 \wedge \cdots \wedge k_n \rightarrow k_i$
+      \\[0.2cm]
+      zeigen, was offensichtlich ist.
+\item Fall: Es gilt $\{ k_1, \cdots, k_n \} \vdash k$ weil es eine aussagenlogische
+      Variable $p$ und Klauseln $g$ und $h$ gibt, so dass 
+      \[ \{ k_1, \cdots, k_n \} \vdash g \cup \{ p \} \quad \mathrm{und} \quad
+         \{ k_1, \cdots, k_n \} \vdash h \cup \{ \neg p \}
+      \]
+      gilt und daraus haben wir mit der Schnitt-Regel auf
+      \[ \{ k_1, \cdots, k_n \} \vdash g \cup h \]
+      geschlossen mit $k = g \cup h$. 
+
+      Nach Induktions-Voraussetzung haben wir dann
+      \[ \models k_1 \wedge \cdots \wedge k_n \rightarrow g \vee p \quad \mathrm{und} \quad 
+         \models k_1 \wedge \cdots \wedge k_n \rightarrow h \vee \neg p. \]
+      Wegen 
+      \[ \models (g \vee p) \wedge (h \vee \neg p) \rightarrow g \vee h \quad \mathrm{und} \quad
+         k = g \cup h \]
+      folgt daraus die Behauptung.
+      \qed
+\end{enumerate}
+
+\noindent
+Die Umkehrung dieses Satzes gilt leider nur in abgeschwächter Form und zwar dann, wenn $k$
+die leere Klausel ist, also im Fall $k = \falsum$.
+\begin{Satz}[Widerlegungs-Vollständigkeit] \label{widerlegungs-vollstaendig}
+{\em
+  Ist $\{k_1, \cdots, k_n \}$ eine Menge von Klauseln,
+  so haben wir: \\[0.1cm]
+  \hspace*{1.3cm} 
+  Wenn $\models k_1 \wedge \cdots \wedge k_n \rightarrow \falsum$ gilt, \quad dann gilt auch $\{k_1, \cdots, k_n \} \vdash \{\}$.
+}
+\end{Satz}
+\vspace*{0.2cm}
+
+\noindent
+Diesen Satz im Rahmen der Vorlesung zu beweisen würde zuviel Zeit kosten.
+Ein Beweis findet sich beispielsweise in dem Buch von Schöning \cite{schoening87}.
+
+%\subsection{Beweis der Widerlegungs-Vollständigkeit*}
+%\noindent
+%Der Beweis der Widerlegungs-Vollständigkeit ist nicht-trivial.  Wir werden diesen Beweis liefern, nachdem wir
+%gezeigt haben, wozu der Satz von der Widerlegungs-Vollständigkeit benutzt werden kann.
+%Haben wir eine Menge von Klauseln $M = \{k_1,\cdots,k_n\}$ gegeben und wollen zeigen,
+%dass eine Formel $f$ aus $M$ folgt, so wird es im allgemeinen nicht gelingen, $f$ direkt
+%aus $M$ herzuleiten.  Wir können uns aber mit einem Trick behelfen:  Aufgrund der Tautologie
+%$f \leftrightarrow \neg f \rightarrow \falsum$ gilt 
+%\[ \models k_1 \wedge \cdots \wedge k_n \rightarrow f \quad \mathrm{g.d.w.} \quad
+%   \models k_1 \wedge \cdots \wedge k_n \wedge \neg f \rightarrow \falsum.
+%\]
+%Anstatt also $f$ herzuleiten, negieren wir $f$, überführen die Negation $\neg f$ in konjunktive
+%Normalform und fügen die Klauseln der Menge $\mathtt{knf}(\neg f)$ den ursprünglichen
+%Annahmen in der Menge $M$ hinzu.  Wenn sich nun aus $M \cup \mathtt{knf}(\neg f)$ die Formel
+%$\falsum$ herleiten
+%läßt, dann folgt $f$ aus $M$: 
+%\[ \models k_1 \wedge \cdots \wedge k_n \rightarrow f \quad \mathrm{g.d.w.} \quad
+%   \{ k_1, \cdots, k_n \} \cup \mathtt{knf}(\neg f) \vdash \{\}.
+%\]
+%Wir erläutern das Verfahren mit einem Beispiel.  Wir wollen zeigen,
+%dass aus \\[0.2cm]
+%\hspace*{1.3cm} $u \rightarrow s \vee t$, \quad
+%$s \rightarrow p$ \quad und \quad $t \rightarrow p$, \\[0.2cm]
+%die Formel $u \rightarrow p$
+%folgt.  Die Umwandlung der Annahmen in Klauseln ist trivial, wir erhalten 
+%\[ M = \bigl\{ \{\neg u, s, t \}, \{ \neg s, p \}, \{ \neg t, p \} \bigr\}. \]
+%Jetzt negieren wir die Formel $\neg(u \rightarrow p)$ und wandeln die Negation in
+%konjunktive Normalform um. Es gilt 
+%\[\mathtt{knf}\bigl(\neg(u \rightarrow p)\bigr) = \bigl\{ \{u\},\; \{\neg p\}\bigr\}. \]
+%Anschließend müssen wir die beiden Klauseln, die wir bei der Berechnung der konjunktiven
+%Normalform gefundenen haben, zu der Menge $M$ hinzufügen.  Wir bilden also die Menge
+%\[ N := M \cup \mathtt{knf}\bigl(\neg(u \rightarrow p)\bigr) = \bigl\{
+%  \{\neg u, s, t \},\; \{\neg s, p \},\; \{ \neg t, p \},\; \{u\},\; \{\neg p\} \bigr\}. 
+%\]
+%Schließlich müssen wir aus der Menge $N$ mit Hilfe der Schnitt-Regel die leere Klausel,
+%die ja der Formel $\falsum$ entspricht, herleiten:
+%\begin{enumerate}
+%\item $\{u\},\; \{\neg u, s, t \} \;\vdash\; \{ s, t \}$
+%\item $\{s,t\},\;  \{\neg s, p \} \;\vdash\; \{t,p\}$
+%\item $\{t,p\},\;  \{\neg p \} \;\vdash\; \{t\}$
+%\item $\{t\},\;    \{\neg t, p \} \;\vdash\; \{p\}$
+%\item $\{p\},\;    \{\neg p \} \;\vdash\; \{\}$
+%\end{enumerate}
+%Der Rest dieses Abschnittes widmet sich dem Beweis der Widerlegungs-Vollständigkeit.
+%Wir beginnen mit dem Begriff der Erfüllbarkeit.
+%
+%\begin{Definition}[Unerfüllbar]
+%{\em
+%  Es sei $M$ eine Menge von aussagenlogischen Formeln.
+%  Wir sagen, dass $M$ \emph{unerfüllbar} ist und schreiben 
+%  \[ M \models \falsum \]
+%  wenn es keine aussagenlogische Interpretation $\I$ gibt, die alle Formel aus $M$ erfüllt.
+%  Bezeichnen wir die Menge der aussagenlogischen Interpretationen mit
+%  \textsc{Ali}, so schreibt sich das formal als
+%  \[ M \models \falsum \quad \mbox{g.d.w.} \quad 
+%     \forall \I \in \textsc{Ali}: \exists g \in M: \I(g) = \mathtt{false}. 
+%     \hspace*{5.2cm} _\Box
+%  \]
+%}  
+%\end{Definition}
+%
+%Im nächsten Lemma beschäftigen wir uns mit folgender Situation: Angenommen, wir leiten aus einer Menge von
+%Klauseln, die die Form $M \cup \bigl\{ \{ l \} \bigr\}$ hat, eine Klausel $k$ her.
+%Wenn uns nun die Klausel $\{ l \}$ nicht mehr als Annahme zur Verfügung steht,
+%werden wir im allgemeinen die Klausel $k$ nicht mehr herleiten können.  Es bleibt die Möglichkeit, dass wir
+%eine irgendwie abgeschwächte Version von $k$ herleiten können.  Das nachfolgende Lemma zeigt, dass
+%dies tatsächlich so ist.
+%
+%\begin{Lemma} \label{lemma:l1} 
+%{\em 
+%  Es sei $l \in \mathcal{L}$ ein Literal und $M \subseteq \mathcal{K}$ eine Menge von Klauseln.
+%  Außerdem gelte
+%  \[ M \cup \bigl\{ \{ l \} \bigr\} \vdash k. \]
+%  Dann gilt auch
+%  \[ M \vdash k \cup \bigl\{ \komplement{\,l\,} \bigr\}. \]
+%}
+%\end{Lemma}
+%
+%\noindent
+%\textbf{Beweis}: Wir führen den Beweis durch Induktion nach der Herleitung 
+%\[ M \cup \bigl\{ \{ l \} \bigr\} \vdash k. \]
+%\begin{enumerate}
+%\item Fall: $k = \{ p, \neg p \}$. Offenbar gilt
+%      \[ M \vdash \{ p, \neg p \} \]
+%      und mit der Abschwächungs-Regel folgt daraus
+%      \[ M \vdash \bigl\{ p, \neg p, \komplement{\,l\,} \bigr\}. \]
+%      Wegen $k = \{ p, \neg p \}$ ist das die Behauptung.
+%\item Fall: $k \in M \cup \bigl\{ \{ l \} \bigr\}$. 
+%    
+%      Dann gibt es zwei Möglichkeiten: $k \in M$ oder $k = \{l\}$, die wir getrennt
+%      betrachten:
+%      \begin{enumerate}
+%      \item $k \in M$. Dann folgt nach Definition des Herleitungs-Begriffs sofort
+%            \[  M \vdash k \]
+%            und mit der Abschwächungs-Regel folgt
+%            \[ M \vdash k \cup \bigl\{ \bigl\{ \komplement{\,l} \bigr\} \bigr\}. \]  
+%      \item $k = \{l\}$.  Es gilt
+%            \[ M \vdash \bigl\{ l, \komplement{\,l\,} \bigr\} \]
+%            und wegen 
+%            $k \cup \bigl\{ \bigl\{ \komplement{\,l\,} \bigr\} \bigr\} = \bigl\{ l, \komplement{\,l\,} \bigr\}$
+%            ist das die Behauptung.
+%      \end{enumerate}
+%\item Fall: Der letzte Schluss war eine Anwendung der Abschwächungs-Regel der Gestalt
+%      \[ \frac{\;k_1 \;}{\;k_1 \cup \{ h \}\;}. \]
+%      Dann gilt also
+%      \[ M \cup \bigl\{\{ l \}\bigr\} \vdash k_1 \quad \mathrm{mit} \quad k = k_1 \cup \{ h \} \]
+%      und die Induktions-Voraussetzung liefert 
+%      \[ M \vdash k_1 \cup \bigl\{ \komplement{\,l\,} \bigr\}. \]
+%      Daraus folgt mit einer Anwendung der Abschwächungs-Regel
+%      \[ M \vdash k_1 \cup \{ h \} \cup \bigl\{ \komplement{\,l\,} \bigr\} \]
+%      und wegen 
+%      $k \cup \bigl\{ \komplement{\,l\,} \bigr\} = k_1 \cup \{ h \} \cup \bigl\{ \komplement{\,l\,} \bigr\}$
+%      ist das die Behauptung.
+%\item Fall: Der letzte Schluss war eine Anwendung der Schnitt-Regel der Gestalt
+%      \[ \frac{\;k_1 \cup \{ h \} \qquad k_2 \cup \{ \komplement{\,h\,} \bigr\}\;}{k_1 \cup k_2}. \]
+%      Dann haben wir also:
+%      \begin{enumerate}
+%      \item  $M \cup \bigl\{ \{ l \} \bigr\} \vdash k_1 \cup \{h\}$,
+%      \item  $M \cup \bigl\{ \{ l \} \bigr\} \vdash k_2 \cup \bigl\{ \komplement{\,h\,} \bigr\}$ und
+%      \item  $k = k_1 \cup k_2$.
+%      \end{enumerate}
+%      Aus $M \vdash k_1 \cup \{h\}$         folgt nach Induktions-Voraussetzung
+%      \begin{equation}
+%        \label{eq:al1}
+%        M \vdash k_1 \cup \{h\} \cup \bigl\{ \komplement{\,l\,} \bigr\}. 
+%      \end{equation}
+%      Genauso folgt aus $M \vdash k_2 \cup \bigl\{ \komplement{\,h\,}\bigr\}$         nach Induktions-Voraussetzung
+%      \begin{equation}
+%        \label{eq:al2}
+%        M \vdash k_2 \cup \bigl\{ \komplement{\,h\,} \bigr\} \cup \bigl\{ \komplement{\,l\,} \bigr\}. 
+%      \end{equation}
+%      Wenden wir auf (\ref{eq:al1}) und (\ref{eq:al2}) die Schnitt-Regel an, so erhalten wir
+%      \[ M \vdash k_1 \cup k_2 \cup \bigl\{ \komplement{\,l\,} \bigr\} \]
+%      und wegen $k = k_1 \cup k_2$ ist das die Behauptung.  \qed
+%\end{enumerate}
+%
+%\begin{Lemma}[Konsistenz-Lemma] \label{lemma:l2}
+%{\em
+%  Es sei $M \subseteq \mathcal{K}$ eine Menge von Klauseln und $l \in \mathcal{L}$ sei ein
+%  Literal.  Falls dann sowohl 
+%  $M \cup \bigl\{               l    \bigr\} \vdash \{\}$ als auch 
+%  $M \cup \bigl\{ \komplement{\,l\,} \bigr\} \vdash \{\}$  gilt, dann folgt 
+%  $M \vdash \{\}$.
+%} 
+%\end{Lemma}
+%
+%\noindent
+%\textbf{Beweis}:  Aus den Voraussetzungen folgt mit Lemma \ref{lemma:l1}
+%\[ M \vdash \bigl\{ \komplement{\,l\,} \bigr\} \quad \mathrm{und} \quad
+%   M \vdash \bigl\{               l    \bigr\}. \]
+%Wenden wir hierauf die Schnitt-Regel an, so erhalten wir 
+%\[ M \vdash \{\} \]
+%und das ist die Behauptung. \qed
+%
+%\begin{Satz}[Widerlegungs-Vollständigkeit der Aussagenlogik] \label{satz:s5}
+%{\em
+%  Es sei $M \subseteq \mathcal{K}$ eine Menge von Klauseln. 
+%  \\[0.2cm]
+%  \hspace*{1.3cm}
+%  Wenn $M \models \falsum$ gilt, \quad dann gilt auch  $M \vdash \{\}$.
+%}
+%\end{Satz}
+%
+%\noindent
+%\textbf{Beweis}: Wir führen den Beweis indirekt und machen die
+%Annahme:
+%\begin{equation}
+%  \label{eq:c1}
+%  M \not\,\vdash \{\}.    
+%\end{equation}
+%Mit Hilfe dieser Annahme werden wir eine Belegungen $\mathcal{I}$ konstruieren
+%die alle Klauseln aus $M$ wahr macht, was im Widerspruch zur Unerfüllbarkeit von $M$ steht. 
+%
+%Zunächst sei $(p_n)_{n \in \mathbb{N}}$ eine Aufzählung der Menge $\mathcal{P}$ der
+%aussagenlogischen Variablen $\mathcal{P}$, es gelte also
+%\[ \mathcal{P} = \{ p_n \mid n \in \mathbb{N} \}. \]
+%Wir konstruieren induktiv eine
+%Folge $(M_n)_n$ von Klausel-Mengen:
+%\begin{description}
+%\item[I.A.] $n=0$: \ Wir setzen $M_0 := M$.
+%\item[I.S.] $n \mapsto n+1$: \ Wir definieren
+%\[ M_{n+1} \;:=\; 
+%\left\{ \begin{array}{ll}
+%        M_n \cup \bigl\{ \{ \;\; p_n \} \bigr\} & \mbox{falls $M_n\cup\{ \{p_n\} \} \not\,\vdash \{\}$;} \\
+%        M_n \cup \bigl\{ \{ \neg p_n \} \bigr\} & \mbox{sonst.}    \\
+%\end{array} \right. 
+%\]
+%\end{description}
+%Wir zeigen durch Induktion nach $n$, dass für alle $n\el\mathbb{N}$ gilt
+%\[ M_n \not\,\vdash \{\}. \]
+%\begin{enumerate}
+%\item[I.A.] $n=0$:  
+%             Wegen $M_0 = M$ folgt die Behauptung in diesem Fall aus unserer Annahme (\ref{eq:c1}).
+%\item[I.S.] $n \mapsto n+1$: 
+%             Hier führen wir eine Fallunterscheidung analog zur der Definition
+%             von $M_n$ durch:
+%             \begin{enumerate}
+%             \item $M_{n+1} = M_n \cup \bigl\{ \{ \neg p_n \} \bigr\}$. 
+%
+%                   In diesem Fall wissen wir aus der Definition von $M_{n+1}$, dass
+%                   \begin{equation}
+%                     \label{eq:c2}
+%                     M_n \cup \bigl\{ \{ p_n \} \bigr\} \vdash \{\} 
+%                   \end{equation}
+%                   gilt.  Würde außerdem $M_{n+1} \vdash \{\}$, also
+%                   \begin{equation}
+%                     \label{eq:c3}
+%                     M_n \cup \bigl\{ \{ \neg p_n \} \bigr\} \vdash \{\} 
+%                   \end{equation}
+%                   gelten, so würde mit Lemma \ref{lemma:l2} aus 
+%                   (\ref{eq:c2}) und (\ref{eq:c3}) folgen,
+%                   dass  auch $M_n \vdash \{\}$ gelten müsste, was aber im Widerspruch zur
+%                   Induktions-Voraussetzung stünde.
+%             \item $M_{n+1} = M_n \cup \bigl\{ \{ p_n \} \bigr\}$. 
+%             
+%                   Nach Definition von $M_{n+1}$ gilt dann
+%                   \[ M_n \cup \bigl\{ \{ p_n \} \bigr\} \not\,\vdash \{\} \]
+%                   und das ist gerade die Behauptung.
+%             \end{enumerate}
+%\end{enumerate}
+%Wir definieren nun die Klausel-Menge $\widehat{M}$ als \emph{Grenzwert} der monotonen Folge $(M_n)_n$
+%indem wir 
+%\[ \widehat{M}:=\bigcup_{n\in\mathbb{N}} M_n \] 
+%setzen. Würde $\widehat{M} \vdash \{\}$
+%gelten, so würde die Herleitung der leeren Klausel $\{\}$ mit endlich vielen Klauseln
+%$\{ k_1, \cdots ,k_l \}$ aus $\widehat{M}$ auskommen. Jede Klausel $k_i$ würde in
+%einer Menge $M_{n(i)}$ liegen. Wir definieren 
+%\[ n(0) := \max\{n(1),\cdots ,n(l) \}. \]
+%Da die Folge $(M_n)_n$ monoton wächst, was nichts anderes heißt, als dass
+%\[ M_n \subseteq M_{n+1} \quad \mbox{für alle $n \in \mathbb{N}$} \]
+%gilt, haben wir
+%\[ \{ k_1,\cdots ,k_l\} \subseteq M_{n(0)}.  \]
+%Daraus würde aber $M_{n(0)} \vdash \{\}$ folgen, was nach dem oben geführten Induktions-Beweis nicht
+%sein kann.  Folglich gilt 
+%\begin{equation}
+%  \label{eq:c4}
+%     \widehat{M} \not\,\vdash \{\}.     
+%\end{equation}
+%Damit sind wir in der Lage, eine aussagenlogische Belegungen $\mathcal{I}$ zu konstruieren, die alle
+%Klauseln aus $M$ wahr macht.  Wir setzen
+%\[ \mathcal{I} :=   \bigl\{ \langle p, \mathtt{true} \rangle : p \el \widehat{M}  \bigr\} 
+%   \cup \bigl\{ \langle p, \mathtt{false} \rangle : p \el \mathcal{P} \wedge p \notel \widehat{M} \bigr\} 
+%\]
+%und behaupten, dass alle Klauseln $k \el M$ unter der Belegungen $\mathcal{I}$ wahr werden:
+%\[ \mathcal{I}(k) = \mathtt{true} \quad \mbox{für alle $k \in M$.} \]
+%Wir argumentieren indirekt und nehmen an, dass eine
+%Klausel $k \el M$ existiert, die mit der Belegung $\mathcal{I}$ falsch wird.
+%Diese Klausel hat dann die Form
+%\[ k = \{ q_1, \cdots, q_a, \neg r_1, \cdots, \neg r_b \}, \]
+%wobei die $q_i$ für $i=1,\cdots,a$ und die $r_j$ für $j=1,\cdots,b$ Aussage-Variablen sind.
+%Wenn $k$ mit der Belegung $\mathcal{I}$ falsch wird, dann heißt das:
+%\[ \forall i \in \{1,\cdots,a\} : \mathcal{I}(q_i) = \mathtt{false}
+%    \quad \mbox{und} \quad
+%   \forall j \in \{1,\cdots,a\} : \mathcal{I}(r_i) = \mathtt{true} 
+%\]
+%Nach Definition der Belegung $\mathcal{I}$ folgt daraus
+%\[ \forall i \in \{1,\cdots,a\} : \{ q_i \} \notel \widehat{M}
+%    \quad \mbox{und} \quad
+%   \forall j \in \{1,\cdots,a\} : \{ r_i \} \el \widehat{M}
+%\]
+%Falls $\{ q_i \} \notel \widehat{M}$ ist, dann folgt aus der Konstruktion von $\widehat{M}$,
+%dass $\{\neg q_i\} \el \widehat{M}$ ist, denn die Konstruktion von 
+% der Folge $(M_n)_n$ war gerade so angelegt, dass für jede Primformel $q$ entweder $\{ q \}$ 
+%oder $\{\neg q \}$ in $\widehat{M}$ liegen muss.  Damit haben wir also
+%\[ \forall i \in \{1,\cdots,a\} \colon \{ \neg q_i \} \el \widehat{M}
+%    \quad \mbox{und} \quad
+%   \forall j \in \{1,\cdots,a\} \colon \{      r_i \} \el \widehat{M}.
+%\]
+%Andererseits ist durch genügend häufiges Anwenden der Schnittregel klar, dass
+%\[ \bigl\{ \{ q_1, \cdots, q_a, \neg r_1, \cdots, \neg r_b \}, \{ \neg q_1 \}, \cdots, \{ \neg q_a \}, \{ r_1 \}, \cdots, \{ r_b \} \bigr\} \vdash \{\}  \]
+%gilt.   Wegen $k = \{ q_1, \cdots, q_a, \neg r_1, \cdots, \neg r_b \}$ haben wir also einerseits
+%\[ \bigl\{ k, \{ \neg q_1 \}, \cdots, \{ \neg q_a \}, \{ r_1 \}, \cdots, \{ r_b \} \bigr\} \vdash \{\} \]
+%und andererseits 
+%\[ \bigr\{ k, \{ \neg q_1 \}, \cdots, \{ \neg q_a \}, \{ r_1 \}, \cdots, \{ r_b \} \bigr\} \subseteq
+%   \widehat{M}. \]
+%Dies ist ein Widerspruch zu (\ref{eq:c4}), denn wir aus der Annahme erhalten haben, dass die Belegung
+%$\mathcal{I}$ eine Klausel $k \el M$ falsch macht.  Dieser
+%Widerspruch zeigt, dass die Belegung $\mathcal{I}$  alle Klauseln aus $M$ wahr machen muss.  Damit ist
+%die Menge $M$ im Widerspruch zu der Voraussetzung $M \models \bot$ erfüllbar und damit ist die ganz am
+%Anfang des Beweises gemachte Annahme $M \not\,\vdash \{\}$ widerlegt.  \qed 
+
+
+\section{Das Verfahren von Davis und Putnam}
+In der Praxis stellt sich oft die Aufgabe, für eine gegebene Menge von Klauseln $K$ eine
+Belegung $\I$ der Variablen zu berechnen, so dass 
+\\[0.2cm]
+\hspace*{1.3cm} $\mathtt{eval}(k,\I) = \mathtt{true}$ \quad für alle $k\in K$ \\[0.2cm]
+gilt.  In diesem Fall sagen wir auch, dass die Belegung $\I$ eine \emph{Lösung} der
+ Klausel-Menge $K$ ist.  Wir werden in diesem Abschnitt ein Verfahren vorstellen, mit dem eine solche
+Aufgabe bearbeitet werden kann.  Dieses Verfahren geht auf Davis und Putnam
+\cite{davis62} zurück.  Verfeinerungen dieses Verfahrens werden beispielsweise
+eingesetzt, um die Korrektheit digitaler elektronischer Schaltungen nachzuweisen.  
+
+Um das Verfahren zu motivieren überlegen wir zunächst, bei welcher Form der Klausel-Menge $K$
+unmittelbar klar ist, ob es eine Belegung gibt, die $K$ löst und wie diese Belegung
+aussieht.  Betrachten wir dazu ein Beispiel: \\[0.2cm]
+\hspace*{1.3cm} 
+$K_1 = \bigl\{\; \{p\},\; \{\neg q\},\; \{r\},\; \{\neg s\}, \; \{\neg t\} \;\bigr\}$ 
+\\[0.2cm]
+Die Klausel-Menge $K_1$ entspricht der aussagenlogischen Formel
+\\[0.2cm]
+\hspace*{1.3cm}
+$p \wedge \neg q \wedge r \wedge \neg s \wedge \neg t$.
+\\[0.2cm]
+Daher ist $K_1$ lösbar und die Belegung  \\[0.2cm]
+\hspace*{1.3cm} 
+$\I = \bigl\{\; \pair(p, \mathtt{true}),\; \pair(q, \mathtt{false}),\;\pair(r, \mathtt{true}),\; \pair(s, \mathtt{false}),\; \pair(t, \mathtt{false})\;\}$
+\\[0.2cm]
+ist eine Lösung.  Betrachten wir eine weiteres Beispiel: \\[0.2cm]
+\hspace*{1.3cm} 
+$K_2 = \bigl\{\; \{\}, \{p\},\; \{\neg q\},\; \{r\}\; \bigr\}$ 
+\\[0.2cm]
+Diese Klausel-Menge entspricht der Formel
+\\[0.2cm]
+\hspace*{1.3cm}
+$\falsum \wedge p \wedge \neg q \wedge r$.
+\\[0.2cm]
+Offensichtlich ist $K_2$ unlösbar.  Als letztes Beispiel betrachten wir 
+\\[0.2cm]
+\hspace*{1.3cm} $K_3 = \bigl\{ \{p\}, \{\neg q\}, \{\neg p\} \bigr\}$.
+\\[0.2cm]
+Diese Klausel-Menge kodiert die Formel
+\\[0.2cm]
+\hspace*{1.3cm}
+$p \wedge \neg q \wedge \neg p $
+\\[0.2cm]
+Offenbar ist $K_3$ ebenfalls unlösbar, denn eine Lösung $\I$ müßte $p$ gleichzeitig
+wahr und falsch machen.
+Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlaß für zwei Definitionen.
+
+\begin{Definition}[Unit-Klausel]
+{\em
+  Eine Klausel $k$ heißt \emph{Unit-Klausel}, wenn $k$ nur aus einem Literal besteht.
+  Es gilt dann \\[0.2cm]
+  \hspace*{1.3cm} $k = \{p\}$ \quad oder \quad $k = \{\neg p\}$ \\[0.2cm]
+  für eine Aussage-Variable $p$.
+}
+\end{Definition}
+
+\begin{Definition}[Triviale Klausel-Mengen]
+{\em
+  Eine Klausel-Menge $K$ heißt \emph{trivial} wenn einer der beiden folgenden Fälle
+  vorliegt.
+  \begin{enumerate}
+  \item $K$ enthält die leere Klausel: $\{\} \el K$.
+
+        In diesem Fall ist $K$ offensichtlich unlösbar.
+  \item $K$ enthält nur Unit-Klausel mit verschiedenen Aussage-Variablen.
+        Bezeichnen wir die Menge der aussagenlogischen Variablen mit $\mathcal{P}$,
+        so schreibt sich diese Bedingung als 
+        \\[0.3cm]
+        \hspace*{1.3cm}
+        $\forall k \el K: \textsl{card}(k) = 1$ \quad und \quad
+        $\forall p \el \mathcal{P}: \neg\bigl( \{p\} \in K \wedge \{\neg p\} \in K\bigr)$.
+        \\[0.3cm]
+        Dann ist 
+        \[ \I = \bigl\{ \pair(p, \mathtt{true}) \mid \{p\} \in K \bigr\} \,\cup\, \bigl\{
+             \pair(p, \mathtt{false}) \mid \{\neg p\} \in K \bigr\} 
+        \]
+        eine Lösung von $K$.
+  \end{enumerate}
+}
+\end{Definition}
+
+
+Wie können wir nun eine Menge von Klauseln so vereinfachen, dass die Menge schließlich nur
+noch aus Unit-Klauseln besteht?  Es gibt drei
+Möglichkeiten, Klauselmengen zu vereinfachen:
+\begin{enumerate}
+\item Schnitt-Regel,
+\item Subsumption und
+\item Fallunterscheidung.
+\end{enumerate}
+Wir betrachten diese Möglickeiten jetzt der Reihe nach.
+
+\subsection{Vereinfachung mit der Schnitt-Regel}
+Eine typische Anwendung der Schnitt-Regel hat die Form: \\[0.2cm]
+\hspace*{1.3cm} $\schluss{ k_1 \cup \{p\} \quad \{\neg p\} \cup k_2}{k_1 \cup k_2}$
+\\[0.2cm]
+Die hierbei erzeugte Klausel $k_1 \cup k_2$ wird in der Regel mehr Literale enthalten
+als die Prämissen $k_1 \cup \{p\}$ und $\bigl\{\neg p\} \cup k_2$.  Enthält die
+Klausel $k_1 \cup \{p\}$ insgesamt $m+1$ Literale und enthält die Klausel
+$\bigl\{\neg p\} \cup k_2$ insgesamt $n+1$ Literale, so kann die Konklusion $k_1 \cup k_2$ 
+insgesamt $m + n$ Literale enthalten.  Natürlich können es auch weniger Literale 
+sein, und zwar dann, wenn es Literale gibt, die sowohl in $k_1$ als auch in $k_2$
+auftreten.  Im allgemeinen ist $m + n$ größer als $m + 1$ und als $n + 1$.  Die
+Klauseln wachsen nur dann sicher nicht, wenn entweder $n = 0$ oder $m = 0$ ist.
+Dieser Fall liegt vor, wenn einer der beiden Klauseln nur aus einem Literal besteht
+und folglich eine \emph{Unit-Klausel} ist.  Da es unser Ziel ist, die Klausel-Mengen
+zu vereinfachen, lassen wir nur solche Anwendungen der Schnitt-Regel zu, bei denen
+eine der Klausel eine Unit-Klausel ist.  Solche Schnitte bezeichnen wir als
+\emph{Unit-Schnitte}.  Um alle mit einer gegebenen Unit-Klausel $\{l\}$ möglichen Schnitte
+durchführen zu können, definieren wir eine Funktion
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{unitCut}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$
+\\[0.2cm]
+so, dass für eine Klausel-Menge $K$ und eine Unit-Klausel $\{l\}$ die Funktion
+$\textsl{unitCut}(K,l)$ die Klausel-Menge $K$ soweit wie möglich mit Unit-Schnitten mit der Klausel
+$\{l\}$ vereinfacht:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{unitCut}(K,l) = \Bigl\{ k \backslash \bigl\{ \komplement{\,l\,} \bigr\} \;\Big|\; k \in K \Bigr\}$
+
+\subsection{Vereinfachung durch Subsumption}
+Das Prinzip der Subsumption demonstrieren wir zunächst an einem Beispiel.
+Wir betrachten \\[0.2cm]
+\hspace*{1.3cm} $K = \bigl\{ \{p, q, \neg r\}, \{p\} \bigr\} \cup M$. \\[0.2cm]
+Offenbar impliziert die Klausel $\{p\}$ die Klausel $\{p, q, \neg r\}$, immer wenn
+$\{p\}$ erfüllt ist, ist automatisch auch $\{q, p, \neg r\}$ erfüllt, denn es gilt \\[0.2cm]
+\hspace*{1.3cm} $\models p \rightarrow q \vee p \vee \neg r$. \\[0.2cm]
+Allgemein sagen wir, dass eine Klausel $k$
+ von einer Unit-Klausel $u$ \emph{subsumiert} wird, wenn
+\\[0.2cm]
+\hspace*{1.3cm} $u \subseteq k$ \\[0.2cm]
+gilt.  Ist $K$ eine Klausel-Menge mit $k \in K$ und $u \in K$ und wird
+$k$ durch $u$ subsumiert, so können wir $K$ durch Unit-Subsumption zu $K - \{k\}$
+vereinfachen, indem wir die Klausel $k$ aus $K$ löschen.  Allgemein definieren wir eine Funktion
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{subsume}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$
+\\[0.2cm]
+die eine gegebene Klauselmenge $K$, die die Unit-Klausel $\{l\}$ enthält, mittels Subsumption 
+dadurch vereinfacht, dass alle durch $\{l\}$ subsumierten Klauseln aus $K$ gelöscht werden.
+Die Unit-Klausel $\{l\}$ behalten wir natürlich.  Daher definieren wir:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{subsume}(K, l) := 
+\bigl(K \backslash \bigl\{ k \in K \mid l \in k \bigr\}\bigr) \cup \bigl\{\{l\}\bigr\} = 
+\bigl\{ k \in K \mid l \not\in k \bigr\} \cup \bigl\{\{l\}\bigr\}$.
+\\[0.2cm]
+In der obigen Definition muss $\{l\}$ in das Ergebnis eingefügt werden, weil die Menge
+$\bigl\{ k \in K \mid l \not\in k \bigr\}$ die Unit-Klausel $\{l\}$ nicht enthält.
+
+
+\subsection{Vereinfachung durch Fallunterscheidung}
+Ein Kalkül, der nur mit Unit-Schnitten und Subsumption arbeitet, ist nicht 
+widerlegungs-vollständig.  Wir brauchen 
+daher eine weitere Möglichkeit, Klausel-Mengen zu vereinfachen.
+Eine solche Möglichkeit bietet das Prinzip der
+\emph{Fallunterscheidung}.  Dieses Prinzip basiert auf dem folgenden
+Satz.
+
+\begin{Satz}
+{\em
+  Ist $K$ eine Menge von Klauseln und ist $p$ eine aussagenlogische Variable, 
+  so ist $K$ genau dann erfüllbar, wenn $K \cup \bigl\{\{p\}\bigr\}$ oder 
+  $K \cup \bigl\{\{\neg p\}\bigr\}$ erfüllbar ist.  
+}  
+\end{Satz}
+Beweis: 
+Ist $K$ erfüllbar durch eine
+Belegung $\I$, so gibt es für  $\I(p)$ zwei Möglichkeiten:  Falls $\I(p) = \mathtt{true}$ ist, ist
+damit auch die Menge $K \cup \bigl\{\{p\}\bigr\}$ erfüllbar, andernfalls ist
+$K \cup \bigl\{\{\neg p\}\bigr\}$ erfüllbar. 
+
+Da $K$ sowohl eine Teilmenge von $K \cup \bigl\{\{p\}\bigr\}$ als auch von 
+$K \cup \bigl\{\{\neg p\}\bigr\}$ ist, ist klar, dass $K$ erfüllbar
+ist, wenn eine dieser Mengen erfüllbar sind.  
+\qed
+
+Wir können nun eine Menge $K$ von Klauseln dadurch vereinfachen, dass wir eine
+aussagenlogische Variable $p$ wählen, die in $K$ vorkommt.
+Anschließend bilden wir die Mengen \\[0.2cm]
+\hspace*{1.3cm} $K_1 := K \cup \bigl\{\{p\}\bigr\}$ \quad und \quad $K_2 := K \cup
+\bigl\{\{\neg p\}\bigr\}$
+\\[0.2cm]
+und untersuchen rekursiv ob $K_1$ erfüllbar ist.  Falls wir eine Lösung für $K_1$ finden,
+ist dies auch eine Lösung für die ursprüngliche Klausel-Menge $K$ und wir haben unser Ziel
+erreicht.
+Andernfalls untersuchen wir rekursiv ob $K_2$ erfüllbar ist.
+Falls wir nun eine Lösung finden, ist dies auch eine Lösung von $K$ und wenn wir für $K_2$
+keine Lösung finden, dann hat auch $K$ keine Lösung.
+Die rekursive Untersuchung von $K_1$ bzw.~$K_2$ ist leichter,
+weil ja wir dort mit den Unit-Klausel $\{p\}$ bzw.~$\{\neg p\}$
+zunächst Unit-Subsumption und anschließend Unit-Schnitte durchführen können.
+
+
+\subsection{Der Algorithmus}
+Wir können jetzt den Algorithmus von Davis und Putnam skizzieren.
+Gegeben sei eine Menge $K$ von Klauseln.  Gesucht ist dann eine Lösung von $K$.  Wir
+suchen  also eine Belegung $\I$, so dass gilt: \\[0.2cm]
+\hspace*{1.3cm} $\I(k) = \mathtt{true}$ \quad für alle $k \in K$.\\[0.2cm]
+Das Verfahren von Davis und Putnam besteht nun aus den folgenden Schritten.
+\begin{enumerate}
+\item Führe alle Unit-Schnitte aus, die mit Klauseln aus $K$ möglich sind und führe
+      zusätzlich alle Unit-Subsumptionen aus.
+\item Falls $K$ nun trivial ist, sind wir fertig.
+\item Andernfalls wählen wir eine aussagenlogische Variable $p$, die in $K$ auftritt.
+      \begin{enumerate}
+      \item Jetzt versuchen  wir rekursiv  die Klausel-Menge \\[0.2cm]
+            \hspace*{1.3cm}  $K \cup \bigl\{\{p\}\bigr\}$ \\[0.2cm]
+            zu lösen. Falls diese gelingt, haben wir eine Lösung von $K$.
+      \item Andernfalls versuchen wir  die Klausel-Menge \\[0.2cm]
+            \hspace*{1.3cm} $K \cup \bigl\{\{\neg p\}\bigr\}$ \\[0.2cm]
+            zu lösen.  Wenn auch dies fehlschlägt, ist $K$ unlösbar, andernfalls
+            haben wir eine Lösung von $K$.
+      \end{enumerate}
+\end{enumerate}
+Für die Implementierung ist es zweckmäßig, die beiden oben definierten Funktionen $\textsl{unitCut}()$ und
+$\textsl{subsume}()$ zusammen zu fassen.  Wir definieren eine Funktion
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{reduce}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$
+\\[0.2cm]
+wie folgt: 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{reduce}(K,l)  = 
+ \bigl\{\, k \backslash \{\komplement{l}\} \;|\; k \in K \wedge \komplement{l} \in k \,\bigr\} 
+       \,\cup\, \bigl\{\, k \in K \mid \komplement{l} \not\in k \wedge l \not\in k \} \cup \bigl\{\{l\}\bigr\}.
+$
+\\[0.2cm]
+Die Menge enthält also einerseits die Ergebnisse von Schnitten mit
+der Unit-Klausel $\{l\}$ und andererseits nur noch die Klauseln $k$,
+die mit $l$ nichts zu tun haben weil weder $l \in k$ noch $\komplement{l} \in k$
+gilt.  Außerdem fügen wir auch noch die Unit-Klausel $\{l\}$ hinzu.
+Dadurch erreichen wir, dass die beiden Mengen $K$ und $\textsl{reduce}(K,l)$
+logisch äquivalent sind, wenn wir dieses Mengen als Formeln in konjunktiver Normalform
+interpretieren.  
+
+
+
+\subsection{Ein Beispiel}
+Zur Veranschaulichung demonstrieren wir das Verfahren von Davis und Putnam an einem Beispiel.
+Die Menge $K$ sei wie folgt definiert: \\[0.2cm]
+\hspace*{1.3cm} $K := \Big\{ \{p, q, s\},\; \{\neg p, r, \neg t\},\;  \{r, s\},\; \{\neg r, q, \neg p\},$ \\
+\hspace*{2.5cm} $\{\neg s, p\},\; \{\neg p, \neg q, s, \neg r\},\; \{p, \neg q, s\},\; \{\neg r, \neg s\},\; \{\neg p, \neg s\} \Big\}  $. \\[0.2cm]
+Wir zeigen nun mit dem Verfahren von Davis und Putnam, dass $K$ nicht lösbar ist.  Da die
+Menge $K$ keine Unit-Klauseln enthält, ist im ersten Schritt nichts zu tun.  Da $K$ nicht
+trivial ist, sind wir noch nicht fertig.  Also gehen wir jetzt zu Schritt 3 und wählen
+eine aussagenlogische Variable, die in $K$ auftritt.  An dieser Stelle ist es sinnvoll
+eine Variable zu wählen, die in möglichst vielen Klauseln von $K$ auftritt.  Wir wählen
+daher die aussagenlogische Variable $p$.
+\begin{enumerate}
+\item Zunächst bilden wir jetzt die Menge \\[0.2cm]
+      \hspace*{1.3cm} $K_0 := K \cup \bigl\{ \{p\} \bigr\}$       \\[0.2cm]
+      und versuchen, diese Menge zu lösen.  Dazu bilden wir jetzt \\[0.2cm]
+      \hspace*{0.3cm} 
+      $K_1 := \textsl{reduce}\bigl(K_0,p\bigr) = 
+          \Big\{ \{r, \neg t\},\; \{r, s\},\; \{\neg r, q\},\; \{\neg q, s, \neg r\},\; \{\neg r, \neg s\},\; \{ \neg s\},\;\{p\}\, \Big\}$.
+      \\[0.2cm]
+      Die Klausel-Menge $K_1$ enthält die Unit-Klausel $\{\neg s\}$,
+      so dass wir als nächstes mit dieser Klausel reduzieren können: \\[0.2cm]
+      \hspace*{1.3cm} 
+      $K_2 := \textsl{reduce}\bigl(K_1,\;\neg s\bigr) = 
+              \Big\{ \{r, \neg t\},\; \{r\},\; \{\neg r, q\},\; \{\neg q, \neg r\},\; \{ \neg s\},\; \{p\} \Big\}$.
+      \\[0.2cm]
+      Hier haben wir nun die neue Unit-Klausel $\{r\}$, mit der wir als nächstes reduzieren:
+      \\[0.2cm]
+      \hspace*{1.3cm} 
+      $K_3 := \textsl{reduce}\bigl(K_2,\; r\bigr) = 
+              \Big\{ \{r\},\; \{q\},\; \{\neg q\},\; \{ \neg s\},\; \{p\} \Big\}$
+      \\[0.2cm]
+      Da $K_3$ die Unit-Klausel $\{q\}$ enthält, reduzieren wir jetzt mit $q$: \\[0.2cm]
+      \hspace*{1.3cm} 
+      $K_4 := \textsl{reduce}\bigl(K_2,\;q\bigr) = 
+              \Big\{ \{r\},\; \{q\},\; \{\},\; \{ \neg s\},\; \{p\} \Big\}$.
+      \\[0.2cm]
+      Die Klausel-Menge $K_4$ enthält die leere Klausel und ist damit unlösbar.
+     
+\item Also bilden wir jetzt die Menge \\[0.2cm]
+      \hspace*{1.3cm} $K_5 := K \cup \bigl\{ \{\neg p\} \bigr\}$ \\[0.2cm]
+      und versuchen, diese Menge zu lösen.  Dazu bilden wir
+      \\[0.2cm]
+      \hspace*{1.3cm} 
+      $K_6 = \textsl{reduce}\bigl(K_5,\; \neg p\bigr) =\Big\{ \{q, s\},\; \{r, s\},\;\{\neg s\},\; \{\neg q, s\},\; \{\neg r, \neg s\},\;\{\neg p\}\, \Big\}$.
+      \\[0.2cm]
+      Die Menge $K_6$ enthält die  Unit-Klausel $\{\neg s\}$.  Wir bilden daher \\[0.2cm]
+      \hspace*{1.3cm} 
+      $K_7 = \textsl{reduce}\bigl(K_6,\; \neg s\bigr) =\Big\{ \{q\},\; \{r\},\;\{\neg s\},\; \{\neg q\},\;\{\neg p\}\, \Big\}$.
+      \\[0.2cm]
+      Die Menge $K_7$ enthält die neue Unit-Klausel $\{q\}$, mit der wir als nächstes reduzieren:\\[0.2cm]
+      \hspace*{1.3cm} 
+      $K_8 = \textsl{reduce}\bigl(K_7,\; q \bigr) =\Big\{ \{q\},\; \{r\},\;\{\neg s\},\; \{\},\;\{\neg p\}\, \Big\}$.
+      \\[0.2cm]
+      Da $K_8$ die leere Klausel enthält, ist $K_8$ und damit auch die ursprünglich
+      gegebene Menge $K$ unlösbar.
+\end{enumerate}
+
+
+\subsection{Implementierung des Algorithmus von Davis und Putnam}
+Wir zeigen jetzt die Implementierung der Prozedur \texttt{davisPutnam}, 
+mit der die Frage, ob eine Menge von Klauseln erfüllbar ist, beantwortet werden kann. Die
+Implementierung ist in Abbildung \ref{fig:davisPutnam} auf Seite \pageref{fig:davisPutnam}
+gezeigt.  Die Prozedur erhält zwei Argumente: \texttt{clauses} und \texttt{literals}.
+\texttt{clauses} ist eine Menge von Klauseln und \texttt{literals} ist eine Menge von
+Literalen.  Falls  die Vereinigung dieser beiden Mengen erfüllbar ist, so liefert
+der Aufruf \texttt{davisPutnam(clauses, literals)} eine Menge von Unit-Klauseln \texttt{r}, so
+dass jede Belegung $\I$, die alle Unit-Klauseln aus \texttt{r} erfüllt, auch die
+Menge $\mathtt{clauses} \cup \mathtt{literals}$ erfüllt.  Falls die Menge
+$\mathtt{clauses} \cup \mathtt{literals}$ nicht erfüllbar ist, liefert der Aufruf
+\texttt{davisPutnam(Clauses, Literals)} als Ergebnis die Menge $\{ \{\} \}$ zurück,
+denn die leere Klausel repräsentiert die unerfüllbare Formel $\falsum$.
+
+Sie fragen sich vielleicht, wozu wir in der Prozedur \texttt{davisPutnam} die Menge
+\texttt{literals} brauchen.  Der Grund ist, dass wir uns bei den rekursiven Aufrufen
+merken müssen, welche Literale wir schon benutzt haben.  Diese Literale sammeln wir in der
+Menge \texttt{literals}.
+
+Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie folgt:
+\begin{enumerate}
+\item In Zeile 2 reduzieren wir mit Hilfe der Methode \texttt{saturate} 
+      solange wie möglich die gegebene Klausel-Menge \texttt{clauses} mit Hilfe
+      von Unit-Schnitten und entfernen alle Klauseln die durch Unit-Klauseln
+      subsumiert werden.
+\item Anschließend testen wir in Zeile 3, ob die so vereinfachte Klausel-Menge
+      die leere Klausel enthält und geben in diesem Fall als Ergebnis die Menge 
+      $\bigl\{\{\}\bigr\}$ zurück.
+\item Dann testen wir in Zeile 6, ob bereits alle Klauseln $c$ aus der Menge
+      \texttt{clauses} Unit-Klauseln sind.  Wenn dies so ist,
+      dann ist die Menge \texttt{clauses} trivial und wir geben diese Menge als Ergebnis zurück.
+\item Andernfalls wählen wir in Zeile 9 ein Literal $l$ aus der Menge \texttt{clauses}, 
+      dass wir noch nicht benutzt haben.
+      Wir untersuchen dann in Zeile 10 rekursiv, ob die Menge \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\mathtt{clauses} \cup \bigl\{\{\mathtt{l}\}\bigr\}$ 
+      \\[0.2cm]
+      lösbar ist.  Dabei gibt es zwei Fälle:
+      \begin{enumerate}
+      \item Falls diese Menge lösbar ist, geben wir die Lösung dieser Menge als Ergebnis zurück.
+
+      \item Sonst  prüfen wir rekursiv, ob die Menge \\[0.2cm]
+            \hspace*{1.3cm} $\mathtt{clauses} \cup \bigl\{ \{ \neg \mathtt{l}\} \bigr\}$ \\[0.2cm]
+            lösbar ist.  
+      \end{enumerate}
+\end{enumerate}
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.2cm,
+                  xrightmargin  = 0.2cm
+                ]
+    davisPutnam := procedure(clauses, literals) {
+        clauses := saturate(clauses);
+        if ({} in clauses) {
+            return { {} };
+        }
+        if (forall (c in clauses | #c == 1)) {
+            return clauses;
+        }
+        l := selectLiteral(clauses, literals);
+        notL := negateLiteral(l);    
+        r := davisPutnam(clauses + { {l} }, literals + { l, notL });
+        if (r != { {} }) {
+            return r;
+        }     
+        return davisPutnam(clauses + { {notL} }, literals + { l, notL });
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Die Prozedur \texttt{davisPutnam}.}
+  \label{fig:davisPutnam}
+\end{figure} 
+
+Wir diskutieren nun die Hilfsprozeduren, die bei der Implementierung der Prozedur
+\texttt{davisPutnam} verwendet wurden.
+Als erstes besprechen wir die Funktion \texttt{saturate}.  Diese Prozedur erhält eine
+Menge $s$ von Klauseln als Eingabe und führt alle möglichen Unit-Schnitte und
+Unit-Subsumptionen durch.  
+Die Prozedur \texttt{saturate} ist in Abbildung \ref{fig:saturate} auf Seite \pageref{fig:saturate}
+gezeigt.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    saturate := procedure(s) {
+        units := { k in s | #k == 1 };
+        used := {};
+        while (units != {}) {
+            unit := arb(units);
+            used := used + { unit };
+            l    := arb(unit);
+            s    := reduce(s, l);
+            units := { k in s | #k == 1 } - used;        
+        }
+        return s;
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Die Prozedur \texttt{saturate}.}
+  \label{fig:saturate}
+\end{figure} 
+Die Implementierung von \texttt{saturate} funktioniert wie folgt: 
+\begin{enumerate}
+\item Zunächst berechnen wir in Zeile 2 die Menge \texttt{units} aller Unit-Klauseln.  
+\item Dann initialisieren wir in Zeile 3 die Menge \texttt{used} als die leere Menge.
+      In dieser Menge merken wir uns, welche Unit-Klauseln wir schon für Unit-Schnitte und
+      Subsumptionen benutzt haben.
+\item Solange die Menge \texttt{units} der Unit-Klauseln nicht leer ist, wählen wir in Zeile 5
+      eine beliebige Unit-Klausel \texttt{unit} aus.
+\item In Zeile 6 fügen wir die Klausel \texttt{unit} zu der Menge
+      \texttt{used} der benutzten Klausel hinzu.  
+\item In Zeile 7 extrahieren mit \texttt{arb} das Literal \texttt{l} der Klausel \texttt{unit}.  
+\item In Zeile 8 wird  die eigentliche Arbeit durch einen Aufruf der Prozedur
+      \texttt{reduce} geleistet.
+\item Dabei können jetzt neue Unit-Klauseln entstehen, die wir in Zeile 9
+      aufsammeln.  Wir sammeln dort aber nur die Unit-Klauseln auf,
+       die wir noch nicht benutzt haben.
+\item Die Schleife in den Zeilen 4 -- 10 wird nun solange durchlaufen, wie wir 
+      Unit-Klauseln finden, die wir noch nicht benutzt haben.
+\item Am Ende geben wir die verbliebende Klauselmenge als Ergebnis zurück.
+\end{enumerate}
+Die dabei verwendete Prozedur $\texttt{reduce}()$ ist in Abbildung \ref{fig:reduce} gezeigt.
+Im vorigen Abschnitt hatten wir die Funktion $\textsl{reduce}(K,l)$, die eine
+Klausel-Menge $K$ mit Hilfe des Literals $l$ reduziert, als
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{reduce}(K,l)  = 
+ \bigl\{\, k \backslash \{\komplement{l}\} \;|\; k \in K \wedge \komplement{l} \in k \,\bigr\} 
+       \,\cup\, \bigl\{\, k \in K \mid \komplement{l} \not\in k \wedge l \not\in k \} \cup \bigl\{\{l\}\bigr\}
+$
+\\[0.2cm]
+definiert.
+Die Implementierung setzt diese Definition unmittelbar um.  
+
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    reduce := procedure(s, l) {
+        notL := negateLiteral(l);
+        return   { k - { notL } : k in s | notL in k } 
+               + { k in s | !(notL in k) && !(l in k) } 
+               + { {l} };
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Die Prozedur \texttt{reduce}.}
+  \label{fig:reduce}
+\end{figure} 
+
+Die Implementierung des Algorithmus von Davis und Putnam benutzt außer den bisher diskutierten Prozeduren
+noch zwei weitere Hilfsprozeduren, deren Implementierung in 
+Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
+\begin{enumerate}
+\item Die Prozedur \texttt{selectLiteral} wählt ein beliebiges Literal aus 
+      einer gegeben Menge $s$ von Klauseln aus, das außerdem nicht in der Menge
+      \texttt{forbidden} von Literalen vorkommen darf, die bereits benutzt worden sind.
+      Dazu werden alle Klauseln, die ja Mengen von Literalen sind, vereinigt.  Von dieser
+      Menge wird dann die Menge der bereits benutzten Literalen abgezogen und aus der
+      resultierenden Menge wird mit Hilfe der Funktion $\texttt{arb}()$ ein Literal ausgewählt.
+\item Die Prozedur \texttt{negateLiteral} bildet die Negation $\komplement{l}$ 
+      eines gegebenen Literals $l$.  
+\end{enumerate}
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    selectLiteral := procedure(s, forbidden) {
+        return arb(+/ s - forbidden);
+    };
+    negateLiteral := procedure(l) {
+        match (l) {
+            case !p : return p;
+            case  p : return !p;
+        }
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Die Prozeduren \texttt{select} und \texttt{negateLiteral}.}
+  \label{fig:solve-aux}
+\end{figure}
+
+Die oben dargestellte Version des Verfahrens von Davis und Putnam läßt sich in vielerlei
+Hinsicht verbessern.  Aus Zeitgründen können wir auf solche Verbesserungen leider nicht
+weiter eingehen. Der interessierte Leser sei hier auf \cite{moskewicz01}  verwiesen. 
+\\[0.2cm]
+\hspace*{1.3cm} \textsl{Chaff: Engineering an Efficient SAT Solver} \\
+\hspace*{1.3cm} von \emph{M. Moskewicz, C. Madigan, Y. Zhao, L. Zhang, S. Malik} 
+
+
+\section{Das 8-Damen-Problem}
+In diesem Abschnitt zeigen wir, wie bestimmte kombinatorische Problem in aussagenlogische
+Probleme umformuliert werden können.  Diese
+können dann anschließend mit dem Algorithmus von Davis und Putnam bzw.~mit 
+Verbesserungen dieses Algorithmus gelöst werden.  Als konkretes
+Beispiel betrachten wir das 8-Damen-Problem.  Dabei geht es darum, 8 Damen so auf einem
+Schach-Brett aufzustellen, dass keine Dame eine andere Dame schlagen kann.
+Beim Schach-Spiel kann eine Dame dann eine andere Figur schlagen, wenn diese Figur
+entweder 
+\begin{itemize}
+\item in der selben Zeile,
+\item in der selben Spalte, oder
+\item in der selben Diagonale
+\end{itemize}
+wie die Dame steht.  Abbildung \ref{fig:queens-problem} auf Seite \pageref{fig:queens-problem}
+zeigt ein Schachbrett, in dem sich in der dritten Zeile in der vierten Spalte
+eine Dame befindet.  Diese Dame kann auf alle die Felder ziehen, die mit Pfeilen markierte
+sind, und kann damit Figuren, die sich auf diesen Feldern befinden, schlagen.
+
+\begin{figure}[!ht]
+  \centering
+\setlength{\unitlength}{1.0cm}
+\begin{picture}(10,9)
+\thicklines
+\put(1,1){\line(1,0){8}}
+\put(1,1){\line(0,1){8}}
+\put(1,9){\line(1,0){8}}
+\put(9,1){\line(0,1){8}}
+\put(0.9,0.9){\line(1,0){8.2}}
+\put(0.9,9.1){\line(1,0){8.2}}
+\put(0.9,0.9){\line(0,1){8.2}}
+\put(9.1,0.9){\line(0,1){8.2}}
+\thinlines
+\multiput(1,2)(0,1){7}{\line(1,0){8}}
+\multiput(2,1)(1,0){7}{\line(0,1){8}}
+\put(4.15,6.15){{\chess Q}}
+\multiput(5.25,6.5)(1,0){4}{\vector(1,0){0.5}}
+\multiput(3.75,6.5)(-1,0){3}{\vector(-1,0){0.5}}
+\multiput(5.25,7.25)(1,1){2}{\vector(1,1){0.5}}
+\multiput(5.25,5.75)(1,-1){4}{\vector(1,-1){0.5}}
+\multiput(3.75,5.75)(-1,-1){3}{\vector(-1,-1){0.5}}
+\multiput(3.75,7.25)(-1,1){2}{\vector(-1,1){0.5}}
+\multiput(4.5,7.25)(0,1){2}{\vector(0,1){0.5}}
+\multiput(4.5,5.75)(0,-1){5}{\vector(0,-1){0.5}}
+\end{picture}
+\vspace*{-1.0cm}
+  \caption{Das 8-Damen-Problem.}
+  \label{fig:queens-problem}
+\end{figure}
+
+Als erstes überlegen wir uns, wie wir ein Schach-Brett mit den darauf
+positionierten Damen aussagenlogisch repräsentieren können.  Eine Möglichkeit besteht darin, 
+für jedes Feld eine aussagenlogische Variable einzuführen.  Diese Variable drückt
+aus, dass auf dem entsprechenden Feld eine Dame steht.  Wir ordnen diesen Variablen wie
+folgt Namen zu:  Die Variable, die das $j$-te Feld in der $i$-ten
+Zeile bezeichnet, stellen wir durch den Term \\[0.2cm]
+\hspace*{1.3cm} $\mathtt{Var}(i,j)$ \quad mit $i,j \in \{1, \cdots, 8\}$ \\[0.2cm]
+dar. Wir numerieren die Zeilen dabei von oben beginnend von 1 bis 8 durch, während die
+Spalten von links nach rechts numeriert werden.  Abbildung \ref{fig:queens-assign} auf
+Seite \pageref{fig:queens-assign} zeigt die Zuordnung der Variablen zu den Feldern.
+
+\begin{figure}[!ht]
+  \centering
+\setlength{\unitlength}{1.8cm}
+\begin{picture}(10,9)
+\thicklines
+\put(0.9,0.9){\line(1,0){8.2}}
+\put(0.9,9.1){\line(1,0){8.2}}
+\put(0.9,0.9){\line(0,1){8.2}}
+\put(9.1,0.9){\line(0,1){8.2}}
+\put(1,1){\line(1,0){8}}
+\put(1,1){\line(0,1){8}}
+\put(1,9){\line(1,0){8}}
+\put(9,1){\line(0,1){8}}
+\thinlines
+\multiput(1,2)(0,1){7}{\line(1,0){8}}
+\multiput(2,1)(1,0){7}{\line(0,1){8}}
+
+%%  for (i = 1; i <= 8; i = i + 1) {
+%%for (j = 1; j <= 8; j = j + 1) \{
+%%   \put(\$j.15,<9-$i>.35){{\Large p<$i>\$j}}
+%%\}
+%%  }
+
+\put(1.15,8.40){{ Var(1,1) }}
+\put(2.15,8.40){{ Var(1,2) }}
+\put(3.15,8.40){{ Var(1,3) }}
+\put(4.15,8.40){{ Var(1,4) }}
+\put(5.15,8.40){{ Var(1,5) }}
+\put(6.15,8.40){{ Var(1,6) }}
+\put(7.15,8.40){{ Var(1,7) }}
+\put(8.15,8.40){{ Var(1,8) }}
+\put(1.15,7.40){{ Var(2,1) }}
+\put(2.15,7.40){{ Var(2,2) }}
+\put(3.15,7.40){{ Var(2,3) }}
+\put(4.15,7.40){{ Var(2,4) }}
+\put(5.15,7.40){{ Var(2,5) }}
+\put(6.15,7.40){{ Var(2,6) }}
+\put(7.15,7.40){{ Var(2,7) }}
+\put(8.15,7.40){{ Var(2,8) }}
+\put(1.15,6.40){{ Var(3,1) }}
+\put(2.15,6.40){{ Var(3,2) }}
+\put(3.15,6.40){{ Var(3,3) }}
+\put(4.15,6.40){{ Var(3,4) }}
+\put(5.15,6.40){{ Var(3,5) }}
+\put(6.15,6.40){{ Var(3,6) }}
+\put(7.15,6.40){{ Var(3,7) }}
+\put(8.15,6.40){{ Var(3,8) }}
+\put(1.15,5.40){{ Var(4,1) }}
+\put(2.15,5.40){{ Var(4,2) }}
+\put(3.15,5.40){{ Var(4,3) }}
+\put(4.15,5.40){{ Var(4,4) }}
+\put(5.15,5.40){{ Var(4,5) }}
+\put(6.15,5.40){{ Var(4,6) }}
+\put(7.15,5.40){{ Var(4,7) }}
+\put(8.15,5.40){{ Var(4,8) }}
+\put(1.15,4.40){{ Var(5,1) }}
+\put(2.15,4.40){{ Var(5,2) }}
+\put(3.15,4.40){{ Var(5,3) }}
+\put(4.15,4.40){{ Var(5,4) }}
+\put(5.15,4.40){{ Var(5,5) }}
+\put(6.15,4.40){{ Var(5,6) }}
+\put(7.15,4.40){{ Var(5,7) }}
+\put(8.15,4.40){{ Var(5,8) }}
+\put(1.15,3.40){{ Var(6,1) }}
+\put(2.15,3.40){{ Var(6,2) }}
+\put(3.15,3.40){{ Var(6,3) }}
+\put(4.15,3.40){{ Var(6,4) }}
+\put(5.15,3.40){{ Var(6,5) }}
+\put(6.15,3.40){{ Var(6,6) }}
+\put(7.15,3.40){{ Var(6,7) }}
+\put(8.15,3.40){{ Var(6,8) }}
+\put(1.15,2.40){{ Var(7,1) }}
+\put(2.15,2.40){{ Var(7,2) }}
+\put(3.15,2.40){{ Var(7,3) }}
+\put(4.15,2.40){{ Var(7,4) }}
+\put(5.15,2.40){{ Var(7,5) }}
+\put(6.15,2.40){{ Var(7,6) }}
+\put(7.15,2.40){{ Var(7,7) }}
+\put(8.15,2.40){{ Var(7,8) }}
+\put(1.15,1.40){{ Var(8,1) }}
+\put(2.15,1.40){{ Var(8,2) }}
+\put(3.15,1.40){{ Var(8,3) }}
+\put(4.15,1.40){{ Var(8,4) }}
+\put(5.15,1.40){{ Var(8,5) }}
+\put(6.15,1.40){{ Var(8,6) }}
+\put(7.15,1.40){{ Var(8,7) }}
+\put(8.15,1.40){{ Var(8,8) }}
+
+\end{picture}
+\vspace*{-1.0cm}
+  \caption{Zuordnung der Variablen.}
+  \label{fig:queens-assign}
+\end{figure}
+
+Als nächstes überlegen wir uns, wie wir die einzelnen Bedingungen des 8-Damen-Problems 
+als aussagenlogische
+Formeln kodieren können.  Letztlich lassen sich alle Aussagen der Form
+\begin{itemize}
+\item ``in einer Zeile steht höchstens eine Dame'', 
+\item ``in einer Spalte steht höchstens eine Dame'', oder 
+\item ``in einer Diagonale steht höchstens eine Dame'' 
+\end{itemize}
+auf das selbe Grundmuster zurückführen:
+Ist eine Menge von aussagenlogischen Variablen \\[0.2cm]
+\hspace*{1.3cm} $V = \{ x_1, \cdots, x_n \}$ \\[0.2cm]
+gegeben, so brauchen wir eine Formel die aussagt, dass \textbf{\emph{höchstens}} eine der Variablen aus
+$V$ den Wert \texttt{true} hat.  Das ist aber gleichbedeutend damit, dass für jedes Paar
+$x_i, x_j \in V$ mit $x_i \not= x_j$ die folgende Formel gilt: \\[0.2cm]
+\hspace*{1.3cm} $\neg (x_i \wedge x_j)$. \\[0.2cm]
+Diese Formel drückt aus, dass die Variablen $x_i$ und $x_j$ nicht gleichzeitig den Wert
+\texttt{true} annehmen.  Nach den DeMorgan'schen Gesetzen gilt
+\\[0.2cm]
+\hspace*{1.3cm}
+$\neg (x_i \wedge x_j) \leftrightarrow \neg x_i \vee \neg x_j$
+\\[0.2cm]
+und die Klausel auf der rechten Seite dieser Äquivalenz schreibt sich in Mengen-Schreibweise als
+\\[0.2cm]
+\hspace*{1.3cm}  $\{\neg x_i, \neg x_j \}$. \\[0.2cm]
+Die Formel, die für eine Variablen-Menge $V$ ausdrückt, dass keine zwei verschiedenen
+Variablen gleichzeitig gesetzt sind, kann daher als Klausel-Menge als
+\\[0.2cm]
+\hspace*{1.3cm} $\bigl\{\, \{ \neg p, \neg q \} \;|\; p \in V \,\wedge\, q \in V
+\,\wedge\, p \not= q \bigr\}$
+\\[0.2cm]
+geschrieben werden.
+Wir setzen diese Überlegungen in eine \textsc{SetlX}-Prozedur um.  Die in Abbildung \ref{fig:atMostOne}
+gezeigte Prozedur \texttt{atMostOne}() bekommt als Eingabe eine Menge $V$ von
+aussagenlogischen Variablen.  Der Aufruf $\texttt{atMostOne}(V)$ berechnet eine Menge von
+Klauseln.  Diese Klauseln sind genau dann wahr, wenn höchstens eine der Variablen aus $V$
+den Wert \texttt{true} hat.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    atMostOne := procedure(v) {
+        return { { !p, !q } : p in v, q in v | p != q };
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Die Prozedur \texttt{atMostOne}.}
+  \label{fig:atMostOne}
+\end{figure}
+
+Mit Hilfe der Prozedur \texttt{atMostOne} können wir nun die Prozedur
+\texttt{atMostOneInRow} implementieren.  Der Aufruf \\[0.2cm]
+\hspace*{1.3cm} \texttt{atMostOneInRow}(\textsl{row}, n) \\[0.2cm]
+berechnet für eine gegebene Zeile \textsl{row} bei einer Brettgröße von $n$ eine Formel,
+die ausdrückt, dass in der Zeile \textsl{row} höchstens eine Dame steht.
+Abbildung \ref{fig:atMostOneInRow} zeigt die
+Prozedur $\texttt{atMostOneInRow}()$: Wir sammeln alle Variablen der durch \texttt{row}
+spezifizierten Zeile
+in der Menge 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bigl\{ \mathtt{Var}(\mathtt{row},j) \mid j \in \{1, \cdots, n \} \bigr\}$
+\\[0.2cm]
+ auf und rufen mit dieser Menge die Hilfs-Prozedur $\texttt{atMostOne}()$ auf, die das Ergebnis
+als Menge von Klauseln liefert.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    atMostOneInRow := procedure(row, n) {
+        return atMostOne({ Var(row, j) : j in [1 .. n] });
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Die Prozedur \texttt{atMostOneInRow}.}
+  \label{fig:atMostOneInRow}
+\end{figure}
+
+Als nächstes berechnen wir eine Formel die aussagt, dass mindestens eine Dame in einer gegebenen
+Spalte steht.  Für die erste Spalte hätte diese Formel die Form 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{Var}(1,1) \vee \texttt{Var}(2,1) \vee \texttt{Var}(3,1) \vee \texttt{Var}(4,1) \vee \texttt{Var}(5,1) \vee
+\texttt{Var}(6,1) \vee \texttt{Var}(7,1) \vee \texttt{Var}(8,1)$
+\\[0.2cm]
+und wenn allgemein eine Spalte $c$ mit $c \in \{1,\cdots,8\}$ gegeben ist, lautet die Formel
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{Var}(1,c) \vee \texttt{Var}(2,c) \vee \texttt{Var}(3,c) \vee \texttt{Var}(4,c) \vee \texttt{Var}(5,c) \vee
+\texttt{Var}(6,c) \vee \texttt{Var}(7,c) \vee \texttt{Var}(8,c)$.
+\\[0.2cm]
+Schreiben wir diese Formel in der Mengenschreibweise als Menge von Klauseln, so erhalten wir
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bigl\{ \{\texttt{Var}(1,c) , \texttt{Var}(2,c) , \texttt{Var}(3,c) , \texttt{Var}(4,c) , \texttt{Var}(5,c) ,
+\texttt{Var}(6,c) , \texttt{Var}(7,c) , \texttt{Var}(8,c) \}\bigr\}$.
+\\[0.2cm]
+Abbildung \ref{fig:oneInColumn} zeigt eine \textsc{SetlX}-Prozedur, die für eine gegebene Spalte
+\texttt{column} die entsprechende Klausel-Menge berechnet.  Der Schritt, von einer einzelnen Klausel
+zu einer Menge von Klauseln überzugehen ist notwendig, da unsere Implementierung des Algorithmus von
+Davis und Putnam ja mit einer Menge von Klauseln arbeitet.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    oneInColumn := procedure(column, n) {
+        return { { Var(row, column) : row in { 1 .. n } } };
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Die Prozedur \texttt{oneInColumn}.}
+  \label{fig:oneInColumn}
+\end{figure}
+
+An dieser Stelle erwarten Sie vielleicht, dass wir als noch Formeln angeben die
+ausdrücken, dass in einer gegebenen Spalte höchstens eine Dame steht und dass in jeder
+Reihe mindestens eine Dame steht.
+Solche Formeln sind aber unnötig, denn wenn wir wissen, dass in jeder Spalte mindestens
+eine Dame steht, so wissen wir bereits, dass auf dem Brett mindestens 8 Damen stehen.
+Wenn wir nun zusätzlich wissen, dass in jeder Zeile höchstens eine Dame steht, so ist
+automatisch klar, dass in jeder Zeile genau eine Dame stehen muß, denn sonst kommen wir insgesamt
+nicht auf 8 Damen.  Weiter folgt aus der Tatsache, dass in jeder Spalte eine Dame steht und daraus,
+dass es insgesamt nicht mehr als 8 Damen sind, dass in jeder Spalte höchstens eine Dame stehen kann.
+
+Als nächstes überlegen wir uns, wie wir die Variablen, die auf der selben Diagonale
+stehen, charakterisieren können.  Es gibt grundsätzlich zwei verschiedene Arten von
+Diagonalen: absteigende Diagonalen und aufsteigende Diagonalen.  Wir betrachten zunächst
+die aufsteigenden Diagonalen.  Die längste aufsteigende Diagonale, wir sagen dazu auch
+\emph{Hauptdiagonale}, besteht aus den
+Variablen \\[0.2cm]
+\hspace*{1.3cm} 
+$\texttt{Var}(8,1),\; \texttt{Var}(7,2),\; \texttt{Var}(6,3),\; \texttt{Var}(5,4),\; \texttt{Var}(4,5),\; \texttt{Var}(3,6),\; 
+ \texttt{Var}(2,7),\; \texttt{Var}(1,8)$. 
+\\[0.2cm]
+Die Indizes $i$ und $j$ der Variablen $\mathtt{Var}(i,j)$ erfüllen offenbar
+die Gleichung \\[0.2cm]
+\hspace*{1.3cm} $i + j = 9$. \\[0.2cm]
+Allgemein erfüllen die Indizes der Variablen einer aufsteigenden Diagonale die Gleichung \\[0.2cm]
+\hspace*{1.3cm} $i + j = k$, \\[0.2cm]
+wobei $k$ einen Wert aus der Menge $\{3, \cdots, 15 \}$ annimmt.  Diesen Wert $k$ geben
+wir nun als Argument bei der Prozedur \texttt{atMostOneInUpperDiagonal} mit.  Diese
+Prozedur ist in Abbildung \ref{fig:atMostOneInUpperDiagonal} gezeigt.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    atMostOneInUpperDiagonal := procedure(k, n) {
+        s := { Var(r, c) : c in [1..n], r in [1..n] | r + c == k };
+        return atMostOne(s);
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Die Prozedur \texttt{atMostOneInUpperDiagonal}.}
+  \label{fig:atMostOneInUpperDiagonal}
+\end{figure}
+
+Um zu sehen, wie die Variablen einer fallenden Diagonale
+charakterisiert werden können, betrachten wir die fallende Hauptdiagonale, die aus den
+Variablen \\[0.2cm]
+\hspace*{1.3cm} 
+$\texttt{Var}(1,1),\; \texttt{Var}(2,2),\; \texttt{Var}(3,3),\; \texttt{Var}(4,4),\; \texttt{Var}(5,5),\; 
+ \texttt{Var}(6,6),\; \texttt{Var}(7,7),\; \texttt{Var}(8,8)$ 
+\\[0.2cm]
+besteht. Die Indizes  $i$ und $j$ dieser Variablen erfüllen offenbar
+die Gleichung \\[0.2cm]
+\hspace*{1.3cm} $i - j = 0$. \\[0.2cm]
+Allgemein erfüllen die Indizes der Variablen einer absteigenden Diagonale die Gleichung \\[0.2cm]
+\hspace*{1.3cm} $i - j = k$, \\[0.2cm]
+wobei $k$ einen Wert aus der Menge $\{-6, \cdots, 6 \}$ annimmt.  Diesen Wert $k$ geben
+wir nun als Argument bei der Prozedur \texttt{atMostOneInLowerDiagonal} mit.
+Diese Prozedur ist in Abbildung \ref{fig:atMostOneInLowerDiagonal} gezeigt.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    atMostOneInLowerDiagonal := procedure(k, n) {
+        s := { Var(r, c) : c in [1..n], r in [1..n] | r - c == k };
+        return atMostOne(s);
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Die Prozedur \texttt{atMostOneInLowerDiagonal}.}
+  \label{fig:atMostOneInLowerDiagonal}
+\end{figure}
+
+Jetzt sind wir in der Lage, unsere Ergebnisse zusammen zu fassen:  Wir können eine
+Menge von Klauseln konstruieren, die das 8-Damen-Problem vollständig beschreibt.
+Abbildung \ref{fig:allClauses} zeigt die Implementierung der Prozedur \texttt{allClauses}.
+Der Aufruf \\[0.2cm]
+\hspace*{1.3cm} $\mathtt{allClauses}(n)$ \\[0.2cm]
+rechnet für ein Schach-Brett der Größe $n$ eine Menge von Klauseln aus, die
+genau dann erfüllt sind, wenn auf dem Schach-Brett
+\begin{enumerate}
+\item in jeder Zeile höchstens eine Dame steht (Zeile 2),
+\item in jeder absteigenden Diagonale höchstens eine Dame steht (Zeile 3),
+\item in jeder aufsteigenden Diagonale höchstens eine Dame steht (Zeile 4) und
+\item in jeder Spalte mindestens eine Dame steht (Zeile 5).
+\end{enumerate}
+Die Ausdrücke in den einzelnen Zeilen liefern Mengen, deren Elemente
+Klausel-Mengen sind.  Was wir als Ergebnis brauchen ist aber eine Klausel-Menge
+und keine Menge von Klausel-Mengen.  Daher bilden wir mit dem Operator ``\texttt{+/}''
+die Vereinigung dieser Mengen.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    allClauses := procedure(n) {
+        return   +/ { atMostOneInRow(row, n)         : row in {1..n}        }
+               + +/ { atMostOneInLowerDiagonal(k, n) : k in {-(n-2) .. n-2} }
+               + +/ { atMostOneInUpperDiagonal(k, n) : k in {3 .. 2*n - 1}  }
+               + +/ { oneInColumn(column, n)         : column in {1 .. n}   };
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Die Prozedur \texttt{allClauses}.}
+  \label{fig:allClauses}
+\end{figure}
+
+Als letztes zeigen wir in Abbildung \ref{fig:davisPutnam:solve} die Prozedur
+\texttt{solve}, mit der wir das 8-Damen-Problem lösen können.
+Hierbei ist $\texttt{printBoard}()$ eine Prozedur, welche die Lösung in lesbarere Form als Schachbrett
+ausdruckt.  Das funktioniert allerdings nur, wenn ein Font verwendet wird, bei dem alle Zeichen die
+selbe Breite haben.  Diese Prozedur ist der Vollständigkeit halber in Abbildung \ref{fig:printBoard}
+gezeigt, wir wollen die Implementierung aber nicht weiter diskutieren.
+Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/queens.stlx}{\texttt{queens.stlx}}.
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    solve := procedure(n) {
+        clauses  := allClauses(n);
+        solution := davisPutnam(clauses, {});
+        if (solution != { {} }) {
+            printBoard(solution, n);
+        } else {
+            print("The problem is not solvable for " + numberQueens + " queens!");
+            print("Try to increase the number of queens.");
+        }
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Die Prozedur \texttt{solve}.}
+\label{fig:davisPutnam:solve}
+\end{figure}
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    printBoard := procedure(i, n) {
+        if (i == { {} }) {
+            return;
+        }
+        print( "        " + ((8*n+1) * "-") );
+        for (row in [1..n]) {
+            line := "        |";
+            for (col in [1..n]) {
+                line += "       |";
+            }
+            print(line);
+            line := "        |";
+            for (col in [1..n]) {
+                if ({ Var(row, col) } in i) {
+                    line += "   Q   |";
+                } else {
+                    line += "       |";
+                }
+            }
+            print(line);
+            line := "        |";
+            for (col in [1..n]) {
+                line += "       |";
+            }
+            print(line);
+            print( "        " + ((8*n+1) * "-") );
+        }
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Die Prozedur $\texttt{printBoard}()$.}
+\label{fig:printBoard}
+\end{figure}
+
+\pagebreak
+
+ Die durch den Aufruf $\mathtt{davisPutnam}(Clauses, \{\})$ 
+berechnete Menge \texttt{solution} enthält für jede der Variablen $\mathtt{Var}(i,j)$
+entweder die Unit-Klausel $\{\mathtt{Var}(i,j)\}$  (falls auf diesem Feld eine Dame steht) oder
+aber die Unit-Klausel  $\{ \mathtt{!Var}(i,j)\}$ (falls das Feld leer bleibt).
+Eine graphische Darstellung des durch die berechnete Belegung dargestellten Schach-Bretts
+sehen Sie in Abbildung \ref{fig:queens-solution}. 
+
+\begin{figure}[!ht]
+  \centering
+\hspace*{0.0cm}
+\vbox{\offinterlineskip
+   \hrule height1pt
+   \hbox{\vrule width1pt\bigchess
+         \vbox{\hbox{0Z0L0Z0Z}
+               \hbox{Z0Z0Z0ZQ}
+               \hbox{QZ0Z0Z0Z}
+               \hbox{Z0L0Z0Z0}
+               \hbox{0Z0Z0L0Z}
+               \hbox{ZQZ0Z0Z0}
+               \hbox{0Z0Z0ZQZ}
+               \hbox{Z0Z0L0Z0}}%
+         \vrule width1pt}
+   \hrule height1pt}
+
+  \caption{Eine Lösung des 8-Damen-Problems.}
+  \label{fig:queens-solution}
+\end{figure}
+
+
+Das 8-Damen-Problem ist natürlich nur eine spielerische Anwendung der Aussagen-Logik.
+Trotzdem zeigt es die Leistungsfähigkeit des Algorithmus von Davis
+und Putnam sehr gut, denn die Menge der Klauseln, die von der Prozedur \texttt{allClauses}
+berechnet wird, füllt unformatiert fünf Bildschirm-Seiten, falls diese  eine Breite von 80
+Zeichen haben.  In dieser Klausel-Menge kommen 64 verschiedene Variablen vor.
+Der Algorithmus von Davis und Putnam benötigt zur Berechnung einer Belegung, die diese
+Klauseln erfüllt, auf meinem iMac weniger als fünf Sekunden.
+
+In der Praxis gibt es viele Probleme, die sich in ganz ähnlicher Weise auf die Lösung einer
+Menge von Klauseln zurückführen lassen.  Dazu gehört zum Beispiel das Problem, einen
+Stundenplan zu erstellen, der gewissen Nebenbedingungen genügt.  Verallgemeinerungen des
+Stundenplan-Problems werden in der Literatur als \emph{Scheduling-Problemen} bezeichnet.
+Die effiziente Lösung solcher Probleme ist Gegenstand der aktuellen Forschung.
+
+
+%\input{compact-barwise}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "logik"
+%%% End: 

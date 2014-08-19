@@ -1,0 +1,28 @@
+program main;
+
+    R := { [1,2], [2,3], [1,3], [2,4], [4,5] };
+    print( "R = ", R );
+    print( "computing transitive closure of R" );
+    T := closure(R);
+    print( "R+ = ", T );
+
+    -- The procedure call closure(R) computes the transitive closure
+    -- of the binary relation R.
+    procedure closure(R);
+        T   := R;
+        loop
+            Old_T := T;
+            T     := T + product(R, T);
+            if T = Old_T then
+                return T;
+            end if;
+        end loop;
+    end closure;
+
+    -- The procedure call product(R1, R2) computes the relational
+    -- product R1 o R2.
+    procedure product(R1, R2);
+        return { [x,z] : [x,y1] in R1, [y2,z] in R2 | y1 = y2 };
+    end product;
+
+end main;

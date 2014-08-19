@@ -1,0 +1,40 @@
+program main;
+    R := { [1,2], [2,3], [1,3], [2,4], [4, 1], [4,5] };
+    print( "R = ", R );
+    P := reachable(1, 5, R);
+    print( "P = ", P );
+    
+    -- Check wether there is a path from x to y in R and compute it.
+    procedure reachable(x, y, R);
+        P := { [x] };
+        loop
+            Old_P := P;
+            P     := P + path_product(P, R);
+            Found := { p in P | p(#p) = y };
+            if Found /= {} then
+                return arb Found;
+            end if;
+            if P = Old_P then
+                return;
+            end if;
+        end loop;
+    end reachable;
+
+    -- The procedure call product(P, Q) computes the path product P * Q.
+    procedure path_product(P, Q);
+        return { add(p,q) : p in P, q in Q | p(#p) = q(1) and not cyclic(add(p,q)) };
+    end path_product;    
+
+    -- The procedure not_cyclic(p) checks whether the path p is cyclic.
+    procedure cyclic(p);
+        return #{ x : x in p } < #p;
+    end cyclic;
+
+    -- The product call add(p,q) computes the sum ofg the lists p and q.
+    -- The last point of p has to be the first point of q.
+    procedure add(p, q);
+        return p + q(2..);
+    end add;    
+
+end main;
+

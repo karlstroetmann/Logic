@@ -1,0 +1,53 @@
+Hallo Herr Gesang,
+
+Ihr Programm ist korrekt aber an mehreren Stellen unnötig kompliziert.
+Sie schreiben beispielsweise:
+
+    R1:= { [[E1,E2],fuellen(E1-S,E2+S)]: E1 in {0..3}, E2 in {0..5}, S in {E1} };
+
+Die Bedingung "S in {E1}" ist äquivalent zu der Bedingung "S = E1".
+Damit gilt dann
+
+   E1-S = E1-E1 = 0
+
+und
+
+   E2+S = E2+E1.
+
+Folglich ist die Variable S überflüssig, denn Sie können die Relation R1 wie folgt
+einfacher definieren:
+
+    R1:= { [[E1,E2],fuellen(0,E2+E1)]: E1 in {0..3}, E2 in {0..5} };
+
+Analog können Sie die Definition der Relation R2 vereinfachen zu 
+
+    R2:= { [[E1,E2],fuellen(E1+E2,0)]: E1 in {0..3}, E2 in {0..5} };
+
+Die Prozedur vomFassfuellenx ist viel zu kompliziert.  Sie schreiben:
+
+    procedure vomFassfuellenx(x,y);
+        if x /= 3 then
+            x:= 3;
+            return [x,y];
+        else
+            return [x,y];
+        end if;
+    end vomFassfuellenx;
+
+De facto ist das das selbe wie
+
+    procedure vomFassfuellenx(x,y);
+        return [3,y];
+    end vomFassfuellenx;
+
+denn in jedem Fall geben Sie an der ersten Stelle der Liste 3 zurück
+und die zweite Komponente bleibt immer unverändert.  Ähnliche Argumente
+gelten für die Prozeduren vomFassfuelleny, leerenx und leereny.  Alle diese
+Prozeduren sind nach Vereinfachung trivial und daher überflüssig.  Wenn 
+Sie diese Funktionen nicht verwenden, vereinfachen sich die Relationen 
+R3, R4, R5 und R6 wie folgt:
+
+    R3:= { [[E1,E2], [3,E2]]: E1 in {0..3}, E2 in {0..5} };
+    R4:= { [[E1,E2], [E1,5]]: E1 in {0..3}, E2 in {0..5} };
+    R5:= { [[E1,E2], [0,E2]]: E1 in {0..3}, E2 in {0..5} };
+    R6:= { [[E1,E2], [E1,0]]: E1 in {0..3}, E2 in {0..5} };

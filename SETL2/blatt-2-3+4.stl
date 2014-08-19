@@ -1,0 +1,50 @@
+program main;
+    -- Eine Abstands-Funktion D:
+    D := { [[1,2], 2], [[ 2,3], 1], [[1,3], 4], [[2,4], 7 ], [[4,5], 1], 
+           [[5, 1], 2], [[17, 29], 3], [[29, 42], 5], [[42, 5], 2] 
+         }; 
+    x := 1;
+    print("oneStepSet({[x, 0]}, D) = ", oneStepSet({[x,0]}, D));
+    print("reachable(x, D)         = ", reachable(x, D));
+
+-- Aufgabe 3: Der Aufruf oneStepSetNoUse(M, R) berechnet alle die Paare [y, l],
+-- für die es einen Punkt x aus gibt, so dass es eine direkte Verbindung von
+-- x nach y der Länge l gibt
+procedure oneStepSetNoUse(M, D);
+    return { [ y, l ] : [ [ x, y ], l ] in D | x in M };
+end oneStepSetNoUse;
+
+-- E ist eine Menge von Paaren der Form [y, l1], wobei l1 die Entfernung zu 
+-- einem gegebenem Punkt x angibt. D ist eine Abstands-Funktion.  Der Aufruf 
+-- oneStepSetExtended(E, D) berechnet alle die Paare [z, l1 + l2], für die 
+-- der Punkt z in einem Schritt von einem Punkt y aus E erreicht werden kann.
+-- l1 ist der Abstand, den y von dem Punkt x hat, l2 ist der Abstand, den
+-- z von y hat.
+procedure oneStepSet(E, D);
+    return { [z, l1 + l2] : [y1, l1] in E, [ [y2, z], l2 ] in D | y1 = y2 };
+end oneStepSet;
+
+-- Aufgabe 4:  Der Aufruf reachable(x, D) berechnet für einen Punkt x und eine 
+-- Abstands-Funktion D alle die Paare [y, l], für die es einen Punkt x aus gibt,
+-- so dass es eine Verbindung von x nach y der Länge l gibt.
+procedure reachable(x, D);
+    E := { [ x, 0 ] };
+    loop
+        OldE := E;
+        E := minimize(E + oneStepSet(E, D));
+        if E = OldE then
+            return E;
+        end if;
+    end loop;
+end reachable;
+
+-- E ist eine Menge von Paaren der Form [y, l], wobei l die Entfernung zu einem
+-- gegebenem Punkt angibt. Die Prozedur minimize entfernt alle die Paare 
+-- [y, l1], für die es ein Paar [y, l2] in E gibt, so dass l2 < l1 ist. 
+procedure minimize(E);
+    return { [ y, l ] in E | l = min/ { d : [ z, d ] in E | y = z } };
+end minimize;
+
+end main;
+
+

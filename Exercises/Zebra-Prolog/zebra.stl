@@ -1,0 +1,568 @@
+program main;
+    var mTokenList; -- list of all tokens 
+    var mIndex;     -- index to the next token
+
+    German    := "German";
+    Briton    := "Briton";
+    Swede     := "Swede";
+    American  := "American";
+    Norwegian := "Norwegian";
+
+    Red       := "red";
+    Green     := "green";
+    White     := "white";
+    Blue      := "blue";
+    Yellow    := "yellow";
+
+    PallMall  := "PallMall";
+    Dunhill   := "Dunhill"; 
+    Marlboro  := "Marlboro";
+    Winfield  := "Winfield";
+    Rothmanns := "Rothmanns";
+
+    Dog       := "dog";
+    Bird      := "bird";
+    Cat       := "cat";
+    Pig       := "pig";
+    Zebra     := "zebra";
+
+    Whiskey   := "whiskey";
+    Coffee    := "coffee";
+    Beer      := "beer";
+    Milk      := "milk";
+    Water     := "water";
+
+    F  := {};
+    F +:= onePerHouse( { German, Briton, Swede, American, Norwegian } );
+    F +:= onePerHouse( { Red, Green, White, Blue, Yellow } );
+    F +:= onePerHouse( { PallMall, Dunhill, Marlboro, Winfield, Rothmanns } );
+    F +:= onePerHouse( { Dog, Bird, Cat, Pig, Zebra } );
+    F +:= onePerHouse( { Whiskey, Coffee, Beer, Milk, Water } );
+
+    for i in { 1 .. 5 } loop
+        F +:= parse(Briton + i + " -> " + Red + i);    
+        F +:= parse(Swede + i + " -> " + Dog + i);
+        F +:= parse(American + i + " -> " + Whiskey + i);        
+        F +:= parse(Green + i + " -> " + Coffee + i);        
+        F +:= parse(PallMall + i + " -> " + Bird + i);        
+        F +:= parse(Yellow + i + " -> " + Dunhill + i);        
+        F +:= parse(Winfield + i + " -> " + Beer + i);        
+        F +:= parse(German + i + " -> " + Rothmanns + i);        
+    end loop;
+
+    -- green house left of white house
+    print(F);
+    F +:= leftTo(Green, White);
+
+    -- middle house drinks coffee
+    F +:= parse(Milk + 3);
+    -- norwegian in first house
+    F +:= parse(Norwegian + 1);
+
+    -- Marlboro next to cat.
+    F +:= nextTo(Marlboro, Cat);
+    F +:= nextTo(Pig, Dunhill);
+    F +:= nextTo(Norwegian, Blue);
+    F +:= nextTo(Marlboro, Water);
+
+    S := DavisPutnam(F, {});
+    printSolution(S);
+
+    print("checking uniqueness ...");
+    for i in { 1 .. 5 } loop
+        S := DavisPutnam(F + parse(Zebra + i), {});
+        if S = false then
+            print("The zebra cannot be in house number " + i + ".");
+        else 
+            print("The zebra might be in house number " + i + ".");
+            printSolution(S);
+        end if;
+    end loop;
+
+    -- Given a set of Names like 
+    --    { "German", "Briton", "Swede", "American", "Norwegian" }
+    -- this procedure builds a formula in cnf that expresses the following 
+    -- three statements:
+    --   * Every member of the set is somewhere.
+    --   * Every house has at least on inhabitant.
+    --   * No house has more than one inhabitant.
+    procedure onePerHouse(M);
+        return { somewhere(x) : x in M }
+             + { something(M, i) : i in { 1 .. 5 } }
+             + +/ { atMostOneAt(M, i) : i in { 1 .. 5 } };
+    end onePerHouse;
+
+    -- This procedure will generate a formula that states that x has to be in
+    -- in one of the houses.  For example,  the call somewhere("a") will produce
+    -- will produce a clause in set notation that is equivalent to the 
+    -- following formula:
+    --   a1 + a2 + a3 + a4 + a5
+    procedure somewhere(x);
+        return { x + i : i in { 1 .. 5 } };
+    end somewhere;
+
+    -- This procedure generates a formula that states that some of the elements
+    -- the set M has to be at location i.  For example, the call
+    --       somewhere( { "a", "b", "c", "d", "e" }, 3 )
+    -- will produce a clause in set notation that is equivalent to the 
+    -- following formula:
+    --       a3 + b3 + c3 + d3 + e3.
+    procedure something(M, i);
+        return { x + i : x in M };
+    end something;
+    
+    -- Given a set of strings M and an index i, this procedure computes a 
+    -- set of clauses stating that at most one of the objects in M can be 
+    -- at location i.  For example, the call
+    --         atMostOneAt( { "a", "b", "c", "d", "e" }, 3 );
+    -- will produce a set of clauses equivalent to the following formula:
+    --      -(a3 * b3) * -(a3 * c3) * -(a3 * d3) * -(a3 * e3) 
+    --    * -(b3 * a3) * -(b3 * c3) * -(b3 * d3) * -(b3 * e3) 
+    --    * -(c3 * a3) * -(c3 * b3) * -(c3 * d3) * -(b3 * e3) 
+    --    * -(d3 * a3) * -(d3 * b3) * -(d3 * c3) * -(b3 * e3) 
+    --    * -(e3 * a3) * -(e3 * b3) * -(e3 * c3) * -(e3 * e3) 
+    procedure atMostOneAt(M, i);
+        return atMostOne( { x + i : x in M } );
+    end atMostOneAt;
+
+
+    -- S is a set of propositional variables. The call atMostOne(S) creates
+    -- a set of clauses.  This set expresses the fact that at most one of
+    -- the variables in S is true.
+    procedure atMostOne(S);
+        return { { [ "-", p ], [ "-", q ] } : p in S, q in S | p /= q };
+    end atMostOne;
+
+    -- compute a formula that states that a is next to b.
+    -- for example, the call nextTo("a", "b") will compute the following
+    -- formula in cnf:
+    --    (a1 -> b2) 
+    --  * (a2 -> b1 + b3)
+    --  * (a3 -> b2 + b4)
+    --  * (a4 -> b3 + b5)
+    --  * (a5 -> b4)
+    procedure nextTo(a, b);
+        F := parse(a + "1 -> " + b + "2");
+        for i in { 2 .. 4 } loop
+            F +:= parse(a + i + " -> " + b + (i - 1) + " + " + b + (i + 1));
+        end loop;
+        F +:= parse(a + "5 -> " + b + "4");
+        return F;
+    end nextTo;
+
+    -- This procedure expresses the fact that x is left of y.
+    procedure leftTo(x, y);
+        F := {};
+        for i in { 1 .. 4 } loop 
+            F +:= parse(x + i + " -> " + y + (i + 1));
+        end loop;    
+        F +:= parse("-" + x + "5");
+        return F;
+    end leftTo;
+
+    procedure printSolution(S);
+        for c in S loop
+            l := arb c;
+            if l(1) /= "-" then
+                print(l);
+            end if; 
+        end loop;
+    end printSolution;
+
+    ----------------------------------------------------------------------------
+    -- Everything below is for parsing.                                       --
+    ----------------------------------------------------------------------------
+
+    -- This procedure parses the given string s and transforms it into a formula.
+    procedure parse(s);
+        mTokenList := scanFormula(s);
+        mIndex     := 1;
+        result     := parseFormula();
+        return normalize(result);
+    end parse;
+
+    -- Diese Prozedur parst eine aussagenlogische Formel gem‰ﬂ der folgenden
+    -- Grammatik:
+    --
+    --        formula         : implication "<->" implication
+    --                        | implication
+    --                        ;
+    --
+    --        implication     : conjunction "->" implication
+    --                        | conjunction
+    --                        ;
+    --
+    --        conjunction     : disjunction conjunctionRest;
+    --                    
+    --        conjunctionRest : "*" disjunction conjunctionRest
+    --                        | /* epsilon */
+    --                        ;
+    --
+    --        disjunction     : negation disjunctionRest;
+    --
+    --        disjunctionRest : "+" negation disjunctionRest
+    --                        | /* epsilon */
+    --                        ;
+    --
+    --        negation        : "-" negation
+    --                        | atomic
+    --                        ;
+    -- 
+    --        atomic          : "(" formula ")"
+    --                        | IDENTIFIER
+    --                        ;
+    procedure parseFormula();
+        implicationLhs := parseImplication();
+        if mIndex <= #mTokenList and mTokenList(mIndex) /= ")" then
+            check("<->");
+            implicationRhs := parseImplication();
+            return [ implicationLhs, "<->", implicationRhs ];
+        else
+            return implicationLhs;    
+        end if;
+    end parseFormula;
+
+    -- Diese Prozedur implementiert die folgenden Grammatik-Regeln:
+    --
+    --        implication     : conjunction "->" implication
+    --                        | conjunction
+    --                        ; 
+    procedure parseImplication();
+        conjunction := parseConjunction();
+        if mIndex <= #mTokenList and mTokenList(mIndex) notin { "<->", ")" } then
+            check("->");
+            implication := parseImplication();
+            return [ conjunction, "->", implication ];
+        else
+            return conjunction;
+        end if;
+    end parseImplication;
+
+    -- Diese Prozedur implementiert die folgende Grammatik-Regel:
+    --
+    --        conjunction     : disjunction conjunctionRest;
+    --
+    procedure parseConjunction();
+        disjunction := parseDisjunction();
+        return parseConjunctionRest(disjunction);
+    end parseConjunction;
+
+    -- Diese Prozedur implementiert die folgenden Grammatik-Regeln:
+    --                    
+    --        conjunctionRest : "*" disjunction conjunctionRest
+    --                        | /* epsilon */
+    --                        ;
+    procedure parseConjunctionRest(formula);
+        if check("*") then
+            disjunction := parseDisjunction();
+            return parseConjunctionRest([ formula, "*", disjunction ]);
+        end if;
+        return formula;
+    end parseConjunctionRest;
+
+    -- Diese Prozedur implementiert die folgende Grammatik-Regel:
+    --
+    --        disjunction     : negation disjunctionRest;
+    --
+    procedure parseDisjunction();
+        negation := parseNegation();
+        return parseDisjunctionRest(negation);
+    end parseDisjunction;
+
+    -- Diese Prozedur implementiert die folgenden Grammatik-Regeln:
+    --
+    --        disjunctionRest : "+" negation disjunctionRest
+    --                        | /* epsilon */
+    --                        ;
+    procedure parseDisjunctionRest(formula);
+        if check("+") then
+            negation := parseNegation();
+            return parseDisjunctionRest([ formula, "+", negation]);
+        end if;
+        return formula;
+    end parseDisjunctionRest;
+
+    -- Diese Prozedur implementiert die folgenden Grammatik-Regeln:
+    --
+    --        negation        : "-" negation
+    --                        | atomic
+    --                        ;
+    procedure parseNegation();
+        if check("-") then
+            negation := parseNegation();
+            return [ "-", negation ];            
+        end if;
+        return parseAtomic();
+    end parseNegation;
+
+    -- Diese Prozedur implementiert die folgenden Grammatik-Regeln:
+    --
+    --        atomic          : "(" formula ")"
+    --                        | IDENTIFIER
+    --                        | "0"
+    --                        | "1"
+    --                        ;
+    procedure parseAtomic();
+        if check("(") then
+            formula := parseFormula();
+            if not check(")") then
+                abort("Parse Error, ')' expected");
+            end if;
+            return formula; 
+        end if;
+        if is_string(mTokenList(mIndex)) then
+            result := mTokenList(mIndex);
+            mIndex := mIndex + 1;
+            return result;
+        end if;
+        print(mTokenList);
+        print(mIndex);
+        abort("Parse Error in parseFactor. ");
+    end parseAtomic;
+
+    -- ‹berpr¸fe, ob als n‰chstes token in der Eingabe steht.
+    procedure check(token);
+        -- no tokens left
+        if mIndex > #mTokenList then
+            return false;
+        end if;
+        if mTokenList(mIndex) = token then
+            mIndex := mIndex + 1;
+            return true;
+        end if;
+        return false;
+    end check;
+
+    -- Liest einen String und scannt den String.  Es wird eine Liste von Token
+    -- zur¸ck gegeben.
+    procedure scanFormula(s);
+        letters := {};
+        -- collect all letters and digits
+        for x in { 48 .. 57 } + { 65 .. 90 } + { 97 .. 122 } loop
+            letters := letters + { char(x) };
+        end loop;
+        case 
+            when s = ""                      => return [];
+            when s(1) = "0"                  => return [ "0" ] + scanFormula( s(2..) );
+            when s(1) = "1"                  => return [ "1" ] + scanFormula( s(2..) );
+            when s(1) = "("                  => return [ "(" ] + scanFormula( s(2..) );
+            when s(1) = ")"                  => return [ ")" ] + scanFormula( s(2..) );
+            when s(1) = "+"                  => return [ "+" ] + scanFormula( s(2..) );
+            when s(1) = "*"                  => return [ "*" ] + scanFormula( s(2..) );
+            when #s >= 2 and s(1..2) = "->"  => return [ "->" ] + scanFormula( s(3..) );
+            when #s >= 3 and s(1..3) = "<->" => return [ "<->" ] + scanFormula( s(4..) );
+            when s(1) = "-"                  => return [ "-" ] + scanFormula( s(2..) );
+            when s(1) = " " or s(1) = "    " => return scanFormula( s(2..) );
+        end case;
+        index := 1;
+        word  := "";
+        if s(index) notin letters then
+            abort("Error in scanFormula(" + s + ")");
+        end if;
+        while s(index) in letters and index < #s loop
+            index := index + 1;
+        end loop;
+        if not s(index) in letters then
+            return [ s(1 .. index - 1) ] + scanFormula( s(index ..) );
+        end if;
+        if index = #s then
+            return [ s ];
+        end if;
+        print( "Error in scanFormula: s = ", s );
+    end scanFormula;
+
+    -- Druckt die Formel f am Bildschirm aus.
+    procedure prettyPrint(f);
+        case
+            when f = 1        => return "1";
+            when f = 0        => return "0";
+            when is_string(f) => return f;
+            when f(1) = "-"   => return "-" + prettyPrint(f(2));
+            when f(2) = "*"   => return "(" + prettyPrint(f(1)) + " * "   + prettyPrint(f(3)) + ")";
+            when f(2) = "+"   => return "(" + prettyPrint(f(1)) + " + "   + prettyPrint(f(3)) + ")";
+            when f(2) = "->"  => return "(" + prettyPrint(f(1)) + " -> "  + prettyPrint(f(3)) + ")";
+            when f(2) = "<->" => return "(" + prettyPrint(f(1)) + " <-> " + prettyPrint(f(3)) + ")";
+            otherwise => abort("Error in prettyPrint: " + str(f));
+        end case;
+    end prettyPrint;
+
+    -- Clauses ist eine Menge von Klauseln und Literals ist eine Menge
+    -- von Literalen.  Der Aufruf DavisPutnam(Clauses, Literals) versucht 
+    -- eine Lˆsung der Menge
+    --                        Clauses
+    -- zu berechnen.  Wenn dies gelingt, wird eine Menge von Unit-Klauseln 
+    -- zur¸ck gegeben, die keine komplement‰ren Literale enth‰lt.  Aus dieser 
+    -- Menge kann dann unmittelbar eine Belegung berechnet werden, die Clauses
+    -- lˆst.
+    --       Wenn die Menge Clauses unlˆsbar ist, wird false zur¸ck gegeben.
+    -- Das Argument Literals dient der Buchhaltung bei den rekursiven Aufrufen.
+    -- Hier werden alle die Literale aufgesammelt, mit denen die Menge Clauses
+    -- schon reduziert wurde.  Beim ersten Aufruf ist diese Menge leer.
+    procedure DavisPutnam( Clauses, Literals );
+        -- 1. Schritt: Bilde solange wie mˆglich Unit-Schnitte mit den Klauseln
+        --             aus Clauses und entferne subsumierte Klauseln.
+        Clauses := saturate(Clauses);
+        -- 2. Schritt: Falls {} in Clauses, ist Clauses unerf¸llbar,
+        --             also gilt Clauses |= false und wir geben true zur¸ck.
+        if {} in Clauses then
+            return false;
+        end if;
+        -- 3. Schritt: Falls f¸r alle Klauseln k aus Clauses gilt card(k) = 1,
+        --             so ist die Menge Clauses erf¸llbar, wir geben dann
+        --             die Menge Clauses zur¸ck.
+        if { k in Clauses | #k = 1 } = Clauses then
+            return Clauses;
+        end if;
+        -- 4. Schritt: W‰hle Literal l aus Clauses, dass noch nicht benutzt
+        --             worden ist.
+        literal := selectLiteral(Clauses, Literals);
+        --   Fall (a): Pr¸fe rekursiv, ob Clauses + { {l} } |= false.
+        --             Falls es eine Belegung I gibt, die die Menge Clauses + {l} erf¸llt,
+        --             gebe I zur¸ck.
+        --             Sonst weiter bei (b).
+        Result := DavisPutnam(Clauses + {{literal}}, Literals + { literal });
+        if Result /= false then
+            return Result;
+        end if;        
+        --   Fall (b): Pr¸fe rekursiv, ob Clauses + { {-l} } |= false.
+        --             Falls es eine Belegung I gibt, die die Menge Clauses + {-l} erf¸llt,
+        --             gebe I zur¸ck.
+        --             Sonst haben wir Clauses + {{l}} |= false. und Clauses + {{-l}} |= false
+        --             und daraus folgt Clauses |= false, wir geben also true zur¸ck.
+        notLiteral := negateLiteral(literal);
+        return DavisPutnam(Clauses + {{notLiteral}}, Literals + { notliteral } );
+    end DavisPutnam;
+
+    -- Gegeben ist eine Menge S von Klauseln.  Der Aufruf saturate(S) berechnet alle
+    -- Klauseln, die mit Unit Schnitten aus S ableitbar sind.  Zus‰tzlich werden alle
+    -- Klauseln, die von Unit-Klauseln subsumiert werden, aus der Menge S entfernt.
+    procedure saturate(S);
+        -- Wir berechnen zun‰chst alle Unit-Klauseln.
+        Units := { k in S | #k = 1 };
+        -- Wir m¸ssen uns merken, welche Unit-Klauseln wir schon benutzt haben.
+        Used := {};
+        -- Solange wir unbenutzte Unit-Klauseln haben, w‰hlen wir eine 
+        -- Unit-Klausel aus, merken uns, dass wir diese Klausel benutzt haben 
+        -- und bilden alle mˆglichen Schnitte mit anderen Klauseln.  
+        while Units /= {} loop
+            unit := arb Units;
+            Used := Used + { unit };
+            literal := arb unit;
+            S := reduce(S, literal);
+            -- Da bei der Reduktion neue Unit-Klauseln entstehen kˆnnen, 
+            -- m¸ssen wir die Menge der Unit-Klauseln bei jedem Durchlauf
+            -- der Schleife neu berechnen.  
+            Units := { k in S | #k = 1 } - Used;        
+        end loop;
+        -- Wenn keine neuen Unit-Klauseln gefunden werden, geben wir S zur¸ck.
+        return S;
+    end saturate;
+
+    -- Die Prozedur reduce(S,l) f¸hrt alle Unit-Schnitte und alle Unit-Subsumptionen,
+    -- die mit der Unit-Klausel {l} mˆglich sind, durch.
+    procedure reduce( S, l );
+        notL := negateLiteral(l);
+        return   { k - { notL } : k in S | notL in k } 
+               + { k in S | not notL in k and not l in k } 
+               + { {l} };
+    end reduce;
+
+    -- Wir w‰hlen ein beliebiges Literal aus einer beliebigen Klausel,
+    -- so dass weder dieses Literal noch die Negation benutzt wurden.
+    procedure selectLiteral( S, Forbidden );
+        return arb { l : k in S, l in k | not l in Forbidden };
+    end selectLiteral;
+
+    -- Diese Prozedur berechnet das Komplement des Literals l.
+    procedure negateLiteral(l);
+        if l(1) = "-" then
+            return l(2);
+        else
+            return [ "-", l ];
+        end if;
+    end negateLiteral;
+
+    -- Diese Prozedur ¸berf¸hrt die Formel f in konjunktive Normalform.
+    procedure normalize(f);
+        n1 := elimGdw(f);
+        n2 := elimFolgt(n1);
+        n3 := nnf(n2);
+        n4 := knf(n3);
+        return n4;
+    end normalize;
+
+    -- Eliminiert den Operator "gdw" aus der eingegebenen Formel f.
+    procedure elimGdw(f);
+        case
+            when f = "1"      => return "1";
+            when f = "0"      => return "0";
+            when is_string(f) => return f;
+            when f(1) = "-"   => return [ "-", elimGdw( f(2) ) ];
+            when f(2) = "*"   => return [ elimGdw( f(1) ), "*", elimGdw( f(3) ) ];
+            when f(2) = "+"   => return [ elimGdw( f(1) ), "+", elimGdw( f(3) ) ];
+            when f(2) = "->"  => return [ elimGdw( f(1) ), "->", elimGdw( f(3) ) ];
+            when f(2) = "<->" => return
+	         elimGdw( [ [ f(1), "->", f(3) ], "*", [ f(3), "->", f(1) ] ] );
+            otherwise         =>  print("Fehler in elimGdw( ", f, ")" );
+        end case;
+    end elimGdw;
+
+    -- Eliminiert den Operator "->" aus der eingegebenen Formel f.
+    -- Es wird vorausgesetzt, dass der Operator "<->" bereits vorher 
+    -- eliminiert wurde.
+    procedure elimFolgt(f);
+        case
+            when f = "1"      =>  return "1";
+            when f = "0"      =>  return "0";
+            when is_string(f) =>  return f;
+            when f(1) = "-"   =>  return [ "-", elimFolgt(f(2)) ];
+            when f(2) = "*"   =>  return [ elimFolgt(f(1)), "*", elimFolgt(f(3)) ];
+            when f(2) = "+"   =>  return [ elimFolgt(f(1)), "+", elimFolgt(f(3)) ];
+            when f(2) = "->"  =>  return elimFolgt( [ [ "-", f(1) ], "+", f(3) ] );
+            otherwise         =>  print("Fehler in elimFolgt( ", f, ")" );
+        end case;
+    end elimFolgt;
+
+    -- Berechnet die Negations-Normalform der Formel f.
+    procedure nnf(f);
+        case
+            when f = "1"      =>  return "1";
+            when f = "0"      =>  return "0";
+            when is_string(f) =>  return f;
+            when f(1) = "-"   =>  return neg( f(2) );
+            when f(2) = "*"   =>  return [ nnf( f(1) ), "*", nnf( f(3) ) ];
+            when f(2) = "+"   =>  return [ nnf( f(1) ), "+", nnf( f(3) ) ];
+            otherwise         => print("Fehler in nnf( ", f, ")" );
+        end case;
+    end nnf;
+
+    -- Diese Funktion berechnet die Negations-Normalform von (-f) und schiebt dabei
+    -- das Negationszeichen soweit wie mˆglich nach innen.
+    procedure neg(f);
+        case
+            when f = "1"      => return "0";
+            when f = "0"      => return "1";
+            when is_string(f) => return [ "-", f ];
+            when f(1) = "-"   => return nnf( f(2) );
+            when f(2) = "*"   => return [ neg( f(1) ), "+", neg( f(3) ) ];
+            when f(2) = "+"   => return [ neg( f(1) ), "*", neg( f(3) ) ];
+            otherwise  => print("Fehler in neg( ", f, ")" );
+        end case;
+    end neg;
+
+    -- Diese Funktion berechnet die KNF von f durch Ausmultiplizieren.
+    -- Die KNF wird als Menge von Mengen dargestellt.  Es wird vorausgesetzt,
+    -- dass die Funktion f bereits in Negations-Normalform ist.
+    procedure knf(f);
+        case
+            when f = "1"      =>  return { };
+            when f = "0"      =>  return { {} };
+            when is_string(f) =>  return { { f } };
+            when f(1) = "-"   =>  return { { f } };
+            when f(2) = "*"   =>  return knf( f(1) ) + knf( f(3) );
+            when f(2) = "+"   =>  return { k1 + k2 : k1 in knf(f(1)), k2 in knf(f(3)) };
+            otherwise  => print("Fehler in knf( ", f, ")" );
+        end case;
+    end knf;
+
+end main;

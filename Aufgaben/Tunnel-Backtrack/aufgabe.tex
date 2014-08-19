@@ -1,0 +1,84 @@
+\documentclass{article}
+\usepackage{german}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{fancyvrb}
+\usepackage{alltt}
+
+\pagestyle{empty}
+
+\begin{document}
+\noindent
+{\Large \textbf{Aufgaben-Blatt}: Der Tunnel}
+\vspace{0.5cm}
+
+
+
+\noindent
+Vier Personen, Albert, Bruno, Claudia und Doris müssen eine Tunnel durchqueren.  Der Tunnel
+ist so eng, dass immer nur zwei Personen gleichzeitig hindurch können.  Außerdem braucht
+man zum Durchqueren eine Taschen-Lampe.  Die vier haben aber zusammen nur eine
+Taschen-Lampe.  Die Zeiten, die Albert, Bruno, Claudia und Doris zum Durchqueren benötigen
+sind 5 Minuten, 10 Minuten, 20 Minuten und 25 Minuten.  
+\begin{enumerate}
+\item Schreiben Sie ein \textsl{Prolog}-Programm, welches das Problem löst.
+\item Schreiben Sie ein \textsl{SetlX}-Programm, welches das Problem löst.
+      Das \textsc{SetlX}-Programm soll die Lösung durch Backtracking berechnen.
+      Versuchen Sie dabei analog vorzugehen wie in dem unten gezeigten
+      \textsc{SetlX}-Programm zur Lösung des 8-Damen-Problems.
+\end{enumerate} 
+
+
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    solve := procedure(l, n) { 
+        if (#l == n) {
+            return l;
+        }
+        for (x in [1 .. n ]) {
+            try {
+                check(l, x);
+                // if this works, try to add more queens
+                return solve(l + [x], n);
+            } catch (e) {
+                // do nothing, next value of x is tried automatically
+            }
+        }
+        // if we haven't found a solution so far, there is none
+        throw("no solution");
+    };
+    
+    check := procedure(l, x) {
+        if (x in l) {
+            throw("same row");
+        }
+        m := #l;
+        if (exists (i in {1 .. m} | i-l(i) == m+1-x || i+l(i) == m+1+x)) {
+            throw("same diagonal");
+        }
+    };
+
+    solveAndPrint := procedure(n) {
+        try {
+            l := solve([], n);
+            print(l);
+        } catch (e) {
+            print("There is no solution for n = $n$.");
+        }
+    };
+\end{Verbatim}
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latexosis
+%%% TeX-master: t
+%%% End: 

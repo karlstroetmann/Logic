@@ -1,0 +1,2762 @@
+\chapter{Die Programmier-Sprache \textsc{SetlX}}
+Die im letzten Kapitel vorgestellten Begriffs-Bildungen aus der Mengenlehre bereiten
+erfahrungsgemäß dem Anfänger aufgrund ihrer Abstraktheit gewisse Schwierigkeiten.  Um
+diese Begriffe vertrauter werden zu lassen, stelle ich daher nun eine Programmier-Sprache
+vor, die mit diesen Begriffen arbeitet.  Dies ist die Sprache \textsc{SetlX}.
+Diese Sprache basiert auf der Ende der siebziger Jahre von Jacob T.~Schwartz eingeführten
+Sprache \href{http://en.wikipedia.org/wiki/SETL}{\textsc{Setl}} \cite{setl86}.  
+Die Sprache \textsc{SetlX} lehnt sich in ihrer Syntax stark an die Programmiersprache \texttt{C} an,
+ist vom Konzept her aber als Derivat von \textsc{Setl} zu sehen. Sie finden auf der Webseite 
+\\[0.2cm]
+\hspace*{1.3cm}
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/SetlX/setlX.php}{\texttt{http://wwwlehre.dhbw-stuttgart.de/stroetmann/SetlX/setlX.php}}
+\\[0.2cm]
+eine Anleitung zur Installation von \textsc{SetlX}.
+
+\section{Einführende Beispiele}
+Wir wollen in diesem Abschnitt die Sprache \textsc{SetlX} an Hand einiger einfacher
+Beispiele vorstellen, bevor wir dann in den folgenden Abschnitten auf die Details
+eingehen.  
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                ]
+    -====================================setlX=============================v2.2.0=-
+    
+    Welcome to the setlX interpreter!
+    
+    Open Source Software from http://setlX.randoom.org/
+    (c) 2011-2013 by Herrmann, Tom
+    
+    You can display some helpful information by using '--help' as parameter when
+    launching this program.
+    
+    Interactive-Mode:
+      The 'exit;' statement terminates the interpreter.
+    
+    -===============================Interactive=Mode==============================-
+    
+    => 
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{\textsc{SetlX}-Interpreter nach dem Start.}
+\label{fig:setlx}
+\end{figure}
+
+Die Sprache \textsc{SetlX} ist eine interaktive Sprache, Sie können diese
+Sprache also unmittelbar über einen Interpreter aufrufen.  Falls Sie \textsc{SetlX} auf
+Ihrem Rechner installiert haben, können Sie den Befehl
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{setlx}
+\\[0.2cm]
+in einer Kommando-Zeile eingeben.  Anschließend meldet sich der Interpreter dann wie wie
+in Abbildung \ref{fig:setlx} auf Seite \pageref{fig:setlx} gezeigt.  Die Zeichenfolge
+``\texttt{=>}'' ist der Prompt, der Ihnen signalisiert, dass der Interpreter auf eine Eingabe
+wartet.  Geben Sie dort den  Text
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{1 + 2;}
+\\[0.2cm]
+ein und drücken anschließend auf die Eingabe-Taste, so erhalten Sie
+die folgende Ausgabe:
+
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    Hallo
+    ~< Result: 3 >~
+    
+    => 
+\end{Verbatim}
+Hier hat der Interpreter die Summe $1+2$ berechnet und das Ergebnis ausgegeben.  Es gibt auch eine
+Funktion, mit deren Hilfe Sie Werte ausdrucken können.  Diese Funktion heißt \texttt{print}.  Wenn
+Sie im Interpreter
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{print(\symbol{34}Hallo\symbol{34});}
+\\[0.2cm]
+eingeben und anschließend auf die Eingabe-Taste drücken, so erhalten Sie
+die folgende Ausgabe:
+
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    Hallo
+    ~< Result: om >~
+    
+    => 
+\end{Verbatim}
+Hier hat der Interpreter zunächst den Befehl \texttt{print(\symbol{34}Hallo\symbol{34})} ausgeführt und dabei
+den Text ``\texttt{Hallo}'' ausgegeben.  In der Zeile darunter wird der Wert des zuletzt
+ausgegebenen Ausdrucks angezeigt.  Da die Funktion $\texttt{print}()$ kein Ergebnis
+berechnet, ist der Rückgabe-Wert undefiniert.  Ein undefinierter Wert wird in
+\textsc{SetlX} mit $\Omega$ bezeichnet, was in der Ausgabe durch den String
+``\texttt{om}'' dargestellt wird.
+
+Die Funktion $\mathtt{print}()$ akzeptiert beliebig viele Argumente.  Wenn Sie
+beispielsweise das Ergebnis der Rechnung $36 \cdot 37 / 2$ ausgeben wollen, so können Sie dies über den Befehl
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{print(\symbol{34}36 * 37 / 2 = \symbol{34}, 36 * 37 / 2);}
+\\[0.2cm]
+erreichen.  Wenn Sie nur an der Auswertung dieses Ausdrucks interessiert sind, so können Sie diesen 
+Ausdruck auch unmittelbar hinter dem Prompt eingeben und mit einem Semikolon ``\texttt{;}'' abschließen.
+Wenn Sie nun die Eingabe-Taste betätigen, wird der Ausdruck ausgewertet und das Ergebnis angezeigt.
+
+Der \textsc{SetlX}-Interpreter läßt sich nicht nur interaktiv betreiben, sondern er kann auch vollständige
+Programme ausführen.  Speichern wir das in Abbildung \ref{fig:sum.stlx} gezeigte 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/sum.stlx}{Programm} in einer Datei mit
+dem Namen ``\texttt{sum.stlx}'' ab, so können wir in der Kommando-Zeile den Befehl
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{setlx sum.stlx}
+\\[0.2cm] 
+eingeben.  Dann wird zunächst der Text ``\texttt{Type a natural number} $\cdots$'' gefolgt von einem
+Doppelpunkt als Prompt ausgegeben.  Geben wir nun eine Zahl $n$ ein und betätigen die Eingabe-Taste, so wird
+als Ergebnis die Summe $\sum_{i=1}^n i$ ausgegeben.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    // This program reads a number n and computes the sum 1 + 2 + ... + n.
+    n := read("Type a natural number and press return: ");
+    s := +/ { 1 .. n };
+    print("The sum 1 + 2 + ... + ", n, " is equal to ", s, ".");
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Ein einfaches Programm zur Berechnung der Summe $\sum\limits_{i=1}^n i$.}
+\label{fig:sum.stlx}
+\end{figure}
+
+
+Wir diskutieren nun das in Abbildung \ref{fig:sum.stlx} auf Seite \pageref{fig:sum.stlx} gezeigte Programm
+Zeile für Zeile.  Die Zeilen-Nummern in dieser und den folgenden Abbildungen von \textsc{SetlX}-Programmen
+sind nicht Bestandteil der Programme sondern wurden hinzugefügt um in den Diskussionen
+dieser Programme besser auf einzelne Zeilen Bezug nehmen zu können. 
+\begin{enumerate}
+\item Die erste Zeile enthält einen Kommentar.  In \textsc{SetlX} werden Kommentare
+      durch den String ``\texttt{//}'' eingeleitet.  Aller Text zwischen diesem String und
+      dem Ende der Zeile wird von dem \textsc{SetlX}-Compiler ignoriert.  Neben
+      einzeiligen Kommentaren unterstützt \textsc{SetlX} auch mehrzeilige Kommentare, die
+      wie in der Sprache \texttt{C} durch die Strings ``\texttt{/*}'' und ``\texttt{*/}''
+      begrenzt werden.
+\item Die zweite Zeile enthält eine Zuweisung.  Die Funktion $\textsl{read}()$ gibt
+      zunächst den Text aus, der den Benutzer zur Eingabe einer Zahl auffordert und liest dann
+      den vom Benutzer eingegebenen String.  Falls der Benutzer eine Zahl eingibt, wird
+      dies erkannt und die eingegebene Zahl wird  Hilfe des
+      Zuweisungs-Operators ``\texttt{:=}'' der Variablen \texttt{n} zugewiesen.
+      An dieser Stelle gibt es zwei wichtige Unterschiede zur Syntax der Sprache
+      \texttt{C}:
+      \begin{enumerate}
+      \item \texttt{SetlX} verwendet den Zuweisungs-Operator ``\texttt{:=}'', während
+            die Programmiersprache \texttt{C} den String ``\texttt{=}'' als
+            Zuweisungs-Operator benutzt.
+      \item Alle Variablen müssen in der Sprache \textsc{SetlX} mit einem kleinen
+            Buchstaben beginnen.  In \texttt{C} können Variablen auch mit einem großen
+            Buchstaben beginnen.  Das selbe gilt für die Namen von Funktionen.
+      \end{enumerate}
+      Im Gegensatz zu der Sprache \texttt{C} ist die Sprache \textsc{SetlX} \emph{ungetypt}.
+      Daher ist es weder notwendig noch möglich, die Variable \texttt{n} zu deklarieren.
+      Würde der Benutzer an Stelle einer Zahl einen String eingeben, so würde das Programm später mit einer
+      Fehlermeldung abbrechen.
+\item Die dritte Zeile zeigt zunächst, wie sich Mengen als Aufzählungen definieren lassen.  Sind
+      $a$ und $b$ ganze Zahlen mit $a < b$, so berechnet der Ausdruck
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{\{ $a$ .. $b$ \}}
+      \\[0.2cm]
+      die Menge
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\{ x \in \mathbb{Z} \mid a \leq x \wedge x \leq b \}$.
+      \\[0.2cm]
+      Der Operator ``\texttt{+/}'' berechnet dann die Summe aller Elemente der Menge
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\{ i \in \mathbb{N} \mid 1 \leq i  \wedge i \leq n \}$
+      \\[0.2cm]
+      Das ist natürlich genau die Summe
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $1 + 2 + \cdots + n = \sum\limits_{i=1}^n i$.
+      \\[0.2cm]
+      Diese Summe wird der Variablen $s$ zugewiesen.
+\item In der letzten Zeile wird diese Summe ausgegeben.
+\end{enumerate}
+Als nächstes betrachten wir das in Abbildung \ref{fig:sum-recursive.stlx} auf Seite
+\pageref{fig:sum-recursive.stlx} gezeigte Programm 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/sum-recursive.stlx}{\texttt{sum-recursive.stlx}}, 
+das die Summe $\sum\limits_{i=0}^n i$ mit Hilfe einer Rekursion berechnet.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    sum := procedure(n) {
+        if (n == 0) { 
+            return 0;
+        } else {
+            return sum(n-1) + n;
+        }
+    };
+    
+    n     := read(("Zahl eingeben: "); 
+    total := sum(n);
+    print("Sum 0 + 1 + 2 + ... + ", n, " = ", total);
+\end{Verbatim} 
+\vspace*{-0.3cm}
+  \caption{Ein rekursives Programm zur Berechnung der Summe $\sum\limits_{i=0}^ni$.}
+  \label{fig:sum-recursive.stlx}
+\end{figure} 
+
+\begin{enumerate}
+\item Zeile 1 bis Zeile 7 enthalten die Definition der Prozedur \texttt{sum}.  Die 
+      Definition einer Prozedur wird in \textsc{SetlX} durch das Schlüsselwort
+      ``\texttt{procedure}'' eingeleitet.  Hinter diesem Schlüsselwort 
+      folgt zunächst eine öffnende Klammer ``\texttt{(}'', dann
+      eine Liste von Argumenten, welche durch ``\texttt{,}'' voneinander getrennt sind, 
+      und danach  eine schließenden Klammer ``\texttt{)}''.
+      Darauf folgt der Rumpf der Prozedur, der, genau wie in der Sprache \texttt{C},
+      durch die Klammern ``\texttt{\{}'' und
+      ``\texttt{\}}'' begrenzt wird.  Im Allgemeinen besteht der Rumpf aus einer
+      Liste von Kommandos.  In unserem Fall haben wir hier nur ein einziges Kommando.
+      Dieses Kommando ist allerdings ein zusammengesetztes Kommando und zwar eine
+      Fallunterscheidung.  Die allgemeine Form einer Fallunterscheidung ist wie folgt:
+
+      \begin{Verbatim}[ codes         = {\catcode`_=8\catcode`^=7},
+                        frame         = lines, 
+                        framesep      = 0.3cm, 
+                        labelposition = bottomline,
+                        numbers       = left,
+                        numbersep     = -0.2cm,
+                        xleftmargin   = 0.8cm,
+                        xrightmargin  = 0.8cm,
+                        commandchars  = \\\{\}
+                      ]
+        \textbf{if (} \textsl{test} \textbf{) \{}
+            \textsl{body}\(_1\)
+        \textbf{\} else \{}
+            \textsl{body}\(_2\)
+        \textbf{\}}
+      \end{Verbatim}
+      \vspace*{-0.1cm}
+      Die Semantik der Fallunterscheidung ist wie folgt:
+      \begin{enumerate}
+      \item Zunächst wird der Ausdruck \textsl{test} ausgewertet.  Bei der Auswertung
+            muß sich entweder der Wert ``\texttt{true}'' oder ``\texttt{false}'' ergeben.
+      \item Falls sich ``\texttt{true}'' ergibt, werden anschließend die Kommandos
+            in  \textsl{body}$_1$ ausgeführt.  Dabei ist \textsl{body}$_1$ 
+            eine Liste von Kommandos.
+      \item Andernfalls werden die Kommandos in der Liste \textsl{body}$_2$ ausgeführt.
+      \end{enumerate}
+      \textbf{Beachten Sie} hier die folgenden beiden \underline{Unterschiede} zur Sprache \texttt{C}:
+      \begin{enumerate}
+      \item Bei dem \texttt{if}-Befehl müssen Sie auch dann geschweifte Klammern
+            verwenden, wenn $\textsl{body}_1$ und $\textsl{body}_2$ nur aus einem einzigen
+            Befehl bestehen.
+      \item Die Definition der Prozedur muss durch ein Semikolon abgeschlossen werden.
+      \end{enumerate}
+      
+\item Nach der Definition der Prozedur \texttt{sum}  wird in Zeile 9 ein Wert 
+      in die Variable \texttt{n} eingelesen.
+\item Dann wird in Zeile 10 für den eben eingelesenen Wert von \texttt{n} die oben definierte Prozedur
+      \texttt{sum} aufgerufen.  
+
+      Zusätzlich enthält Zeile 10 eine Zuweisung: Der Wert, den der Prozedur-Aufruf
+      \texttt{sum(n)} zurück liefert, wird in die Variable \texttt{total}, die auf der
+      linken Seite des \emph{Zuweisungs-Operators} ``\texttt{:=}'' steht, geschrieben.
+\item Anschließend wird das berechnete Ergebnis durch einen \texttt{print}-Befehl ausgegeben.
+\end{enumerate}
+Die Prozedur \texttt{sum} in dem obigen Beispiel ist \emph{rekursiv}, d.h.~sie ruft sich
+selber auf.  Die Logik, die hinter der Implementierung steht, läßt sich am einfachsten
+durch die beiden folgenden bedingten Gleichungen erfassen:
+\begin{enumerate}
+\item $\textsl{sum}(0) = 0$,
+\item $n > 0 \rightarrow \textsl{sum}(n) = sum(n-1) + n$.
+\end{enumerate}
+Die Korrektheit dieser Gleichungen wird unmittelbar klar, wenn wir für $\textsl{sum}(n)$
+die Definition
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{sum}(n)= \sum\limits_{i=0}^n i$ 
+\\[0.2cm]
+einsetzen, denn offenbar gilt:
+\begin{enumerate}
+\item $\textsl{sum}(0)= \sum\limits_{i=0}^0 i = 0$,
+\item $\textsl{sum}(n)= \sum\limits_{i=0}^n i = \left(\sum\limits_{i=0}^{n-1} i\right) + n = \textsl{sum}(n-1) + n$. 
+
+\end{enumerate}
+Die erste Gleichung behandelt den Fall, dass die Prozedur sich nicht selbst
+aufruft.  Einen solchen Fall muss es in jeder rekursiv definierten Prozedur geben, denn
+sonst würde die Prozedur in einer Endlos-Schleife stecken bleiben. 
+
+\section{Darstellung von Mengen}
+Der wichtigste Unterschied zwischen der Sprache \textsc{SetlX} und der Sprache \texttt{C}
+besteht darin, dass \textsc{SetlX} die Verwendung von Mengen und Listen unmittelbar unterstützt.
+Um zu zeigen, wie wir in \textsc{SetlX} mit Mengen umgehen können, zeigen wir ein
+ einfaches Programm, das Vereinigung, Schnitt und
+Differenz zweier Mengen berechnet.   Abbildung \ref{fig:simple.stlx} zeigt die Datei
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/simple.stlx}{\texttt{simple.stlx}}.  
+Das in dieser Abbildung gezeigte Programm zeigt die Verwendung der
+elementaren Mengen-Operatoren in \textsc{SetlX}.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ codes         = {\catcode`$=3\catcode`_=8\catcode`^=7},
+                  frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  commandchars  = \\\{\},
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    a := \{ 1, 2, 3 \};
+    b := \{ 2, 3, 4 \};
+    // \emph{Berechnung der Vereinigungs-Menge} a $\cup$ b 
+    c := a + b;
+    print(a, " + ", b, " = ", c);
+    // \emph{Berechnung der Schnitt-Menge}      a $\cap$ b
+    c := a * b;
+    print(a, " * ", b, " = ", c);
+    // \emph{Berechnung der Mengen-Differenz}   a $\backslash$ b
+    c := a - b;
+    print(a, " - ", b, " = ", c);
+    // \emph{Berechnung der Potenz-Menge}      $\displaystyle 2^a$
+    c := pow(a);
+    print("pow(", a, ") = ", c);
+    // \emph{Überprüfung einer Teilmengen-Beziehung}  a $\subseteq$ b
+    print("(", a, " <= ", b, ") = ", (a <= b)); 
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Berechnung von $\cup$, $\cap$, $\backslash$ und Potenz-Menge}
+  \label{fig:simple.stlx}
+\end{figure} %$
+
+\noindent
+In Zeile 1 und 2 sehen wir, dass wir Mengen ganz einfach durch explizite Aufzählung ihrer
+Argumente angeben können.  In den Zeilen 4, 7 und 10 berechnen wir dann nacheinander 
+Vereinigung, Schnitt und Differenz dieser Mengen.  Hier ist zu beachten, dass dafür
+in \textsc{SetlX} die Operatoren ``\texttt{+}'', ``\texttt{*}'', ``\texttt{-}''
+verwendet werden.  
+In Zeile 13 berechnen wir die Potenz-Menge mit Hilfe der Funktion $\textsl{pow}()$.
+Schließlich überprüfen wir in Zeile 17 mit dem Operator ``\texttt{<=}'', 
+ob \texttt{a} eine Teilmenge von \texttt{b} ist.
+Führen wir dieses Programm aus, so
+erhalten wir die folgende Ausgabe:
+\begin{verbatim}
+    {1, 2, 3} + {2, 3, 4} = {1, 2, 3, 4}
+    {1, 2, 3} * {2, 3, 4} = {2, 3}
+    {1, 2, 3} - {2, 3, 4} = {1}
+    pow({1, 2, 3}) = {{}, {1}, {1, 2}, {1, 2, 3}, {1, 3}, {2}, {2, 3}, {3}}
+    ({1, 2, 3} <= {2, 3, 4}) = false
+\end{verbatim}
+Um interessantere Programme zeigen zu können, stellen wir jetzt weitere
+Möglichkeiten vor, mit denen wir in \textsc{SetlX} Mengen definieren können.
+
+\subsubsection{Definition von Mengen durch arithmetische Aufzählung}
+In dem letzten Beispiel hatten wir Mengen durch explizite Aufzählung definiert.  Das ist
+bei großen Mengen viel zu mühsam.  Eine Alternative ist daher die Definition einer Menge
+durch eine \emph{arithmetische Aufzählung}.  Wir betrachten zunächst ein Beispiel: 
+\begin{verbatim}
+        a := { 1 .. 100 };
+\end{verbatim}
+Die Menge, die hier der Variablen \texttt{a} zugewiesen wird, ist die Menge aller
+natürlichen Zahlen von 1 bis 100.  Die allgemeine Form einer solchen Definition ist \\[0.2cm]
+\hspace*{1.3cm} \texttt{a := \{ \textsl{start} .. \textsl{stop} \};} \\[0.2cm]
+Mit dieser Definition würde \texttt{a} die Menge aller ganzen Zahlen von
+\textsl{start} bis \textsl{stop} zugewiesen, formal gilt \\[0.2cm]
+\hspace*{1.3cm} $\texttt{a} = \{ n \in \mathbb{Z} \mid \textsl{start} \leq n \wedge n \leq\textsl{stop} \}$. \\[0.2cm]
+Es gibt noch eine Variante der arithmetischen Aufzählung, die wir ebenfalls durch ein
+Beispiel einführen. 
+\begin{verbatim}
+        a := { 1, 3 .. 100 };
+\end{verbatim}
+Die Menge, die hier der Variablen \texttt{a} zugewiesen wird, ist die Menge aller
+ungeraden natürlichen Zahlen von 1 bis 100.  Die Zahl 100 liegt natürlich nicht
+in dieser Menge, denn sie ist ja gerade.
+Die allgemeine Form einer solchen Definition ist \\[0.2cm]
+\hspace*{1.3cm} 
+\texttt{a := \{ \textsl{start}, \textsl{second} .. \textsl{stop} \}} \\[0.2cm]
+Definieren wir $\textsl{step} = \textsl{second} - \textsl{start}$ und ist \textsl{step} positiv, so läßt sich
+diese Menge formal wie folgt definieren: 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\texttt{a} = \{ \textsl{start} + n * \textsl{step} \mid n \in \mathbb{N} \wedge \textsl{start} + n * \textsl{step} \leq\textsl{stop} \}$. 
+\\[0.2cm]
+Beachten Sie, dass $\textsl{stop}$ nicht unbedingt ein Element der Menge 
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{a := \{ \textsl{start}, \textsl{second} .. \textsl{stop} \}} 
+\\[0.2cm]
+ist.  Beispielsweise gilt
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\{ 1, 3 .. 6 \} = \{ 1, 3, 5 \}}.
+
+
+\subsubsection{Definition von Mengen durch Iteratoren}
+Eine weitere Möglichkeit, Mengen zu definieren, ist durch die Verwendung von
+\emph{Iteratoren} gegeben.  Wir geben zunächst ein einfaches Beispiel: 
+\\[0.2cm]
+\hspace*{1.3cm} 
+\texttt{p := \{ n * m : n in \{2..10\}, m in \{2..10\} \};} 
+\\[0.2cm]
+Nach dieser Zuweisung enthält \texttt{p} die Menge aller \emph{nicht-trivialen} Produkte, deren
+Faktoren $\leq$ 10 sind.  (Ein Produkt der Form $a \cdot b$ heißt dabei \emph{trivial} genau
+dann, wenn einer der Faktoren $a$ oder $b$ den Wert $1$ hat.)
+In der Schreibweise der Mathematik  gilt für die oben definierte Menge \texttt{p}: 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\mathtt{p} = \bigl\{ n \cdot m \mid n \in \mathbb{N} \wedge m \in \mathbb{N} \wedge 
+                                 2 \leq n \wedge 2 \leq m \wedge n \leq 10 \wedge m \leq 10 
+              \bigl\}
+$. 
+\\[0.2cm]
+Wie ausdruckstark Iteratoren sind, läßt sich an dem Programm 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-difference.stlx}{\texttt{primes-difference.stlx}}
+erkennen, das in Abbildung \ref{fig:primes-sieve.stlx} auf Seite \pageref{fig:primes-sieve.stlx}
+gezeigt ist.  Das Programm berechnet die Menge der Primzahlen bis zu einer
+vorgegebenen Größe $n$ und ist so kurz wie eindrucksvoll.  Die zugrunde liegende
+Idee ist, dass eine Zahl genau dann eine Primzahl ist, wenn Sie von 1
+verschieden ist und sich nicht als Produkt zweier von 1 verschiedener Zahlen
+schreiben läßt.  Um also die Menge der Primzahlen kleiner gleich $n$ zu
+berechnen, ziehen wir einfach von der Menge 
+$\{ 2, \cdots, n \}$ die Menge aller Produkte
+ab.  Genau dies passiert in Zeile 2 des Programms.
+
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    n := 100;
+    primes := {2 .. n} - { p * q : p in {2..n}, q in {2..n} };
+    print(primes);
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Programm zur Berechnung der Primzahlen bis $n$.}
+  \label{fig:primes-sieve.stlx}
+\end{figure} %$
+
+Die allgemeine Form der Definition eine Menge mit Iteratoren ist durch den Ausdruck
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\{ \textsl{expr} : x_1 \;\mathtt{in}\; S_1,\; \cdots,\; x_n \;\mathtt{in}\; S_n \}$ 
+\\[0.2cm]
+gegeben.
+Hierbei ist $\textsl{expr}$ ein Term, in dem die Variablen $x_1$ bis $x_n$
+auftreten.  Weiterhin sind
+$S_1$ bis $S_n$ Ausdrücke, die bei ihrer Auswertung Mengen ergeben.  Die
+Ausdrücke \texttt{$x_i$ in $S_i$} werden dabei als \emph{Iteratoren} bezeichnet,
+weil die Variablen $x_i$ über alle Werte der entsprechenden Menge $S_i$ laufen
+(wir  sagen auch: \emph{iterieren}).
+Die mathematische Interpretation der obigen Menge ist dann durch \\[0.2cm]
+\hspace*{1.3cm} 
+$\bigl\{ \textsl{expr} \mid x_1 \in S_1 \wedge \cdots \wedge x_n \in S_n \bigr\}$ 
+\\[0.2cm]
+gegeben.  Die Definition einer Menge über Iteratoren entspricht  der
+Definition einer Menge als Bild-Menge.
+
+Es ist in \textsc{SetlX} auch möglich, das \emph{Auswahl-Prinzip} zu verwenden.  Dazu
+können wir Iteratoren mit einer Bedingung verknüpfen.   Die allgemeine Syntax
+dafür ist: \\[0.2cm]
+\hspace*{1.3cm}  
+$\{ \textsl{expr} : x_1 \;\mathtt{in}\; S_1,\; \cdots,\; x_n \;\mathtt{in}\; S_n \mid \textsl{cond}\, \}$. 
+\\[0.2cm]
+Hierbei haben die Ausdrücke  $\textsl{expr}$ und $S_i$ die selbe
+Bedeutung wie oben und 
+ $\textsl{cond}$ ist ein Ausdruck, der von den Variablen $x_1$, $\cdots$, $x_n$ abhängt und dessen Auswertung
+entweder \texttt{true} oder \texttt{false} ergibt.  Die mathematische
+Interpretation der obigen Menge ist dann \\[0.2cm]
+\hspace*{1.3cm} 
+$\bigl\{ \textsl{expr} \mid x_1 \in S_1 \wedge \cdots \wedge x_n \in S_n \wedge \textsl{cond} \,\bigr\}$. 
+\\[0.2cm]
+Wir geben ein konkretes Beispiel: Nach der Zuweisung
+\begin{alltt}
+  \texttt{primes := \{ p : p in  \{2..100\} | \{ x : x in \{1..p\} | p \% x == 0 \} == \{1, p\} \};}
+\end{alltt}
+ enthält \texttt{primes} die Menge aller Primzahlen, die
+kleiner oder gleich 100 sind.  Die der obigen Berechnung zugrunde liegende Idee
+besteht darin, dass eine Zahl genau dann eine Primzahl ist, wenn Sie nur durch 1
+und sich selbst teilbar ist.  Um festzustellen, ob eine Zahl $p$ durch eine
+andere Zahl $x$ teilbar ist, können wir in \textsc{SetlX} den Operator
+\texttt{\%} verwenden: Der Ausdruck $p \;\texttt{\%}\; x$ berechnet den Rest,
+der übrig bleibt, wenn Sie die Zahl $p$ durch $x$ teilen.  
+Eine Zahl $p$ ist also genau dann durch eine andere Zahl $x$ teilbar, wenn der
+Rest $0$ ist, wenn also  \texttt{$p \;\texttt{\%}\; x = 0$}
+gilt.  Damit liefert \\[0.2cm]
+\hspace*{1.3cm} \texttt{\{ x : x in \{1..p\} | p \% x == 0 \}}
+\\[0.2cm]
+genau die Menge aller Teiler von $p$ und $p$ ist eine Primzahl, wenn diese Menge
+nur aus den beiden Zahlen $1$ und $p$ besteht.  Das Programm aus der Datei 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-slim.stlx}{\texttt{primes-slim.stlx}}, 
+das in Abbildung
+\ref{fig:primes-slim.stlx} auf Seite \pageref{fig:primes-slim.stlx} gezeigt wird, benutzt diese Methode
+zur Berechnung der Primzahlen.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.4cm,
+                  xrightmargin  = 0.4cm
+                ]
+    teiler := procedure(p) {
+        return { t : t in {1..p} | p % t == 0 };
+    };
+    n      := 100;
+    primes := { p : p in {2..n} | teiler(p) == {1, p} };
+    print(primes);
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Alternatives Programm zur Berechnung der Primzahlen.  \label{fig:primes-slim.stlx}}
+\end{figure} %$
+
+Zunächst haben wir in den Zeilen 1 bis 3 die Funktion $\texttt{teiler}(p)$ definiert, die
+als Ergebnis die Menge der Teiler der Zahl $p$ berechnet.  Die Menge der Primzahlen ist dann die
+Menge der Zahlen $p$, die nur den Teiler $1$ oder $p$ haben.
+
+
+\section{Paare, Relationen und Funktionen}
+Das Paar $\langle x, y \rangle$ wird in \textsc{SetlX} in der Form $[x,y]$
+dargestellt, die spitzen Klammern werden also durch eckige Klammern ersetzt.
+Wir hatten im letzten Kapitel gesehen, dass wir eine Menge von Paaren, die
+sowohl links-total als auch rechts-eindeutig ist, auch als Funktion auffassen
+können.  Ist $R$ eine solche Menge und $x \in \textsl{dom}(R)$, so bezeichnet in
+\textsc{SetlX} der Ausdruck $R(x)$  das eindeutig bestimmte Element $y$, für das
+$\langle x, y \rangle \in R$ gilt.  Das Programm 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/function.stlx}{\texttt{function.stlx}}
+in Abbildung
+\ref{fig:function.stlx} auf Seite \pageref{fig:function.stlx} zeigt dies konkret.
+Zusätzlich zeigt das Programm noch, dass in \textsc{SetlX} bei einer binären
+Relation $\textsl{dom}(R)$ als $\texttt{domain}(R)$ und $\textsl{rng}(R)$ als $\mathtt{range}(R)$ geschrieben wird.
+Außerdem sehen wir in Zeile 2, dass wir den Wert einer funktionalen Relation durch eine
+Zuweisung ändern können.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    q := { [n, n**2] : n in {1..10} };
+    q[5] := 7;
+    print( "q[3]   = ", q[3]      );
+    print( "q[5]   = ", q[5]      );
+    print( "dom(q) = ", domain(q) );
+    print( "rng(q) = ", range(q)  );
+    print( "q = ", q );
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Rechnen mit binären Relationen.}  \label{fig:function.stlx}
+\end{figure} %$
+
+\noindent
+Das Programm berechnet in Zeile 1 die binäre Relation $q$ so, dass $q$ die
+Funktion $x \mapsto x*x$ auf der Menge $\{n\in \mathbb{N} \mid 1 \leq n \wedge n \leq 10 \}$
+repräsentiert.  
+
+An dieser Stelle eine Warnung: In \textsc{SetlX} müssen alle Variablen mit einem kleinen
+Buchstaben beginnen!  Normalerweise hätte ich die Relation \texttt{q} mit einem großen
+\texttt{Q} bezeichnen wollen, aber das geht nicht, denn alle Namen, die mit einem großen
+Buchstaben beginnen, sind zur Darstellung von \emph{Termen} reserviert.
+
+In Zeile 2 wird die Relation an der Stelle $x=5$ so abgeändert, dass nun $q(5)$ den Wert
+$7$ hat.   Anschließend werden noch $\textsl{dom}(Q)$ und $\textsl{rng}(Q)$ berechnet.
+Das Programm liefert die folgende Ausgabe:
+\begin{verbatim}
+    q[3]   = 9
+    q[5]   = 7
+    dom(q) = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+    rng(q) = {1, 4, 7, 9, 16, 36, 49, 64, 81, 100}
+    q = {[1, 1], [2, 4], [3, 9], [4, 16], [5, 7], [6, 36], [7, 49], [8, 64], 
+         [9, 81], [10, 100]}
+\end{verbatim}
+
+Es ist naheliegend zu fragen, was bei der Auswertung eines Ausdrucks der Form
+$R(x)$ passiert, wenn die Menge $\{ y \mid \langle x, y \rangle \in R \}$
+entweder leer ist oder aber aus mehr als einem Element besteht. 
+Das Programm 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/buggy-function.stlx}{\texttt{buggy-function.stlx}}
+in Abbildung
+\ref{fig:buggy-function.stlx} auf Seite \pageref{fig:buggy-function.stlx} beantwortet
+diese Frage auf experimentellem Wege.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    r := { [1, 1], [1, 4], [3, 3] };
+    print( "r[1] = ", r[1] );
+    print( "r[2] = ", r[2] );
+    print( "{ r[1], r[2] } = ", { r[1], r[2] } );
+    print( "r{1} = ", r{1} );
+    print( "r{2} = ", r{2} );
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Rechnen mit nicht-funktionalen binären Relationen.}  \label{fig:buggy-function.stlx}
+\end{figure} %$
+
+Falls die Menge  $\{ y \mid \langle x, y \rangle \in r \}$  entweder leer ist
+oder mehr als eine Element enthält, so ist der Ausdruck $r(x)$ undefiniert.
+Ein solcher Ausdruck wird in \textsc{SetlX} durch den String ``\texttt{om}'' dargestellt.
+Der Versuch, einen undefinierten Wert in eine Menge $M$ einzufügen, ändert diese
+Menge nicht, es gibt aber auch keine Fehlermeldung.  Deswegen wird in Zeile 4 für 
+die Menge \texttt{\{ r(1), r(2) \}} einfach die leere Menge ausgegeben.
+
+Will man das Auftreten von undefinierten Werten beim Auswerten einer binären
+Relation $r$ vermeiden, so gibt es in \textsc{SetlX} die Möglichkeit, $r\{x\}$ statt
+$r(x)$ zu schreiben, die runden Klammern werden also durch geschweifte Klammern ersetzt.  
+Der Ausdruck $r\{x\}$  ist für eine binäre Relation $r$ wie folgt definiert: 
+\\[0.2cm]
+\hspace*{1.3cm}
+ $r\{x\} := \{ y \mid \langle x, y \rangle \in r \}$ 
+\\[0.2cm]
+Daher liefert das Programm aus Abbildung \ref{fig:buggy-function.stlx} die folgende Ausgabe:
+\begin{verbatim}
+    r[1] = om
+    r[2] = om
+    { r[1], r[2] } = {}
+    r{1} = {1, 4}
+    r{2} = {}
+
+\end{verbatim}
+
+\section{Allgemeine Tupel}
+Auch beliebige $n$-Tupel lassen sich in \textsc{SetlX} darstellen.  Diese können
+ganz analog zu Mengen definiert werden.  Das geht denkbar einfach: Es müssen nur
+alle geschweiften Klammern der Form ``\texttt{\{}'' und ``\texttt{\}}'' durch
+die entsprechenden eckigen Klammern ``\texttt{[}'' und ``\texttt{]}'' ersetzt
+werden.  Dann können Tupel durch explizite Aufzählung, arithmetische Aufzählung, Iteration und das
+Auswahlprinzip in der selben Weise wie Mengen gebildet werden.  In \textsc{SetlX} werden Tupel in
+der Regel als \emph{Listen} bezeichnet.  Das Programm 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-tuple.stlx}{\texttt{primes-tuple.stlx}}
+in Abbildung \ref{fig:primes-tuple.stlx} zeigt, wie wir in \textsc{SetlX} mit Listen arbeiten
+können.  Dieses Programm berechnet die Primzahlen nach dem selben 
+Verfahren wir das Programm in Abbildung \ref{fig:primes-slim.stlx} auf Seite
+\pageref{fig:primes-slim.stlx}, benutzt aber Listen sowohl zur Darstellung der Menge der Primzahlen als auch
+zur Darstellung der Menge der Teiler.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    teiler := procedure(p) {
+        return [ t : t in {1..p} | p % t == 0 ];
+    };
+    
+    n := 100;
+    primes := [ p : p in [2 .. n] | teiler(p) == [1, p] ];
+    print(primes);
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Berechnung der Primzahlen mit Tupeln.}  
+\label{fig:primes-tuple.stlx}
+\end{figure} %$
+
+\section{Spezielle Funktionen und Operatoren auf Mengen}
+Das Programm 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/sort.stlx}{\texttt{sort.stlx}}
+in Abbildung \ref{fig:sort.stlx} auf Seite
+\pageref{fig:sort.stlx} zeigt ein einfaches Verfahren
+ um eine Liste von Zahlen zu sortieren.  
+Der Ausdruck \\[0.2cm]
+\hspace*{1.3cm}
+\texttt{max(s)}
+\\[0.2cm]
+berechnet das größte Element der Liste $s$.  
+Damit läuft die Variable $n$ in dem Iterator
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{n in [1 .. max(s)]}
+\\[0.2cm]
+dann von 1 bis zur größten in $s$ auftretenden Zahl.  
+Aufgrund der Bedingung ``\texttt{n in s}''
+wird die Zahl $n$ genau dann in die resultierende Liste eingefügt, wenn $n$ ein
+Element der Liste $s$ ist.  Da der Iterator 
+\\[0.2cm]
+\hspace*{1.3cm}
+``\texttt{n in [1 .. max(s)]}'' 
+\\[0.2cm]
+die Zahlen der Reihe nach aufzählt, ist das
+Ergebnis eine sortierte Liste, die genau die Zahlen enthält, die Elemente von $s$
+sind.
+
+Offensichtlich ist der in der Prozedur $\texttt{sort}()$ implementierte Algorithmus nicht sehr effizient.
+Wir werden später noch effizientere Algorithmen diskutieren.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    sort := procedure(s) {
+        return [ n : n in [1 .. max(s)] | n in s ];
+    };
+    s := [ 13, 5, 7, 2, 4 ];
+    print( "sort( ", s, " ) = ", sort(s) );
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Sortieren einer Menge.}  \label{fig:sort.stlx}
+\end{figure} %\$
+
+Analog zu der Funktion $\mathtt{max}()$ gibt es noch die Funktion $\texttt{min}()$ die das
+Minimum einer Menge oder Liste berechnet.  
+
+Weiterhin können die Operatoren ``\texttt{+/}''
+und ``\texttt{*/}'' auf Mengen angewendet werden.  Der Operator  ``\texttt{+/}'' berechnet
+die Summe aller Elemente einer Menge, während der Operator ``\texttt{*/}'' das Produkt der
+Elemente berechnet.  Ist die zu Grunde liegende Menge oder Liste leer, so geben diese
+Operatoren ``\texttt{+/}'' als Ergebnis ``\texttt{om}'' zurück.
+Die Operatoren ``\texttt{+/}'' und ``\texttt{*/}'' können auch als binäre Operatoren
+verwendet werden.  Ein Ausdruck der Form
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{x +/ s}
+\\[0.2cm]
+gibt als Ergebnis den Wert $x$ zurück, wenn die Menge $s$ leer ist.  Falls \texttt{s}
+nicht leer ist, liefert der obige Ausdruck die Summe der Elemente der Menge \texttt{s}.
+Ein Ausdruck der Form ``\texttt{x */ s}'' funktioniert analog:  Falls \texttt{s} leer ist,
+wird \texttt{x} zurück gegeben, sonst ist das Ergebnis das Produkt der Elemente aus \texttt{s}.
+
+Als nächstes besprechen wir die Funktion
+``\texttt{from}'', mit dem wir ein (nicht näher spezifiziertes) Element aus einer
+Menge auswählen können.  Die Syntax ist: 
+\\[0.2cm]
+\hspace*{1.3cm} 
+\texttt{$x$ \texttt{:= from(}$s$\texttt{)};}
+\\[0.2cm]
+Hierbei ist $s$ eine Menge und $x$  eine Variable.  Wird diese Anweisung
+ausgeführt, so wird ein nicht näher spezifiziertes Element aus der Menge $s$
+entfernt.  Dieses Element wird darüber hinaus der Variablen $x$ zugewiesen.
+Falls $s$ leer ist, so erhält $x$ den undefinierten Wert ``\texttt{om}'' und
+$s$ bleibt unverändert.  Das Programm 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/from.stlx}{\texttt{from.stlx}}
+in Abbildung \ref{fig:from.stlx} auf Seite
+\pageref{fig:from.stlx} nutzt diese Anweisung um eine Menge elementweise
+auszugeben.  Jedes Element wird dabei in einer eigenen Zeile ausgedruckt.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    printSet := procedure(s) {
+        if (s == {}) {
+            return;
+        }
+        x := from(s);
+        print(x);
+        printSet(s);
+    };
+    s := { 13, 5, 7, 2, 4 };
+    printSet(s);
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Menge elementweise ausdrucken.}  \label{fig:from.stlx}
+\end{figure} %\$
+
+Neben der Funktion ``\texttt{from}'' gibt es noch die Funktion
+``\texttt{arb}'',  die ein beliebiges Element aus einer Menge auswählt, die Menge selbst
+aber unverändert läßt.  Nach den Befehlen
+\begin{verbatim}
+    s := { 1, 2 };
+    x := arb(s);
+    print("x = ", x);
+    print("s = ", s);
+\end{verbatim}
+erhalten wir die folgende Ausgabe:
+\begin{verbatim}
+    x = 13
+    s = {2, 3, 5, 7, 13}
+\end{verbatim}
+
+
+Weiterhin steht für Listen der Operator ``\texttt{+}''
+zur Verfügung, mit dem zwei Listen aneinander gehängt werden können.
+Außerdem  gibt es noch den unären Operator ``\texttt{\#}'',
+der für Mengen und Listen die Anzahl der Elemente berechnet.
+Schließlich kann man Elemente von Listen mit der Schreibweise \\[0.2cm]
+\hspace*{1.3cm} \texttt{$x$ := $t$[$n$];} \\[0.2cm]
+indizieren.  In diesem Fall muss $t$ eine Liste sein, die mindestens die Länge
+$n$ hat.  Die obige Anweisung weist der Variablen $x$ dann den Wert des $n$-ten
+Elementes der Liste $t$ zu.  Die obige Zuweisung läßt sich auch umdrehen: Mit \\[0.2cm]
+\hspace*{1.3cm} \texttt{$t$[$n$] := $x$;} \\[0.2cm]
+wird die Liste $t$ so abgeändert, dass das $n$-te Element danach den Wert $x$ hat.
+Im Gegensatz zu der Sprache \texttt{C} werden in \textsc{SetlX} Listen mit 1 beginnend
+indiziert, falls wir die beiden Befehle
+\\[0.2cm]
+\hspace*{1.3cm} \texttt{l := [ 1, 2, 3 ];} \\
+\hspace*{1.3cm} \texttt{x := l[1];}
+\\[0.2cm]
+ausführen, hat \texttt{x} also anschließend den Wert 1.
+
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    a := [ 1, 2, 3 ];
+    b := [ 2, 3, 4, 5, 6 ];
+    c := { 5, 6, 7 };
+    // Aneinanderhängen von Tupeln mit +
+    print(a, " + ", b, " = ", a + b);
+    // Berechnung der Anzahl der Elemente einer Menge
+    print("# ", c, " = ", # c);
+    // Berechnung der Länge eines Tupels
+    print("# ", a, " = ", # a);
+    // Auswahl des dritten Elements von b
+    print(b, "[3] = ", b[3] );
+    // Überschreiben des 10. Elements von b
+    b[10] := 42;
+    print("b = ", b);
+    // Auswahl einer Teilliste
+    d := b(2..4);
+    print( "d = ", d);
+    x := 1;  y := 2;
+    [ x, y ] := [ y, x ];
+    print("x = ", x, ", y = ", y);
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Weitere Operatoren auf Tupeln und Mengen.}  \label{fig:simple-tuple.stlx}
+\end{figure} %\$
+
+Das Programm 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/simple-tuple.stlx}{\texttt{simple-tuple.stlx}}
+in Abbildung \ref{fig:simple-tuple.stlx} auf Seite
+\pageref{fig:simple-tuple.stlx} demonstriert die eben vorgestellten Operatoren.  
+Zusätzlich sehen wir in Zeile 19, dass \textsc{SetlX} simultane Zuweisungen unterstützt.
+Das Programm produziert die folgende Ausgabe:
+\begin{verbatim}
+    [1, 2, 3] + [2, 3, 4, 5, 6] = [1, 2, 3, 2, 3, 4, 5, 6]
+    # {5, 6, 7} = 3
+    # [1, 2, 3] = 3
+    [2, 3, 4, 5, 6][3] = 4
+    b = [2, 3, 4, 5, 6, om, om, om, om, 42]
+    d = [3, 4, 5]
+    x = 2, y = 1
+\end{verbatim}
+
+
+\subsection{Anwendung: \emph{Sortieren durch Auswahl}}
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    minSort := procedure(l) {
+        if (l == []) {
+           return [];
+        }
+        m := min(l);
+        return [ m ] + minSort( [ x : x in l | x != m ] );
+    };
+
+    l := [ 13, 5, 13, 7, 2, 4 ];
+    print( "sort( ", l, " ) = ", minSort(l) );
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Implementierung des Algorithmus \emph{Sortieren durch Auswahl}.}
+\label{fig:min-sort.stlx}
+\end{figure}
+
+\noindent
+Als praktische Anwendung zeigen wir eine Implementierung des Algorithmus 
+\emph{Sortieren durch Auswahl}.  Dieser Algorithmus, dessen Aufgabe es ist, eine gegebene
+Liste $L$ zu sortieren, kann wie folgt beschrieben werden:
+\begin{enumerate}
+\item Falls $L$ leer ist, so ist auch $\textsl{sort}(L)$ leer:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\textsl{sort}([]) = []$.
+\item Sonst berechnen wir das Minimum $m$ von $L$: 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $m = \min(L)$.
+      \\[0.2cm]
+      Dann entfernen wir $m$ aus der Liste $L$ und sortieren die Restliste rekursiv:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\textsl{sort}(L) = [ \min(L) ] + \textsl{sort}([ x \in L \mid x \not= \min(L) ])$.
+\end{enumerate}
+Abbildung \ref{fig:min-sort.stlx} auf Seite \pageref{fig:min-sort.stlx} zeigt das Programm
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/min-sort.stlx}{\texttt{min-sort.stlx}},
+das diese Idee in \textsc{SetlX} umsetzt. 
+
+
+\section{Kontroll-Strukturen}
+Die Sprache \textsc{SetlX} stellt alle Kontroll-Strukturen zur Verfügung, die
+ in modernen Sprachen üblich sind.  Wir haben  ``\texttt{if}''-Abfragen bereits mehrfach gesehen.
+In der  allgemeinsten Form hat eine Fallunterscheidung die in Abbildung \ref{fig:if} auf Seite
+\pageref{fig:if} gezeigte Struktur.
+\begin{figure}[!ht]
+\begin{Verbatim}[ codes         = {\catcode`$=3\catcode`_=8\catcode`^=7},
+                  frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  commandchars  = \\\{\},
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+      \texttt{if} (\textsl{test}\(_0\)) \texttt{\{}
+          \textsl{body}\(_0\)
+      \texttt{\} else if} (\textsl{test}\(_1\)) \texttt{\{}
+          \textsl{body}\(_1\)
+          \vdots
+      \texttt{\} else if} (\textsl{test}\(_n\)) \texttt{\{}
+          \textsl{body}\(_n\)
+      \texttt{\} else \{}
+          \textsl{body}\(_{n+1}\)
+      \texttt{\}}
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Struktur der allgemeinen Fallunterscheidung.}  
+\label{fig:if}
+\end{figure} %\$
+
+
+Hierbei steht $\textsl{test}_i$ für einen Test, der ``\texttt{true}'' oder
+``\texttt{false}'' liefert.  Liefert der Test ``\texttt{true}'', so wird der zugehörigen
+Anweisungen in $\textsl{body}_i$ ausgeführt, andernfalls wird der nächste
+Test  $\textsl{test}_{i+1}$ versucht.  Schlagen alle Tests fehl, so wird
+$\textsl{body}_{n+1}$ ausgeführt.
+ 
+Die Tests selber können dabei die binären Operatoren 
+\\[0.2cm]
+\hspace*{1.3cm}
+``\texttt{==}'',
+``\texttt{!=}'',
+``\texttt{>}'',
+``\texttt{<}'',
+``\texttt{>=}'',
+``\texttt{<=}'',
+``\texttt{in}'',
+\\[0.2cm]
+verwenden. Dabei  steht ``\texttt{==}'' für den Vergleich auf Gleichheit,
+``\texttt{!=}'' für den Vergleich auf Ungleichheit.
+Für Zahlen führen die Operatoren ``\texttt{>}'',
+``\texttt{<}'',
+``\texttt{>=}'' und 
+``\texttt{<=}''
+die selben Größenvergleiche durch wie in der Sprache \textsl{C}.  Für Mengen
+überprüfen diese Operatoren analog, ob die entsprechenden Teilmengen-Beziehung
+erfüllt ist.  Der Operator ``\texttt{in}'' überprüft, ob das erste Argument ein
+Element der als zweites Argument gegeben Menge ist: Der Test \\[0.2cm]
+\hspace*{1.3cm} \texttt{$x$ in $S$} \\[0.2cm]
+hat genau dann den Wert \texttt{true}, wenn $x \in S$ gilt.
+Aus den einfachen Tests, die mit Hilfe der oben vorgestellten Operatoren
+definiert werden können, können mit Hilfe der Junktoren ``\texttt{\&\&}'' (logisches \emph{und}),
+``\texttt{||}'' (logisches \emph{oder}) und ``\texttt{not}'' (logisches \emph{nicht})
+komplexere Tests aufgebaut werden.  
+Dabei bindet der Operator ``\texttt{||}'' am schwächsten und der Operator ``\texttt{!}''
+bindet am stärksten.  Ein Ausdruck der Form
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{!a == b \&\& b < c || x >= y}
+\\[0.2cm]
+wird also als
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{((!(a == b)) \&\& b < c) || x >= y}
+\\[0.2cm]
+geklammert.  Damit haben die logischen Operatoren die selbe Präzedenz wie in der Sprache \texttt{C}.
+
+\textsc{SetlX} unterstützt  die Verwendung von Quantoren.  Die Syntax für die Verwendung
+des Allquantors ist
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{forall (} $x$ \texttt{in} $s$ \texttt{|} \textsl{cond} \texttt{)}
+\\[0.2cm]
+Hier ist $s$ eine Menge und \textsl{cond} ist ein Ausdruck, der von der Variablen $x$ abhängt und einen
+Wahrheitswert als Ergebnis zurück liefert.  Die Auswertung des oben angegebenen Allquantors liefert genau
+dann \texttt{true} wenn die Auswertung von \textsl{cond} für alle Elemente der Menge $s$ den Wert
+\texttt{true} ergibt.  Abbildung \ref{fig:primes-forall.stlx} auf Seite
+\pageref{fig:primes-forall.stlx} zeigt das Programm
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-forall.stlx}{\texttt{primes-forall.stlx}},
+welches die  Primzahlen mit Hilfe eines Allquantors berechnet.
+Die Bedingung
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{forall (x in divisors(p) | x in \{1, p\})}
+\\[0.2cm]
+trifft auf genau die Zahlen $p$ zu, für die gilt, dass alle Teiler Elemente der Menge $\{1,p\}$ sind.
+Dies sind genau die Primzahlen.
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    isPrime := procedure(p) {
+        return forall (x in divisors(p) | x in {1, p});
+    };
+    divisors := procedure(p) {
+        return { t : t in {1..p} | p % t == 0 };
+    };
+    n := 100;
+    print([ p : p in [2..n] | isPrime(p) ]);
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Berechnung der Primzahlen mit Hilfe eines Allquantors}
+\label{fig:primes-forall.stlx}
+\end{figure}
+
+Neben dem Allquantor gibt es noch den Existenzquantor. Die Syntax ist:
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{exists (}$x$ \texttt{in} $s$ \texttt{|} \textsl{cond}\texttt{)}
+\\[0.2cm]
+Hierbei ist wieder eine $s$ eine Menge und \textsl{cond} ist ein Ausdruck, der zu \texttt{true} oder
+\texttt{false} ausgewertet werden kann.  Falls es wenigstens ein $x$ gibt, so dass die Auswertung von
+\textsl{cond} true ergibt, liefert die Auswertung des Existenzquantor ebenfalls den Wert \texttt{true}.
+\pagebreak
+
+\remark
+Liefert die Auswertung eines Ausdrucks der Form
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{exists (}$x$ \texttt{in} $s$ \texttt{|} \textsl{cond}\texttt{)}
+\\[0.2cm]
+den Wert \texttt{true}, so wird 
+\textbf{zusätzlich} der Variablen $x$ ein Wert zugewiesen, für den die Bedingung \textsl{cond}
+erfüllt ist.   Falls die Auswertung des Existenzquantors den Wert \texttt{false} ergibt,
+ändert sich der Wert von  $x$ nicht.
+
+
+\subsubsection{\texttt{Switch}-Blöcke}
+Als Alternative zur Fallunterscheidung mit Hilfe von \texttt{if}-\texttt{then}-\texttt{else}-Konstrukten
+gibt es noch den \texttt{switch}-Block.  Ein solcher Block hat die  in Abbildung \ref{fig:case} auf Seite
+\pageref{fig:case} gezeigte Struktur.  Bei der Abarbeitung werden der Reihe nach
+die Tests \textsl{test}$_1$, $\cdots$, \textsl{test}$_n$
+ausgewertet. Für den ersten Test \textsl{test}$_i$, dessen
+Auswertung den Wert \texttt{true} ergibt, wird der zugehörige Block
+\textsl{body}$_i$ ausgeführt.  Nur dann, wenn alle Tests 
+\textsl{test}$_1$, $\cdots$, \textsl{test}$_n$
+scheitern, wird der Block \textsl{body}$_{n+1}$ hinter dem Schlüsselwort
+\texttt{default} ausgeführt.  Den selben Effekt könnte man natürlich auch mit
+einer \texttt{if}-\texttt{else if}-$\cdots$-\texttt{else if}-\texttt{else}-Konstruktion erreichen,
+nur ist die Verwendung eines \texttt{switch}-Blocks oft 
+übersichtlicher.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ codes         = {\catcode`_=8\catcode`^=7},
+                  frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  commandchars  = \\\{\},
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+      \texttt{\underline{switch} \{}
+          \texttt{\underline{case}} \textsl{test}\(_1\) : \textsl{body}\(_1\) 
+          \vdots
+          \texttt{\underline{case}} \textsl{test}\(_n\) : \textsl{body}\(_n\)
+          \texttt{\underline{default}:} \textsl{body}\(_{n+1}\)
+      \texttt{\}}
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Struktur eines \texttt{switch}-Blocks}  \label{fig:case}
+\end{figure} 
+
+Abbildung \ref{fig:switch.stlx} zeigt das Programm
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/switch.stlx}{\texttt{switch.stlx}},
+bei dem es darum  geht, in Abhängigkeit von der letzte Ziffer einer Zahl eine Meldung auszugeben.  Bei
+der Behandlung der Aussagenlogik werden wir noch realistischere Anwendungs-Beispiele für den
+\texttt{switch}-Block kennenlernen.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    print("Zahl eingeben:");
+    n := read();
+    m := n % 10;
+    switch {
+        case m == 0 : print("letzte Ziffer ist 0");
+        case m == 1 : print("letzte Ziffer ist 1");
+        case m == 2 : print("letzte Ziffer ist 2");
+        case m == 3 : print("letzte Ziffer ist 3");
+        case m == 4 : print("letzte Ziffer ist 4");
+        case m == 5 : print("letzte Ziffer ist 5");
+        case m == 6 : print("letzte Ziffer ist 6");
+        case m == 7 : print("letzte Ziffer ist 7");
+        case m == 8 : print("letzte Ziffer ist 8");
+        case m == 9 : print("letzte Ziffer ist 9");
+        default     : print("impossible");
+    }
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Anwendung eines \texttt{switch}-Blocks}
+\label{fig:switch.stlx}
+\end{figure}
+
+In der Sprache \texttt{C} gibt es eine  analoge Konstruktion.
+ In \texttt{C} ist es so, dass nach einem
+Block, der nicht durch einen \texttt{break}-Befehl abgeschlossen wird, auch alle folgenden Blocks
+ausgeführt werden.  Dies ist in \textsc{SetlX} anders: Dort wird immer genau ein Block
+ausgeführt.
+
+Neben dem \texttt{switch}-Block gibt es noch dem \texttt{match}-Block, den wir allerdings
+erst später diskutieren werden.
+
+\subsection{Schleifen}
+Es gibt in \textsc{SetlX} Kopf-gesteuerte Schleifen (\texttt{while}-Schleifen)
+und Schleifen, die über die Elemente einer Menge iterieren (\texttt{for}-Schleifen).
+Wir diskutieren diese  Schleifenformen jetzt im Detail.
+
+\subsubsection{\texttt{while}-Schleifen}
+Die allgemeine Syntax der \texttt{while}-Schleife ist in Abbildung \ref{fig:while} auf Seite
+\pageref{fig:while} gezeigt.  Hierbei ist \textsl{test} ein Ausdruck, der zu
+Beginn ausgewertet wird und der ``\texttt{true}'' oder ``\texttt{false}'' ergeben muss.
+Ergibt die Auswertung ``\texttt{false}'', so ist die Auswertung der
+\texttt{while}-Schleife bereits beendet. Ergibt die Auswertung allerdings
+``\texttt{true}'', so wird anschließend \textsl{body} ausgewertet.  Danach beginnt
+die Auswertung der Schleife dann wieder von vorne, d.h.~es wird wieder
+\textsl{test} ausgewertet und danach wird abhängig von dem Ergebnis dieser
+wieder \textsl{body} ausgewertet.  Das ganze passiert so lange, bis irgendwann
+einmal die Auswertung von \textsl{test} den Wert ``\textsl{false}'' ergibt.
+Die von \textsc{SetlX} unterstützten \texttt{while}-Schleifen funktionieren genauso wie in
+der Sprache \texttt{C}.
+
+\begin{figure}[!ht]
+  \centering
+\begin{alltt}
+      \texttt{while (}\textsl{test}\texttt{) \{}
+          \textsl{body}
+      \texttt{\}}
+\end{alltt}
+\vspace*{-0.3cm}
+\caption{Struktur der \texttt{while}-Schleife}  \label{fig:while}
+\end{figure} 
+
+Abbildung \ref{fig:primes-while.stlx} auf Seite
+\pageref{fig:primes-while.stlx} zeigt das Programm
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-while.stlx}{\texttt{primes-while.stlx}},
+das die Primzahlen mit Hilfe einer \texttt{while}-Schleife berechnet.
+Hier ist die Idee, dass eine Zahl genau dann Primzahl ist, wenn es keine
+kleinere Primzahl gibt, die diese Zahl teilt.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    n := 100;
+    primes := {};
+    p := 2;
+    while (p <= n) {
+        if (forall (t in primes | p % t != 0)) {
+            print(p);
+            primes := primes + { p };
+        }
+        p := p + 1;
+    }
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Iterative Berechnung der Primzahlen.}  \label{fig:primes-while.stlx}
+\end{figure} %\$
+
+
+\subsubsection{\texttt{for}-Schleifen}
+Die allgemeine Syntax der \texttt{for}-Schleife ist in Abbildung \ref{fig:for} auf Seite
+\pageref{fig:for} gezeigt.  Hierbei ist $s$ eine Menge (oder eine Liste) und $x$ der Name einer
+Variablen. Diese Variable wird nacheinander mit allen Werten aus der Menge $s$
+belegt und anschließend wird mit dem jeweiligen Wert von $x$ der
+Schleifenrumpf \textsl{body} ausgeführt.  
+
+\begin{figure}[!ht]
+  \centering
+\begin{alltt}
+      \texttt{for (}\textsl{x} \texttt{in} \textsl{s}\texttt{) \{}
+          \textsl{body}
+      \texttt{\}}
+\end{alltt}
+\vspace*{-0.3cm}
+\caption{Struktur der \texttt{for}-Schleife.}  \label{fig:for}
+\end{figure} 
+
+Abbildung \ref{fig:primes-for.stlx} auf Seite
+\pageref{fig:primes-for.stlx} zeigt das Programm
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-for.stlx}{\texttt{primes-for.stlx}},
+das die Primzahlen mit Hilfe einer \texttt{for}-Schleife berechnet.
+Der dabei verwendete Algorithmus ist als das \emph{Sieb des Eratosthenes}
+bekannt.  Das funktioniert wie folgt: Sollen alle Primzahlen kleiner oder gleich
+$n$ berechnet werden, so wird zunächst ein Tupel der Länge $n$ gebildet, dessen
+$i$-tes Element den Wert $i$ hat.  Das passiert in Zeile 3.  Anschließend werden 
+ alle Zahlen, die Vielfache von 2, 3, 4, $\cdots$ sind, aus der Menge der
+Primzahlen entfernt, indem die Zahl, die an dem entsprechenden Index in der Liste
+\texttt{primes} steht, auf 0 gesetzt wird.
+Dazu sind zwei Schleifen erforderlich: Die äußere \texttt{for}-Schleife iteriert
+$i$ über alle Werte von 2 bis $n$.  Die innere \texttt{while}-Schleife iteriert dann für
+gegebenes $i$ über alle Werte $i \cdot j$, für die das Produkt $i \cdot j \leq n$ ist.
+Schließlich
+werden in der letzten \texttt{for}-Schleife in den Zeilen 14 bis 18 alle die
+Indizes $i$ ausgedruckt, für die $\mathtt{primes}(i)$  nicht auf 0 gesetzt worden ist,
+denn das sind genau die Primzahlen.
+
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    n := 100;
+    primes := [1 .. n];
+    for (i in [2 .. n]) {
+        j := 2;
+        while (i * j <= n) {
+            primes[i * j] := 0;
+            j := j + 1;
+        }
+    }
+    print({ i : i in [2 .. n] | primes[i] > 0 });
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Berechnung der Primzahlen nach Eratosthenes.}  \label{fig:primes-for.stlx}
+\end{figure} %$
+
+Der Algorithmus aus Abbildung \ref{fig:primes-for.stlx} kann durch die folgende Beobachtungen
+noch verbessert werden: 
+\begin{enumerate}
+\item Es reicht aus, wenn $j$ mit $i$ initialisiert wird, denn alle kleineren Vielfachen von $i$
+      wurden bereits vorher auf 0 gesetzt.
+\item Falls in der äußeren Schleife die Zahl $i$ keine Primzahl ist, so bringt es nichts mehr, die
+      innere \texttt{while}-Schleife in den Zeilen 9 bis 11 zu durchlaufen, denn alle
+      Indizes, für die dort \texttt{primes[i*j]} auf 0 gesetzt wird, sind schon bei dem
+      vorherigen Durchlauf der äußeren Schleife, bei der \texttt{primes[i]}
+      auf 0 gesetzt wurde, zu 0 gesetzt worden. 
+
+      Abbildung \ref{fig:primes-eratosthenes.stlx} auf Seite
+      \pageref{fig:primes-eratosthenes.stlx} zeigt das Programm
+      \href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-eratosthenes.stlx}{\texttt{primes-eratosthenes.stlx}},
+      das diese Ideen umsetzt.
+      Um den Durchlauf der inneren while Schleife in dem Fall, dass
+      \texttt{primes[i] = 0} ist, zu überspringen, haben wir den Befehl ``\texttt{continue}''
+      benutzt.  Der Aufruf von ``\texttt{continue}'' bricht die Abarbeitung des
+      Schleifen-Rumpfs für den aktuellen Wert von \texttt{i} ab, weist der Variablen
+      \texttt{i} den nächsten Wert aus \texttt{[1..n]} zu und fährt dann mit der
+      Abarbeitung der Schleife in Zeile 4 fort.  Der Befehl ``\texttt{continue}'' verhält sich
+      also genauso, wie der Befehl ``\texttt{continue}'' in der Sprache \textsl{C}.
+\end{enumerate}
+
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    n := 10000;
+    primes := [1 .. n];
+    for (i in [2 .. n/2]) {
+        if (primes[i] == 0) {
+            continue;
+        }
+        j := i;
+        while (i * j <= n) {
+            primes[i * j] := 0;
+            j := j + 1;
+        }
+    }
+    print({ i : i in [2 .. n] | primes[i] > 0 });
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Effizientere Berechnung der Primzahlen nach Eratosthenes.}  \label{fig:primes-eratosthenes.stlx}
+\end{figure} %\$
+\pagebreak
+
+
+\subsection{Fixpunkt-Algorithmen}
+Angenommen, wir wollen in der Menge $\mathbb{R}$ der reellen Zahlen die
+Gleichung \\[0.2cm]
+\hspace*{1.3cm} $x = cos(x)$ \\[0.2cm]
+lösen.  Ein naives Verfahren, das hier zum Ziel führt, basiert auf der
+Beobachtung, dass die Folge $(x_n)_n$, die durch \\[0.2cm]
+\hspace*{1.3cm} $x_0 := 0$ und $x_{n+1} := \mathtt{cos}(x_n)$ für alle $n \in \mathbb{N}$ \\[0.2cm]
+definiert ist, gegen eine Lösung der obigen Gleichung konvergiert.  Damit führt das in
+Abbildung \ref{fig:solve.stlx} auf Seite \pageref{fig:solve.stlx} angegebene Programm
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/solve.stlx}{\texttt{solve.stlx}}
+zum Ziel.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    x := 0.0;
+    while (true) {
+        old_x := x;
+        x := cos(x);    
+        print(x);
+        if (abs(x - old_x) < 1.0e-13) {
+            print("x = ", x);
+            break;
+        }   
+    }
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Lösung der Gleichung $x = cos(x)$ durch Iteration.}  \label{fig:solve.stlx}
+\end{figure} %\$
+
+Bei dieser Implementierung wird die Schleife in dem Moment abgebrochen, wenn die
+Werte von \texttt{x} und \texttt{old\_x} nahe genug beieinander liegen.  Dieser
+Test kann aber am Anfang der Schleife noch gar nicht durchgeführt werden, weil
+da die Variable \texttt{old\_x} noch gar keinen Wert hat.  Daher brauchen wir
+hier das Kommando ``\texttt{break}''.  Dieses bricht die Schleife ab.
+In der Sprache \textsl{C} hat das Kommando ``\texttt{break}'' die selbe Funktion.  
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    solve := procedure(f, x0) {
+        x := x0;
+        for (n in [1 .. 10000]) {
+            oldX := x;
+            x := f(x);
+            if (abs(x - oldX) < 1.0e-15) {
+                return x;
+            }
+        }
+    };
+    print("solution to x = cos(x):  ", solve(cos, 0));
+    print("solution to x = 1/(1+x): ", solve(x |-> 1.0/(1+x), 0));
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Eine generische Implementierung des Fixpunkt-Algorithmus}.
+\label{fig:fixpoint.stlx}
+\end{figure}
+
+Abbildung \ref{fig:fixpoint.stlx} zeigt das Program
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/fixpoint.stlx}{\texttt{fixpoint.stlx}}.
+Hier ist eine generische Funktion \texttt{solve} implementiert, die zwei Argumente verarbeitet: 
+\begin{enumerate}
+\item Das Argument \texttt{f} ist die Funktion, für die ein Fixpunkt berechnet werden soll.
+\item Das Argument \texttt{x0} gibt den Startwert der Fixpunkt-Iteration an.
+\end{enumerate}
+In Zeile 11 haben wir die Funktion \texttt{solve} aufgerufen, um die Gleichung $x = \cos(x)$ zu
+lösen.  In Zeile 12 lösen wir die Gleichung 
+\\[0.2cm]
+\hspace*{1.3cm}
+$x = \bruch{1}{1+x}$ 
+\\[0.2cm]
+die zu der quadratischen Gleichung $x^2 + x = 1$ äquivalent ist.  Beachten Sie, dass wir die
+Funktion $x \mapsto \frac{1}{1+x}$ in \textsc{SetlX} durch den Ausdruck
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{x |-> 1.0/(1+x)}
+\\[0.2cm]
+definieren können.  Hier habe ich die Fließkomma-Zahl $1.0$ verwendet, das \textsc{SetlX} sonst mit
+rationalen Zahlen rechnen würde, was wesentlich aufwendiger ist.
+
+
+
+Ganz nebenbei zeigt das obige Beispiel auch, dass Sie in \textsc{SetlX} nicht
+nur mit ganzen, sondern auch mit reellen Zahlen rechnen können.  Eine Zahlen-Konstante,
+die den Punkt ``\texttt{.}'' enthält, wird automatisch als reelle Zahl erkannt
+und auch so abgespeichert.  In \textsc{SetlX} stehen unter anderem die folgenden reellen
+Funktionen zur Verfügung: 
+\begin{enumerate}
+\item Der Ausdruck $\texttt{sin}(x)$ berechnet den Sinus von $x$.
+      Außerdem stehen die trigonometrischen Funktionen $\texttt{cos}(x)$ und 
+      $\texttt{tan}(x)$ zur Verfügung. Die Umkehr-Funktionen der trigonometrischen Funktionen sind
+      $\texttt{asin}(x)$, $\texttt{acos}(x)$ und $\texttt{atan}(x)$.    
+
+      Der Sinus Hyperbolicus von $x$ wird durch $\mathtt{sinh}(x)$ berechnet. 
+      Entsprechend berechnet $\mathtt{cosh}(x)$ den Kosinus Hyperbolicus und
+      $\mathtt{tanh}(x)$ den Tangens Hyperbolicus.
+\item Der Ausdruck $\texttt{exp}(x)$ berechnet die Potenz zur Basis $e$, es gilt
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{exp}(x) = e^x$.
+\item Der Ausdruck $\texttt{log}(x)$ berechnet den natürlichen Logarithmus von $x$.
+       Der Logarithmus zur Basis 10 von $x$ wird durch $\mathtt{log10}(x)$ berechnet.
+\item Der Ausdruck $\texttt{abs}(x)$ berechnet den Absolut-Betrag von $x$, während
+      $\mathtt{signum}(x)$ das Vorzeichen von $x$ berechnet.
+\item Der Ausdruck $\texttt{sqrt}(x)$ berechnet die Quadrat-Wurzel von $x$, es gilt
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{sqrt}(x) = \sqrt{x}$.
+\item Der Ausdruck $\texttt{cbrt}(x)$ berechnet die dritte Wurzel von $x$, es gilt
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{cbrt}(x) = \sqrt[3]{x}$.
+\item Der Ausdruck $\texttt{ceil}(x)$ berechnet die kleinste ganze Zahl, die größer oder
+      gleich $x$ ist, es gilt
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{ceil}(x) = \min(\{ z \in \mathbb{Z} \mid z \geq x \})$.
+\item Der Ausdruck $\texttt{floor}(x)$ berechnet die größte ganze Zahl, die kleiner oder
+      gleich $x$ ist, es gilt
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{floor}(x) = \max(\{ z \in \mathbb{Z} \mid z \leq x \})$.
+\item Der Ausdruck $\texttt{round}(x)$ rundet $x$ zu einer ganzen Zahl.
+\end{enumerate}
+Darüber hinaus unterstützt \textsc{SetlX} die Verwendung von rationalen Zahlen.  Die
+Eingabe von
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{1/2 + 1/3;}
+\\[0.2cm]
+liefert das Ergebnis \texttt{5/6}.
+
+
+\subsection{Verschiedenes}
+Der Interpreter bietet die Möglichkeit, komplexe Programme zu laden.  Der Befehl
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{load(\textsl{file});}
+\\[0.2cm]
+lädt das Programm, dass sich in der Datei \textsl{file} befindet und führt die in dem
+Programm vorhandenen Befehle aus.  Führen wir beispielsweise den Befehl
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{load(\symbol{34}primes-forall.stlx\symbol{34});}
+\\[0.2cm]
+im Interpreter aus und enthält die Datei ``\texttt{primes-forall.stlx}'' das in Abbildung
+\ref{fig:primes-forall.stlx} auf Seite \pageref{fig:primes-forall.stlx} gezeigte Programm,
+so können wir anschließend mit den in dieser Datei definierten Variablen arbeiten.
+Beispielsweise liefert der Befehl
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{print(isPrime);}
+\\[0.2cm]
+die Ausgabe:
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{procedure (p) \{ return forall (x in divisors(p) | x in \{1, p\}); \}}
+\\[0.2cm]
+Zeichenketten, auch bekannt als \emph{Strings}, werden in \textsc{SetlX} in doppelte
+Hochkommata gesetzt.  Der Operator ``\texttt{+}'' kann dazu benutzt werden, zwei Strings
+aneinander zu hängen, der Ausdruck 
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\squote{abc} + \squote{uvw};}
+\\[0.2cm]
+liefert also das Ergebnis
+\\[0.2cm]
+\hspace*{1.3cm}
+\squote{abcuvw}.
+\\[0.2cm]
+Zusätzlich kann eine natürliche Zahl $n$ mit einem String $s$ über den
+Multiplikations-Operator ``\texttt{*}'' verknüpft werden.  Der Ausdruck 
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{n * s;}
+\\[0.2cm]
+liefert als Ergebnis die $n$-malige Verkettung von $s$.  Beispielsweise ist das Ergebnis von
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{3 * \squote{abc};}
+\\[0.2cm]
+der String
+\\[0.2cm]
+\hspace*{1.3cm}
+\squote{abcabcabc}.
+
+\section{Fallstudie: Berechnung von Wahrscheinlichkeiten}
+Wir wollen in diesem kurzen Abschnitt zeigen, wie sich Wahrscheinlichkeiten für die Poker-Variante
+\textsl{Texas Hold'em} berechnen lassen.  Bei dieser Poker-Variante gibt es insgesamt 52 Karten. Jeder
+dieser Karten hat eine Farbe, die ein Element der Menge
+\\[0.2cm]
+\hspace*{1.3cm} $\textsl{suits} = \{ \club, \spade, \heart, \diamondsuit \}$
+\\[0.2cm]
+ist und außerdem einen Wert hat, der ein Element der Menge
+\\[0.2cm]
+\hspace*{1.3cm} $\textsl{values} = \{ 2, 3, 4, 5, 6, 7, 8, 9, 10, \textsl{Jack}, \textsl{Queen},
+\textsl{King}, \textsl{Ace} \}$
+\\[0.2cm]
+ist.  Die einzelnen Karten können dann mathematisch als Paare dargestellt werden.  Die gesamte Menge von
+Karten wäre dann beispielsweise wie folgt gegeben:
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\textsl{deck} = \{ \pair(v,s) \mid v \in \textsl{values} \wedge \textsl{s} \in \textsl{suits} \}$.
+\\[0.2cm]
+Jeder Spieler bekommt zunächst zwei Karten.  Diese beiden Karten werden als \emph{Preflop}
+oder \emph{Hole} bezeichnet.  Nach einer Bietphase werden anschließend drei weitere
+Karten, der sogenannte \textsl{Flop}, auf den Tisch gelegt.  Wir nehmen an, dass ein Spieler zunächst die
+Karten $\{ \pair(3, \club), \pair(3, \spade) \}$ bekommen hat und nun wissen möchte, wie groß die
+Wahrscheinlichkeit dafür ist, dass beim Flop eine weitere 3 auf den Tisch gelegt wird.
+Um diese Wahrscheinlichkeit zu berechnen, muss der Spieler die Anzahl aller Flops, bei denen eine weitere
+3 erscheinen kann, durch die gesamte Anzahl der Flops teilen.  Das in Abbildung \ref{fig:poker-triple.stlx}
+gezeigte Programm führt diese Berechnung durch.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                ]
+    suits  := { "c", "h", "d", "s" };
+    values := { "2", "3", "4", "5", "6", "7", "8", "9", 
+                "T", "J", "Q", "K", "A" }; 
+    deck   := { [ v, s ] : v in values, s in suits };
+    hole   := { [ "3", "c" ], [ "3", "s" ] };
+    rest   := deck - hole;
+    flops  := { { k1, k2, k3 } : k1 in rest, k2 in rest, k3 in rest 
+                               | #{ k1, k2, k3 } == 3 };
+    print(#flops);
+    trips  := { f : f in flops | [ "3", "d" ] in f || [ "3", "h" ] in f };
+    print(1.0 * #trips / #flops);
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Berechnung von Wahrscheinlichkeiten im Poker}
+\label{fig:poker-triple.stlx}
+\end{figure}
+
+\begin{enumerate}
+\item In Zeile 1 definieren wir die Menge \texttt{suits} der Farben einer Karte.
+\item In Zeile 2 und 3  definieren wir die Menge \texttt{values} der möglichen Werte einer
+      Karte.
+\item In Zeile 4 stellen wir die Menge aller Karten, die wir mit \textsl{deck} bezeichnen,
+      als Menge von Paaren dar, wobei die erste Komponente der Paare den Wert und die zweite Komponente 
+      die Farbe der Karte angibt.
+\item Die in Zeile 5 definierte Menge \textsl{hole} stellt die Menge der Karten des Spielers dar.
+\item Die verbleibenden Karten bezeichnen wir in Zeile 6 als \textsl{rest}.
+\item In Zeile 7 und 8 berechnen wir die Menge aller möglichen Flops.  Da die Reihenfolge der Karten im
+      Flop keine Rolle spielt, verwenden wir zur Darstellung der einzelnen Flops eine Menge.
+      Dabei müssen wir aber darauf achten, dass der Flop auch wirklich aus drei
+      \underline{verschiedenen}  Karten
+      besteht.  Daher haben wir bei der Auswahl der Menge die Bedingung
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{\# \{ k1, k2, k3 \} == 3 }
+      \\[0.2cm]
+      zu beachten.
+\item Die Teilmenge der Flops, in denen mindestens eine weitere 3 auftritt, wird in Zeile 10 
+      berechnet.
+\item Schließlich berechnet sich die Wahrscheinlichkeit für eine 3 im Flop als das Verhältnis der 
+      Anzahl der günstigen Fälle zu der Anzahl der möglichen Fälle.  Wir müssen also nur die Anzahl
+      der Elemente der entsprechenden Mengen ins Verhältnis setzen.  
+
+      Hier gibt es aber noch eine Klippe, die umschifft werden muss: Da die Variablen
+      \texttt{\#Trips} und \texttt{\#Flops} mit ganzen Zahlen belegt sind, würde die Division
+      \texttt{\#Trips / \#Flops} als ganzzahlige Division ausgeführt und das Ergebnis wäre
+      eine rationale Zahl.
+      Daher ist es erforderlich, zunächst eine der beiden Zahlen in eine Fließkomma-Zahl zu konvertieren,
+      damit der Quotienten als Fließkomma-Zahl berechnet wird.  Dies können wir beispielsweise dadurch
+      erreichen, dass wir den Dividenden \texttt{\#Trips} mit der Fließkomma-Zahl $1.0$
+      multiplizieren.
+\end{enumerate}
+Lassen wir das Programm laufen, so sehen wir, dass die Wahrscheinlichkeit, ein
+Pocket-Paar im Flop auf Trips zu verbessern, bei etwa $11,8\%$ liegt.
+\vspace*{0.1cm}
+
+\noindent
+\textbf{Bemerkung}:  Die Berechnung von Wahrscheinlichkeiten ist in der oben dargestellten
+Weise nur dann möglich, wenn die im Laufe der Berechnung auftretenden Mengen so klein
+sind, dass sie sich explizit im Rechner darstellen lassen.  Wenn diese Voraussetzung nicht
+mehr erfüllt ist, können die gesuchten Wahrscheinlichkeiten mit Hilfe der im zweiten Semester
+vorgestellten \emph{Monte-Carlo-Methode} berechnet werden.
+
+
+\section{Fallstudie: Berechnung von Pfaden}
+Wir wollen  dieses Kapitel mit einer praktisch relevanten Anwendung der Sprache
+\textsc{SetlX} abschließen.  Dazu betrachten wir das Problem, Pfade in
+einem \emph{Graphen} zu bestimmen.  Abstrakt gesehen beinhaltet ein Graph die Information,
+zwischen welchen Punkten es direkte Verbindungen gibt.
+Zur Vereinfachung wollen wir zunächst annehmen, dass die einzelnen Punkte durch Zahlen
+identifiziert werden.  Dann können wir eine direkte Verbindung zwischen zwei Punkten durch
+ein Paar von Zahlen
+darstellen.  Den Graphen selber stellen wir als eine Menge solcher Paaren dar.
+Wir betrachten ein Beispiel. Sei \texttt{R} wie folgt definiert: \\[0.2cm]
+\hspace*{0.5cm} 
+$R \mathtt{:=} \bigl\{ \pair(1,2), \pair(2,3), \pair(1,3), \pair(2,4), \pair(4,5) \bigr\}$.
+\\[0.2cm]
+In diesem Graphen haben wir die Punkte \texttt{1},
+\texttt{2}, \texttt{3}, \texttt{4} und \texttt{5}.  Ein Darstellung dieses Graphen finden
+Sie in Abbildung \ref{fig:graph0}.
+Beachten Sie, dass die Verbindungen in diesem Graphen
+\emph{Einbahn-Straßen} sind:  Wir haben zwar eine Verbindung von \texttt{1} nach
+\texttt{2}, aber keine Verbindung von \texttt{2} nach \texttt{1}.
+\vspace*{-11cm}
+
+\begin{figure}[!ht]
+  \centering
+  \epsfig{file=Figures/graph0,scale=0.6}
+  \vspace*{-1cm}
+
+  \caption{Ein einfacher Graph.}
+  \label{fig:graph0}
+\end{figure}
+
+
+
+\noindent
+In dem Graphen sind nur die unmittelbaren Verbindungen
+zwischen zwei Punkten verzeichnet.  Es gibt aber unter Umständen auch noch
+andere Verbindungen.  Beispielsweise gibt es eine unmittelbare Verbindung von
+\texttt{1} nach \texttt{3}.  Es gibt darüber hinaus noch einen
+Pfad von \texttt{1} nach \texttt{3}, der über den Punkt \texttt{2} geht.  
+Unser Ziel in diesem Abschnitt ist es einen Algorithmus zu entwickeln, der überprüft, ob
+zwischen zwei Punkten eine Verbindung existiert und gegebenenfalls berechnet.
+Dazu entwickeln wir zunächst einen Algorithmus, der nur überprüft, ob es eine
+Verbindung zwischen zwei Punkten gibt und erweitern diesen Algorithmus dann später so, dass diese
+Verbindung auch berechnet wird.
+
+\subsection{Berechnung des transitiven Abschlusses einer Relation}
+Als erstes bemerken wir, dass ein Graph $R$ nichts anderes ist als eine binäre Relation.
+Um feststellen zu können, ob es zwischen zwei Punkten eine Verbindung gibt,
+müssen wir den transitiven Abschluß $R^+$ der Relation $R$ bilden.  Wir haben bereits
+früher in dem Kapitel zur Mengenlehre gezeigt, dass $R^+$ wie folgt
+berechnet werden kann: \\[0.2cm]
+\hspace*{1.3cm} $R^+ = \bigcup\limits_{i=1}^{\infty} R^i = R \cup R^2 \cup R^3 \cup \cdots$  \\[0.2cm]
+Auf den ersten Blick betrachtet sieht diese Formel so aus, als ob wir unendlich
+lange rechnen müßten.  Aber versuchen wir einmal, diese Formel anschaulich zu
+verstehen.  Zunächst steht da $R$.  Das sind die Verbindungen, die unmittelbar  gegeben
+sind.  Als nächstes steht dort $R^2$ und das ist $R \circ R$.  Es gilt aber \\[0.2cm]
+\hspace*{1.3cm} $R \circ R = \{ \pair(x,z) \mid \exists y \colon \pair(x,y) \in R \wedge \pair(y,z) \in R \}$
+\\[0.2cm]
+In $R^2$ sind also alle die Pfade enthalten, die aus zwei direkten Verbindungen
+zusammengesetzt sind.  Allgemein läßt sich durch Induktion sehen, dass $R^n$
+alle die Pfade enthält, die aus $n$ direkten Verbindungen zusammengesetzt sind.  Nun
+ist die Zahl der Punkte, die wir haben, endlich.  Sagen wir mal, dass es
+$k$ Punkte sind.  Dann macht es  keinen Sinn solche Pfade zu betrachten, die
+aus mehr als $k-1$ direkten Verbindungen zusammengesetzt sind, denn wir wollen ja
+nicht im Kreis herum laufen.  Damit kann dann aber die Formel zur Berechnung des
+transitiven Abschlusses vereinfacht werden:\\[0.2cm]
+\hspace*{1.3cm} 
+$R^+ = \bigcup\limits_{i=1}^{k-1} R^i$.
+\\[0.2cm]
+Diese Formel könnten wir tatsächlich so benutzen.  Es ist aber noch effizienter,
+einen Fixpunkt-Algorithmus zu verwenden.  Dazu zeigen wir zunächst, dass der transitive
+Abschluß $R^+$ die folgende Fixpunkt-Gleichung erfüllt:
+\begin{equation}
+  \label{fixpunkt}
+  R^+ = R \cup R \circ R^+. 
+\end{equation}
+Wir erinnern hier daran, dass wir vereinbart haben, dass der Operator $\circ$ stärker
+bindet als der Operator $\cup$, so dass der Ausdruck $R \cup R \circ R^+$ als
+$R \cup (R \circ R^+)$ zu lesen ist.
+Die Fixpunkt-Gleichung \ref{fixpunkt} läßt sich algebraisch beweisen.  Es gilt
+\[
+\begin{array}{cll}
+    & R \cup R \circ R^+ \\[0.2cm]
+  = & R \cup R \circ \bigcup\limits_{i=1}^{\infty} R^i \\[0.4cm]
+  = & R \cup R \circ \bigl(R^1 \cup R^2 \cup R^3 \cup \cdots \bigr) \\[0.2cm]
+  = & R \cup \bigl(R \circ R^1 \cup R \circ R^2 \cup R \circ R^3 \cup \cdots \bigr) &
+      \mbox{Distributiv-Gesetz} \\[0.2cm]
+  = & R \cup \bigl(R^2 \cup R^3 \cup  R^4 \cup \cdots \bigr) & \mbox{Potenz-Gesetz} \\[0.2cm]
+  = & R^1 \cup \bigl(R^2 \cup R^3 \cup  R^4 \cup \cdots \bigr) \\[0.2cm]
+  = & \bigcup\limits_{i=1}^{\infty} R^i \\[0.4cm]
+  = & R^+
+\end{array}
+\]
+Die Gleichung \ref{fixpunkt} kann benutzt werden um den transitiven Abschluß iterativ zu
+berechnen.  Wir definieren eine Folge $(T_n)_{n \in \mathbb{N}}$ durch Induktion folgt:
+\begin{enumerate}
+\item[I.A.] $n = 1$:         \hspace*{2.3cm} $T_1 := R$
+\item[I.S.] $n \mapsto n+1$: \hspace*{1.6cm} $T_{n+1} := R \cup R \circ T_n$. 
+\end{enumerate}
+Die Relationen $T_n$ lassen sich auf die Relation $R$ zurückführen:
+\begin{enumerate}
+\item $T_1 = R$.
+\item $T_2 = R \cup R \circ T_1 = R \cup R \circ R = R^1 \cup R^2$.
+\item $\begin{array}[t]{lcl}
+       T_3  & = & R \cup R \circ T_2 \\
+            & = & R \cup R \circ (R^1 \cup R^2) \\
+            & = & R^1 \cup R^2 \cup R^3. \\
+       \end{array}
+      $
+\end{enumerate}
+Allgemein können wir durch vollständige Induktion über $n \in \mathbb{N}$ beweisen, dass
+\[ T_n = \bigcup\limits_{i=1}^{n} R^i \]
+gilt.  Der Induktions-Anfang folgt unmittelbar aus der Definition von $T_1$.  Um den 
+Induktions-Schritt durchzuführen, betrachten wir
+\[ \begin{array}{lcll}
+   T_{n+1} & = & R \cup R \circ T_n & \mbox{gilt nach Definition} \\[0.2cm]
+           & = & R \cup R \circ \left(\bigcup\limits_{i=1}^{n} R^i\right) &
+                 \mbox{gilt nach Induktions-Voraussetzung} \\[0.4cm]
+           & = & R \cup R^2 \cup \cdots \cup R^{n+1}  &
+                 \mbox{Distributiv-Gesetz} \\[0.2cm]
+           & = & R^1 \cup \cdots \cup R^{n+1} \\
+           & = & \bigcup\limits_{i=1}^{n+1} R^i & \Box 
+   \end{array}
+\]
+Die Folge $(T_n)_{n\in\mathbb{N}}$ hat eine weitere nützliche Eigenschaft: Sie ist 
+\emph{monoton steigend}.  Allgemein nennen wir eine Folge von Mengen $(X_n)_{n\in\mathbb{N}}$
+\emph{monoton steigend}, wenn 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\forall n \in \mathbb{N}: X_n \subseteq X_{n+1}$
+\\[0.2cm]
+gilt, wenn also die Mengen $X_n$ mit wachsendem Index $n$ immer größer werden.
+Die Monotonie der Folge $(T_n)_{n \in \mathbb{N}}$ folgt aus der gerade bewiesenen Eigenschaft
+$T_n = \bigcup_{i=1}^{n} R^i$, denn es gilt
+\\[0.2cm]
+\hspace*{1.3cm}
+$
+\begin{array}[t]{llcl}
+                & T_n \subseteq T_{n+1} \\[0.2cm]
+\Leftrightarrow & \bigcup\limits_{i=1}^{n} R^i \subseteq \bigcup\limits_{i=1}^{n+1} R^i \\[0.5cm]
+\Leftrightarrow & \bigcup\limits_{i=1}^{n} R^i \subseteq \bigcup\limits_{i=1}^{n} R^i \cup R^{n+1} \\
+\end{array}
+$
+\\[0.2cm]
+und die letzte Formel ist offenbar wahr.  Ist nun die Relation $R$ endlich, so ist natürlich 
+auch $R^+$ eine endliche Menge.  Da die 
+Folge $T_n$ aber in dieser Menge liegt, denn es gilt ja 
+\\[0.2cm]
+\hspace*{1.3cm}
+$T_n = \bigcup\limits_{i=1}^{n} R^i \subseteq \bigcup\limits_{i=1}^{\infty} R^i = R^+$ \quad für alle $n \in \mathbb{N}$,
+\\[0.2cm]
+können die Mengen $T_n$ nicht beliebig groß werden.  Aufgrund der Monotonie der Folge
+$(T_n)_{n\in\mathbb{N}}$ muss es daher einen Index $k$ geben, ab dem die Mengen $T_n$ alle gleich sind:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\forall n \in \mathbb{N}:( n \geq k \rightarrow T_n = T_k)$.
+\\[0.2cm]
+Berücksichtigen wir die Gleichung $T_n = \bigcup_{i=1}^{n} R^i$, so haben wir 
+\\[0.2cm]
+\hspace*{1.3cm}
+$T_n = \bigcup\limits_{i=1}^{n} R^i = \bigcup\limits_{i=1}^{k} R^i = T_k$ \quad für alle $n \geq k$.
+\\[0.2cm]
+Daraus folgt dann aber, dass
+\\[0.2cm]
+\hspace*{1.3cm}
+$T_n = \bigcup\limits_{i=1}^{n} R^i = \bigcup\limits_{i=1}^{\infty} R^i = R^+$ 
+\quad für alle $n \geq k$  
+\\[0.2cm]
+gilt.  Der Algorithmus zur Berechnung von $R^+$ sieht nun so aus, dass wir die Iteration
+\[ T_{n+1} := R \cup R \circ T_n \]
+solange durchführen bis $T_{n+1} = T_n$ gilt, denn dann gilt auch $T_n = R^+$.
+
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    closure := procedure(r) {
+        t := r;
+        while (true) {
+            oldT := t;
+            t    := r + product(r, t);
+            if (t == oldT) {
+                return t;
+            }
+        }
+    };
+    product := procedure(r1, r2) {
+        return { [x,z] : [x,y] in r1, [y,z] in r2 };
+    };
+    r := { [1,2], [2,3], [1,3], [2,4], [4,5] };
+    print( "r = ", r );
+    print( "computing transitive closure of r" );
+    t := closure(r);
+    print( "r+ = ", t );
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Berechnung des transitiven Abschlusses.}  
+\label{fig:transitive-closure.stlx}
+\end{figure} %\$
+
+\noindent
+Das Programm 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/transitive-closure.stlx}{\texttt{transitive-closure.stlx}}
+in Abbildung
+\ref{fig:transitive-closure.stlx} auf Seite \pageref{fig:transitive-closure.stlx}  zeigt
+eine Implementierung dieses Gedankens.
+Lassen wir dieses Programm laufen, so erhalten wir als Ausgabe:
+\begin{verbatim}
+    R = {[2, 3], [4, 5], [1, 3], [2, 4], [1, 2]}
+    R+ = {[1, 5], [2, 3], [4, 5], [1, 4], [1, 3], [2, 4], [1, 2], [2, 5]}
+\end{verbatim}
+Der transitive Abschluß $R^+$ der Relation $R$ läßt sich jetzt anschaulich
+interpretieren:  Er enthält alle Paare $\pair(x,y)$, für die es einen \emph{Pfad} von
+$x$ nach $y$ gibt.  Ein Pfad von $x$ nach $y$ ist dabei eine Liste der
+Form \\[0.2cm]
+\hspace*{1.3cm} $\bigl[ x_1, x_2, \cdots, x_n \bigr]$,
+\\[0.2cm]
+für die $x = x_1$ und $y = x_n$ gilt und für die außerdem 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\pair(x_i, x_{i+1}) \in R$ \quad für alle $i = 1, \cdots, n-1$ gilt.
+\\[0.2cm]
+Die Funktion $\textsl{product}(r_1, r_2)$ berechnet das relationale Produkt $r_1 \circ
+r_2$ nach der Formel
+\\[0.2cm]
+\hspace*{1.3cm}
+$r_1 \circ r_2 = \{ \langle x, z \rangle \mid \exists y: \pair(x,y) \in r_1 \wedge \pair(y,z) \in r_2 \}$.
+\\[0.2cm]
+Die Implementierung dieser Prozedur  zeigt die allgemeine
+Form der Mengen-Defi\-nition durch Iteratoren in \textsc{SetlX}.  Allgemein können wir eine Menge
+durch den Ausdruck
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{\; \textsl{expr} \;\texttt{:}\; [x^{(1)}_1, \cdots, x^{(1)}_{n(1)}] \;\texttt{in}\; s_1,
+     \cdots, [x^{(k)}_1, \cdots, x^{(k)}_{n(k)}] \;\texttt{in}\; s_k \;\texttt{|}\;
+     \textsl{cond} \;\}
+$
+\\[0.2cm]
+definieren.  Dabei muss $s_i$ für alle $i=1, \cdots, k$ eine Menge von Listen  der Länge
+$n(i)$ sein.  Bei der Auswertung dieses Ausdrucks werden für die Variablen 
+$x^{(i)}_1, \cdots, x^{(i)}_{n(i)}$ die Werte eingesetzt, die die entsprechenden
+Komponenten der Listen haben, die in der Menge $s_i$ auftreten.  Beispielsweise würde die
+Auswertung von 
+\begin{verbatim}
+    s1 := { [ 1, 2, 3 ], [ 5, 6, 7 ] };
+    s2 := { [ "a", "b" ], [ "c", "d" ] };
+    m := { [ x1, x2, x3, y1, y2 ] : [ x1, x2, x3 ] in s1, [ y1, y2 ] in s2 };
+\end{verbatim}
+für \texttt{M} die Menge
+\begin{verbatim}
+    { [1, 2, 3, "a", "b"], [5, 6, 7, "c", "d"],  
+      [1, 2, 3, "c", "d"], [5, 6, 7, "a", "b"] }
+\end{verbatim}
+berechnen. 
+
+
+\subsection{Berechnung der Pfade}
+Als nächstes wollen wir das Programm zur Berechnung des transitiven Abschlusses so
+erweitern, dass wir nicht nur feststellen können, dass es einen Pfad zwischen zwei Punkten
+gibt, sondern dass wir diesen auch berechnen können.  Die Idee ist, dass wir statt des
+relationalen Produkts, das für zwei Relationen definiert ist, ein sogenanntes
+\emph{Pfad-Produkt}, das auf Mengen von Pfaden definiert ist, berechnen.  Vorab führen wir
+für Pfade, die wir ja durch Listen repräsentieren,
+drei Begriffe ein.
+\begin{enumerate}
+\item Die Funktion $\textsl{first}(p)$ liefert den ersten Punkt der Liste $p$: \\[0.2cm]
+      \hspace*{1.3cm} $\textsl{first}\bigl([x_1,\cdots,x_m]\bigr) = x_1$.
+\item Die Funktion $\textsl{last}(p)$ liefert den letzten Punkt der Liste $p$: \\[0.2cm]
+      \hspace*{1.3cm} $\textsl{last}\bigl([x_1,\cdots,x_m]\bigl) = x_m$.
+\item Sind $p = [ x_1, \cdots, x_m ]$ und $q =[ y_1, \cdots, y_n ]$ 
+      zwei Pfade mit $\textsl{first}(q) = \textsl{last}(p)$, dann definieren wir 
+      die Summe von $p$ und $q$       als \\[0.2cm]
+      \hspace*{1.3cm}
+      $p \oplus q := [x_1, \cdots, x_m, y_2, \cdots, y_n ]$.
+\end{enumerate}
+Sind nun $P_1$ und $P_2$ Mengen von Pfaden, so definieren wir das  \emph{Pfad-Produkt} von
+$P_1$ und $P_2$ als \\[0.2cm]
+\hspace*{1.3cm} 
+$P_1 \bullet P_2 := \bigl\{\; p_1 \oplus p_2 \mid p_1 \in P_1 \wedge p_2 \in P_2 \wedge \textsl{last}(p_1) = \textsl{first}(p_2) \;\bigr\}$.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    closure := procedure(r) {
+        p := r;
+        while (true) {
+            oldP := p;
+            p    := r + pathProduct(r, p);
+            if (p == oldP) {
+                return p;
+            }
+        }
+    };
+    pathProduct := procedure(p, q) {
+        return { add(x, y) : x in p, y in q | x[#x] == y[1] };
+    };    
+    add := procedure(p, q) {
+        return p + q[2..];
+    };    
+    r := { [1,2], [2,3], [1,3], [2,4], [4,5] };
+    print( "r = ", r );
+    print( "computing all paths" );
+    p := closure(r);
+    print( "p = ", p );
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Berechnung aller Verbindungen.}  \label{path.stlx}
+\end{figure} %\$
+
+\begin{figure}[!ht]
+  \centering
+  \vspace*{-9cm}
+
+  \epsfig{file=Figures/graph-zykl,scale=0.5}
+  \vspace*{-1cm}
+
+  \caption{Ein zyklischer Graph.}
+  \label{fig:graph-zykl}
+\end{figure}
+
+Damit können wir das Programm in Abbildung
+\ref{fig:transitive-closure.stlx} so abändern, dass alle möglichen Verbindungen zwischen zwei
+Punkten berechnet werden.  Abbildung
+\ref{path.stlx} zeigt das resultierende Programm
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/path.stlx}{\texttt{path.stlx}}. 
+Leider funktioniert das Programm dann nicht mehr, wenn der Graph Zyklen enthält.
+Abbildung
+\ref{fig:graph-zykl} zeigt einen Graphen, der einen Zyklus enthält.  In diesem Graphen
+gibt es unendlich viele Pfade, die von dem Punkt 1 zu dem Punkt 2 führen: \\[0.2cm]
+\hspace*{1.3cm} $[ 1, 2 ]$, $[ 1, 2, 4, 1, 2 ]$, 
+$[ 1, 2, 4, 1, 2, 4, 1, 2 ]$, 
+$[ 1, 2, 4, 1, 2, 4, 1, 2, 4, 1, 4 ]$, $\cdots$
+\\[0.2cm]
+Offenbar  sind die Pfade unwichtig, die einen Punkt mehrfach enthalten und die daher
+zyklisch sind.  Solche Pfade sollten wir bei der Berechnung des Pfad-Produktes
+eliminieren.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ numbers       = left,
+                  numbersep     = -0.2cm,
+                  frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                ]
+    pathProduct := procedure(p, q) {
+        return { add(x,y) : x in p, y in q | x[#x] == y[1] && noCycle(x,y) };
+    };
+    noCycle := procedure(l1, l2) {
+        return #({ x : x in l1 } * { x : x in l2 }) == 1;
+    };
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Berechnung aller Verbindungen in zyklischen Graphen}  
+\label{fig:path-cyclic.stlx}
+\end{figure} %\$
+
+Abbildung \ref{fig:path-cyclic.stlx} zeigt einen Ausschnitt des geänderten Programms
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/path-cyclic.stlx}{\texttt{path-cyclic.stlx}},
+das auch für zyklische Graphen funktioniert. 
+\begin{enumerate}
+\item In Zeile 2 berücksichtigen wir nur die Pfade $x \oplus y$, die nicht zyklisch sind.
+\item In Zeile 5 überprüfen wir, ob die Konkatenation  $l_1 \oplus l_2$ zyklisch ist.  Die
+      Kombination von $l_1$ und $l_2$  ist genau dann 
+      zyklisch, wenn die Listen $l_1$ und $l_2$ mehr als ein gemeinsames Element
+      enthalten.  Die Listen $l_1$ und $l_2$ enthalten mindestens ein gemeinsames Element,
+      denn wir verknüpfen diese beiden Listen ja nur dann, wenn das letzte Element
+      der Liste $l_1$ mit dem ersten Element der Liste $l_2$ übereinstimmt.
+      Wenn es nun noch einen weiteren Punkt geben würde, der sowohl in $l_1$ als auch in
+      $l_2$ auftreten würde, dann wäre der Pfad $l_1 \oplus l_2$ zyklisch.
+\end{enumerate}
+
+In den meisten Fällen sind wird gar nicht daran interessiert, alle möglichen Verbindungen
+zwischen allen Punkten zu berechnen, das wäre nämlich viel zu aufwendig, sondern wir
+wollen nur zwischen zwei gegebenen Punkten 
+eine Verbindung finden.  Abbildung \ref{fig:find-path} zeigt die Implementierung einer
+Prozedur $\texttt{reachable}(x, y, r)$, die überprüft, ob es in dem Graphen $r$ eine
+Verbindung von $x$ nach $y$ gibt und die diese Verbindung berechnet.  Das vollständige
+Programm finden Sie in der Datei
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/find-path.stlx}{\texttt{find-path.stlx}}.
+Wir diskutieren nun die Implementierung der Prozedur \texttt{reachable}.
+\begin{enumerate}
+\item In Zeile 2 initialisieren wir $p$ so, dass zunächst nur der Pfad der Länge 0,
+      der mit dem Punkt $x$  startet, in $p$ liegt.
+\item In Zeile 6 selektieren wir die Pfade aus $p$, die zum Ziel $y$ führen.
+\item Wenn wir dann in Zeile 7 feststellen, dass wir einen solchen Pfad berechnet haben,
+      geben wir einen dieser Pfade in Zeile 8 zurück.
+\item Falls es nicht gelingt einen solchen Pfad zu berechnen und wir keine neuen
+      Pfade mehr finden können, verlassen wir die Prozedur in Zeile 11
+      mit dem Befehl \texttt{return}.  Da wir bei diesem \texttt{return}-Befehl
+      keinen Wert zurückgeben, ist der Rückgabewert der Prozedur in diesem Fall
+      automatisch $\Omega$.
+\end{enumerate}
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    reachable := procedure(x, y, r) {
+        p := { [x] };
+        while (true) {
+            oldP  := p;
+            p     := p + pathProduct(p, r);
+            found := { l in p | l[#l] == y };
+            if (found != {}) {
+                return arb(found);
+            }
+            if (p == oldP) {
+                return;
+            }
+        }
+    };
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Berechnung aller Verbindungen zwischen zwei Punkten}  
+\label{fig:find-path}
+\end{figure} %\$
+
+\subsection{Der Bauer mit dem Wolf, der Ziege und dem Kohl}
+Wir präsentieren nun eine betriebswissenschaftliche Anwendung des oben entwickelten Algorithmus und
+betrachten folgendes Problem.
+\vspace*{0.3cm}
+
+\begin{minipage}[c]{14cm}
+{\sl
+Ein Agrarökonom will mit einem Wolf, einer Ziege und einem Kohl über einen Fluß übersetzen, um
+diese als Waren auf dem Markt zu verkaufen.
+Das Boot ist aber so klein, dass er nicht mehr als zwei Waren gleichzeitig mitnehmen kann.
+Wenn der Bauer den Wolf mit der Ziege allein läßt, dann frißt der Wolf die Ziege und wenn er die
+Ziege mit dem Kohl allein läßt, dann frißt die Ziege den Kohl. }
+\end{minipage}
+\vspace*{0.3cm}
+
+\noindent
+Wir wollen einen Fahrplan entwickeln, mit dem der Agrarökonom alle seine Waren unbeschadet zum
+Markt bringen kann.  Dazu modellieren wir das Rätsel als Erreichbarkeits-Problem in einem
+Graphen.  
+Die Punkte des Graphen beschreiben dabei die einzelnen Situationen, die auftreten
+können.  Wir definieren eine Menge\\[0.2cm]
+\hspace*{1.3cm} 
+$\texttt{all} := \{ \squote{Bauer}, \squote{Wolf}, \squote{Ziege},\squote{Kohl} \}$.
+\\[0.2cm]
+Die einzelnen Punkte sind dann Paare von Mengen, haben also die Form \\[0.2cm]
+\hspace*{1.3cm} 
+$\langle s_1, s_2 \rangle$ \quad mit $s_1,s_2 \subseteq \texttt{all}$.
+\\[0.2cm]
+Dabei gibt die Menge $s_1$ an, was am linken Ufer ist und $s_2$ gibt an, was am rechten
+Ufer ist.  Die Menge aller Punkte können wir dann definieren als \\[0.2cm]
+\hspace*{1.3cm} 
+$p := \bigl\{ \langle s_1, s_2 \rangle \in 2^\texttt{all} \times 2^\texttt{all} \;|\;
+              s_1 \cup s_2 = \texttt{all} \;\wedge\; s_1 \cap s_2 = \{\} 
+      \bigr\}
+$.
+\\[0.2cm]
+Die Bedingung $s_1 \cup s_2 = \texttt{all}$ stellt dabei sicher, dass nichts verloren
+geht:  Jedes der Elemente aus \texttt{all} ist entweder am linken oder am rechten Ufer.
+Die Bedingung $s_1 \cap s_2 = \{\}$ verbietet die Bilokalisation von Objekten, sie stellt also sicher,
+dass kein Element aus der Menge \texttt{all}  gleichzeitig am  linken und am rechten Ufer ist.
+
+Als nächstes definieren wir den Graphen $r$, also die möglichen Verbindungen zwischen
+Punkten.  Dazu definieren wir eine Prozedur $\textsl{problem}(s)$. Hierbei ist $s$ eine
+Menge von Objekten, die an einem Ufer sind.  Die Prozedur $\textsl{problem}(s)$
+liefert genau dann \texttt{true}, wenn es bei der  Menge $s$ ein Problem gibt, weil entweder die Ziege
+mit dem Kohl allein ist, oder aber der Wolf die Ziege frißt.
+\begin{verbatim}
+    problem := procedure(s) {
+        return "goat" in s && "cabbage" in s || "wolf" in s && "goat" in s;
+    };
+\end{verbatim}
+Damit können wir eine Relation $r_1$ wie folgt definieren:
+\\[0.2cm]
+\hspace*{1.3cm} 
+$r_1 := \Bigl\{ \bigl\langle \pair(s_1, s_2), \pair(s_1 \backslash b, s_2 \cup b)
+  \bigr\rangle \;|\; $ \\
+\hspace*{2.3cm} 
+$\pair(s_1, s_2) \in P \;\wedge\; b \subseteq s_1 \;\wedge\;
+ \squote{Bauer} \in b \;\wedge\; \textsl{card}(b) \leq 2 \;\wedge\; \neg\textsl{problem}(s_1 \backslash b) \Bigr\}$.
+\\[0.2cm]
+Diese Menge beschreibt alle die Fahrten, bei denen der Bauer vom linken Ufer zum rechten Ufer
+fährt und bei denen zusätzlich sichergestellt ist, dass am linken Ufer
+nach der Überfahrt kein Problem auftritt.  Die einzelnen Terme werden wie folgt
+interpretiert:
+\begin{enumerate}
+\item $\pair(s_1,s_2)$ ist der Zustand vor der Überfahrt des Bootes,
+      $s_1$ gibt also die Objekte am linken Ufer an, $s_2$ sind die Objekte am rechten Ufer.
+\item $b$ ist der Inhalt des Bootes, daher beschreibt 
+       $\pair(s_1 \backslash b, s_2 \cup b)$ den Zustand nach der Überfahrt des Bootes:
+       Links sind nun nur noch die Objekte aus $s_1 \backslash b$, dafür sind rechts dann 
+       die Objekte $s_2 \cup b$.
+
+       Die Bedingungen lassen sich wie folgt interpretieren.
+\item $b \subseteq s_1$: Es können natürlich nur solche Objekte ins Boot genommen werden,
+       die vorher am linken Ufer waren.
+\item $\squote{Bauer} \in b$: Der Bauer muß auf jeden Fall ins Boot, denn weder der Wolf
+       noch die Ziege können rudern.
+\item $\textsl{card}(b) \leq 2$: Die Menge der Objekte im Boot darf nicht mehr als zwei
+       Elemente haben, denn im Boot ist nur für zwei Platz.
+\item $\neg\textsl{problem}(s_1 \backslash b)$:  Am linken Ufer soll es nach der Überfahrt
+       kein Problem geben, denn der Bauer ist ja hinterher am rechten Ufer.
+\end{enumerate}
+In analoger Weise definieren wir nun eine Relation $r_2$ die die Überfahrten vom rechten
+Ufer zum linken Ufer beschreibt:\\[0.2cm]
+\hspace*{1.3cm} 
+$r_2 := \Bigl\{ \bigl\langle \pair(s_1, s_2), \pair(s_1 \cup b, s_2 \backslash b)
+  \bigr\rangle \;|\; $ \\
+\hspace*{2.3cm} 
+$\pair(s_1, s_2) \in P \;\wedge\; b \subseteq s_2 \;\wedge\;
+ \squote{Bauer} \in b \;\wedge\; \textsl{card}(b) \leq 2 \;\wedge\; \neg\textsl{problem}(s_2 \backslash b) \Bigr\}$.
+\\[0.2cm]
+Die gesamte Relation $r$ definieren wir nun als
+\\[0.2cm]
+\hspace*{1.3cm} $r := r_1 \cup r_2$.\\[0.2cm]
+Als nächstes müssen wir den Start-Zustand modellieren.
+Am Anfang sind alle am linken Ufer, also wird der Start-Zustand durch das Paar 
+\\[0.3cm]
+\hspace*{1.3cm}
+$\bigl\langle \{ \squote{Bauer}, \squote{Wolf}, \squote{Ziege},\squote{Kohl} \}, \{\} \bigr\rangle$.
+\\[0.3cm]
+Beim Ziel ist es genau umgekehrt, dann sollen alle auf der rechten Seite des Ufers sein:
+\\[0.3cm]
+\hspace*{1.3cm}
+$\bigl\langle \{\}, \{ \squote{Bauer}, \squote{Wolf}, \squote{Ziege},\squote{Kohl} \} \bigr\rangle$.
+\\[0.3cm]
+Damit haben wir das Problem in der Mengenlehre modelliert und können die im letzten
+Abschnitt entwickelte Prozedur \texttt{reachable} benutzen, um das Problem zu lösen.
+In der Abbildung \ref{fig:wolf-ziege} finden Sie das Programm 
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/wolf-goat-cabbage.stlx}{\texttt{wolf-goat-cabbage.stlx}},
+in dem die oben ausgeführten Überlegungen in \textsc{SetlX} umgesetzt wurden.
+Die von diesem Programm berechnete Lösung finden Sie in Abbildung \ref{fig:wolf-ziege-solution}.
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ codes         = {\catcode`$=3\catcode`_=8\catcode`^=7},
+                  frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                ]
+    all := { "farmer", "wolf", "goat", "cabbage" };
+    p   := pow(all);
+    r1  := { [ s, s - b ] : s in p, b in pow(s) 
+                          | "farmer" in b && #b <= 2 && !problem(s - b) 
+           };
+    r2  := { [ s, s + b ] : s in p, b in pow(all - s) 
+                          | "farmer" in b && #b <= 2 && !problem(all - (s + b))
+           };
+    r   := r1 + r2;
+    start := [ all, {} ];
+    goal  := [ {}, all ];
+    path := findPath(start, goal, r);
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Wie kommt der Bauer ans andere Ufer?}  
+\label{fig:wolf-ziege}
+\end{figure} %\$
+\noindent
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ codes         = {\catcode`$=3\catcode`_=8\catcode`^=7},
+                  frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  commandchars  = \\\{\},
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                ]
+    \{"Kohl", "Ziege", "Wolf", "Bauer"\}                                        \{\}
+                              >> \{"Ziege", "Bauer"\} >>
+    \{"Kohl", "Wolf"\}                                          \{"Ziege", "Bauer"\}
+                              << \{"Bauer"\} <<<< 
+    \{"Kohl", "Wolf", "Bauer"\}                                          \{"Ziege"\}
+                              >> \{"Wolf", "Bauer"\} >>>
+    \{"Kohl"\}                                          \{"Ziege", "Wolf", "Bauer"\}
+                              << \{"Ziege", "Bauer"\} <<
+    \{"Kohl", "Ziege", "Bauer"\}                                          \{"Wolf"\}
+                              >> \{"Kohl", "Bauer"\} >>>
+    \{"Ziege"\}                                          \{"Kohl", "Wolf", "Bauer"\}
+                              << \{"Bauer"\} <<<< 
+    \{"Ziege", "Bauer"\}                                          \{"Kohl", "Wolf"\}
+                              >> \{"Ziege", "Bauer"\} >>    
+    \{\}                                        \{"Kohl", "Ziege", "Wolf", "Bauer"\}
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Ein Fahrplan für den Bauern}  
+\label{fig:wolf-ziege-solution}
+\end{figure} %$
+\pagebreak
+
+\vspace*{\fill}
+\pagebreak
+
+\section{Terme und Matching}
+Neben den bisher vorgestellten Datenstrukturen gibt es noch eine weitere wichtige
+Datenstruktur, die sogenannten \emph{Terme}, die insbesondere nützlich ist, wenn wir
+\emph{symbolische Programme} 
+schreiben wollen.  Darunter verstehen wir solche Programme, die Formeln manipulieren.
+Wollen wir beispielsweise ein Programm schreiben, dass als Eingabe einen String wie
+\\[0.2cm]
+\hspace*{1.3cm}
+``\texttt{x * sin(x)}''
+\\[0.2cm]
+einliest, diesen String als eine Funktion in der Variablen ``\texttt{x}'' interpretiert
+und dann die Ableitung dieser Funktion nach der Variablen ``\texttt{x}'' berechnet, so
+sprechen wir von einem \emph{symbolischen Programm}.   Wollen wir einen Ausdruck wie 
+``\texttt{x * sin(x)}'' darstellen, so eignen sich \emph{Terme} am besten dazu.
+Im nächsten Unter-Abschnitt werden wir zunächst \emph{Terme} zusammen mit den in \setl\
+vordefinierten Funktionen vorstellen, die zur Verarbeitung von Termen benutzt werden können.
+Anschließend stellen wir das sogenannte \emph{Matching} vor, mit dessen Hilfe sich Terme
+besonders leicht manipulieren lassen.
+
+
+\subsection{Konstruktion und Manipulation von Termen}
+Terme werden mit Hilfe sogenannter \emph{Funktions-Zeichen} gebildet.  Es ist wichtig,
+dass Sie Funktions-Zeichen nicht mit Funktionen oder Variablen verwechseln.  In \setl\
+beginnen Funktionen-Zeichen im Gegensatz zu einem Variablen-Namen daher mit einem großen
+Buchstaben.  Auf den Großbuchstaben können  dann beliebig viele Buchstaben, Ziffern und
+der Unterstrich ``\texttt{\_}'' folgen.
+Zusätzlich gibt es noch Funktionszeichen, die mit dem Zeichen
+``\texttt{\symbol{94}}''
+beginnen.  Solche Funktions-Zeichen werden intern von \setl\ verwendet um Operator-Symbole
+wie ``\texttt{+}'' oder ``\texttt{*}'' darzustellen.
+Die folgenden Strings können beispielsweise  als Funktions-Zeichen vewendet werden:
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{F}, \quad \texttt{FabcXYZ}, \quad \texttt{\symbol{94}sum}, \quad \texttt{Hugo\_}.
+\\[0.2cm]
+Damit sind wir nun in der Lage, Term zu definieren.  Ist $F$ ein Funktions-Zeichen und sind
+$t_1$, $t_2$, $\cdots$, beliebige \setl-Werte, so ist der Ausdruck
+\\[0.2cm]
+\hspace*{1.3cm}
+$F(t_1, t_2, \cdots, t_n)$
+\\[0.2cm]
+ein Term.  Beachten Sie, dass Terme ganz ähnlich aussehen wie die Aufrufe von Funktionen.
+Terme und Aufrufe von Funktionen unterscheiden sich nur dadurch, dass bei einem Term links
+vor der ersten öffnenden Klammer ein Funktions-Zeichen steht, während bei einem
+Funktions-Aufruf dort statt dessen eine Variable steht, der eine Funktions-Definition zugewiesen
+worden ist.
+
+\examples
+\begin{enumerate}
+\item \texttt{Adresse(\symbol{34}Rotebühlplatz 41\symbol{34}, 70178, \symbol{34}Stuttgart\symbol{34})}
+
+      ist ein Term, der eine Adresse repräsentiert.
+\item \texttt{Product(Variable(\symbol{34}x\symbol{34}), Sin(Variable(\symbol{34}x\symbol{34})))}
+
+      ist ein Term, der einen arithmetischen Ausdruck repräsentiert, den Sie mathematisch
+      als $x * \sin(x)$ schreiben würden.  \eox
+\end{enumerate}
+
+An dieser Stelle fragen Sie sich vielleicht, wie Terme ausgewertet werden.  Die Antwort ist:
+\textbf{Gar nicht!}  Terme werden nur dazu benutzt, Daten darzustellen.  Terme sind also bereits 
+Werte  genauso wie auch Zahlen, Strings, Mengen oder Listen als Werte aufgefasst werden.
+Genausowenig wie Sie die Zahl \texttt{42} auswerten müssen, müssen Sie einen Term auswerten.
+
+Nehmen wir einmal an,
+dass es in \setl\ keine Listen geben würde.  Dann könnten wir Listen als Terme darstellen.  Zunächst
+würden wir ein Funktions-Zeichen benötigen, mit dem wir die leere Liste darstellen könnten.  Wir
+wählen dazu das Funktions-Zeichen \texttt{Nil}.  Damit haben wir dann also die Entsprechung
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{Nil}() \;\widehat{=}\; \texttt{[]}$.
+\\[0.2cm]
+\textbf{Beachten} Sie hier, dass die Klammern hinter dem Funktions-Zeichen \texttt{Nil} nicht
+weggelassen werden dürfen!  Um nun eine Liste darzustellen, deren erstes Element $x$ ist und deren
+restliche Elemente durch die Restliste $r$ gegeben sind, verwenden wir das Funktions-Zeichen
+\texttt{Cons}.  Dann haben wir die Entsprechung
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{Cons(x, r)} \;\widehat{=}\; \texttt{[}x\texttt{]}+r$. 
+\\[0.2cm]
+Konkret können wir nun die Liste \texttt{[1,2,3]} durch den Term
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{Cons(1, Cons(2, Cons(3, Nil())))}
+\\[0.2cm]
+darstellen.  In der Sprache \textsl{Prolog}, die wir später noch besprechen werden, werden Listen
+intern übrigens in ähnlicher Form als Terme dargestellt.
+
+Es gibt zwei vordefinierte Funktionen in \setl, mit denen wir auf die Komponenten eines Terms
+zugreifen können und es gibt eine Funktion, mit deren Hilfe wir Terme konstruieren können.
+\begin{enumerate}
+\item Die Funktion \texttt{fct} berechnet das Funktions-Zeichen eines Terms.
+      Falls $t$ ein Term der Form $F(s_1,\cdots,s_n)$ ist, so ist das Ergebnis des Funktions-Aufrufs
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{fct}(F(s_1,\cdots,s_n))$
+      \\[0.2cm]
+      das Funktions-Zeichen $F$ dieses Terms.  Beispielsweise liefert der Ausdruck
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{fct(Cons(1, Cons(2, Cons(3, Nil()))))}
+      \\[0.2cm]
+      als Ergebnis das Funktions-Zeichen \texttt{\symbol{34}Cons\symbol{34}}.
+\item Die Funktion \texttt{args} berechnet die Argumente eines Terms.
+      Falls $t$ ein Term der Form $F(s_1,\cdots,s_n)$ ist, dann liefert der Ausdruck
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{args}(F(s_1,\cdots,s_n))$
+      \\[0.2cm]
+      als Ergebnis die Liste $[s_1, \cdots, s_n]$ der Argumente des Terms $t$  .  Beispielsweise
+      liefert der Ausdruck
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{args(Cons(1, Cons(2, Cons(3, Nil()))))}
+      \\[0.2cm]
+      das Ergebnis
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{[1, Cons(2, Cons(3, Nil()))]}.
+\item Ist ein Funktions-Zeichen $f$ und eine Liste $l$ von Argumenten gegeben, so erzeugt die
+      Funktion \texttt{makeTerm} durch den Aufruf
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{makeTerm}(f,l)$
+      \\[0.2cm]
+      einen Term $t$ mit dem Funktions-Zeichen $f$ und der Argument-Liste $l$, für $t$ gilt also
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{fct}(t) = f$  \quad und \quad $\mathtt{args}(t) = l$.
+      \\[0.2cm]
+      Beispielsweise liefert der Aufruf
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{makeTerm(\symbol{34}Cons\symbol{34}, [ 1, Nil() ])}
+      \\[0.2cm]
+      als Ergebnis den Term
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{Cons(1,Nil())}.
+      \\[0.2cm]
+      Diesen Term hätten wir natürlich auch unmittelbar hinschreiben können.
+\end{enumerate}
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    append := procedure(l, x) {
+        if (fct(l) == "Nil") {
+            return Cons(x, Nil());
+        }
+        [head, tail] := args(l);
+        return Cons(head, append(tail, x));
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Einfügen eines Elements am Ende einer Liste.}
+\label{fig:append.stlx}
+\end{figure}
+
+In Abbildung  \ref{fig:append.stlx} auf Seite \pageref{fig:append.stlx} sehen Sie die
+Implementierung  einer Funktion
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/append.stlx}{\texttt{append}},
+deren Aufgabe es ist, ein Element $x$ am Ende einer Liste $l$ einzufügen, wobei vorausgesetzt ist,
+dass die Liste $l$ als Term mit Hilfe der Funktions-Zeichen ``\texttt{Cons}'' und ``\texttt{Nil}''
+dargestellt wird.
+\begin{enumerate}
+\item Zunächst wird in Zeile 2 überprüft, ob die Liste $l$ leer ist.  Die Liste $l$ ist genau dann
+      leer, wenn $l = \texttt{Nil()}$ gilt.  Daher können wir einfach das Funktions-Zeichen von dem
+      Term $l$ testen um herauszufinden, ob $l$ die leere Liste repräsentiert.
+\item Falls $l$ nicht leer ist, muss $l$ die Form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $l = \texttt{Cons(\textsl{head}, \textsl{tail})}$
+      \\[0.2cm]     
+      haben.  Dann ist \textsl{head} das erste Element der Liste $l$ und \textsl{tail} bezeichnet
+      die Liste der restlichen Elemente.  In diesem Fall müssen wir $x$ rekursiv in die Liste
+      \textsl{tail} einfügen.  Als Ergebnis wird in Zeile 6 dann eine neue Liste erzeugt, deren
+      erstes Element \textsl{head} ist, während die Liste der restlichen Elemente durch den
+      rekursiven Aufruf von \textsl{append} berechnet wird.
+\end{enumerate}
+In manchen Fällen ist es sehr unbequem, dass Funktions-Zeichen immer mit einem großen Buchstaben
+beginnen müssen.  Deswegen gibt es in \setl\ einen Escape-Mechanismus, der es erlaubt, auch
+Funktionszeichen zu verwenden, die mit einem kleinen Buchstaben beginnen:  Falls wir einem
+Funktionszeichen den Operator ``\texttt{\symbol{64}}'' voranstellen, dann darf das Funktionszeichen
+auch mit einem kleinen Buchstaben beginnen.  Wollen wir beispielsweise Terme benutzen um
+algebraische Ausdrücke darzustellen, die trigonometrische Funktionen enthalten, 
+so können wir einen Ausdruck der Form $\sin(x)$ durch den Term
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\symbol{64}sin(\symbol{34}x\symbol{34})}  
+\\[0.2cm]
+darstellen.
+
+\subsection{Matching}
+Der Umgang mit Termen wäre sehr mühsam, wenn wir die Terme jedesmal mit Hilfe der Funktionen
+\texttt{fct} und \texttt{args} auseinander nehmen müssten.  Abbildung \ref{fig:append-match.stlx} 
+zeigt eine weitere Implementierung der Funktion
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/append-match.stlx}{\texttt{append}}, 
+bei der wir die Kontroll-Struktur \texttt{match} an Stelle der Funktionen ``\texttt{fct}''
+and ``\texttt{args}'' verwendet haben.  In Zeile 3 wird  überprüft, ob die Liste $l$ leer ist.
+Die wahre Stärke des Matchings sehen wir allerdings ist in Zeile 4, denn dort wird nicht nur
+überprüft, ob die Liste $l$ die Form
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{Cons(\textsl{head},\textsl{tail})}
+\\[0.2cm]
+hat, sondern gleichzeitig werden die Variablen \textsl{head} and \textsl{tail} so gesetzt, dass
+anschließend die Gleichung
+\\[0.2cm]
+\hspace*{1.3cm}
+$l = \texttt{Cons(\textsl{head},\textsl{tail})}$
+\\[0.2cm]
+erfüllt ist.
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    append := procedure(l, x) {
+        match (l) {
+            case Nil():            return Cons(x, Nil());
+            case Cons(head, tail): return Cons(head, append(tail, x));
+        }
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Implementierung von \texttt{append} mit Hilfe von \emph{Matching}.}
+\label{fig:append-match.stlx}
+\end{figure}
+
+Im Allgemeinen ist  ein \texttt{match}-Block so ähnlich aufgebaut wie ein
+\texttt{switch}-Block und hat die in Abbildung \ref{fig:match} gezeigte Struktur.
+Hier bezeichnet $e$ einen Ausdruck, dessen Auswertung einen Term ergibt.  
+Die Ausdrücke $t_1$, $\cdots$, $t_n$ sind sogenannte \emph{Muster}, die freie
+Variablen enthalten.  Bei der Auswertung eines \texttt{Match}-Blocks versucht
+\textsc{SetlX} die in dem Muster $t_i$ auftretenden Variablen so zu setzen, dass das Muster
+zu dem Ergebnis der Auswertung von $e$ gleich ist.  Gelingt dies, so wird die
+mit $\textsl{body}_i$ bezeichnete Gruppe von Befehlen ausgeführt.  Andernfalls
+versucht \textsc{SetlX} das nächste Muster $t_{i+1}$ mit $e$ zur Deckung zu bringen.
+Falls keines der Muster $t_1$, $\cdots$, $t_n$ mit $e$ zur Deckung zu bringen ist, wird
+ersatzweise $\textsl{body}_{n+1}$ ausgeführt.  
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ codes         = {\catcode`_=8\catcode`^=7},
+                  frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  commandchars  = \\\{\},
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+      \texttt{\underline{match} (\(e\)) \{}
+          \texttt{\underline{case}} \(t_1\) : \textsl{body}\(_1\) 
+          \vdots
+          \texttt{\underline{case}} \(t_n\) : \textsl{body}\(_n\)
+          \texttt{\underline{default}:} \textsl{body}\(_{n+1}\)
+      \texttt{\}}
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Struktur eines \texttt{Match}-Blocks}  \label{fig:match}
+\end{figure} 
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    diff := procedure(t, x) {
+        match (t) {
+            case t1 + t2 :
+                return diff(t1, x) + diff(t2, x);
+            case t1 - t2 :
+                return diff(t1, x) - diff(t2, x);
+            case t1 * t2 :
+                return diff(t1, x) * t2 + t1 * diff(t2, x);
+            case t1 / t2 :
+                return ( diff(t1, x) * t2 - t1 * diff(t2, x) ) / t2 * t2;
+            case f ** g :
+                return diff( @exp(g * @ln(f)), x);
+            case ln(a) :
+                return diff(a, x) / a;
+            case exp(a) :
+                return diff(a, x) * @exp(a);
+            case ^variable(x) : // x is defined above as second argument
+                return 1;
+            case ^variable(y) : // y not yet defined, matches any other variable
+                return 0;
+            case n | isNumber(n):   
+                return 0;  
+        }
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{A function to perform symbolic differentiation.}
+\label{fig:diff.stlx}
+\end{figure}
+
+\noindent
+Wir zeigen zum Abschluss dieses Abschnitts ein komplexeres Beispiel.  Die in Abbildung
+\ref{fig:diff.stlx} auf Seite \pageref{fig:diff.stlx} gezeigte Funktion
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/diff.stlx}{\texttt{diff}}
+wird mit zwei Argumenten aufgerufen:
+\begin{enumerate}
+\item Das erste  Argument $t$ ist ein Term, der einen arithmetischen Ausdruck repräsentiert.
+\item Das zweite Argument $x$ ist ein String, der als Variable interpretiert wird.
+\end{enumerate}
+Die Aufgabe der Funktion \texttt{diff} besteht darin, den durch $t$ gegebenen Ausdruck nach der
+in $x$ angegebenen Variablen zu differenzieren.  Wollen wir beispielsweise die Funktion
+\\[0.2cm]
+\hspace*{1.3cm}
+$x \mapsto x^x$
+\\[0.2cm]
+nach $x$ ableiten, so können wir die Funktion \texttt{diff} wie folgt aufrufen.
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{diff(parse(\symbol{34}x ** x\symbol{34}), \symbol{34}x\symbol{34});}
+\\[0.2cm]
+Hier wandelt die Funktion \texttt{parse} den String ``\texttt{x ** x}'' in einen Term um.  Die
+genaue Struktur dieses Terms diskutieren wir weiter unten.  Wir betrachten
+zunächst den \texttt{match}-Befehl in  Abbildung \ref{fig:diff.stlx}.  
+In Zeile  3 hat der zu differenzierende Ausdruck die Form
+\texttt{t1 + t2}.  Um einen solchen Ausdruck nach einer Variablen $x$ zu differenzieren, müssen wir
+sowohl  \texttt{t1} als auch \texttt{t2} nach $x$ differenzieren.  Die dabei erhaltenen Ergebnisse
+sind dann zu addieren.  Etwas interessanter ist Zeile 8, welche die Produkt-Regel der
+Differenzial-Rechnung umsetzt.  Die Produkt-Regel lautet:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\displaystyle \frac{d\;}{dx} \bigl(t_1 \cdot t_2\bigr) = \frac{d\, t_1}{dx} \cdot t_2 + t_1 \cdot \frac{d\,t_2}{dx}$.
+\\[0.2cm]
+Bemerken Sie, dass in Zeile 7 das Muster
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{t1 * t2}
+\\[0.2cm]
+zum einen dazu dient, zu erkennen, dass der zu differenzierende Ausdruck ein Produkt ist, zum
+anderen aber auch die beiden Faktoren des Produkts extrahiert und an die Variablen $t_1$ und $t_2$ bindet.
+In den Zeilen  12 und 16 haben wir den Funktions-Zeichen ``\texttt{exp}'' und ``\texttt{ln}'' den
+ Operator ``\texttt{\symbol{64}}'' vorangestellen müssen, denn sonst würden die Strings
+ ``\texttt{exp}'' und ``\texttt{ln}'' nicht als Funktions-Zeichen sondern als Variablen
+ aufgefasst werden. 
+
+Die Regel zur Berechnung der  Ableitung eines Ausdrucks der Form $f^g$ beruht auf der
+Gleichung
+\\[0.2cm]
+\hspace*{1.3cm}
+$f^g = \exp\bigl(\ln\bigl(f^g\bigr)\bigr) = \exp\bigl(g \cdot \ln(f)\bigr)$,
+\\[0.2cm]
+die in Zeile 12 umgesetzt wird.  
+
+Um einen Ausdruck der Form $\ln(f)$ abzuleiten, müssen
+wir die Kettenregel anwenden.  Da $\frac{d\;}{dx} \ln(x) = \frac{1}{x}$ ist, haben wir insgesamt
+\\[0.2cm]
+\hspace*{1.3cm}
+$\displaystyle \frac{d\;}{dx} \ln(f) = \frac{1}{f} \cdot \frac{d\,f}{dx}$.
+\\[0.2cm]
+Diese Gleichung wurde in Zeile 14 verwendet.  In analoger Weise wird dann in Zeile 16 mit Hilfe der
+Kettenregel ein Ausdruck der Form $\mathtt{exp}(f)$ abgeleitet.
+
+Um das Beispiel in Abbildung \ref{fig:diff.stlx} besser zu verstehen müssen wir wissen, 
+wie die Funktion \texttt{parse} einen String in einen Term umwandelt.  Die Funktion 
+ \texttt{parse} muss sowohl Operator-Symbole als auch Variablen verarbeiten.
+Eine Variable der Form  \texttt{\symbol{34}x\symbol{34}} wird in den Term
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\symbol{94}variable(\symbol{34}x\symbol{34})}
+\\[0.2cm]
+umgewandelt.  Dies erklärt die Zeilen 19 und 21 von Abbildung \ref{fig:diff.stlx}.
+
+Wir können die interne Darstellung eines Terms mit Hilfe der Funktion
+``\texttt{canonical}'' ausgeben.  Beispielsweise liefert der Ausdruck
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{canonical(parse(\symbol{34}x ** x\symbol{34}))}
+\\[0.2cm]
+das Ergebnis
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\symbol{94}power(\symbol{94}variable(\symbol{34}x\symbol{34}), \symbol{94}variable(\symbol{34}x\symbol{34}))}.
+\\[0.2cm]
+Dies zeigt, dass der Exponentiations-Operator ``\texttt{**}'' in \setl\ intern durch das Funktions-Zeichen
+``\texttt{\symbol{94}power}'' dargestellt wird.  Die interne Darstellung des Operators
+``\texttt{+}'' ist ``\texttt{\symbol{94}sum}'',
+``\texttt{-}'' wird durch das Funktions-Zeichen ``\texttt{\symbol{94}difference}'' dargestellt,
+``\texttt{*}'' wird durch das Funktions-Zeichen ``\texttt{\symbol{94}product}'' dargestellt und der Operator
+``\texttt{/}'' wird durch das Funktions-Zeichen ``\texttt{\symbol{94}quotient}'' dargestellt.
+
+Terme sind in dem folgenden Sinne \emph{viral}:  Falls ein Argument eines der Operatoren
+``\texttt{+}'', ``\texttt{-}'', ``\texttt{*}'', ``\texttt{/}'', ``\texttt{\symbol{92}}'' und
+``\texttt{\%}''
+ein Term ist, so erzeugt der Operator als Ergebnis automatisch einen Term.
+Beispielsweise liefert der Ausdruck
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{parse(\symbol{34}x\symbol{34}) + 2}
+\\[0.2cm]
+den Term
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\symbol{94}sum(\symbol{94}variable(\symbol{34}x\symbol{34}), 2)}.
+\\[0.2cm]
+Zeile 21 zeigt, dass an ein Muster in einem \texttt{case} eine Bedingung angeschlossen werden kann:
+Das Muster
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{case n:}
+\\[0.2cm]
+passt zunächst auf jeden Term.  Allerdings wollen wir in Zeile 21 nur Zahlen matchen.  Daher haben
+wir an dieses Muster mit Hilfe des Operators ``\texttt{|}'' noch die Bedingung \texttt{isNumber(n)}
+angehängt, mit der wir sicherstellen, dass $n$ tatsächlich eine Zahl ist.
+
+
+\subsection{Ausblick}
+Wir konnten in diesem einführenden Kapitel nur einen Teil der Sprache \textsc{SetlX}
+behandeln.  Einige weitere Features
+der Sprache \textsc{SetlX} werden wir noch in den folgenden Kapiteln diskutieren.
+Zusätzlich finden Sie
+weitere Informationen  in dem Tutorial, das im Netz unter der Adresse
+\\[0.2cm]
+\hspace*{1.3cm}
+\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/SetlX/tutorial.pdf}{\texttt{http://wwwlehre.dhbw-stuttgart.de/stroetmann/SetlX/tutorial.pdf}}
+\\[0.2cm]
+abgelegt ist.  
+
+\remark
+Die meisten der in diesem Abschnitt vorgestellten Algorithmen sind 
+nicht effizient.  Sie dienen nur dazu, die Begriffsbildungen aus der Mengenlehre konkret
+werden zu lassen.  Die Entwicklung effizienter Algorithmen ist Gegenstand des zweiten
+Semesters. 
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "logik"
+%%% End: 
+

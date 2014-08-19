@@ -1,0 +1,83 @@
+-- Es war einmal ein Bauer, der wollte mit einem wolf, einer goat und
+-- einer Kiste cabbage über einen Fluß übersetzen.  In dem Boot war aber
+-- nicht genug Platz für alles, der Bauer konnte maximal ein Tiere oder 
+-- das Gemüse mitnehmen.  Er konnte aber auch wolf und goat nicht 
+-- alleine lassen, denn dann hätte der wolf die goat gefressen.
+-- Ebensowenig konnte er die goat mit dem cabbage alleine lassen, denn
+-- dann hätte die goat den cabbage gefressen.
+
+program main;
+    All := { "farmer", "wolf", "goat", "cabbage" };
+    P   := pow All;
+    R1  := { [ S, S - B ] : S in P, B in pow S |
+             "farmer" in B and #B <= 2 and not problem(S - B) };
+    R2  := { [ S, S + B ] : S in P, B in pow (All - S) |
+             "farmer" in B and #B <= 2 and not problem(All - (S + B)) };
+    R   := R1 + R2;
+
+    start := All;
+    goal  := {};
+
+    path := reachable(start, goal, R);
+    printPath(path, All);
+
+    -- The set S presents a problem if either the goat and the cabbage or the
+    -- wolf and the goat are contained in S.
+    procedure problem(S);
+        return ("goat" in S and "cabbage"  in S) or
+               ("wolf"  in S and "goat" in S);
+    end problem;
+
+    -- Check wether there is a path from x to y in R and compute it.
+    procedure reachable(x, y, R);
+        P := { [x] };
+        loop
+            Old_P := P;
+            P     := P + path_product(P, R);
+            Found := { p in P | p(#p) = y };
+            if Found /= {} then
+                return arb Found;
+            end if;
+            if P = Old_P then
+                return;
+            end if;
+        end loop;
+    end reachable;
+
+    -- Gebe diesen Pfad Schritt für Schritt aus.
+    procedure printPath(path, All);
+        for i in [1 .. #path] loop
+            S1 := path(i);
+            S2 := All - path(i);
+            print(S1, 65 * " ", S2);
+            if i = #path then
+                exit;
+            end if;
+            if "farmer" in S1 then
+                B := S1 - path(i+1);
+                print("                                     >>>> ", B, " >>>> " );
+            else
+                B := S2 - (All - path(i+1));
+                print("                                     <<<< ", B, " <<<< " );
+            end if;
+        end loop;
+    end printPath;
+
+    -- The procedure call product(P, Q) computes the path product P * Q.
+    procedure path_product(P, Q);
+        return { add(p,q) : p in P, q in Q | p(#p) = q(1) and not cyclic(add(p,q)) };
+    end path_product;    
+
+    -- The procedure not_cyclic(p) checks whether the path p is cyclic.
+    procedure cyclic(p);
+        return #{ x : x in p } < #p;
+    end cyclic;
+
+    -- The product call add(p,q) computes the sum of the lists p and q.
+    -- The last point of p has to be the first point of q.
+    procedure add(p, q);
+        return p + q(2..);
+    end add;    
+
+end main;
+

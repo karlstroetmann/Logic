@@ -1,0 +1,298 @@
+program main;
+    -- The number of queens on the board and the size of the board.
+    numberQueens := 8;
+    -- Erzeugung eines Bretts, die Prozedur createBoard() ist bereits 
+    -- implementiert.
+    board := createBoard(numberQueens);
+    print(board);
+    print("\n");
+
+    print("Test: Aufgabe 1");
+    print( atMostOne( {"a", "b", "c"} ) );
+    print("\n");
+
+    print("Test: Aufgabe 2");
+    print("This should print a formula expressing that there is at most one" + 
+          " queen in the first column.");
+    print( atMostOneInColumn(board, 1) );
+    print("\n");
+
+    print("Test: Aufgabe 3");
+    print("This should print a formula expressing that there is at most one" + 
+          " queen in the rising main diagonal.");
+    print( atMostOneInUpperDiagonal(board, numberQueens + 1) );
+    print("\n");
+
+    print("Test: Aufgabe 4");
+    print("This should print a formula expressing that there is at most one" + 
+          " queen in the falling main diagonal.");
+    print( atMostOneInLowerDiagonal(board, 0) );
+    print("\n");
+
+    print("Test: Aufgabe 5");
+    print("This should print a formula expressing that there is at least one" + 
+          " queen in the first row.");
+    print( oneInRow(board, 1) );
+    print("\n");
+
+    Clauses := allClauses(board);
+    print("Test: Aufgabe 6");
+    print("This should print a formula that is equivalent to the " 
+          + numberQueens + "-queens-problem.");
+    print(Clauses);
+    print("\n");
+
+    -- Solve the set of clauses using the algorithm of Davis and Putnam.
+    -- The procedure DavisPutnam() is already implemented.
+    if Clauses /= om then
+        I := DavisPutnam(Clauses,{});
+    end if;
+
+    -- This prints the solution if there is one.
+    if I /= FALSE then
+        printBoard(I, board);
+    else
+        print("The problem is not solvable for " + numberQueens + " queens!");
+        print("Try to increase the number of queens.");
+    end if;
+
+    -- Aufgabe 1:
+    -- S is a set of propositional variables. The call atMostOne(S) creates
+    -- a set of clauses.  This set expresses the fact that at most one of
+    -- the variables in S is true.
+    procedure atMostOne(S);
+
+    end atMostOne;
+
+    -- Aufgabe 2:
+    -- This procedure computes a set of clauses.  This set of clauses is true
+    -- iff there is at most one queen on the given column.
+    procedure atMostOneInColumn(board, column);
+
+
+
+    end atMostOneInColumn;
+
+    -- Aufgabe 3:
+    -- This procedure computes a set of clauses.  This set of clauses is true
+    -- iff there is at most one queen on the diagonal satisfying the equation 
+    --    row + column = k.
+    procedure atMostOneInUpperDiagonal(board, k);
+
+
+
+    end atMostOneInUpperDiagonal;
+
+    -- Aufgabe 4:
+    -- This procedure computes a set of clauses.  This set of clauses is true
+    -- iff there is at most one queen on the diagonal satisfying the equation 
+    --    row - column = k.
+    procedure atMostOneInLowerDiagonal(board, k);
+
+
+
+    end atMostOneInLowerDiagonal;
+
+    -- Aufgabe 5:
+    -- This procedure computes a set of clauses.  This set of clauses is true
+    -- iff there is at least one queen on the given row.
+    procedure oneInRow(board, row);
+
+    end oneInRow;
+
+    -- Aufgabe 6:
+    -- The procedure allClauses takes as input a matrix (i.e. a list of lists)
+    -- of propositional variables.  Each of these variables represents a field
+    -- of a chess board.  The variables express the fact that the corresponding
+    -- field is occupied by a queen.
+    -- The procedure computes as output a formula in KNF. This formula expresses
+    -- the fact that no queen on the board threatens another queen, i.e. two
+    -- queens are not
+    --             on the same row,    or
+    --             on the same column, or
+    --             on the same diagonal.
+    -- Furthermore the formula guarantees that there is a queen in every row.
+    -- The formula is represented as a set of clauses.  Each of the clauses
+    -- is represented as a set of literals.
+    --
+    -- In order to simplify the resulting formula, the following observation
+    -- can be used:
+    -- If there are no two queens on the same column and there is at least one
+    -- queen in every row, then it follows that there is exactly one queen in
+    -- every row, since otherwise there would be more than 8 queens on the board
+    -- and that is only possible if there is one column containing more than one
+    -- queen.
+    procedure allClauses(board);
+
+
+
+
+    end allClauses;
+
+    -- n is a positive integer.  The call createBoard(n) creates a list
+    -- containing n lists.  Each of these lists has itself a length of
+    -- n. The element number j in the list number i is the string 
+    --    "p" + i + j.
+    procedure createBoard(n);
+        return [ createRow(n, i) : i in [1..n] ];
+    end createBoard;
+
+    -- This procedure produces a list of propositional variables
+    -- representing the i-th row on a chessboard of size n.
+    procedure createRow(n, i);
+        return [ "p" + i + j : j in [1..n] ];
+    end createRow;
+
+    -- I is a set of unit clauses and board is a matrix of propositional 
+    -- variables representing a chessboard.   This procedure prints the 
+    -- chessboard.
+    procedure printBoard(I, board);
+        if I = om then
+            return;
+        end if;
+        n := #board;
+        print( "        " + ((8*n+1) * "-") );
+        for row in [1..n] loop
+            line := "        |";
+            for col in [1..n] loop
+                line +:= "       |";
+            end loop;
+            print(line);
+            line := "        |";
+            for col in [1..n] loop
+                if { board(row)(col) } in I then
+                    line +:= "   Q   |";
+                else
+                    line +:= "       |";
+                end if;
+            end loop;
+            print(line);
+            line := "        |";
+            for col in [1..n] loop
+                line +:= "       |";
+            end loop;
+            print(line);
+            print( "        " + ((8*n+1) * "-") );
+        end loop;
+    end printBoard;
+
+    -- Eine Sparversion der oberen Prozedur.
+    procedure printBoardSmall(I, board);
+        n := #board;
+        print( "        " + ((2*n+1) * "-") );
+        for row in [1..n] loop
+            line := "        |";
+            for col in [1..n] loop
+                if { board(row)(col) } in I then
+                    line +:= "Q|";
+                else
+                    line +:= " |";
+                end if;
+            end loop;
+            print(line);
+            print( "        " + ((2*n+1) * "-") );
+        end loop;
+    end printBoardSmall;
+
+    ----------------------------------------------------------
+    --                                                                     --
+    --     Below is the implementation of the Davis-Putnam algorithm.      --
+    --                                                                     --
+    ----------------------------------------------------------
+
+    -- Clauses ist eine Menge von Klauseln und Literals ist eine Menge
+    -- von Literalen.  Der Aufruf unsatisfiable(Clauses, Literals) versucht 
+    -- eine Lösung der Menge
+    --                        Clauses
+    -- zu berechnen.  Wenn dies gelingt, wird eine Menge von Unit-Klauseln 
+    -- zurück gegeben, die keine komplementären Literale enthält.  Aus dieser 
+    -- Menge kann dann unmittelbar eine Belegung berechnet werden, die Clauses
+    -- löst.
+    --       Wenn die Menge Clauses unlösbar ist, wird false zurück gegeben.
+    -- Das Argument Literals dient der Buchhaltung bei den rekursiven Aufrufen.
+    -- Hier werden alle die Literale aufgesammelt, mit denen die Menge Clauses
+    -- schon reduziert wurde.  Beim ersten Aufruf ist diese Menge leer.
+    procedure DavisPutnam( Clauses, Literals );
+        -- 1. Schritt: Bilde solange wie möglich Unit-Schnitte mit den Klauseln
+        --             aus Clauses und entferne subsumierte Klauseln.
+        Clauses := saturate(Clauses);
+        -- 2. Schritt: Falls {} in Clauses, ist Clauses unerfüllbar,
+        --             also gilt Clauses |= false und wir geben true zurück.
+        if {} in Clauses then
+            return false;
+        end if;
+        -- 3. Schritt: Falls für alle Klauseln k aus Clauses gilt card(k) = 1,
+        --             so ist die Menge Clauses erfüllbar, wir geben dann
+        --             die Menge Clauses zurück.
+        if { k in Clauses | #k = 1 } = Clauses then
+            return Clauses;
+        end if;
+        -- 4. Schritt: Wähle Literal l aus Clauses, dass noch nicht benutzt
+        --             worden ist.
+        literal := selectLiteral(Clauses, Literals);
+        --   Fall (a): Prüfe rekursiv, ob Clauses + { {l} } |= false.
+        --             Falls es eine Belegung I gibt, die die Menge Clauses + {l} erfüllt,
+        --             gebe I zurück.
+        --             Sonst weiter bei (b).
+        Result := DavisPutnam(Clauses + {{literal}}, Literals + { literal });
+        if Result /= false then
+            return Result;
+        end if;        
+        --   Fall (b): Prüfe rekursiv, ob Clauses + { {-l} } |= false.
+        --             Falls es eine Belegung I gibt, die die Menge Clauses + {-l} erfüllt,
+        --             gebe I zurück.
+        --             Sonst haben wir Clauses + {{l}} |= false. und Clauses + {{-l}} |= false
+        --             und daraus folgt Clauses |= false, wir geben also true zurück.
+        notLiteral := negateLiteral(literal);
+        return DavisPutnam(Clauses + {{notLiteral}}, Literals + { notliteral } );
+    end DavisPutnam;
+
+    -- Gegeben ist eine Menge S von Klauseln.  Der Aufruf saturate(S) berechnet alle
+    -- Klauseln, die mit Unit Schnitten aus S ableitbar sind.  Zusätzlich werden alle
+    -- Klauseln, die von Unit-Klauseln subsumiert werden, aus der Menge S entfernt.
+    procedure saturate(S);
+        -- Wir berechnen zunächst alle Unit-Klauseln.
+        Units := { k in S | #k = 1 };
+        -- Wir müssen uns merken, welche Unit-Klauseln wir schon benutzt haben.
+        Used := {};
+        -- Solange wir unbenutzte Unit-Klauseln haben, wählen wir eine 
+        -- Unit-Klausel aus, merken uns, dass wir diese Klausel benutzt haben 
+        -- und bilden alle möglichen Schnitte mit anderen Klauseln.  
+        while Units /= {} loop
+            unit := arb Units;
+            Used := Used + { unit };
+            literal := arb unit;
+            S := reduce(S, literal);
+            -- Da bei der Reduktion neue Unit-Klauseln entstehen können, 
+            -- müssen wir die Menge der Unit-Klauseln bei jedem Durchlauf
+            -- der Schleife neu berechnen.  
+            Units := { k in S | #k = 1 } - Used;        
+        end loop;
+        -- Wenn keine neuen Unit-Klauseln gefunden werden, geben wir S zurück.
+        return S;
+    end saturate;
+
+    -- Die Prozedur reduce(S,l) führt alle Unit-Schnitte und alle Unit-Subsumptionen,
+    -- die mit der Unit-Klausel {l} möglich sind, durch.
+    procedure reduce( S, l );
+        notL := negateLiteral(l);
+        return { k - { notL } : k in S | notL in k } + 
+               { k : k in S | not notL in k and (not l in k or k = {l}) };
+    end reduce;
+
+    -- Wir wählen ein beliebiges Literal aus einer beliebigen Klausel,
+    -- so dass weder dieses Literal noch die Negation benutzt wilurden.
+    procedure selectLiteral( S, Forbidden );
+        return arb { l : k in S, l in k | not l in Forbidden };
+    end selectLiteral;
+
+    -- Diese Prozedur berechnet das Komplement des Literals l.
+    procedure negateLiteral(l);
+        if l(1) = "-" then
+            return l(2);
+        else
+            return [ "-", l ];
+        end if;
+    end negateLiteral;
+
+end main;

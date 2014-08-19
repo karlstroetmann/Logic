@@ -1,0 +1,337 @@
+\documentclass{slides}
+\usepackage[latin1]{inputenc}
+\usepackage{german}
+\usepackage{epsfig}
+\usepackage{amssymb}
+
+\pagestyle{empty}
+\setlength{\textwidth}{18cm}
+\setlength{\textheight}{24cm}
+\setlength{\topmargin}{0cm}
+\setlength{\headheight}{0cm}
+\setlength{\headsep}{0cm}
+\setlength{\topskip}{0.2cm}
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\evensidemargin}{0.5cm}
+
+\newcommand{\is}{\;|\;}
+
+\newcounter{mypage}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Mengen-Operatoren
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item Vereinigung
+
+      \texttt{c := a + b;}
+
+      entspricht: $c = a \cup b$ 
+\item Durchschnitt
+
+      \texttt{c := a * b;}
+
+      entspricht: $c = a \cap b$ 
+\item Mengen-Differenz
+
+      \texttt{c := a - b;}
+
+      entspricht: $c = a \backslash b$
+\item Potenz-Menge 
+  
+      \texttt{c := pow a;}
+
+      entspricht: $c := 2^a$
+\end{enumerate}
+
+\setcounter{page}{1}
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{18cm}{1mm}
+Setl2  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Setl2 --- Definition von Mengen
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item Explizites Auflisten aller Elemente 
+
+      \texttt{\{ 1, 5, 7 \}}
+\item Arithmetische Aufzählung
+
+      \texttt{\{ 1 .. 100 \}}
+
+      entspricht: \quad $\{ n \in \mathbb{N} \mid 1 \leq n \wedge n \leq 100 \}$
+\item Arithmetische Aufzählung mit konstanter Schrittweite
+
+      \texttt{\{ 3, 8 .. 100 \}}
+
+      entspricht: \quad $\{ 3 + n \cdot 5 \mid n \in \mathbb{N} \;\wedge\; 3 + n \cdot 5 \leq 100 \}$
+\item Definition von Mengen durch Iteratoren (Bildmengen)
+      
+      Beispiel: Menge aller Produkte $n \cdot m$ mit $2 \leq n, m \leq 100$
+
+      \texttt{\{ n * m : n in \{2..10\}, m in \{2..10\} \}}
+\item Mengenbildung durch Auswahl
+
+      Beispiel: Menge aller Teiler von $p$
+
+      \texttt{\{ x : x in \{ 1 .. p \} | p mod x = 0 \}}
+
+      Einfachere Schreibweise:
+
+      \texttt{\{ x in \{1..p\} | p mod x = 0 \}}
+      
+      entspricht: 
+      $\Biggl\{ x \in \{ n \in \mathbb{N} \mid 1 \leq n \wedge n \leq p \} \;\mid\; 
+               p \;\mathop{\mathtt{mod}}\; x = 0 \Biggr\}$
+\end{enumerate}
+
+
+\setcounter{page}{1}
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{18cm}{1mm}
+Setl2  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Setl2 --- Definition von Mengen
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\setcounter{enumi}{5}
+\item Mengenbildung durch Iteratoren und zusätzliche Auswahl
+
+      Beispiel: Menge aller Produkte $m \cdot n$ für die gilt
+      \\[0.1cm]
+      \hspace*{1.3cm} $m + n = 9$
+
+      \texttt{\{ n*m : n in \{ 0 .. 9 \}, m in \{ 0 .. 9 \} | m+n = 9 \}}
+
+      allgemeine Form
+
+      \texttt{M := \{ $\textsl{expr}(x_1,\cdots,x_n)$ : $x_1$ in $S_1$, $\cdots$, $x_n \in S_n$ \\
+      \hspace*{6.6cm} | $\textsl{cond}(x_1,\cdots,x_n)$ \}}
+      \begin{enumerate}
+      \item $\textsl{expr}(x_1,\cdots,x_n)$: 
+
+            Ausdruck, in dem Variablen $x_1$, $\cdots$ $x_n$ vorkommen.
+      \item $S_1$, $\cdots$ $S_n$: Mengen
+      \item $\textsl{cond}(x_1, \cdots, x_n)$: 
+
+            Ausdruck, der  ``\texttt{true}'' oder ``\texttt{false}'' ergibt.
+      \item $M$: Menge, die alle Elemente  $\textsl{expr}(x_1,\cdots,x_n)$ 
+            enthält, für die $x_i \in S_i$ gilt und $\textsl{cond}(x_1, \cdots, x_n)$
+            den Wert ``\texttt{true}'' liefert.
+      \end{enumerate}
+\end{enumerate}
+
+\setcounter{page}{1}
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{18cm}{1mm}
+Setl2  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+
+\setcounter{page}{1}
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{18cm}{1mm}
+Setl2  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+
+\setcounter{page}{1}
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{18cm}{1mm}
+Setl2  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+
+\setcounter{page}{1}
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{18cm}{1mm}
+Setl2  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+
+\setcounter{page}{1}
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{18cm}{1mm}
+Setl2  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+
+\setcounter{page}{1}
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{18cm}{1mm}
+Setl2  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+
+\setcounter{page}{1}
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{18cm}{1mm}
+Setl2  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+
+\setcounter{page}{1}
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{18cm}{1mm}
+Setl2  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+
+\setcounter{page}{1}
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{18cm}{1mm}
+Setl2  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+
+\setcounter{page}{1}
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{18cm}{1mm}
+Setl2  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+
+\setcounter{page}{1}
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{18cm}{1mm}
+Setl2  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

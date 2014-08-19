@@ -1,0 +1,94 @@
+-- Es war einmal ein Bauer, der wollte mit einem Wolf, einer Ziege und
+-- einer Kiste Kohl über einen Fluß übersetzen.  In dem Boot war aber
+-- nicht genug Platz für alles, der Bauer konnte maximal ein Tiere oder 
+-- das Gemüse mitnehmen.  Er konnte aber auch Wolf und Ziege nicht 
+-- alleine lassen, denn dann hätte der Wolf die Ziege gefressen.
+-- Ebensowenig konnte er die Ziege mit dem Kohl alleine lassen, denn
+-- dann hätte die Ziege den Kohl gefressen.
+
+program main;
+    All := { "Bauer", "Wolf", "Ziege", "Kohl" };
+    -- P ist die Menge aller Punkte.
+    P := { [ S1, S2 ] : S1 in pow All, S2 in pow All | 
+                        S1 + S2 = All and S1 * S2 = {} };
+    -- Ein neuer Punkt ist erreichbar, wenn der Bauer von links nach 
+    -- rechts übersetzt und höchstens ein Objekte mitnimmt.
+    R1 := { [ [S1, S2], [S1 - B, S2 + B] ] : [S1, S2] in P, B in pow S1 |
+              "Bauer" in B and #B <= 2 and not problem(S1 - B) };
+    -- Genauso, wie der Bauer von links nach rechts übersetzen kann, 
+    -- geht es auch von rechts nach links.
+    R2 := { [ [S1, S2], [S1 + B, S2 - B] ] : [S1, S2] in P, B in pow S2 |
+              "Bauer" in B and #B <= 2 and not problem(S2 - B) };
+    for [x,y] in R1 loop
+            print(x, "   ", y);
+    end loop;            
+    for [x,y] in R2 loop
+            print(x, "   ", y);
+    end loop;            
+    -- R ist die Menge aller Verbindungen zwischen Punkten des Zustandsraums.
+    R := R1 + R2;
+
+    -- Am Anfang sind alle links.
+    start := [ All, {} ];
+    -- Am Ende sollen alle rechts sein.
+    goal := [ {}, All ];
+    -- Berechne eine Pfad zum Ziel.
+    path := reachable(start, goal, R);
+
+    -- Gebe diesen Pfad Schritt für Schritt aus.
+    for i in [1 .. #path] loop
+        S1 := path(i)(1);
+        S2 := path(i)(2);
+        print(S1, 65 * " ", S2);
+        if i = #path then
+            exit;
+        end if;
+        if "Bauer" in S1 then
+            M := S1 - path(i+1)(1);
+            print("                                     >>>> ", M, " >>>> " );
+        else
+            M := S2 - path(i+1)(2);
+            print("                                     <<<< ", M, " <<<< " );
+        end if;
+    end loop;
+
+    -- Die Menge S ist problematisch, wenn entweder Ziege und Kohl 
+    -- oder Wolf und Ziege zusammen sind.
+    procedure problem(S);
+        return ("Ziege" in S and "Kohl" in S) or ("Wolf" in S and "Ziege" in S);
+    end problem;
+
+    -- Check wether there is a path from x to y in R and compute it.
+    procedure reachable(x, y, R);
+        P := { [x] };
+        loop
+            Old_P := P;
+            P     := P + path_product(P, R);
+            Found := { p in P | p(#p) = y };
+            if Found /= {} then
+                return arb Found;
+            end if;
+            if P = Old_P then
+                return;
+            end if;
+        end loop;
+    end reachable;
+
+    -- The procedure call product(P, Q) computes the path product P * Q.
+    procedure path_product(P, Q);
+        return { add(p,q) : p in P, q in Q | p(#p) = q(1) and not_cyclic(add(p,q)) };
+    end path_product;    
+
+    -- The procedure not_cyclic(p) checks whether the path p is cyclic.
+    procedure not_cyclic(p);
+        return #{ x : x in p } = #p;
+    end not_cyclic;
+
+    -- The product call add(p,q) computes the sum ofg the lists p and q.
+    -- The last point of p has to be the first point of q.
+    procedure add(p, q);
+        return p + q(2..);
+    end add;    
+
+end main;
+

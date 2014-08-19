@@ -1,0 +1,51 @@
+program main;
+
+--  z.B.  f := [ "oder", [ "p" ] , [ "nicht", [ "p" ] ] ];
+    print("Bitte Formel eingeben");
+    read(f);
+    if tautology(f) then
+        print("Die Formel \"" + f + "\" ist eine Tautologie.");
+    else
+        print("Die Formel \"" + f + "\" ist keine Tautologie.");
+    end if;
+
+    -- Auswertung der aussagen-logischen Formel f mit Hilfe der Belegung I
+    procedure evaluate(f, I);
+        case
+            when f = "true"   =>  return TRUE;
+            when f = "false"  =>  return FALSE;
+            when #f = 1       =>  return I(f(1));
+            when #f = 2 and f(1) = "nicht" =>  return not evaluate(f(2), I);
+            when #f = 3 and f(1) = "und"   =>  return evaluate(f(2), I) and  evaluate(f(3), I);
+            when #f = 3 and f(1) = "oder"  =>  return evaluate(f(2), I) or   evaluate(f(3), I);
+            when #f = 3 and f(1) = "folgt" =>  return not evaluate(f(2), I) or evaluate(f(3), I);
+            when #f = 3 and f(1) = "gdw"   =>
+                return (not evaluate(f(2), I) or evaluate(f(3), I)) and (evaluate(f(2), I) or not evaluate(f(3), I));
+            otherwise => print("malformed formula: ", f);
+        end case;
+    end evaluate;
+
+    -- Diese Funktion sammelt alle Variablen in f auf.
+    procedure collectVars(f);
+        case
+            when f = "true"   =>  return {};
+            when f = "false"  =>  return {};
+            when #f = 1       =>  return { f(1) };
+
+            when #f = 2 and f(1) = "nicht" =>  return collectVars( f(2) );
+            when #f = 3 and f(1) = "und"   =>  return collectVars( f(2) ) + collectVars( f(3) );
+            when #f = 3 and f(1) = "oder"  =>  return collectVars( f(2) ) + collectVars( f(3) );
+            when #f = 3 and f(1) = "folgt" =>  return collectVars( f(2) ) + collectVars( f(3) );
+            when #f = 3 and f(1) = "gdw"   =>  return collectVars( f(2) ) + collectVars( f(3) );
+            otherwise => print("malformed formula: ", f);
+        end case;
+    end collectVars;
+
+    -- Test, ob Formel f eine Tautologie ist.
+    procedure tautology(f);
+        V := collectVars(f);
+        A := { { [x, x in M] : x in V } : M in pow V };
+        return forall S in A | evaluate(f, S);
+    end tautology;
+
+end main;

@@ -1,0 +1,1950 @@
+\chapter{First-order Logic}
+Propositional logic discusses the propositional connectives ``$\neg$'', 
+``$\wedge$'', ``$\vee$'',  ``$\rightarrow$'', and ``$\leftrightarrow$''.  In first-order
+logic, the set of \formulae is much richer, as we will also use the quantifiers ``$\forall$'' and
+``$\exists$''.  Furthermore, the following notions are introduced:
+\begin{enumerate}
+\item \emph{Terms} are used as a way to denote objects.
+\item These terms are constructed using  \emph{variables} and \emph{function symbols}.
+      For example, the following are terms:
+      \[ \textsl{father}(x),\quad \textsl{mother}(\textsl{isaac}), \quad x+7. \]
+      Here, \textsl{father}, \textsl{mother}, \textsl{isaac}, ``\texttt{+}'', and ``\texttt{7}''
+      are function symbols, while $x$ is used as a variable.
+\item Different objects can be put into a relation using  \emph{predicate symbols} to build atomic
+      formul\ae.  For example, the following are atomic formul\ae:
+      \[ \textsl{isBrother}\bigl(\textsl{adam},
+         \textsl{father}(\textsl{brian})\bigr),\quad x+7 < x\cdot 7,\quad n \in \mathbb{N}.
+      \]
+      Here, we have used the predicate symbols \textsl{isBrother}, ``$<$'', and ``$\in$''.
+\item First-order \formulae can be combined using propositional connectives:
+      \[ x > 1 \rightarrow x + 7 < x \cdot  7 \]
+\item Furthermore, \formulae can contain  \emph{quantifiers} to define the semantics of variables:
+      \[ \forall x \in \mathbb{R}: \exists n \in \mathbb{N}: x < n \]
+\end{enumerate}
+The following section defines the syntax of first-order formul\ae, while their interpretation is
+discussed in section \ref{sec:semantics}.
+
+\section{Syntax}
+We begin with the definition of the notion of a \emph{signature}.  
+A signature is just a collection of symbols categorized as variables, function symbols, predicate
+symbols, and a specification of their arity.
+ 
+\begin{Definition}[Signature]
+{\em
+  A \emph{signature} is a  4-tuple \\[0.2cm]
+  \hspace*{1.3cm} 
+  $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$, 
+  \\[0.2cm]
+  such that: 
+  \begin{enumerate}
+  \item $\mathcal{V}$ is the set of variables.
+  \item $\mathcal{F}$ is the set of function symbols.
+  \item $\mathcal{P}$ is the set of predicate symbols.
+  \item $\textsl{arity}$ is a function assigning an arity to all function symbols and predicate
+        symbols: 
+        \\[0.2cm]
+        \hspace*{1.3cm} 
+        $\textsl{arity}: \mathcal{F} \cup \mathcal{P} \rightarrow \mathbb{N}$. 
+        \\[0.2cm]
+        A symbol  $f$ is called an \emph{$n$-ary} symbol iff $\textsl{arity}(f) = n$.
+  \item As we have to be able to distinguish variables, function symbols, and predicate symbols,
+        the sets $\mathcal{V}$, $\mathcal{F}$, and $\mathcal{P}$ have to be pairwise disjoint: 
+        \\[0.2cm] 
+        \hspace*{1.3cm} 
+        $\mathcal{V} \cap \mathcal{F} = \{\}$, \quad
+        $\mathcal{V} \cap \mathcal{P} = \{\}$, \quad and \quad
+        $\mathcal{F} \cap \mathcal{P} = \{\}$.
+  \end{enumerate}
+}
+\end{Definition}
+
+\noindent
+\emph{Terms} are expressions that denote objects.  They are composed from variables and function
+symbols.  Their formal definition is as follows.
+\begin{Definition}[Term]
+{\em
+  If $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ is a
+  signature, the set of  $\Sigma$-terms $\mathcal{T}_\Sigma$ is defined inductively:
+  \begin{enumerate}
+  \item For every variables $x \in \mathcal{V}$ we have $x \in \mathcal{T}_\Sigma$.
+  \item If $f \in \mathcal{F}$ is an n-ary function symbol and if  
+        $t_1,\cdots,t_n \el \mathcal{T}_\Sigma$, then we also have 
+        \\[0.2cm]
+        \hspace*{1.3cm} 
+        $f(t_1,\cdots,t_n) \el \mathcal{T}_\Sigma$. 
+        \\[0.2cm]
+        If $c \in \mathcal{F}$ is a 0-ary function symbol, we are permitted to write 
+        $c$ instead of $c()$.  In this case, the function symbol $c$ is called a 
+        \emph{constant}.
+        \hspace*{\fill} $\Box$
+  \end{enumerate}
+}
+\end{Definition}
+
+\example
+Define the set of variables as $\mathcal{V} = \{ x, y, z \}$, the set of function symbols as
+ $\mathcal{F} = \{ 0, 1, \mathtt{+}, \cdot \}$, 
+and the set of predicate symbols as $\mathcal{P} = \{\mathtt{=}, \leq\}$.  
+The signature of these symbols is given by the function  \textsl{arity} 
+as follows: \\[0.2cm]
+\hspace*{1.3cm} 
+$\textsl{arity} = \bigl\{ \pair(0,0), \pair(1,0), \pair(\mathtt{+},2),
+ \pair(\cdot,2), \pair(=,2), \pair(\leq,2) \bigr\}
+$
+\\[0.2cm]
+Now, define the signature $\Sigma_\mathrm{arith}$ as
+$\Sigma_\mathrm{arith} := \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$. 
+\\[0.2cm]%
+Then we can construct  $\Sigma_{\mathrm{arith}}$-terms as follows:
+\begin{enumerate}
+\item $x, y, z \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$, 
+      
+      as all variables are also  $\Sigma_{\mathrm{arith}}$-terms.
+\item $0, 1 \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$,  
+
+      as $0$ and $1$ are  $0$-ary function symbols.
+\item $\mathtt{+}(0,x) \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$, 
+
+      as we have already seen that  $0 \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$, $x \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$ and
+      ``$\mathtt{+}$'' is a binary function symbol.
+\item $\cdot(\mathtt{+}(0,x),1) \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$, 
+
+      as $\mathtt{+}(0,x) \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$, $1 \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$ and
+      ``$\cdot$'' is a binary function symbol.
+\end{enumerate}
+
+The notion of an  \emph{atomic formula} is defined next.  
+An atomic formula is a formula that does not contain smaller formul\ae.
+Therefore, an atomic formula cannot contain propositional connectives or quantifiers.
+
+\begin{Definition}[Atomic Formul\ae]
+{\em
+  If  $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ is a
+  signature, the the set  $\mathcal{A}_\Sigma$ of all atomic $\Sigma$-\formulae is defined as
+  follows:
+
+   If $p \el \mathcal{P}$ is an $n$-ary predicate symbol and 
+   $t_1$, $\cdots$, $t_n \in \mathcal{T}_\Sigma$, then: \\[0.2cm]
+  \hspace*{1.3cm} $p(t_1,\cdots,t_n) \in \mathcal{A}_\Sigma$.  \\[0.2cm]
+  If  $p$ is a  0-ary predicate symbol, then we will write  $p$ instead of  $p()$.
+  In this case, the predicate symbol $p$ is called a  \emph{propositional variable}.
+  \hspace*{\fill} $\Box$
+}
+\end{Definition}
+
+\noindent
+\textbf{Remark}: Be careful not to mix up the variables of $\mathcal{V}$, which are also know as
+\emph{object variables} and the propositional variables.
+
+\example
+If we continue the example given above, we can see that 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\mathtt{=}(\cdot(\mathtt{+}(0,x),1),0) \in \Sigma_\mathrm{arith}$. \qed
+\vspace{0.3cm}
+
+\noindent
+We will define first-order \formulae next.  We have to be careful to distinguish between two
+different kinds of variables.  There are so called \emph{bound variables} and \emph{free variables}.
+We introduce these notions using an example from calculus.
+Take a look at the following equation: \\[0.2cm]
+\hspace*{1.3cm} $\int\limits_{0}^{x} y \cdot  t\, d t = \frac{1}{2} x^2 \cdot  y$ \\[0.2cm]
+In this equation, the variables $x$ and $y$ are \emph{free}, while the variable $t$ is \emph{bound}
+by the integral operator ``$\int$''.  The point is that we can substitute arbitrary values for
+ $x$ and $y$ and the formula will still remain valid.
+For example, if we substitute $2$ for  $x$, then we get the equation \\[0.2cm]
+\hspace*{1.3cm}  $\int\limits_{0}^{2} y \cdot  t\, d t = \frac{1}{2} 2^2 \cdot  y$ 
+\\[0.2cm]
+and this equation is true.  On the other hand, substituting a number for $t$ does not make any
+sense, as the integral operator needs a variable.  We can try to substitute a variable $t$.
+If we substitute $u$ for $t$, we would get
+\\[0.2cm]
+\hspace*{1.3cm} $\int\limits_{0}^{x} y \cdot  u\, d u = \frac{1}{2} x^2 \cdot  y$, 
+\\[0.2cm]
+which is a valid equation.  However, if we would substitute $y$ for the variable $t$, we would get
+ \\[0.2cm]
+\hspace*{1.3cm}  $\int\limits_{0}^{x} y \cdot  y\, d y = \frac{1}{2} x^2 \cdot  y$. \\[0.2cm]
+Now this equation is no longer valid!  The problem is, that by substituting $y$ for $t$ the variable
+$y$ that already occurred inside the integral has been captured and has become a bound variable.
+
+
+A similar problem arises if we substitute arbitrary terms for $y$.  
+As long as these terms don't contain the variable  $t$, we are fine.
+For example, if we substitute $x^2$ for $y$, we get
+\\[0.2cm]
+\hspace*{1.3cm}  $\int\limits_{0}^{x} x^2 \cdot  t\, d t = \frac{1}{2} x^2 \cdot  x^2$,
+ \\[0.2cm]
+which is true.  However, if we substitute  $t^2$ for $y$, we get \\[0.2cm]
+\hspace*{1.3cm} $\int\limits_{0}^{x} t^2 \cdot  t\, d t = \frac{1}{2} x^2 \cdot  t^2$ \\[0.2cm]
+and that formula is nonsense. 
+\vspace{0.3cm}
+
+
+In first-order logic, the quantifiers ``$\forall$'' (\emph{for all}) and ``$\exists$''
+(\emph{exists}) bind variables in a similar was as the  integral operator ``$\int$'' does in
+calculus.  In order to define the notions of \emph{bound} and \emph{free} variables precisely,
+we first define for a given term $t$ the set of variables $\textsl{Var}(t)$ occurring in $t$.
+
+
+\begin{Definition}[$\var(t)$]
+{\em
+    If  $t$ is a $\Sigma$-term, where $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$,
+    then the set $\var(t)$ is the set of all variables occurring in $t$.
+    Formally, $\textsl{Var}(t)$ is defined by induction on  $t$:
+    \begin{enumerate}
+    \item $\var(x) := \{ x \}$ \quad for all $x \in \mathcal{V}$,
+    \item $\var\bigl(f(t_1,\cdots,t_n)\bigr) := \var(t_1) \cup \cdots \cup \var(t_n)$.
+          \hspace*{\fill} $\Box$
+    \end{enumerate}
+}
+\end{Definition}
+
+
+\begin{Definition}[$\Sigma$-formula, bound and free variables] \hspace*{\fill} \\
+{\em \label{praedikaten-formel}
+    Assume $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ is a signature.
+    The set of all  $\Sigma$-\emph{formul\ae} will be denoted as  $\mathbb{F}_\Sigma$.
+    This set will be defined inductively.
+    Furthermore, for every formula  $F\el \mathbb{F}_\Sigma$ we will define the set $\textsl{BV}(F)$
+    as the set of all \emph{bound variables} of $F$  and the set $\textsl{FV}(F)$ will be defined as
+    the set of all \emph{free variables} of $F$.
+    \begin{enumerate}
+    \item We have $\falsum \in \mathbb{F}_\Sigma$ and $\verum \in \mathbb{F}_\Sigma$ and we define \\[0.2cm]
+          \hspace*{1.3cm} $\FV(\falsum) := \FV(\verum) := \BV(\falsum) := \BV(\verum) := \{\}$
+    \item If  $F = p(t_1,\cdots,t_n)$ is an atomic $\Sigma$-formula, then $F \in \mathbb{F}_\Sigma$.
+          Furthermore, we have:
+          \begin{enumerate}
+          \item $\FV\bigl(p(t_1,\cdots,t_n) \bigr) := \var(t_1) \cup \cdots \cup \var(t_n)$.
+          \item $\BV\bigl(p(t_1,\cdots,t_n) \bigr) := \{\}$.
+          \end{enumerate}
+    \item If $F \in \mathbb{F}_\Sigma$, then also $\neg F \in \mathbb{F}_\Sigma$. Furthermore:
+          \begin{enumerate}
+          \item $\FV\bigl( \neg F \bigr) := \FV(F)$.
+          \item $\BV\bigl( \neg F \bigr) := \BV(F)$.
+          \end{enumerate}
+    \item If we have $F, G \in \mathbb{F}_\Sigma$ and if, furthermore, we have \\[0.2cm]
+          \hspace*{1.3cm} $\FV(F) \cap \BV(G) = \{\}$ \quad and \quad
+                          $\FV(G) \cap \BV(F) = \{\}$, \\[0.2cm]
+          then the following are $\Sigma$-formul\ae:
+          \begin{enumerate}
+          \item $(F \wedge G) \in \mathbb{F}_\Sigma$,
+          \item $(F \vee G) \in \mathbb{F}_\Sigma$,
+          \item $(F \rightarrow G) \in \mathbb{F}_\Sigma$,
+          \item $(F \leftrightarrow G) \in \mathbb{F}_\Sigma$.
+          \end{enumerate}
+          Furthermore, for all sentential connectives  $\odot \in \{ \wedge, \vee, \rightarrow,
+          \leftrightarrow \}$ we define:
+          \begin{enumerate}
+          \item $\FV\bigl(F \odot G \bigr) := \FV(F) \cup \FV(G)$.
+          \item $\BV\bigl( F \odot G \bigr) := \BV(F) \cup \BV(G)$.
+          \end{enumerate}
+    \item If $x \in \mathcal{V}$  and $F \in \mathbb{F}_\Sigma$ such that $x \not\in \BV(F)$, then
+          we have:
+          \begin{enumerate}
+          \item $(\forall x \colon F) \in \mathbb{F}_\Sigma$.
+          \item $(\exists x \colon F) \in \mathbb{F}_\Sigma$.
+          \end{enumerate}
+          Furthermore, we define: 
+          \begin{enumerate}
+          \item $\FV\bigl( (\forall x \colon F) \bigr) := \FV\bigl( (\exists x \colon F) \bigr) := \FV(F) \backslash \{x\}$.
+          \item $\BV\bigl( (\forall x \colon F) \bigr) := \BV\bigl( (\exists x \colon F) \bigr) := \BV(F) \cup \{x\}$.  
+          \end{enumerate}
+    \end{enumerate}
+    If the signature  $\Sigma$ is either obvious from the context or unimportant, then we will write
+    $\mathbb{F}$ instead of $\mathbb{F}_\Sigma$.
+    \hspace*{\fill} $\Box$
+}
+\end{Definition}
+
+In the definition given above we have been careful to guarantee that a variable cannot occur both as
+a free and as a bound variable in a given formula.  Therefore, it can be shown that the following
+holds 
+\[ \FV(F) \cap \BV(F) = \{\} \quad \mbox{for all $F \in \mathbb{F}_\Sigma$.} \]
+
+
+\example
+Continuing the example from above, we see that \\[0.2cm]
+\hspace*{1.3cm} 
+$(\exists x \colon\, \leq\!(\mathtt{+}(y, x),y)) \in \mathbb{F}_{\Sigma_{\mathrm{arith}}}$ 
+\\[0.2cm]
+holds.  The set of bound variables is  $\{x\}$, while the set of free variables is $\{ y \}$. \qed
+\vspace{0.3cm}
+
+If \formulae were always written as defined above, the readability would suffer.
+Therefore, we agree on certain rules that allow us to drop parenthesis.  First of all, 
+regarding the propositional connectives, we will use the same rules as discussed in the previous
+chapter.  Furthermore, sequences of the same quantifier are combined as follows:
+We will write  
+\[ 
+\forall x, y \colon p(x, y)  \quad \mbox{instead of} \quad \forall x \colon ( \forall y \colon p(x,y)). 
+\]
+Furthermore, we agree that quantifiers have a higher precedence than the propositional connectives.
+For example, 
+\[ \bigl(\forall x \colon p(x)\bigr) \wedge G  \quad \mbox{can be written as} 
+   \quad \forall x \colon p(x) \wedge G.  
+\]
+Furthermore, we agree to use an infix notation for binary relation and function symbols.
+If the relative precedence of different binary operators is not obvious from the context, we have to
+use parenthesis for disambiguation.
+For example, the formula
+\[ (\exists x \colon \leq(\mathtt{+}(y, x),y)) \]
+will be written as follows: \\[0.2cm]
+\hspace*{1.3cm} $\exists x \colon y + x \leq y$. 
+\\[0.2cm]
+In the literature, you might find expressions of the form 
+$\forall x\el M: F$ or $\exists x\el M: F$.  These are just abbreviations that are defined as follows:
+\[ \bigl(\forall x\el M: F\bigr) \stackrel{def}{\Longleftrightarrow} \forall x: \bigl(x \el M \rightarrow F\bigr),\]
+\[ \bigl(\exists x\el M: F\bigr) \stackrel{def}{\Longleftrightarrow} \exists x: \bigl(x \el M \wedge F\bigr).\]
+
+\section{Semantics \label{sec:semantics}}
+Next, we fix the meaning of first-order formul\ae.   To this end we first define the notion of 
+a \emph{$\Sigma$-structure} a.k.a. \emph{first-order structure}.  
+A first-order structure gives an interpretation for the function symbols and the predicate symbols
+of the signature.
+
+\begin{Definition}[First-order Structure]
+{\em
+    Assume a signature \\[0.2cm]
+    \hspace*{1.3cm} 
+    $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$. 
+    \\[0.2cm]
+    is given.  A  \emph{$\Sigma$-structure} $\struct$ is a pair
+    $\langle \mathcal{U}, \mathcal{J} \rangle$ such that we have the following:
+    \begin{enumerate}
+        \item $\mathcal{U}$ is a non-empty set.  This set will be referred to as the 
+              \emph{universe} of the $\Sigma$-structure.  It contains all the values
+              that can occur when we evaluate terms.
+        \item $\mathcal{J}$ is an \emph{interpretation} of the function symbols and predicate
+              symbols of our signature $\Sigma$.
+              
+              Formally,  $\mathcal{J}$ is defined as a mapping that has the following properties:
+        \begin{enumerate}
+        \item Every function symbol  $f \el \mathcal{F}$ such that $\textsl{arity}(f) = m$ is
+              mapped to an  $m$-ary function
+              \\[0.2cm]
+              \hspace*{1.3cm}
+              $f^\mathcal{J}\colon \mathcal{U} \times \cdots \times \mathcal{U} \rightarrow \mathcal{U}$ 
+              \\[0.2cm]
+              that maps  $m$-tuples of the universe  $\mathcal{U}$ into  $\mathcal{U}$.
+        \item Every predicate symbol $p \el \mathcal{P}$ such that $\textsl{arity}(p) = n$ is mapped
+              to an  $n$-ary relation \\[0.2cm]
+              \hspace*{1.3cm} 
+              $p^\mathcal{J} \subseteq \mathcal{U}^n$. 
+        \item If the symbol  ``$=$'' is an element of the predicate symbols  $\mathcal{P}$, then
+              we demand that the interpretation of ``$=$'' is natural, that is we must have
+              \\[0.2cm]
+              \hspace*{1.3cm}  
+              $=^\mathcal{J} = \{ \pair(u,v) \mid u,v \in \mathcal{U} \wedge u = v\}$.
+        \end{enumerate}
+    \end{enumerate}
+}
+\end{Definition}
+
+\example
+We provide an example of a  $\Sigma_{\mathrm{arith}}$-structure
+$\struct_{\mathrm{arith}} = \langle \mathcal{U}_{\mathrm{arith}}, \mathcal{J}_{\mathrm{arith}} \rangle$
+by defining:
+\begin{enumerate}
+\item $\mathcal{U}_{\mathrm{arith}} = \mathbb{N}$.
+\item The interpretations  $\mathcal{J}_{\mathrm{arith}}$ are defined by requiring that the function
+      symbols  ``$0$'', ``$1$'', ``$\mathtt{+}$'', and ``$\cdot$'' are interpreted as the corresponding
+      functions defined on the set  $\mathbb{N}$. 
+
+      The predicate symbols $\leq$ is defined as the following relation:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\leq^{\mathcal{J}_{\mathrm{arith}}} = 
+       \{ \pair(m,n) \in \mathbb{N}^2\mid \exists k \in \mathbb{N}: m + k = n \}
+      $,
+      \\[0.2cm]
+      while the equality symbol is interpreted as follows:
+      \\[0.2cm]
+      \hspace*{1.3cm}  
+      $=^{\mathcal{J}_{\mathrm{arith}}} = \{ \pair(m,m) \mid m \in \mathbb{N}  \}$.
+      \qed
+\end{enumerate}
+
+\example
+The example given above is the natural way of interpreting the function and relation symbols in 
+$\Sigma_{\mathrm{arith}}$-structure.  However, it is not the only possible
+$\sigma_{\mathrm{arith}}$-structure.   Let us define another $\Sigma_{\mathrm{arith}}$-structure
+$\struct_2 = \langle \mathcal{U}_{2}, \mathcal{J}_{2} \rangle$
+as follows:
+\begin{enumerate}
+\item $\mathcal{U}_{2} = \{ a, b \}$
+\item $0^{\mathcal{J}_2} := a$ 
+\item $1^{\mathcal{J}_2} := b$ 
+\item $+^{\mathcal{J}_2} := \Bigl\{ \bigl\langle\pair(a,a), a\bigr\rangle,
+                                   \bigl\langle\pair(a,b), b\bigr\rangle,
+                                   \bigl\langle\pair(b,a), b\bigr\rangle,
+                                   \bigl\langle\pair(b,b), a\bigr\rangle \Bigr\}$
+\item $\cdot^{\mathcal{J}_2} := \Bigl\{ \bigl\langle\pair(a,a), a\bigr\rangle,
+                                   \bigl\langle\pair(a,b), a\bigr\rangle,
+                                   \bigl\langle\pair(b,a), a\bigr\rangle,
+                                   \bigl\langle\pair(b,b), b\bigr\rangle \Bigr\}$
+\item $\leq^{\mathcal{J}_2}$ is defined as follows: \\[0.2cm]
+       $\leq^{\mathcal{J}_2} \;:=\; \bigl\{ \pair(a,a), \pair(a,b), \pair(b,b) \bigr\}$.
+\item $=^{\mathcal{J}_2}$ is the identical relation: \\[0.2cm]
+       $=^{\mathcal{J}_2} \;:=\; \bigl\{ \pair(a,a), \pair(b,b) \bigr\}$.
+
+      Note that we have to define $=^{\mathcal{J}_2}$ as the identical relation. 
+\end{enumerate}
+
+In order to evaluate terms we have to assign values to the variables first.
+This is done next.
+
+\begin{Definition}[Variable Assignment]
+Assume a signature
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ 
+\\[0.2cm]
+and a $\Sigma$-structure   $\struct = \langle \mathcal{U}, \mathcal{J} \rangle$  are given.  An 
+$\mathcal{S}$-\emph{variable assignment} is a mapping 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\mathcal{I}: \mathcal{V} \rightarrow \mathcal{U}$.
+\\[0.2cm]
+that assigns a value from the universe $\mathcal{U}$ to every variable.
+
+
+If $\mathcal{I}$ is an  $\struct$-variable assignment, $x$ is a variable and $c$ is an element
+of the universe $\mathcal{U}$, then we define the variable assignment
+$\mathcal{I}[x/c]$ as follows:
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\mathcal{I}[x/c](y) := \left\{
+\begin{array}{ll}
+c               & \mbox{if}\;\; y = x;  \\
+\mathcal{I}(y)  & \mbox{otherwise}.          \\
+\end{array}
+\right.$ \hspace*{\fill} $\Box$
+\end{Definition}
+
+\begin{Definition}[Evaluation of Terms]
+{\em
+    If $\struct = \pair(\mathcal{U},\mathcal{J})$ is a $\Sigma$-structure and $\mathcal{I}$ is an 
+    $\struct$-variable assignment, then for every term $t$ we can define the value of 
+    $t$ in $\mathcal{S}$, which is written as $\struct(\mathcal{I}, t)$,  by induction on the structure of $t$:
+    \begin{enumerate}
+    \item If  $x \in \mathcal{V}$, we define: \\[0.2cm]
+          \hspace*{1.3cm} 
+          $\struct(\mathcal{I}, x) := \mathcal{I}(x)$.
+    \item For a $\Sigma$-term $f(t_1,\cdots,t_n)$ we define \\[0.2cm]
+          \hspace*{1.3cm} 
+          $\struct\bigl(\mathcal{I}, f(t_1,\cdots,t_n)\bigr) := 
+           f^\mathcal{J}\bigl( \struct(\mathcal{I}, t_1), \cdots, \struct(\mathcal{I}, t_n) \bigr)
+          $.
+          \hspace*{\fill} $\Box$
+    \end{enumerate}
+}
+\end{Definition}
+
+\example
+Using the $\Sigma_{\mathrm{arith}}$-structure $\struct_{2}$
+we define an  $\struct_{2}$-variable assignment  $\mathcal{I}$ as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{S} := \bigl\{ \pair(x,a), \pair(y,b), \pair(z,a)\bigr\}$.
+\\[0.2cm]
+Then we have
+\begin{enumerate}
+\item $\mathcal{I}(\mathtt{x}) := a$,
+\item $\mathcal{I}(\mathtt{y}) := b$,
+\item $\mathcal{I}(\mathtt{z}) := a$.
+\end{enumerate}
+Furthermore, we have \\[0.2cm]
+\hspace*{1.3cm}  $\struct_2\bigl(\mathcal{I}, \mathtt{x} + \mathtt{y} \bigr) = b$. \qed
+
+\begin{Definition}[Evaluation of Atomic  $\Sigma$-formul\ae]
+If  $\struct$ is a  $\Sigma$-structure and $\mathcal{I}$ is an $\struct$-variable \\
+assignment,
+then we can define the value of an atomic  $\Sigma$-formula
+$p(t_1, \cdots, t_n)$, written  $\struct\bigl(\mathcal{I}, p(t_1, \cdots, t_n) \bigr)$, as follows: 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\struct\bigl(\mathcal{I}, p(t_1,\cdots,t_n)\bigr) := \left\{
+\begin{array}{ll}
+ \mathtt{true} & \mbox{if} \quad 
+    \bigl\langle \struct(\mathcal{I}, t_1), \cdots, \struct(\mathcal{I}, t_n) \bigr\rangle \in
+    p^\mathcal{J}; \\
+ \mathtt{false} & \mbox{otherwise}.
+\end{array}
+\right.
+$
+ \hspace*{\fill} $\Box$
+\end{Definition}
+
+\example
+Continuing the example from above we have: \\[0.2cm]
+\hspace*{1.3cm}  $\struct_2\bigl(\mathcal{I},z \leq x + y \bigr) = \mathtt{true}$. \qed
+\vspace{0.1cm}
+
+In order to define the evaluate of arbitrary  $\Sigma$-\formulae we assume that we have the
+following functions at our disposal.  These functions are defined as in the previous chapter 
+on propositional logic.
+\begin{enumerate}
+\item $\circneg: \mathbb{B} \rightarrow \mathbb{B}$,
+\item $\circvee: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$,
+\item $\circwedge: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$,
+\item $\circright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$,
+\item $\circleftright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$.
+\end{enumerate}
+These functions have been defined in Table 
+\ref{tab:aussagen-logik} on page \pageref{tab:aussagen-logik}. 
+
+\begin{Definition}[Evaluation of $\Sigma$-Formul\ae]
+Assume $\struct$ is a  $\Sigma$-structure and $\mathcal{I}$ is an  $\struct$-variable assignment.
+Then, for every  $\Sigma$-\formulae $F$ the value  $\struct(\mathcal{I},F)$
+is defined by induction on  $F$:
+\begin{enumerate}
+\item $\struct(\mathcal{I},\verum) := \mathtt{true}$ and $\struct(\mathcal{I},\falsum) := \mathtt{false}$.
+\item $\struct(\mathcal{I}, \neg F) \;:=\; \circneg\bigl(\struct(\mathcal{I}, F)\bigr)$.
+\item $\struct(\mathcal{I}, F \wedge G) \;:=\; \circwedge\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
+\item $\struct(\mathcal{I}, F \vee G) \;:=\; \circvee\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
+\item $\struct(\mathcal{I}, F \rightarrow G) \;:=\; \circright\!\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
+\item $\struct(\mathcal{I}, F \leftrightarrow G) \;:=\; \circleftright\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
+\item $\struct\bigl(\mathcal{I}, \forall x\colon F\bigr) \;:=\; \left\{
+  \begin{array}{ll}
+     \mathtt{true}  & \mbox{if}\;\; \struct(\mathcal{I}[x/c], F) = \mathtt{true}\quad \mbox{for
+     all}\; c\in \mathcal{U}; \\
+     \mathtt{false} & \mbox{otherwise}.
+  \end{array}
+  \right.$
+\item $\struct\bigl(\mathcal{I}, \exists x \colon F\bigr) \;:=\; \left\{
+  \begin{array}{ll}
+     \mathtt{true}  & \mbox{if}\;\; \struct(\mathcal{I}[x/c], F) = \mathtt{true}\quad \mbox{for
+       some}\; c\in \mathcal{U}; \\
+     \mathtt{false} & \mbox{otherwise}.
+  \end{array}
+  \right.$\hspace*{\fill} $\Box$    
+\end{enumerate}
+\end{Definition}
+
+\example
+Continuing the last example, we have \\[0.2cm]
+\hspace*{1.3cm}  $\struct_2\bigl(\mathcal{I}, \forall \mathtt{x}: x \cdot  0 \leq 1 \bigr) = \mathtt{true}$.
+
+\begin{Definition}[Universally Valid]
+If $F$  is a  $\Sigma$-formula such that we have 
+\\[0.2cm]
+\hspace*{1.3cm} $\struct(\mathcal{I}, F) = \mathtt{true}$
+\\[0.2cm]
+for every  $\Sigma$-formula $\struct$ and any
+$\struct$-variable assignment  $\mathcal{I}$, then the formula 
+$F$ is called \emph{universally valid}.  This is written as
+\\[0.2cm]
+\hspace*{1.3cm} $\models F$. \hspace*{\fill} $\Box$
+\end{Definition}
+
+If  $F$ is a formula such that $\FV(F) = \{\}$, then the value of $\struct(\mathcal{I}, F)$
+does not depend on the variable assignment $\mathcal{I}$.  A formula $F$ such that
+ $\FV(F) = \{\}$ is called a \emph{closed} formula.
+If $F$ is a closed formula we write $\struct(F)$
+instead of $\struct(\mathcal{I}, F)$.  If, furthermore,  $\struct(F) = \mathtt{true}$, then
+the structure  $\struct$ is called a  \emph{model} for $F$.  In this case, we will write \\[0.2cm]
+\hspace*{1.3cm} $\mathcal{S} \models F$.
+\vspace{0.1cm}
+
+The notion  ``\emph{satisfiable}'' and ``\emph{equivalent}'' can be transferred from propositional
+logic to first-order logic.   In order to keep our definitions readable, we will assume in the
+following that a fixed signature  $\Sigma$ is given.
+Then, we can just talk of terms, formul\ae, and structures instead of
+$\Sigma$-terms, $\Sigma$-formul\ae, and $\Sigma$-structures.
+
+
+\begin{Definition}[Equivalent]
+{\em
+  Two \formulae $F$ and $G$ are called \emph{equivalent} iff \\[0.2cm]
+\hspace*{1.3cm} $\models F \leftrightarrow G$ 
+} \hspace*{\fill} $\Box$
+\end{Definition}
+
+\noindent
+\textbf{Remark}:
+All propositional equivalences are first-order equivalences, too.
+
+\begin{Definition}[Satisfiable]
+{\em
+    A set of \formulae $M \subseteq \mathbb{F}_\Sigma$ is  \emph{satisfiable},
+    iff there is a structure  $\struct$ and a variable assignment $\mathcal{I}$ such that 
+      \\[0.2cm]
+    \hspace*{1.3cm} 
+    $\forall m \el M: \struct(\mathcal{I},m) = \mathtt{true}$ \\[0.2cm]
+    holds.  Otherwise,  $M$ is called  \emph{unsatisfiable}.
+    This is written as \\[0.2cm]
+    \hspace*{1.3cm} $M \models \falsum$.
+    \hspace*{\fill} $\Box$
+} 
+\end{Definition}
+
+\noindent
+Our goal is to develop an algorithm that takes a given set of $M$ of first order \formulae and that
+checks, whether the set $M$ is unsatisfiable.  We will see that the question
+whether 
+\\[0.2cm]
+\hspace*{1.3cm}
+ $M \models \falsum$
+\\[0.2cm]
+holds, is undecidable in general.  However, we will be able to develop a \emph{calculus}
+ $\vdash$ such that we have \\[0.2cm]
+\hspace*{1.3cm} 
+$M \vdash \falsum$ \quad iff \quad $M \models \falsum$. 
+\\[0.2cm]
+Therefore, we will be able to write a program that can be used as a so called \emph{semi-decision procedure} 
+for the question, whether $M \vdash \falsum$ holds.  By this we mean the following:  If indeed 
+$M$ is unsatisfiable, then our program will eventually be able to discover that fact.  However, if
+$M$ is satisfiable, then the program might run forever. The program will we based on the calculus
+$\vdash$.  The idea is to generate all possible derivations of $\falsum$ from $M$ in a systematic
+way.  If there is a proof of $\falsum$, we will eventually find it and thus have shown $M$ to be
+unsatisfiable.  On the other hand, if there is no such proof, the program might run forever.
+
+
+In order to facilitate our understanding of the notion of semi-decidability, we present a problem from number theory that
+exhibits a similar behaviour.  A natural number $n$ is called  \emph{perfect} iff the sum of all of
+its proper factors is the number $n$.  For example, the number $n$ is perfect as the proper factors
+are $1$, $2$, and $3$ and we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$1 + 2 + 3 = 6$.
+\\[0.2cm]
+All known perfect numbers are even.  The question, whether there is an odd perfect number is an open
+mathematical problem.
+Let us try to solve the problem by writing a procedure that checks for every odd number whether it
+is perfect.  Figure  \ref{fig:find-perfect.stl} on page \pageref{fig:find-perfect.stl} shows this
+program.  Now if there is a perfect number that is odd, and if, furthermore, we have unlimited
+computational resources, the program will eventually find it.
+However, if there are no odd numbers that are perfect,  our program will never produce a result.
+Therefore, this program does not decide the question.  Rather it is only a semi-decision 
+procedure\footnote{Before wasting countless cpu cycles running this program you should know that it
+  has been proven that all odd perfect number have to be bigger than $10^{300}$.}.
+
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  commandchars  = \\\{\},
+                  xleftmargin   = 0.3cm,
+                  xrightmargin  = 0.3cm
+                ]
+    program main;
+        n := 1;
+        loop
+            if perfect(n) then
+                if n mod 2 = 0 then
+                    print(n);
+                else
+                    print("Heureka: ", n);
+                end if;
+            end if;
+            n := n + 1;
+        end loop;    
+    
+        procedure perfect(n);
+            return +/ \{ x in {1 .. n-1} | n mod x = 0 \} = n;
+        end perfect;
+    end main;
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Searching for an odd perfect number.}
+  \label{fig:find-perfect.stl}
+\end{figure} 
+
+
+
+\subsection{Implementing First-order Structures  in \textsc{Setl2}}
+The notion of first-order structures developed in the last section is an abstract one.
+In order to facilitate our comprehension of this concept we will give an implementation of
+first-order structures in \setl.  
+As an concrete example we discuss \emph{group theory}.  The signature $\Sigma_G$ of group theory is
+given as follows:
+\[ \Sigma_G = 
+   \bigl\langle \{x,y,z\},\; \{1,*\},\; \{=\},\; \{ \pair(1,0), \pair(*,2), \pair(=,2) \} \bigr\rangle. 
+\]
+We use  ``$1$'' as a nullary function symbol,  ``$*$'' is a binary
+function symbol and ``$=$'' is a binary predicate symbol.
+We define a $\Sigma_G$-structure $\struct_2 = \langle \mathcal{U}_{2}, \mathcal{J}_{2} \rangle$
+as follows:
+\begin{enumerate}
+\item $\mathcal{U}_{2} = \{ a, b \}$
+\item $1^{\mathcal{J}_2} := a$ 
+\item $*^{\mathcal{J}_2} := \Bigl\{ \bigl\langle\pair(a,a), a\bigr\rangle,
+                                   \bigl\langle\pair(a,b), b\bigr\rangle,
+                                   \bigl\langle\pair(b,a), b\bigr\rangle,
+                                   \bigl\langle\pair(b,b), a\bigr\rangle \Bigr\}$
+\item $=^{\mathcal{J}_2}$ is the identical relation: \\[0.2cm]
+       $=^{\mathcal{J}_2} \;:=\; \bigl\{ \pair(a,a), \pair(b,b) \bigr\}$.
+\end{enumerate}
+In  \setl{}, this structure can be implemented as shown in figure
+\ref{fig:gruppen.stl}.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                ]
+    a := "a";
+    b := "b";  
+    U := { a, b };  -- the universe
+    multiply := { [ [a,a], a ],  [ [a,b], b ],  [ [b,a], b ],  [ [b,b], a ] };
+    equal    := { [ x, y ] : x in U, y in U | x = y };
+    J := { [ "1", a ], [ "*", multiply ], [ "=", equal ] };
+    S := [ U, J ];
+    I := { [ "x", a ], [ "y", b ], [ "z", a ] }; 
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{A First-order Structure for Group-Theory.}
+\label{fig:gruppen.stl}
+\end{figure}
+
+\begin{enumerate}
+\item We have defined the variables $a$ and $b$
+      as the strings \texttt{\symbol{34}a\symbol{34}} and \texttt{\symbol{34}b\symbol{34}} in line
+      1 and 2.  These variables are really nothing more than abbreviations that enable us to give the 
+      interpretation of the function symbol  ``$*$'' in a concise form.
+\item The universe  $\mathcal{U}$ consists of the two strings  \quoted{a} and \quoted{b}.
+\item The interpretation of ``\texttt{*}'' is given by the binary relation  \texttt{multiply}
+      defined in line 4.  The function defined by this relation satisfies the following:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{multiply}(\pair(\quoted{a},\quoted{a})) = \quoted{a}$, \quad
+      $\mathtt{multiply}(\pair(\quoted{a},\quoted{b})) = \quoted{b}$, 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{multiply}(\pair(\quoted{b},\quoted{a})) = \quoted{b}$, \quad
+      $\mathtt{multiply}(\pair(\quoted{b},\quoted{b})) = \quoted{a}$.      
+\item Line  5 defines the relation \texttt{equal} that is used as the interpretation
+      $=^\mathcal{J}$ of the binary relation symbol ``$=$''. 
+\item Line 6 collects the different interpretations and assigns them to their respective
+      symbol.  Therefore, for as given function symbol $f$, the interpretation of $f$, 
+      i.e.~$f^\mathcal{J}$, is given as $J(f)$.  
+\item Line 7 combines the universe and $U$ and the interpretation $J$ to a first-order
+      structure $S$.
+\item Line 8 defines a variable assignment for the variables \quoted{x}, \quoted{y}, and \quoted{z}.
+\end{enumerate}
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                ]
+    procedure evalFormula(f, S, I);
+        case
+            when f = 1        =>  return TRUE;
+            when f = 0        =>  return FALSE;
+            when f(1) = "-"   =>  return not evalFormula(f(2), S, I);
+            when f(2) = "*"   =>  
+                     return evalFormula(f(1), S, I) and  evalFormula(f(3), S, I);
+            when f(2) = "+"   =>  
+                     return evalFormula(f(1), S, I) or   evalFormula(f(3), S, I);
+            when f(2) = "->"  =>  
+                     return not evalFormula(f(1), S, I) or evalFormula(f(3), S, I);
+            when f(2) = "<->" =>  
+                     return evalFormula(f(1), S, I) = evalFormula(f(3), S, I);
+            when f(1) = "forall" =>
+                x := f(2);
+                g := f(3);
+                U := S(1);                
+                return forall c in U | evalFormula(g, S, modify(I, x, c));
+            when f(1) = "exists" =>
+                x := f(2);
+                g := f(3);
+                U := S(1);                
+                return exists c in U | evalFormula(g, S, modify(I, x, c));
+            otherwise => return evalAtomic(f, S, I);  -- atomic formula
+        end case;        
+    end evalFormula;
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Evaluation of First-order Formul\ae.}
+\label{fig:pl-evaluate.stl}
+\end{figure}
+
+Next, we develop a procedure that is capable of evaluating first-order \formulae in a given structure.
+Figure \ref{fig:pl-evaluate.stl} shows the implementation of the procedure 
+$\textsl{evalFormula}(f, \mathcal{S}, \mathcal{I})$.  The arguments of this procedure are as follows:
+\begin{enumerate}
+\item $f$ is a first-order formula, 
+\item $\mathcal{S}$ is a first-order structure, and
+\item $\mathcal{I}$ is a variable assignment.
+\end{enumerate}
+Here, the formula $f$ is represented as a list in a similar way as we have done it already in
+propositional logic.
+For example, the formula
+\[ \forall x: \forall y: x * y = y * x \]
+is represented as
+\begin{verbatim}
+   ["forall", "x", ["forall", "y", ["=", ["*", "x", "y"], ["*", "y", "x"]]]].
+\end{verbatim}
+The evaluation of first-order \formulae is similar to the evaluation of propositional
+\formulae shown in Figure  \ref{fig:eval} on page \pageref{fig:eval}.
+Only the treatment of quantifiers is new here.
+Line 10 to 14 deals with the evaluation of a formula $f$ of the form $\forall x \colon g$.
+This formula is represented as the list  
+\[ f = \texttt{[} \texttt{forall},\; x,\; g \texttt{]}.  \]
+The second element of this list is the variable $x$.  Therefore we have
+$x = f(2)$.  The third component is the formula $g$, we have $g = f(3)$.  The evaluation
+of  $\forall x\colon g$ is done according to the definition 
+\[\struct\bigl(\mathcal{I}, \forall x\colon g\bigr) \;:=\; \left\{
+      \begin{array}{ll}
+         \mathtt{true}  & \mbox{if}\;\; \struct(\mathcal{I}[x/c], g) = \mathtt{true}\quad
+         \mbox{for all}\; c\in \mathcal{U}; \\
+         \mathtt{false} & \mbox{otherwise}.
+      \end{array}
+      \right.
+\]
+In order to implement this we use the procedure  $\textsl{modify}()$ which changes the
+variable assignment $\mathcal{I}$ for the variable $x$ into $c$, we have
+\[ \textsl{modify}(\mathcal{I},x,c) = \mathcal{I}[x/c]. \]
+The implementation of this procedure is shown later in Figure  \ref{fig:pl-evaluate-term.stl}.
+
+The evaluation of a formula of the form  $\exists x\colon g$ is similar and will therefore
+not be discussed in detail.
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    procedure evalAtomic(a, S, I);
+        -- we do not support nullary predicates yet
+        J    := S(2);
+        p    := a(1); -- predicate symbol
+        pJ   := J(p);
+        args := a(2..);
+        argsVal := evalTermList(args, S, I);
+        return argsVal in pJ;
+    end evalAtomic;  
+
+    procedure evalTerm(t, S, I);
+        if is_string(t) then  -- it is a variable
+            return I(t);
+        end if;
+        J    := S(2);
+        f    := t(1); -- function symbol
+        fJ   := J(f);
+        args := t(2..);
+        argsVal := evalTermList(args, S, I);
+        if #argsVal > 0 then
+            result := fJ(argsVal); 
+        else
+            result := fJ;   -- t is a constant
+        end if;
+        return result;
+    end evalTerm;
+
+    procedure evalTermList(tl, S, I);
+        return [ evalTerm(t, S, I) : t in tl ];
+    end evalTermList;
+
+    procedure modify(I, x, c);
+        I(x) := c; 
+        return I;
+    end modify;
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Evaluation of Terms.}
+\label{fig:pl-evaluate-term.stl}
+\end{figure}
+
+Figure \ref{fig:pl-evaluate-term.stl} shows the evaluation of atomic \formulae and of
+first-order terms.  An atomic formula of the form
+\\[0.2cm]
+\hspace*{1.3cm}
+$p(t_1, \cdots, t_n)$
+\\[0.2cm]
+is represented as the list
+\\[0.2cm]
+\hspace*{1.3cm}
+$[ p, t_1, \cdots, t_n ]$.
+\\[0.2cm]
+Therefore, the predicate symbol $p$ is the first element of the list representing an
+atomic formula and the arguments $t_1$, $\cdots$, $t_n$ make up the rest of the list.
+We evaluate the arguments using the procedure $\textsl{evalTermList}()$ and then we only
+have to check, whether the resulting list of elements is a member of the interpretation of
+the predicate symbol $p$.
+
+Next, we discuss the procedure $\textsl{evalTerm}()$.  The first argument $t$ of this
+procedure is a term that needs to be evaluated.
+The second argument  $\mathcal{S}$ of the procedure $\textsl{evalAtomic}()$ is a
+first-order structure and the final argument $I$ is a variable assignment.
+\begin{enumerate}
+\item If $t$ is a variable it will just be a string.
+      Therefore, we just have to look up the value assigned to $x$ in the variable assignment
+      $\mathcal{I}$.  This variable assignment is represented as a binary relation that
+      can be used as a function in \setl.
+\item If the term $t$ has the form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $t = f(t_1,\cdots,t_n)$,
+      \\[0.2cm]
+      then $t$ will be represented as a list of the form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $[ f, t_1, \cdots, t_n ]$.
+      \\[0.2cm]
+      In order to evaluate this expression, we first evaluate the subterms recursively.
+      After that, we use the interpretation
+      $f^\mathcal{of}$ J the function symbol  $f$ to evaluate the function for the given
+      arguments.  We have to be careful to also handle the case where the list of arguments
+      is empty.
+\end{enumerate}
+The implementation of the procedure  $\texttt{evalTermList}()$ applies the function
+$\mathtt{evalTerm}()$ on all terms of a given list.
+
+Finally, the procedure  $\texttt{modify}(\textsl{I},x,c)$ computes a new variable
+assignment.  The implementation is very straightforward, as \setl{} provides the means to
+change a functional relation using an assignment of the following form:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I}(x) \;\mathtt{:=}\; c;$
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                ]
+    g1 := parse("forall x: =(*(x, 1), x)");
+    g2 := parse("forall x: exists y: =(*(x, y), 1)");
+    g3 := parse("forall x: forall y: forall z: =( *(*(x,y), z), *(x, *(y,z)) )");
+    GT := { g1, g2, g3 };
+    for f in GT loop
+        print( "checking ", f, ": ", evalFormula(f, S, I) );
+    end loop;
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Axioms of Group Theory.}
+\label{fig:gruppen-theorie.stl}
+\end{figure}
+
+We conclude this section by showing how the function
+$\texttt{evalFormula}(f, \mathcal{S}, \mathcal{I})$ can be used to check, whether the
+structure shown in Figure \ref{fig:gruppen.stl} validates the axioms of  \emph{group theory}.
+These axioms are as follows:
+\begin{enumerate}
+\item The constant $1$ is the right-neutral element of multiplication:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x\colon x * 1 = x$.
+\item For every element $x$ there is a right-inverse element $y$, such that
+      $x$ multiplied by $y$ yields $1$:      
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x \colon \exists y \colon x * y = 1$.
+\item The law of associativity holds true in any structure that is a group:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x \colon \forall y \colon \forall z \colon (x * y) * z = x * (y * z)$.
+\end{enumerate}
+These axioms are given in line  1 to 3 of figure \ref{fig:gruppen-theorie.stl}.
+I could not use infix operators here, as my parser did not support them.
+The loop in line  4 to 6 checks, whether all axioms are satisfied in the structure defined
+above.
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Remark}:  The program discussed in this section can be used to check, whether a
+given first-order formula is valid in a given first-order structure.  However, we cannot
+check whether a formula is universally valid for two reasons: 
+\begin{enumerate}
+\item For one thing, we cannot use the program if the universe has an infinite number of
+      elements.
+
+      There are certain formula that evaluate as true in all finite first-order structures but
+      that are not satisfied in certain first-order structures with an infinite universe.
+\item The number of possible first-order structures is infinite, even if we restrict
+      ourselves to finite universes. Therefore, we cannot check all universes.
+\end{enumerate}
+
+\section{Normal Forms for First-order Formul\ae}
+In the next sections, we will define a calculus $\vdash$ for first-order \formulae.
+Our task  is simplified a lot if we restrict ourselves to \formulae that have a special form.
+Therefore, we will restrict our attention to so called first-order clauses.  Note that
+this approach is similar to what we did in propositional logic:  There, we first
+transformed all \formulae into conjunctive normal form.  Then we used the Davis-Putnam
+algorithm to check whether these \formulae where satisfiable.
+In first-order logic, we will see that every first-order formula $F$ can be transformed into a a set of first
+order clauses that is satisfiable iff the original formula $F$ is satisfiable.
+In order to transform a first-order formula into a first-order clause we will make use of
+the following equivalences.
+
+\begin{Proposition}
+{\em The following equivalences are valid:
+  \begin{enumerate}
+  \item $\models \neg\big(\forall x\colon f\big) \leftrightarrow \big(\exists x\colon \neg f\big)$
+  \item $\models \neg\big(\exists x\colon f\big) \leftrightarrow \big(\forall x\colon \neg f\big)$
+  \item $\models \big(\forall x\colon f\big) \wedge \big(\forall x\colon g\big) \leftrightarrow \forall x\colon \big(f \wedge g\big)$
+  \item $\models \big(\exists x\colon f\big) \vee \big(\exists x\colon g\big) \leftrightarrow \exists x\colon \big(f \vee g\big)$
+  \item $\models \big(\forall x\colon \forall y\colon f \big) \leftrightarrow \big(\forall y\colon  \forall x\colon f \big)$
+  \item $\models \big(\exists x\colon \exists y\colon f \big) \leftrightarrow \big(\exists y\colon  \exists x\colon f \big)$
+  \item If $x$ is a variable such that $x \not\in \FV(f)$, then we have \\[0.2cm]
+        \hspace*{1.3cm} $\models  \big(\forall x\colon f) \leftrightarrow f$ \quad and \quad
+                        $\models  \big(\exists x\colon f) \leftrightarrow f$.
+  \item If  $x$ is a variable such that $x \not\in \FV(g) \cup \BV(g)$, then we have the
+    following:
+    \begin{enumerate}
+    \item $\models \big(\forall x\colon f) \vee g \leftrightarrow \forall x\colon (f \vee g)$
+    \item $\models g \vee \big(\forall x\colon f) \leftrightarrow \forall x\colon (g \vee f)$
+    \item $\models \big(\exists x\colon f) \wedge g \leftrightarrow \exists x\colon (f \wedge g)$
+    \item $\models g \wedge \big(\exists x\colon f) \leftrightarrow \exists x\colon (g \wedge f)$
+    \end{enumerate}
+  \end{enumerate}
+}
+\end{Proposition}
+In order to make use of the equivalences of the last group it might be necessary to rename
+bound variables.  If $f$ is a first-order formula and if  $x$ and $y$ are two variables,
+then  $f[x/y]$ is the formula that we get when we replace every occurrence of  $x$ in $f$
+by  $y$.  For example, we have \\[0.2cm]
+\hspace*{1.3cm} $\bigl(\forall u : \exists v : p(u,v)\bigr)[u/z] = \forall z : \exists v : p(z,v)$
+\\[0.2cm]
+Now we are ready to formulate the last equivalence: If $f$ is a first-order formula such that
+ $x \in BV(f)$ and if  $y$ is a variable that does not occur in $f$, then we have 
+\\[0.2cm]
+\hspace*{1.3cm} $\models f \leftrightarrow f[x/y]$.
+\\[0.2cm]
+This just means that we can rename bound variables as long as the new names do not clash
+with other variable names.
+
+Using the equivalences given so far,  any first-order formula can be rewritten in a way
+that all quantifiers occur at the beginning of the formula.  A formula that can be written
+as a string of quantifiers followed by a subformula without quantifiers is said to be in
+\emph{prenex normal form}.  An example will clarify the algorithm that is used to
+transform a formula into prenex normal form.  Let us transform the formula
+ \\[0.2cm]
+\hspace*{1.3cm} $\big(\forall x\colon p(x)\big) \rightarrow \big(\exists x\colon p(x)\big)$ \\[0.2cm]
+into prenex normal form: 
+$$ 
+\begin{array}{ll}
+                 & \forall x\colon p(x) \rightarrow \exists x\colon p(x)            \\[0.2cm]
+ \leftrightarrow & \neg \big(\forall x\colon p(x)\big) \vee \exists x\colon p(x)    \\[0.2cm]
+ \leftrightarrow & \exists x\colon \neg p(x) \vee \exists x\colon p(x)              \\[0.2cm]
+ \leftrightarrow & \exists x\colon \bigl(\neg p(x) \vee p(x)\bigr)                  \\[0.2cm]
+ \leftrightarrow & \exists x\colon \verum                                           \\[0.2cm]
+ \leftrightarrow & \verum                                                  
+\end{array}
+$$
+Here, we got lucky and ended up with a formula that does not contain any quantifier at all.
+Let us consider another example:
+$$ 
+\begin{array}{ll}
+                 & \exists x\colon p(x) \rightarrow \forall x\colon p(x)            \\[0.2cm]
+ \leftrightarrow & \neg \big(\exists x\colon p(x)\big) \vee \forall x\colon p(x)    \\[0.2cm]
+ \leftrightarrow & \forall x\colon \neg p(x) \vee \forall x\colon p(x)              \\[0.2cm]
+ \leftrightarrow & \forall x\colon \neg p(x) \vee \forall y\colon p(y)              \\[0.2cm]
+ \leftrightarrow & \forall x\colon \bigl(\neg p(x) \vee \forall y\colon p(y)\bigr)  \\[0.2cm]
+ \leftrightarrow & \forall x\colon \forall y\colon \bigl(\neg p(x) \vee p(y)\bigr)  \\[0.2cm]
+\end{array}
+$$
+This formula is now in prenex normal form.  
+
+In order to normalize first-order \formulae even more we need a stronger notion of
+equivalence.  This is the notion of \emph{equisatisfiability}.
+Let us motivate this notion by an example.
+Let us compare the following two first-order \formulae:
+\\[0.2cm]
+\hspace*{1.3cm} 
+$f_1 = \forall x \colon \exists y \colon p(x,y)$ \quad and \quad 
+$f_2 = \forall x \colon p\bigl(x,s(x)\bigr)$.
+\\[0.2cm]
+The \formulae $f_1$ and $f_2$ are not equivalent, they don't even use the same signature:
+The formula  $f_2$ uses the function symbol $s$ which does not occur in the formula  $f_1$. 
+However, even although  $f_1$ and $f_2$ are not equivalent, they still are related in the
+following sense:  If $\textsl{S}_1$ is a first-order structure such that  $f_1$ is true in
+$\textsl{S}_1$
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{S}_1 \models f_1$,
+\\[0.2cm]
+then the structure $\textsl{S}_1$ can be extended to a structure $\textsl{S}_2$ such that
+$f_2$ is valid in $\textsl{S}_2$:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{S}_2 \models f_2$.
+\\[0.2cm]
+In order to do this, we just have to define the interpretation of the function symbol
+ $s$ in a way such that we do have
+\\[0.2cm]
+\hspace*{1.3cm}
+$p\bigl(x,s(x)\bigr)$ 
+\\[0.2cm]
+for any  $x$ form our universe.  This is possible, as the formula 
+$f_1$ states that given any $x$ we can find a value  $y$ such that 
+$p(x,y)$ is true.   The function  $s$ therefore just has to return a $y$ such that
+$p(x,y)$ is true.  Therefore, $f_1$ and $f_2$ are \emph{equisatisfiable}. 
+In general, two \formulae $f_1$ and $f_2$ are equisatisfiable if $f_1$ has a model if and
+only if $f_2$ has a model.
+ 
+
+
+\begin{Definition}[Skolemization]
+Assume $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$
+is a signature and $f$ is a closed  $\Sigma$-formula of the form 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$f = \forall x_1, \cdots, x_n \colon \exists y \colon g(x_1, \cdots, x_n, y)$. 
+\\[0.2cm]
+Then we choose a new  $n$-ary function symbol $s$, i.e.~we take a symbol $s$ that does not
+yet occur in the set $\mathcal{F}$ and we extend the signature $\Sigma$ to the new signature
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\Sigma' := \Bigl\langle \mathcal{V}, \mathcal{F} \cup \{s\}, \mathcal{P}, \textsl{arity}
+\cup \bigl\{\pair(s,n)\bigr\} \Bigr\rangle$, 
+\\[0.2cm]
+that has  $s$ as a new $n$-ary function symbol.  Then, we define the  $\Sigma'$-formula
+$f'$ as follows: \\[0.2cm]
+\hspace*{1.3cm} 
+$f' := \textsl{Skolem}(f) := 
+\forall x_1 \colon \cdots \forall x_n \colon g\bigl(x_1, \cdots, x_n, s(x_1,\cdots,x_n)\bigr)$.
+\\[0.2cm]
+As you can see, the existential quantifier $\exists y$ has been dropped.  Furthermore,
+every occurrence of the variable $y$ is replaced by the term $s(x_1,\cdots,x_n)$.  
+We say that the formula  $f'$ is generated from $f$ through a \emph{skolemization step}.
+\hspace*{\fill} $\Box$  
+\end{Definition}
+
+In order to describe how a formula $f$ and the skolemization of $f$, i.e.~$\textsl{Skolem}(f)$ are
+related, we need the following definition.
+
+\begin{Definition}[Equisatisfiability]
+{\em
+   Two closed formula $f$ and $g$ are \\
+   \emph{equisatisfiable} if either $f$ and $g$ are both satisfiable or both are
+   unsatisfiable.
+   If  $f$ and $g$ are equisatisfiable, then this is written as
+   \\[0.2cm]
+   \hspace*{1.3cm} 
+   $f \approx_e g$.
+}  \hspace*{\fill} $\Box$
+\end{Definition}
+
+
+\noindent
+\begin{Proposition}
+{\em
+  If the formula $f'$ is generated from the formula $f$ through a skolemization step, then
+   $f$ and $f'$ are equisatisfiable.
+}
+\end{Proposition}
+
+Now we can provide a simple algorithm to eliminate the existential quantifiers from a
+given formula:  First, the formula is put into prenex normal form.  Second, all
+existential quantifiers are eliminated by skolemization steps.  This step  is called
+\emph{skolemization}. According to the last
+proposition, the resulting \formulae are equisatisfiable.  
+If we transform a formula $F$ into prenex normal and then skolemize the prenex normal form,
+we end up with a formula of the form
+\\[0.2cm]
+\hspace*{1.3cm} 
+$f' = \forall x_1, \cdots, \forall x_n: g$ 
+\\[0.2cm]
+such that the formula  $g$ does not contain any quantifiers. The formula $g$ is sometimes called the
+\emph{matrix} of $f'$.
+As the formula $g$ only contains propositional connectives, it can be transformed into
+conjunctive normal form using the algorithm shown  in the previous chapter.  Then we end
+up with a formula of the form
+\\[0.2cm]
+\hspace*{1.3cm} $\forall x_1, \cdots, \forall x_n: (k_1 \wedge \cdots \wedge k_m)$. 
+\\[0.2cm]
+Here, the  $k_i$ are disjunctions of  \emph{literals}.  (In first-order logic, a literal
+is either an atomic formula or the negation of an atomic formula.)  If we apply the equivalence
+$(\forall x\colon f_1\wedge f_2) \leftrightarrow (\forall x\colon f_1) \wedge (\forall x\colon f_2)$
+then the universal quantifiers can be distributed onto the different  $k_i$ and the resulting
+formula has the form  
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\big(\forall x_1, \cdots, \forall x_n: k_1\big) \wedge \cdots \wedge 
+ \big(\forall x_1, \cdots, \forall x_n: k_m\big)$. 
+\\[0.2cm]
+A formula  $f$ of this form is said to be in 
+ {\em first-order clausal-normal-form} and a formula of the form
+ \\[0.2cm]
+\hspace*{1.3cm} $\forall x_1, \cdots, x_n: k$, \\[0.2cm]
+where $k$ is a disjunction of literals is called a \emph{first-order clause}.
+If $M$ is a set of \formulae and we want to know whether $M$ is satisfiable, then we can
+transform $M$ into a set of first-order clauses that is equisatisfiable.
+As a first-order clause only contains universal quantifiers, we can simply our notation
+even further by agreeing that all formula are implicitly universally quantified.  Then we
+can drop these quantifiers.
+
+Now what is this all good for?  The idea is to develop an algorithm that is able to check
+whether a given first-order formula $f$ is universally valid or not, that is want to know whether
+\\[0.2cm]
+\hspace*{1.3cm} $\models f$ \\[0.2cm]
+holds.  We know that \\[0.2cm]
+\hspace*{1.3cm} 
+$\models f$ \quad iff \quad $\{\neg f\} \models \falsum$ \\[0.2cm]
+holds, as the formula  $f$ is universally valid iff there is no structure that satisfies
+the formula  $\neg f$.  We therefore form  $\neg f$ and transform $\neg f$ into
+first-order clausal-normal form.  Then we get something like  
+\\[0.2cm]
+\hspace*{1.3cm}
+$\neg f \approx_e k_1 \wedge \cdots \wedge k_n$
+ \\[0.2cm]
+where $k_1,\cdots,k_n$ are first-order clauses.
+Next, we try to derive an inconsistency from the first-order clauses  $k_1,\cdots,k_n$: \\[0.2cm]
+\hspace*{1.3cm} $\{k_1, \cdots, k_n\} \vdash \falsum$ \\[0.2cm]
+If we succeed, then we know that the set  $\{k_1, \cdots, k_n\}$ is unsatisfiable.
+That implies that  $\neg f$ is unsatisfiable and therefore, in this case, we have shown
+that $f$ is universally valid.
+In order to be able to derive an inconsistency from the clauses  $k_1,\cdots,k_n$ we still
+need inference rules for first-order clauses.  We will demonstrate a set of appropriate
+inference rules at the end of this chapter.
+
+Let us demonstrate the algorithm sketched so far by an example.
+We want to investigate, whether \\[0.2cm]
+\hspace*{1.3cm} 
+$\models \big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow \big(\forall
+ y\colon \exists x\colon p(x,y)\big)$
+ \\[0.2cm]
+holds.  We know that this holds if and only if we have
+ \\[0.2cm]
+\hspace*{1.3cm} 
+$\Big\{ \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow
+\big(\forall y\colon \exists x\colon p(x,y)\big)\Big)\Big\} \models \falsum.$ 
+\\[0.2cm]
+Let us first transform the negated formula into prenex normal form: 
+$$
+\begin{array}{ll}
+                  & \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow \big(\forall y\colon \exists x\colon p(x,y)\big)\Big) \\
+  \leftrightarrow & \neg \Big(\neg \big(\exists x\colon \forall y\colon  p(x,y)\big) \vee \big(\forall y\colon \exists x\colon p(x,y)\big)\Big) \\
+  \leftrightarrow &                \big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge \neg \big(\forall y\colon \exists x\colon p(x,y)\big) \\
+  \leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \neg \exists x\colon p(x,y)\big) \\
+  \leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \forall x\colon \neg p(x,y)\big) \\
+\end{array}
+$$
+In order to proceed, we have to rename the bound variables in the second part of the
+conjunction.   We rename  $x$ as $u$ and $y$ as $v$ and get the following:
+$$
+\begin{array}{ll}
+                  &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \forall x\colon \neg p(x,y)\big) \\
+  \leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists v\colon  \forall u\colon \neg p(u,v)\big) \\
+  \leftrightarrow &\exists v\colon  \Big( \big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\forall u\colon \neg p(u,v)\big) \Big)\\
+  \leftrightarrow &\exists v\colon  \exists x\colon  \Big( \big(\forall y\colon  p(x,y)\big) \wedge \big(\forall u\colon \neg p(u,v)\big) \Big)\\
+  \leftrightarrow &\exists v\colon  \exists x\colon \forall y\colon \Big( p(x,y) \wedge \big(\forall u\colon \neg p(u,v)\big) \Big)\\
+  \leftrightarrow &\exists v\colon  \exists x\colon \forall y\colon \forall u\colon \Big( p(x,y) \wedge \neg p(u,v) \Big)\\
+\end{array}
+$$
+Now we have to skolemize in order to get rid of the existential quantifiers.
+In order to do so we introduce two new function symbols  $s_1$ and $s_2$. 
+Because there are no universal quantifiers in front of the existential quantifiers, 
+we have  $\mathtt{arity}(s_1) = 0$ and $\mathtt{arity}(s_2) = 0$.
+$$
+\begin{array}{ll}
+           & \exists v\colon  \exists x\colon \forall y\colon \forall u\colon \Big( p(x,y) \wedge \neg p(u,v) \Big)\\
+ \approx_e & \exists x\colon \forall y\colon \forall u\colon \Big( p(x,y) \wedge \neg p(u,s_1) \Big)\\
+ \approx_e & \forall y\colon \forall u\colon \Big( p(s_2,y) \wedge \neg p(u,s_1) \Big)\\
+\end{array}
+$$
+The last formula only contains universal quantifiers which can be dropped, as we have
+agreed that in a first-order clause all variables are implicitly universally quantified.
+Then the first-order clausal normal form of this formula in set notation is
+\\[0.2cm]
+\hspace*{1.3cm}
+$M := \Big\{ \big\{ p(s_2,y) \big\}, \big\{\neg p(u,s_1)\big\}\Big\}$. 
+\\[0.2cm]
+Let us now show that the set  $M$ is inconsistent.  First, take the clause
+ $\big\{ p(s_2,y) \big\}$ and substitute the constant  $s_1$ for the variable $y$.  That
+ yields the clause \\[0.2cm]
+\hspace*{1.3cm}  $\big\{ p(s_2,s_1) \big\}$. \hspace*{\fill}(1)
+\\[0.2cm]
+We can substitute $s_1$ for  $y$, as the clause is implicitly universally quantified.
+
+Next, we take the clause $\big\{\neg p(u,s_1)\big\}$ and substitute
+ $s_2$ for $u$, yielding the clause \\[0.2cm]
+\hspace*{1.3cm} $\big\{\neg p(s_2,s_1)\big\}$ \hspace*{\fill} (2) 
+\\[0.2cm]
+Applying the cut rule to the clauses  (1) and (2) gives \\[0.2cm]
+\hspace*{1.3cm} 
+$\big\{ p(s_2,s_1) \big\}$, \quad$\big\{\neg p(s_2,s_1)\big\}$ \quad $\vdash \quad \{\}$.
+\\[0.2cm]
+Therefore, we have derived an inconsistency and this shows that $M$ is unsatisfiable.
+Therefore, the set \\[0.2cm]
+\hspace*{1.3cm} 
+$\Big\{ \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists x\colon p(x,y)\big)\Big)\Big\}$
+\\[0.2cm]
+is unsatisfiable, too, and we have shown  \\[0.2cm]
+\hspace*{1.3cm} 
+$\models \big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists x\colon p(x,y)\big)$.
+\pagebreak
+
+\section{Unification}
+In the example in the last section we have guessed terms $s_1$ and $s_2$ that we then
+substituted for the variables
+$y$ and $u$ in the clauses $\big\{ p(s_2,y) \big\}$ and  $\big\{\neg p(u,s_1)\big\}$.
+These terms were chosen with the intention to apply the cut rule later.
+In this section we develop a method to calculate the terms that are required to be able to
+apply the cut rule.  In order to do so, we first introduce the notion of a 
+\emph{variable substitution}.
+
+\begin{Definition}[Substitution]
+Let a signature \\[0.2cm]
+\hspace*{1.3cm} $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ \\[0.2cm]
+be given.  A  $\Sigma$-Substitution is a finite set of pairs of the form \\[0.2cm]
+\hspace*{1.3cm} $\sigma = \bigl\{ \langle x_1, t_1 \rangle, \cdots, \langle x_n, t_n \rangle \bigr\}$ \\[0.2cm]
+such that we have the following:
+\begin{enumerate}
+\item $x_i \in \mathcal{V}$ for all $i \in \{1, \cdots, n \}$,
+\item $t_i \in \mathcal{T}_\Sigma$ for all $i \in \{1, \cdots, n \}$,
+\item if $i\not=j$, then $x_i \not= x_j$, therefore, the variables $x_i$ are all different
+      from each other.
+\end{enumerate}
+
+If $\sigma = \bigl\{ \langle x_1, t_1 \rangle, \cdots, \langle x_n, t_n \rangle \bigr\}$
+is a $\Sigma$-substitution, we write this as  \\[0.2cm]
+\hspace*{1.3cm} $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$.  \\[0.2cm]
+Furthermore, the  \emph{domain} of the substitution $\sigma$ is defined as  \\[0.2cm]
+\hspace*{1.3cm} $\textsl{dom}(\sigma) = \{ x_1, \cdots, x_n\}$.
+\\[0.2cm]
+The set of all substitutions is denoted as \textsl{Subst}.
+\hspace*{\fill} $\Box$
+\end{Definition}
+
+\noindent
+We will later \emph{apply} a substitution to a term.  If  $t$ is a term and  
+$\sigma$ is a substitution, then $t\sigma$ is the term that we get when we replace every
+variable $x_i$ in the term $t$ by the corresponding term  $t_i$.  The formal definition
+follows.
+
+\begin{Definition}[Application of a Substitution]
+\hspace*{\fill} \\
+Take a term $t$ and a substitution $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$.
+We define the  \emph{application} of $\sigma$ on $t$ (written $t\sigma$) by induction on  $t$: 
+\begin{enumerate}
+\item If  $t$ is a variable, there are two cases:
+  \begin{enumerate}
+  \item $t = x_i$ for an $i\in\{1,\cdots,n\}$.  Then we define
+        \\[0.2cm]
+        \hspace*{1.3cm}
+        $x_i\sigma := t_i$.
+  \item $t = y$ and $y\in\mathcal{V}$, but $y \not\in \{x_1,\cdots,x_n\}$.  We define
+        \\[0.2cm]
+        \hspace*{1.3cm}
+        $y\sigma := y$.
+  \end{enumerate}
+\item If $t$ is not a variable, it must have the form  $t= f(s_1,\cdots,s_m)$. Then we
+      define 
+      \\[0.2cm]
+      \hspace*{1.3cm} 
+      $f(s_1, \cdots, s_m)\sigma := f(s_1\sigma, \cdots, s_m\sigma)$, 
+      \\[0.2cm]
+      as the expressions  $s_i\sigma$ are defined by induction hypotheses.      
+      \hspace*{\fill} $\Box$
+\end{enumerate}
+\end{Definition}
+
+A substitution can also be applied to a first-order clause if predicate symbols and 
+propositional connectives are treated similar to function symbols.  Instead of giving a
+lengthy formal definition, we provide some examples.
+Let us define the substitution $\sigma$ as
+\\[0.2cm]
+\hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto c,\; x_2 \mapsto f(d) \big]$. \\[0.2cm]
+Then we have the following:
+\begin{enumerate}
+\item $x_3\sigma = x_3$,
+\item $f(x_2)\sigma = f\bigl(f(d)\bigr)$,
+\item $h(x_1,g(x_2))\sigma = h\bigl(c,g(f(d))\bigr)$.
+\item $\bigl\{ p(x_2), q(d,h(x_3,x_1))\bigr\}\sigma = \bigl\{ p(f(d)),\; q(d,h(x_3,c))\bigr\}$.
+\end{enumerate}
+
+
+\noindent
+Next, we show how substitutions can be combined.
+\begin{Definition}[Composition of Substitutions] 
+Assume that
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\sigma = \big[ x_1 \mapsto s_1, \cdots, x_m \mapsto s_m \big]$ \quad and \quad
+$\tau = \big[ y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \big]$ 
+\\[0.2cm]
+are two substitutions such that  $\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) =
+\{\}$. Then the \emph{composition}
+$\sigma\tau$ of $\sigma$ and $\tau$ is defined as follows: \\[0.2cm]
+\hspace*{1.3cm} $\sigma\tau := \big[ x_1 \mapsto s_1\tau, \cdots, x_m \mapsto s_m\tau,\; y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \big]$
+\hspace*{\fill} $\Box$
+\end{Definition}
+
+\noindent
+\textbf{Example}:  Continuing the last example we define \\[0.2cm]
+\hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto c,\; x_2 \mapsto f(x_3) \big]$
+                \quad and \quad $\tau := \big[ x_3 \mapsto h(c,c),\; x_4 \mapsto d \big]$. \\[0.2cm]
+Then we have: \\[0.2cm]
+\hspace*{1.3cm} $ \sigma\tau = \big[ x_1 \mapsto c,\; x_2 \mapsto f(h(c,c)),\; x_3 \mapsto h(c,c),\;x_4 \mapsto d \big]$.
+\hspace*{\fill} $\Box$
+\vspace{0.3cm}
+
+\noindent
+We have the following proposition.
+
+\begin{Proposition} \label{satz:komposition}
+If  $t$ is a  Term and $\sigma$ and $\tau$ are  substitutions such that
+$\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) = \{\}$, then we have the following: \\[0.2cm]
+\hspace*{1.3cm} $(t \sigma)\tau = t (\sigma\tau)$.
+\hspace*{\fill} $\Box$
+\end{Proposition}
+This proposition can be proven by induction on the term $t$.
+
+
+\begin{Definition}[Syntactical Equation]
+{\em
+A  \emph{syntactical equation} is a construct of the form
+$s \doteq t$, where either of the following is true:
+\begin{enumerate}
+\item $s$ and $t$ are both terms, or
+\item $s$ and $t$ are both atomic formula.
+\end{enumerate}
+Furthermore, a \emph{syntactical system of equations} is a set of syntactical equations.
+\hspace*{\fill} $\Box$
+}
+\end{Definition}
+
+When discussing syntactical equations, we will not distinguish between function symbols
+and relation symbols.
+
+
+\begin{Definition}[Unifier]
+A  substitution $\sigma$ \emph{solves} a syntactical equation $s \doteq t$ iff we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$s\sigma = t\sigma$, 
+\\[0.2cm]
+that is applying the substitution $\sigma$ to both $s$ and $t$ yields identical objects.
+If $E$ is a syntactical system of equations, then a substitution $\sigma$ is called a
+\emph{unifier} 
+of $E$ iff  $\sigma$ solves every syntactical equation in  $E$. 
+ \hspace*{\fill} $\Box$  
+\end{Definition}
+If $E = \{ s_1 \doteq t_1, \cdots, s_n \doteq t_n \}$ is a syntactical system of equations
+and  $\sigma$ is a substitution, then we define the application of $\sigma$ on $E$ as follows: \\[0.2cm]
+\hspace*{1.3cm}  $E\sigma := \{ s_1\sigma \doteq t_1\sigma, \cdots, s_n\sigma \doteq t_n\sigma \}$.
+\vspace{0.3cm}
+
+\example
+Consider the following syntactical equation:  
+\\[0.2cm]
+\hspace*{1.3cm} $p(x_1, f(x_4)) \doteq p( x_2, x_3)$ \\[0.2cm]
+Define the substitution $\sigma$ as \\[0.2cm]
+\hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \big]$. \\[0.2cm]
+The substitution $\sigma$ solves the syntactical equation given above, as we have \\[0.2cm]
+\hspace*{1.3cm} $p(x_1, f(x_4))\sigma = p(x_2, f(x_4))$ \quad and \quad \\[0.2cm]
+\hspace*{1.3cm} $p(x_2, x_3)\sigma \;\quad = p(x_2, f(x_4))$ \\[0.2cm]
+and these atomic \formulae are identical. \qed
+\vspace{0.3cm}
+
+Next, we develop an algorithm that takes a system of syntactical  equations $E$ and
+calculates a unifier  $\sigma$ for $E$, provided there is one.  If the system $E$ is not
+solvable, the algorithm recognizes this fact.  To begin, let us think of those syntactical
+equations, which are obviously unsolvable.  There are two cases:  A syntactical equation of the form  \\[0.2cm]
+\hspace*{1.3cm} $f(s_1,\cdots,s_m) \doteq g(t_1,\cdots, t_n)$ \\[0.2cm]
+is obviously unsolvable if  $f$ and $g$ are different function symbols.  The reason is,
+that we have \\[0.2cm]
+\hspace*{1.0cm}
+$f(s_1,\cdots,s_m)\sigma = f(s_1\sigma,\cdots,s_m\sigma)$ \quad and \quad
+$g(t_1,\cdots, t_n)\sigma = g(t_1\sigma,\cdots,t_n\sigma)$ 
+\\[0.2cm]
+for any substitution $\sigma$.  Therefore, if $f \not = g$, then the terms
+$f(s_1,\cdots,s_m)\sigma$ and $g(t_1,\cdots, t_n)\sigma$ start with different function
+symbols and can therefore not be syntactical equal.
+
+But there is another syntactical equation that is obviously unsolvable.  Consider the equation
+\\[0.2cm]
+\hspace*{1.3cm} 
+$x \doteq f(t_1,\cdots,t_n)$  \quad where $x \in \textsl{Var}\big(f(t_1,\cdots,t_n)\big)$. \\[0.2cm]
+Regardless what term we substitute for $x$, the right hand side of this equation will
+always have at least one more function symbol than the left hand side.  Therefore, the right hand
+side can never be equal to the left hand side.  This is best seen by inspecting the special case
+\\[0.2cm]
+\hspace*{1.3cm}
+$x \doteq s(x)$.
+\\[0.2cm]
+We are now ready to give an algorithm that can be used to solve a system of syntactical
+equations.  This algorithm works on pairs of the form
+\\[0.2cm]
+\hspace*{1.3cm}
+$\langle F, \tau \rangle$.  
+\\[0.2cm]
+Here $F$ is a system of syntactical equations and $\tau$ is a substitution.  The algorithm
+is started with the pair $\langle E, [] \rangle$.  Here $E$ is the set of syntactical
+equations that have to be solved, while  $[]$ is the empty  substitution, i.e.~the
+substitution that does not change anything.  The algorithm works by applying the
+reductions rules given below.  These rules are applied as long as possible.  Then, the
+pair $\pair(E, [])$ is either reduced to a pair of the form 
+$\langle \{\}, \sigma \rangle$ where the substitution $\sigma$ is a unifier of $E$, or we
+derive an equation that is obviously unsolvable.  
+The reduction rules are as follows:
+\begin{enumerate}
+\item If  $y\in\mathcal{V}$ is a variable that does not occur in the term $t$, then we
+      apply the following reduction: 
+      \[ \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \quad\leadsto\quad 
+         \Big\langle E[y \mapsto t], \sigma\big[ y \mapsto t \big] \Big\rangle 
+         \quad \mbox{provided $y \notin \textsl{Var}(t)$.}
+      \]
+      This reduction rule can be interpreted as follows:  If the set of syntactical
+      equations contains an equation of the form $y \doteq t$ where $y$ is a variable, and
+      if, furthermore, the variable $y$ does not occur in $t$, then the equation $y \doteq t$
+      is solved by the substitution $[y \mapsto t]$.  Therefore, we can drop the syntactical
+      equation $y \doteq t$ in favor of the substitution $[y \mapsto t]$.  However, we have to take care
+      to apply this substitution to the remaining equations and also to the substitution $\sigma$.
+\item If the variable $y$ does occur in the term $t$, that is if  $y \in \textsl{Var}(t)$,
+      and if, furthermore,  $t \not= y$, then the system of syntactical
+      equations $E \cup \big\{ y \doteq t \big\}$ is not solvable.  This will be written as
+      \[ \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle\;\leadsto\; \Omega
+         \quad \mbox{provided $y \in \textsl{Var}(t)$ and $t \not= y$}. 
+      \]
+\item If $y\in\mathcal{V}$ is a variable and $t$ isn't a variable, then we have:
+      \[ \Big\langle E \cup \big\{ t \doteq y \big\}, \sigma \Big\rangle \quad\leadsto\quad 
+         \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle
+              \quad \mbox{provided $y \in \mathcal{V}$ and $t \not= \mathcal{V}$}.
+      \]   
+      This rule is necessary to be able to apply one of the first two rules later.
+\item Trivial syntactical equations can be dropped:
+      \[ \Big\langle E \cup \big\{ x \doteq x \big\}, \sigma \Big\rangle \quad\leadsto\quad
+         \Big\langle E, \sigma \Big\rangle.
+      \]   
+\item If $f$ is an $n$-ary function symbol, then we have 
+      \[ \Big\langle E \cup \big\{ f(s_1,\cdots,s_n) \doteq f(t_1,\cdots,t_n) \big\}, \sigma \Big\rangle 
+         \;\leadsto\; 
+         \Big\langle E \cup \big\{ s_1 \doteq t_1, \cdots, s_n \doteq t_n\}, \sigma \Big\rangle.
+      \]   
+      A syntactical equation of the form $f(s_1,\cdots,s_n) \doteq f(t_1,\cdots,t_n)$ is therefore
+      replaced by the $n$ syntactical equations  $s_1 \doteq t_1$, $\cdots$, $s_n \doteq t_n$.
+
+      This rule is the reason that we have to work with sets of equations.  Even if we start with just
+      one syntactical equation, applying this rule can increase the number of equations.
+
+      A special case of this rule is 
+      \[ \Big\langle E \cup \big\{ c \doteq c \big\}, \sigma \Big\rangle \;\leadsto\; 
+         \Big\langle E, \sigma \Big\rangle.
+      \]
+      Here $c$ is a nullary function symbol.
+\item The set of syntactical equations $E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\}$
+      does not have a solution if the function symbols  $f$ and $g$ are different:
+      \[ \Big\langle E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\},
+      \sigma \Big\rangle \;\leadsto\; \Omega \qquad \mbox{provided $f \not= g$}. \]
+\end{enumerate}
+If we have been given a set of syntactical equations $E$, we start with the pair 
+$\langle E, []\rangle$.  We will always be able to apply one of the reductions given above until one of
+the following cases occurs:
+\begin{enumerate}
+\item We can apply either the 2nd or the 6th rule.  In this case, the system of syntactical
+      equations is not solvable.
+\item The pair  $\langle E, [] \rangle$ is successively reduced to the pair  $\langle \{\}, \sigma\rangle$.
+      In this case,  $\sigma$ is a unifier of  $E$.  This is written as  $\sigma = \textsl{mgu}(E)$.
+      If we start with the set of equations $E = \{ s \doteq t \}$, then we will write this as $\sigma = \textsl{mgu}(s, t)$.
+      The abbreviation \textsl{mgu} is short for ``\emph{most general unifier}''.
+\end{enumerate}
+
+\example
+Let us demonstrate the algorithm and solve the syntactical equation \\[0.2cm]
+\hspace*{1.3cm}  $p(x_1, f(x_4)) \doteq p( x_2, x_3)$.  \\[0.2cm]
+The solution is calculated as follows:
+$$
+\begin{array}{ll}
+          &  \big\langle \big\{ p(x_1, f(x_4)) \doteq p( x_2, x_3) \big\}, \big[ \big] \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{ x_1 \doteq x_2, f(x_4) \doteq x_3 \big\}, \big[ \big] \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{ f(x_4) \doteq x_3 \big\}, \big[ x_1 \mapsto x_2 \big] \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{ x_3 \doteq f(x_4) \big\}, \big[ x_1 \mapsto x_2 \big] \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{\big\}, \big[ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \big] \big\rangle \\[0.2cm]
+\end{array}
+$$
+So in this case, the algorithm is successful and the substitution
+ \\[0.2cm]
+\hspace*{1.3cm} $\big[ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \big]$ \\[0.2cm]
+is a solution of the given syntactical equation.  
+
+\noindent
+Let us consider another example.  We try to solve the following system of syntactical equations:
+\[ E = \big\{ p(h(x_1,c)) \doteq p(x_2),\; q(x_2, d) \doteq q(h(d,c),x_4) \big\} \]
+In this case, the algorithm proceeds as follows:
+$$
+\begin{array}{ll}
+          & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; q(x_2, d) \doteq q(h(d,c),x_4) \big\}, \big[ \big] \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c), \; d \doteq x_4 \big\}, \big[ \big] \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c), \; x_4 \doteq d \big\}, \big[ \big] \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c) \big\}, \big[ x_4 \mapsto d \big] \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(h(d,c)) \big\}, \big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \big] \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ h(x_1,c) \doteq h(d,c) \big\}, \big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \big] \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ x_1 \doteq d,\; c \doteq c \big\}, \big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \big] \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ x_1 \doteq d,\big\}, \big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \big] \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{\big\}, \big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \big] \big\rangle \\[0.2cm]
+\end{array}
+$$
+Therefore, the substitution  $\big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \big]$ is a solution
+of the given set of syntactical equations.  \hspace*{\fill} $\Box$
+\pagebreak
+
+
+\section{A Calculus for First-order Logic}
+In this chapter, we define a calculus for first-order logic.  This calculus uses two inference rules that
+we define next.
+
+\begin{Definition}[Resolution] 
+Assume the following:
+\begin{enumerate}
+\item $k_1$ and $k_2$ are first-order clauses,
+\item $p(s_1,\cdots,s_n)$ and $p(t_1,\cdots,t_n)$ are atomic \formulae,
+\item the syntactical equation  $p(s_1,\cdots,s_n)  \doteq p(t_1,\cdots,t_n)$ is solvable, we have
+      \[ \mu = \textsl{mgu}\bigl(p(s_1,\cdots,s_n), p(t_1,\cdots,t_n)\bigr). \]
+\end{enumerate}
+Then, the following is an instance of the \emph{resolution rule}:
+ \[ \schluss{k_1 \cup\{ p(s_1,\cdots,s_n)\} \quad\quad \{\neg p(t_1,\cdots,t_n)\} \cup k_2}{
+             k_1\mu \cup k_2\mu}.
+ \hspace*{6cm} \Box
+ \]
+\end{Definition}
+The resolution rule is a combination of the  \emph{substitution rule} and the cut rule.  The substitution
+rule has the form
+\[ \schluss{k}{k\sigma}. \]
+Here, $k$ is a first-order clause and $\sigma$ is a substitution.
+
+In applications of the resolution rule it might be necessary to rename the variables of one clause 
+before the resolution rule can be applied.  Consider the following example.
+The clause set  
+\[ M = \Bigl\{ \bigl\{ p(x) \bigr\}, \bigl\{ \neg p(f(x)) \bigr\} \Bigr\} \]
+is inconsistent.  However, we can not use the resolution rule directly, as the syntactical equation 
+\[ p(x) \doteq p(f(x)) \]
+is unsolvable.  The reason is, that by a mere  \textbf{coincidence}, both clauses use the same variable $x$.
+However, if we rename the variable $x$ in the second clause into $y$, we arrive at the following set of clauses:
+\[ \Bigl\{ \bigl\{ p(x) \bigr\}, \bigl\{ \neg p(f(y)) \bigr\} \Bigr\}. \]
+Here, the resolution rule can be applied, as the syntactical equation 
+\[ p(x) \doteq p(f(y)) \]
+has the solution $[x \mapsto f(y)]$.  Using this substitution we can derive the empty clause 
+\[ \bigl\{ p(x) \bigr\}, \quad \bigl\{ \neg p(f(y)) \bigr\} \quad \vdash \quad \{\} \]
+and thus have shown the inconsistency of the set  $M$.
+
+\noindent
+The resolution rule alone is not sufficient in order to show that a given set of clauses $M$ is sufficient.
+Rather, we need a second rule.  To motivate the second rule, consider the following example:
+\[ M = \Bigl\{ \bigl\{p(f(x),y), p(u,g(v))\bigr\}, 
+               \bigl\{\neg p(f(x),y), \neg p(u,g(v))\bigr\} \Bigr\} 
+\]
+We will show that  $M$ is inconsistent.  However, the cut rule is not sufficient to show the
+inconsistency of $M$.  The problem is that any application of the cut rule will always leave us with
+clauses that contain two literals.  A formal proof of this claim can be done using a case distinction
+which is quite lengthy but nevertheless straightforward.  This example motivates the introduction of the
+following rule.
+
+ 
+
+\begin{Definition}[Factorization] Assume the following:
+\begin{enumerate}
+\item $k$ is a first-order clause,
+\item $p(s_1,\cdots,s_n)$ and $p(t_1,\cdots,t_n)$ are atomic formul\ae,
+\item $p(s_1,\cdots,s_n)  \doteq p(t_1,\cdots,t_n)$ is solvable and 
+\item $\mu = \textsl{mgu}\bigl(p(s_1,\cdots,s_n), p(t_1,\cdots,t_n)\bigr)$ is the unifier.
+\end{enumerate}
+Then both \\[0.3cm]
+\hspace*{0.8cm}
+$\schluss{k \cup \bigl\{p(s_1,\cdots,s_n),\, p(t_1,\cdots,t_n)\bigl\}}{k\mu \cup \bigl\{p(s_1,\cdots,s_n)\mu\bigr\} }$ 
+\quad and \quad
+$\schluss{k \cup \bigl\{ \neg p(s_1,\cdots,s_n),\, \neg p(t_1,\cdots,t_n)\bigl\}}{k\mu \cup \bigl\{\neg p(s_1,\cdots,s_n)\mu\bigr\} }$ 
+\\[0.3cm]
+are applications of the  \emph{factorization rule}.
+\hspace*{\fill} $\Box$
+\end{Definition}
+
+\noindent
+Let us show that using both resolution and factorization we can show the set $M$ given above to be
+inconsistent. 
+\begin{enumerate}
+\item Let us first use factorization with the first clause.
+      In order to do so, we calculate the unifier 
+      \[ \mu = \textsl{mgu}\bigl(p(f(x),y), p(u,g(v))\bigr) = [y \mapsto g(v), u \mapsto f(x)]. \]
+      Then, factorization yields 
+      \[ \bigl\{p(f(x),y), p(u,g(v))\bigr\} \quad \vdash \quad \bigl\{p(f(x),g(v))\bigr\}. \]
+\item Now we apply factorization to the second clause.  We calculate the unifier as
+      \[ \mu = \textsl{mgu}\bigl(\neg p(f(x),y), \neg p(u,g(v))\bigr) = [y \mapsto g(v), u \mapsto f(x)]. 
+      \]
+      This time, factorization yields: 
+      \[ \bigl\{ \neg p(f(x),y), \neg p(u,g(v))\bigr\} \quad \vdash \quad \bigl\{\neg p(f(x),g(v))\bigr\}.
+      \]
+\item We finish our proof with an application of resolution.  The unifier we use this time is the empty
+      substitution, we have $\mu = []$, as the corresponding atomic \formulae are already equal:
+      \[ \bigl\{p(f(x),g(v))\bigr\}, \quad \bigl\{\neg p(f(x),g(v))\bigr\} \quad \vdash \quad \{\}. \]
+\end{enumerate}
+If $M$ is a set of clauses and  $k$ is a first-order clause such that $k$ can be inferred by successive 
+applications of resolution and factorization from clauses of  $M$, then this is written as
+\\[0.2cm]
+\hspace*{1.3cm} $M \vdash k$.
+\\[0.2cm]
+We read this as  \emph{$M$ proves $k$}.
+
+\begin{Definition}[Universal Closure]
+{\em
+  If $k$ is a first-order clause and  $\{x_1,\cdots,x_n\}$ is the set of all variables occurring in  $k$,
+  then we define the \emph{universal closure}  $\forall(k)$  of the clause $k$ as \\[0.2cm]
+  \hspace*{1.3cm} $\forall(k) := \forall x_1, \cdots,\forall x_n \colon k$.
+}
+\end{Definition}
+
+\noindent
+The essential properties of our provability relation  $M \vdash k$ are given in the following theorems.
+
+\begin{Proposition}[Correctness] \hspace*{\fill} \\
+If $M = \{k_1,\cdots,k_n\}$ is a set of clauses and is  $M \vdash k$, then we have \\[0.2cm]
+\hspace*{1.3cm}
+$\models \forall(k_1) \wedge \cdots \wedge \forall(k_n) \rightarrow \forall(k)$. 
+\\[0.2cm]
+Therefore, if the clause $k$ can be proven from the set $M$,  then $k$ is indeed a logical consequence 
+of the \formulae in  $M$.
+\hspace*{\fill} $\Box$
+\end{Proposition}
+
+\noindent
+The converse of the preceding theorem is only valid for the empty clause.
+\begin{Proposition}[Refutation Completeness] \hspace*{\fill} \\
+If $M = \{k_1,\cdots,k_n\}$ is a set of clauses and we have  
+$\models \forall(k_1) \wedge \cdots \wedge \forall(k_n) \rightarrow \falsum$, then we can indeed prove
+the empty clause form the clauses in $M$ \\[0.2cm]
+\hspace*{1.3cm} $M \vdash \{\}$.
+  \hspace*{\fill} $\Box$
+\end{Proposition}
+
+The preceding theorems provide us with a method to check for a given first-order formula $f$ whether
+ $\models f$ holds.  The idea is to proceed as follows:
+\begin{enumerate}
+\item We compute the Skolem normal form of $\neg f$.  This Skolem normal form is a formula of the form
+      $\forall x_1, \cdots, x_m \colon g$ and we know that this formula is equisatisfiable with $\neg f$:
+      \\[0.2cm]
+      \hspace*{1.3cm} $\neg f \approx_e \forall x_1, \cdots, x_m \colon g$.
+\item Next, we transform the matrix $g$ into  conjunctive normal form: 
+      \[ g \leftrightarrow k_1 \wedge \cdots \wedge k_n. \]
+      Therefore, we now have 
+      \[ \neg f \approx_e k_1 \wedge \cdots \wedge k_n \] 
+      and that implies 
+      \[  
+          \models f                           \quad \mbox{iff} \quad
+          \{\neg f\} \models \falsum          \quad \mbox{iff} \quad 
+          \{k_1,\cdots,k_n\} \models \falsum.
+      \]
+\item Using the correctness and the refutation completeness we now have
+      \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\{k_1,\cdots,k_n\} \models \falsum$ \quad iff \quad 
+      $\{k_1,\cdots,k_n\} \vdash \falsum$. \\[0.2cm]
+      Therefore we try to infer the empty clause from the set of clauses  $M = \{ k_1, \cdots, k_n \}$ using both
+      resolution and factorization.  If we are successful, we have shown the original formula $f$ to be
+      universally valid.
+\end{enumerate}
+We close this section by providing an example.
+We assume the following axioms:
+\begin{enumerate}
+\item Every dragon is happy if all of its children are able to fly.
+\item Every red dragon can fly.
+\item The children of red dragons are always red.
+\end{enumerate}
+We want to show that these axioms imply that all red dragons are happy.
+As a first step, let us formalize the axioms and the claim in first-order logic.
+To this end, we define the following signature: \\[0.2cm]
+\hspace*{1.3cm}  $\Sigma_\textsl{dragon} := \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ \quad where
+\begin{enumerate}
+\item $\mathcal{V} := \{x,y,z\}$.
+\item $\mathcal{F} = \{\}$.
+\item $\mathcal{P} := \{ \textsl{red}, \textsl{canFly}, \textsl{happy}, \textsl{child} \}$.
+\item $\textsl{arity} := \bigl\{ \pair(\textsl{red},1), \pair(\textsl{canFly},1),
+  \pair(\textsl{happy},1), \pair(\textsl{child},2)\bigr\}$
+\end{enumerate}
+The predicate  $\textsl{child}(x,y)$ is true iff $x$ is a child of $y$.
+We formalize the axioms and the claim:
+\begin{enumerate}
+\item $f_1 := \forall x: \Bigl(\forall y: \big(\textsl{child}(y,x) \rightarrow \textsl{canFly}(y)\big) \rightarrow \textsl{happy}(x)\Bigr)$
+\item $f_2 := \forall x: \bigl(\textsl{red}(x) \rightarrow \textsl{canFly}(x)\bigr)$
+\item $f_3 := \forall x: \Bigl(\textsl{red}(x) \rightarrow \forall y: \bigl(\textsl{child}(y,x) \rightarrow \textsl{red}(y)\bigr)\Bigr)$
+\item $f_4 := \forall x: \bigl(\textsl{red}(x) \rightarrow \textsl{happy}(x)\bigr)$
+\end{enumerate}
+We want to prove that the formula \\[0.2cm]
+\hspace*{1.3cm} $f := f_1 \wedge f_2 \wedge f_3 \rightarrow f_4$ \\[0.2cm]
+is universally valid.  Therefore, we take the formula $\neg f$ and see that we have the following
+equivalence
+\\[0.2cm]
+\hspace*{1.3cm} $\neg f \leftrightarrow f_1 \wedge f_2 \wedge f_3 \wedge \neg f_4$. \\[0.2cm]
+The next step is to transform the formula on the right hand side of this equivalence into a set of clauses.
+As we have a conjunction of several \formulae here, it is possible to transform the \formulae
+$f_1$, $f_2$, $f_3$ and  $\neg f_4$  separately.
+\begin{enumerate}
+\item The formula $f_1$ is transformed as follows:
+ $$ 
+  \begin{array}{lcl}
+    f_1 & =           & \forall x:\Bigl(\forall y: \big(\textsl{child}(y,x)
+    \rightarrow \textsl{canFly}(y)\big) \rightarrow \textsl{happy}(x) \Bigr) \\[0.2cm]
+    &\leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \textsl{child}(y,x) \rightarrow \textsl{canFly}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \neg \textsl{child}(y,x) \vee \textsl{canFly}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\leftrightarrow & \forall x: \Bigl(\exists y: \neg \big( \neg \textsl{child}(y,x) \vee \textsl{canFly}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\leftrightarrow & \forall x: \Bigl( \exists y: \big(\textsl{child}(y,x) \wedge \neg  \textsl{canFly}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\leftrightarrow & \forall x:  \exists y: \Bigl(\big( \textsl{child}(y,x) \wedge \neg  \textsl{canFly}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\approx_e & \forall x: \Bigl(\big( \textsl{child}(s(x),x) \wedge \neg  \textsl{canFly}(s(x))\big) \vee \textsl{happy}(x) \Bigr)\\
+  \end{array}
+     $$
+      In the last step, we have introduced the  Skolem function $s$ where
+      $\textsl{arity}(s) = 1$.  The interpretation of this function is as follows:  For every dragon
+      $x$, that is not happy, $s(x)$ provides a child  $y$ of $x$ such that $y$ is not able to fly.
+
+      If we transform the matrix of the last formula into conjunctive normal form, we get the following
+      clauses: 
+      \\[0.2cm]
+      \hspace*{1.3cm} $k_1 := \bigl\{ \textsl{child}(s(x),x), \textsl{happy}(x) \bigl\}$,   \\[0.2cm]
+      \hspace*{1.3cm} $k_2 := \bigl\{ \neg \textsl{canFly}(s(x)), \textsl{happy}(x) \bigl\}$. 
+\item The formula $f_2$ is transformed as follows:
+ $$
+        \begin{array}{lcl}
+            f_2 & =  & \forall x: \bigl(\textsl{red}(x) \rightarrow \textsl{canFly}(x) \bigr) \\[0.2cm]
+            & \leftrightarrow  & \forall x: \bigl(\neg \textsl{red}(x) \vee \textsl{canFly}(x) \bigr)
+        \end{array}
+      $$ 
+      Therefore,  $f_2$ is equivalent to the following clause: \\[0.2cm]
+      \hspace*{1.3cm} $k_3 := \bigl\{ \neg \textsl{red}(x), \textsl{canFly}(x) \bigl\}$.
+\item For  $f_3$ we get:
+      $$
+        \begin{array}{lcl}
+          f_3 & =          & \forall x: \Bigl(\textsl{red}(x) \rightarrow 
+                             \forall y: \bigl(\textsl{child}(y,x) \rightarrow \textsl{red}(y)\bigr) \Bigr) 
+          \\[0.2cm]
+          &\leftrightarrow & \forall x: \Bigl(\neg \textsl{red}(x) \vee 
+                             \forall y: \bigl(\neg \textsl{child}(y,x) \vee \textsl{red}(y)\bigr)\Bigr) 
+          \\[0.2cm]
+          &\leftrightarrow & \forall x: \forall y: \bigl(\neg \textsl{red}(x) \vee \neg \textsl{child}(y,x) \vee \textsl{red}(y)\bigr)
+        \end{array}
+      $$
+      As a clause, this is written as follows: \\[0.2cm]
+      \hspace*{1.3cm} $ k_4 := \bigl\{ \neg \textsl{red}(x), \neg \textsl{child}(y,x), \textsl{red}(y)\bigl\}$.
+\item Transforming the negation of  $f_4$ we get the following:
+ $$
+        \begin{array}{lcl}
+\neg f_4 & =      & \neg \forall x: \bigl(\textsl{red}(x) \rightarrow \textsl{happy}(x)\bigr) 
+         \\[0.2cm]
+         & \leftrightarrow & \neg \forall x: \bigl(\neg \textsl{red}(x) \vee \textsl{happy}(x) \bigr)
+         \\[0.2cm]
+         & \leftrightarrow & \exists x: \neg \bigl(\neg \textsl{red}(x) \vee \textsl{happy}(x) \bigr)
+         \\[0.2cm]
+         & \leftrightarrow & \exists x: \bigl(\textsl{red}(x) \wedge \neg \textsl{happy}(x) \bigr)
+         \\[0.2cm]
+         & \approx_e & \textsl{red}(d) \wedge \neg \textsl{happy}(d) \\
+        \end{array}
+      $$
+      Here, we have introduced the Skolem constant  $d$.  This constant denotes a dragon that is both red
+      and not happy.  Written as a set of clauses, the previous formula takes the following form:
+      \\[0.2cm]
+      \hspace*{1.3cm} $k_5 = \bigl\{ \textsl{red}(d) \bigl\}$, \\[0.2cm]
+      \hspace*{1.3cm} $k_6 = \bigl\{ \neg \textsl{happy}(d) \bigl\}$.
+\end{enumerate}
+We therefore have to show that the set  $M$ consisting of the clauses listed below, is inconsistent:
+\begin{enumerate}
+\item $k_1 = \bigl\{ \textsl{child}(s(x),x),\; \textsl{happy}(x) \bigl\}$  
+\item $k_2 = \bigl\{ \neg \textsl{canFly}(s(x)),\; \textsl{happy}(x) \bigl\}$
+\item $k_3 = \bigl\{ \neg \textsl{red}(x),\; \textsl{canFly}(x) \bigl\}$
+\item $k_4 = \bigl\{ \neg \textsl{red}(x),\; \neg \textsl{child}(y,x),\; \textsl{red}(y) \bigl\}$
+\item $k_5 = \bigl\{ \textsl{red}(d) \bigl\}$ 
+\item $k_6 = \bigl\{ \neg \textsl{happy}(d) \bigl\}$
+\end{enumerate}
+Define $M := \bigl\{k_1,k_2,k_3,k_4,k_5,k_6\bigl\}$.  We will show $M \vdash \falsum$.
+\begin{enumerate}
+\item We have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\textsl{mgu}\bigl(\textsl{red}(d), \textsl{red}(x)\bigr) = [x \mapsto d]$.
+      \\[0.2cm]
+      Therefore, resolution applied to the clauses  $k_5$ and $k_4$ yields:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{\textsl{red}(d)\bigl\}$, \ $\bigl\{\neg \textsl{red}(x), \neg \textsl{child}(y,x),
+       \textsl{red}(y)\bigl\}$ \ $\vdash$ \ $\bigl\{\neg \textsl{child}(y,d), \textsl{red}(y)\bigl\}$.
+\item We apply the resolution rule again for the clause derived above and the clause  $k_1$.
+      To this end, we first compute
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\textsl{mgu}\bigl(\textsl{child}(y,d), \textsl{child}(s(x),x)\bigr) = 
+       [y \mapsto s(d), x \mapsto d]$.
+      \\[0.2cm]
+      Then we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+       $\bigl\{\neg \textsl{child}(y,d), \textsl{red}(y)\bigl\}$, \ 
+       $\bigl\{\textsl{child}(s(x),x), \textsl{happy}(x)\bigl\}$ \ $\vdash$ \ 
+       $\bigl\{\textsl{happy}(d), \textsl{red}(s(d))\bigl\}$.
+\item Next, we apply the resolution rule to the last clause derived and  $k_6$. We have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\textsl{mgu}\bigl(\textsl{happy}(d), \textsl{happy}(d)\bigr) = []$
+      \\[0.2cm]
+      Therefore, we conclude
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{\textsl{happy}(d), \textsl{red}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{happy}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{red}(s(d))\bigl\}$.
+\item Next, we apply resolution to the clauses $\bigl\{\textsl{red}(s(d))\bigl\}$ and $k_3$.
+      We have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\textsl{mgu}\bigl(\textsl{red}(s(d)), \neg \textsl{red}(x)\bigr) = [x \mapsto s(d)]$
+      \\[0.2cm]
+      Therefore, resolution yields:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{\textsl{red}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{red}(x), \textsl{canFly}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{canFly}(s(d))\bigl\}$
+\item Next, we apply resolution to $\bigl\{\textsl{canFly}(s(d))\bigl\}$ and 
+      $k_2$.  We have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\textsl{mgu}\bigl(\textsl{canFly}(s(d)), \textsl{canFly}(s(x))\bigr) = [x \mapsto d]$.
+      \\[0.2cm]
+      Now the resolution rule yields
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{\textsl{canFly}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{canFly}(s(x)), \textsl{happy}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{happy}(d)\bigl\}$.
+\item The clause $\bigl\{\textsl{happy}(d)\bigl\}$ and the clause $k_6$ are inconsistent, as we have:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{\textsl{happy}(d)\bigl\}$, \  $\bigl\{\neg \textsl{happy}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\bigl\}$.
+\end{enumerate}
+As we have proven the empty clause, we have shown  that $M \vdash
+\falsum$ holds.  Therefore, we may conclude that all communist dragons are happy. 
+
+
+\exercise
+The \emph{Russell set} $R$ is defined as the set of all those sets that do not contain themselves.
+We therefore have.
+\\[0.2cm]
+\hspace*{1.3cm}
+$\forall x: \bigl( x \el R \leftrightarrow \neg x \el R)$.
+\\[0.2cm]
+Show that this formula is inconsistent.
+\vspace{0.3cm}
+
+\exercise
+Assume there is a small town with just one barber.  Further assume the following:
+\begin{enumerate}
+\item The barber  shaves all those villagers that do not shave themselves.
+\item The barber does not shave anybody who shaves himself.
+\end{enumerate}
+Prove, that using these axioms we are actually able to prove that the barber is gay.
+We are thus able to validate a common prejudice with scientific means!
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "logic"
+%%% End: 

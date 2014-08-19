@@ -1,0 +1,141 @@
+program main;
+
+    M := { {["p"]} };
+    r := unsatisfiable( M, {} );
+    print(" r = ", r);
+
+    M := { {["p"], ["q"], ["r"]},
+           {[ "-", ["p"]], ["q"]},
+           {["p"], [ "-", ["q"] ]},
+           {[ "-", ["p"]], [ "-", ["q"] ]}
+         };
+    r := unsatisfiable( M, {} );
+    print(" r = ", r);
+
+    M := { {["p"], ["q"], ["s"]},
+           {[ "-", ["p"]], ["r"], [ "-", ["t"]]},
+           {["r"], ["s"], ["p"]},
+           {[ "-", ["r"]], ["q"], [ "-", ["p"]]},
+           {[ "-", ["s"]], ["p"]},
+           {[ "-", ["p"]], [ "-", ["q"]], ["s"], [ "-", ["r"]]},
+           {["p"], [ "-", ["q"]], ["s"]},
+           {[ "-", ["r"]], [ "-", ["s"]]},
+           {[ "-", ["p"]], [ "-", ["s"]]}
+         };
+    r := unsatisfiable( M, {} );
+    print(" r = ", r);
+
+    M := { {["p"], ["q"], ["s"]},
+           {[ "-", ["p"]], ["r"], [ "-", ["t"]]},
+           {["r"], ["s"]},
+           {[ "-", ["r"]], ["q"], [ "-", ["p"]]},
+           {[ "-", ["s"]], ["p"]},
+           {[ "-", ["p"]], [ "-", ["q"]], ["s"], [ "-", ["r"]]},
+           {["p"], [ "-", ["q"]], ["s"]},
+           {[ "-", ["r"]], [ "-", ["s"]]},
+           {[ "-", ["p"]], [ "-", ["s"]]}
+         };
+    r := unsatisfiable( M, {} );
+    print(" r = ", r);
+
+    M := { {["p"], ["q"], ["s"]},
+           {[ "-", ["p"]], ["r"], [ "-", ["t"]]},
+           {["r"], ["s"]},
+           {[ "-", ["r"]], ["q"], [ "-", ["p"]]},
+           {[ "-", ["s"]], ["p"]},
+           {["p"], [ "-", ["q"]], ["s"]},
+           {[ "-", ["r"]], [ "-", ["s"]]},
+           {[ "-", ["p"]], [ "-", ["s"]]}
+         };
+    r := unsatisfiable( M, {} );
+    print(" r = ", r);
+
+    -- Clauses ist eine Menge von Klauseln und Literals ist eine Menge
+    -- von Literalen, die schon im Schritt 4 benutzt wurden.
+    -- Der Aufruf unsatisfiable(Clauses, Literals) überprüft, ob die Menge
+    -- Clauses unerfüllbar ist, ob also gilt:
+    --           Clauses |= false
+    -- Falls dies der Fall ist, wird true zurück gegeben.  Sonst wird eine Menge
+    -- von Unit-Klauseln zurück gegeben, die keine komplementären Literale 
+    -- enthält.  Jede Belegung I, die diese Menge erfüllt, erfüllt auch
+    -- die ursprüngliche Menge Clauses.
+    procedure unsatisfiable( Clauses, Literals );
+        -- 1. Schritt: Bilde solange wie möglich Unit-Schnitte mit den Klauseln
+        --             aus Clauses und entferne subsumierte Klauseln.
+        Clauses := saturate(Clauses);
+        -- 2. Schritt: Falls {} in Clauses, ist Clauses unerfüllbar,
+        --             also gilt Clauses |= false und wir geben true zurück.
+        if {} in Clauses then
+            return true;
+        end if;
+        -- 3. Schritt: Falls für alle Klauseln k aus Clauses gilt card(k) = 1,
+        --             so ist die Menge Clauses erfüllbar, wir geben dann
+        --             die Menge Clauses zurück.
+        if forall k in Clauses | #k = 1 then
+            return Clauses;
+        end if;
+        -- 4. Schritt: Wähle Literal l aus Clauses, dass noch nicht benutzt
+        --             worden ist.
+        literal := selectLiteral(Clauses, Literals);
+        --   Fall (a): Prüfe rekursiv, ob Clauses + { {l} } |= false.
+        --             Falls es eine Belegung I gibt, die die Menge Clauses + {l} erfüllt,
+        --             gebe I zurück.
+        --             Sonst weiter bei (b).
+        Result := unsatisfiable(Clauses + {{literal}}, Literals + { literal });
+        if Result /= true then
+            return Result;
+        end if;        
+        --   Fall (b): Prüfe rekursiv, ob Clauses + { {-l} } |= false.
+        --             Falls es eine Belegung I gibt, die die Menge Clauses + {-l} erfüllt,
+        --             gebe I zurück.
+        --             Sonst haben wir Clauses + {{l}} |= false. und Clauses + {{-l}} |= false
+        --             und daraus folgt Clauses |= false, wir geben also true zurück.
+        notLiteral := negateLiteral(literal);
+        return unsatisfiable(Clauses + {{notLiteral}}, Literals + { literal } );
+    end unsatisfiable;
+
+    -- Gegeben ist eine Menge S von Klauseln.  Der Aufruf saturate(S) berechnet alle
+    -- Klauseln, die mit Unit Schnitten aus S ableitbar sind.  Zusätzlich werden alle
+    -- Klauseln, die von Unit-Klauseln subsumiert werden, aus der Menge S entfernt.
+    procedure saturate(S);
+        -- Wir berechnen zunächst alle Unit-Klauseln.
+        Units := { k in S | #k = 1 };
+        -- Wir müssen uns merken, welche Unit-Klauseln wir schon benutzt haben.
+        Used := {};
+        -- Solange wir unbenutzte Unit-Klauseln haben, wählen wir eine 
+        -- Unit-Klausel aus, merken uns, dass wir diese Klausel benutzt haben 
+        -- und bilden alle möglichen Schnitte mit anderen Klauseln.  
+        while Units /= {} loop
+            unit := arb Units;
+            Used := Used + { unit };
+            literal := arb unit;
+            notLiteral := negateLiteral(literal);
+            S := { k - { notLiteral } : k in S };
+            -- Außerdem entfernen wir aus S alle Klauseln, die durch
+            -- die gerade untersuchte Unit-Klauseln subsumiert werden.
+            S := S  - { k in S | literal in k and #k > 1 };
+            -- Da bei der Anwendung neue Unit-Klauseln entstehen können, 
+            -- müssen wir die Menge der Unit-Klauseln bei jedem Durchlauf
+            -- der Schleife neu berechnen.  
+            Units := { k in S | #k = 1 } - Used;        
+        end loop;
+        -- Wenn keine neuen Unit-Klauseln gefunden werden, geben wir S zurück.
+        return S;
+    end saturate;
+
+    -- Wir wählen ein beliebiges Literal aus einer beliebigen Klausel,
+    -- so dass weder dieses Literal noch die Negation benutzt wilurden.
+    procedure selectLiteral( S, Forbidden );
+        return arb { l : k in S, l in k | not l in Forbidden and not negateLiteral(l) in Forbidden };
+    end selectLiteral;
+
+    -- Diese Prozedur berechnet das Komplement des Literals l.
+    procedure negateLiteral(l);
+        case
+            when #l = 2 => return l(2);
+            when #l = 1 => return [ "-", l ];
+            otherwise =>
+                abort("Error in negateLiteral" + str(l));
+        end case;
+    end negateLiteral;
+end main;

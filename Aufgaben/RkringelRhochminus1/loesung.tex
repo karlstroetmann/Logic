@@ -1,0 +1,194 @@
+\documentclass{article}
+\usepackage{fleqn}
+\usepackage{german}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{fancyvrb}
+\usepackage{alltt}
+
+%\pagestyle{empty}
+
+\newcommand{\qed}{\hspace*{\fill} $\Box$}
+\def\pair(#1,#2){\langle #1, #2 \rangle}
+
+\begin{document}
+\noindent
+\textbf{Aufgabe}: Es sei $R \subseteq M \times N$.  Unter welchen Bedingungen gilt 
+\\[0.1cm]
+\hspace*{1.3cm}
+$R \circ R^{-1} = \mathrm{id}_M$? 
+\vspace{0.3cm}
+
+\noindent
+\textbf{Lösung}:
+Die Gleichung $R \circ R^{-1} = \mathrm{id}_M$ gilt genau dann, wenn $R$ links-total und
+links-eindeutig ist.  Wir wiederholen zunächst die Definitionen dieses Begriffe.
+Eine Relation $R \subseteq M \times M$ ist \emph{links-total} auf $M$ genau dann, wenn
+\begin{equation}
+  \label{eq:1}
+  \forall x \in M: \exists y \in M: \pair(x,y) \in R
+\end{equation}
+gilt.  Eine Relation $R \subseteq M \times M$ ist \emph{links-eindeutig} genau dann, wenn
+\begin{equation}
+  \label{eq:2}
+  \forall x,y,z \in M: \bigl(\pair(x,y) \in R \wedge \pair(z,y) \in R \rightarrow x = z\bigr)
+\end{equation}
+gilt.  Wir behaupten nun, dass Folgendes gilt:
+\\[0.2cm]
+\hspace*{1.3cm}
+$R \circ R^{-1} = \mathrm{id}_M$ \quad g.d.w. \quad
+$R$ ist links-eindeutig und links-total auf $M$.
+\\[0.2cm]
+\textbf{Beweis}:
+Der Beweis einer Aussage``$A$ g.d.w. $B$'' zerfällt oft in zwei Teile: Zunächst nehmen wir
+an, dass $A$ gilt und zeigen, dass daraus $B$ folgt.  Anschließend nehmen wir an, dass $B$
+gilt und zeigen, dass daraus $A$ folgt.  Wir wenden dieses Beweis-Prinzip an und zerlegen
+den Beweis damit in zwei Teile:
+\begin{enumerate}
+\item[``$\Rightarrow$'']
+Wir zeigen zunächst, dass aus der Gültigkeit der Gleichung 
+\\[0.2cm]
+\hspace*{1.3cm}
+$R \circ R^{-1} = \mathrm{id}_M$
+\\[0.2cm]
+folgt, dass $R$ sowohl links-total als auch links-eindeutig ist.
+\begin{enumerate}
+\item Als erstes zeigen wir, dass $R$ auf $M$ links-total ist.  Sei also eine beliebiges
+      $x \in M$ gegeben.  Wir müssen zeigen, dass es ein $y \in M$ gibt, so dass $\pair(x,y) \in R$ ist. 
+      Wir wissen, dass
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\pair(x,x) \in \mathrm{id}_M$
+      \\[0.2cm]
+      gilt.  Aus der vorausgesetzten Gleichung $R \circ R^{-1} = \mathrm{id}_M$ folgt dann
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\pair(x,x) \in R \circ R^{-1}$
+      \\[0.2cm]
+      Setzen wir hier die Definition des relationalen Produkts ein, so sehen wir, dass
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\pair(x,x) \in \bigl\{ \pair(x,z) \mid \exists y: (\pair(x,y) \in R \wedge \pair(y,z) \in R^{-1}) \bigr\}$
+      \\[0.2cm]
+      gilt.  Daraus folgt aber sofort die Formel
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\exists y: (\pair(x,y) \in R \wedge \pair(y,x) \in R^{-1})$
+      \\[0.2cm]
+      Berücksichtigen wir hier wieder, dass $\pair(y,x) \in R^{-1}$ g.d.w.~$\pair(x,y) \in R$ gilt,
+      so haben wir
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\exists y: (\pair(x,y) \in R \wedge \pair(x,y) \in R$),
+      \\[0.2cm]
+      was äquivalent ist zu
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\exists y: \pair(x,y) \in R$.
+      \\[0.2cm]
+      Da es sich bei dem $x$, das in dieser Formel auftritt, um ein beliebiges Element
+      der Menge $M$ handelt, haben wir damit gezeigt, dass $R$ auf $M$ links-total ist.
+\item Wir zeigen nun, dass $R$ links-eindeutig ist.  Es seien nun Elemente $x$, $y$ und $z$ der Menge 
+      gegeben, so dass
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\pair(x,y) \in R$ \quad und \quad $\pair(z,y) \in R$
+      \\[0.2cm]
+      gilt.  Wir müssen zeigen, dass dann $x = z$ gelten muss.  
+      Dazu beobachten wir, dass 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\pair(z,y) \in R$ \quad g.d.w. \quad $\pair(y,z) \in R^{-1}$
+      \\[0.2cm]
+      gilt.  Nun folgt aus
+      $\pair(x,y) \in R$ und $\pair(y,z) \in R^{-1}$ nach Definition des relationalen
+      Produkts, dass 
+      \\[-0.1cm]
+      \hspace*{1.3cm}
+      $\pair(x,z) \in R \circ R^{-1}$
+      \\[0.2cm]
+      gilt.   Aus der vorausgesetzten Gleichung $R \circ R^{-1} = \mathrm{id}_M$ folgt dann
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\pair(x,z) \in \mathrm{id}_M$
+      \\[0.2cm]
+      und nach Definition der Relation $\mathrm{id}_M$ folgt daraus $x = z$.  
+\end{enumerate}
+Damit ist der Beweis der Richtung ``$\Rightarrow$'' abgeschlossen.
+
+\item[``$\Leftarrow$'']
+Wir nehmen nun an, dass $R$ links-eindeutig und links-total auf $M$ ist und zeigen,
+dass unter diesen Bedingungen die Gleichung 
+\begin{equation}
+  \label{eq:3}
+  R \circ R^{-1} = \mathrm{id}_M 
+\end{equation}
+gültig ist.  Da es sich hier um eine Gleichung zwischen Mengen handelt, zerlegen wir diesen
+Beweis in zwei Teile indem wir zeigen, dass sowohl
+\\[0.2cm]
+\hspace*{1.3cm}
+$R \circ R^{-1} \subseteq \mathrm{id}_M$ \quad als auch \quad $R \circ R^{-1} \supseteq \mathrm{id}_M$ 
+\\[0.2cm]
+gilt.
+\begin{enumerate}
+\item[``$\subseteq$'']: Sei $\pair(x,z) \in R \circ R^{-1}$.  Nach Definitionen
+  des relationalen Produkts heißt dies, dass 
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\pair(x,z) \in \bigl\{ \pair(x,z) \mid \exists y: (\pair(x,y) \in R \wedge \pair(y,z) \in R^{-1}) \bigr\}$
+  \\[0.2cm]
+  gilt. Daraus folgt sofort
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\exists y: \bigl(\pair(x,y) \in R \wedge \pair(y,z) \in R^{-1}\bigr)$
+  \\[0.2cm]
+  Wegen $\pair(y,z) \in R^{-1}$ g.d.w.~$\pair(z,y) \in R$ ist dies äquivalent zu
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\exists y: \pair(x,y) \in R \wedge \pair(z,y) \in R$
+  \\[0.2cm]
+  Mit der Links-Eindeutigkeit (\ref{eq:2}) der Relation $R$ folgt daraus 
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $x = z$.
+  \\[0.2cm]
+  Also haben wir
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\pair(x,z) = \pair(x,x) \in \mathrm{id}_M$.
+\item[``$\supseteq$'']: Sei nun $\pair(x,x) \in \mathrm{id}_M$.  Wir  müssen $\pair(x,x)
+  \in R \circ R^{-1}$ zeigen.  Nach Definition des relationalen Produkts 
+  ist das äquivalent zu
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\pair(x,x) \in \bigl\{ \pair(x,z) \mid \exists y: (\pair(x,y) \in R \wedge \pair(y,z) \in R^{-1}) \bigr\}$
+  \\[0.2cm] 
+  zeigen und dies ist äquivalent zu der Formel
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\exists y: \bigl(\pair(x,y) \in R \wedge \pair(y,x) \in R^{-1}\bigr)$.
+  \\[0.2cm]
+  Mit der Definition von $R^{-1}$ kann dies umgeformt werden zu
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\exists y: \bigl(\pair(x,y) \in R \wedge \pair(x,y) \in R\bigr)$.
+  \\[0.2cm]
+  Diese Formel ist offenbar äquivalent zu der Formel
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\exists y: \pair(x,y) \in R$
+  \\[0.2cm]
+  und diese Formel folgt sofort aus der Tatsache, dass die Relation $R$ links-total ist.
+\end{enumerate}
+Damit ist nun auch der Beweis der Richtung ``$\Leftarrow$'' abgeschlossen und wir haben
+die Behauptung vollständig bewiesen.
+\qed
+\end{enumerate}
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

@@ -1,0 +1,13 @@
+program main;
+    Suits  := { "c", "h", "d", "s" };
+    Values := { "2", "3", "4", "5", "6", "7", "8", "9", 
+                "T", "J", "Q", "K", "A" }; 
+    Deck  := { [ v, s ] : v in Values, s in Suits };
+    Hole  := { [ "2", "c" ], [ "6", "c" ] };
+    Rest  := Deck - Hole;
+    Flops := { { k1, k2, k3 } : k1 in Rest, k2 in Rest, k3 in Rest 
+                              | #{ k1, k2, k3 } = 3 };
+    Straight := { f in Flops | { k(1) : k in f } = { "3", "4", "5" } };
+    print(1.0 * #Straight / #Flops);
+
+end main;

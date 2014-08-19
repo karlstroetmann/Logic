@@ -1,0 +1,1553 @@
+\documentclass{slides}
+\usepackage{german}
+\usepackage[latin1]{inputenc}
+\usepackage{epsfig}
+\usepackage{fancyvrb}
+\usepackage{epsfig}
+\usepackage{amssymb}
+
+\pagestyle{empty}
+\setlength{\textwidth}{20cm}
+\setlength{\textheight}{24cm}
+\setlength{\topmargin}{0cm}
+\setlength{\headheight}{0cm}
+\setlength{\headsep}{0cm}
+\setlength{\topskip}{0.2cm}
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\evensidemargin}{0.5cm}
+
+\newcommand{\myrule}{\rule{20cm}{1mm}\\ }
+
+\def\pair(#1,#2){\langle #1, #2 \rangle}
+\newcommand{\is}{\;|\;}
+\newcommand{\schluss}[2]{\frac{\displaystyle\quad \rule[-8pt]{0pt}{18pt}#1 \quad}{\displaystyle\quad \rule{0pt}{14pt}#2 \quad}}
+\newcommand{\vschlus}[1]{{\displaystyle\rule[-6pt]{0pt}{12pt} \atop \rule{0pt}{10pt}#1}}
+\newcommand{\verum}{\top}
+\newcommand{\falsum}{\bot}
+\newcommand{\var}{\textsl{Var}}
+\newcommand{\struct}{\mathcal{S}}
+\newcommand{\FV}{\textsl{FV}}
+\newcommand{\BV}{\textsl{BV}}
+\newcommand{\gentzen}{\vdash_\mathcal{G}}
+\newcommand{\komplement}[1]{\overline{#1}}
+
+\newcommand{\circneg}{\mbox{$\bigcirc\hspace*{-0.54cm}\neg$}}
+\newcommand{\circwedge}{\mbox{$\bigcirc\hspace*{-0.52cm}\wedge$}}
+\newcommand{\circvee}{\mbox{$\bigcirc\hspace*{-0.52cm}\vee$}}
+\newcommand{\circright}{\mbox{$\bigcirc\hspace*{-0.79cm}\rightarrow$}}
+\newcommand{\circleftright}{\mbox{$\bigcirc\hspace*{-0.79cm}\leftrightarrow$}}
+
+\newcounter{mypage}
+
+\begin{document}
+\begin{center}
+Prädikatenlogik
+\end{center}
+\vspace*{0.5cm}
+
+\footnotesize
+Neue Begriffe:
+\begin{enumerate}
+\item \emph{Terme}: Bezeichnungen für Objekte
+
+       Beispiel: $f(x, 1)$
+
+       Terme sind aufgebaut aus
+\item \emph{Variablen} und \emph{Funktions-Zeichen}: \\
+
+      Beispiel:\\[0.1cm]
+      \hspace*{1.3cm} 
+      $x$: Variable; \\
+      \hspace*{1.3cm} 
+      $1$, $f$: Funktions-Zeichen
+\item \emph{Spezifikation der Stelligkeit}: gewährleistet, \\
+      dass Terme sinnvoll sind
+
+      Beispiel: $\mathtt{arity}(f) = 2$, \quad $\mathtt{arity}(1) = 0$.
+\item \emph{Prädikats-Zeichen}: atomare Formeln
+
+      Beispiel: $\textsl{even}\bigg(f(1,x)\bigg)$ \\[0.1cm]
+      \hspace*{1.3cm} $\textsl{arity}(even) = 1$
+\item \emph{Quantoren}: Aussagen über Mengen 
+
+      Beispiele: \\[0.1cm]
+\hspace*{1.3cm} $\forall x \in \mathbb{N}:\textsl{even}\bigg(f(1,x)\bigg)$\\[0.1cm]
+\hspace*{1.3cm} $\exists x \in \mathbb{N}:\textsl{even}\bigg(f(1,x)\bigg)$\\[0.1cm]
+\end{enumerate}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1} 
+\myrule
+Prädikatenlogik -- Syntax \hspace*{\fill} Seite \arabic{mypage}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Signatur
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Definition}: Eine Signatur $\Sigma$ ist ein $4$-Tupel  \\[0.3cm]
+\hspace*{1.3cm} $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P},
+\mathtt{arity}\rangle$.  \quad
+Dabei gilt:
+\begin{enumerate}
+\item $\mathcal{V}$:  Menge der \emph{Variablen}
+\item $\mathcal{F}$:  Menge der \emph{Funktions-Zeichen}
+\item $\mathcal{P}$:  Menge der \emph{Prädikats-Zeichen}
+\item $\textsl{arity}: \mathcal{F} \cup \mathcal{P} \rightarrow \mathbb{N}$ \\[0.1cm]
+      ordnet Funktions und Prädikats-Zeichen Stelligkeit zu.
+\item Die Mengen $\mathcal{V}$, $\mathcal{F}$ und $\mathcal{P}$ sind paarweise disjunkt: 
+      \begin{enumerate}
+      \item $\mathcal{V} \cap \mathcal{F} = \emptyset$
+      \item $\mathcal{V} \cap \mathcal{P} = \emptyset$
+      \item $\mathcal{F} \cap \mathcal{P} = \emptyset$.
+      \end{enumerate}
+\end{enumerate}
+
+Geg.: Signatur $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity}\rangle$ \\[0.3cm]
+\hspace*{1.3cm} 
+Induktive Definition der $\Sigma$-Terme $\mathcal{T}_\Sigma$:
+\begin{enumerate}
+\item $x \in \mathcal{T}_\Sigma$ \quad für alle $x \in \mathcal{V}$.
+\item Falls $f \in \mathcal{F}$ mit $\mathtt{arity}(f) = n$  und $t_1,\cdots,t_n \in\mathcal{T}_\Sigma$, dann  \\[0.1cm]
+      \hspace*{1.3cm} $f(t_1,\cdots,t_n) \in \mathcal{T}_\Sigma$.
+ 
+      Schreibweise: Falls $\textsl{arity}(f) = 0$, dann \\[0.1cm]
+      \hspace*{1.3cm} $c$ \quad statt \quad $c()$.
+\end{enumerate}
+\begin{center}
+{\normalsize
+Terme $\approx$ Namen für Objekte }
+\end{center}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Syntax  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Beispiel
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+$\Sigma_\mathrm{arith} = \langle \mathcal{V}, \mathcal{F}, \mathcal{P},\textsl{arity}\rangle$ \quad mit
+\begin{enumerate}
+\item $\mathcal{V} = \{ x, y, z \}$
+\item $\mathcal{F} = \{ 0, 1, \mathtt{+}, \mathtt{-}, \mathtt{*} \}$
+\item $\mathcal{P} = \{\mathtt{=}, \leq\}$ 
+\item $\textsl{arity} = \bigl\{ \pair(0,0), \pair(1,0), \pair(\mathtt{+},2),\pair(\mathtt{-},2), \pair(\mathtt{*},2) \bigr\}$
+\end{enumerate}
+
+Beispiele für  $\Sigma_{\mathrm{arith}}$-Terme:
+\begin{enumerate}
+\item $x, y, z \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$
+\item $0, 1 \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$
+\item $\mathtt{+}(0,x) \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$
+\item $\mathtt{*}(\mathtt{+}(0,x),1) \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Syntax  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Atomare Formeln
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Definition} der atomaren Formeln \\[0.1cm]
+\textbf{Geg.}: Signatur $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P},
+\textsl{arity}\rangle$. \quad Sei
+\begin{enumerate}
+\item  $p \in \mathcal{P}$ \quad mit \quad $\textsl{arity}(p) = n$,
+\item  $t_i \in \mathcal{T}_{\Sigma}$ \quad für alle $i\in\{1,\cdots,n\}$. 
+\end{enumerate}
+Dann ist \\[0.3cm]
+\hspace*{1.3cm}  $p(t_1, \cdots, t_n) \in \mathcal{A}_\Sigma$ 
+
+\begin{center}
+{\normalsize
+  $\mathcal{A}_\Sigma$  $\approx$ Menge der atomaren $\Sigma$-Formeln}
+\end{center}
+
+\textbf{Beispiele}:
+\begin{enumerate}
+\item $\mathtt{=}(\mathtt{*}(\mathtt{+}(0,x),1),0)$ 
+\item $\leq(y,\mathtt{*}(\mathtt{+}(0,x),1))$ 
+\end{enumerate}
+
+Infix-Notation zur Klammer-Ersparnis:
+\begin{enumerate}
+\item $(0+x)*1 = 0$
+\item $y \leq (0+x)*1$ 
+\end{enumerate}
+Notwendig dazu: Festlegung von 
+\begin{enumerate}
+\item Bindungs-Stärke
+\item Assoziativität
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Syntax  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Gebundene und freie Variablen
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\hspace*{1.3cm} $\int\limits_{0}^{x} y * t\, d t = \frac{1}{2} x^2 * y$ \hspace*{1.3cm} in Analysis gültig
+\begin{enumerate}
+\item $x$, $y$: freie Variablen
+\item $t$ gebundene Variable
+\end{enumerate}
+
+Unterschiede zwischen gebundenen und freien Variablen
+\begin{enumerate}
+\item Freie Variablen: beliebige Werte einsetzbar, $x \mapsto 2$: \\[0.3cm]
+\hspace*{1.3cm}  $\int\limits_{0}^{2} y * t\, d t = \frac{1}{2} 2^2 * y$ 
+\item Gebundene Variablen: umbenennbar \\[0.1cm]
+\hspace*{1.3cm} $\int\limits_{0}^{x} y * u\, d u = \frac{1}{2} x^2 * y$ 
+\item Vorsicht beim Umbenennen: \\[0.3cm]
+\hspace*{1.3cm}  $\int\limits_{0}^{x} y * y\, d y = \frac{1}{2} x^2 * y$. \\[0.3cm]
+      Durch Umbenennen können \underline{falsche} Formeln entstehen, wenn freie Variablen
+      \emph{eingefangen} werden!  
+\item Freie Variablen: Terme i.a.~nicht einsetzbar: $y \mapsto t^2$ \\[0.3cm]
+\hspace*{1.3cm} $\int\limits_{0}^{x} t^2 * t\, d t = \frac{1}{2} x^2 * t^2$ \\[0.1cm]
+\end{enumerate}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Syntax  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+$\Sigma$-Formeln
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Definition}: 
+Für  $t \in \mathcal{T}_\Sigma$ definiere $\var(t)$ induktiv:
+\begin{enumerate}
+\item $\var(x) := \{ x \}$ \quad für $x \in \mathcal{V}$.
+\item $\var\Bigg( f(t_1,\cdots,t_n) \Bigg) := \var(t_1) \cup \cdots \cup \var(t_n)$ 
+\end{enumerate}
+
+\textbf{Definiere} induktiv:
+\begin{itemize}
+\item $\mathbb{F}_\Sigma$: Menge der $\Sigma$-Formeln.
+\item $\FV(f)$: Menge der \emph{freien Variablen} in $f$.
+\item $\BV(f)$:            Menge der \emph{gebundenen Variablen} in $f$.
+\end{itemize}
+\begin{enumerate}
+\item  $\falsum \in \mathbb{F}_\Sigma$, $\verum \in \mathbb{F}_\Sigma$  \\[0.1cm]
+       $\FV(\falsum) := \FV(\verum) := \BV(\falsum) := \BV(\verum) := \emptyset$
+\item $p(t_1,\cdots,t_n) \in \mathbb{F}_\Sigma$ falls $p(t_1,\cdots,t_n)$   atomare $\Sigma$-Formel  \\[0.3cm]
+      $\FV\Bigg(p(t_1,\cdots,t_n) \Bigg) := \var(t_1) \cup \cdots \cup \var(t_n)$ \\
+      $\BV\Bigg(p(t_1,\cdots,t_n) \Bigg) := \emptyset$
+\item $\neg f \in \mathbb{F}_\Sigma$ falls $f \in \mathbb{F}_\Sigma$ \\[0.3cm]
+      $\FV\bigl( \neg f \bigr) := \FV(f)$ \quad und \quad $\BV\bigl( \neg f \bigr) := \BV(f)$
+\end{enumerate}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Syntax  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+$\Sigma$-Formeln (Fortsetzung)
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item[4.] Sei $f, g \in \mathbb{F}_\Sigma$ und gelte \\[0.3cm]
+      \hspace*{1.3cm} $\FV(f) \cap \BV(g) = \emptyset$ \quad und \quad
+                      $\FV(g) \cap \BV(f) = \emptyset$. \\[0.3cm]
+      Dann:
+      \begin{enumerate}
+      \item $(f \wedge g) \in \mathbb{F}_\Sigma$,
+      \item $(f \vee g) \in \mathbb{F}_\Sigma$,
+      \item $(f \rightarrow g) \in \mathbb{F}_\Sigma$,
+      \item $(f \leftrightarrow g) \in \mathbb{F}_\Sigma$.
+      \end{enumerate}
+      Weiter gilt für alle $\odot \in \{ \wedge, \vee, \rightarrow, \leftrightarrow \}$:
+      \begin{enumerate}
+      \item $\FV\bigl( f \odot g \bigr) := \FV(f) \cup \FV(g)$.
+      \item $\BV\bigl( f \odot g \bigr) := \BV(f) \cup \BV(g)$.
+      \end{enumerate}
+\item[5.] Sei  $x \in {\cal V}$  und $f \in \mathbb{F}_\Sigma$ mit $x \not\in \BV(f)$. \\[0.3cm]
+      Dann gilt:
+      \begin{enumerate}
+      \item $(\forall x : f) \in \mathbb{F}_\Sigma$.
+      \item $(\exists x : f) \in \mathbb{F}_\Sigma$.
+      \end{enumerate}
+      Weiter gilt für alle $\mathcal{Q} \in \{ \forall, \exists \}$:
+      \begin{enumerate}
+      \item $\FV\Bigg( (\mathcal{Q} x : f) \Bigg) := \FV(f) \backslash \{x\}$.
+      \item $\BV\Bigg( (\mathcal{Q} x : f) \Bigg) := \BV(f) \cup \{x\}$.  
+      \end{enumerate}
+\end{enumerate}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Syntax  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Klammer-Ersparnis
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item Selbe Regeln wie in Aussagenlogik. Bindungsstärke: 
+  1: ``$\neg$'', \ 2: ``$\wedge$'' und ``$\vee$'', \ 3: ``$\rightarrow$'', \ 4: ``$\leftrightarrow$''.
+\item Äußere Klammern werden weggelassen.
+\item Zusammenfassung von gleichen Quantoren: \\[0.3cm]
+      \hspace*{1.3cm} $\forall x, y: p(x, y)$  
+      statt \\[0.3cm]
+      \hspace*{1.3cm} $\forall x: \Bigg( \forall y: p(x,y) \Bigg)$. 
+\item Wirkungs-Bereich von Quantoren maximal: \\[0.3cm]
+      \hspace*{1.3cm} $\forall x\in\tau: f \wedge g$ \quad statt \quad $\forall x\in\tau: (f \wedge g)$
+\item 0-stellige Funktions-Zeichen werden ohne Klammer geschrieben: \\[0.3cm]
+      \hspace*{1.3cm} $1$ \quad statt \quad $1()$.
+\item Zweistellige Funktions-Zeichen in Infix-Notation,
+      wenn Bindungsstärke klar ist: \\[0.3cm]
+      \hspace*{1.3cm} $x + y * z$ \quad statt \quad $+(x, *(y,z))$.
+\item Zweistellige Prädikats-Zeichen in Infix-Notation: \\[0.3cm]
+      \hspace*{1.3cm} $x < y$ \quad statt \quad $<(x, y)$.
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Syntax  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Beispiele für $\Sigma$-Formeln (Gruppen-Theorie)
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item $\Sigma_G = \langle \mathcal{V}, \mathcal{F}, \mathcal{P},\textsl{arity}\rangle$ mit
+\item $\mathcal{V} := \{x_i | i \in \mathbb{N} \}$
+\item $\mathcal{F} := \{ 1, \mathtt{*} \}$
+\item $\mathcal{P} := \{ \mathtt{=} \}$
+\item $\textsl{arity} = \bigl\{ \pair(1,0), \pair(\mathtt{*},2), \pair(\mathtt{=},2)\bigr\}$
+\item Axiome der Gruppen-Theorie:
+  \begin{enumerate}
+  \item $1 * x_1 = x_1$
+  \item $(x_1 * x_2) * x_3 = x_1 * (x_2 * x_3)$
+  \item $\forall x_1: \exists x_2: x_2 * x_1 = 1$
+  \end{enumerate}
+\item Theoreme der Gruppen-Theorie:
+  \begin{enumerate}
+  \item $x_1 * 1= x_1$
+  \item $\forall x_1: \exists x_2: x_1 * x_2 = 1$
+  \end{enumerate}
+\item Nicht-Theoreme der Gruppen-Theorie:
+  \begin{enumerate}
+  \item $x_1 * x_2 = x_2 * x_1$
+  \item $\forall x_1: \exists x_2: x_2 * x_2 = x_1$
+  \end{enumerate}
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Syntax  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Prädikatenlogik -- Semantik
+\end{center}
+\vspace*{0.5cm}
+
+\footnotesize
+\textbf{Def.}:   $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P},\textsl{arity}\rangle$ sei Signatur. 
+
+\emph{$\Sigma$-Struktur} $\struct$ ist Paar 
+ $\langle \mathcal{U}, \mathcal{J} \rangle$ mit:
+\begin{enumerate}
+    \item $\mathcal{U}$ ist eine nicht-leere Menge. (\emph{Universum})
+    \item $\mathcal{J}$ ist eine Abbildung mit:
+    \begin{enumerate}
+    \item Für alle $f \in \mathcal{F}$ mit $\textsl{arity}(f) = m$ gilt \\[0.3cm]
+          \hspace*{1.3cm}
+          $f^\mathcal{J}\colon \mathcal{U} \times \cdots \times \mathcal{U} \rightarrow \mathcal{U}$ 
+    \item Für alle $p \in \mathcal{P}$ mit $\textsl{arity}(p) = n$ gilt \\[0.3cm]
+          \hspace*{1.3cm} 
+          $p^\mathcal{J}\colon \mathcal{U} \times \cdots \times \mathcal{U} \rightarrow \mathbb{B}$
+    \item Falls  $=\,\in\mathcal{P}$, dann \\[0.1cm]
+          \hspace*{1.3cm}  $=^\mathcal{J}(u,v) = \mathtt{true}$ \quad g.d.w. \quad $u = v$. \\[0.1cm]
+    \end{enumerate}
+    $\mathcal{J}$ ist \emph{Interpretation} der Funktions- und \\[0.1cm]
+    \hspace*{0.6cm} Prädikats-Zeichen
+\end{enumerate}
+
+\textbf{Beispiel}: Sei $\Sigma_G$ Signatur zur Gruppen-Theorie
+
+Definiere $\Sigma_G$ Struktur $\mathcal{Z} = \langle \{a, b\}, \mathcal{J}\rangle$ mit:
+\begin{enumerate}
+\item $1^\mathcal{J} := a$ 
+\item $*^\mathcal{J} := \Bigl\{ \bigl\langle\pair(a,a), a\bigr\rangle,
+                                   \bigl\langle\pair(a,b), b\bigr\rangle,
+                                   \bigl\langle\pair(b,a), b\bigr\rangle,
+                                   \bigl\langle\pair(b,b), a\bigr\rangle \Bigr\}$
+\item $=^\mathcal{J}$ ist Identität: \\[0.1cm]
+       $=^\mathcal{J} \;:=\; \Bigl\{ \bigl\langle\pair(a,a), \mathtt{true}\bigr\rangle,
+                                 \bigl\langle\pair(a,b), \mathtt{false}\bigr\rangle,$\\[0.1cm]
+\hspace*{2.3cm} $                \bigl\langle\pair(b,a), \mathtt{false}\bigr\rangle,
+                                 \bigl\langle\pair(b,b), \mathtt{true}\bigr\rangle \Bigr\}$
+\end{enumerate}
+
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1} 
+\myrule
+Prädikatenlogik -- Semantik \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Variablen-Interpretation
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Def.}: (\emph{Variablen-Interpretation}) \quad Gegeben seien:
+\begin{enumerate}
+\item Signatur \quad
+      $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ 
+\item $\Sigma$-Struktur \quad $\struct = \langle \mathcal{U}, \mathcal{J} \rangle$ 
+\end{enumerate}
+Dann heißt eine Abbildung \\[0.3cm]
+\hspace*{1.3cm} $\mathcal{I}: \mathcal{V} \rightarrow \mathcal{U}$ \\[0.3cm]
+$\struct$-\emph{Variablen-Interpretation}.
+
+\begin{enumerate}
+\item $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ 
+      sei Signatur
+\item $\Sigma$-Struktur $\struct = \langle \mathcal{U}, \mathcal{J} \rangle$ 
+\item $\mathcal{I}$ sei $\struct$-Variablen-Interpretation,
+
+\item $x$ sei Variable 
+\item $c \in \mathcal{U}$.
+\end{enumerate}
+Dann definiere Variablen-Interpretation $\mathcal{I}[x/c]$ durch \\[0.1cm]
+\hspace*{1.3cm} 
+    $\mathcal{I}[x/c](y) := \left\{
+    \begin{array}{ll}
+    c               & \mbox{falls}\; y = x;  \\
+    \mathcal{I}(y)  & \mbox{sonst}.          \\
+    \end{array}
+    \right.$ 
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Semantik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Semantik der Terme
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+
+\textbf{Gegeben}: 
+\begin{enumerate}
+\item Signatur $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$,
+\item $\Sigma$-Struktur $\struct = \langle \mathcal{U}, \mathcal{J} \rangle$,
+\item $\struct$-Variablen-Interpretation $\mathcal{I}: \mathcal{V} \rightarrow \mathcal{U}$.
+\end{enumerate}
+
+\textbf{Definition}: Interpretation eines Terms $t$ in Struktur $\mathcal{S}$ unter
+Variablen-Interpretation $\mathcal{I}$:  $\struct(\mathcal{I}, t)$
+\begin{enumerate}
+\item Fall: $t$ Variable: \\[0.3cm]
+      \hspace*{1.3cm} $\struct(\mathcal{I}, x) := \mathcal{I}(x)$
+\item Fall: $t = f(t_1,\cdots,t_n)$  \\[0.3cm]
+      \hspace*{1.3cm} $\struct\Bigg(\mathcal{I}, f(t_1,\cdots,t_n)\Bigg) := 
+                       f^\mathcal{J}\Bigg( \struct(\mathcal{I}, t_1), \cdots, \struct(\mathcal{I}, t_n) \Bigg)$.
+\end{enumerate}
+
+\textbf{Beispiel}: (Gruppen-Theorie) 
+
+Sei $\mathcal{I} = \{ x_1 \mapsto a, \; x_2 \mapsto b, \;, x_3 \mapsto a, \cdots \}$ 
+\begin{enumerate}
+\item $\mathcal{Z}\Bigg(\mathcal{I}, x_1 * 1\Bigg) = *^\mathcal{J}\Bigg(\mathcal{I}(x_1), 1^\mathcal{J}\Bigg) = *^\mathcal{J}(a, a) = a$
+\item $\mathcal{Z}\Bigg(\mathcal{I}, x_1 * (x_2 * x_3)\Bigg) = *^\mathcal{J}(a, *^\mathcal{J}(b,a)) = *^\mathcal{J}(a, b) = b$
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Semantik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Semantik der atomaren $\Sigma$-Formeln
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Gegeben}: 
+\begin{enumerate}
+\item Signatur $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$,
+\item $\Sigma$-Struktur $\struct = \langle \mathcal{U}, \mathcal{J} \rangle$,
+\item $\struct$-Variablen-Interpretation $\mathcal{I}: \mathcal{V} \rightarrow \mathcal{U}$.
+\item atomare Formel $p(t_1, \cdots, t_n)$
+\end{enumerate}
+\textbf{Definiere}: \\[0.1cm]
+\hspace*{1.3cm} $\struct\Bigg(\mathcal{I}, p(t_1,\cdots,t_n)\Bigg) := 
+                 p^\mathcal{J}\Bigg( \struct(\mathcal{I}, t_1), \cdots, \struct(\mathcal{I}, t_n) \Bigg)$
+
+\textbf{Beispiel}: (Gruppen-Theorie) 
+Sei $\mathcal{I} = \{ x_1 \mapsto a, \; x_2 \mapsto b, \;, x_3 \mapsto a, \cdots \}$ \\[0.3cm]
+
+\hspace*{2.0cm} 
+ $
+ \begin{array}[c]{cl}
+  &  \mathcal{Z}\Bigg( \mathcal{I}, x_2 * x_1 = 1 \Bigg) \\[0.3cm]
+= &  =^\mathcal{J}\Bigg(\mathcal{Z}(\mathcal{I}, x_2 * x_1),\;\mathcal{Z}(\mathcal{I},1)\Bigg) \\[0.3cm]
+= &  =^\mathcal{J}\Bigg(*^\mathcal{J}(\mathcal{I}(x_2),\, \mathcal{I}(x_1)),\;\mathcal{Z}(\mathcal{I},1)\Bigg) \\[0.3cm]
+= &  =^\mathcal{J}\Bigg(*^\mathcal{J}(b, a),\;1^\mathcal{J}\Bigg) \\[0.3cm]
+= &  =^\mathcal{J}( b,\; a) \\[0.3cm]
+= &  \mathtt{false} 
+ \end{array}
+$
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Semantik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Semantik der Junktoren
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Gegeben}: Funktionen (wie in AL)
+\begin{enumerate}
+\item $\circneg: \mathbb{B} \rightarrow \mathbb{B}$,
+\item $\circvee: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$,
+\item $\circwedge: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$,
+\item $\circright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$,
+\item $\circleftright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$.
+\end{enumerate}
+
+\textbf{Definition}: Gegeben
+\begin{enumerate}
+\item Signatur $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$,
+\item $\Sigma$-Struktur $\struct = \langle \mathcal{U}, \mathcal{J} \rangle$,
+\item $\struct$-Variablen-Interpretation $\mathcal{I}: \mathcal{V} \rightarrow \mathcal{U}$.
+\end{enumerate}
+\begin{enumerate}
+\item $\struct(\mathcal{I},\verum) := \mathtt{true}$ und $\struct(\mathcal{I},\falsum) := \mathtt{false}$.
+\item $\struct(\mathcal{I}, \neg f) \;:=\; \circneg\Bigg(\struct(\mathcal{I}, f)\Bigg)$.
+\item $\struct(\mathcal{I}, f \wedge g) \;:=\; \circwedge\Bigg(\struct(\mathcal{I}, f), \struct(\mathcal{I}, g)\Bigg)$.
+\item $\struct(\mathcal{I}, f \vee g) \;:=\; \circvee\Bigg(\struct(\mathcal{I}, f), \struct(\mathcal{I}, g)\Bigg)$.
+\item $\struct(\mathcal{I}, f \rightarrow g) \;:=\; \circright\!\Bigg(\struct(\mathcal{I}, f), \struct(\mathcal{I}, g)\Bigg)$.
+\item $\struct(\mathcal{I}, f \leftrightarrow g) \;:=\; \circleftright(\struct(\mathcal{I}, f), \struct(\mathcal{I}, g)\Bigg)$.
+\end{enumerate}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Semantik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Semantik der Quantoren
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\hspace*{1.3cm} 
+    $\mathcal{I}[x/c](y) := \left\{
+    \begin{array}{ll}
+    c               & \mbox{falls}\; y = x;  \\
+    \mathcal{I}(y)  & \mbox{sonst}.          \\
+    \end{array}
+    \right.$
+
+ $\struct\bigl(\mathcal{I}, \forall x \!:\! f\bigr) \;:=\; $ \\[0.3cm]
+ \hspace*{1.3cm} $\left\{
+       \begin{array}{ll}
+       \mathtt{true}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], f) = \mathtt{true}\quad \mbox{für alle}\; c\in \mathcal{U}\;\mbox{gilt}; \\
+       \mathtt{false} % \mbox{sonst}.
+       \end{array}
+       \right.$
+\vspace{0.5cm}
+
+ $\struct\bigl(\mathcal{I}, \exists x\!:\! f\bigr) \;:=\; $ \\[0.3cm]
+ \hspace*{1.3cm} $\left\{
+       \begin{array}{ll}
+       \mathtt{true}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], f) = \mathtt{true}\quad \mbox{für ein}\; c\in \mathcal{U}\;\mbox{gilt}; \\
+       \mathtt{false} % \mbox{sonst}.
+       \end{array}
+       \right.$ 
+\vspace{0.5cm}
+
+Falls $\FV(f) = \emptyset$, dann $\mathcal{S}(\mathcal{I}_1, f) = \mathcal{S}(\mathcal{I}_2, f)$ 
+für alle $\mathcal{I}_1$, $\mathcal{I}_2$.
+
+Schreibweise: Falls $\FV(f) = \emptyset$ \\[0.1cm]
+\hspace*{1.3cm} $\mathcal{S}(f) := \mathcal{S}(\mathcal{I}, f)$
+\vspace{0.5cm}
+
+\textbf{Beispiele}: 
+\begin{enumerate}
+\item $\mathcal{Z}( \forall x_1: \exists x_2: x_1 * x_2 = 1) = \mathtt{true}$
+\item $\mathcal{Z}( \forall x_1, x_2: x_1 * x_2 = x_2 * x_1) = \mathtt{true}$
+\item $\mathcal{Z}( \forall x_1: \exists x_2: x_2 * x_2 = x_1) = \mathtt{false}$
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Semantik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+
+\begin{center}
+Allgemeingültig
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Gegeben}: $f$ sei $\Sigma$-Formel. Falls für jede
+\begin{enumerate}
+\item $\struct$: \quad  $\Sigma$-Struktur und jede
+\item  $\mathcal{I}$: \quad $\struct$-Variablen-Interpretation
+\end{enumerate}
+\hspace*{1.3cm} $\struct(\mathcal{I}, f) = \mathtt{true}$ \\[0.3cm]
+gilt, dann ist  $f$  \emph{allgemeingültig}.  
+
+\textbf{Schreibweise}:
+\hspace*{1.3cm} $\models f$. 
+
+\textbf{Beispiele}: (Gruppen-Theorie) Seien
+\begin{enumerate}
+  \item $g_1 \quad := \quad \forall x_1: 1 * x_1 = x_1$
+  \item $g_2 \quad := \quad \forall x_2, x_3, x_4: (x_2 * x_3) * x_4 = x_2 * (x_3 * x_4)$
+  \item $g_3 \quad := \quad \forall x_5: \exists x_6: x_5 * x_6 = 1$
+  \item $g \quad := \quad g_1 \wedge g_2 \wedge g_3$.
+\end{enumerate}
+Dann gilt:
+\begin{enumerate}
+\item $\models g \rightarrow \forall x_{1}: x_{1} * 1 = x_{1}$
+\item $\models g \rightarrow \forall x_{1}: \exists x_{2}: x_{1} * x_{2} = 1$
+\item $\not\models g \rightarrow \forall x_{1}, x_{2}: x_{1} * x_{2} = x_{2} * x_{1}$
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Semantik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Modell
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Gegeben}: $f \in \mathbb{F}_\Sigma$ \\[0.3cm]
+\hspace*{1.3cm} $f$ \emph{geschlossen} \quad g.d.w. \quad $\FV(f) = \emptyset$
+
+\textbf{Beobachtung}: Für geschlossene Formel hängt Wahrheitswert nicht von
+Variablen-Interpretation $\mathcal{I}$ ab: \\[0.1cm]
+\hspace*{1.3cm} $\mathcal{S}(\mathcal{I}_1, f) = \mathcal{S}(\mathcal{I}_2, f)$.
+
+Schreibweise: $\mathcal{S}(f) = \mathcal{S}(\mathcal{I}, f)$
+\vspace{0.5cm}
+
+\textbf{Gegeben}: 
+\begin{enumerate}
+\item $f \in \mathbb{F}_\Sigma$ mit $\FV(f) = \emptyset$
+\item $\struct$ sei $\Sigma$-Struktur 
+\end{enumerate}
+\quad $\struct$ \emph{Modell} von $f$ \quad g.d.w. \quad $\struct(f) = \mathtt{true}$
+\vspace{0.3cm}
+
+Schreibweise: \quad $\struct \models f$ \quad falls \quad $\struct(f) = \mathtt{true}$
+\vspace{0.5cm}
+
+\textbf{Gegeben}:  
+\begin{enumerate}
+\item $M \subseteq \mathbb{F}_\Sigma$
+\item $\FV(f) = \emptyset$ \quad für alle $f \in M$
+\end{enumerate}
+$M$ \emph{erfüllbar} \quad g.d.w. \quad
+es existiert $\Sigma$-Struktur $\mathcal{S}$ mit \\[0.3cm]
+\hspace*{2.3cm} $\Sigma \models f$ \quad für alle $f \in M$.
+
+
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Semantik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+
+\footnotesize
+\textbf{Gegeben}:  
+\begin{enumerate}
+\item $M \subseteq \mathbb{F}_\Sigma$
+\item $\FV(f) = \emptyset$ \quad für alle $f \in M$
+\end{enumerate}
+$M$ \emph{unerfüllbar} \quad g.d.w. \\
+es existiert keine $\Sigma$-Struktur $\mathcal{S}$ mit \\[0.3cm]
+\hspace*{2.3cm} $\mathcal{S} \models f$ \quad für alle $f \in M$.
+
+\textbf{Schreibweise}: \\[0.1cm]
+\hspace*{1.3cm} $M \models \falsum$ \quad g.d.w. $M$ unerfüllbar
+\vspace{0.5cm}
+
+\textbf{Satz}: Sei $f$ geschlossene Formel. Dann gilt \\[0.3cm]
+\hspace*{1.3cm} 
+$\models f$ \quad g.d.w. \quad $\{ \neg f \} \models \falsum$
+
+
+\normalsize
+\begin{center}
+Äquivalenzen  
+\end{center}
+\vspace{0.5cm}
+\footnotesize
+
+\textbf{Gegeben}:  $f, g \in \mathbb{F}_\Sigma$
+$f$ und $g$ \emph{äquivalent} \quad g.d.w. \\[0.3cm]
+\hspace*{3.3cm}  $\models f \leftrightarrow g$
+
+Beispiele: DeMorgan'sche Gesetze für Quantoren
+\begin{enumerate}
+\item $\models \neg\big(\forall x\colon F\big) \leftrightarrow \big(\exists x\colon \neg F\big)$
+\item $\models \neg\big(\exists x\colon F\big) \leftrightarrow \big(\forall x\colon \neg F\big)$
+\end{enumerate}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik -- Semantik  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Pränexe Normalform
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+Es gelten die folgenden Äquivalenzen:
+  \begin{enumerate}
+  \item $\models \big(\forall x\colon f\big) \wedge \big(\forall x\colon g\big) \leftrightarrow \big(\forall x\colon f \wedge g\big)$
+  \item $\models \big(\exists x\colon f\big) \vee \big(\exists x\colon g\big) \leftrightarrow \big(\exists x\colon f \vee g\big)$
+  \item $\models \big(\forall x\colon \forall y\colon f \big) \leftrightarrow \big(\forall y\colon  \forall x\colon f \big)$
+  \item $\models \big(\exists x\colon \exists y\colon f \big) \leftrightarrow \big(\exists y\colon  \exists x\colon f \big)$
+  \item Sei $x \in \mathcal{V}$ mit $x \not\in \FV(f) \cup \BV(f)$. Dann gilt:
+    \begin{enumerate}
+    \item $\models  \big(\forall x\colon f) \leftrightarrow f$ 
+    \item $\models  \big(\exists x\colon f) \leftrightarrow f$.
+    \end{enumerate}
+  \item Sei $x \in \mathcal{V}$ mit $x \not\in \FV(g) \cup \BV(g)$. Dann gilt:
+    \begin{enumerate}
+    \item $\models \big(\forall x\colon f) \vee g \leftrightarrow \big(\forall x\colon f \vee g\big)$
+    \item $\models g \vee \big(\forall x\colon f) \leftrightarrow \big(\forall x\colon g \vee f\big)$
+    \item $\models \big(\exists x\colon f) \wedge g \leftrightarrow \big(\exists x\colon f \wedge g\big)$
+    \item $\models g \wedge \big(\exists x\colon f) \leftrightarrow \big(\exists x\colon g \wedge f\big)$
+    \item $\models f \leftrightarrow f[x/y]$
+    \end{enumerate}
+  \end{enumerate}
+
+\textbf{Definition}: 
+\begin{enumerate}
+\item  $f$  prädikatenlogische Formel
+\item $x$, $y$ Variablen, $y \not\in \FV(f) \cup BV(f)$
+\end{enumerate} 
+\qquad  $f[x/y]$: ersetze in $f$ Variable  $x$ durch $y$ 
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik   \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Skolemisierung
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Gegeben}:
+\begin{enumerate}
+\item $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ Signatur
+\item $f = \forall x_1, \cdots, x_n \colon \exists y \colon g(x_1, \cdots, x_n, y)$ \quad
+      mit $\FV(f) = \emptyset$    
+\end{enumerate}
+Schritte zur Skolemisierung
+\begin{enumerate}
+\item Wähle neues $n$-stelliges Funktions-Zeichen $s$: \\[0.3cm]
+      \hspace*{1.3cm} $s \not\in \mathcal{F}$.
+\item Bilde neue Signatur \\[0.3cm]
+      \hspace*{1.3cm} 
+      $\Sigma' := \Bigl\langle \mathcal{V}, \mathcal{F} \cup \{s\}, \mathcal{P}, \textsl{arity} \cup \bigl\{\pair(s,n)\bigr\} \Bigr\rangle$, 
+\item Bilde Skolemisierung von $f$ \\[0.3cm]
+      $f' = \textsl{skolem}(f) = \forall x_1 \colon \cdots \forall x_n \colon g\bigl(x_1, \cdots, x_n, s(x_1,\cdots,x_n)\bigr)$\\[0.1cm]
+\end{enumerate}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik   \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{slide}{}
+\normalsize
+\begin{center}
+Skolemisierung
+\end{center}
+\vspace{0.5cm}
+
+\textbf{Gegeben}: $f,g \in \mathbb{F}_\Sigma$ \quad mit $\FV(f) = \FV(g) = \emptyset$
+
+$f$ und $g$ erfüllbarkeits-äquivalent ($f \approx_e g$) \quad g.d.w.
+\begin{enumerate}
+\item $f$ und $g$ beide erfüllbar oder
+\item $f$ und $g$ beide unerfüllbar
+\end{enumerate}
+
+\textbf{Satz}: $f \approx_e \textsl{skolem}(f)$
+
+\textbf{Beispiel}: $\forall x: \exists y: p(x,y) \;\approx_e\; \forall x: p(x,s(x))$
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik   \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Überführung in Klausel-Normalform
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Gegeben}: prädikatenlogische Formel $f$
+
+\textbf{Gesucht}: prädikatenlogischen Klauseln $\{k_1,\cdots,k_n\}$ mit \\[0.1cm]
+\hspace*{1.3cm} $f \approx_e k_1 \wedge \cdots \wedge k_n$
+\begin{enumerate}
+\item Transformation von $f$ in pränexe Normalform 
+      \\[0.3cm]
+      \hspace*{1.3cm}
+      $f \leftrightarrow Q_1 x_1: \cdots Q_m x_m: g$ \quad mit
+      \begin{enumerate}
+      \item $Q_i \in \{\forall, \exists\}$ für $i=1,\cdots,m$,
+      \item $g$ ist Quantoren-frei.
+      \end{enumerate}
+\item Beseitigung der Existenz-Quantoren durch Skolemisierung
+
+       $f \approx_e \forall x_1, \cdots, x_l: g$
+\item Weglassen der Quantoren: Variablen implizit allquantifiziert
+\item Berechnung der konjuktiven Normalform der Matrix
+
+      \hspace*{1.3cm} $g \leftrightarrow k_1 \wedge \cdots \wedge k_r$
+
+      $f \approx_e \forall(k_1) \wedge \cdots \wedge \forall(k_r)$
+\end{enumerate}
+Allabschluß: $\forall(h) := \forall x_1, \cdots, x_n:h$ mit $\{x_1,\cdots,x_n\} = \FV(h)$
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prädikatenlogik   \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Martelli--Montanari--Regeln zur Transformation
+ syntaktischer Gleichungssysteme 
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Betrachte} Paare $\langle E, \sigma \rangle$ mit
+\begin{enumerate}
+\item $E$ ist syntaktisches Gleichungssystem,
+\item $\sigma$ ist Substitution.
+\end{enumerate}
+
+Verfahren zur Transformation solcher Paare:
+\begin{enumerate}
+\item $\langle E \cup \big\{ y \doteq t \big\},\; \sigma \rangle \;\leadsto\; \langle E[y \mapsto t],\; \sigma\big[ y \mapsto t \big]  \rangle$
+
+      falls $y \not\in \textsl{var}(t)$.
+\item $\langle E \cup \big\{ y \doteq t \big\}, \sigma \rangle \quad\leadsto\quad \Omega $
+
+      falls $y \in \textsl{var}(t)$ und $t \not= y$.
+\item $\langle E \cup \big\{ t \doteq y \big\}, \sigma \rangle \quad\leadsto\quad \langle E \cup \big\{ y \doteq t \big\}, \sigma \rangle$
+
+      Falls $y \in \mathcal{V}$ und $t \not\in \mathcal{V}$.
+\item $\langle E \cup \big\{ x \doteq x \big\}, \sigma \rangle \quad\leadsto\quad \langle E, \sigma \rangle$.
+\item \hspace*{1.25cm} $\langle E \cup \big\{ f(s_1,\cdots,s_n) \doteq f(t_1,\cdots,t_n) \big\}, \sigma \rangle$ \\[0.2cm]
+       $\leadsto\quad \langle E \cup \big\{ s_1 \doteq t_1, \cdots, s_n \doteq t_n\}, \sigma \rangle$.
+\item $\langle E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\}, \sigma \rangle \;\leadsto\; \Omega$
+
+      falls $f \not= g$.
+\end{enumerate}
+
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Unifikation  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Robinson-Kalkül: Resolution + Faktorisierung
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+Resolutions-Regel: 
+\begin{enumerate}
+\item $k_1$, $k_2$:  prädikatenlogische Klauseln,
+\item $p(s_1,\cdots,s_n)$, $p(t_1,\cdots,t_n)$: atomare Formeln,
+\item syntaktische Gleichung $p(s_1,\cdots,s_n)  \doteq p(t_1,\cdots,t_n)$ lösbar, 
+\item $\mu = \textsl{mgu}\bigl(p(s_1,\cdots,s_n), p(t_1,\cdots,t_n)\bigr)$.
+\end{enumerate}
+\hspace*{1.3cm} $\schluss{k_1 \cup\{ p(s_1,\cdots,s_n)\} \quad\quad \{\neg p(t_1,\cdots,t_n)\} \cup k_2}{k_1\mu \cup k_2\mu}$ 
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Robinson-Kalkül \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Robinson-Kalkül: Resolution + Faktorisierung
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+Faktorisierungs-Regel:
+\begin{enumerate}
+\item $k$ ist  eine prädikatenlogische Klausel,
+\item $p(s_1,\cdots,s_n)$ und $p(t_1,\cdots,t_n)$ sind atomare Formeln,
+\item die syntaktische Gleichung $p(s_1,\cdots,s_n)  \doteq p(t_1,\cdots,t_n)$ ist lösbar, 
+\item $\mu = \textsl{mgu}\bigl(p(s_1,\cdots,s_n), p(t_1,\cdots,t_n)\bigr)$.
+\end{enumerate}
+\hspace*{1.8cm}
+$\schluss{k \cup \bigl\{p(s_1,\cdots,s_n),\, p(t_1,\cdots,t_n)\bigl\}}{k\mu \cup \bigl\{p(s_1,\cdots,s_n)\mu\bigr\} }$ 
+\quad und 
+
+\hspace*{1.8cm}
+$\schluss{k \cup \bigl\{ \neg p(s_1,\cdots,s_n),\, \neg p(t_1,\cdots,t_n)\bigl\}}{k\mu \cup \bigl\{\neg p(s_1,\cdots,s_n)\mu\bigr\} }$ 
+
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Robinson-Kalkül \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Verfahren zur Prüfung von $\models f$ 
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Betrachte} 
+\begin{enumerate}
+\item $\models f$  \quad g.d.w \quad $\{\neg f\} \models \falsum$
+\item Bilde Skolem-Normalform von $\neg f$: \\[0.3cm]
+      \hspace*{1.3cm} $\neg f \approx_e \forall x_1, \cdots, x_m \colon g$.
+\item Bringe Matrix $g$ in konjunktive Normalform: \\[0.3cm]
+      \hspace*{1.3cm} 
+      $g \leftrightarrow k_1 \wedge \cdots \wedge k_n$.
+
+      Also \\[0.3cm]
+      \hspace*{1.3cm} $\neg f \approx_e k_1 \wedge \cdots \wedge k_n$
+\item Dann gilt: 
+      \\[0.3cm]
+      \hspace*{1.3cm}
+       $\models f$ \quad g.d.w. \quad $\{\neg f\} \models \falsum$ \quad g.d.w. \quad $\{k_1,\cdots,k_n\} \models \falsum$.
+\item Korrektheits-Satz + Widerlegungs-Vollständigkeit:
+      \\[0.3cm]
+      \hspace*{1.3cm} $\{k_1,\cdots,k_n\} \models \falsum$ \quad g.d.w. \quad $\{k_1,\cdots,k_n\} \vdash \falsum$. 
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Robinson-Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Rote Drachen sind glücklich 
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+Zoologische Axiome:
+\begin{enumerate}
+\item Jeder Drache ist glücklich, wenn alle seine Kinder fliegen können.
+\item Rote Drachen können fliegen.
+\item Die Kinder eines roten Drachens sind immer rot.
+\end{enumerate}
+\textbf{Beh.:} Alle roten Drachen sind glücklich.
+
+\textbf{Formalisierung}:
+\begin{enumerate}
+\item $f_1 := \forall x: \big(\forall y: \textsl{kind}(y,x) \rightarrow \textsl{fliegt}(y)\big) \rightarrow \textsl{glücklich}(x)$
+\item $f_2 := \forall x: \textsl{rot}(x) \rightarrow \textsl{fliegt}(x)$
+\item $f_3 := \forall x: \textsl{rot}(x) \rightarrow \forall y: \textsl{kind}(y,x) \rightarrow \textsl{rot}(y)$
+\item $f_4 := \forall x: \textsl{rot}(x) \rightarrow \textsl{glücklich}(x)$
+\end{enumerate}
+\textbf{zu zeigen:} \\[0.1cm]
+\hspace*{1.3cm} $f := f_1 \wedge f_2 \wedge f_3 \rightarrow f_4$ \\[0.1cm]
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Robinson-Kalkül \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+\textsl{Prolog} -- Ein Beispiel 
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    gallier(asterix).
+    gallier(obelix).
+
+    kaiser(caesar).
+    roemer(caesar).
+
+    stark(X) :- gallier(X).
+
+    maechtig(X) :- stark(X).
+    maechtig(X) :- kaiser(X), roemer(X).
+
+    spinnt(X) :- roemer(X).
+\end{Verbatim}
+
+Interpretation:
+\begin{enumerate}
+\item Asterix ist ein Gallier.
+\item Obelix ist ein Gallier.
+\item Cäsar ist ein Kaiser.
+\item Cäsar ist ein Römer.
+\item Alle Gallier sind stark.
+\item Wer stark ist, ist mächtig.
+\item Wer Kaiser und Römer ist, der ist mächtig.
+\item Wer Römer ist, spinnt. 
+\end{enumerate}
+
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prolog  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Prolog --- Syntax
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item \textbf{Variable}: String, der 
+      \begin{enumerate}
+      \item mit großen Buchstaben oder Unterstrich ``\texttt{\_}'' beginnt,
+      \item nur aus Buchstaben, Ziffern, und ``\texttt{\_}'' besteht.
+      \end{enumerate}
+      \textbf{Beispiele}: 
+      \\[0.3cm]
+      \hspace*{1.3cm} \texttt{X}, \texttt{ABC\_32}, \texttt{\_U}, \texttt{Hugo},
+      \texttt{\_1}, \texttt{\_}.
+      
+      anonyme Variable: \texttt{\_}
+\item \textbf{Funktions-Zeichen, Prädikats-Zeichen}: String, der
+      \begin{enumerate}
+      \item mit kleinen Buchstaben beginnt und 
+      \item nur aus Buchstaben, Ziffern und Unterstrich ``\texttt{\_}'' besteht, oder
+      \item in einfachen Hochkomma eingeschlossen ist.
+      \end{enumerate}
+      \textbf{Beispiele}:
+      \\[0.3cm]
+      \hspace*{1.3cm}      
+      \texttt{asterix}, \texttt{a1}, \texttt{i\_love\_prolog}, \texttt{x}, '\texttt{George W. Bush}'.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prolog  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Prolog --- Syntax-Erweiterungen
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item Zusätzliche \textbf{Funktions-Zeichen}: \\[0.3cm]
+      \hspace*{1.3cm} 
+      ``\texttt{+}'', ``\texttt{-}'', ``\texttt{*}'', ``\texttt{/}'', ``\texttt{.}'' 
+
+      können als Infix-Operatoren benutzt werden.
+\item Zusätzliche \textbf{Prädikats-Zeichen}: \\[0.3cm]
+      \hspace*{1.3cm} 
+      ``\texttt{<}'', ``\texttt{>}'', ``\texttt{=}'', ``\texttt{=<}'', ``\texttt{>=}, 
+      ``\texttt{$\backslash$=}'', ``\texttt{==}'', ``\texttt{$\backslash$==}''.
+
+      Infix-Schreibweise zulässig
+      
+      \begin{tabbing}
+      \hspace*{1.3cm} \= ``\texttt{==}'', \= ``\texttt{$\backslash$==}'': \= Vergleichs-Operatoren \\[0.3cm]
+                      \> ``\texttt{=}'',  \> ``\texttt{$\backslash$=}'':  \> Unifikations-Operatoren        
+      \end{tabbing}
+
+\item Zusätzliche \textbf{Funktions-Zeichen}: \\[0.3cm] 
+      \hspace*{1.3cm} ganze Zahlen, Fließkomma-Zahlen
+
+      \textbf{Beispiele}: 
+      \\[0.3cm]
+      \hspace*{1.3cm}
+      \texttt{12}, \texttt{-3}, \texttt{2.5}, \texttt{2.3e-5}.
+\end{enumerate}
+
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prolog  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Prolog -- Der Algorithmus
+\end{center}
+
+\footnotesize
+\textbf{Gegeben}
+\begin{enumerate}
+\item Anfrage \hspace*{3.5cm} $G = Q_1, \cdots, Q_n$
+\item \textsl{Prolog}-Programm \quad $P$
+\end{enumerate}
+
+\textbf{Gesucht}: Instanz $G\sigma$ mit: \quad $G\sigma$ folgt aus $P$.
+\begin{enumerate}
+\item Suche (der Reihe nach) alle Regeln  \\[0.3cm]      
+      \hspace*{1.3cm} $A \;\mathtt{:-}\; B_1,\cdots,B_m.$ \\[0.3cm]
+      so dass Unifikator $\mu = \mathtt{mgu(Q_1,A)}$ existiert.
+\item Gibt es mehrere solche Regeln, dann:
+      \begin{enumerate}
+      \item Wähle erste Regel in Programm-Reihenfolge
+      \item Setze Auswahl-Punkt (\emph{Choice-Point})
+      \end{enumerate}
+\item Setze $G := G\mu$ 
+\item Rekursiv: beantworte Anfrage \\[0.3cm]
+      \hspace*{1.3cm} $B_1\mu, \cdots, B_m\mu, Q_2\mu, \cdots, Q_n\mu$ \\[0.3cm]
+      Falls $m + n = 0$: Gebe $G\mu$ zurück.
+\item Falls 4. erfolglos:
+      \begin{enumerate}
+      \item Gehe zurück zum letzten Auswahl-Punkt.
+      \item Mache alle vom Auswahl-Punkt ab gemachten Substitutionen $G := G\mu$ rückgängig.
+      \end{enumerate}
+\end{enumerate}
+
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prolog  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Ein Rätsel
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item Drei Freunde belegen den ersten, zweiten und dritten \\
+      Platz bei einem Programmier-Wettbewerb.
+\item Jeder der drei hat genau einen Vornamen, genau ein \\
+      Auto und hat sein Programm in genau einer \\
+      Programmier-Sprache geschrieben.
+\item Michael programmiert in \textsl{Setl} und war besser als \\
+      der Audi-Fahrer.
+\item Julia, die einen Ford Mustang fährt, war besser \\
+      als der Java-Programmierer.
+\item Das Prolog-Programm war am besten.
+\item Wer fährt Toyota?
+\item In welcher Sprache programmiert Thomas?
+\end{enumerate}
+
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prolog  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Negation in \textsl{Prolog}
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+Beantwortung der Anfrage \quad \texttt{\symbol{92}+} $A$:
+\begin{enumerate}
+\item Versuche Beantwortung der Anfrage $A$.
+\item Falls Beantwortung der Anfrage $A$ scheitert: 
+
+      Beantwortung der Anfrage \texttt{\symbol{92}+} $A$ erfolgreich.  
+
+      Keine Variablen-Instantiierung.
+\item Falls Beantwortung der Anfrage $A$ erfolgreich mit Subst. $\mu$:
+
+      Beantwortung der Anfrage \texttt{\symbol{92}+} $A$ scheitert.
+
+      Variablen-Instantiierung $\mu$ wird rückgängig gemacht.
+\end{enumerate}
+\framebox{\framebox{
+Beantwortung von \texttt{\symbol{92}+} $A$ instantiiert
+\textbf{niemals} \rule[-2pt]{14pt}{0pt}Variable! }}
+
+Deswegen:
+
+\framebox{\framebox{
+Bei Anfrage \texttt{\symbol{92}+} $A$ soll $A$
+\textbf{keine} \rule[-2pt]{14pt}{0pt}Variablen enthalten!}}
+
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prolog  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Negation und Cut
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+Probleme bei der Negation
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    gallier(miraculix).
+    
+    roemer(caesar).
+    
+    smart1(X) :- \+ roemer(X), gallier(X).
+    
+    smart2(X) :- gallier(X), \+ roemer(X).
+\end{Verbatim}
+\vspace{0.5cm}
+
+Funktion des Cut-Operators
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    q(Z) :- p(Z).
+    q(1).
+
+    p(X) :- a(X), b(X), !, c(X,Y), d(Y).    
+    p(3).
+    
+    a(1).    a(2).    a(3).
+    
+    b(2).    b(3).
+    
+    c(2,2).  c(2,4).
+    
+    d(3).
+\end{Verbatim}
+
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prolog  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Abarbeitung des Cut-Operators
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Gegeben}: 
+\begin{enumerate}
+\item Klausel $P \;\texttt{:-}\; Q_1, \cdots, Q_m, \texttt{!}, R_1, \cdots, R_k$ 
+\item Anfrage $A$ mit $A\mu = P\mu$
+\end{enumerate}
+\textbf{Abarbeitung}
+\begin{enumerate}
+\item neue Anfrage:  $Q_1\mu, \cdots, Q_m\mu, \texttt{!}, R_1\mu, \cdots, R_k\mu$ 
+
+      Auswahl-Punkt falls weitere Klauseln für $A$ vorhanden
+\item Falls später Abarbeitung von Anfrage  \\[0.3cm]
+      \hspace*{1.3cm} 
+      $Q_i\sigma, \cdots, Q_m\sigma, \texttt{!}, R_1\sigma, \cdots, R_k\sigma$ \\[0.3cm]
+      für  $i\in\{1,\cdots,m\}$ scheitert:
+
+       Cut wird nicht erreicht, hat keine Wirkung.
+\item Reduziere Anfrage $\texttt{!}, R_1\sigma, \cdots, R_k\sigma$ \\[0.3cm]
+      zu neuer Anfrage $R_1\sigma, \cdots, R_k\sigma$. \\[0.3cm]
+      Lösche  Auswahl-Punkte, die bei Beantwortung der Teilanfragen \\[0.1cm]
+      \hspace*{1.3cm} $Q_i\sigma, \cdots, Q_m\sigma, \texttt{!}, R_1\sigma, \cdots, R_k\sigma$ \\[0.3cm]
+      gesetzt wurden.
+
+      Lösche Auswahl-Punkt, der evtl.~im 1.~Schritt gesetzt wurde
+\item Falls  Beantwortung der Anfrage \\[0.3cm]
+      \hspace*{1.3cm} $R_1\sigma, \cdots, R_k\sigma$. \\[0.3cm]
+      scheitert, so scheitert auch Beantwortung von  $A$.
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prolog  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Sortieren durch Mischen
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item $\mathtt{odd}([]) = []$.
+\item $\mathtt{odd}([h|t]) = [h|\mathtt{even}(t)]$.
+\item $\mathtt{even}([]) = []$.
+\item $\mathtt{even}([h|t]) = \mathtt{odd}(t)$.
+\item $\mathtt{merge}([], l) = l$.
+\item $\mathtt{merge}(l, []) = l$.
+\item $x \leq y \rightarrow \mathtt{merge}([x|s], [y|t]) = [x|\mathtt{merge}(s, [y|t])]$.
+\item $x  >   y \rightarrow \mathtt{merge}([x|s], [y|t]) = [y|\mathtt{merge}([x|s], t)]$.
+\item $\mathtt{sort}([]) = []$.
+\item $\mathtt{sort}([x]) = [x]$.
+\item $\mathtt{sort}([x,y|t]) = \mathtt{merge}( \mathtt{sort}(\mathtt{odd}([x,y|t])), \mathtt{sort}(\mathtt{even}([x,y|t])))$.
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\myrule
+Prolog  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

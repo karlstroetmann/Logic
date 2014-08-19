@@ -1,0 +1,90 @@
+program main;
+    var size;    
+    -- Die Abbildung BackChain gibt an, wie ein Zustand erreicht werden kann.
+    var BackChain := {};
+	
+    [start, target, size] := getProblemSpecification();
+
+    -- Versuche einen Weg von dem Startzustand zu dem Ziel zu finden.
+    path := findPath( start, target );
+    if path then
+        print( "Das Problem ist lösbar!" );
+        print( collectPath( target, start ) );
+    else
+        print( "Das Problem ist nicht lösbar." );
+    end if;
+
+    -- Die Prozedur findPath versucht einen Weg von start nach Ziel zu finden.
+    procedure findPath( start, target );
+        -- States ist die Menge der erreichbaren Zustände
+        States := { start };
+        loop
+            OldStates := States;
+            BackChain := BackChain + { [ new, old ] : old in States, new in reachable(old) | new notin States };
+            States := States + domain(BackChain);
+            if target in States then
+                return true;
+            end if;
+            if OldStates = States then
+                return false;
+            end if;
+        end loop;
+    end findPath;
+
+    procedure collectPath( target, start );
+        path := [ target ];
+        while target /= start loop
+            target := arb BackChain{target};
+            path := [ target ] + path;
+        end loop;
+        return path;
+    end collectPath;
+
+    -- Berechne alle Zustände, die von einem gegebenem Ausgangszustand erreichbar sind.
+    procedure reachable(state);
+        -- S1 ist die Menge der Zustände, die durch Auskippen eines Eimers 
+        -- erreicht werden können.
+        S1 := { empty( state, j )   : j in [ 1 .. #state ] };
+        -- S2 ist die Menge der Zustände, die durch Füllen eines Eimers 
+        -- erreicht werden können.
+        S2 := { fill( state, j )    : j in [ 1 .. #state ] };
+        -- S3 ist die Menge aller Zustände, die dadurch erreicht werden können,
+        -- dass Wasser von einem Eimer in einen anderen Eimer umgegossen wird.
+        S3 := { pour( state, i, j ) : i in [ 1 .. #state ], j in [ 1 .. #state ] | i /= j };
+        return S1 + S2 + S3;
+    end reachable;
+
+    -- Eimer Nummer j auskippen.
+    procedure empty( state, j );        
+        state(j) := 0;
+        return state;
+    end empty;
+
+    -- Eimer Nummer j füllen.
+    procedure fill( state, j ); 
+        state(j) := size(j); 
+        return state;
+    end fill;
+       
+    -- Eimer Nummer i in Eimer Nummer j kippen.
+    procedure pour( state, i, j );       
+        amount := state(i) min (size(j) - state(j)); 
+        state(i) := state(i) - amount;           
+        state(j) := state(j) + amount;
+        return state;
+    end pour;
+
+    -- Diese Prozedur liefert eine konkrete Problem-Beschreibung:
+    -- Gegeben sind zwei Eimer der Größen 3 Liter und 5 Liter.
+    -- In dem zweiten Eimer sollen nachher genau 4 Liter Wasser sein.
+    procedure getProblemSpecification(); 
+        -- Am Anfang sind die Eimer leer
+        start  := [ 0, 0 ]; 
+        -- Am Ende sollen in dem zweiten Eimer 4 Liter Wasser sein.
+        target := [ 0, 4 ]; 
+        -- Die Größen der Eimer
+        -- Die Eimer haben die Größen 3 Liter und 5 Liter.
+        size := [ 3, 5 ]; 
+        return [ start, target, size ];
+    end getProblemSpecification;
+end main;

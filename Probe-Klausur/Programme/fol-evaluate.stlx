@@ -1,0 +1,88 @@
+// This procedure evaluates the formula f in the structure s
+// using the variable assignment i.
+evalFormula := procedure(f, s, i) {
+    u := s[1];
+    match (f) {
+        case true     :  return true;
+        case false    :  return false;
+        case !g       :  return !evalFormula(g, s, i);
+        case g && h   :  return evalFormula(g, s, i) && evalFormula(h, s, i);
+        case g || h   :  return evalFormula(g, s, i) || evalFormula(h, s, i);
+        case g => h   :  return evalFormula(g, s, i) => evalFormula(h, s, i);
+        case g <==> h :  return evalFormula(g, s, i) == evalFormula(h, s, i);
+        case forall (x in _ | g) : 
+             return forall (c in u | evalFormula(g, s, modify(i, x, c)));
+        case exists (x in _ | g) : 
+             return exists (c in u | evalFormula(g, s, modify(i, x, c)));
+        default : return evalAtomic(f, s, i);  // atomic formula
+    }
+};
+
+// This procedure evaluates the atomic formula a in the structure s
+// using the variable assignment i.
+evalAtomic := procedure(a, s, i) {
+    // we do not support nullary predicates 
+    j  := s[2];
+    p  := fct(a); // predicate symbol
+    pJ := j[p];
+    argList := args(a);
+    argsVal := evalTermList(argList, s, i);
+    return argsVal in pJ;
+};  
+
+// This procedure evaluates the term t in the structure s
+// using the variable assignment i.
+evalTerm := procedure(t, s, i) {
+    if (fct(t) == "^variable") {
+        varName := args(t)[1];
+        return i[varName];
+    }
+    j    := s[2];
+    f    := fct(t); // function symbol
+    fJ   := j[f];
+    argList := args(t);
+    argsVal := evalTermList(argList, s, i);
+    if (#argsVal > 0) {        
+        result := fJ[argsVal]; 
+    } else {
+        result := fJ;   // t is a constant
+    }
+    return result;
+};
+
+// This procedure evaluates the term list tl, given the structure s and the variable
+// assignment i.
+evalTermList := procedure(tl, s, i) {
+    return [ evalTerm(t, s, i) : t in tl ];
+};
+
+// Given a variable assignement i, a variable x, and an element c from the universe,
+// this function computes the variable assignement i[x/c] which satisfies
+//     i[x/c](x) == c,
+//     i[x/c](y) == i(y) for x != y.
+modify := procedure(i, v, c) {
+    x := args(v)[1];
+    i[x] := c;
+    return i;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+// Below are some examples of structures and formula.                         //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+a := "a";
+b := "b";  
+u := { a, b };  // the universe
+// pJ is the interpretation of the predicate symbol "p".
+pJ := { [ a, a ],  [ b, b ] };
+// The structure consists of the universe and the interpretation of
+// the function and predicate symbols.
+j := { [ "P", pJ ] };
+s := [ u, j ];
+// I is a variable assignment.
+i := { [ "x", a ], [ "y", b ] }; 
+f1 := parse("forall (x in u | exists(y in u | P(x, y))) => exists(y in u | forall(x in u | P(x, y)))");
+print("evalFormula($f1$, s, i) = $evalFormula(f1, s, i)$"); 
+

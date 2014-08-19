@@ -1,0 +1,141 @@
+program main;
+    -- Globale Variablen werden durch das Schlüsselwort "var" deklariert.
+    var size;    
+    -- Die Abbildung BackChain gibt an, wie ein Zustand erreicht werden kann.
+    var BackChain := {};
+	
+    [start, target, size] := getProblemSpecification();
+
+    -- Versuche einen Weg von dem Startzustand zu dem Ziel zu finden.
+    path := findPath( start, target );
+    if path then
+        print( "Das Problem ist lösbar!" );
+        print( collectPath( target, start ) );
+    else
+        print( "Das Problem ist nicht lösbar." );
+    end if;
+
+-- general state-exploration procedure, incorporating use of estimated distance to solution
+procedure findPath(start, target);
+    BackChain := { [start, start] };                                                 
+    best_dist := dist_to_target(start, target);
+    -- initially, only the start state has been seen
+    just_seen := { start };
+    -- collection of states temporarily set aside, because state believed closer to solution is known    
+    set_aside := {};
+    done := {};
+    count := 0;
+    while just_seen /= {} loop      -- while there exist newly seen states
+        -- look for states that have not been seen before
+        brand_new := {}; 
+        for old_state in just_seen loop                               
+            count +:= 1;
+--            print("count = ", count);
+            done +:= { old_state };
+            if dist_to_target(old_state, target) > best_dist then
+                -- set this node aside, perhaps temporarily
+                -- and do not generate new states from this node
+                set_aside with := old_state;        
+                continue;        
+            end if;
+            for new_state in reachable(old_state) | BackChain( new_state ) = OM loop
+                BackChain( new_state ) := old_state;  
+                if (dtt := dist_to_target(new_state,target)) <= best_dist then
+                    -- record a brand_new state
+                    brand_new with := new_state;     
+                    if dtt < best_dist then 
+                        best_dist := dtt;
+                    end if;
+                else
+                    -- set this node aside, perhaps temporarily
+                    set_aside with:= new_state;
+                end if;
+                if new_state = target then 
+                    return true; 
+                end if;
+            end loop;        -- end for new_state
+            -- now the brand-new states
+            -- define those which have just been seen
+            just_seen := brand_new;       
+            if #just_seen > 0 then 
+                continue; 
+            end if;
+            if #set_aside = 0 then 
+                return false; 
+            end if;   
+            -- otherwise we must backtrack, restarting with all the best of the states that have been set aside
+            best_dist := min/ [ dist_to_target(state,target) : state in set_aside ];
+            just_seen := { state in set_aside | dist_to_target(state,target) = best_dist };
+            -- the states now to be processed are no longer 'set aside'
+            set_aside -:= just_seen;              
+        end loop;                              -- end for old_state
+    end loop;                                  -- end while
+    return false; 
+end findPath; 
+
+-- estimated distance to target
+procedure dist_to_target(state, targ);		
+    -- disable the estimate
+    -- return 1;	
+    return #[ t : t = targ(j) | t /= state(j) ];
+end dist_to_target;
+
+procedure collectPath( target, start );
+    path := [ target ];
+    while target /= start loop
+        target := arb BackChain{target};
+        path := [ target ] + path;
+    end loop;
+    return path;
+end collectPath;
+
+-- Berechne alle Zustände, die von einem gegebenem Ausgangszustand erreichbar sind.
+procedure reachable(state);
+    -- S1 ist die Menge der Zustände, die durch Auskippen eines Eimers 
+    -- erreicht werden können.
+    S1 := { empty( state, j )   : j in [ 1 .. #state ] };
+    -- S2 ist die Menge der Zustände, die durch Füllen eines Eimers 
+    -- erreicht werden können.
+    S2 := { fill( state, j )    : j in [ 1 .. #state ] };
+    -- S3 ist die Menge aller Zustände, die dadurch erreicht werden können,
+    -- dass Wasser von einem Eimer in einen anderen Eimer umgegossen wird.
+    S3 := { pour( state, i, j ) : i in [ 1 .. #state ], j in [ 1 .. #state ] | i /= j };
+    return S1 + S2 + S3;
+end reachable;
+
+-- Eimer Nummer j auskippen.
+procedure empty( state, j );        
+    state(j) := 0;
+    return state;
+end empty;
+
+-- Eimer Nummer j füllen.
+procedure fill( state, j ); 
+    state(j) := size(j); 
+    return state;
+end fill;
+   
+-- Eimer Nummer i in Eimer Nummer j kippen.
+procedure pour( state, i, j );       
+    amount := state(i) min (size(j) - state(j)); 
+    state(i) := state(i) - amount;           
+    state(j) := state(j) + amount;
+    return state;
+end pour;
+
+-- Diese Prozedur liefert eine konkrete Problem-Beschreibung:
+-- Gegeben sind zwei Eimer der Größen 3 Liter und 5 Liter.
+-- In dem zweiten Eimer sollen nachher genau 4 Liter Wasser sein.
+procedure getProblemSpecification; 
+    -- Am Anfang sind die Eimer leer
+    start  := [ 0, 0, 0, 0, 0, 0, 0, 0 ]; 
+--    start  := [ 0, 0 ]; 
+    target := [ 3, 4, 5, 3, 5, 2, 2, 9 ]; 
+--    target := [ 0, 4 ]; 
+    -- Die Größen der Eimer
+--    size := [ 3, 5 ]; 
+    size := [ 3, 5, 7, 11, 13, 17, 19, 23 ]; 
+    return [ start, target, size ];
+end getProblemSpecification;
+
+end main;

@@ -1,0 +1,101 @@
+-- Es war einmal ein Händler, der hatte ein großes Faß Wein und
+-- zwei Eimer, von denen ein Eimer genau drei Liter faßt, während 
+-- der andere Eimer 5 Liter faßt.  Ziel ist es, den Eimer, der 
+-- fünf Liter faßt, mit genau vier Litern zu füllen.  Erlaubte
+-- Operationen sind:
+--   1.  Ein Eimer kann aus dem Faß gefüllt werden.
+--   2.  Ein Eimer kann geleert werden.
+--   3.  Der Inhalt eines Eimers kan in einen anderen Eimer umgefüllt
+--       werden.  Dabei wird aber höchstens soviel umgefüllt, bis
+--       der andere Eimer voll ist.
+
+program main;
+    -- Ein Zustand wird durch ein Paar [x, y] beschrieben.  Dabei
+    -- gibt x an, wieviel Liter im ersten Eimer sind und y gibt an, wieviel
+    -- Liter im zweiten Eimer sind.
+    P := { [x, y] : x in {0..3}, y in {0..5} };
+
+    -- R1 beschreibt die Übergänge, bei denen der erste Eimer gefüllt wird.
+    R1 := { [ [x, y], [3, y] ] : [x, y] in P | x /= 3 };
+    -- print("R1 = ", R1);
+    -- R2 beschreibt die Übergänge, bei denen der zweite Eimer gefüllt wird.
+    R2 := { [ [x, y], [x, 5] ] : [x, y] in P | y /= 5};
+    -- print("R2 = ", R2);
+    -- R3 beschreibt die Übergänge, bei denen der erste Eimer geleert wird.
+    R3 := { [ [x, y], [0, y] ] : [x, y] in P | x /= 0 };
+    -- print("R3 = ", R3);
+    -- R4 beschreibt die Übergänge, bei denen der zweite Eimer geleert wird.
+    R4 := { [ [x, y], [x, 0] ] : [x, y] in P | y /= 0 };
+    -- print("R4 = ", R4);
+    -- R5 beschreibt die Übergänge, bei denen der Inhalt des ersten Eimers 
+    -- in den zweiten gegossen wird, wobei nur der Fall betrachtet wird,
+    -- dass im zweiten Eimer genug Platz für den gesamten Inhalt des ersten 
+    -- Eimers ist.
+    R5 := { [ [x, y], [0, x+y] ] : [x, y] in P | x + y <= 5 and x /= 0  };
+    -- print("R5 = ", R5);
+    -- R6 beschreibt die Übergänge, bei denen der Inhalt des ersten Eimers 
+    -- in den zweiten gegossen wird, wobei jetzt der Fall betrachtet wird,
+    -- dass im zweiten Eimer nicht genug Platz für den gesamten Inhalt des ersten 
+    -- Eimers ist.  
+    R6 := { [ [x, y], [x - (5 - y), 5] ] : [x, y] in P | x + y > 5  and y /= 5 };
+    -- print("R6 = ", R6);
+    -- R7 beschreibt die Übergänge, bei denen der Inhalt des zweiten Eimers 
+    -- in den ersten gegossen wird, wobei nur der Fall betrachtet wird,
+    -- dass im ersten Eimer genug Platz für den gesamten Inhalt des zweiten 
+    -- Eimers ist.
+    R7 := { [ [x, y], [x+y, 0] ] : [x, y] in P | x + y <= 3 and  y /= 0 };
+    -- print("R7 = ", R7);
+    -- R8 beschreibt die Übergänge, bei denen der Inhalt des zweiten Eimers 
+    -- in den ersten gegossen wird, wobei jetzt der Fall betrachtet wird,
+    -- dass im ersten Eimer nicht genug Platz für den gesamten Inhalt des zweiten
+    -- Eimers ist.  
+    R8 := { [ [x, y], [3, y - (3 - x)] ] : [x, y] in P | x + y > 3 and x /= 3 };
+    -- print("R8 = ", R8);
+
+    -- R ist die Menge aller Verbindungen zwischen Punkten des Zustandsraums.
+    R := R1 + R2 + R3 + R4 + R5 + R6 + R7 + R8;
+
+    -- Am Anfang sind alle Eimer leer.
+    start := [0, 0];
+    -- Am Ende sollen im zweiten Eimer vier Liter sein.  Wir nehmen mal an, 
+    -- dass der erste Eimer dann leer ist, denn wir können ihn ja ausgießen.
+    goal  := [0, 4];
+    -- Berechne eine Pfad zum Ziel.
+    path := reachable(start, goal, R);
+
+    print(path);
+
+    -- Check wether there is a path from x to y in R and compute it.
+    procedure reachable(x, y, R);
+        P := { [x] };
+        loop
+            Old_P := P;
+            P     := P + path_product(P, R);
+            Found := { p in P | p(#p) = y };
+            if Found /= {} then
+                return arb Found;
+            end if;
+            if P = Old_P then
+                return;
+            end if;
+        end loop;
+    end reachable;
+
+    -- The procedure call product(P, Q) computes the path product P * Q.
+    procedure path_product(P, Q);
+        return { add(p,q) : p in P, q in Q | p(#p) = q(1) and not_cyclic(add(p,q)) };
+    end path_product;    
+
+    -- The procedure not_cyclic(p) checks whether the path p is cyclic.
+    procedure not_cyclic(p);
+        return #{ x : x in p } = #p;
+    end not_cyclic;
+
+    -- The product call add(p,q) computes the sum of the lists p and q.
+    -- The last point of p has to be the first point of q.
+    procedure add(p, q);
+        return p + q(2..);
+    end add;    
+
+end main;
+

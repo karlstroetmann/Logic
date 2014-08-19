@@ -1,0 +1,151 @@
+program main;
+
+    -- Ein einzelnes Seil repräsentieren wir durch eine Liste der Form
+    --   [ K, L, R, D ].
+    -- Dabei haben die einzelnen Parameter die folgende Bedeutung:
+    --   K ist die Nummer des Seils,
+    --   L ist Element der Menge {0, 1} und gibt an, ob das linke Ende des Seils
+    --     brennt oder nicht. L hat den Wert 1, wenn das linke Ende brennt, sonst
+    --     hat L den Wert 0.
+    --   R ist Element der Menge {0, 1} und spezifiziert, ob das rechte Ende des Seils
+    --     brennt.
+    --   D spezifiert die Zeit, die das das Seil noch benötigt, um ganz abzubrennen,
+    --     sofern es nur an einer Seite brennt.
+    -- Den Zustand aller Seile repräsentieren wir als Menge von Seilen.
+
+    -- Ein Zustand hat die Form
+    --   [ D, Seile ].
+    -- Dabei ist D die bisher vergangene Zeit und Seile ist eine Menge von noch nicht
+    -- vollständig abgebrannten Seilen.
+
+    -- Am Anfang ist noch keine Zeit vergangen und keines der Seile brennt.
+    start     := [ 0, { [1, 0, 0, 64], [2, 0, 0, 32], [3, 0, 0, 16] } ];
+    states    := anzuendenLoeschen(start);
+    oldStates := {};
+    k := 0;
+    D := {};
+    while states /= oldStates loop
+        oldStates := states;
+        k := k + 1;
+        print(k);
+        D +:= { s(1) : s in states };
+        states := { nextState(S) : S in states };
+        states := +/ { anzuendenLoeschen(S) : S in states };
+    end loop;
+    D +:= { s(1) : s in states };
+    print(D);
+
+    -- Für einen gegebenen Zustand, der aus einer Menge von Seilen besteht,
+    -- berechnet diese Funktion den Folgezustand, der dadurch definiert ist, dass
+    -- das erste Seil abgebrannt ist.
+    procedure nextState(state);
+        oldD  := state(1);
+        Seile := state(2);
+        if Seile = {} then
+            return state;
+        end if;
+        d := dauerAll(Seile);
+        return [ oldD + d, brenneAll(Seile, d) ];
+    end nextState;
+
+    -- Für einen gegebenen Zustand State berechnet diese Prozedur die Menge alle möglichen 
+    -- Folgezustände, die sich durch das Anzünden oder Löschen eines Seilendes ergeben.
+    procedure anzuendenLoeschen(State);
+        D := State(1);
+        M := State(2);
+        if M = {} then
+            return { State };
+        end if;
+        A := { nextSeile(S) : S in M };
+        Seile := pickOneFromEach(A);
+        return { [ D, S ] : S in Seile | einsbrennt(S) };
+    end anzuendenLoeschen;
+
+    -- Die Prozedur nextSeile(S) berechnet für ein gegebenes Seil S die Menge 
+    -- aller neuen Zustände, die sich durch das Anzünden oder Löschen eines
+    -- der Seilenden ergeben können.  Der ursprüngliche Zustand des Seils
+    -- wird ebenfalls mit in die Ergebnismenge mit aufgenommen.  Ist die 
+    -- verbleibende Brenndauer des Seils 0, wird die leere Menge zurück gegeben.
+    procedure nextSeile(S);
+        K := S(1);
+        D := S(4);
+        if D = 0 then
+            return {};
+        end if;
+        return { [ K, L, R, D ] : L in {0, 1}, R in {0, 1} };
+    end nextSeile;
+
+    -- Die Prozedur einsbrennt(Seile) liefert true, wenn wenigstens eines der Seile
+    -- an wenigstens einem Ende brennt.
+    procedure einsbrennt(Seile);
+        return exists S in Seile | S(2) = 1 or S(3) = 1;
+    end einsbrennt;
+
+    -- Der Aufruf dauerAll(Seile) berechnet für eine gegebene Menge von Seilen die Zeit,
+    -- die benötigt wird, bis das erste Seil abgebrannt ist.
+    procedure dauerAll(Seile);
+        return min/ { dauer(S) : S in Seile };
+    end dauerAll;
+
+    -- Der Aufruf dauer(Seil) berechnet die Zeit, die benötigt wird, damit das Seil abbrennt.
+    -- Sollte das Seil nicht brennen, wird Omega zurück gegeben.
+    procedure dauer(Seil);
+        L := Seil(2);
+        R := Seil(3);
+        D := Seil(4);
+        case
+            when L = 1 and R = 1 => return D/2;
+            when L = 1 and R = 0 => return D;
+            when L = 0 and R = 1 => return D;
+        end case;
+    end dauer;
+    
+    -- Die Prozedur brenneAll(State, Dauer) läßt alle Seile für die gegebene Zeit brennen.
+    procedure brenneAll(State, Dauer);
+        result := {};
+        for Seil in State loop
+            NeuesSeil := brenne(Seil, Dauer);
+            if NeuesSeil(4) /= 0 then
+                result := result + { NeuesSeil };
+            end if;
+        end loop;
+        return result;
+    end brenneAll;
+
+    -- Die Prozedur brenne(Seil, Dauer) läßt das gegebene Seil für die gegebene Dauer brennen.
+    -- Als Ergebnis wird das teilweise abgebrannte Seil zurück gegeben.
+    procedure brenne(Seil, Dauer);
+        K := Seil(1);
+        L := Seil(2);
+        R := Seil(3);
+        D := Seil(4);
+        case
+            when L = 1 and R = 1 => D := D - 2 * Dauer;
+            when L = 1 and R = 0 => D := D - Dauer;
+            when L = 0 and R = 1 => D := D - Dauer;
+        end case;
+        return [ K, L, R, D ];
+    end brenne;
+
+    -- S ist eine Menge, deren Elemente wieder nicht-leere Mengen sind.  Die Prozedur
+    -- pickOneFromEach(S) berechnet eine Menge, deren Elemente genau die Mengen sind,
+    -- die aus jeder Menge aus S genau ein Element enthalten, es wird also die folgende
+    -- Menge berechnet:
+    --   { y | forall x in S : card(x * y) = 1 }
+    procedure pickOneFromEach(S);
+        -- A ist die Menge aller Elemente von Mengen aus S.
+        A := +/ S;
+        return { y in pow A | forall x in S | #(x * y) = 1 };
+    end pickOneFromEach;
+
+    -- pickOneFromEachRec(S) berechnet die Menge pickOneFromEach(S) rekursiv.
+    procedure pickOneFromEachRec(S);
+        if S = {} then
+            return {{}};
+        end if;
+        x from S;
+        return { { e } + y : e in x, y in pickOneFromEachRec(S) };
+    end pickOneFromEachRec;
+
+end main;
+

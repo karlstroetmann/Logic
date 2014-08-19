@@ -1,0 +1,102 @@
+-- George W. Bush, Osama bin Laden, Mama, Papa, Anto, Bruno, Cindy, and Doris wollen einen 
+-- Fluss überqueren.  Dabwi sollen die folgenden Spielregeln eingehalten werden:
+-- 1.  !!Wenn Osama auf einer Seite des Flusses ist und sich auf dieser Seite noch noch andere 
+--     Personen aufhalten, dann soll er von George bewacht werden.
+-- 2.  !!Wenn Cindy oder Doris auf einer Seite des Flusses ist und sich Papa ebenfalls
+--     auf dieser Seite befindet, dann muss auch Mama auf dieser Seite sein.
+--     (Die beiden Töchter Cindy und Doris dürfen also nicht mit ihrem Vater allein sein.)
+-- 3.  !!Wenn Anton oder Bruno auf einer Seite des Flusses ist und sich Mama ebenfalls
+--     auf dieser Seite befindet, dann muss auch Papa auf dieser Seite sein.
+--     (Die beiden Söhne Anton und Bruno dürfen also nicht mit ihrer Mutter allein sein.)
+-- 4.  !!Im Boot können höchstens zwei Personen fahren.
+-- 5.  !!Nur George, Mama und Papa können das Boot steuern.
+
+program main;
+    All := { "George", "Osama", "Mama", "Papa", "Anton", "Bruno", "Cindy", "Doris", "Boot" };
+    -- P ist die Menge aller Punkte.
+    P := pow All;
+    R1 := { [S, S - B] : S in P, B in pow S | not verboten(S) and not verboten(S - B) and bootOK(B) };
+
+    R2 := { [S, S + B] : S in P, B in pow (All - S) | not verboten(S) and not verboten(S + B) and bootOK(B) };
+
+    -- R ist die Menge aller Verbindungen zwischen Punkten des Zustandsraums.
+    R := R1 + R2;
+    -- Am Anfang sind alle links.
+    start := All;
+    -- Am Ende sollen alle rechts sein.
+    goal  := {};
+    -- Berechne einen Pfad zum Ziel.
+    path := reachable(start, goal, R);
+    F :=  {k in P | not verboten(k)};
+   	--print(#path);
+    -- Gebe diesen Pfad Schritt für Schritt aus.
+    for i in [1 .. #path] loop
+        Left  := path(i);
+        Right := All - Left;
+        print(Left - { "Boot" }, 20 * " ", Right - { "Boot" });
+        print("");
+        if i = #path then
+            exit;
+        end if;
+        if "Boot" in Left then
+            M := Left - path(i+1) - { "Boot" };
+            print("    >>>> ", M, " >>>> " );
+        else
+            M := Right - (All - path(i+1)) - { "Boot" };
+            print("    <<<< ", M, " <<<< " );
+        end if;
+        print("");
+    end loop;
+
+    -- Die Prozedur verboten(S) liefert als Ergebnis true, wenn die Menge S einen
+    -- Zustand beschreibt, der, wenn er am rechten ooder linken Ufer auftreten würde,
+    -- zu einem Problem führen würde.
+    procedure verboten(S);
+		linksVerboten := ("Papa" in S and ("Cindy" in S or "Doris" in S) and not ("Mama" in S)) or ("Mama" in S and ("Anton" in S or "Bruno" in S) and not ("Papa" in S)) or
+						("Osama" in S and (not "George" in S) and #S >= 2);
+		rechtsVerboten := ("Papa" notin S and ("Cindy" notin S or "Doris" notin S) and not ("Mama" notin S)) or ("Mama" notin S and ("Anton" notin S or "Bruno" notin S) and not ("Papa" notin S)) or
+						("Osama" notin S and (not "George" notin S) and (9 - #S) >= 2);
+		return linksVerboten or rechtsVerboten;
+    end verboten;
+
+    -- Die Prozedur bootOK(B) bekommt als Eingabe eine Menge von Personen, die in dem
+    -- Boot sitzen.  Sie liefert als Ergebnis true, wenn die Bedingungen, die das Boot 
+    -- betreffen, erfüllt sind.
+    procedure bootOK(B);
+		return ("Boot" in B and #B in {2,3} and ("Papa" in B or "Mama" in B or "George" in B));
+    end bootOK;
+
+    -- Check wether there is a path from x to y in R and compute it.
+    procedure reachable(x, y, R);
+        P := { [x] };
+        loop
+            Old_P := P;
+            P     := P + path_product(P, R);
+            Found := { p in P | p(#p) = y };
+            if Found /= {} then
+                return arb Found;
+            end if;
+            if P = Old_P then
+                return;
+            end if;
+        end loop;
+    end reachable;
+
+    -- The procedure call product(P, Q) computes the path product P * Q.
+    procedure path_product(P, Q);
+        return { add(p,q) : p in P, q in Q | p(#p) = q(1) and not cyclic(add(p,q)) };
+    end path_product;    
+
+    -- The procedure cyclic(p) checks whether the path p is cyclic.
+    procedure cyclic(p);
+        return #{ x : x in p } < #p;
+    end cyclic;
+
+    -- The product call add(p,q) computes the sum of the lists p and q.
+    -- The last point of p has to be the first point of q.
+    procedure add(p, q);
+        return p + q(2..);
+    end add;    
+
+end main;
+

@@ -1,0 +1,105 @@
+
+{ {Aufgaben-Blatt}: Symbolisches Differenzieren}
+Das Problem des symbolischen Differenzierens besteht darin, einen gegebenen
+arithmetischen Ausdruck $E$ symbolisch nach einer Variable $x$ abzuleiten. Symbolisch
+heißt in diesem Zusammenhang, das das Ergebnis dieser Operation keine Zahl ist, 
+sondern wieder ein arithmetischer Ausdruck.
+Hat beispielsweise $E$ den Wert $x * \exp(x)$, so gilt nach der Produkt-Regel der Differential-Rechnung 
+\[  \frac{ d}{ dx} (x * \exp(x)) = 1 * \exp(x) + x * \exp(x). \]
+Also ist das Ergebnis, das wir erhalten, wenn wir den arithmetischen Ausdruck $x * exp(x)$
+nach $x$ differenzieren, der Ausdruck $1 * \exp(x) + x * \exp(x)$.
+Um einen Algorithmus entwickeln zu können, der das oben geschilderte Problem löst,
+definieren wir zunächst induktiv die Menge $E$ der arithmetischen Ausdrücke.
+\begin{enumerate}
+\item Strings, die nur aus Buchstaben bestehen, sind arithmetische
+Ausdrücke. Diese Ausdrücke werden als Variablen interpretiert. 
+\item Zahlen sind arithmetische Ausdrücke.
+\item Gilt $s, t\in E$, so gilt auch:
+\begin{enumerate}
+\item $-s \in E$,
+\item $s + t \in E$,
+\item $s - t \in E$,
+\item $s * t \in E$,
+\item $s / t \in E$.
+\end{enumerate}
+\item Ist $s \in E$ und ist $n \in N$, so gilt auch 
+$s {**} n \in E$. Der Ausdruck
+$s {**} n$ steht hier für die $n$-te Potenz des Ausdrucks $s$.
+\end{enumerate}
+Als nächstes müssen wir überlegen, wie arithmetische Ausdrücke in {Setl2}
+repräsentiert werden können. Wir definieren dazu eine Repräsentations-Funktion 
+ $rep: E \rightarrow SetlObj$ 
+die als Eingabe einen arithmetischen Ausdruck nimmt und 
+diesen in ein {Setl2}-Objekt transformiert:
+\begin{enumerate}
+\item Da wir Variablen als Strings darstellen, ist die Repräsentation von Variablen
+trivial:
+$rep(v) = v$  für alle Variablen $v$.
+\item Genauso ist die Repräsentation von Zahlen trivial:
+$rep(x) = x$  für alle $x \in R$.
+\item $rep(-s) := [ "-", rep(t) ]$.
+\item $rep(s + t) := [ rep(s), "+", rep(t) ]$.
+\item $rep(s - t) := [ rep(s), "-", rep(t) ]$.
+\item $rep(s * t) := [ rep(s), "*", rep(t) ]$.
+\item $rep(s / t) := [ rep(s), "/", rep(t) ]$.
+\item $rep(s ** n) := [ rep(s), "**", n ]$.
+\end{enumerate}
+
+
+{Aufgabe 1}:
+Stellen Sie rekursive Gleichungen auf, die den Vorgang des symbolischen Differenzierens beschreiben.
+
+
+{Aufgabe 2}:
+Schreiben Sie eine {Setl2}-Prozedur diff, so dass der Aufruf
+$diff(E,x)$ den arithmetischen Ausdruck $E$ symbolisch nach der Variablen $x$ differenziert.
+
+
+Hinweis: Unter {\symbol{126}stroetma/public-html/SETL2/diff-frame.stl}
+finden Sie ein Programm-Gerüst, in dem Sie nur noch die Prozedur diff
+implementieren müssen. Das Gerüst enthält bereits einen Parser, einen Pretty-Printer und
+diverse Testfälle.
+
+
+Hinweis: Es gibt eine vordefinierte Prozedur {is\_integer} die genau dann
+``true'' liefert, wenn ihr Argument eine ganze Zahl ist.
+
+
+{Aufgabe 3}: Erweitern Sie das Programm so, dass auch arithmetische Ausdrücke,
+die Funktionen wie $\exp()$, $ln()$, $sqrt()$, $\sin()$, $\cos()$, $\tan()$, oder
+$\arctan()$ enthalten, differenziert werden können.
+
+
+Hinweis: Es gelten die folgenden Regeln:
+\begin{tabular}[c]{|c|c|}
+\hline
+$f(x)$ &     $\frac{df}{dx}$ \\
+\hline
+\hline
+$ exp(x)$    & $exp(x)$ 
+\hline
+$ln(x)$      & $\frac{ 1}{ x}$ 
+\hline
+$sin(x)$     & $cos(x)$ 
+\hline
+$cos(x)$     & $- sin(x)$ 
+\hline
+$tan(x)$     & $\frac{1}{\cos^2(x)}$ 
+\hline
+$arctan(x)$  & $\frac{1}{1 + x^2}$ 
+\hline
+$\sqrtx$     & $\frac{1}{2* \sqrt{x}}$ \\
+\hline
+\end{tabular}
+
+{Aufgabe 4}: Schreiben Sie eine Prozedur simplify, die einen
+gegebenen arithmetischen Ausdruck unter Berücksichtigung der Regeln 
+ $1 * x = x * 1 = x, 0 * x = x * 0 = 0, 0 + x = x + 0 = x$
+vereinfacht.
+
+
+{Aufgabe 5*}: Erweitern Sie das Programm so, dass auch arithmetische Ausdrücke
+der Form $s{**}t$ für beliebige arithmetische Ausdrücke $t$
+differenziert werden können. Testen Sie die Implementierung, indem Sie 
+ $\frac{d}{dx} (x^x)$
+berechnen.

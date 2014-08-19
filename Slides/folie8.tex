@@ -1,0 +1,612 @@
+\documentclass{slides}
+\usepackage[latin1]{inputenc}
+\usepackage{german}
+\usepackage{epsfig}
+\usepackage{amssymb}
+
+\pagestyle{empty}
+\setlength{\textwidth}{17cm}
+\setlength{\textheight}{24cm}
+\setlength{\topmargin}{0cm}
+\setlength{\headheight}{0cm}
+\setlength{\headsep}{0cm}
+\setlength{\topskip}{0.2cm}
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\evensidemargin}{0.5cm}
+
+\newcommand{\is}{\;|\;}
+\newcommand{\schluss}[2]{\frac{\displaystyle\quad \rule[-8pt]{0pt}{18pt}#1 \quad}{\displaystyle\quad \rule{0pt}{14pt}#2 \quad}}
+\newcommand{\vschlus}[1]{{\displaystyle\rule[-6pt]{0pt}{12pt} \atop \rule{0pt}{10pt}#1}}
+\newcommand{\verum}{\top}
+\newcommand{\falsum}{\bot}
+\newcommand{\var}{\textsl{Var}}
+\newcommand{\struct}{\mathcal{S}}
+\newcommand{\el}{\!\in\!}
+\newcommand{\FV}{\textsl{FV}}
+\newcommand{\BV}{\textsl{BV}}
+\newcommand{\gentzen}{\vdash_\mathcal{G}}
+\newcommand{\komplement}[1]{\overline{#1}}
+
+\newcounter{mypage}
+
+\begin{document}
+
+\begin{slide}
+\begin{center}
+Der Robinson--Kalk"ul
+\end{center}
+\vspace*{0.5cm}
+
+\footnotesize
+\textbf{Vereinbarung:} Bei Klauseln Allquantoren weggelassen.
+
+\textbf{Beispiel}: Wir schreiben \\[0.3cm]
+\hspace*{1.3cm} $\textsl{pop}(\textsl{push}(x_1,s_1))$ \\[0.3cm]
+statt \\[0.3cm]
+\hspace*{1.3cm} $\forall x_1\in \mathbb{N}: \forall s_1\in\textsl{Stack}:\textsl{pop}(\textsl{push}(x_1,s_1))$. 
+\vspace*{0.5cm}
+
+\textbf{Vereinbarung}: Klauseln sind Mengen von Literalen \\[0.3cm]
+\hspace*{1.3cm} $l_1 \vee \cdots \vee l_n \;=\; \{l_1, \cdots, l_n\}$
+
+\textbf{Definition}: Schlu\3--Regel ist Paar der Form \\[0.3cm]
+\hspace*{1.3cm} $\langle \{k_1, \cdots, k_n\}, k \rangle$ \\[0.3cm]
+ $k$ und $k_i$: pr"adikatenlogische Klauseln.
+
+$k_1$, $\cdots$, $k_n$: \ \ Pr"amissen
+
+$k$: \quad \quad \quad \quad Konklusion
+
+
+\textbf{Schreibweise}: \\[0.1cm]
+\hspace*{1.3cm} $\schluss{k_1 \quad \cdots \quad k_n}{k}$ \\[0.1cm]
+
+\textbf{Definition}: Substitutions--Regel \\[0.3cm]
+\hspace*{1.3cm} $\schluss{k}{k\tau}(\emph{Subst})$ \\[0.7cm]
+$k$: \quad Klausel
+
+$\tau$: \quad Substitution
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalk"ul  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Beobachtung}:  Klauseln ``schrumpfen'' durch Subst-Regel.
+
+\textbf{Betrachte}:
+\begin{enumerate}
+\item $k = q(x,d) \vee q(c,y)$
+\item $\tau = [ x \mapsto c, y \mapsto d ]$
+\end{enumerate}
+Dann gilt: 
+$$
+\begin{array}{lll}
+ k\tau & = & q(c,d) \vee q(c,d)   \\
+       & = & \{ q(c,d), q(c,d) \} \\
+       & = & \{ q(c,d) \}         \\
+       & = & q(c,d) \\
+\end{array}
+$$
+Also:
+\hspace*{1.3cm} $\schluss{q(x,d) \vee q(c,y)}{q(c,d)}(\textsl{Subst})$.
+\vspace{0.3cm}
+
+\textbf{Definition}: (Schnitt--Regel)  Es sei
+\begin{enumerate}
+\item $k_1$, $k_2$: \ prädikatenlogische Klauseln
+\item $l$: \quad \quad \ prädikatenlogisches Literal
+\end{enumerate}
+\hspace*{1.3cm} $\schluss{k_1 \vee l \quad\quad \komplement{\,l\,} \vee k_2}{k_1 \vee k_2}(\textsl{Schnitt})$ 
+\vspace{0.3cm}
+
+\textbf{Definition}: Kalkül = Menge von Schluß--Regeln
+\\[0.3cm]
+\hspace*{1.3cm} $\textsl{Simple} := \{ \textsl{Subst}, \textsl{Schnitt} \}$
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Herleitungs--Begriff
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Definition}: $M \vdash_\mathcal{K} k$
+\begin{enumerate}
+\item Falls $k \in M$, dann $M \vdash_\mathcal{K} k$.
+
+\item Falls 
+     \begin{enumerate}
+     \item  $M \vdash_\mathcal{K} k_i$  für alle $i=1,\cdots,n$ und
+     \item $\schluss{k_1 \quad \cdots \quad k_n}{k}$ Schluß aus $\mathcal{K}$,
+     \end{enumerate}
+     dann $M \vdash_\mathcal{K} k$.
+\end{enumerate}
+Sprechweise: ``{\em $k$ kann mit $\mathcal{K}$ aus $M$ hergeleitet werden}''.
+
+\textbf{Beispiel}: Signatur
+\begin{enumerate}
+\item $\mathbb{T} := \{ \mathbb{B}, \mathbb{N} \}$.
+\item $\textsl{Fz} := \{ s \}$ und $s: \mathbb{N} \rightarrow \mathbb{N}$.
+\item $\textsl{Pz} := \{ < \}$ und $<: \mathbb{N} \times \mathbb{N} \rightarrow \mathbb{B}$.
+\item $\mathcal{V} := \{ x, y, z, u,v,w \}$.
+\end{enumerate}
+Klauseln:
+\begin{enumerate}
+\item $g_1 := \neg\; x \!<\! x$.
+\item $g_2 := \neg\; x \!<\! y \;\vee\; \neg\; y \!<\! z \;\vee\; x \!<\! z$.
+\item $g_3 := x \!<\! s(x)$.
+\item $g_4 := x \!<\! s(s(x))$.
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Ein Beispiel
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+Setze: $M := \{ g_1, g_2, g_3 \}$.  
+
+Zeige: $M \vdash_\textsl{Simple} g_4$.
+\begin{enumerate}
+\item Aus $g_2$ folgt mit $\tau = [y \mapsto s(x)]$
+
+      $$\schluss{\neg\; x \!<\! y \;\vee\; \neg\; y \!<\! z \;\vee\; x \!<\! z}{\neg\; x \!<\! s(x) \;\vee\; \neg\; s(x) \!<\! z \;\vee\; x \!<\! z}(\textsl{Subst})$$
+\item Aus $g_3$ und der letzten Formel folgt mit Schnitt
+
+      $$\schluss{x \!<\! s(x) \quad\quad \neg\; x \!<\! s(x) \;\vee\; \neg\; s(x) \!<\! z \;\vee\; x \!<\! z}{\neg\; s(x) \!<\! z \;\vee\; x \!<\! z}$$
+\item Daraus folgt mit $\tau = [z \mapsto s(s(x))]$
+
+      $$\schluss{\neg\; s(x) \!<\! z \;\vee\; x \!<\! z}{\neg\; s(x) \!<\! s(s(x)) \;\vee\; x \!<\! s(s(x))}(\textsl{Subst})$$
+\item Aus $g_3$ folgt mit $\tau = [ x \mapsto s(x) ]$
+
+      $$\schluss{x \!<\! s(x)}{s(x) \!<\! s(s(x))}(\textsl{Subst})$$
+\item Aus den letzten beiden Formeln folgt mit Schnitt
+
+      $$\schluss{s(x) \!<\! s(s(x)) \quad\quad \neg\; s(x) \!<\! s(s(x)) \;\vee\; x \!<\! s(s(x))}{x \!<\! s(s(x))}$$ 
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Resolutions--Regel (Motivation)
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Frage}: \quad \ Wie wähle ich Substitution $\tau$ in $(\textsl{Subst})$?
+
+\textbf{Antwort}: \ So, dass Schnitt--Regel anwendbar wird!
+$$
+  \schluss{\hspace*{-1cm} \schluss{k_1 \vee l_1}{k_1\tau_1 \vee l_1\tau_1}(\textsl{Subst}) \quad  
+            \schluss{l_2 \vee k_2}{l_2\tau_2 \vee k_2\tau_2}(\textsl{Subst})\hspace*{-1cm} }{k_1\tau_1 \vee k_2\tau_2}(\textsl{Schnitt})
+$$
+\textbf{Forderung}:
+$$ l_1\tau_1 = \komplement{\,l_2\,}\tau_2 $$
+
+\textbf{Beispiel}:
+\begin{enumerate}
+\item $k_1 \vee l_1 \;=\; x \!<\! s(x)$
+\item $l_2 \vee k_2 \;=\; \neg\; s(x) \!<\! z \;\vee\; x \!<\! z$
+\item $(x < s(x))\tau_1 = (x < z)\tau_2$
+\item $\tau_1 = [x \mapsto s(x)]$
+\item $\tau_2 = [z \mapsto s(s(x))]$ 
+\item $k_1\tau_1 \vee k_2\tau_2 \;=\; x \!<\! s(s(x))$
+\end{enumerate}
+
+\textbf{Definition}: $\pi = [x_1 \mapsto y_1, \cdots, x_n \mapsto y_n]$ \\[0.3cm]
+ist  \emph{Variablen--Umbenennung} falls 
+\begin{enumerate}
+\item $\{y_1, \cdots, y_n\} \cap \{x_1,\cdots, x_n\} = \emptyset$. 
+\item $i \not= j \Rightarrow y_i \not= y_j$,
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Resolutions--Regel
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Definition}: (Resolutions--Regel) \quad   Es gelte:
+    \begin{enumerate}
+    \item $k_1$, $k_2$: prädikatenlogische Klauseln,
+    \item $l_1$, $l_2$: prädikatenlogische Literale,
+    \item $\pi$: Variablen--Umbenennung,
+    \item $l_1 \doteq \komplement{\,l_2}\pi$: lösbare syntaktische Gleichung,
+    \item $\mu = \textsl{mgu}(l_1, \komplement{\,l_2\,})$.
+    \end{enumerate}
+     Dann: \emph{Resolutions--Regel} \\[0.5cm]
+     \hspace*{1.3cm} $\schluss{k_1 \vee l_1 \quad\quad l_2 \vee k_2}{k_1\mu \vee k_2\pi\mu}(\textsl{Res})$ \\[0.2cm]
+
+\textbf{Bemerkung}: $\textsl{Res} = 2 * (\textsl{Subst}) + (\textsl{Schnitt})$
+
+$$
+  \schluss{\hspace*{-1cm} { \; \atop \schluss{k_1 \vee l_1}{k_1\mu \vee l_1\mu}(\textsl{Subst})} \quad 
+            \schluss{\hspace*{-1cm}l_2 \vee k_2\hspace*{-1cm}}{\hspace*{-1cm}\schluss{l_2\pi \vee k_2\pi}{l_2\pi\mu \vee
+                k_2\pi\mu}(\textsl{Subst})\hspace*{-3cm}}(\textsl{Subst}) \hspace*{-1cm}}{k_1\mu \vee k_2\pi\mu}(\textsl{Schnitt})
+$$
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Robinson--Kalkül
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Definition}: (Faktorisierungs--Regel) 
+\begin{enumerate}
+\item  $k$: prädikatenlogische Klausel,
+\item  $l_1$ und $l_2$: prädikatenlogische Literale,
+\item  $l_1 \doteq l_2$: lösbare syntaktische Gleichung
+\item  $\mu = \textsl{mgu}(l_1, l_2)$
+\end{enumerate}
+\hspace*{1.3cm} $\schluss{k \vee l_1 \vee l_2}{k\mu \vee l_1\mu}(\textsl{Fakt})$ \\[0.1cm]
+
+\textbf{Beispiel}:
+
+ \hspace*{1.3cm} $\schluss{q(x,d) \vee q(c,y)}{q(c,d)}(\textsl{Fakt})$.
+
+\textbf{Bemerkung}: $(\textsl{Fakt})$ ist Spezialfall von $(\textsl{Subst})$
+
+\textbf{Definition}: Robinson--Kalkül \\[0.3cm]
+\hspace*{1.3cm} $\mathcal{R} := \{ \textsl{Res}, \textsl{Fakt} \}$
+
+\textbf{Korrektheits--Satz}:
+
+Falls $M \vdash_\mathcal{R} k$, dann $M \models k$.
+\vspace{0.5cm}
+
+\textbf{Widerlegungs--Vollständigkeit}:
+
+Falls $M \models \falsum$, dann $M \vdash_\mathcal{R} \falsum$.
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Robinson--Kalkül (Beispiel)
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Beispiel}: Sei
+\begin{enumerate}
+\item $g_1 := \neg\; x \!<\! x$.
+\item $g_2 := \neg\; x \!<\! y \;\vee\; \neg\; y \!<\! z \;\vee\; x \!<\! z$.
+\item $g_3 := x \!<\! s(x)$.
+\item $g_4 := x \!<\! s(s(x))$.
+\end{enumerate}
+Zeige: $\{g_1,g_2,g_3\} \vdash_\mathcal{R} g_4$
+\begin{enumerate}
+\item Aus $g_3$ und $g_2$ folgt mit $\pi = []$ und $\mu = [y \mapsto s(x)]$
+     $$\schluss{x \!<\! s(x) \quad\quad \neg\; x \!<\! y \;\vee\; \neg\; y \!<\! z \;\vee\; x \!<\! z}{\neg\; s(x) \!<\! z \;\vee\; x \!<\! z}(\textsl{Res})$$
+\item Aus  $g_2$ und $\neg\; s(x) \!<\! z \;\vee\; x \!<\! z$ folgt mit \\[0.3cm]
+      $\pi = [x \mapsto u, z \mapsto v]$ und $\mu = [ x \mapsto s(u), v \mapsto s(s(u))]$
+      $$\schluss{x \!<\! s(x) \quad\quad \neg\; s(x) \!<\! z \;\vee\; x \!<\! z}{u \!<\! s(s(u))}(\textsl{Res})$$
+\end{enumerate}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Verfahren zur Überprüfung $M \models k$
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item Setze $N := M \cup \{ \neg f \}$. Dann  \\[0.3cm]
+      \hspace*{1.3cm} $M \models f$ \quad g.d.w. \quad $N \models \falsum$.
+\item Sei  $N = \{ g_1, \cdots, g_n \}$. \\
+      Überführe $g_1, \cdots g_n$ in Klausel--Normalform: \\[0.3cm]
+      \hspace*{1.3cm} $\{ g_1, \cdots, g_n \} \approx_e \{k_1, \cdots, k_m\}$
+\item  $M \models f$ \quad g.d.w.\quad  $\{k_1, \cdots, k_m\} \vdash_\mathcal{R} \falsum$ 
+\end{enumerate}
+
+\textbf{Aber}: $\{k_1, \cdots, k_m\} \vdash_\mathcal{R} \falsum$ \quad nur \emph{semi--entscheibar}.
+\begin{enumerate}
+\item Falls $\{k_1, \cdots, k_m\} \vdash_\mathcal{R} \falsum$, dann finden wir es heraus.
+\item Falls $\{k_1, \cdots, k_m\} \not\vdash_\mathcal{R} \falsum$, dann rechnen wir beliebig\\ lange.
+\item Also: Gleichzeitig systematisch nach Struktur \\
+       $\mathcal{S}$  suchen mit
+  \begin{enumerate}
+  \item $\mathcal{S}(m) = \mathtt{true}$ f.a. $m \in M$,
+  \item $\mathcal{S}(f) = \mathtt{false}$.
+  \end{enumerate}
+\end{enumerate}
+\textbf{Problem}: Manchmal gibt es nur unendliche \\
+Strukturen $\textsl{S}$
+für die $\mathcal{S}(m) = \mathtt{true}$ f.a. $m \in M$ gilt.
+
+\textbf{Beispiel}: $M = \{g_1,g_2,g_3\}$
+
+\begin{center}
+\fbox{\fbox{Prädikatenlogik unentscheidbar!}}  
+\end{center}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Beispiel
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Axiome}:
+\begin{enumerate}
+\item Jeder Drache ist glücklich, wenn alle seine Kinder fliegen können.
+\item Rote Drachen können fliegen.
+\item Die Kinder eines roten Drachens sind immer rot.
+\end{enumerate}
+\textbf{Behauptung}: Alle roten Drachen sind glücklich.
+\vspace{0.5cm}
+
+\textbf{Formalisierung}:
+
+Signatur:  $\Sigma_\textsl{Drache} := \langle \mathcal{V}, \textsl{Fz}, \textsl{Pz}, \textsl{arity}  \rangle$ 
+\begin{enumerate}
+\item $\mathcal{V} = \{ x, y, z \}$
+\item $\textsl{Fz} = \{\}$
+\item $\textsl{Pz} = \{ \textsl{rot}, \textsl{fliegt}, \textsl{glück}, \textsl{kind} \}$
+\item $\textsl{arity} = 
+       \{ \langle \textsl{rot}, 1 \rangle, \langle \textsl{fliegt}, 1 \rangle, 
+          \langle \textsl{glück}, 1 \rangle, \langle \textsl{kind}, 2 \rangle
+        \}$
+\end{enumerate}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Beispiel (Fortsetzung)
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+Formalisierung von Axiomen und Behauptung:
+\begin{enumerate}
+\item $f_1 := \forall x: \big(\forall y: \textsl{kind}(y,x) \rightarrow \textsl{fliegt}(y)\big) \rightarrow \textsl{glück}(x)$
+\item $f_2 := \forall x: \textsl{rot}(x) \rightarrow \textsl{fliegt}(x)$
+\item $f_3 := \forall x: \textsl{rot}(x) \rightarrow \forall y: \textsl{kind}(y,x) \rightarrow \textsl{rot}(y)$
+\item $f_4 := \forall x: \textsl{rot}(x) \rightarrow \textsl{glück}(x)$
+\end{enumerate}
+
+Skolemisierungen $f_1$:
+$$ 
+  \begin{array}{ll}
+    f_1 =           & \forall x: \big(\forall y: \textsl{kind}(y,x) \rightarrow \textsl{fliegt}(y)\big) \rightarrow \textsl{glück}(x) \\[0.2cm]
+    \leftrightarrow & \forall x: \neg \big( \forall y: \neg \textsl{kind}(y,x) \vee \textsl{fliegt}(y)\big) \vee \textsl{glück}(x) \\[0.2cm]
+    \leftrightarrow & \forall x:  \big( \exists y: \textsl{kind}(y,x) \wedge \neg  \textsl{fliegt}(y)\big) \vee \textsl{glück}(x) \\[0.2cm]
+    \leftrightarrow & \forall x: \exists y: \big( \textsl{kind}(y,x) \wedge \neg  \textsl{fliegt}(y)\big) \vee \textsl{glück}(x) \\[0.2cm]
+    \approx_e & \forall x: \big( \textsl{kind}(k(x),x) \wedge \neg  \textsl{fliegt}(k(x))\big) \vee \textsl{glück}(x) 
+  \end{array}
+$$
+
+Umformung in Klauseln: \\[0.3cm]
+\hspace*{1.3cm} $k_1 :=  \textsl{kind}(k(x),x) \vee \textsl{glück}(x)$   \\[0.2cm]
+\hspace*{1.3cm} $k_2 :=  \neg \textsl{fliegt}(k(x)) \vee \textsl{glück}(x)$ 
+\vspace{0.3cm}
+
+Umformung in Klauseln $f_2$: \\[0.3cm]
+\hspace*{1.3cm} $k_3 := \neg \textsl{rot}(x) \vee \textsl{fliegt}(x)$
+
+Umformung in Klauseln $f_3$: \\[0.3cm]
+\hspace*{1.3cm} $ k_4 := \neg \textsl{rot}(x) \vee \neg \textsl{kind}(y,x) \vee \textsl{rot}(y)$
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Beispiel (Fortsetzung)
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+Umformung in Klauseln $\neg f_4$:
+ $$
+        \begin{array}{ll}
+         \neg f_4 =      & \neg \forall x: \textsl{rot}(x) \rightarrow \textsl{glück}(x) \\[0.2cm]
+         \leftrightarrow & \neg \forall x: \neg \textsl{rot}(x) \vee \textsl{glück}(x) \\[0.2cm]
+         \leftrightarrow & \exists x: \textsl{rot}(x) \wedge \neg \textsl{glück}(x) \\[0.2cm]
+         \approx_e & \textsl{rot}(d) \wedge \neg \textsl{glück}(d) 
+        \end{array}
+      $$
+Klauseln: \\[0.3cm]
+\hspace*{1.3cm} $k_5 = \textsl{rot}(d)$ \\[0.2cm]
+\hspace*{1.3cm} $k_6 = \neg \textsl{glück}(d)$ 
+
+Definiere $L := \{ k_1, k_2,k_3,k_4,k_5,k_6\}$ mit
+\begin{enumerate}
+\item $k_1 = \textsl{kind}(k(x),x) \vee \textsl{glück}(x)$  
+\item $k_2 = \neg \textsl{fliegt}(k(x)) \vee \textsl{glück}(x)$
+\item $k_3 = \neg \textsl{rot}(x) \vee \textsl{fliegt}(x)$
+\item $k_4 = \neg \textsl{rot}(x) \vee \neg \textsl{kind}(y,x) \vee \textsl{rot}(y)$
+\item $k_5 = \textsl{rot}(d)$ 
+\item $k_6 = \neg \textsl{glück}(d)$
+\end{enumerate}
+Zeige: \\[0.1cm]
+\hspace*{1.3cm} $L \vdash_\mathcal{R} \falsum$
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Der Beweis
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item Aus $k_5$ und $k_4$ folgt
+      \vspace{0.3cm}
+
+      $\schluss{\textsl{rot}(d) \quad \neg \textsl{rot}(x) \vee \neg \textsl{kind}(y,x) \vee \textsl{rot}(y)}{\neg \textsl{kind}(y,d) \vee \textsl{rot}(y)}(\mathcal{R})$
+\item Daraus folgt mit $k_1$
+      \vspace{0.3cm}
+
+      $\schluss{\hspace*{-0.5cm}\neg \textsl{kind}(y,d) \vee \textsl{rot}(y) \quad \textsl{kind}(k(x),x)\vee \textsl{glück}(x)\hspace*{-0.5cm}}{\textsl{glück}(d) \vee \textsl{rot}(k(d))}(\mathcal{R})$ 
+\item Daraus folgt mit $k_6$
+      \vspace{0.3cm}
+
+      $\schluss{\textsl{glück}(d) \vee \textsl{rot}(k(d)) \quad \neg \textsl{glück}(d)}{\textsl{rot}(k(d))}(\mathcal{R})$
+\item Daraus folgt mit $k_3$
+      \vspace{0.3cm}
+
+      $\schluss{\textsl{rot}(k(d)) \quad \neg \textsl{rot}(x) \vee \textsl{fliegt}(x)}{\textsl{fliegt}(k(d))}(\mathcal{R})$
+\item Daraus folgt mit $k_2$
+      \vspace{0.3cm}
+
+      $\schluss{\textsl{fliegt}(k(d)) \quad \neg \textsl{fliegt}(k(x)) \vee \textsl{glück}(x)}{\textsl{glück}(d)}(\mathcal{R})$
+\item Daraus folgt mit $k_6$
+      \vspace{0.3cm}
+
+      $\schluss{\textsl{glück}(d) \quad  \neg \textsl{glück}(d)}{\falsum}(\mathcal{R})$
+\end{enumerate}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Hausaufgabe
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+Gegeben seien folgende Axiome:
+\begin{enumerate}
+\item Jeder Barbier rasiert alle Personen, die sich\\ nicht selbst rasieren.
+\item Kein Barbier rasiert jemanden, der sich selbst rasiert.
+\end{enumerate}
+Folgern Sie daraus: \\[0.3cm]
+\hspace*{1.3cm} Alle Barbiere sind blond.
+
+
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Der Robinson--Kalkül  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "folie8"
+%%% End: 
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

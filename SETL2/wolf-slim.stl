@@ -1,0 +1,36 @@
+program main;
+    All := { "Bauer", "Wolf", "Ziege", "Kohl" };
+    P := { [S1,S2]: S1 in pow All, S2 in pow All | S1+S2 = All and S1*S2 = {} };
+    R := { [ [S1, S2], [S1 - M, S2 + M] ]: [S1, S2] in P, M in pow S1 |
+                "Bauer" in M and #M <= 2
+            and not ("Ziege" in S1 - M and "Kohl"  in S1 - M)
+            and not ("Wolf"  in S1 - M and "Ziege" in S1 - M) };
+    R +:= { [[S2, S1], [T2, T1]]: [[S1, S2], [T1, T2]] in R };
+    start := [ All, {} ];
+    goal := [ {}, All ];
+    PS := { [start] };
+    loop
+        PS +:= {p+[z]: p in PS, [y,z] in R | p(#p) = y and #{x: x in p} = #p};
+        Pf := { p in PS | p(#p) = goal };
+        if Pf /= {} then
+            print( arb Pf ); exit;
+        end if;
+    end loop;
+end main;
+
+-- % time stlx main
+-- [[{"Kohl", "Ziege", "Wolf", "Bauer"}, {}],
+--  [{"Kohl", "Wolf"}, {"Ziege", "Bauer"}],
+--  [{"Kohl", "Wolf", "Bauer"}, {"Ziege"}],
+--  [{"Wolf"}, {"Kohl", "Ziege", "Bauer"}],
+--  [{"Ziege", "Wolf", "Bauer"}, {"Kohl"}],
+--  [{"Ziege"}, {"Kohl", "Wolf", "Bauer"}],
+--  [{"Ziege", "Bauer"}, {"Kohl", "Wolf"}],
+--  [{}, {"Kohl", "Ziege", "Wolf", "Bauer"}]]
+--
+-- real	0m0.010s
+-- user	0m0.007s
+-- sys	0m0.003s
+--
+-- % wc slim.stl
+--  19 170 754 slim.stl

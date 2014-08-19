@@ -1,0 +1,53 @@
+program main;
+
+    PreferencesMen := {};
+    PreferencesMen("Anton")  := [ "Jenny", "Heidi", "Susi", "Clara" ];
+    PreferencesMen("Hugo")   := [ "Jenny", "Clara", "Heidi", "Susi" ];
+    PreferencesMen("Emil")   := [ "Clara", "Heidi", "Clara", "Susi" ];
+    PreferencesMen("Dieter") := [ "Clara", "Susi", "Heidi", "Jenny" ];
+
+    PreferencesWomen := {};
+    PreferencesWomen("Clara") := [ "Anton", "Hugo", "Emil", "Dieter" ];
+    PreferencesWomen("Heidi") := [ "Emil", "Dieter", "Anton", "Hugo" ];
+    PreferencesWomen("Susi")  := [ "Emil", "Dieter", "Anton", "Hugo" ];
+    PreferencesWomen("Jenny") := [ "Emil", "Anton", "Dieter", "Hugo" ];
+
+    Marriages := stableMatch(PreferencesMen, PreferencesWomen);
+
+    procedure stableMatch(PreferencesMen, PreferencesWomen);
+        Men   := domain(PreferencesMen);
+        Women := domain(PreferencesWomen);
+        Marriages := {};
+        while #Marriages < #Men loop
+            Applicants := {};
+            -- Initially, the set of men interested in a woman contains 
+            -- at most their husband.
+            for woman in Women loop
+                Applicants(woman) := { Marriages(woman) };
+            end loop;
+            -- all unmarried men try to get married
+            for man in Men | man notin range(Marriages) loop
+                -- propose to first women in preference list
+                Applicants( PreferencesMen(man)(1) ) +:= { man };
+                PreferencesMen(man) := PreferencesMen(man)(2..);
+            end loop;
+            -- next all women evaluate their options
+            for woman in Women loop
+                man := chooseBest( PreferencesWomen(woman), Applicants(woman) );
+                Marriages(woman) := man;
+            end loop;
+            print("Marriages = ", Marriages);
+        end loop;
+        return Marriages;
+    end stableMatch;
+
+    -- Select the best from a set of applicants.  The list Preferences determines
+    -- which is best.
+    procedure chooseBest( Preferences, Applicants );
+        for man in Preferences loop
+            if man in Applicants then
+                return man;
+            end if;
+        end loop;
+    end chooseBest;
+end main;

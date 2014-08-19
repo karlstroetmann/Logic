@@ -1,0 +1,278 @@
+\documentclass{article}
+\usepackage[latin1]{inputenc}
+\usepackage{fleqn}
+\usepackage{ngerman}
+\usepackage{a4wide}
+\usepackage{amssymb}
+
+\setlength{\topmargin}{-0.5cm}
+\setlength{\mathindent}{1.3cm}
+%\setlength{\evensidemargin}{-0.5cm}
+%\setlength{\oddsidemargin}{-0.5cm}
+%\setlength{\textwidth}{17cm}
+
+\def\pair(#1,#2){\langle #1, #2 \rangle}
+
+\newcommand{\exercise}{\vspace*{0.1cm}
+\stepcounter{aufgabe}
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Aufgabe \arabic{aufgabe}}: }
+
+\newcounter{aufgabe}
+
+\newcommand{\schluss}[2]{\frac{\displaystyle\quad \rule[-6pt]{0pt}{12pt}#1 \quad}{\displaystyle\quad \rule{0pt}{10pt}#2 \quad}}
+\newcommand{\vschlus}[1]{{\displaystyle\rule[-6pt]{0pt}{12pt} \atop \rule{0pt}{10pt}#1}}
+
+\newcommand{\punkte}[1]{\hspace*{\fill} \mbox{(#1 Punkte)}}
+\newcommand{\struct}{\mathcal{S}}
+\newcommand{\FV}{\textsl{FV}}
+\newcommand{\BV}{\textsl{BV}}
+\newcommand{\var}{\textsl{Var}}
+\newcommand{\el}{\!\in\!}
+\newcommand{\verum}{\top}
+\newcommand{\falsum}{\bot}
+\newcommand{\gentzen}{\vdash_{G}}
+\newcommand{\komplement}[1]{\overline{#1}}
+\newcommand{\mathquote}[1]{\mbox{``}\mathtt{#1}\mbox{''}}
+
+\begin{document}
+
+\noindent
+{\large Aufgaben zur Vorlesung  ``{\sl Grundlagen der Informatik}''}
+\vspace{0.3cm}
+
+
+\exercise
+\begin{enumerate}
+\item[(a)] Es seien $l_1$ und $l_2$ Listen von ganzen Zahlen.
+           Geben Sie eine \textsc{Setl2}-Prozedur $\texttt{both}()$ an, so dass der Aufruf 
+           $\mathtt{both}(l_1, l_2)$ die Menge aller der Zahlen berechnet,
+           die sowohl in $l_1$ als auch in $l_2$ auftreten.
+           \punkte{4}
+\item[(b)] Eine Tripel $\langle x, y, z \rangle \in \mathbb{N}^3$ 
+           ist ein \emph{pythagoräisches Tripel} falls 
+           \\[0.1cm]
+           \hspace*{1.3cm}      
+                 $x^2 + y^2 = z^2$
+           \\[0.1cm]
+           gilt.  Beispielsweise ist $\langle 3, 4, 5 \rangle$ ein pythagoräisches Tripel,
+           denn es gilt $3^2 + 4^2 = 5^2$.
+           Geben Sie eine \textsc{Setl2}-Prozedur $\texttt{pythagoras}()$ an,
+           so dass der Aufruf $\texttt{pythagoras}(n)$ die Menge aller der pythagoräischen
+           Tripel $\langle x, y, z \rangle$ berechnet, für die $x$, $y$ und $z$ alle
+           kleiner als $n$ sind.
+           \punkte{6}
+\item[(c)] Schreiben Sie eine Prozedur $\texttt{subsets}()$, so dass der Aufruf
+           \\[0.2cm]
+           \hspace*{1.3cm}
+           $\textsl{subsets}(n, k)$
+           \\[0.2cm]
+           für zwei natürliche Zahlen $n$ und $k$ die Menge aller der Teilmengen der Menge
+           $\{1, \cdots, n\}$ berechnet, die genau $k$ Elemente enthalten.
+           \punkte{8}
+\end{enumerate}
+
+\exercise
+Wir definieren eine Abstands-Relation $A$ als eine Menge von
+Paaren der Form $\bigl\langle \langle x, y \rangle, d \bigr\rangle$ wobei gilt: 
+\begin{enumerate}
+\item $\langle x, y \rangle \el P \times P$.
+\item $d \in \mathbb{N}$ und es gilt $d \geq 1$.
+\end{enumerate}
+Wir interpretieren eine Abstands-Relation $A$ wie folgt: Ist 
+$\bigl\langle \langle x, y\rangle, d \bigr\rangle \in A$, so gibt es eine 
+direkte Verbindung zwischen den Punkten $x$ und $y$ und diese Verbindung hat die Länge
+$d$.  Die Komposition $A_1 \circ A_2$ zweier Abstands-Relationen sei so definiert,
+dass das Paar $\bigl\langle \langle x, z\rangle, d \bigr\rangle \in A$ genau dann ein
+Element der Komposition $A_1 \circ A_2$ ist, wenn es einen Punkt $y\el P$ gibt,
+so dass es einerseits in $A_1$ eine direkte Verbindung von $x$ nach $y$ einer Länge $d_1$
+und andererseits in $A_2$ eine direkte Verbindung von $y$ nach $z$ der Länge $d_2$ gibt,
+so dass $d = d_1 + d_2$ ist.
+\begin{enumerate}
+\item[(a)] Implementieren Sie eine \textsc{Setl2}-Prozedur $\texttt{compose}()$,
+           so dass der Aufruf $\texttt{compose}(A_1, A_2)$ für zwei 
+           Abstands-Relationen $A_1$ und $A_2$ die Komposition $A_1 \circ A_2$ 
+           berechnet.            
+           \punkte{8}
+\item[(b)] Implementieren Sie eine Prozedur \texttt{closure}, so dass der Aufruf
+           $\texttt{closure}(A)$ für eine Abstands-Relation $A$
+           die Menge aller Paare  $\bigl\langle \langle x_1, x_n \rangle, d \bigr\rangle$
+           berechnet, so dass es eine endliche Folge $x_1, x_2, x_3, \cdots, x_n$ von
+           Punkten aus $P$ gibt, so dass einerseits 
+           \\[0.1cm]
+           \hspace*{1.3cm}      
+            $\bigl\langle \langle x_i, x_{i+1} \rangle, d_i \bigr\rangle \in A$      
+           \\[0.1cm]
+           und andererseits $d = d_1 + d_2 + \cdots + d_{n-1}$ gilt.
+           \punkte{10}
+
+           \noindent
+           \textbf{Hinweis}: Sie dürfen voraussetzen, dass es nur endlich viele Pfade gibt.
+\end{enumerate}
+\pagebreak
+
+\exercise
+Implementieren Sie eine \textsc{Setl2}-Prozedur $\texttt{toLists}()$, so dass der Aufruf
+$\texttt{toLists}(M)$ für eine Menge $M$ die Menge aller Listen berechnet, die jedes
+Element der Menge $M$ genau einmal enthalten.  Beispielsweise soll der Aufruf
+\[ \texttt{toLists}(\{1,2,3\}) \]
+als Ergebnis die Menge
+\[ \bigl\{\; [1,2,3],\; [1,3,2],\; [2,1,3],\; [2,3,1],\; [3,1,2],\; [3,2,1]\; \bigr\} \]
+berechnen.
+\punkte{8}
+\vspace{0.1cm}
+
+\noindent
+\textbf{Hinweis}: Implementieren Sie die Prozedur rekursiv.
+
+\exercise
+\begin{enumerate}
+\item[(a)] Formalisieren Sie die Schluß-Regel, die in dem folgenden Argument verwendet wird. 
+           \begin{center}
+           \begin{minipage}[c]{12cm}
+           {\em  
+                Wenn der linke Motor ausfällt oder wenn der rechte Motor ausfällt, stürzt
+                das Flugzeug ab.  Das Flugzeug  stürzt ab. Der linke Motor fällt nicht
+                aus. Also ist der rechte Motor ausgefallen.
+           } 
+           \end{minipage}  
+           \end{center}
+           \textbf{Hinweis}: Die verwendete Schluß-Regel hat drei Prämissen.
+          \punkte{4}
+\item[(b)] Überprüfen  Sie, ob diese Schluß-Regel korrekt ist.
+           \punkte{6}
+\end{enumerate}
+
+\exercise
+\begin{enumerate}
+\item[(a)] Betrachten Sie die folgende Schluß--Regel: \\[0.1cm]
+           \hspace*{1.3cm} 
+           $\schluss{q \wedge p \quad\quad r \vee \neg q}{r \wedge p}$ \\[0.1cm]
+           Geben Sie  eine aussagenlogische
+           Formel $f$ an, die genau dann eine Tautologie ist, wenn die obige Schluß--Regel korrekt ist.
+           \punkte{2}
+\item[(b)] Berechnen Sie die konjunktive Normalform der in (a) berechneten Formel.
+           \punkte{8} 
+\end{enumerate}
+\pagebreak
+
+\exercise
+Der Begriff eines \emph{arithmetischen \textsc{Setl2}-Ausdrucks} werde wie folgt induktiv 
+definiert:
+\begin{enumerate}
+\item Jede String ist ein \emph{arithmetischer \textsc{Setl2}-Ausdruck}.
+      Ein String stellt eine \emph{Variable} dar.
+\item Sind $s$ und $t$ \emph{arithmetische \textsc{Setl2}-Ausdrücke}, so sind auch
+      \begin{enumerate}
+      \item $[ s, \textrm{``}\texttt{+}\textrm{''}, t ]$,
+      \item $[ s, \textrm{``}\texttt{-}\textrm{''}, t ]$,
+      \item $[ s, \textrm{``}\texttt{*}\textrm{''}, t ]$,
+      \item $[ s, \textrm{``}\texttt{/}\textrm{''}, t ]$
+      \end{enumerate}
+      \emph{aritmetische \textsc{Setl2}-Ausdrücke}.
+\end{enumerate}
+
+\begin{enumerate}
+\item[(a)] Schreiben sie eine Prozedur $\texttt{allVars}(s)$, die für einen gegebenen
+           arithmetischen \textsc{Setl2}-Ausdruck die Menge aller Variablen berechnet, 
+           die in $s$ auftreten. \\
+           \punkte{8} 
+\item[(b)] Schreiben sie eine Prozedur $\texttt{countVars}(s,x)$, die für einen gegebenen
+           arithmetischen \textsc{Setl2}-Ausdruck $s$ und eine Variable $x$
+           zählt, wie oft die Variable $x$ in $s$ auftritt. \\
+           \punkte{8} 
+\item[(c)] Schreiben sie eine Prozedur $\texttt{singleVars}(s)$, die für einen gegebenen
+           arithmetischen \textsc{Setl2}-Ausdruck die Menge aller Variablen berechnet, 
+           die in $s$ genau einmal auftreten. \\
+           \punkte{4} 
+\end{enumerate}
+
+
+\exercise
+Die Menge $M$ sei wie folgt definiert: \\[0.1cm] 
+           \hspace*{1.3cm} $M := \bigl\{ 
+           \{ t, q, r \}, 
+           \{ t, p, \neg  r \}, 
+           \{  \neg t, p, r \},
+           \{ t,  \neg q  \},
+           \{  \neg t, p \},
+           \{ q,  \neg p  \},
+           \{  \neg t,  \neg p \}
+           \bigr\}$.
+            \\[0.1cm]
+           Zeigen Sie durch mehrfache Anwendung der Schnitt-Regel, dass $M \vdash \{\}$ gilt.
+           \punkte{8}
+
+\exercise
+Die Menge $M$ sei wie folgt definiert: \\[0.1cm]
+\hspace*{1.3cm} $M := \{ \; \{p, q\},
+                         \{ \neg p, r,  \neg t\},
+                         \{r, s, p \},
+                         \{ \neg r, q,  \neg p\},
+                         \{r,  \neg s, p\},$ \\[0.1cm]
+\hspace*{2.6cm} $        \{ \neg p,  \neg q, s\},
+                         \{p,  \neg q, s\},
+                         \{ \neg r,  \neg s\},
+                         \{ \neg p,  \neg s\},
+                         \{q, \neg p, t\} \bigr\}$ \\[0.1cm]
+Zeigen Sie mit dem Verfahren von Davis-Putnam, dass $M$ nicht lösbar ist.
+\punkte{12}
+
+\exercise
+Geben Sie eine prädikatenlogische Struktur $\mathcal{S}$ an, in der die 
+Formel
+\[ (\forall x\colon \exists y\colon p(x,y)) \rightarrow \exists y\colon \forall x\colon p(x,y) \]
+nicht gilt.  Die prädikatenlogische Struktur soll wie im Skript mit Hilfe
+von \textsc{Setl2} beschrieben werden.  \punkte{10}
+
+\exercise
+Wandeln Sie die folgende Formel in prädikatenlogische Klausel-Normalform um
+und geben Sie das Ergebnis in Mengen-Schreibweise an. \\[0.1cm]
+\hspace*{1.3cm} 
+$\Big(\forall x\colon \neg \exists y\colon \big(q(x) \rightarrow p(x,y)\big) \Big) \rightarrow 
+ \big(\forall z\colon q(z)\big)
+$ 
+\punkte{8}
+\pagebreak
+
+
+\exercise
+Implementieren Sie ein \textsl{Prolog}-Prädikat ``$\mathtt{is\_contained}$'' mit der Typ-Spezifikation
+\\[0.1cm]
+\hspace*{1.3cm} $\mathtt{is\_contained}( +\textsl{List}(\textsl{Number}), +\textsl{List}(\textsl{Number}) )$. \\[0.1cm]
+Ein Aufruf von $\mathtt{is\_contained}$ soll die Form \\[0.1cm]
+\hspace*{1.3cm} $\mathtt{is\_contained}(l_1, l_2)$ \\[0.1cm]
+haben. Dabei sind $l_1$ und $l_2$ Listen von Zahlen.  Der Aufruf soll genau dann
+erfolgreich sein,  wenn alle Elemente von $l_1$ in der Liste $l_2$ enthalten sind.
+\punkte{8}
+\vspace{0.1cm}
+
+\noindent
+\textbf{Hinweis}: Sie dürfen das eingebaute Prädikat $\mathtt{member}$ benutzen.
+
+\exercise
+Implementieren Sie ein \textsl{Prolog}-Prädikat ``$\mathtt{all\_lists}$'' 
+mit der Typ-Spezifikation \\[0.1cm]
+\hspace*{1.3cm} 
+$\mathtt{all\_lists}( +\textsl{Number}, +\textsl{Number}, -\textsl{List}(\textsl{Number}) )$. 
+\\[0.1cm]
+Der Aufruf            
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{all\_lists}(N, K, L)$
+\\[0.2cm]
+soll für zwei natürliche Zahlen $N$ und $K$ eine Liste $L$ erzeugen, deren Elemente
+aus der Menge $\{1, \cdots, N\}$ stammen und die die Länge $K$ hat.   Die Liste darf kein
+Element mehrfach enthalten.   Außerdem soll das Prädikat beim Backtracking alle möglichen Listen mit
+der oben beschriebenen Eigenschaft erzeugen.
+\punkte{8}
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

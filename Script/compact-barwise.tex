@@ -1,0 +1,341 @@
+\section{Der Kompaktheits-Satz der Aussagen-Logik}
+Das Ziel dieses Abschnittes ist der Beweis des Kompaktheits-Satzes der Aussagen-Logik.  
+Dieser Satz liegt tiefer als alle bisher behandelten Sätze.  Wir benötigen den Kompaktheits-Satz
+später, um die Widerlegungs-Vollständigkeit der Prädikaten-Logik beweisen zu können.
+Wir folgen bei unserer Darstellung des Kompaktheits-Satzes dem Artikel von Jon Barwise
+\cite{barwise:1991a} aus dem Handbuch der mathematischen Logik \cite{barwise:1991}.
+
+\begin{Definition}[endlich erfüllbar, maximal endlich erfüllbar]
+  {\em Eine Menge $M$ von aussagenlogischen Formeln heißt \emph{endlich erfüllbar} (abgekürzt: e.e.) genau
+    dann, wenn jede endliche Teilmenge von $M$ erfüllbar ist:
+    \\[0.2cm]
+    \hspace*{1.3cm} 
+    $M$ e.e. \quad g.d.w. \quad 
+    $\forall E \subseteq M: \textsl{card}(E) < \infty \rightarrow 
+    \exists \mathcal{I} \in \textsc{Ali}: \forall f \in E: \mathcal{I}(f) = \mathtt{true}$
+    \\[0.2cm]
+    Eine Menge $M$ von aussagenlogischen Formeln heißt \emph{maximal endlich erfüllbar}
+    (abgekürzt m.e.e.) genau dann, wenn $M$ endlich erfüllbar ist und wenn außerdem für
+    jede aussagenlogische Formel $f$ entweder $f$ oder die Negation $\neg f$ ein Element von $M$ ist:
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $M$ m.e.e. \quad g.d.w. \quad 
+    $M$ e.e.$\;$ und $\;\forall f \el \mathcal{F}: f \el M \,\vee\, (\neg f) \el M$. \qed
+  }
+\end{Definition}
+
+\begin{Satz} \label{satz28}
+{\em
+  Es sei $M$ maximal endlich erfüllbar.  Dann gilt 
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $(f \wedge g) \el M$ \quad g.d.w. \quad $f \el M$ und $g \el M$.
+}
+\end{Satz}
+
+\noindent
+\textbf{Beweis}: Wir beweisen beide Richtungen des ``g.d.w.'' getrennt.
+\begin{description}
+\item[``$\Rightarrow$''] Sei $(f \wedge g) \el M$.  Wir führen den Beweis indirekt und
+  nehmen an, es gelte $f \notel M$. Da
+  $M$ maximal endlich erfüllbar ist, muss dann die Formel $\neg f$ ein Element der Menge
+  $M$ sein.  Damit enthält $M$ aber die endliche Teilmenge 
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $E := \{ f \wedge g, \neg f\}$, 
+  \\[0.2cm]
+  die offenbar nicht erfüllbar ist, denn jede Belegung, die $f \wedge g$ wahr macht, macht
+  sicher auch $f$ wahr und damit $\neg f$ falsch.  Die Unerfüllbarkeit von $E$ steht im
+  Widerspruch zur endlichen Erfüllbarkeit von $M$.  Damit muss die Annahme $f \notel M$
+  falsch sein und wir haben $f \el M$ gezeigt. 
+
+  Der Nachweis von $g \el M$ kann analog geführt werden.
+\item[``$\Leftarrow$''] Sei nun $f \el M$ und $g \el M$.  
+  Wir führen den Beweis indirekt und nehmen an, dass $(f \wedge g) \notel M$ gelte.  Da $M$
+  maximal endlich erfüllbar ist, muss dann die Formel $\neg (f \wedge g)$ ein Element der
+  Menge $M$ sein.  Dann enthält $M$ aber die endliche Teilmenge
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $E := \{ \neg (f \wedge g), f, g \}$
+  \\[0.2cm]
+  die offensichtlich nicht erfüllbar ist, denn jede Belegung, die $f$ und $g$ wahr macht,
+  macht auch die Formel $f \wedge g$ wahr und muss damit die Formel $\neg (f \wedge g)$
+  falsch machen.  Die Unerfüllbarkeit von $E$ steht im Widerspruch zur endlichen
+  Erfüllbarkeit von $M$.  Damit muss die Annahme $(f \wedge g) \notel M$ falsch sein und
+  es gilt $(f \wedge g) \el M$. \qed
+\end{description}
+
+\begin{Satz} \label{satz29}
+{\em
+  Es sei $M$ maximal endlich erfüllbar. Dann gilt:
+  \begin{enumerate}
+  \item $(\neg f) \el M$ \quad g.d.w. $f \notel M$.
+  \item $(f \vee g) \el M$ \quad g.d.w. $f \el M$ oder $g \el M$.
+  \item $(f \rightarrow g) \el M$ \quad g.d.w. $(\neg f) \el M$ oder $g \el M$.
+  \item $(f \leftrightarrow g) \el M$ \quad g.d.w. 
+        $(f \rightarrow g) \el M$ und $(g \rightarrow f) \el M$.
+  \end{enumerate}
+}
+\end{Satz}
+
+\noindent
+\textbf{Beweis}:  Der Beweis der einzelnen Behauptungen verläuft ganz analog zu dem Beweis
+von Satz \ref{satz28}.  Exemplarisch zeigen wir den Beweis der vierten Behauptung.
+Wir beweisen beide  Richtungen des ``g.d.w.'' getrennt.
+\begin{description}
+\item[``$\Rightarrow$''] Sei $(f \leftrightarrow g) \el M$.  Wir führen den Beweis indirekt und
+  nehmen an, es gelte $(f \rightarrow g) \notel M$. Da
+  $M$ maximal endlich erfüllbar ist, muss dann die Formel $\neg (f \rightarrow g)$ ein Element der Menge
+  $M$ sein.  Damit enthält $M$ aber die endliche Teilmenge 
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $E := \{ f \leftrightarrow g, \neg (f \rightarrow g)\}$, 
+  \\[0.2cm]
+  die offenbar nicht erfüllbar ist, denn jede Belegung, die $f \leftrightarrow g$ wahr macht, macht
+  sicher auch $f \rightarrow g$ wahr und damit $\neg (f \rightarrow g)$ falsch.  Die
+  Unerfüllbarkeit von $E$ steht im 
+  Widerspruch zur endlichen Erfüllbarkeit von $M$.  Damit muss die Annahme $(f \rightarrow g) \notel M$
+  falsch sein und wir haben $(f \rightarrow g) \el M$ gezeigt. 
+
+  Der Nachweis von $(g \rightarrow f) \el M$ kann analog geführt werden.
+\item[``$\Leftarrow$''] Sei nun $(f \rightarrow g) \el M$ und $(g \rightarrow f) \el M$.  
+  Wir führen den Beweis indirekt und nehmen an, dass $(f \leftrightarrow g) \notel M$ gelte.  Da $M$
+  maximal endlich erfüllbar ist, muss dann die Formel $\neg (f \leftrightarrow g)$ ein Element der
+  Menge $M$ sein.  Dann enthält $M$ aber die endliche Teilmenge
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $E := \{ \neg (f \leftrightarrow g), f \rightarrow g, g \rightarrow f \}$
+  \\[0.2cm]
+  die offensichtlich nicht erfüllbar ist, denn jede Belegung, die $f \rightarrow g$ und $g
+  \rightarrow f$ wahr macht,
+  macht auch die Formel $f \leftrightarrow g$ wahr und muss damit die Formel $\neg (f \leftrightarrow g)$
+  falsch machen.  Die Unerfüllbarkeit von $E$ steht im Widerspruch zur endlichen
+  Erfüllbarkeit von $M$.  Damit muss die Annahme $(f \leftrightarrow g) \notel M$ falsch sein und
+  es gilt $(f \leftrightarrow g) \el M$. \qed
+\end{description}
+
+\begin{Satz} \label{satz30}
+{\em
+  Jede maximal endlich erfüllbare Menge $M$ ist erfüllbar.
+}
+\end{Satz}
+
+\noindent
+\textbf{Beweis}:
+Die Menge $M$ sei maximal endlich erfüllbar.  Wir konstruieren eine Variablen-Belegung
+$\mathcal{I}$ wie folgt:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I} := \bigl\{ \pair(p, \mathtt{true})  \mid p \el M \bigr\} \cup
+                \bigl\{ \pair(p, \mathtt{false}) \mid p \notel M \bigr\}$.
+\\[0.2cm]
+Wir behaupten, dass diese Belegung  jede Formel $f\el M$ wahr und jede Formel $f \notel M$
+falsch macht und beweisen diese
+Behauptung durch Induktion nach dem Aufbau der Formel $f$. Wir beweisen also
+\\[-0.2cm]
+\hspace*{1.3cm}
+$f \el M$ \quad g.d.w. \quad $\mathcal{I}(f) = \mathtt{true}$
+\\[0.2cm]
+durch Induktion nach $f$.
+\begin{enumerate}
+\item $f = p \el \mathcal{P}$, \ $f$ ist also eine aussagenlogische Variable.
+    
+      Falls $p \el M$ ist, dann folgt $\mathcal{I}(f) = \mathtt{true}$ aus der Definition
+      von $\mathcal{I}$.   Falls $p \notel M$ ist, folgt aus der Definition von
+      $\mathcal{I}$ sofort $\mathcal{I}(p) = \mathtt{false}$.
+      
+\item $f = \neg g$.  
+
+      Sei zunächst $f \el M$. Nach Satz \ref{satz29} folgt aus $(\neg g) \el M$ sofort
+      $g \notel M$.  Nach Induktions-Voraussetzung gilt dann $\textsl{I}(g) = \mathtt{false}$ und
+      daraus folgt sofort $\textsl{I}(f) = \textsl{I}(\neg g) = \mathtt{true}$.
+      
+      Sei nun $f \notel M$. Wieder nach Satz \ref{satz29} folgt aus $(\neg g) \notel M$ sofort
+      $g \el M$.  Nach Induktions-Voraussetzung gilt dann $\textsl{I}(g) = \mathtt{true}$ und
+      daraus folgt sofort $\textsl{I}(f) = \textsl{I}(\neg g) = \mathtt{false}$.
+\item $f = (g \wedge h)$.
+
+      Sei zunächst $f \el M$.  Nach Satz \ref{satz29} folgt aus $(g \wedge h) \el M$ sofort
+      $g \el M$ und $h \el M$.  Wenden wir die Induktions-Voraussetzung auf $g$ und $h$ an, so sehen
+      wir, dass $\textsl{I}(g) = \mathtt{true}$ und
+      $\textsl{I}(h) = \mathtt{true}$ gelten muss, woraus sofort
+      $\textsl{I}(f) = \textsl{I}(g \wedge h) = \mathtt{true}$ folgt.
+      
+      Sei nun $f \notel M$. Nach Satz \ref{satz29} folgt aus $(g \wedge h) \notel M$, dass
+      entweder $g \notel M$ oder $h \notel M$ ist.  Wir betrachten nur den Fall $g \notel M$, 
+      der Fall $h \notel M$ ist analog.  Aus $g \notel M$ folgt mit der Induktions-Voraussetzung,
+      dass $\mathcal{I}(g) = \mathtt{false}$ gilt.  Dass impliziert aber die Behauptung 
+      $\textsl{I}(g \wedge h) = \mathtt{false}$, womit wir $\mathcal{I}(f) = \mathtt{false}$ haben.
+\item $f = (g \vee h)$,
+      $f = (g \rightarrow h)$,
+      $f = (g \leftrightarrow h)$.
+      
+      Da der Beweis dieser Fälle ganz analog zum Beweis des Falles $f = (f \wedge g)$ verläuft,
+      können wir auf einen expliziten Beweis dieser Fälle verzichten. \qed
+\end{enumerate}
+
+\begin{Satz}[Kompaktheits-Satz]
+{\em
+  Die Menge $M$ sei endlich erfüllbar.  Dann ist $M$ erfüllbar, es gibt also eine aussagenlogische
+  Belegung $\mathcal{I}$, so dass gilt:
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\forall f \in M: \mathcal{I}(f) = \mathtt{true}$.
+} 
+\end{Satz}
+
+\noindent
+\textbf{Beweis}:  Wir werden $M$ so zu einer maximal endlich erfüllbaren Menge $\widehat{M}$
+erweitern, dass 
+\\[0.2cm]
+\hspace*{1.3cm}
+$M \subseteq \widehat{M}$
+\\[0.2cm]
+gilt.  Da die Menge $\widehat{M}$ nach Satz \ref{satz30} erfüllbar ist, ist $M$ als Teilmenge von
+$\widehat{M}$ dann erst recht erfüllbar.
+Zu diesem Zweck definieren wir eine Folge $(M_n)_{n\in \mathbb{N}}$ von Mengen, die alle endlich
+erfüllbar sind und die in einem gewissen Sinne gegen die Menge $\widehat{M}$ konvergieren.
+Die Definition der Mengen $M_n$ verläuft durch Induktion nach der Zahl $n$.  Bevor wir diese
+Induktion durchführen können, benötigen wir eine \emph{Aufzählung} aller aussagenlogischen Formeln.
+Darunter verstehen wir eine Folge aussagenlogischer Formeln $(g_n)_{n \in \mathbb{N}}$, in der jede
+aussagenlogische Formel mindestens einmal vorkommt, es soll also gelten:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\forall f \in \mathcal{F}: \exists n \in \mathbb{N}: f = g_n$.
+\\[0.2cm]
+Falls die Menge der Aussagen-Variablen endlich ist, so kann eine solche Folge zum Beispiel dadurch konstruiert
+werden, dass wir erst alle Formeln der Länge 1, dann die Formeln der Länge 2 und so weiter
+aufzählen.  
+
+Die induktive Definition der Mengen $M_n$ verläuft nun wie folgt.
+\begin{enumerate}
+\item[I.A.] $n = 0$:  Wir setzen
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $M_0 := M$.
+  \\[0.2cm]
+  Dann ist die Menge $M_0$ nach Voraussetzung endlich erfüllbar.
+\item[I.S.] $n \mapsto n + 1$:  Die Definition von $M_{n+1}$ erfolgt über eine Fall-Unterscheidung:
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $M_{n+1} := \left\{
+  \begin{array}[c]{ll}
+    M_n \cup \{ f_n \}      & \mbox{falls $M_n \cup \{ f_n \}$ endlich erfüllbar ist;} \\[0.2cm]
+    M_n \cup \{ \neg f_n \} & \mbox{sonst.}
+  \end{array}
+  \right.
+  $
+  \\[0.2cm]
+  Wir müssen zeigen, dass $M_{n+1}$ endlich erfüllbar ist.  Es gibt zwei Fälle.
+  \begin{enumerate}
+  \item $M_n \cup \{ f_n \}$ ist endlich erfüllbar.
+
+        Dann gilt $M_{n+1} = M_n \cup \{ f_n \}$ und die Behauptung ist trivial.
+  \item $M_n \cup \{ f_n \}$ ist nicht endlich erfüllbar.
+
+        Da $M_n$ alleine nach Induktions-Voraussetzung endlich erfüllbar ist, muss es dann eine
+        endliche Teilmenge $E = \{ e_1, \cdots, e_k \} \subseteq M_n$ geben, so dass
+        \\[0.2cm]
+        \hspace*{1.3cm}
+        $E \cup \{ f_n \}$
+        \\[0.2cm]
+        nicht erfüllbar ist.  Damit gilt dann
+        \\[0.2cm]
+        \hspace*{1.3cm}
+        $\{ e_1, \cdots, e_m, f_n \} \models \falsum$
+        \\[0.2cm]
+        und daraus folgt
+        \\[0.2cm]
+        \hspace*{1.3cm}
+        $ \models e_1 \wedge \cdots \wedge e_n \rightarrow \neg f_n$.
+        \\[0.2cm]
+        Wir führen den Beweis nun indirekt und nehmen an, dass die Menge
+        \\[0.2cm]
+        \hspace*{1.3cm}
+        $M_n \cup \{ \neg f_n \}$ 
+        \\[0.2cm]
+        nicht endlich erfüllbar wäre.  Dann gibt es eine endliche Menge 
+        $G = \{ g_1, \cdots, g_k \} \subseteq M_n$,
+        so dass gilt:
+        \\[0.2cm]
+        \hspace*{1.3cm}
+        $\{ g_1, \cdots, g_k, \neg f_n \} \models \falsum$.
+        \\[0.2cm]
+        Daraus folgt aber
+        \\[0.2cm]
+        \hspace*{1.3cm}
+        $\models g_1 \wedge \cdots \wedge g_k \rightarrow f_n$.
+        \\[0.2cm]
+        Insgesamt haben wir damit aber sowohl
+        \\[0.2cm]
+        \hspace*{1.3cm}
+        $\models e_1 \wedge \cdots \wedge e_m \wedge g_1 \wedge \cdots \wedge g_k \rightarrow f_n$
+        \\
+        als auch 
+        \\[-0.2cm]
+        \hspace*{1.3cm}
+        $\models e_1 \wedge \cdots \wedge e_m \wedge g_1 \wedge \cdots \wedge g_k \rightarrow \neg f_n$.
+        \\[0.2cm]
+        Zusammengenommen zeigt dies, dass die Menge $G := \{ e_1, \cdots, e_m, g_1, \cdots, g_k \}$
+        nicht erfüllbar ist:
+        \\[0.2cm]
+        \hspace*{1.3cm}
+        $\{ e_1, \cdots, e_m, g_1, \cdots, g_k \} \models \falsum$.
+        \\[0.2cm]
+        Dies steht im Widerspruch dazu, dass diese Menge eine endliche Teilmenge von $M_n$ ist und
+        $M_n$ ist nach Induktions-Voraussetzung endlich erfüllbar.  Daher haben wir die Annahme,
+        dass $M_n \cup \{ \neg f_n \}$ nicht endlich erfüllbar ist, widerlegt. 
+  \end{enumerate}
+  Nach Konstruktion der Mengen $M_n$ gilt offenbar
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $M_0 \subseteq M_1 \subseteq M_2 \subseteq \cdots \subseteq M_n \subseteq M_{n+1} \subseteq \cdots$.
+  \\[0.2cm]
+  Daher definieren wir die Menge $\widehat{M}$ nun als den Grenzwert der Folge $(M_n)_{n \in \mathbb{N}}$:
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\widehat{M} = \bigcup\limits_{n \in \mathbb{N}} M_n$.
+  \\[0.2cm]
+  Wir zeigen zunächst, dass $\widehat{M}$ endlich erfüllbar ist.  Sei also $E$ eine endliche
+  Teilmenge von $\widehat{M}$:
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $E = \{ e_1, \cdots, e_m \} \subseteq \bigcup\limits_{n \in \mathbb{N}} M_n$.
+  \\[0.2cm]
+  Dann gibt es für jedes $i \in \{ 1, \cdots, m \}$ eine Zahl $n(i)$, so dass
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $e_i \in M_{n(i)}$ 
+  \\[0.2cm]
+  ist.  Wir definieren
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\widehat{n} := \max\bigl(\bigl\{n(1), \cdots, n(m) \bigr\}\bigr)$
+  \\[0.2cm]
+  Daraus folgt aber sofort $E \subseteq M_{\widehat{n}}$ und da $M_{\widehat{n}}$ endlich erfüllbar
+  ist, muss die Menge $E$ als endliche Teilmenge von $M_{\widehat{n}}$ erfüllbar sein.
+  Damit haben wir gezeigt, dass $\widehat{M}$ endlich erfüllbar ist.
+
+  Als nächstes zeigen wir, dass $\widehat{M}$ maximal endlich erfüllbar ist.  Betrachten wir eine
+  beliebige aussagenlogische Formel $f$.  Wir müssen zeigen, dass entweder $f \el \widehat{M}$ oder 
+  $(\neg f) \el \widehat{M}$ gilt.  Wir hatten vorausgesetzt, dass die Folge $(f_n)_{n \in \mathbb{N}}$ 
+  die Menge aller aussagenlogischen Formeln aufzählt.  Also gibt es ein $n$, so dass $f = f_n$ ist.
+  Nach Definition gilt dann aber 
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $M_{n+1} = M_n \cup \{ f_n \}$ \quad oder \quad 
+  $M_{n+1} = M_n \cup \{ \neg f_n \}$
+  \\[0.2cm]
+  und da $M_{n+1} \subseteq \widehat{M}$ ist, folgt
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $f_n \el \widehat{M}$ \quad oder \quad
+  $(\neg f_n) \el \widehat{M}$.
+  \\[0.2cm]
+  Also ist $\widehat{M}$ maximal endlich erfüllbar und daher ist $\widehat{M}$ nach Satz \ref{satz30} erfüllbar. \qed
+\end{enumerate}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "logik"
+%%% End: 

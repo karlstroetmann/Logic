@@ -1,0 +1,182 @@
+\documentclass{article}
+\usepackage{german}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{fancyvrb}
+\usepackage{alltt}
+
+\newcommand{\diff}{\frac{\displaystyle d\;}{\displaystyle dx}}
+\newcommand{\df}[1]{\frac{\displaystyle d#1}{\displaystyle dx}}
+\newcommand{\ds}{\displaystyle}
+
+\begin{document}
+\noindent
+{\Large \textbf{Exercise}: Symbolic Computation}
+\vspace{0.5cm}
+
+\noindent
+In \emph{symbolic differentiation} we are given an arithmetic expression $e$ and the task
+is to compute the derivative of this expression with respect to a given variable $x$.
+The task is called \emph{symbolic} differentiation because the result is not a numerical
+value, but rather an arithmetic expression.  For example, if the expression $e$ is given as
+\\[0.2cm]
+\hspace*{1.3cm}
+$e = x \cdot \exp(x)$,
+\\[0.2cm]
+then the derivative of $e$ with respect to $x$ can be calculated using the \emph{product rule} and 
+is seen to be
+\[ \displaystyle \diff \Bigl(x \cdot \exp(x)\Bigr) = 1 \cdot \exp(x) + x \cdot \exp(x). \]
+In order to be able to develop an algorithm for symbolic differentiation, we first define the set
+ $\mathcal{E}$ of arithmetic expressions.
+\begin{enumerate}
+\item The strings $\mathtt{x}$, $\mathtt{y}$ and $\mathtt{z}$ are arithmetical expressions, 
+      we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{x} \in \mathcal{E}$, \quad
+      $\mathtt{y} \in \mathcal{E}$, \quad and \quad
+      $\mathtt{z} \in \mathcal{E}$.
+      \\[0.2cm]
+      Of course, these strings are interpreted as variables.
+\item All natural numbers are arithmetical expressions:
+
+      $n \in \mathcal{E}$ \quad for all $n \in \mathbb{N}$.
+\item If $s$ and  $t$ are arithmetical expressions, then we have:
+      \begin{enumerate}
+      \item $s + t \in \mathcal{E}$,
+      \item $s - t \in \mathcal{E}$,
+      \item $s \,\cdot\, t \in \mathcal{E}$,
+      \item $s \;\,/\,\; t \in \mathcal{E}$.
+      \end{enumerate}
+\item If $s \in \mathcal{E}$ and $n \in \mathbb{N}$, then $s^n \in \mathcal{E}$.  
+\end{enumerate}
+In order to be able to manipulate arithmetical expressions with a \textsc{Setl} program, 
+we have to define how these expressions are represented in \textsc{Setl2}.
+There, we define a function 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{rep}: \mathcal{E} \rightarrow \textsc{Setl2}$.
+\\[0.2cm]
+This function takes an arithmetical expression as its argument and transforms it into a
+\textsl{Setl} data structure.  The value $\texttt{rep}(e)$ is defined by induction on $e$:
+\begin{enumerate}
+\item The representation of a variable is the corresponding string.  Therefore we have
+
+      $\texttt{rep}(v) = v$ \quad for all variables 
+      $v \in \{ \mathtt{x}, \mathtt{y}, \mathtt{z} \}$ .  
+\item A number is represented by itself:
+
+      $\texttt{rep}(n) = n$ \quad for all $n \in \mathbb{N}$.
+\item $\texttt{rep}(s + t) := [ \texttt{rep}(s), \textrm{``}+\textrm{''}, \texttt{rep}(t) ]$.
+\item $\texttt{rep}(s - t)  := [ \texttt{rep}(s), \textrm{``}-\textrm{''}, \texttt{rep}(t) ]$.
+\item $\texttt{rep}(s \,*\, t)  := [ \texttt{rep}(s), \textrm{``}*\textrm{''}, \texttt{rep}(t) ]$.
+\item $\texttt{rep}(s \;\,/\,\; t)  := [ \texttt{rep}(s), \textrm{``}\,/\,\textrm{''}, \texttt{rep}(t) ]$.
+\item $\texttt{rep}(s^n) := [ \texttt{rep}(s), \textrm{``}\mathtt{**}\textrm{''}, n ]$ 
+      \quad for all $n \in \mathbb{N}$.
+\end{enumerate}
+\vspace{0.3cm}
+
+\noindent
+\textbf{Exercise 1}:
+Implement a \textsc{Setl2} procedure \texttt{diff} such that 
+$\texttt{diff}(e,v)$ computes the derivate of the arithmetical expression $E$ with respect to the
+variable  $v$.
+\vspace{0.3cm}
+
+\noindent
+\begin{enumerate}
+\item You will find a program skeleton for this task at the following location:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{http://www.ba-stuttgart.de/\symbol{126}stroetma/SETL2/diff-frame.stl}
+      \\[0.2cm]
+      This program skeleton already contains a parser, a pretty printer and some test cases.
+\item The representation of arithmetical expressions given above does not account for the unary
+      minus operator ``\texttt{-}''.  Therefore, an expression of the form $- e$ has to be
+      represented as $0 - e$.
+\item The parser is not able to parse negative numbers and the unary minus operator is not supported
+      either. However, instead of writing, for example,
+      $-5 \cdot x$  use the expression $0 - 5 \cdot x$.  
+\item Remember the following rules:
+      \begin{enumerate}
+      \item $\diff \bigl(g + h\bigr) = \df{g} + \df{h} $,
+      \item $\diff \bigl(g - h\bigr) = \df{g} - \df{h} $,
+      \item $\diff \bigl(g \cdot h\bigr) = 
+       \df{g} \cdot h + g \cdot \df{h}$
+      \item $\diff \Bigl(\frac{\ds g}{\ds h}\Bigr) = 
+       \frac{\raisebox{-3.3mm}{}\;\;\ds \df{g} \cdot h - g \cdot
+         \df{h}\;\;}{\raisebox{3mm}{}\displaystyle h \cdot h}$  
+      \item $\diff g^n = n \cdot g^{n-1} \cdot \df{g}$  
+            \quad for all $n \in \mathbb{N}$
+      \end{enumerate}
+\item For testing types, \textsc{Setl} provides the procedure $\texttt{is\_integer}()$.
+\end{enumerate}
+
+\noindent
+\textbf{Exercise 2}: Extend the program so  that you can handle the functions 
+ $\exp()$, $\mathtt{ln}()$, $\mathrm{sqrt}()$, $\sin()$, $\cos()$, $\tan()$, and $\arctan()$.
+\vspace{0.3cm}
+
+\noindent
+\textbf{Remark}:  The derivatives of these functions are as follows:
+
+\begin{center}
+\begin{tabular}[c]{|c|c||c|c|}
+\hline
+$\rule[-0.3cm]{0pt}{0.8cm} f(x)$    & $\frac{\displaystyle d\;}{\displaystyle dx} f$ &
+$\rule[-0.3cm]{0pt}{0.8cm} f(x)$    & $\frac{\displaystyle d\;}{\displaystyle dx} f$ \\
+\hline
+\hline
+$\rule{0pt}{0.5cm} \texttt{exp}(x)$ & $\texttt{exp}(x)$  
+&
+$\rule{0pt}{0.5cm}\texttt{ln}(x)$ & $\frac{\displaystyle 1}{\displaystyle x}$ \\[0.3cm]
+\hline
+$\rule{0pt}{0.5cm}\texttt{sin}(x)$ & $\texttt{cos}(x)$  
+&
+$\rule{0pt}{0.5cm}\texttt{cos}(x)$ & $- \texttt{sin}(x)$  \\[0.3cm]
+\hline
+$\rule{0pt}{0.5cm}\texttt{tan}(x)$ & $\frac{\displaystyle1}{\rule{0cm}{11pt}\displaystyle\texttt{cos}^2(x)}$  
+&
+$\rule{0pt}{0.5cm}\texttt{arctan}(x)$ & $\frac{\displaystyle1}{\rule{0cm}{11pt}\displaystyle1 + x^2}$  \\[0.6cm]
+\hline
+$\rule[-0.5cm]{0pt}{1.0cm}\sqrt{x}$ & $\frac{\displaystyle1}{\rule{0cm}{11pt}\displaystyle 2
+  \sqrt{x}}$ & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent
+\textbf{Hint}:  Don't forget to apply the chain rule!
+\vspace{0.3cm}
+
+
+\noindent
+\textbf{Exercise 3}: Implement a procedure \texttt{simplify} that takes an arithmetical expression
+and simplifies it using the following identities:
+\\[0.2cm]
+\hspace*{1.3cm}
+$1 \cdot x = x \cdot 1 = x,\quad 0 \cdot x = x \cdot 0 = 0,\quad 0 + x = x + 0 = x$.
+\vspace{0.3cm}
+
+\noindent
+\textbf{Hint}:  Use recursion!
+\vspace{0.3cm}
+
+
+\noindent
+\textbf{Exercise 4$^{*}$}: Extend your program so that it can calculate the derivative of 
+an expression of the form 
+$s^t$
+where  $s$ and  $t$ are arbitrary arithmetical expressions.  Test your implementation
+by computing 
+\\
+\hspace*{2.3cm} 
+$\displaystyle \frac{\displaystyle d\;}{dx} \bigl(x^x\bigr)$.
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

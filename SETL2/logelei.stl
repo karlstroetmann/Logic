@@ -1,0 +1,60 @@
+program main;
+    -- Wenn Herr Meier kommt, bringt er auch Frau Meier mit.
+    f1 := [ "papa", "->", "mama" ];
+
+    -- Mindestens eines der beiden Kinder Walter und Katrin wird kommen.
+    f2 := [ "walter", "+", "katrin" ];          
+
+    -- Entweder kommt Frau Meier oder Franziska, aber nicht beide.
+    f3 := [ "mama", "+", "franziska" ]; 
+    f4 := [ "-", [ "mama", "*", "franziska" ] ]; 
+
+    -- Entweder kommen Fransizka und Katrin zusammen oder beide kommen nicht.
+    f5 := [ "franziska", "<->", "katrin" ]; 
+
+    -- Wenn Walter kommt, dann kommen auch Katrin und Herr Meier.
+    f6 := [ "walter", "->",  [ "katrin", "*", "papa" ] ];
+
+    FS := { f1, f2, f3, f4, f5, f6 };
+
+    A  := { "papa", "mama", "walter", "katrin", "franziska" };
+    P  := pow A;
+    print("P = ", P);
+    -- B ist die Menge aller Belegungen
+    B  := { createBelegung(M, A) : M in P };
+    S  := { I in B | evalSet(FS, I) = true };
+    if #S = 1 then
+        I := arb S;
+        Besucher := { x in A | I(x) };
+        print("\nMenge der Besucher: ", Besucher);
+    end if;
+
+    -- Diese Prozedur erzeugt aus einer Teilmenge M von A eine Belegung,
+    -- die genau für die Elemente x aus A true liefert, für die x ein Element von
+    -- M ist.      
+    procedure createBelegung(M, A);
+        return { [ x, x in M ] : x in A };
+    end createBelegung;
+
+    -- FS ist eine Menge von Formeln und I ist eine Belegung.  Die Funktion liefert
+    -- genau dann wahr, wenn evaluate(f, I) für alle Formeln f aus FS true liefert. 
+    procedure evalSet(FS, I);
+        return { eval(f, I) : f in FS } = { true };
+    end evalSet;
+
+    -- Die Prozedur evaluate(f, I) wertet die aussagen-logische Formel f unter
+    -- aussagen-logischen Interpretation I aus.
+    procedure eval(f, I);
+        case
+            when f  = 1       =>  return TRUE;
+            when f  = 0       =>  return FALSE;
+            when is_string(f) =>  return I(f);
+            when f(1) = "-"   =>  return not eval(f(2), I);
+            when f(2) = "*"   =>  return eval(f(1), I) and  eval(f(3), I);
+            when f(2) = "+"   =>  return eval(f(1), I) or   eval(f(3), I);
+            when f(2) = "->"  =>  return not eval(f(1), I) or eval(f(3), I);
+            when f(2) = "<->" =>  return eval(f(1), I) = eval(f(3), I);
+            otherwise => print("eval: Syntax-Fehler: ", f);
+        end case;
+    end eval;
+end main;

@@ -1,0 +1,59 @@
+program main;
+    -- Anton, Bruno oder Claus ist schuldig.
+    f1 := [ "+", [ "+", "a", "b" ], "c" ];
+
+    -- Wenn Anton schuldig ist, so hat er genau einen Komplizen.
+    f2 := [ "->", "a", [ "+", "b", "c" ] ];          -- mindestens einen Komplizen
+    f3 := [ "->", "a", [ "-", [ "*", "b", "c" ] ] ]; -- höchstens einen Komplizen
+
+    -- Wenn Bruno unschuldig ist, dann ist auch Claus unschuldig
+    f4 := [ "->", [ "-", "b" ], [ "-", "c" ] ]; 
+
+    -- Wenn genau zwei schuldig sind, dann ist Claus einer von ihnen.
+    -- Also gilt nicht: Anton und Bruno sind schuldig und Claus ist unschuldig.
+    f5 := [ "-", [ "*", [ "*", "a", "b" ], [ "-", "c" ] ] ]; 
+
+    -- Wenn Claus unschuldig ist, ist Anton schuldig.
+    f6 := [ "->", [ "-", "c" ],  "a"  ];
+
+    FS := { f1, f2, f3, f4, f5, f6 };
+
+    A  := { "a", "b", "c" };
+    P  := pow A;
+    print("P = ", P);
+    B  := { createBelegung(M, A) : M in P };
+    print("B = ", B);
+    
+    S  := { I in B | evaluateSet(FS, I) = true };
+    print(S);
+    
+
+    -- Diese Prozedur erzeugt aus einer Teilmenge M von A eine Belegung,
+    -- die genau für die Elemente x aus A true liefert, für die x ein Element von
+    -- M ist.      
+    procedure createBelegung(M, A);
+        return { [ x, x in M ] : x in A };
+    end createBelegung;
+
+    -- FS ist eine Menge von Formeln und I ist eine Belegung.  Die Funktion liefert
+    -- genau dann wahr, wenn evaluate(f, I) für alle Formeln f aus FS true liefert. 
+    procedure evaluateSet(FS, I);
+        return { evaluate(f, I) : f in FS } = { true };
+    end evaluateSet;
+
+    -- Die Prozedur evaluate(f, I) wertet die aussagen-logische Formel f unter
+    -- aussagen-logischen Interpretation I aus.
+    procedure evaluate(f, I);
+        case
+            when f  = 1       =>  return TRUE;
+            when f  = 0       =>  return FALSE;
+            when is_string(f) =>  return I(f);
+            when f(1) = "-"   =>  return not evaluate(f(2), I);
+            when f(1) = "*"   =>  return evaluate(f(2), I) and  evaluate(f(3), I);
+            when f(1) = "+"   =>  return evaluate(f(2), I) or   evaluate(f(3), I);
+            when f(1) = "->"  =>  return not evaluate(f(2), I) or evaluate(f(3), I);
+            when f(1) = "<->" =>  return evaluate(f(2), I) = evaluate(f(3), I);
+            otherwise => print("evaluate: Syntax-Fehler: ", f);
+        end case;
+    end evaluate;
+end main;

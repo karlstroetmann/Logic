@@ -1,0 +1,47 @@
+program main;
+    f := [ "->", [ "->", "p", "q" ], [ "->", [ "->", [ "-", "p" ], "q" ], "q" ] ];
+    if tautology(f) then
+        print("Die Formel \"" + f + "\" ist eine Tautologie.");
+    else
+        print("Die Formel \"" + f + "\" ist keine Tautologie.");
+    end if;
+
+    -- Diese Funktion sammelt alle Variablen in f auf.
+    procedure collectVars(f);
+        case
+            when f = 1        =>  return {};
+            when f = 0        =>  return {};
+            when is_string(f) =>  return { f };
+            when f(1) = "-"   =>  return collectVars( f(2) );
+            when f(1) = "*"   =>  return collectVars( f(2) ) + collectVars( f(3) );
+            when f(1) = "+"   =>  return collectVars( f(2) ) + collectVars( f(3) );
+            when f(1) = "->"  =>  return collectVars( f(2) ) + collectVars( f(3) );
+            when f(1) = "<->" =>  return collectVars( f(2) ) + collectVars( f(3) );
+            otherwise => print("malformed formula: ", f);
+        end case;
+    end collectVars;
+
+    -- Test, ob Formel f eine Tautologie ist.
+    procedure tautology(f);
+        V := collectVars(f);
+        -- A ist die Menge aller Belegungen
+        A := { { [x, x in M] : x in V } : M in pow V };
+        return { eval(f, I) : I in A } = { true };
+    end tautology;
+
+    -- Die Prozedur eval(f, I) wertet die aussagen-logische Formel f unter
+    -- aussagen-logischen Interpretation I aus.
+    procedure eval(f, I);
+        case
+            when f  = 1       =>  return TRUE;
+            when f  = 0       =>  return FALSE;
+            when is_string(f) =>  return I(f);
+            when f(1) = "-"   =>  return not eval(f(2), I);
+            when f(1) = "*"   =>  return eval(f(2), I) and  eval(f(3), I);
+            when f(1) = "+"   =>  return eval(f(2), I) or   eval(f(3), I);
+            when f(1) = "->"  =>  return not eval(f(2), I) or eval(f(3), I);
+            when f(1) = "<->" =>  return eval(f(2), I) = eval(f(3), I);
+            otherwise => print("eval: Syntax-Fehler: ", f);
+        end case;
+    end eval;
+end main;

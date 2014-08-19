@@ -1,0 +1,44 @@
+-- variant new states function, for rough planning
+procedure relaxed_new_states_from(state); 
+    return { new_state : j in [ 1 .. #state ], k in [ 0 .. size(j) ] | (new_state(j) := k) /= OM}; 
+end relaxed_new_states_from;
+
+
+procedure find_path_by_planning(start, target); 
+    -- allowed-step function used by find_path routine
+    var new_states_from;    
+    
+    -- first allow 'roughly correct' steps, to generate a plan 
+    new_states_from := relaxed_new_states_from;
+    if (plan := find_path(start,target)) = OM then 
+        return OM; 
+    end if;
+
+    -- now use 'exact' steps, to fill in the plan 
+    new_states_from := exact_new_states_from;
+    details := [];      -- will show how j-th step of plan was filled in
+    plan_index := 1;    -- next step of plan to be filled in
+    
+    while plan_index < #plan loop
+    -- try to fill in the plan with exact steps, abandoning plan steps which don't work
+        if (steps := find_path(plan(plan_index),plan(plan_index + 1))) = OM then
+            -- cannot take this step of plan; drop a future plan step if possible
+            if plan_index + 1 < #plan then
+                plan(plan_index + 1) := [];
+            elseif plan_index > 1 then
+                -- drop the prior step of the plan, and back up
+                plan(plan_index) := []; 
+                plan_index -:= 1;
+            else    -- impossible to connect start with target
+                return OM;
+            end if;
+        else    -- record sequence of steps to the next plan point
+            details(plan_index) := steps; 
+            plan_index +:= 1;
+        end if;    
+    end loop;
+        -- at this point we are done, and simply need to assemble all subsequences
+        --  of steps into an overall solution, dropping repeated nodes
+    return +/ [ steps(if j = 1 then 1 else 2 end if ..) : steps in details ];
+    
+end find_path_by_planning; 

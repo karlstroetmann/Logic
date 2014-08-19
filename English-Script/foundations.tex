@@ -1,0 +1,2161 @@
+\chapter{Mathematical Foundations} 
+\emph{Formal logic} and \emph{set theory} are at the foundation of computer science.
+Therefore, these two topics are the central themes of this introductory computer science lecture. 
+Both set theory and formal logic are rather abstract and quite difficult.  
+According to my experience, a lot of students  have a  hard time understanding these
+topics.  Therefore it is necessary to motivate the use of set theory and formal logic.
+To this end, the following section will convince you that computer science needs a solid
+scientific foundation.   As this lecture progresses you will see that set theory and logic
+can indeed provide this scientific foundation.
+
+\section{Motivation}
+Modern software and hardware system are the most complex systems ever designed by humanity.
+There are IT projects  that take several thousand developers and several years to complete.
+It is obvious that the failure of such a project is connected with enormous financial losses.
+Let me give a few examples of software projects that illustrate this point.
+\begin{enumerate}
+\item On June 9th of 1996 the Ariane 5 rocket disintegrated on its maiden voyage.
+      This was due to a chain of software errors:
+      \begin{itemize}
+      \item A sensor of the navigation system measured the horizontal inclination and stored
+            this number as a 64 bit floating point number.
+      \item This number was converted into a 16 bit fixed point number.
+            During this conversion there was an overflow because the 64 bit number could not be
+            represented with 16 bits.
+      \item As a consequence, the navigation system produced an error message, which was sent
+            to the controlling unit.
+      \item The controlling unit wrongly interpreted the error message as flight data and
+            tried to correct the flight path accordingly.  
+      \item The resulting accelerations caused the rocket to disintegrate.  
+            Four satellites were lost, the financial loss
+            was estimated to be a few hundred million dollars.
+
+      \item You can find a complete report on the Ariane 5 disaster at \\[0.1cm]
+      \hspace*{1.3cm} \texttt{http://www.ima.umn.edu/\symbol{126}arnold/disasters/ariane5rep.html}
+     
+      \end{itemize}
+\item The Therac 25 is a medical device for X-ray treatment of cancer patients.
+      Due to a software error in 1985 at least 6 patients got a severe overdose of radiation.
+      Three of these did not survive the overdose.
+      A detailed description of these accidents is available at \\[0.1cm]
+      \hspace*{1.3cm} \texttt{http://courses.cs.vt.edu/\symbol{126}cs3604/lib/Therac\_25/Therac\_1.html}      
+\item During the first golf war, an Iraqi  \textsl{Scud} missile could not be intercepted
+      by the  \textsl{Patriot} anti-aircraft system.  This was due to a programming error
+      in the \textsl{Patriot} control software.
+      As a result, 28 soldiers lost their lives, and a hundred more were severely injured.
+\item You can find a listing of more software related accidents at \\[0.1cm]
+      \hspace*{1.3cm} \texttt{http://www.cs.tau.ac.il/\symbol{126}nachumd/horror.html}.
+\end{enumerate}
+The examples given above show that the construction of IT systems requires both diligence
+and precision.  Therefore, the development of IT systems needs a solid scientific foundation.
+This foundation consists of both formal logic and set theory.
+Besides being used as foundation, both set theory and formal logic have immediate
+applications in computer science. 
+\begin{enumerate}
+\item Set theory and the theory of relations (which is a part of set theory)
+      is the foundation of the theory of relational databases.
+\item The programming languages \textsl{Prolog}, which is used primarily in 
+      AI\footnote{AI is short for \emph{artificial intelligence}.} applications,
+      is based on predicate logic.
+\end{enumerate}
+Besides the immediate applications of formal logic and set theory, our engagement with these topics
+has another very important reason:  Complex systems can only be controlled by suitable abstractions.
+Nobody is able to understand every detail of a program consisting of several hundred thousand lines
+of codes.  The only way to manage a software system of that size is to introduce suitable
+abstractions.  Therefore, a higher-than-average ability to abstract is the most important ability of
+a computer scientist.  Our treatment of logic and set theory aims at improving this ability.
+
+Of course, there is another very important reason that should motivate you to study both formal
+logic and set theory sincerely and I don't want to conceal this reason:  It is the written
+examination at the end of this term.
+
+\paragraph{Overview} 
+This lecture will cover the following topics:
+\begin{enumerate}
+\item mathematical {formul\ae}
+
+      Mathematical {formul\ae} can express complex statements of affairs
+      much more concise than descriptions given in natural language.
+\item set theory
+
+      Set theory is the foundation of both modern mathematics and computer science.
+\item \textsc{Setl}
+  
+      The programming language \textsc{Setl} is directly based on set theory.
+\item propositional logic
+
+      Propositional logic analyzes the meaning of connectors like \emph{and}, \emph{or}, 
+      and \emph{if $\cdots$ then}.
+\item predicate logic      
+
+      Predicate logic adds the \emph{quantifiers} ``\emph{forall}'' and ``\emph{exists}''
+      to propositional logic.
+\item \textsl{Prolog}
+
+      \textsl{Prolog} is a programming language based on predicate logic.
+\item limits of computability
+
+      Certain problems cannot be solved by algorithms.  We will see that the question,
+      whether a given program halts on a given input, is not decidable.
+\item Hoare calculus
+
+      The \emph{Hoare calculus} is a system that enables us to formally prove the correctness
+      of algorithms.
+\end{enumerate}
+
+\section{Mathematical {Formul\ae}}
+Mathematical {formul\ae} are used to represent facts unambiguously.  We will define
+mathematical {formul\ae} as abbreviations.  Let us first motivate their use.
+
+\subsection{Why Use Mathematical {Formul\ae}?}
+Take a look at the following statement:
+\begin{center}
+\begin{minipage}{14cm}
+{\em 
+  If wee add two numbers and then square this sum,  we will get the same result that we get
+  when we square the numbers separately, add these squares and finally add the product of
+  both numbers twice.
+}
+\end{minipage}
+\end{center}
+This text given above is nothing else than the well known formula 
+\\[0.2cm]
+\hspace*{1.3cm} $(a+b)^2 = a^2 + b^2 + 2\cdot a\cdot b$. 
+\\[0.2cm]
+Obviously, this formula is much easier to understand than the text given above.
+But besides being easier to read, mathematical {formul\ae} offer two more benefits.
+\begin{enumerate}
+\item Mathematical {formul\ae} can be processed and analyzed by a computer program.
+      At the present time, it is not possible for a computer to ``\emph{understand}''
+      natural language.
+\item The meaning of a mathematical formula can be defined unambiguously.
+      In contrast, natural language is often ambiguous:  Different people may interpret
+      the same sentence differently.
+\end{enumerate}
+
+\subsection{Mathematical {Formul\ae} As Abbreviations}
+Let us first introduce the ingredients that are used to build mathematical {formul\ae}.
+\begin{enumerate}
+\item \emph{variables}
+
+      Variables are used as names for arbitrary objects.  In the example given above we
+      used the variables $a$ and $b$ to denote arbitrary numbers.
+\item \emph{constants}
+
+      A constant is used to denote a fixed object.  In mathematics, numbers like $1$ or
+      $\pi$ are used as constants.  If we were to devise a theory describing biblical
+      genealogy, we would use constants like \texttt{Adam} and \texttt{Eve}.
+
+      Both variables and constants are known as \emph{atomic terms}.  The attribute
+      \emph{atomic} relates to the fact that neither variables nor constants can be
+      subdivided into further components.  
+
+\item \emph{function symbols}
+
+      Function symbols are used to construct complex expressions.  In the example above, we
+      have used ``$+$'', ``$*$'', and ``$^2$'' as function symbols.  Expressions that are
+      made up from function symbols, variables and constants are called ``\emph{terms}''.
+
+      Every function symbol has an \emph{arity}.  The arity specifies the number of
+      arguments that the function symbol needs.  To give an example, the function symbol
+      ``+'' expects two arguments, so its arity is two.  The square root function
+      $\sqrt{\;\;}$ is an example of a function symbol with arity 1.
+      
+      Instead of saying that the function symbol $f$ has arity $n$ we will call $f$ an
+      $n$-ary function symbol.  If a function symbol is 2-ary, it is also called a
+      \emph{binary} function symbol, and a 1-ary function symbol is also known as a
+      \emph{unary} function symbol.  
+\item \emph{terms}
+
+      Terms denote complex objects.  The notion of a term is defined inductively:
+      \begin{enumerate}
+      \item Every variable is a term.
+      \item Every constant is a term.
+      \item If $f$ is an $n$-ary function symbol and we already know that $t_1$, $t_2$,
+            $\cdots$, $t_n$ are terms, then $f(t_1, \cdots, t_n)$ is also a term.
+      \end{enumerate}
+      The notation $f(t_1, \cdots, t_n)$ is called the \emph{prefix notation}.  In
+      mathematical practice we often use an infix notation for binary function symbols.
+      If $o$ is a binary function symbol and $t_1$ and $t_2$ are terms, then we often write
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $t_1\;o\;t_2$ \quad instead of \quad $o(t_1, t_2)$.
+      \\[0.2cm]
+      A well known  example is the binary function symbol ``+'':  Of course we write
+      $x + y$ instead of $+(x,y)$.   However, when several different binary function
+      symbols are used, we have to define a \emph{precedence} of the different function
+      symbols,  or otherwise the interpretation of a term would be ambiguous.
+      For example, in school mathematics the term
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $x + y * z$ \quad is interpreted as \quad $+(x, *(y, z))$
+      \\[0.2cm]
+      as the binary function symbol ``\texttt{*}'' has a higher precedence than the binary
+      function symbol ``$+$''.
+\item \emph{predicate symbols}
+
+      Predicate symbols are used to make a statement about objects.  Like a function symbol,
+      a predicate symbol has an arity which is a natural number.  If $p$ is an $n$-ary
+      predicate symbol and if $t_1$, $t_2$, $\cdots$, $t_n$ are terms, then
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $p(t_1, t_2, \cdots, t_n)$
+      \\[0.2cm]
+      is an \emph{atomic formula}.  It states that the terms $t_1$, $\cdots$, $t_n$ are in
+      the relation denoted by the predicate symbol $p$.  To give an example, consider the
+      two terms $x$ and $+(x,1)$ and the predicate symbol $<$.
+      Then
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $<(x, +(x,1))$
+      \\[0.2cm]
+      is an \emph{atomic formula}. Of course, this is easier to read if presented in infix notation as
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $x < x + 1$.
+      \\[0.2cm]
+      While terms denote objects, atomic {formul\ae} have a \emph{truth value}:  They are
+      either true or false.
+\item \emph{sentential connectives}
+
+      \emph{Sentential connectives} are also know as \emph{logical operators}.
+      They are used to build more complex {formul\ae} from atomic {formul\ae}.
+      The simplest sentential connective is ``\emph{and}''.  We will write the logical
+      operator denoting ``\emph{and}'' as ``$\wedge$''.  Given two {formul\ae} $F_1$ and
+      $F_2$, we can connect these  {formul\ae} with the operator ``$\wedge$'' to build the
+      new formula
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $F_1 \wedge F_2$.
+      \\[0.2cm]
+      We read this formula as ``\emph{$F_1$ and $F_2$}''.  It states that both $F_1$ and
+      $F_2$ hold true.
+      
+      The following tables lists all the logical operators that we are going to use:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \hspace*{1.3cm} 
+      \begin{tabular}{|l|l|}
+      \hline
+      operator & read as \\
+      \hline
+      \hline
+        $\neg F$ & not $F$ \\
+      \hline
+        $F_1 \wedge F_2$ & $F_1$ and $F_2$ \\
+      \hline
+        $F_1 \vee F_2$ & $F_1$ or $F_2$ \\
+      \hline
+        $F_1 \rightarrow F_2$ & if $F_1$ holds, then $F_2$ holds \\
+      \hline
+        $F_1 \leftrightarrow F_2$ &  $F_1$ holds if and only if $F_2$ holds \\
+      \hline
+      \end{tabular}
+      \\[0.2cm]
+      In a complex formula we will have to use parenthesis to eliminate ambiguities.
+      However, as excessive use of parenthesis renders a complex formula unreadable,
+      we agree to assign precedences to these logical operators.  
+      The operator  ``$\neg$'' has the highest precedence.  Both  ``$\wedge$''
+      and ``$\vee$'' have the same precedence and this precedence is higher than the
+      precedence of ``$\rightarrow$''.  Finally, the precedence of  ``$\leftrightarrow$'' 
+      is lower than any other precedence.  Therefore, the formula
+       \\[0.2cm]
+      \hspace*{1.3cm} 
+      $P \wedge Q \rightarrow R \leftrightarrow \neg R \rightarrow \neg P \vee \neg Q$ \\[0.2cm]
+      is interpreted as  \\[0.2cm]
+      \hspace*{1.3cm}  
+      $\bigl((P \wedge Q) \rightarrow R\bigr) \leftrightarrow \bigl(\,(\neg R) \rightarrow ((\neg P) \vee (\neg Q))\,\bigr)$. 
+
+      In formal logic, the logical operators given above are known under the following
+      name:
+      \begin{enumerate}
+      \item $\neg$: negation
+      \item $\wedge$: conjunction
+      \item $\vee$: disjunction
+      \item $\rightarrow$: conditional
+      \item $\leftrightarrow$: biconditional
+      \end{enumerate}
+      In natural language, the usage of the operator ``\emph{or}'' is ambiguous, because
+      it can be used \emph{exclusively} as in ``\emph{either $A$ or $B$ but not both}'' or
+      \emph{inclusively} as in ``\emph{$A$ or $B$ or both}''.  In mathematics, the
+      agreement is to use the operator ``\emph{or}'' inclusively, so the formula
+      $A \vee B$ is also true if both $A$ and $B$ are true.
+      We will defer a more formal treatment of the interpretation of the logical operators to a
+      later chapter.
+\item \emph{quantifiers}
+
+      A quantifier specifies how a variable is used in a formula.  We will use two
+      quantifiers:
+      \begin{enumerate}
+      \item $\forall$ (read: \emph{for all}) is known as the \emph{universal quantifier}.  If $x$ is a variable
+            and $F$ is a formula presumably containing $x$ then
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $\forall x: F$
+            \\[0.2cm]
+            is a formula that is read as 
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            ``\emph{for all $x$, $F$ is true}''
+            \\[0.2cm]
+            To give an example, if $F$ is the formula $x \leq x \cdot x$, then
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $\forall x: x \leq x \cdot x$
+            \\[0.2cm]
+            is a formula stating that for all $x$ the square of $x$ is at least as big as
+            $x$.  Whether the formula is actually true depends on the 
+            \emph{universe of interpretation}:  If this universe is made up of all the natural numbers,
+            the formula is true.  However, if the universe also contains the rational
+            numbers, the formula is false as 
+            $\frac{1}{2} \cdot \frac{1}{2} = \frac{1}{4} < \frac{1}{2}$.
+      \item $\exists$ (read: \emph{exists}) is known as the \emph{existential quantifier}.  If $x$ is a variable
+            and $F$ is a formula presumably containing $x$ then
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $\exists x: F$
+            \\[0.2cm]
+            is a formula that is read as 
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            ``\emph{there exists a value for $x$ such that $F$ is true}''
+            \\[0.2cm]
+            To give an example, if $F$ is the formula $x \cdot x = -1$, then
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $\exists x: x \cdot x = -1$
+            \\[0.2cm]
+            is a formula stating that there is a number $x$ such that the square of $x$ 
+            is $-1$.  Again, the truth of this depends on the 
+            universe of interpretation:  Using the real numbers, this formula is obviously
+            false.  However, in the theory of complex numbers the formula is true. 
+      \end{enumerate}
+      Sometimes you will find so called ``\emph{qualified quantifiers}''.  A universal
+      qualified quantifier has the form
+      \\[0.2cm]
+      \hspace*{1.3cm} $\forall x \in M: F$. 
+      \\[0.2cm]
+      This is read as 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      ``\emph{for all $x$ from $M$ we have $F$}''
+      \\[0.2cm]
+      Here $M$ denotes some set.  In fact, the qualified quantifier can be understood as an
+      abbreviation: 
+      \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\forall x \in M: F$ \quad is the same as \quad
+      $\forall x\colon (x\in M \rightarrow F)$.
+      \\[0.2cm]
+      In a similar way we have \\[0.2cm]
+      \hspace*{1.3cm}  
+      $\exists x \in M: F$ \quad is an abbreviation for \quad
+      $\exists x\colon (x\in M \wedge F)$. 
+      \\[0.2cm]
+      It is time for an example.
+      The formula \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\forall x \in \mathbb{R}: \exists n \in \mathbb{N} : n > x$ 
+      \\[0.2cm]
+      is read as follows:
+      \begin{center}
+        {\em
+        \begin{minipage}{12cm}
+          For all  $x$ from $\mathbb{R}$ there is an $n$ from $\mathbb{N}$
+          such that $n$ is bigger than $x$.
+        \end{minipage}
+        }
+      \end{center}
+      If we have a formula containing both quantifiers and logical operators we have to
+      assign a precedence to the quantifiers.  
+      Our agreement will be that quantifiers have a higher precedence than all logical
+      operators.
+      Therefore \\[0.2cm]
+      \hspace*{1.3cm} $\forall x \colon p(x) \wedge q(y)$ \\[0.2cm]
+      is the same as: \\[0.2cm]
+      \hspace*{1.3cm} $\bigl(\forall x \colon p(x)\bigr) \wedge q(y)$. 
+\end{enumerate}
+
+\subsection{Examples}
+To clarify the notions of \emph{terms} and \emph{formul\ae} we proceed to present some
+examples.  Rather than choosing examples from mathematics we choose {formul\ae} that
+describe kindred-ship.  We start by specifying the constants, variables, function and
+predicate symbols that we are going to use.
+\begin{enumerate}
+\item The following words are used as  \emph{constants}: \\[0.2cm]
+      \hspace*{1.3cm} ``\texttt{adam}'', ``\texttt{eve}'', ``\texttt{cain}'' and ``\texttt{abel}''.
+\item The \emph{variables} are the letters \\[0.2cm]
+      \hspace*{1.3cm} ``$x$'', ``$y$'' and ``$z$''.
+\item The following words are  \emph{function symbols}: \\[0.2cm]
+      \hspace*{1.3cm} 
+      ``\texttt{father}'' and ``\texttt{mother}''. 
+      \\[0.2cm]
+      Both of these function symbols are unary.
+\item The following words are \emph{predicate symbols}: \\[0.2cm]
+      \hspace*{1.3cm} 
+      ``\texttt{brother}'', ``\texttt{sister}'', ``\texttt{uncle}'',
+      ``\texttt{male}'', and ``\texttt{female}''. \\[0.2cm]
+      In addition, we use the symbol ``$=$'' as a predicate symbol.
+      All of these predicate symbols are binary.
+\end{enumerate}
+A collection of constants, variables, function symbols, and predicate symbols together
+with their arity is known as a \emph{signature}.  First, we give some terms that can be
+build with the given signature.
+\begin{enumerate}
+\item ``\texttt{cain}'' is a term, as ``\texttt{cain}'' is a constant.
+\item ``$\mathtt{father}(\mathtt{cain})$'' is also a term, since  ``\texttt{cain}''
+      is a  term and ``\texttt{father}'' is a unary function symbol.
+\item ``$\mathtt{mother}\bigl(\mathtt{father}(\mathtt{cain})\bigr)$'' is a term 
+      as  ``$\mathtt{father}(\mathtt{cain})$'' is a term and  ``\texttt{mother}'' is
+      a unary function symbol,
+\item ``$\texttt{male}(\mathtt{cain})$'' is a formula, as
+      ``\texttt{cain}'' is a term and
+      ``\texttt{male}'' is a unary predicate symbol.
+\item ``$\texttt{male}(\mathtt{lisa})$'' is a formula, as
+      ``\texttt{lisa}'' is a term. 
+\item ``$\forall x: \forall y: \bigl(\mathtt{father}(x) = \mathtt{father}(y) \wedge 
+          \mathtt{mother}(x) = \mathtt{mother}(y)
+         \rightarrow       \mathtt{brother}(x,y) \vee \mathtt{sister}(x,y)\bigr)$''
+      
+      is a formula.
+\item ``$\forall x\colon \forall y\colon\bigl( \mathtt{brother}(x,y) \vee  \mathtt{sister}(x,y)\bigr)$'' 
+
+      is a formula.  Of course, this formula is wrong if we choose the obvious universe of
+      interpretation.
+\end{enumerate}
+For now, we treat {formul\ae} as abbreviations.  In order to be able to define the \emph{truth}
+of a formula  we need to  make the notion of the \emph{universe of interpretation} 
+precise.   In order to do this, we have to introduce set theory first.  This is done
+ in the remaining part of this chapter.
+
+\section{Sets and Relations}
+Set theory has  been developed at the end of the 19th century in order to put mathematics
+on a solid foundation.  This was deemed necessary as the notion of infinity gave rise to a
+number of paradoxes that troubled the mathematicians of that time,
+
+Set theory was devised by Georg Cantor (1845 -- 1918).  The first definition of a set that
+was given by Cantor reads as follows \cite{cantor:1895}:
+\begin{center}
+A \emph{set} is a well-defined collection of \emph{elements}.  
+\end{center}
+The attribute  ``\emph{well-defined}'' expresses that, given a set $M$ and an object $x$
+we must be able to decide whether $x$ is an element of the set $M$.
+In this case we will write \\[0.2cm]
+\hspace*{1.3cm} $x \in M$ \\[0.2cm]
+and read this formula as  ``\emph{$x$ is an element of $M$}''.
+As you can see, we use the symbol ``$\in$'' as a binary predicate symbol that is used with
+infix notation.
+
+In order to make the notion of a  \emph{well-defined collection} precise,
+Cantor used the so called  \emph{comprehension axiom}.
+This works as follows: If  $p(x)$ is a property that an object $x$ either has or does not
+have, then we can build the set of all those objects, that have this property.   This set
+is written as 
+\\[0.2cm]
+\hspace*{1.3cm} $M = \bigl\{ x \;|\; p(x) \bigr\}$. 
+\\[0.2cm]
+We read this formula as
+\\[0.2cm]
+\hspace*{1.3cm}
+ ``$M$ is the set of all $x$ for which $p(x)$ is true''.
+\\[0.2cm]
+Here, the property $p(x)$ is a formula that contains the variable $x$.
+Let us give an example:
+Let $\mathbb{N}$ denote the set of all natural numbers.  Starting from $\mathbb{N}$ 
+we can then define the set of all \emph{even} natural numbers.  In order to do this
+we have to define the property of \emph{evenness} via a mathematical formula.
+Now a natural number $x$ is even if and only if there is a natural number $y$, such that $x$
+is two times $y$.
+Therefore, the property $p(x)$ can be defined as follows: \\[0.2cm]
+\hspace*{1.3cm} $p(x) \;:=\; (\exists y\in \mathbb{N}: x = 2 \cdot y)$. \\[0.2cm]
+Now we can define the set of all even natural numbers as \\[0.2cm]
+\hspace*{1.3cm} $\{ x \;|\; \exists y\in \mathbb{N}: x = 2 \cdot y \}$. 
+\vspace{0.2cm}
+
+Unfortunately, the unrestricted use of the comprehension axion readily leads into difficulties.
+To see the problem, let us define the following set using the comprehension axiom:
+ \\[0.2cm]
+\hspace*{1.3cm} 
+$R := \{ x \;|\; \neg\; x \in x \}$.  
+\\[0.2cm]
+This set contains all those sets that do not contain themselves.
+Intuitively, you might think that no set can possibly contain itself.
+But let us check formally whether $R$ is a member of itself or not.
+Basically, there can only be two cases:
+\begin{enumerate}
+\item $\neg\; R \in R$. 
+
+      So $R$ does not contain itself.
+      Now $R$ is defined as the set of all those sets that do not contain itself.
+      Therefore, $R$ would be a member of itself.  This contradicts our starting assumption
+      $\neg\; R \in R$.
+      
+      Thus we are forced to investigate the next case.
+\item case: $R \in R$. 
+
+      Substituting the definition of $R$ for the second $R$ in the formula we conclude \\[0.2cm]
+      \hspace*{1.3cm}  
+      $R \in \{ x \;|\; \neg\; x \in x \}$. 
+      \\[0.2cm]
+      But this would entail that the formula $\neg\; x \in x$, which is the defining
+      formula for $R$, holds true for $R$ itself.  Thus we conclude
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\neg\; R \in R$.
+      \\[0.2cm]
+      Unfortunately, this contradicts the starting assumption of the second case.
+\end{enumerate}
+As we get a contradiction in either case, something must be wrong.  The only way out is to
+realize that the object 
+\\[0.2cm]
+\hspace*{1.3cm} $\{ x \mid \neg\; x \in x \}$ \\[0.2cm]
+is not a set, the comprehension axiom is way too general and has to be restricted.
+It was the British logician Bertrand Russell (1872 -- 1970) who discovered the paradox
+demonstrated above.  
+In order to avoid this and other paradoxes it is necessary to be more careful when
+constructing sets.  Therefore we will now provide methods to construct sets that are
+weaker than the comprehension axiom, but that have not yet led to inconsistencies.
+
+
+\subsection{Enumerations}
+The simplest method to construct a set is to list all its elements.  These elements
+will be bordered by the curly braces ``\texttt{\{}'' and ``\texttt{\}}''.  They are
+separated by commas ``\texttt{,}''.
+An example is \\[0.2cm]
+\hspace*{1.3cm} $M := \{ 1, 2, 3 \}$, \\[0.2cm]
+which contains the elements  $1$, $2$ and $3$.
+As a second example, the set of all lower case letters is given as: 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\{\mathtt{a}, \mathtt{b}, \mathtt{c}, \mathtt{d}, \mathtt{e},
+ \mathtt{f}, \mathtt{g}, \mathtt{h}, \mathtt{i}, \mathtt{j}, \mathtt{k}, \mathtt{l},
+ \mathtt{m}, \mathtt{n}, \mathtt{o}, \mathtt{p}, \mathtt{q}, \mathtt{r}, \mathtt{s},
+ \mathtt{t}, \mathtt{u}, \mathtt{v}, \mathtt{w}, \mathtt{x}, \mathtt{y}, \mathtt{z\}}$.
+
+\subsection{The Set of all Natural Numbers}
+If we list the elements of a set explicitly, we can never get an infinite set.
+However, we know that there are constructs of mathematical imagination that consist
+of an unbounded number of elements.  The simplest such construct is the set of natural
+numbers.  We postulate that the collection $\mathbb{N}$ of all natural numbers is a well
+defined set: \\[0.2cm]
+\hspace*{1.3cm} $\mathbb{N} := \{ 0, 1, 2, 3, \cdots \}$. \\[0.2cm]
+Besides the set $\mathbb{N}$ of all natural numbers we will use the following sets of
+numbers:
+\begin{enumerate}
+\item $\mathbb{Z}$ is the set of all integers.
+\item $\mathbb{Q}$ is the set of all rational numbers.
+\item $\mathbb{R}$ is the set of all real numbers.
+\end{enumerate}
+In mathematics, it is shown that these sets can all be derived from the set of natural numbers.
+
+\subsection{The Axiom of Separation}
+The axiom of \emph{separation}  is a weak form of the axiom of comprehension.
+The idea is to select those elements from an already given set that possess some property $p(x)$.
+We write this as: \\[0.2cm]
+\hspace*{1.3cm} 
+$N = \{ x\in M \;|\; p(x) \}$ 
+\\[0.2cm]
+Then $N$ is the set of all those elements of $M$ such that $p(x)$ is true.
+\vspace{0.2cm}
+
+\noindent
+\textbf{Example}:
+The set of even numbers can be defined as: \\[0.2cm]
+\hspace*{1.3cm} $\{ x \in \mathbb{N} \;|\; \exists y\in \mathbb{N}: x = 2 \cdot y \}$. 
+
+\subsection{The Axiom of Power  Sets}
+In order to introduce the axiom of power sets we have to define subsets first.
+Given two sets $M$ and $N$,  $M$ is a 
+\emph{subset} of $N$ if and only if every element from $M$ is also an element of $N$.
+This is written as $M \subseteq N$.  Formally this can be defined as: \\[0.2cm]
+\hspace*{1.3cm} $M \subseteq N \;\stackrel{de\!f}{\Longleftrightarrow}\; \forall x: (x \in M \rightarrow x \in N)$ \\[0.2cm]
+Now the  \emph{power set} of a given set $M$ is the set of all subsets of $M$.
+It is written as $2^M$.  Formally we have \\[0.2cm]
+\hspace*{1.3cm} $2^M = \{ x \;|\; x \subseteq M \}$.
+\vspace{0.2cm}
+
+\noindent
+\textbf{Example}: 
+We compute the power set of the set $\{1,2,3\}$ and find: \\[0.2cm]
+\hspace*{1.3cm} $2^{\{1,2,3\}} = \big\{ \{\},\, \{1\}, \, \{2\},\, \{3\},\, \{1,2\}, \, \{1,3\}, \, \{2,3\},\, \{1,2,3\}\big\}$. \\[0.2cm]
+This set has  $8 = 2^3$ elements.  It can be shown that the power set of a set containing
+$n$ elements will itself contain $2^n$ elements.  If we denote the number of elements of a
+finite set with 
+$\textsl{card}(M)$, we therefore have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{card}\left(2^M\right) = 2^{\textsl{card}(M)}$.
+\\[0.2cm]
+This is the motivation for the denoting the power set as  $2^M$.
+
+\subsection{Union}
+Given two sets  $M$ and $N$, the union of  $M$ and $N$ contains all elements that are
+either in $M$ or in $N$.  We will write  $M \cup N$ to denote the union of $M$ and $N$.
+Then we have: \\[0.2cm]
+\hspace*{1.3cm} $M \cup N := \{ x \;|\; x \in M \vee x \in N \}$. 
+\vspace{0.2cm}
+
+\noindent
+\textbf{Example}: 
+If  $M = \{1,2,3\}$ and $N = \{2,5\}$, then we have: \\[0.2cm]
+\hspace*{1.3cm} $\{1,2,3\} \cup \{2,5\} = \{1,2,3,5\}$. 
+\vspace{0.2cm}
+
+The notion of the union of two sets can be extended to the notion of a union of a set of
+sets.  So imagine a set $X$ all of whose elements are itself sets.
+We can then construct the union of all those sets contained in $X$.
+This union is written as $\bigcup X$.  Formally, we have: \\[0.2cm]
+\hspace*{1.3cm} $\bigcup X = \{ y \;|\; \exists x \in X: y \in x \}$.
+\vspace{0.2cm}
+
+\noindent
+\textbf{Example}: 
+Assume that the set $X$ is defined as follows: \\[0.2cm]
+\hspace*{1.3cm} $X = \big\{ \{\},\, \{1,2\}, \, \{1,3,5\}, \, \{7,4\}\,\big\}$. \\[0.2cm]
+Then we have \\[0.2cm]
+\hspace*{1.3cm} $\bigcup X = \{ 1, 2, 3, 4, 5, 7 \}$.
+
+\subsection{Intersection}
+The \emph{intersection} of two sets  $M$ and $N$ is defined as the set that contains all those
+objects that are elements of both $M$ and $N$.  The intersection of $M$ and $N$ is denoted
+as $M \cap N$.  More formally,  $M \cap N$ is defined as follows: \\[0.2cm]
+\hspace*{1.3cm} $M \cap N := \{ x \mid x \in M \wedge x \in N \}$. 
+\vspace{0.2cm}
+
+\noindent
+\textbf{Example}: 
+We compute the intersection of the sets $M = \{ 1, 3, 5 \}$ and $N = \{ 2, 3, 5, 6 \}$.
+We find
+\\[0.2cm]
+\hspace*{1.3cm} $M \cap N = \{ 3, 5 \}$
+
+\subsection{Set Difference}
+Given two sets $M$ and $N$, the  \emph{set difference} of 
+ $M$ without $N$ is the set of all those elements of  $M$ that are not elements of $N$.  
+The set difference is written as $M \backslash N$.  This is read as $M$ \emph{without} $N$.
+The formal definition is: \\[0.2cm]
+\hspace*{1.3cm} $M \backslash N := \{ x \in M \wedge x \not\in N \}$. 
+\vspace{0.2cm}
+
+\noindent
+\textbf{Example}: 
+We compute the set difference of the sets $M = \{ 1, 3, 5, 7 \}$ and $N = \{ 2, 3, 5, 6
+\}$.  We find
+\\[0.2cm]
+\hspace*{1.3cm} $M \backslash N = \{ 1, 7 \}$.
+
+\subsection{Images}
+If  $M$ is a set and $f$ is a function that is defined for all $x$ from $M$, then for all
+$x \in M$ we call $f(x)$ the \emph{image} of $x$ under $f$.  The set of all images
+from elements from $M$ is called the \emph{image} of $M$ under $f$ and is denoted as $f(M)$.
+Formally, the image $f(M)$ is defined as follows:
+ \[ f(M) := \{ y \;|\; \exists x \in M: y = f(x) \}. \]
+Equivalently, we can write 
+\[ f(M) = \bigl\{ f(x) \;|\; x \in M \}. \]
+\vspace{0.2cm}
+
+\noindent
+\textbf{Example}: 
+The set of all integer squares is defined as 
+\[ Q := \bigl\{ y \mid \exists x \in \mathbb{N}: y = x^2 \bigr\} = 
+        \bigl\{ x^2 \mid x \in \mathbb{N} \bigr\}. 
+\]
+
+
+\subsection{Cartesian Products}
+In order to introduce the notion of the Cartesian product of two sets we first need the
+notion of an \emph{ordered pair} of two objects $x$ and $y$.  The ordered pair of $x$
+and $y$ is written as  
+\\[0.2cm]
+\hspace*{1.3cm} $\langle x, y \rangle$.
+\\[0.2cm]
+The object $x$ is the \emph{first component} of the pair $\langle x, y \rangle$, 
+while $y$ is the  \emph{second component}.  Two ordered pairs $\langle x_1, y_1 \rangle$ and $\langle x_2, y_2 \rangle$
+are equal if and only if the respective components are equal.  Therefore we have 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\langle x_1, y_1 \rangle \,=\,\langle x_2, y_2 \rangle$ 
+\quad iff\footnote{
+In computer science and mathematics, 
+it is customary to use ``\emph{iff}'' as an abbreviation for ``\emph{if and only if}''.
+} \quad
+$x_1 = x_2 \wedge y_1 = y_2$.
+ \\[0.2cm]
+The \emph{Cartesian product} of two sets $M$ and $N$ is defined as the set of all ordered
+pairs $p$ such that the first component of $p$ is an element of $M$ and the second
+component is an element of $N$.  The Cartesian product is written as $M \times N$.
+Formally, we have 
+\[ M \times N := \big\{ z \mid \exists x\colon \exists y\colon z = \langle x,y\rangle \wedge x\in M \wedge y \in N \}. \]
+This can also be written as 
+\[ M \times N = \big\{ \langle x,y\rangle \mid  x\in M \wedge y \in N \}. \]
+The Cartesian product is also known as the \emph{product set}.
+\vspace{0.2cm}
+
+\noindent
+\textbf{Example}:  Let $M = \{ 1, 2, 3 \}$ and $N = \{ 5, 7 \}$. Then \\[0.2cm]
+\hspace*{1.3cm} 
+$M \times N = \bigl\{ \pair(1,5),\pair(2,5),\pair(3,5),\pair(1,7),\pair(2,7),\pair(3,7)\bigr\}$.
+\vspace{0.2cm}
+
+\noindent
+The notion of an ordered pair is easily extended to the notion of a finite sequence:
+A finite sequence of length $n$ has the form \\[0.2cm]
+\hspace*{1.3cm} $\langle x_1, x_2, \cdots, x_n \rangle$. \\[0.2cm]
+Finite sequences are also known as \emph{lists}.  Finite sequences enable us to extend the
+notion of product sets to more than two sets.  We define the product set of the sets
+$M_1$, $\cdots$, $M_n$ as 
+\\[0.2cm]
+\hspace*{1.3cm}
+$M_1 \times \cdots \times M_n =\big\{ \langle x_1,x_2,\cdots,x_n \rangle  \mid
+x_1\in M_1 \wedge \cdots \wedge x_n \in M_n \big\}$. 
+\\[0.2cm]
+If  $f$ is a function defined on $M_1 \times \cdots \times M_n$, then we agree to simplify
+our notation as follows: We write 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$f(x_1, \cdots, x_n)$ \quad instead of \quad $f(\langle x_1, \cdots,
+x_n\rangle)$. 
+
+\subsection{Equality of Sets}
+Two sets are considered equal if and only if they have the same elements.
+Therefore we have: \\[0.2cm]
+\hspace*{1.3cm} $M = N \;\leftrightarrow\; \forall x: (x \in M \leftrightarrow x \in N)$ 
+\\[0.2cm]
+Therefore the order in which the elements of a set are listed, is unimportant.  
+For example, we have
+ \\[-0.2cm]
+\hspace*{1.3cm} 
+$\{1,2,3\} = \{3,2,1\}$ \\[0.2cm]
+since both sets contain the same elements.
+
+If sets are defined by explicitly listing their elements, then the question, whether two
+sets are equal, is straightforward to answer.  However, in general it may be arbitrarily
+difficult to decide whether two sets are equal.  For example, it can be shown that
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\{ n \in \mathbb{N} \mid \exists x, y, z\in\mathbb{N}: x > 0 \wedge y > 0 \wedge x^n + y^n = z^n \} 
+= \{1,2\}$. 
+\\[0.2cm]
+However the proof of this claim is equivalent to  \emph{Fermat's Last Theorem}, which was
+postulated in 1637 by {\sl Pierre de Fermat}.  This proof could only be given in  1995 by
+Andrew Wiles.  In general, it can be shown that the question, whether two sets are equal,
+is algorithmically undecidable.
+
+
+\subsection{Set Algebra}
+The set operations ``$\cup$'', ``$\cap$'', and ``$\backslash$'' satisfy a number of equations. 
+ These are given below.  As is customary,  the empty set  $\{\}$ is denoted as $\emptyset$. 
+\\[0.2cm]
+$\begin{array}{rlcl}
+\quad 1. & M \cup \emptyset = M         & \hspace*{0.1cm} & M \cap \emptyset = \emptyset \\[0.1cm]
+2. & M \cup M = M         & \hspace*{0.1cm} & M \cap M = M          \\[0.1cm]
+3. & M \cup N = N \cup M  &  & M \cap N = N \cap M  \\[0.1cm]
+4. & (K \cup M) \cup N = K \cup (M \cup N) &  & (K \cap M) \cap N = K \cap (M \cap N) \\[0.1cm]
+5. & (K \cup M) \cap N = (K \cap N) \cup (M \cap N) &  & (K \cap M) \cup N = (K \cup N) \cap (M \cup N)  \\[0.1cm]
+6. & M \backslash \emptyset = M & & M \backslash M = \emptyset \\[0.1cm]
+7. & K \backslash (M \cup N) = (K \backslash M) \cap (K \backslash N) &&
+     K \backslash (M \cap N) = (K \backslash M) \cup (K \backslash N) \\[0.1cm]
+8. & (K \cup M) \backslash N = (K \backslash N) \cup (M \backslash N) &&
+     (K \cap M) \backslash N = (K \backslash N) \cap (M \backslash N) \\[0.1cm]
+9. & K \backslash (M \backslash N) = (K \backslash M) \cup (K \cap N) &&
+     (K \backslash M) \backslash N = K \backslash (M \cup N) \\[0.1cm]
+10. & M \cup (N \backslash M) = M \cup N &&
+      M \cap (N \backslash M) = \emptyset  \\[0.1cm]
+11. & M \cup (M \cap N) = M  &&
+      M \cap (M \cup N) = M 
+
+\end{array}$
+\\[0.3cm]
+In order to show how these equations can be proved,  we demonstrate the validity of the
+equation 
+\\[0.2cm]
+\hspace*{1.3cm}
+ $K \backslash (M \cup N) = (K \backslash M) \cap (K \backslash N)$.
+\\[0.2cm]
+In order to prove the equality of two sets $M$ and $N$ we have to show that $M$ and $N$
+contain the same elements.
+We have the following chain of equivalences: \\[0.3cm]
+\hspace*{1.3cm} $
+\begin{array}{ll}
+                & x \in K \backslash (M \cup N)        \\[0.1cm]
+\leftrightarrow & x \in K \;\wedge\; \neg\; x \in M \cup N \\[0.1cm]
+\leftrightarrow & x \in K \;\wedge\; \neg\; (x \in M \vee x \in N) \\[0.1cm]
+\leftrightarrow & x \in K \;\wedge\;  (\neg\; x \in M) \wedge (\neg\; x \in N) \\[0.1cm]
+\leftrightarrow & (x \in K \wedge \neg\;x \in M) \;\wedge\; (x \in K \wedge \neg\;x \in N) \\[0.1cm]
+\leftrightarrow & (x \in K \backslash M) \;\wedge\; (x \in K \backslash N) \\[0.1cm]
+\leftrightarrow & x \in (K \backslash M) \cap (K \backslash N). \\[0.1cm]
+\end{array}$ \\[0.3cm]
+The remaining equations can be verified in the same way.
+
+
+\noindent
+In order to simplify our proofs we introduce the following notation:
+If $M$ is a set and $x$ is an object, we write $x \notin M$  instead of
+ $\neg\; x \in M$: \\[0.2cm]
+\hspace*{1.3cm} $x \notin M \;\stackrel{de\!f}{\Longleftrightarrow}\; \neg\; x \in M$.
+\\[0.2cm]
+We use an analogous notation for equality:
+\\[0.2cm]
+\hspace*{1.3cm} 
+$x \not= y \;\stackrel{de\!f}{\Longleftrightarrow}\; \neg\; (x = y)$.
+\vspace{0.2cm}
+
+\noindent
+\textbf{Exercise}:  Prove the equation $(K \cup M) \cap N = (K \cap N) \cup (M \cap N)$.
+\pagebreak
+
+\section{Relations}
+Relations abound in computer science.  A very important application of 
+relations is found in the theory of relational databases.  We start our investigation of
+relations with the special case of \emph{binary relations}.  We will investigate the
+connection
+between binary relations and functions.  We will see, that functions are 
+a special case of binary relations.  Turned around, this means that
+the notion of a binary relation is a generalization of the notion of a function.
+
+Furthermore, we will discuss order relations and equivalence relations.
+
+\subsection{Binary Relations and Functions}
+If a set $R$ is a subset of the Cartesian product $M \times N$ of two sets $M$ and $N$,
+that is  if we have \\[0.2cm]
+\hspace*{1.3cm} $R \subseteq M \times N$, \\[0.2cm]
+then $R$ is called a \emph{binary relation}.  In this case, the \emph{domain} of  $R$ is
+defined as 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\dom(R) := \{ x \mid \exists y \in N \colon \langle x, y \rangle \in R \}$,
+\\[0.2cm]
+while the \emph{range} of $R$ is defined as 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\rng(R) := \{ y \mid \exists x \in M \colon \langle x, y \rangle \in R\}$.
+
+
+\example
+Define $R = \{ \pair(1,1), \pair(2,4), \pair(3,9) \}$.  Then we have \\[0.2cm]
+\hspace*{1.3cm} $\dom(R) = \{1,2,3\}$ \quad and \quad $\rng(R) = \{1,4,9\}$. \qed
+\next
+
+
+\example
+The database of a car dealer stores facts concerning customers and the cars they bought.
+Let us assume that the sets \textsl{Car} and \textsl{Customer} are defined as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{Customer} = \{ \mathrm{Bauer}, \mathrm{Maier}, \mathrm{Schmidt} \}$
+\quad and \quad
+$\textsl{Car} = \{ \mathrm{Polo}, \mathrm{Fox}, \mathrm{Golf} \}$.
+\\[0.2cm]
+Then the binary relation 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{Sales} \subseteq \textsl{Customer} \times \textsl{Car}$
+\\[0.2cm]
+could be given as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{ \pair(\mathrm{Bauer}, \mathrm{Golf}), \pair(\mathrm{Bauer}, \mathrm{Fox}), \pair(\mathrm{Schmidt}, \mathrm{Polo})\}$.
+\\[0.2cm]
+This relation is interpreted as follows:
+\begin{itemize}
+\item Mr.~Bauer bought both a Golf and a Fox.
+\item Mr.~Schmidt has bought a Polo.
+\item Mr. Maier hasn't bought a car so far.
+\end{itemize}
+In the theory of databases, this information is expressed by a table as follows:
+\begin{center}
+  \begin{tabular}[c]{|l|l|}
+\hline
+\textsl{Customer} & \textsl{Car} \\
+\hline
+\hline
+  Bauer   & Golf \\
+\hline
+  Bauer   & Fox  \\
+\hline
+  Schmidt & Polo \\
+\hline
+  \end{tabular}
+\end{center}
+The header row containing the column captions \textsl{Customer} and \textsl{Car}
+is not part of the relation but is the  \emph{relation schema}.
+The relation together with its schema is called a  \emph{table}.  
+
+
+\paragraph{Left-Unique and Right-Unique Relations}
+A relation $R \subseteq M \times N$ is called
+\emph{right-unique} iff the following holds: \\[0.2cm]
+\hspace*{1.3cm} 
+$\forall x \el M \colon \forall y_1, y_2 \el N \colon \bigl(\langle x, y_1 \rangle \in R \wedge \langle x, y_2 \rangle \in R \rightarrow y_1 = y_2\bigr)$.
+\\[0.2cm]
+If the relation $R \subseteq M \times N$ is right-unique, then for every $x\in M$ there is
+at most one  $y \in N$ such that $\langle x, y \rangle \in R$ holds.  
+A right-unique relation is also known as a \emph{functional relation}.
+
+Analogously a relation $R \subseteq M \times N$ \emph{left-unique} iff we have: \\[0.2cm]
+\hspace*{1.3cm} 
+$\forall y \el N \colon \forall x_1, x_2 \el M \colon \bigl(\langle x_1, y \rangle \in R \wedge \langle x_2, y \rangle \in R \rightarrow x_1 = x_2\bigr)$.
+\\[0.2cm]
+Therefore, if $R \subseteq M \times N$ is left-unique, then for every $y\in N$ there
+is at most one $x \in M$ such that $\langle x, y \rangle \in R$ gilt.
+A left-unique relation is also known as an \emph{injective relation}.
+
+\example
+Let $M = \{1,2,3\}$ and $N = \{4,5,6\}$.
+\begin{enumerate}
+\item Assume that the relation $R_1$ is defined as \\[0.2cm]
+      \hspace*{1.3cm} $R_1 = \{ \pair(1,4), \pair(1,6) \}$. \\[0.2cm]
+      This relation is  \underline{not} right-unique, since  $4 \not= 6$.
+      However, this relation is left-unique as the right hand sides of all tuples
+      in  $R_1$ are different.
+\item Assume that the relation  $R_2$ is defined as \\[0.2cm]
+      \hspace*{1.3cm} $R_2 = \{ \pair(1,4), \pair(2,6) \}$. \\[0.2cm]
+      This relation is both left-unique and right-unique.
+\item Assume the relation  $R_3$ is defined as \\[0.2cm]
+      \hspace*{1.3cm} $R_3 = \{ \pair(1,4), \pair(2,6), \pair(3,6) \}$. \\[0.2cm]
+      This relation is right-unique, but it is not left-unique, because we have
+      $\pair(2,6) \el R$ and $\pair(3,6) \el R$, but $2 \not= 3$.
+\end{enumerate}
+
+\paragraph{Left-Total and Right-Total Relations}
+A binary relation $R \subseteq M \times N$ is \emph{left-total on $M$} iff \\[0.2cm]
+\hspace*{1.3cm} $\forall x \in M \colon \exists y \in N \colon \pair(x,y) \in R$. \\[0.2cm]
+That means for every $x$ from $M$ there is a  $y$ from $N$ such that
+$\pair(x,y)$ is a member of the relation $R$.  In the example above, the relation $R_3$ is
+left-total.
+
+
+A binary relation $R \subseteq M \times N$ is  \emph{right-total on $N$} iff \\[0.2cm]
+\hspace*{1.3cm} $\forall y \in N \colon \exists x \in M \colon \pair(x,y) \in R$.
+ \\[0.2cm]
+That means for every  $y$ from $N$ there is an  $x$ from $M$ such that the pair
+$\pair(x,y)$ is a member of the relation  $R$.  
+
+
+
+\paragraph{Functions}
+If a  relation $R \subseteq M \times N$ is both left-total on $M$ and right-unique, then
+$R$ is a \emph{function} on $M$.  The reason for this definition is that in this case
+we can define a function $f_R\colon M \rightarrow N$ as follows: \\[0.2cm]
+\hspace*{1.3cm} $f_R(x) := y \;\stackrel{de\!f}{\Longleftrightarrow}\; \pair(x,y) \in R$. 
+\\[0.2cm]
+This definition works, because the fact that  $R$ is left-total ensures that for every 
+ $x\in M$ there is an  $y \in N$ such that  $\pair(x,y) \in R$.  Therefore, $f_R$ is defined
+ for all $x$ from the set $M$.   The fact that $R$ is right-unique ensures that we find at
+ most one $y$ such that $\pair(x,y) \in R$, so $f_R(x)$ is indeed well-defined.
+
+On the other hand, if a function  \mbox{$f:M \rightarrow N$} is given, we can define a relation
+ $\textsl{graph}(f) \subseteq M \times N$ as follows.
+\[ \textsl{graph}(f) := \bigl\{ \langle x,f(x) \rangle \mid  x\in M \bigr\}. \]
+The  relation $\textsl{graph}(f)$ is left-total because the function $f$ computes a result $f(x)$
+for every $x \el M$  and  the relation is right-unique because
+for a given argument $x \in M$ there is at most one value $f(x)$.
+
+Therefore functions are just a special case of relations.
+The set of all relations on $M \times N$ that are functions on M is written as $N^M$, 
+we have
+\[ N^M := \{ R \subseteq M \times N \mid \mbox{$R$ is a function on $M$}\, \}. \]
+This notation is explained as follows: If  $M$ and $N$ are finite sets with  $m$
+and $n$ elements, then there are  $n^m$ different functions from  $M$ to $N$, we have
+\[ \textsl{card}\left(N^M\right) = \textsl{card}(N)^{\textsl{card}(M)}. \]
+In the following, we make no distinction between a relation that is both left-total on $M$
+ and right-unique and the corresponding function.  If  $R \subseteq M \times N$ is
+ left-total on $M$ and right-unique and $x \in M$, then we will write $R(x)$ to denote the
+uniquely determined value  $y \in N$ that satisfies $\pair(x,y) \in R$.
+
+\noindent
+\textbf{Example}: 
+\begin{enumerate}
+\item Let $M = \{1,2,3\}$, $N = \{1,2,3,4,5,6,7,8,9\}$ and define\\[0.2cm]
+      \hspace*{1.3cm} $R := \{ \pair(1,1),\pair(2,4),\pair(3,9) \}$. \\[0.2cm]
+      Then $R$ is a function on  $M$.  This function computes the squares on the set $M$.
+\item This time we have  $M = \{1,2,3,4,5,6,7,8,9\}$ and $N = \{1,2,3\}$ and define \\[0.2cm]
+      \hspace*{1.3cm} $R := \{ \pair(1,1),\pair(4,2),\pair(9,3) \}$. \\[0.2cm]
+      $R$ is not a function on  $M$, as  $R$ is not left-total on $M$.  
+      For example, the number  $2$ is not mapped by $R$ to an element of  
+      $N$.
+\item Let  $M = \{1,2,3\}$, $N = \{1,2,3,4,5,6,7,8,9\}$ and define \\[0.2cm]
+      \hspace*{1.3cm} $R := \{ \pair(1,1),\pair(2,3),\pair(2,4),\pair(3,9) \}$ \\[0.2cm]
+       $R$ is not a function on $M$, as $R$ is not right-unique.
+       For example, the element $2$ is mapped both to  $3$ and also to $4$.
+\end{enumerate}
+If $R \subseteq M \times N$ is a binary  relation and  $X \subseteq M$, then we define the
+ \emph{image of  $X$ under $R$} as \\[0.2cm]
+\hspace*{1.3cm} $R(X) := \{ y \mid \exists x \in X \colon \pair(x,y) \in R \}$. 
+
+\paragraph{Inverse Relation}
+Given a relation $R \subseteq M \times N$, we define the \emph{inverse} relation \\
+$R^{-1} \subseteq N \times M$ as follows: \\[0.2cm]
+\hspace*{1.3cm} $R^{-1} := \bigl\{ \pair(y,x) \mid \pair(x,y) \in R  \bigr\}$. \\[0.2cm]
+Therefore $R^{-1}$ is right-unique iff $R$ is left-unique.  Furthermore, $R^{-1}$ is
+left-total on $N$ iff $R$ 
+is right-total on $N$.  
+If a relation $R$ is both  left-unique and right-unique and furthermore
+both left-total on $M$ and right-total on $N$, then $R$ is called  \emph{bijective}.
+In this case, we can define two functions: 
+\[ f_R: M \rightarrow N \quad \mbox{and} \quad f_{R^{-1}}:N \rightarrow M \]
+The definition of $f_{R^{-1}}$ reads:
+ \\[0.2cm]
+\hspace*{1.3cm}
+ $f_{R^{-1}}(y) := x \;\stackrel{de\!f}{\Longleftrightarrow}\; \pair(y,x) \in R^{-1}
+ \Longleftrightarrow \pair(x,y) \in R$. 
+\\[0.2cm]
+The function $f_{R^{-1}}$ is the \emph{inverse function} of  $f_R$, as we have \\[0.2cm]
+\hspace*{1.3cm}
+ $\forall y \in N \colon f_R\bigl(f_{R^{-1}}(y)\bigr) = y$ \quad and \quad
+ $\forall x \in M \colon f_{R^{-1}}\bigl(f_R(x)\bigr) = x$. \\[0.2cm]
+This justifies the notation $R^{-1}$ for the inverse relation.
+
+\paragraph{Composition of Relations}
+As functions can be composed, so can relations be composed.
+Assume $L$, $M$ and $N$ are sets.
+If we have two relations  $R \subseteq L \times M$ and $Q \subseteq M \times N$, then the
+ \emph{relational product} $R \circ Q$ is defined as follows: \\[0.2cm]
+\hspace*{1.3cm}
+$R \circ Q := \bigl\{ \pair(x,z) \mid \exists y \in M \colon(\pair(x,y) \in R \wedge \pair(y,z) \in Q) \bigr\}$ 
+\\[0.2cm]
+The relational product $R \circ Q$ is also known as the \emph{composition} of
+$Q$ and $R$.  In the theory of relational databases, you will meet the
+composition of relations again in the  more general form of a \emph{join}.
+\vspace{0.2cm}
+
+\noindent
+\textbf{Example}: 
+Let $L = \{1,2,3\}$, $M = \{4,5,6\}$ and $N = \{7,8,9\}$.  Furthermore, the relations
+$Q$ and $R$ are given as follows: \\[0.2cm]
+\hspace*{1.3cm} $R = \{ \pair(1,4), \pair(1,6), \pair(3,5) \}$ \quad and \quad
+                $Q = \{ \pair(4,7), \pair(6,8), \pair(6,9) \}$. \\[0.2cm]
+Then we have \\[0.2cm]
+\hspace*{1.3cm} $R \circ Q = \{ \pair(1,7), \pair(1,8), \pair(1,9) \}$.
+\vspace{0.2cm}
+
+
+\noindent
+If $R \subseteq L \times M$ is a function on $L$ and  $Q \subseteq M \times N$ is a
+function on $M$, then
+$R \circ Q$ is a function on $L$ and the function $f_{R \circ Q}$ can be computed as
+follows from $f_R$ and $f_Q$:
+\\[0.2cm]
+\hspace*{1.3cm}
+$f_{R \circ Q}(x) = f_Q\bigl(f_R(x)\bigr)$.
+\\[0.2cm]
+Observe that the order, in which $R$ and $Q$ appear on the left hand side of this equation,
+is different than the order of $R$ and $Q$ on the right hand side.
+
+
+\noindent
+\textbf{Remark}:  You should be aware that some text books define the relational product
+$R \circ Q$ as $Q \circ R$.
+In that case, the definition of $R \circ Q$ reads as follows:
+If  $R \subseteq M \times N$ and $Q \subseteq L \times M$, then
+\\[0.2cm]
+\hspace*{1.3cm}
+$R \circ Q := \bigl\{ \pair(x,z) \mid \exists y \in M \colon(\pair(x,y) \in Q \wedge
+\pair(y,z) \in R) \bigr\}$.
+\\[0.2cm]
+The definition used in this lecture is more intuitive when we compute the transitive
+closure of a binary relation.  \qed
+
+
+
+\example
+The next example demonstrates the use of the composition of two relations in the context
+of a database.  Let us assume that the database of a car dealer contains the following two tables.
+\begin{center}
+\textsl{Purchase}:  \begin{tabular}[t]{|l|l|}
+\hline
+\textsl{Customer} & \textsl{Car} \\
+\hline
+\hline
+  Bauer   & Golf \\
+\hline
+  Bauer   & Fox  \\
+\hline
+  Schmidt & Polo \\
+\hline
+  \end{tabular}
+\qquad \textsl{Price}:
+  \begin{tabular}[t]{|l|l|}
+\hline
+\textsl{Car} & \textsl{Amount} \\
+\hline
+\hline
+  Golf    & $20\,000$ \\
+\hline
+  Fox     & $10\,000$ \\
+\hline
+  Polo    & $13\,000$ \\
+\hline
+  \end{tabular}
+\end{center}
+Then the  relational product of $\textsl{Purchase} \circ \textsl{Price}$ is given as follows:
+
+\begin{center}
+  \begin{tabular}[t]{|l|l|}
+\hline
+\textsl{Car} & \textsl{Amount} \\
+\hline
+\hline
+  Bauer   & $20\,000$ \\
+\hline
+  Bauer   & $10\,000$ \\
+\hline
+  Schmidt & $13\,000$ \\
+\hline
+  \end{tabular} 
+\end{center}
+This relation could be used for invoicing practice. \qed
+\vspace{0.2cm}
+
+
+\paragraph{Properties of  the Relational Product}
+The composition of relations is \emph{associative}:  If \\[0.2cm]
+\hspace*{1.3cm} $R \subseteq K \times L$, \quad $Q \subseteq L \times M$ \quad and \quad 
+                $P \subseteq M \times N$ \\[0.2cm]
+are binary relations, then we have \\[0.2cm]
+\hspace*{1.3cm} $(R \circ Q) \circ P = R \circ (Q \circ P)$. \\[0.2cm]
+\textbf{Proof}:  We show
+\begin{equation}
+  \label{eq:ass0}
+   \pair(x,u) \in (R \circ Q) \circ P \leftrightarrow \pair(x,u) \in R \circ (Q \circ P)   
+\end{equation}
+First, we manipulate the left hand side  $\pair(x,u) \in (R \circ Q) \circ P$ of
+(\ref{eq:ass0}). We have
+\[
+\begin{array}{cll}
+                  & \pair(x,u) \in (R \circ Q) \circ P \\[0.2cm]
+  \leftrightarrow & \exists z: \bigl(\pair(x,z) \in R \circ Q \wedge \pair(z,u) \in P\bigr) &
+                    \mbox{definition of}\; (R \circ Q) \circ P \\[0.2cm]
+  \leftrightarrow & \exists z: \bigl(\bigl(\exists y: \pair(x,y) \in R \wedge \pair(y,z) \in Q\bigr) \wedge \pair(z,u) \in P\bigr) &
+                    \mbox{definition of}\; R \circ Q \\
+\end{array}
+\]
+As the variable $y$ does not occur in the formula $\pair(z,u) \in P$, the existential
+quantifier  $\exists y$ can be lifted as follows:
+\begin{equation}
+  \label{eq:ass1}
+  \exists z: \exists y: \bigl(\pair(x,y) \in R \wedge \pair(y,z) \in Q \wedge \pair(z,u) \in P\bigr)
+\end{equation}
+Now we manipulate the right hand side of (\ref{eq:ass0}):
+\[
+\begin{array}{cll}
+                & \pair(x,u) \in R \circ (Q \circ P) \\[0.2cm] 
+\leftrightarrow & \exists y: \bigl(\pair(x,y) \in R \wedge \pair (y,u) \in Q \circ P\bigr) &
+                  \mbox{definition of}\; R \circ (Q \circ P) \\[0.2cm]
+\leftrightarrow & \exists y: \bigl(\pair(x,y) \in R \wedge 
+                  \exists z: \bigl(\pair(y,z) \in Q \wedge \pair(z,u) \in P\bigr)\bigr) &
+                  \mbox{definition of}\; Q \circ P \\
+\end{array}
+\]
+As the variable  $z$ does not occur in the formula $\pair(x,y) \in R$, the existential
+quantifier with respect to $z$ can be lifted and we get
+\begin{equation}
+  \exists z: \exists y: \bigl(\pair(x,y) \in R \wedge \pair(y,z) \in Q \wedge \pair(z,u) \in P\bigr)
+\end{equation}
+Interchanging the order of the existential quantifiers we arrive at
+\begin{equation}
+  \label{eq:ass2}
+  \exists z: \exists y: \bigl(\pair(x,y) \in R \wedge \pair(y,z) \in Q \wedge \pair(z,u) \in P\bigr)
+\end{equation}
+Now the  {formul\ae} (\ref{eq:ass1}) and (\ref{eq:ass2}) are identical.  Therefore we have
+shown the equivalence
+(\ref{eq:ass0}) and the law of associativity is proved.  \hspace*{\fill} $\Box$
+\vspace{0.2cm}
+
+Another important property of the relational product is the following: If
+ $R \subseteq L \times M$ and $Q \subseteq M \times N$ are two relations, then we have \\[0.2cm]
+\hspace*{1.3cm} $(R \circ Q)^{-1} = Q^{-1} \circ R^{-1}$. \\[0.2cm]
+You should note that the sequence of  $Q$ and $R$ is different on the left side of this
+equation
+from the order in which $Q$ and $R$ appear on the right side.  To prove this equation we
+have to show that for all pairs $\pair(z,x) \in N \times L$ the equivalence \\[0.2cm]
+\hspace*{1.3cm} $\pair(z,x) \in (Q \circ R)^{-1} \leftrightarrow \pair(z,x) \in R^{-1} \circ Q^{-1}$ \\[0.2cm]
+is valid.  The proof is given as follows: 
+\[ 
+\begin{array}{cl}
+                & \pair(z,x) \in (R \circ Q)^{-1}                                             \\[0.2cm]
+\leftrightarrow & \pair(x,z) \in R \circ Q                                                    \\[0.2cm]
+\leftrightarrow & \exists y \in M \colon \bigl(\pair(x,y) \in R \wedge \pair(y,z) \in Q\bigr) \\[0.2cm]
+\leftrightarrow & \exists y \in M \colon \bigl(\pair(y,z) \in Q \wedge \pair(x,y) \in R\bigr) \\[0.2cm]
+\leftrightarrow & \exists y \in M \colon \bigl(\pair(z,y) \in Q^{-1} \wedge \pair(y,x) \in R^{-1}\bigr) 
+                  \\[0.2cm]
+\leftrightarrow & \pair(z,x) \in Q^{-1} \circ R^{-1}   \hspace*{\fill} \Box                                       
+\end{array}
+\]
+\vspace{0.2cm}
+
+\noindent
+We note the following law of distributivity:  If $R_1$ and $R_2$
+are relations on $L \times M$ and  $Q$ is a  relation on $M \times N$, then we have: \\[0.2cm]
+\hspace*{1.3cm}  $(R_1 \cup R_2) \circ Q = (R_1 \circ Q) \cup (R_2 \circ Q)$. \\[0.2cm]
+In a similar way we have \\[0.2cm]
+\hspace*{1.3cm}  $R \circ (Q_1 \cup Q_2) = (R \circ Q_1) \cup (R \circ Q_2)$, \\[0.2cm]
+provided $R$ is a  relation on $L \times M$ and $Q_1$ and $Q_2$ are relations on $M \times
+N$.  
+In order to be able to give a concise proof of the first equation we agree that the
+composition operator $\circ$ has a higher precedence than both $\cup$ and $\cap$.  We prove
+the first law of distributivity by showing  
+\begin{equation}
+  \label{eq:dis0}
+\pair(x,z) \in (R_1 \cup R_2) \circ Q \;\leftrightarrow\; \pair(x,z) \in R_1 \circ Q \cup R_2 \circ Q.
+\end{equation}
+To this end, the formula  $\pair(x,z) \in (R_1 \cup R_2) \circ Q$ is manipulated as follows:
+\[
+\begin{array}{cll}
+                  & \pair(x,z) \in (R_1 \cup R_2) \circ Q  \\[0.2cm]
+  \leftrightarrow & \exists y: \bigl(\pair(x,y) \in R_1 \cup R_2 \wedge \pair(y,z) \in Q\bigr) 
+                  & \mbox{definition of}\; (R_1 \cup R_2) \circ Q \\[0.2cm]
+  \leftrightarrow & \exists y: \bigl(\bigl(\pair(x,y) \in R_1 \vee \pair(x,y) \in R_2\bigr) \wedge \pair(y,z) \in Q\bigr) 
+                  & \mbox{definition of}\; R_1 \cup R_2 \\[0.2cm]
+\end{array}
+\]
+This formula is manipulated using the law of distributivity from propositional logic.
+Later, in propositional logic we will show that for arbitrary {formul\ae}
+$F_1$, $F_2$ and $G$ the equivalence 
+\[ (F_1 \vee F_2) \wedge G \;\leftrightarrow\; (F_1 \wedge G) \vee (F_2 \wedge G) \]
+holds.  Using this law we get:
+\begin{eqnarray}
+  \nonumber
+  & & \exists y: \bigl(\bigl(\underbrace{\pair(x,y) \in R_1}_{F_1} \vee \underbrace{\pair(x,y) \in R_2}_{F_2}\bigr) \wedge \underbrace{\pair(y,z) \in Q}_G\bigr) 
+\\[0.2cm] 
+  \label{eq:dis1}
+  & \leftrightarrow &
+    \exists y: \bigl(\bigl(\underbrace{\pair(x,y) \in R_1}_{F_1} \wedge \underbrace{\pair(y,z) \in Q}_G \bigr) \vee 
+               \bigl(\underbrace{\pair(x,y) \in R_2}_{F_2} \wedge \underbrace{\pair(y,z) \in Q}_G \bigr) \bigr)   
+\end{eqnarray}
+Next, we manipulate $\pair(x,z) \in R_1 \circ Q \cup R_2 \circ Q$:
+\[
+\begin{array}{cll}
+                & \pair(x,z) \in R_1 \circ Q \cup R_2 \circ Q \\[0.2cm]
+\leftrightarrow & \pair(x,z) \in R_1 \circ Q \;\vee\; \pair(x,z) \in R_2 \circ Q &
+                  \mbox{definition of}\;\cup \\[0.2cm]
+\leftrightarrow & \bigl(\exists y: (\pair(x,y) \in R_1 \wedge \pair(y,z) \in Q)\bigr) \;\vee\; 
+                  \bigl(\exists y: (\pair(x,y) \in R_2 \wedge \pair(y,z) \in Q)\bigr) \\[0.2cm]
+                & \mbox{definition of}\; R_1 \circ Q \; \mbox{and}\; R_2 \circ Q \\[0.2cm]
+\end{array}
+\]
+This formula is now manipulated using a law of distributivity for predicate logic.
+In the chapter on predicate logic we will see that for arbitrary {formul\ae}
+ $F_1$ and $F_2$ the equivalence
+\[ \exists y: \bigl(F_1 \vee F_2\bigr) \;\leftrightarrow\; \bigl(\exists y: F_1\bigr) \vee \bigl(\exists y: F_2\bigr) \]
+holds.  Then we conclude 
+\begin{eqnarray}
+\nonumber
+ & & \exists y: \bigl(\underbrace{\pair(x,y) \in R_1 \wedge \pair(y,z) \in Q}_{F_1}\bigr) \;\vee\; 
+     \exists y: \bigl(\underbrace{\pair(x,y) \in R_2 \wedge \pair(y,z) \in Q}_{F_2}\bigr) \\[0.2cm]
+  \label{eq:dis2}
+ & \leftrightarrow &
+     \exists y: \Bigl(\bigl(\underbrace{\pair(x,y) \in R_1 \wedge \pair(y,z) \in Q}_{F_1}\bigr) \;\vee\; 
+                \bigl(\underbrace{\pair(x,y) \in R_2 \wedge \pair(y,z) \in Q}_{F_2}\bigr)\Bigr) 
+\end{eqnarray}
+As (\ref{eq:dis1}) and (\ref{eq:dis2}) are identical, the proof is complete.
+\hspace*{\fill} $\Box$
+\vspace{0.2cm}
+
+\noindent
+\textbf{Remark:}
+It is interesting to note that for the intersection and the composition operator
+there is no law of distributivity, the equation
+\\[0.2cm]
+\hspace*{1.3cm}
+$(R_1 \cap R_2) \circ Q = R_1 \circ Q \cap R_2 \circ Q$
+\\[0.2cm]
+does not hold in general.  In order to validate this claim we provide a counter example.
+Let us define the relations $R_1$, $R_2$ and $Q$ as follows: \\[0.2cm]
+\hspace*{1.3cm} $R_1 := \{ \pair(1,2) \}$, \quad $R_2 := \{ \pair(1,3) \}$ \quad and \quad
+                $Q = \{ \pair(2,4), \pair(3,4) \}$. \\[0.2cm]
+Then we have \\[0.2cm]
+\hspace*{1.3cm} $R_1 \circ Q = \{ \pair(1,4) \}$, \quad $R_2 \circ Q = \{ \pair(1,4) \}$,
+\quad therefore 
+\\[0.2cm]
+\hspace*{1.3cm}
+                $R_1 \circ Q \cap R_2 \circ Q = \{ \pair(1,4) \}$. \\[0.2cm]
+But on the other hand, we have  \\[0.2cm]
+\hspace*{1.3cm} 
+$(R_1 \cap R_2) \circ Q  = \emptyset \circ Q = \emptyset \not=
+\{\pair(1,4) \} = R_1 \circ Q  \cap R_2 \circ Q$. 
+\qed
+
+\paragraph{Identical Relation} If  $M$ is a set, we define the \emph{identical relation} $\id_M \subseteq M \times M$
+as follows: \\[0.2cm]
+\hspace*{1.3cm} $\id_M := \bigl\{ \pair(x,x) \mid x \in M \bigr\}$. 
+\vspace*{0.2cm}
+
+\noindent
+\textbf{Example}: Let $M = \{1,2,3\}$.  Then \\[0.2cm]
+\hspace*{1.3cm}  $\id_M := \bigl\{ \pair(1,1),  \pair(2,2),  \pair(3,3) \bigr\}$.
+\vspace*{0.2cm}
+
+\noindent
+An immediate consequence of this definition is \\[0.2cm]
+\hspace*{1.3cm} $\id_M^{-1} = \id_M$. \\[0.2cm]
+If  $R \subseteq M \times N$ is a binary relation we have 
+\[ R \circ \id_N = R \quad \mbox{and} \quad \id_M \circ R = R. \] 
+We prove the second equation.  According to the definition of the composition we have
+\[ \id_M \circ R = \bigl\{ \pair(x,z) \mid \exists y: \pair(x,y) \in \id_M \wedge \pair(y,z) \in R \bigr\}. \]
+Now we have $\pair(x,y) \in \id_M$ if and only if  $x = y$, therefore
+\[ \id_M \circ R = \bigl\{ \pair(x,z) \mid \exists y: x = y \wedge \pair(y,z) \in R \bigr\}. \]
+Furthermore, we have
+\[ \exists y: \bigl( x = y \wedge \pair(y,z) \in R \bigr) \leftrightarrow \pair(x,z) \in R. \]
+This is easy to see:  If we have $\exists y: x = y \wedge \pair(y,z) \in R$,
+the $y$ must be equal to  $x$ and then we have  $\pair(x,z) \in R$.  If on the other hand
+ $\pair(x,z) \in R$, define $y := x$.  For this $y$ we obviously have 
+$x = y \wedge \pair(y,z) \in R$.  Using the equivalence given above we conclude 
+\[ \id_M \circ R = \bigl\{ \pair(x,z) \mid \pair(x,z) \in R \bigr\}. \]
+As  $R \subseteq M \times N$ we know that $R$ is a set of ordered pairs and therefore
+\[ R = \bigl\{ \pair(x,z) \mid \pair(x,z) \in R \bigr\}. \]
+This proves $\id_M \circ R = R$. \hspace*{\fill} $\Box$
+\vspace*{0.2cm}
+
+\exercise
+Assume $R \subseteq M \times N$.  State conditions for the relation $R$ such that
+\\[0.2cm]
+\hspace*{1.3cm}
+$R \circ R^{-1} = \id_M$  
+\\[0.2cm]
+holds.  State conditions such that 
+\\[0.2cm]
+\hspace*{1.3cm}
+$R^{-1} \circ R = \id_M$
+\\[0.2cm]
+holds.  \qed
+% The first equation holds iff $R$ is left-total and left-unique.
+\pagebreak
+
+
+\subsection{Binary Relations on a Set}
+In the following, we discuss the special case of those relations $R \subseteq M \times N$
+that satisfy  $M = N$.  We define: A relation $R \subseteq M \times M$ is a  relation
+\emph{on} the set $M$. In the rest of this section we restrict ourself to discuss
+relations of this kind.  Instead of $R \subseteq M \times M$ we sometimes write $R \subseteq M^2$.
+Furthermore, if $R$ is a relations on  $M$ and if $x, y \in M$, we sometimes write $x R y$ instead of 
+$\pair(x,y) \in R$ and thereby treat $R$ as an infix operator.  For example, the relation $\leq$ 
+on  $\mathbb{N}$ is defined as follows: \\[0.2cm]
+\hspace*{1.3cm}
+ $\leq\; := \{ \pair(x,y) \in \mathbb{N} \times \mathbb{N} \mid \exists z \in \mathbb{N} \colon x + z = y \}$.
+\\[0.2cm]
+Instead of  $\pair(x,y) \in\; \leq$ it is customary to write $x \leq y$.
+  
+\begin{Definition} 
+The relation $R \subseteq M \times M$ is called \emph{reflexive} on  $M$ iff \\[0.2cm]
+\hspace*{1.3cm} $\forall x\in M \colon \pair(x,x) \in R$. 
+\end{Definition}
+
+\begin{Proposition}
+The relation $R \subseteq M \times M$ is  reflexive on $M$ iff $\mbox{\rm id}_M \subseteq R$.
+\end{Proposition}
+
+\noindent
+\textbf{Proof}: We have
+\\[0.2cm]
+\hspace*{1.3cm}
+$
+\begin{array}[b]{cl}
+              & \id_M \subseteq R \\[0.2cm]
+\mbox{iff} & \bigl\{ \pair(x,x) \mid x \in M \bigr\} \subseteq R \\[0.2cm] 
+\mbox{iff} & \forall x \in M: \pair(x,x) \in R \\[0.2cm] 
+\mbox{iff} & \mbox{$R$ is reflexive.}  
+\end{array}
+$
+\hspace*{\fill} $\Box$
+\vspace*{0.2cm}
+
+\begin{Definition}
+The relation $R \subseteq M \times M$ is \emph{symmetric} iff \\[0.2cm]
+\hspace*{1.3cm} 
+$\forall x,y\el M \colon \bigl(\pair(x,y) \in R \rightarrow\pair(y,x)\in R\bigr)$. 
+\end{Definition}
+
+\begin{Proposition}
+The relation $R \subseteq M \times M$ is symmetric iff $R^{-1} \subseteq R$.
+\end{Proposition}
+
+\noindent
+\textbf{Proof}:
+Let us rewrite the formula $R^{-1} \subseteq R$ by substituting
+\[ R^{-1} = \bigl\{ \pair(y,x) \mid \pair(x,y) \in R \bigr\}. \]
+Then $R^{-1} \subseteq R$ is equivalent to
+\[ \bigl\{ \pair(y,x) \mid \pair(x,y) \in R \bigr\} \subseteq R. \]
+According to the definition of $\subseteq$ this is the same as
+\[ \forall x, y \in M \colon \bigl(\pair(x,y) \in R \rightarrow\pair(y,x) \in R\bigr) \]
+and this is the condition for $R$ being symmetric. \qed
+\vspace*{0.2cm}
+
+\begin{Definition}
+The relation $R \subseteq M \times M$  is \emph{anti-symmetric} iff \\[0.2cm]
+\hspace*{1.3cm} 
+$\forall x, y \in M \colon \bigl(\pair(x,y) \in R \wedge \pair(y,x) \in R \rightarrow x = y\bigr)$.
+\end{Definition}
+
+\begin{Proposition}
+The relation $R \subseteq M \times M$  is anti-symmetric iff
+$R \cap R^{-1} \subseteq \mbox{\rm id}_{M}$.
+\end{Proposition}
+
+\noindent
+\textbf{Proof}:
+We split the proof into two parts.  Let us first assume that $R$ is anti-symmetric and therefore
+\[ \forall x, y \in M \colon \bigl(\pair(x,y) \in R \wedge \pair(y,x) \in R \rightarrow x = y\bigr) \]
+holds.  We show that $R \cap R^{-1} \subseteq \id_{M}$ is a consequence of this
+assumption.  Assume $\pair(x,y) \in R \cap R^{-1}$.
+Then $\pair(x,y) \in R$ and from $\pair(x,y) \in R^{-1}$ we know  $\pair(y,x) \in R$.
+From our assumption we can then conclude  $x=y$.
+This implies $\pair(x,y) \in \id_M$, showing  $R \cap R^{-1} \subseteq \id_{M}$.
+
+To prove the remaining part, assume $R \cap R^{-1} \subseteq \id_{M}$.  We have to show
+that this implies 
+\[ \forall x, y \in M \colon \bigl(\pair(x,y) \in R \wedge \pair(y,x) \in R \rightarrow x = y\bigr). \]
+Therefore, take $x,y \in M$ such that $\pair(x,y) \in R$ and $\pair(y,x) \in R$.  We have
+to show  $x=y$.  From $\pair(y,x) \in R$ we have
+$\pair(x,y) \in R^{-1}$.  Therefore $\pair(x,y) \in R \cap R^{-1}$.
+As we have assumed $R \cap R^{-1} \subseteq \id_{M}$, we can conclude
+$\pair(x,y) \in \id_M$ and that implies $x = y$. \hspace*{\fill} $\Box$
+\vspace*{0.2cm}
+
+\begin{Definition}
+The relation $R \subseteq M \times M$  is \emph{asymmetric} iff \\[0.2cm]
+\hspace*{1.3cm} 
+$\forall x, y \in M \colon \neg \bigl(\pair(x,y) \in R \wedge \pair(y,x) \in R)$.
+\end{Definition}
+
+Although the names are similar, the concept of  an asymmetric relation is quite different
+from the concept  of an anti-symmetric relation.
+Therefore, it is important not to confound these notions.
+
+\begin{Definition}
+The  relation $R \subseteq M \times M$  is \emph{transitive} iff \\[0.2cm]
+\hspace*{1.3cm} 
+$\forall x, y, z \in M \colon 
+ \bigl(\pair(x,y) \in R \wedge \pair(y,z) \in R \rightarrow \pair(x,z) \in R\bigr)$.
+\end{Definition}
+
+\begin{Proposition}
+The relation $R \subseteq M \times M$  is transitive iff $R \circ R \subseteq R$.
+\end{Proposition}
+
+\noindent
+\textbf{Proof}:  Let us first assume that $R$ is transitive.  We have to show that this
+implies $R \circ R \subseteq R$.  
+In order to show $R \circ R \subseteq R$ assume $\pair(x,z) \in R \circ R$.  We have
+to show $\pair(x,z) \in R$.  According to the definition of the composition $R \circ R$
+the assumption $\pair(x,z) \in R \circ R$ entails that there exists a $y$ such that we
+have 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\pair(x,y) \in R$ \quad and \quad $\pair(y,z) \in R$.
+\\[0.2cm]
+As we have assumed $R$ transitive this implies  $\pair(x,z) \in R$.
+
+To prove the second part, let us assume $R \circ R \subseteq R$.  We have to show that this
+implies
+\[ \forall x, y, z \in M \colon 
+   \bigl(\pair(x,y) \in R \wedge \pair(y,z) \in R \rightarrow \pair(x,z) \in R\bigr). 
+\]
+In order to show this, assume  $\pair(x,y) \in R$ and $\pair(y,z) \in R$.
+According to the definition of the relational product,
+this implies  $\pair(x,z) \in R \circ R$ and using the assumption $R \circ R \subseteq R$
+we  conclude  $\pair(x,z) \in R$. \qed
+\vspace*{0.2cm}
+
+
+
+\noindent
+\textbf{Examples}:  For the first two examples, define $M = \{1,2,3\}$.
+\begin{enumerate}
+\item $R_1 = \{ \pair(1,1), \pair(2,2), \pair(3,3) \}$.
+
+      $R_1$ is reflexive on $M$, symmetric, anti-symmetric, and transitive.
+      Note that $R_1$ is not asymmetric as we can set $x := 1$ and $y := 1$ 
+      and then have both $\pair(x,y) \in R$ and $\pair(y,x) \in R$.
+\item $R_2 = \{ \pair(1,2), \pair(2,1), \pair(3,3) \}$.
+
+      $R_2$ is not  reflexive on $M$, as $\pair(1,1) \not\in R_2$.
+      $R_2$ is symmetric. 
+      $R_2$ isn't anti-symmetric, because we have both $\pair(1,2) \in R_2$ and 
+      $\pair(2,1) \in R_2$, but $2 \not=1$.
+      As $\pair(3, 3) \in R$, $R$ isn't asymmetric either.
+      Finally,  $R_2$ isn't transitive, because if it were, then the facts
+      $\pair(1,2) \in R_2$ and 
+      $\pair(2,1) \in R_2$ would imply $\pair(1,1) \in R_2$, which is wrong.
+
+      In the following examples we have $M = \mathbb{N}$.
+\item $R_3 := \{ \pair(n,m) \in \mathbb{N}^2 \mid n \leq m \}$.
+
+      As we have $n \leq n$ for all $n \in \mathbb{N}$, $R_3$ is reflexive on $\mathbb{N}$.  
+      $R_3$ is not symmetric: For example, we have $1 \leq 2$ but we don't have $2 \leq
+      1$.  
+      $R_3$ is  anti-symmetric: If we have both $n \leq m$ and $m \leq n$, then we can
+      conclude $m = n$.
+      $R_3$ is not asymmetric, as we have $1 \leq 1$.
+      Finally, $R_3$ is transitive: If we have $k \leq m$ and $m \leq n$, then we can conclude
+      $k \leq n$.
+\item $R_4 := \{ \pair(m,n) \in \mathbb{N}^2 \mid \exists k\in \mathbb{N}: m\cdot k = n \}$
+
+      For two positive integers $m$ and $n$ we have $\pair(m,n) \in R_4$ if $m$ divides
+      $n$.  Therefore $R_4$ is reflexive on $\mathbb{N}$, because every positive 
+      integer divides itself.  $R_4$ is not  symmetric: For example, $1$ divides  $2$ 
+      but $2$ does not divide $1$.  However, $R_4$ is anti-symmetric: If 
+      $m$ divides $n$  and $n$ divides $m$, then we must have $m = n$.  
+      As $R_4$ is reflexive, it cannot be asymmetric.
+      Finally,  $R_4$ is transitive: If  $m$ divides $n$ and
+      $n$ divides  $o$,  we must have natural numbers  $a$ and $b$ such that
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $n = a \cdot m$ \quad and \quad $o = b \cdot n$.
+      \\[0.2cm]
+      This implies $o = b \cdot a \cdot m$ and therefore $m$ divides $o$.
+\end{enumerate}
+Sometimes, it is necessary to convert a relation $R$ that is not transitive into a
+transitive relation.  In order to do so, we define the powers $R^n$ for all
+ $n \in \mathbb{N}$.  This definition is given by induction on $n$.
+\begin{enumerate}
+\item Base Case: $n= 0$.  Define \\[0.2cm]
+      \hspace*{1.3cm} $R^0 := \id_M$
+\item Induction Step: $n \rightarrow n + 1$. 
+
+      According to the inductive hypothesis,  $R^n$ is already defined.
+      We define $R^{n+1}$ as \\[0.2cm]
+      \hspace*{1.3cm} $R^{n+1} = R \circ R^n$.
+\end{enumerate}
+Later, we need the following law of powers: For any  $k,l \in \mathbb{N}$ we have
+\[ R^k \circ R^l = R^{k+l}. \]
+\textbf{Proof}:  We proof this law by induction on  $k$.
+\begin{enumerate}
+\item[B.C.:] $k = 0$.  We have
+             \[ R^0 \circ R^l = \textsl{id}_M \circ R^l = R^l = R^{0+l}. \]
+\item[I.S.:] $k \mapsto k+1$.  We have
+             \[
+             \begin{array}{lcll}
+               R^{k+1} \circ R^l & = & (R \circ R^k) \circ R^l &
+                                       \mbox{definition of}\; R^{k+1} \\
+                                 & = & R \circ (R^k \circ R^l) &
+                                       \mbox{associativity of $\circ$} \\
+                                 & = & R \circ R^{k+l} &
+                                       \mbox{induction hypothesis} \\
+                                 & = & R^{(k+l)+1} &
+                                       \mbox{definition}\; R^{(k+l)+1} \\
+                                 & = & R^{(k+1)+l}. & \hspace*{\fill} \Box
+             \end{array}
+             \]
+\end{enumerate}
+\vspace*{0.3cm}
+
+\noindent
+We define the  \emph{transitive closure} of a binary relation $R$ on a set $M$ as \\[0.2cm]
+\hspace*{1.3cm} $R^+ := \bigcup\limits_{n=1}^{\infty} R^n$. \\
+Here, the expression  $\bigcup\limits_{i=1}^{\infty} R^n$ 
+is to be interpreted as  \\[0.2cm]
+\hspace*{1.3cm} 
+$\bigcup\limits_{i=1}^{\infty} R^n = R^1 \cup R^2 \cup R^3 \cup \cdots $. 
+
+\begin{Proposition}
+Assume $M$ is a set  and $R \subseteq M \times M$ is a binary relation on $M$.
+Then we have the following:
+\begin{enumerate}
+\item $R^+$ is transitive.
+\item With respect to the inclusion ordering $\subseteq$, the relation $R^+$ 
+      is the smallest relation $T$ on  $M$ that is both transitive and extends $R$.
+      To put it differently: If $T$ is a transitive relation on $M$ such that $R \subseteq
+      T$, then 
+      we must have  $R^+ \subseteq T$, as $R^+$ is the smallest relation with these properties.
+\end{enumerate}
+\end{Proposition}
+
+\noindent
+\textbf{Proof}:
+\begin{enumerate}
+\item Let us first prove that $R^+$ is transitive.  We have to prove
+\[ \forall x, y, z: 
+   \bigl(\pair(x,y) \in R^+ \wedge \pair(y,z) \in R^+ \rightarrow \pair(x,z) \in   R^+\bigr). 
+\]
+Therefore, assume  $\pair(x,y) \in R^+$ and $\pair(y,z) \in R^+$.  We have to show
+that this implies  $\pair(x,z) \in R^+$.  According to the definition of  $R^+$ we have
+\[ \pair(x,y) \in \bigcup\limits_{n=1}^{\infty} R^n \quad \mbox{and} \quad
+   \pair(y,z) \in \bigcup\limits_{n=1}^{\infty} R^n.
+\]
+According to the definition of  $\bigcup\limits_{n=1}^{\infty} R^n$ there are natural
+numbers  $k,l\in\mathbb{N}$ such that we have
+\[ \pair(x,y) \in R^k \quad \mbox{and} \quad \pair(y,z) \in R^l. \]
+Using the definition of the composition $R^k \circ R^l$ we conclude
+\[  \pair(x,z) \in R^k \circ R^l. \]
+Using the law of powers we have 
+\[ R^k \circ R^l = R^{k+l}. \]
+Combining these {formul\ae}, we conclude $\pair(x,z) \in R^{k+l}$ and this implies
+\[  \pair(x,z) \in \bigcup\limits_{n=1}^{\infty} R^n. \]
+Therefore,  we have $\pair(x,z) \in R^+$ and thus have shown $R^+$ to be transitive. 
+
+\item Next, we prove that $R^+$ is indeed the smallest  relation that is both transitive
+      and contains $R$.  Therefore, assume  $T$ is a transitive relation such that
+      $R \subseteq T$.  We have to show  $R^+ \subseteq T$.
+
+      In order to do this, we first prove the following claim by induction on $n$
+      \[ \forall n \in \mathbb{N}: \bigl(n \geq 1 \rightarrow R^n \subseteq T\bigr). \]
+
+      \textbf{B.C.:} $n=1$.  We have to show  $R^1 \subseteq T$.  We have
+      \[ R^1 = R \circ \id_M = R. \]
+      Therefore, $R^1 \subseteq T$ is an immediate consequence of our assumption $R \subseteq T$.
+
+      \textbf{I.S.:} $n \mapsto n+1$.  According to the induction hypothesis, we have
+      \[ R^n \subseteq T. \]
+      We  multiply this inclusion with $R$ and arrive at
+      \[ R^{n+1} = R \circ R^n \subseteq R \circ T. \]
+      If we multiply both sides of the assumption  $R \subseteq T$ with $T$ we get
+      \[ R \circ T \subseteq T \circ T. \]
+      As $T$ is transitive, we have 
+      \[ T \circ T \subseteq T. \]
+      Taken together, we have the following chain of inclusions
+      \[ R^{n+1} \subseteq R \circ T \subseteq T \circ T \subseteq T. \]
+      Therefore, we have shown $R^{n+1} \subseteq T$ and the claim is proven.
+
+      From this, $R^+ \subseteq T$ is an immediate consequence of the definition of
+      $R^+$.  \qed
+\end{enumerate}
+
+\example
+Define  \textsl{Human} as the set of all human beings that have ever lived.
+We define the \textsl{parent} on \textsl{Human} as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{parent} := \{ \pair(x,y) \in \textsl{Human}^2 \mid \mbox{$x$ is father of $y$ or
+                                                                  $x$ is mother of $y$} \}.$
+\\[0.2cm]
+The transitive closure of  \textsl{parent} is the set of all those pairs
+$\pair(x,y)$ such that $x$ is an ancestor of $y$:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{parent}^+ = \{ \pair(x,y) \in \textsl{Human}^2 \mid \mbox{$x$ is an ancestor of $y$} \}$.
+\next
+
+\example
+Define \textsl{F} as the set of all airports.  Let us define a 
+relation \textsl{D} on $F$ as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{D} := \{ \pair(x,y) \in \textsl{F} \times \textsl{F} \mid
+                  \mbox{there is a direct flight from $x$ to $y$} \}$.
+\\[0.2cm]
+So $D$ is the set of all direct connections.  The relation $D^2$ is defined as
+\\[0.2cm]
+\hspace*{1.3cm}
+$D^2 = \{ \pair(x,z) \in \textsl{F} \times \textsl{F} \mid 
+          \exists y \in \textsl{F}: \bigl(\pair(x,y) \in D \wedge \pair(y,z) \in D\bigr) \}$.
+\\[0.2cm]
+These are all pairs $\pair(x,y)$ such that there is a connection from $x$ to $y$ with
+exactly one stop.
+Similarly, $D^3$ is the set of all pairs $\pair(x,y)$ such that you can get from $x$ to
+$y$ with two stops.  In general, $D^k$ is the set of those pairs $\pair(x,z)$, 
+such that you need  $k-1$ stops to go from $x$ to $y$.
+The transitive closure $D^+$ contains all those pairs of airports $\pair(x,y)$ such that 
+there is a connection from $x$ to $y$ that can contain any number of stops in between.
+
+
+\exercise
+Let us define the relation $R$ on the set $\mathbb{N}$ as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$R = \{ \pair(k, k + 1) \mid k \in \mathbb{N} \}$.
+\\[0.2cm]
+Compute the following relations:
+\begin{enumerate}
+\item $R^2$,
+\item $R^3$,
+\item $R^n$ for any $n \in \mathbb{N}$ such that $n \geq 1$,
+\item $R^+$.
+\end{enumerate}
+
+
+\begin{Definition}
+The relation $R \subseteq M \times M$  is an
+\emph{equivalence relation} on $M$ iff
+\begin{enumerate}
+\item $R$ is reflexive on $M$,
+\item $R$ is symmetric and
+\item $R$ is transitive.
+\end{enumerate}
+\end{Definition}
+
+The notion of an equivalence relation is a generalization of the notion of equality, as
+the identical relation $\textsl{id}_M$ is a trivial example of an equivalence relation on $M$.
+To present a non-trivial example, given a positive natural number $n$, we define the relation 
+ \\[0.2cm]
+\hspace*{1.3cm}
+ $\approx_n \;:=\; \{ \pair(x,y) \in \mathbb{Z}^2 \mid \exists k \in \mathbb{Z} \colon k \cdot n = x - y \}$
+\\[0.2cm]
+We have   $x \approx_n y$ iff $x$ and $y$ yield the same remainder when divided by $n$.
+We show that for  $n \not=0$ the relation $\approx_n$ is an equivalence relation on $\mathbb{Z}$.
+\begin{enumerate}
+\item In order to prove that $\approx_n$ is reflexive we have to show that
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\pair(x,x) \in\; \approx_n$ \quad holds for all $x \in \mathbb{Z}$.
+      \\[0.2cm]
+      According to the definition of $\approx_n$
+      we therefore have to show \\[0.2cm]
+      \hspace*{1.3cm}
+      $\pair(x,x) \in \bigl\{ \pair(x,y) \in \mathbb{Z}^2 \mid \exists k \in \mathbb{Z}: k
+      \cdot n = x - y \bigr\}$ \quad for all $x \in \mathbb{Z}$.
+      \\[0.2cm]
+      This is equivalent to \\[0.2cm]
+      \hspace*{1.3cm}
+      $\exists k \in \mathbb{Z}: k \cdot n = x - x$.
+      \\[0.2cm]
+      Obviously, choosing $k=0$ satisfies this equation.
+\item Next, we prove that $\approx_n$ is symmetric.  Assume 
+      $\pair(x,y) \in\; \approx_n$.  Then there is a  $k \in \mathbb{Z}$ such that
+      \\[0.2cm]
+      \hspace*{1.3cm}      
+      $k\cdot n = x - y$.
+      \\[0.2cm] 
+      Therefore, we also have
+      \\[0.2cm]
+      \hspace*{1.3cm}      
+      $(-k)\cdot n = y - x$.
+      \\[0.2cm]
+      Hence $\pair(y,x) \in\; \approx_n$.
+\item In order to prove $\approx$ transitive we assume that both
+       $\pair(x,y) \in\; \approx_n$ and $\pair(y,z) \in\; \approx_n$ holds.  Then there
+       are $k_1,k_2 \in \mathbb{Z}$ such that
+      \\[0.2cm]
+      \hspace*{1.3cm}      
+      $k_1 \cdot n = x - y$ \quad and \quad $k_2 \cdot n = y - z$.
+      \\[0.2cm]
+      Adding these equation we see
+      \\[0.2cm]
+      \hspace*{1.3cm}      
+      $(k_1 + k_2) \cdot n = x - z$.
+      \\[0.2cm]
+      Defining  $k_3 := k_1 + k_2$ we have $k_3\cdot n = x - z$ and that shows
+      $\pair(x,z) \in\; \approx_n$.   Therefore, the relation $\approx_n$ is transitive.  \qed
+\end{enumerate}
+
+\begin{Proposition} Assume $M$ and $N$ are sets and
+\\[0.2cm]
+\hspace*{1.3cm}
+$f : M \rightarrow N$
+\\[0.2cm]
+is a function mapping $M$ to $N$.  If we define the  relation $R_f \subseteq M \times M$ as
+\\[0.2cm]
+\hspace*{1.3cm}
+$R_f := \bigl\{ \pair(x,y) \in M \times M \mid f(x) = f(y) \bigr\}$,
+\\[0.2cm]
+then $R_f$ is an equivalence relation.  We call $R_f$ the equivalence relation \emph{induced}
+by $f$.
+\end{Proposition}
+
+\noindent
+\textbf{Proof}: We have to prove that $R_f$ is reflexive on $M$, symmetric, and transitive.
+\begin{enumerate}
+\item We have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x \in M: f(x) = f(x)$.
+      \\[0.2cm]
+      Therefore
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x \in M: \pair(x,x) \in R_f$,
+      \\[0.2cm]
+      showing that $R_f$ is reflexive.
+\item In order to establish $R_f$ as symmetric, we have to prove
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x,y \in M: (\pair(x,y) \in R_f \rightarrow \pair(y,x) \in R_f)$.
+      \\[0.2cm]
+      Let us  therefore assume $\pair(x,y) \in R_f$.  According to the definition of $R_f$ we conclude
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $f(x) = f(y)$.
+      \\[0.2cm]
+      From this 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $f(y) = f(x)$
+      \\[0.2cm]
+      is immediate and according to the definition of $R_f$ this implies 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\pair(y,x) \in R_f$.
+\item To establish $R_f$ as transitive, we have to prove
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x,y,z \in M: \bigl(\pair(x,y) \in R_f \wedge \pair(y,z) \in R_f \rightarrow \pair(x,z)\bigr)$.
+      \\[0.2cm]
+      Therefore, assume 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\pair(x,y) \in R_f \wedge \pair(y,z) \in R_f$.
+      \\[0.2cm]
+      According to the definition of $R_f$ we have 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $f(x) = f(y) \wedge f(y) = f(z)$.
+      \\[0.2cm]
+      But then 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $f(x) = f(z)$.
+      \\[0.2cm]
+      This is the same as 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\pair(x,z) \in R_f$.  \qed
+\end{enumerate}
+
+\example
+Take  $H$ as the set of all human beings and take $N$ as the set of all nations.
+To simplify the discussion, let us assume that every human being has exactly one citizenship.
+Then we can define a function
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{cs}: H \rightarrow N$
+\\[0.2cm]
+such that for every human $x$,  $\textsl{cs}(x)$ is the citizenship of $x$.  
+In the equivalence relation $R_{\textsl{cs}}$ induced by the function $\textsl{cs}$, all those human
+beings are equivalent that have the same citizenship.
+
+
+\begin{Definition}[Equivalence Class]
+If $R$ is an  equivalence relation on  $M$, we define 
+the set $[x]_R$ for all  $x \in M$ as follows: 
+\\[0.2cm]
+\hspace*{1.3cm}
+$[x]_R \;:=\; \bigl\{ y \in M \mid x \mathop{R} y \bigr\}$ \qquad
+(Here,  $x R y$ is used as abbreviation for $\pair(x, y) \in R$.) 
+\\[0.2cm]
+The set  $[x]_R$ is called the \emph{equivalence class generated by $x$}.
+\end{Definition}
+
+\begin{Proposition} \label{prop:14}
+If $R \subseteq M \times M$ is an equivalence relation, then we have: 
+\begin{enumerate}
+\item $\forall x \el M \colon x \el [x]_R$
+\item $\forall x, y \el M \colon \bigl(x \mathop{R} y \rightarrow [x]_R = [y]_R\bigr)$
+\item $\forall x, y \el M \colon \bigl(\neg x \mathop{R} y \rightarrow [x]_R \cap [y]_R = \emptyset\bigr)$
+\end{enumerate}
+\end{Proposition}
+
+\noindent
+\textbf{Remark}: For any $x,y\el M$ we either have $x \mathop{R} y$ or
+ $\neg (x \mathop{R} y)$.  
+Therefore, the equivalence classes generated by two elements $x$ and $y$ are either
+identical or they share no elements:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\forall x, y \el M: \bigl([x]_R = [y]_R \vee [x]_R \cap [y]_R = \emptyset\bigr)$.
+\pagebreak
+
+\noindent
+\textbf{Proof} of proposition \ref{prop:14}:  
+\begin{enumerate}
+\item We have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $   x \el [x]_R \;\leftrightarrow\;
+          x \in \bigl\{ y \el M \mid x \mathop{R} y \bigr\} \;\leftrightarrow\;
+          x \mathop{R} x
+      $.
+      \\[0.2cm]
+      Now $x \mathop{R} x$ is always true since $R$ is an equivalence
+      relation and therefore has to be reflexive.  This shows
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x \el M \colon x \el [x]_R$.
+\item Assume $x \mathop{R} y$.  In  order to prove $[x]_R = [y]_R$ we have to show both
+      $[x]_R \subseteq [y]_R$ and $[y]_R \subseteq [x]_R$.
+
+      We start with the proof of  $[x]_R \subseteq [y]_R$.  Assume 
+      $u \el [x]_R$.  According to the definition of $[x]_R$ this implies 
+      $x \mathop{R} u$.  From $x \mathop{R} y$, since $R$ is symmetric, we have
+      $y \mathop{R} x$.  Now since $R$ is transitive, from $y \mathop{R} x$ and $x
+      \mathop{R} u$ 
+      we conclude  $y \mathop{R} u$ gilt.  According to the definition of  $[y]_R$ we
+      therefore have  $u \el [y]_R$.   This shows $[x]_R \subseteq [y]_R$.
+
+      We show $[y]_R \subseteq [x]_R$ next and assume $u \el [y]_R$.  Then we have
+      $y \mathop{R} u$.  From  $x \mathop{R} y$ and $y \mathop{R} u$ we conclude 
+      $x \mathop{R} u$, as $R$ is transitive.  This implies $u \el [x]_R$ and therefore we
+      have proven $[y]_R \subseteq [x]_R$.
+\item Assume $\neg (x \mathop{R} y)$.  In order to prove  $[x]_R \cap [y]_R = \emptyset$
+      we assume that there exists a $z$ such that $z \el [x]_R \cap [y]_R$.  
+      We will show that this assumption must lead to a contradiction.
+  
+      So we start with  $z \el[x]_R$ and $z \el [y]_R$.  According to the definition of
+       $[x]_R$ and $[y]_R$ we must have
+      \\[0.2cm]
+      \hspace*{1.3cm}      
+      $x \mathop{R} z$ \quad and \quad $y \mathop{R} z$.
+      \\[0.2cm]
+      Since $R$ is symmetric we can turn  $y \mathop{R} z$ around and have
+      \\[0.2cm]
+      \hspace*{1.3cm}      
+      $x \mathop{R} z$ \quad and \quad $z \mathop{R} y$.
+      \\[0.2cm]
+      As $R$ is transitive we conclude $x R y$, contradiction the assumption $\neg (x \mathop{R} y)$.
+      Therefore, there can be no $z$ such that $z \el [x]_R \cap [y]_R$ holds.
+      As a consequence, the set  $[x]_R \cap [y]_R$ must be empty.
+      \hspace*{\fill} $\Box$
+\end{enumerate}
+
+\begin{Definition}[Partition] 
+Let  ${\cal P} \subseteq 2^M$ be a set of subsets of $M$.  We call  ${\cal P}$ a
+\emph{partition} of  $M$ iff the following is true:
+\begin{enumerate}
+\item $\forall x \el M : \exists K \el {\cal P} : x \el K$, \hspace*{\fill}  (\emph{completeness property})
+
+      for every element from $M$ there is a set in ${\cal P}$ containing this element.
+\item $\forall K, L \el {\cal P} : \bigl(K \cap L =\emptyset \vee K = L\bigr)$, \hspace*{\fill}
+      (\emph{separation property})
+      
+      two sets from ${\cal P}$ are either equal or they do not share any elements.
+\end{enumerate}
+\end{Definition}
+
+\noindent
+\textbf{Remark}:
+The last  proposition shows that for every equivalence relation $R$ on a set $M$, 
+the set
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bigl\{ [x]_R \mid x \in M \bigr\}$
+\\[0.2cm]
+of equivalence classes generated by $R$ is a partition of $M$.  
+Next, we will show that this can be turned around: If we have a partition $\mathcal{P}$ on
+$M$, then this partition gives rise to an equivalence relation on $M$.
+
+\begin{Proposition} 
+Assume  $M$ is a set and $\mathcal{P} \subseteq 2^M$ is a partition of $M$.  Define the
+relation $R$ as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$R := \bigl\{ \pair(x,y) \in M \times M \mid \exists K \in \mathcal{P}: \bigl(x \in K \wedge y \in K\bigr) \bigr\}$.
+\\[0.2cm]
+Then $R$ is an equivalence relation on $M$.
+\end{Proposition}
+
+\noindent
+\textbf{Proof}: We have to show that $R$ is reflexive on $M$, symmetric and
+transitive.
+\begin{enumerate}
+\item In order to show that $R$ is reflexive on $M$ we have to show
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x \in M: x \mathop{R} x$.
+      \\[0.2cm]
+      According to the definition of $R$, this is the same as 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x \in M: \exists K \in \mathcal{P}: \bigl(x \in K \wedge x \in K\bigr)$
+      \\[0.2cm]
+      However, the latter is an immediate consequence of the completeness property of $\mathcal{P}$
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x \in M: \exists K \in \mathcal{P}: x \in K$.
+\item In order to show that $R$ is symmetric we have to show
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x, y \in M:\bigl( x \mathop{R} y \rightarrow y \mathop{R} x\bigr)$.
+      \\[0.2cm]
+      Let us assume that 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $x \mathop{R} y$ 
+      \\[0.2cm]
+      holds.  From the definition of $R$ this is the same as
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\exists K \in \mathcal{P}: \bigl(x \in K \wedge y \in K\bigr)$.
+      \\[0.2cm]
+      Now this formula can be rewritten to
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\exists K \in \mathcal{P}: \bigl(y \in K \wedge x \in K\bigr)$
+      \\[0.2cm]
+      and then the definition of $R$ shows
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $y \mathop{R} x$.
+\item In order to show that $R$ is transitive we have to prove 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x,y,z \in M:\bigl( x \mathop{R} y \wedge y \mathop{R} z \rightarrow x \mathop{R} z\bigr)$.
+      \\[0.2cm]
+      Let us assume
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $x \mathop{R} y \wedge y \mathop{R} z$.
+      \\[0.2cm]
+      According to the definition of $R$ this is the same as
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\exists K \in \mathcal{P}: \bigl(x \in K \wedge y \in K\bigr) \wedge 
+       \exists L \in \mathcal{P}: \bigl(y \in L \wedge z \in L\bigr)$.
+      \\[0.2cm]
+      But then there are two sets $K,L\in\mathcal{P}$ such that
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $x \in K \wedge y \in K \cap L \wedge z \in L$.
+      \\[0.2cm]
+      Therefore $K \cap L \not= \emptyset$ and the separation property of  $\mathcal{P}$
+      shows that
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $K = L$.
+      \\[0.2cm]
+      Then we have 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\exists K \in \mathcal{P}: \bigl(x \in K \wedge z \in K\bigr)$
+      \\[0.2cm]
+      and by the definition of  $R$ this means
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $x \mathop{R} z$. 
+      \qed
+\end{enumerate}
+\pagebreak
+
+\paragraph{Partial Order, Linear Order}
+A  relation $R \subseteq M \times M$  is a 
+\emph{partial order (in the sense of $\leq$) on $M$} iff $R$ is
+\begin{enumerate}
+\item reflexive on $M$,
+\item anti-symmetric, and
+\item transitive.
+\end{enumerate}
+The relation $R$ is a \emph{linear order on $M$} if it is a partial order and,
+furthermore, we have
+\\[0.2cm]
+\hspace*{1.3cm} $\forall x \el M : \forall y \el M :\bigl( x\mathop{R}y \vee y \mathop{R} x\bigr)$.
+
+The obvious example of a linear order is the relation $\leq$ on integers.
+However, as we will soon see, there are many more interesting examples.
+
+\example 
+The divisibility relation $\mathop{\mathtt{div}}$ on natural numbers is defined as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \mathop{\mathtt{div}} := 
+   \bigl\{ \pair(x,y) \in \mathbb{N} \times \mathbb{N} \mid \exists k \in \mathbb{N}: k \cdot x = y\bigr\}$.
+\\[0.2cm] 
+We prove that $\mathtt{div}$ is a partial order on $\mathbb{N}$ in the sense of $\leq$.
+To this end, we prove that $\mathtt{div}$ is reflexive on $\mathbb{N}$, symmetric, and 
+\begin{enumerate}
+\item $\mathtt{div}$ is reflexive on $\mathbb{N}$:  We have to prove 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x \in \mathbb{N}: x \mathop{\mathtt{div}} x$.
+      \\[0.2cm]
+      According to the definition of $\mathop{\mathtt{div}}$ this is the same as
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x \in \mathbb{N}: \exists k \in \mathbb{N}: k \cdot x = x$. 
+      \\[0.2cm]
+      Choosing  $k=1$ we have $k \cdot x = x$ for all $x \in \mathbb{N}$ and therefore
+      $\mathtt{div}$ is reflexive on $\mathbb{N}$.
+\item $\mathtt{div}$ is symmetric:  We have to prove 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x, y \in \mathbb{N}:\bigl( x \mathop{\mathtt{div}} y \wedge y \mathop{\mathtt{div}} x \rightarrow x = y\bigr)$
+      \\[0.2cm] 
+      Therefore, assume
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $x \mathop{\mathtt{div}} y \wedge y \mathop{\mathtt{div}} x$.
+      \\[0.2cm]
+      We have to show $x=y$.  According to the definition of $\mathop{\mathtt{div}}$, our
+      assumption is equivalent to
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl(\exists k_1 \in \mathbb{N}: k_1 \cdot x = y \bigr) \wedge
+       \bigl(\exists k_2 \in \mathbb{N}: k_2 \cdot y = x \bigr)$ 
+      \\[0.2cm]
+      Therefore we have natural numbers  $k_1$ and $k_2$ such that
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $k_1 \cdot x = y \wedge k_2 \cdot y = x$.
+      \\[0.2cm]
+      Substituting these equations into each other we arrive at
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $k_1 \cdot k_2 \cdot y = y$ \quad and \quad
+      $k_2 \cdot k_1 \cdot x = x$.
+      \\[0.2cm] 
+      But then we must have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $k_1 \cdot k_2 = 1 \;\vee\; (x = 0 \wedge y = 0)$.
+      \\[0.2cm]
+      From $k_1 \cdot k_2 = 1$ we immediately conclude  $k_1 = 1$ and $k_2 = 1$, as both
+      $k_1$ and $k_2$ are natural numbers.  Then $x = y$ is immediate.
+      If we have both $x = 0$ and $y = 0$, we again have  $x = y$.
+      So in any case, $x = y$ and this had to be shown.
+      \pagebreak
+\item $\mathtt{div}$ is transitive: We have to show
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x, y, z \in \mathbb{N}:\bigl( x \mathop{\mathtt{div}} y \wedge y \mathop{\mathtt{div}} z \rightarrow x \mathop{\mathtt{div}} z\bigr)$
+      \\[0.2cm] 
+      Let us assume 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $x \mathop{\mathtt{div}} y \wedge y \mathop{\mathtt{div}} z$.
+      \\[0.2cm]
+      We have to show $x \mathop{\mathtt{div}} z$.  According to the definition of $\mathop{\mathtt{div}}$
+      this means
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl(\exists k_1 \in \mathbb{N}: k_1 \cdot x = y \bigr) \wedge
+       \bigl(\exists k_2 \in \mathbb{N}: k_2 \cdot y = z \bigr)$. 
+      \\[0.2cm]
+      Then there are natural numbers $k_1$ and $k_2$ such that
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $k_1 \cdot x = y \wedge k_2 \cdot y = z$.
+      \\[0.2cm]
+      Substituting the first equation into the second we get
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $k_2 \cdot k_1 \cdot x = z$.
+      \\[0.2cm] 
+      Setting  $k_3 := k_2 \cdot k_1$ we have  $k_3 \cdot x = z$ and therefore we conclude
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $x \mathop{\mathtt{div}} z$.
+\end{enumerate}
+The relation  $\mathtt{div}$ is not a linear order on $\mathbb{N}$:  For example, we
+neither have $2 \mathop{\mathtt{div}} 3$ nor $3 \mathop{\mathtt{div}} 2$.  \exend
+
+\exercise
+Define the relation  $\leq$ 
+as follows: 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\leq := \bigl\{ \pair(x,y) \in \mathbb{N} \times \mathbb{N} \mid \exists k \in \mathbb{N}: x + k = y \bigr\}$.
+\\[0.2cm]
+Prove that $\leq$ is a linear order on  $\mathbb{N}$.
+\exend
+
+\exercise
+The inclusions relation $\subseteq$ is defined on  the power set $2^\mathbb{N}$ as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\subseteq := 
+\bigl\{ \pair(A,B) \in 2^\mathbb{N} \times 2^\mathbb{N}\mid \exists C \in 2^\mathbb{N}: A \cup C = B \bigr\}$
+\\[0.2cm]
+Prove that  $\subseteq$ is a partial order on $2^\mathbb{N}$ and show that it is not a
+linear order.
+\exend
+\next
+
+\noindent
+Our excursion into set theory ends here.  More details can be found in the literature.
+A good starting point is the book ``Set Theory and Related Topics'' by Seymour Lipshutz
+\cite{lipschutz98}.  This books is also notable for its large number of exercises, most of
+them with solutions.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "logic"
+%%% End: 
+
+% LocalWords:  Ariane arnold Therac Scud nachumd abel lisa Georg de Fermat

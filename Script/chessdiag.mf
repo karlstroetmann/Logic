@@ -1,0 +1,56 @@
+% This is `chessdiag.mf' version 1.1 as of 11/90
+% METAfounded by Piet Tutelaers (internet: rcpt@urc.tue.nl)
+
+% file generates a complete chess diagram
+
+% most versions of METAFONT have memorylimits so generating a complete
+% diagram of 160 X 160 points for a 300 DPI printer is not possible
+
+mode_setup;
+input chessbase;
+
+def draw_pieces(text piece_list) = 
+   string piece, location;
+   for p=piece_list:
+      l:=length p;
+      exitunless (l=2) or (l=3);
+      if l=2: piece:="p"; i:=0;
+      else: piece:=substring(0,1) of p; i:=1; fi;
+      column:=ASCII substring(i,i+1) of p - ASCII "a";
+      row:=ASCII substring(i+1,i+2) of p - ASCII "1";
+      if not odd(column+row): background:=dark; else: background:=light; fi;
+      scantokens piece(d, column,row);
+      endfor;
+   enddef;
+   
+def w(text piece_list) = 
+   color:=white;
+   empty_board(d); draw_pieces(piece_list);
+   enddef;
+   
+def b(text piece_list) = 
+   color:=black;
+   draw_pieces(piece_list);
+   enddef;
+   
+M=8; % number of squares
+d#:=100pt#/M; % size per square
+fine#:=1/100*d#; thin#:=1/90*d#; thick#:=1/36*d#; border#:=1/20*d#;
+define_blacker_pixels(fine, thin, thick, border);
+define_whole_pixels(d);
+pickup pencircle scaled fine; fine_pen:=savepen ; % for drawing dark squares
+pickup pencircle scaled border; border_pen:=savepen ; % for border ofboard
+pickup pencircle scaled thin; thin_pen:=savepen ; % for drawing pieces
+pickup pencircle scaled thick; thick_pen:=savepen; % for drawing inside pieces
+light=0; dark=1; white=0; black=1;
+
+% put here the wanted diagram (ex.: mate in three problem)
+
+w("Kc2","Nb4","Bf8","b3","g7");
+b("Ka3","b6");
+showit;
+
+message("White mates in three moves. Do you see how?");
+StopMe;
+
+end;

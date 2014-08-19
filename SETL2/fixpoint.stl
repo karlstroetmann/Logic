@@ -1,0 +1,31 @@
+program main;
+
+    x := fixpoint(cos, 1.0, nearlyEqual);
+    print("x      = ", x);
+    print("cos(x) = ", x);
+
+    -- Test whether the values of x and y are equal up to rounding errors.
+    procedure nearlyEqual(x, y);
+        return abs(x - y) < 1.0e-13;
+    end nearlyEqual;
+
+    -- This procedure take three parameters:
+    --   f:     a function taking one argument.  The procedure tries to
+    --          compute a fixpoint of f. A fixpoint of f is any value x
+    --          satisfying x = f(x).  The fixpoint is calculated using an
+    --          iterative procedure.
+    --   start: The start value of the iteration used to compute the fixpoint.
+    --   test:  A procedure taking two arguments.  The iteration stops if a 
+    --          value x is found such that test(x, f(x)) yields true.
+    procedure fixpoint(f, start, test);    
+        x := start;
+        loop
+            oldX := x;
+            x    := 2* f(x);
+            if test(x, oldX) then
+                return x;
+            end if;
+        end loop;
+    end fixpoint;
+
+end main;

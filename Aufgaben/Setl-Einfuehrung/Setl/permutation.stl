@@ -1,0 +1,15 @@
+program main;
+
+    for n in [1 .. 4] loop
+        print("n = ", n, ": ", permutation(n));
+        print(#permutation(n));
+    end loop;
+
+    procedure permutation(n);
+        if n = 1 then
+            return { [1] };
+        else
+            return { l(1 .. k) + [ n ] + l(k+1 .. n-1): l in permutation(n-1), k in { 0..n-1 } };
+        end if;
+    end permutation;
+end main;

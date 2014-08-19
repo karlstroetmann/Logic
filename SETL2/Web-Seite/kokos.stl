@@ -1,0 +1,16 @@
+program main;
+
+    x := min/ { n in {1 .. 100} |                    n mod 3 = 1 and 
+                                               rest(n) mod 3 = 1 and 
+                                         rest(rest(n)) mod 3 = 1 and 
+                                   rest(rest(rest(n))) mod 3 = 1      };
+
+    print("Es waren mindestens ", x, " Kokosnüsse.");
+    print("Nach der ersten  Aufteilung sind es noch ", rest(x),             " Kokosnüsse.");
+    print("Nach der zweiten Aufteilung sind es noch ", rest(rest(x)),       " Kokosnüsse.");
+    print("Nach der dritten Aufteilung sind es noch ", rest(rest(rest(x))), " Kokosnüsse.");
+
+    procedure rest(n);
+        return (n - 1) * 2 / 3;
+    end rest;
+end main;

@@ -1,0 +1,63 @@
+program main;
+    -- test input
+    M := [[1.0,1.0,5.2345,3.234],[1.0,2.02345,6.66,4.756],[11.0,32.0,6.662345,14.7234556]]; 
+    solution := Gauss(M);
+    -- checking  the solution
+    print( [ -M(row)(#M + 1) +/ [M(row)(col) * solution(col): col in [1..#M]] : row in [1..#M] ] );	
+
+    -- Solves equations by Gaussian elimination.
+    procedure Gauss(M);             
+        -- To minimize rounding errors, the matrix is normalized first.
+        for row in { 1 .. #M } loop
+            maxVal := max/ { abs( M(row)(col) ) : col in { 1 .. #M } };
+            M(row) := [ M(row)(col) / maxVal : col in { 1 .. #M + 1 } ];
+        end loop;
+        return GaussSolve(M, {1 .. #M}, 1 );    
+    end Gauss;
+       
+    -- Inner recursion for Gaussian elimination. The variable varSet denotes 
+    -- the set of all indices of variables still to be processed; 
+    -- nextRow is the index of the next equation to be examined.
+    procedure GaussSolve(rw M, rd varSet, rd nextRow);
+        -- Define a utility real constant close to zero.
+        const eps := 1.0E-10;                   
+        if varSet = {} then 
+            return []; 
+        end if;
+        print("varSet = ", varSet, ",    nextRow = ", nextRow);
+        printMatrix(M);
+        print();
+        maxVal := max/ { abs(M(row)(col)) : row in [ nextRow .. #M ], col in varSet };
+        if maxVal < eps then
+            return OMEGA;
+        end if;
+        [ row, column ] := arb { [ r, c ] :  r in [ nextRow .. #M ], c in varSet | abs(M(r)(c)) = maxVal };
+        if row /= nextRow then
+            -- exchange row with maximum value with row nextRow
+            [ M(nextRow), M(row) ] := [ M(row), M(nextRow) ];
+        end if;
+        -- subtract row number j from the remaining rows
+        for j in [nextRow + 1 .. #M] loop
+            factor := M(j)(column) / M(nextRow)(column);  -- factor for row to be subtracted.
+            for col in varSet + { #M + 1 } loop 
+                M(j)(col) -:= factor * M(nextRow)(col); 
+            end loop;
+         end loop;
+        -- Now call GaussSolve recursively to solve for the remaining variables.
+        varSet -:= { column };
+        solution := GaussSolve(M, varSet, nextRow + 1);
+        if (solution) = OM then
+            return OM;                 -- Since a singularity has been detected.
+        end if;
+        -- Substitute to determine the value of the column-th variable.
+        solution(column) := (M(nextRow)(#M + 1) -/ [solution(col) * M(nextRow)(col): col in varSet]) / M(nextRow)(column);
+        return solution;    
+    end GaussSolve;    
+
+    procedure printMatrix(M);
+        for row in [ 1 .. #M ] loop
+            print( M(row) );
+        end loop;
+    end printMatrix;
+
+end main;

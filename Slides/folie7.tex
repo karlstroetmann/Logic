@@ -1,0 +1,396 @@
+\documentclass{slides}
+\usepackage[latin1]{inputenc}
+\usepackage{german}
+\usepackage{epsfig}
+\usepackage{amssymb}
+
+\pagestyle{empty}
+\setlength{\textwidth}{17cm}
+\setlength{\textheight}{24cm}
+\setlength{\topmargin}{0cm}
+\setlength{\headheight}{0cm}
+\setlength{\headsep}{0cm}
+\setlength{\topskip}{0.2cm}
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\evensidemargin}{0.5cm}
+
+\newcommand{\is}{\;|\;}
+\newcommand{\schluss}[2]{\frac{\displaystyle\quad \rule[-8pt]{0pt}{18pt}#1 \quad}{\displaystyle\quad \rule{0pt}{14pt}#2 \quad}}
+\newcommand{\vschlus}[1]{{\displaystyle\rule[-6pt]{0pt}{12pt} \atop \rule{0pt}{10pt}#1}}
+\newcommand{\verum}{\top}
+\newcommand{\falsum}{\bot}
+\newcommand{\var}{\textsl{Var}}
+\newcommand{\struct}{\mathcal{S}}
+\newcommand{\el}{\!\in\!}
+\newcommand{\FV}{\textsl{FV}}
+\newcommand{\BV}{\textsl{BV}}
+\newcommand{\gentzen}{\vdash_\mathcal{G}}
+\newcommand{\komplement}[1]{\overline{#1}}
+
+\newcounter{mypage}
+
+\begin{document}
+
+\begin{slide}
+\begin{center}
+Unifikation
+\end{center}
+\vspace*{0.5cm}
+
+\footnotesize
+\textbf{Definition}: Gegeben sei Signatur\\[0.3cm]
+\hspace*{1.3cm} $\Sigma = \langle \mathbb{T}, \textsl{Fz}, \textsl{Pz}, \mathtt{sign}_{F}, \mathtt{sign}_{P}, \mathcal{V}, \textsl{var} \rangle$ \\[0.3cm]
+$\Sigma$--Substitution:  endliche Menge von Paaren der Art\\[0.3cm]
+\hspace*{1.3cm} $\sigma = \Bigg\{ \langle x_1, t_1 \rangle, \cdots, \langle x_n, t_n \rangle \Bigg\}$. \\[0.3cm]
+mit
+\begin{enumerate}
+\item $x_i \in \mathcal{V}$ \quad f"ur alle $i\in\{1,\cdots,n\}$
+
+      Die $x_i$ sind Variablen.
+\item $x_i \in \textsl{var}(\tau) \Rightarrow t_i \in \mathcal{T_{\tau}}$ \quad f"ur alle $i\in\{1,\cdots,n\}$
+
+      Die Terme $t_i$ haben den gleichen Typ wie $x_i$.
+\item $i\not=j \Rightarrow x_i \not= x_j$ \quad f"ur alle $i,j\in\{1,\cdots,n\}$
+
+      Die $x_i$ sind paarweise verschieden.
+\end{enumerate}
+Schreibweise:  \\[0.3cm]
+\hspace*{1.3cm} $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$. \\[0.5cm]
+\textbf{Definition}: \emph{Domain} von $\sigma$ \\[0.3cm]
+\hspace*{1.3cm} $\textsl{dom}(\sigma) := \{x_1,\cdots,x_n\}$.
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1} 
+\rule{17cm}{1mm}
+Unifikation \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Substitutions--Anwendung
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Gegeben}:
+\begin{enumerate}
+\item $t$: \quad Term
+\item $\sigma = \bigl[ x_1 \mapsto s_1, \cdots, x_n \mapsto s_n \bigr]$: \quad Substitution
+\end{enumerate}
+\emph{Anwendung} von $\sigma$ auf $t$: \\[0.3cm]
+\hspace*{1.3cm} Ersetze $x_i$ durch $s_i$.
+
+\textbf{Induktive Definition}: $t\sigma$ (\emph{Anwendung} von $\sigma$ auf $t$) 
+\begin{enumerate}
+\item  $t$ ist Variable:
+  \begin{enumerate}
+  \item $x_i\sigma := s_i$.
+  \item $y\sigma := y$, \quad falls $y \in \mathcal{V}$, aber $y \not\in \{x_1,\cdots,x_n\}$. 
+  \end{enumerate}
+\item $f(t_1, \cdots, t_n)\sigma := f(t_1\sigma, \cdots, t_n\sigma)$.
+\end{enumerate}
+Sei $p(t_1,\cdots,t_n)$ atomare Formel
+
+\hspace*{1.3cm}
+$p(t_1,\cdots,t_n) \sigma := p(t_1\sigma, \cdots, t_n\sigma)$.  
+
+Sei $f$ quantorenfreie Formel.
+
+\textbf{Induktive Definition} von  $f\sigma$
+\begin{enumerate}
+\item $(\neg f)\sigma := \neg (f\sigma)$.
+\item $(f_1 \wedge f_2)\sigma := f_1\sigma \wedge f_2\sigma$.
+\item $(f_1 \vee f_2)\sigma   := f_1\sigma \vee   f_2\sigma$.
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Unifikation  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Komposition von Substitutionen
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Gegeben}:
+\begin{enumerate}
+\item $\sigma = \big[ x_1 \mapsto s_1, \cdots, x_m \mapsto s_m \big]$
+\item $\tau = \big[ y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \big]$
+\item $\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) = \emptyset$
+\end{enumerate}
+\textbf{Definition}: $\sigma\tau$ (\emph{Komposition} von $\sigma$ und $\tau$) \\[0.3cm]
+\hspace*{1.3cm} $\sigma\tau := \big[ x_1 \mapsto s_1\tau, \cdots, x_m \mapsto s_m\tau,\; y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \big]$
+\vspace{0.5cm}
+
+\textbf{Satz}: Gegeben
+\begin{enumerate}
+\item $t$: Term
+\item $\sigma$, $\tau$: Substitutionen
+\end{enumerate}
+Dann gilt:  $(t\sigma)\tau = t (\sigma\tau)$
+\vspace{0.5cm}
+
+\textbf{Definition}: Gegeben
+\begin{enumerate}
+\item $s$, $t$: Terme vom selben Typ, oder
+\item $s$, $t$: atomare Formeln.
+\end{enumerate}
+Dann ist $s \doteq t$ eine \emph{syntaktische Gleichung}.
+
+\hspace*{1.3cm} 
+$E = \{ s_1 \doteq t_1, \cdots, s_n \doteq t_n \}$
+
+heißt \emph{syntaktisches Gleichungssystem}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Unifikation  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Unifikator
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Gegeben}: 
+\begin{enumerate}
+\item Syntaktisches Gleichungssystem \\[0.3cm]
+      \hspace*{1.3cm} $E = \{ s_1 \doteq t_1, \cdots, s_n \doteq t_n \}$,
+\item Substitution $\sigma$.
+\end{enumerate}
+\textbf{Definition}: $\sigma$ ist \emph{Unifikator} von $E$ g.d.w. \\[0.1cm]
+\hspace*{1.3cm} $s_i\sigma = t_i\sigma$ \quad für alle $i=1,\cdots,n$.
+\vspace{0.5cm}
+
+\noindent
+\textbf{Beobachtung}: Sei
+\begin{enumerate}
+\item $E$: \quad  syntaktisches Gleichungssystem, 
+\item $\sigma$: \quad Substitution
+\item $\sigma$ sei Unifikator von $E$,
+\item $\tau$: \quad Substitution mit $\textsl{dom}(\tau) \cap \textsl{dom}(\sigma) = \emptyset$
+\end{enumerate}
+\textbf{Behauptung}: $\sigma\tau$ Unifikator von $E$
+\vspace{0.5cm}
+
+\textbf{Definition}: Unifikator $\sigma$ ist \emph{allgemeiner} als Unifikator $\sigma\tau$.
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Unifikation  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Signatur $\Sigma_\textsl{Stack}$ für Stacks
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+$\Sigma_\textsl{Stack} := \langle \mathbb{T}, \textsl{Fz}, \textsl{Pz}, \mathtt{sign}_{F}, \mathtt{sign}_{P}, \mathcal{V}, \textsl{var} \rangle$ 
+
+\begin{enumerate}
+\item $\mathbb{T} := \{ \mathbb{B}, \mathbb{N}, \textsl{Stack} \}$
+\item $\textsl{Fz} := \{ 0, s, \textsl{nil}, \textsl{push}, \textsl{pop}, \textsl{top} \}$
+\item $\textsl{Pz} := \{ \textsl{empty}, =_O, =_S \}$
+
+      Typ--Spezifikationen:
+      \begin{enumerate}
+      \item $0: \mathbb{N}$
+      \item $s: \mathbb{N} \rightarrow \mathbb{N}$
+
+            Interpretation: $s(n) = n + 1$
+      \item $nil: \textsl{Stack}$
+      \item $\textsl{push}: \mathbb{N} \times \textsl{Stack} \rightarrow \textsl{Stack}$
+      \item $\textsl{pop}: \textsl{Stack} \rightarrow \textsl{Stack}$
+      \item $\textsl{top}: \textsl{Stack} \rightarrow \mathbb{N}$
+      \item $\textsl{empty}: \textsl{Stack} \rightarrow \mathbb{B}$
+      \item $=_O: \mathbb{N} \times \mathbb{N} \rightarrow \mathbb{B}$
+      \item $=_S: \textsl{Stack} \times \textsl{Stack} \rightarrow \mathbb{B}$
+      \end{enumerate}
+\item $\mathcal{V} := \{ x_i | i \in \mathbb{N} \} \cup \{ s_i | i \in \mathbb{N} \}$.
+\item $\textsl{var}(\mathbb{N})   := \{ x_i | i \in \mathbb{N} \}$.
+\item $\textsl{var}(\textsl{Stack}) := \{ s_i | i \in \mathbb{N} \}$.
+\end{enumerate}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Unifikation  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Lösung syntaktischer Gleichungen
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Definition}: Ein Gleichungssystem der Form \\[0.3cm]
+\hspace*{1.3cm} $\{ x_1 \doteq t_1, \cdots, x_n \doteq t_n \}$ \\[0.3cm]
+ist \emph{trivial} g.d.w.
+\begin{enumerate}
+\item $x_i \in \mathcal{V}$ \quad für alle $i \in \{1,\cdots,n\}$,
+\item $x_i \not\in \textsl{var}(t_j)$ \quad für alle $i,j \in \{1,\cdots,n\}$ und
+\item $i \not= j \Rightarrow x_i \not= x_j$ \quad für alle $i,j \in \{1,\cdots,n\}$.
+\end{enumerate}
+
+\textbf{Satz}:  Sei $E := \{ x_1 \doteq t_1, \cdots, x_n \doteq t_n \}$ trivial. \\[0.3cm]
+Dann ist $\sigma := [ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n ]$ Lösung von $E$. \\[0.3cm]
+Dann \textbf{definiere}: \quad $\textsl{Subst}(E) := \sigma$
+
+\vspace{0.5cm}
+\textbf{Definition}:  Eine syntaktische Gleichung $e$ ist 
+\begin{center}
+ \emph{offensichlich unlösbar}
+\end{center}
+falls einer der folgenden Fälle vorliegt:
+\begin{enumerate}
+\item $e = (x \doteq t)$ \quad mit $t \not=x$ und $x\in \var(t)$
+\item $e = (\;g(s_1, \cdots, s_m) \doteq f(t_1, \cdots, t_n)\;)$ \quad mit $f \not=g$.
+\end{enumerate}
+
+\textbf{Satz}: Sei
+\begin{enumerate}
+\item $s \doteq t$ offensichlich unlösbar und
+\item $\sigma$ beliebige Substitution.
+\end{enumerate}
+Dann gilt: \hspace*{1.3cm} $s\sigma \not= t\sigma$.
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Unifikation  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Martelli--Montanari--Regeln 
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\begin{enumerate}
+\item Falls $y\in\mathcal{V}$ mit $y \not\in\textsl{Var}(t)$:
+      \[ \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \quad\leadsto\quad 
+         \Big\langle E[y \mapsto t], \sigma\big[ y \mapsto t \big] \Big\rangle 
+      \]
+\item Falls $y\in\mathcal{V}$ mit $y \in\textsl{Var}(t)$:
+      \[ \Big\langle E \cup \big\{ y \doteq t \big\}, \; \sigma \Big\rangle \;\leadsto\; \Omega. \]
+\item Falls $y\in\mathcal{V}$ und $t \not\in \mathcal{V}$:
+      \[ \Big\langle E \cup \big\{ t \doteq y \big\}, \sigma \Big\rangle \quad\leadsto\quad 
+         \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle.
+      \]   
+\item Falls $x \in \mathcal{V}$:
+      \[ \Big\langle E \cup \big\{ x \doteq x \big\}, \sigma \Big\rangle \quad\leadsto\quad
+         \Big\langle E, \sigma \Big\rangle.
+      \]   
+\item Falls $f$ \ $n$-stelliges Funktions-Zeichen:
+      \[
+      \begin{array}[t]{cl}
+         & \Big\langle E \cup \big\{ f(s_1,\cdots,s_n) \doteq f(t_1,\cdots,t_n) \big\}, \sigma \Big\rangle 
+         \\[0.3cm]
+         \;\leadsto\; &
+         \Big\langle E \cup \big\{ s_1 \doteq t_1, \cdots, s_n \doteq t_n\}, \sigma \Big\rangle.        
+      \end{array}
+      \]   
+\item Falls $f \not= g$;
+      \[ \Big\langle E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\}, \sigma \Big\rangle 
+         \;\leadsto\; \Omega. 
+      \]
+\end{enumerate}
+
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Unifikation  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}{}
+\normalsize
+\begin{center}
+Eigenschaften der Martelli--Montanari--Regeln
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Satz}: Invariante
+
+\textbf{Vor}.: $\langle E_1, F_2 \rangle \leadsto \langle E_2, F_2 \rangle$
+
+\textbf{Beh}:   $\sigma$ löst $E_1 \cup F_1$ \quad g.d.w. \\[0.3cm]
+\hspace*{1.5cm} $\sigma$ löst $E_2 \cup F_2$.
+\vspace{0.5cm}
+
+\textbf{Satz}: Terminierung
+
+\textbf{Beh}.: Es gibt keine unendliche Folge $\langle E_n, F_n \rangle$ mit \\[0.3cm]
+\hspace*{1.7cm} $\langle E_n, F_n \rangle \leadsto \langle E_{n+1}, F_{n+1} \rangle$ \quad für alle $n \in \mathbb{N}$.
+\vspace{0.5cm}
+
+\textbf{Definition}: $\langle E_1, F_1 \rangle$ ist \emph{maximal reduziert}
+g.d.w. \\[0.3cm]
+\hspace*{3.4cm}
+ es gibt kein $\langle E_2, F_2 \rangle$ mit \\[0.3cm]
+\hspace*{4.8cm} $\langle E_1, F_1 \rangle \;\leadsto\; \langle E_2, F_2 \rangle$
+
+\textbf{Satz}: Sei $E_1 := E$, \quad $F_1 := \emptyset$ 
+\begin{enumerate}
+\item $\langle E_1, F_1 \rangle \;\leadsto\; \langle E_2, F_2 \rangle \;\leadsto\; \cdots \leadsto\; \langle E_n, F_n \rangle$
+\item $\langle E_n, F_n \rangle$ maximal reduziert
+\end{enumerate}
+Dann gilt $E_n = \emptyset$ und entweder
+\begin{enumerate}
+\item $F_n$ trivial und $\textsl{Subst}(F_n)$ Lösung von $E$ oder
+\item $F_n$ offensichlich unlösbar und $E$ unlösbar.
+\end{enumerate}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1}
+\rule{17cm}{1mm}
+Unifikation  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

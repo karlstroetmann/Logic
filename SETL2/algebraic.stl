@@ -1,0 +1,94 @@
+-- 'algebraic object' - a relatively 'abstract' class
+class algebraic;            
+        -- no objects of this class  will ever be created directly, so no 'create' routine is needed
+end algebraic;
+
+class body algebraic;
+    -- this assumes that an addition routine is available
+    procedure self - b; 
+        return self + (-b); 
+    end;
+    -- this assumes that an addition routine is available    
+    procedure b + self; 
+        return self + b; 
+    end;
+end algebraic;
+
+-- integers, as  a sample class of algebraic objects
+class int_obj;
+    -- we inherit from the more general 'algebraic' class
+    inherit algebraic;
+    procedure create(n);
+end int_obj;
+
+-- integers, as  a sample class of algebraic objects
+class body int_obj;
+    var val;
+    procedure create(n); 
+        val := n; 
+    end create;
+    procedure selfstr; 
+        return str(val); 
+    end selfstr;
+
+    procedure self + b; 
+        if is_integer(b) then 
+            return int_obj(val + b);
+         else 
+            return int_obj(val + b.val);
+        end if; 
+    end; 
+    procedure -self; 
+        return int_obj(-val); 
+    end; 
+end int_obj;
+
+-- matrices, as a second sample class of algebraic object
+class matrix; 
+    -- we inherit from the more general 'algebraic' class
+    inherit algebraic;
+    procedure create(m);
+end matrix;
+
+-- matrices, as a second sample class of algebraic objects
+class body matrix; 
+    var val;
+
+    procedure create(m); 
+        val := m; 
+    end create;
+
+    procedure selfstr; 
+        return "" +/ ["|" +/ [pad_8(c): c in row] + "|\n": row in val]; 
+    end selfstr;
+
+    -- pad value to  8 characters 
+    procedure pad_8(c); 
+        stg := 8 * " " + str(c); 
+        return stg(#stg - 7 ..); 
+    end pad_8;
+
+    -- matrix addition
+    procedure self + b; 
+        return matrix( [[ c + b.val(i)(j) : c = row(j)] : row = val(i) ] ); 
+    end;
+
+    -- negative matrix
+    procedure -self; 
+        return matrix([[-c: c = row(j)]: row = val(i)]); 
+    end; 
+end matrix;
+
+-- Test code.
+program main;
+    use int_obj, matrix;
+    print(30 + int_obj(333)); 
+    print(int_obj(30) - int_obj(333)); 
+    print(int_obj(30) - 333);
+    m:= matrix([[1,2],[3,4]]);
+    print(m); 
+    print(-m); 
+    m2 := m  + m;
+    print(m2);
+    print(m2 - m);
+end main;

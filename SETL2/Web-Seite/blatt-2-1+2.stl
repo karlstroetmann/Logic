@@ -1,0 +1,40 @@
+program main;
+    -- Eine binäre Relation R:
+    R := { [1,2], [2,3], [1,3], [2,4], [4,5], [5,1], [17, 29], 
+           [29, 42], [42, 5] 
+         };
+    x := 1;
+    print("oneStep(x, R)   = ", oneStep(x, R));
+    print("reachable(x, R) = ", reachable(x, R));
+
+-- Aufgabe 1: Der Aufruf oneStep(x, R) berechnet für einen Punkt x und eine 
+-- binäre Relation R alle die Punkte, die von x aus in einem Schritt erreicht
+-- werden können.
+procedure oneStep(x, R);
+    return { b : [ a, b ] in R | a = x };
+end oneStep;
+
+-- Der Aufruf oneStepSet(M, R) berechnet für eine Menge M  und eine binäre 
+-- Relation R alle die Punkte, die ausgehend von einem Punkt aus M, in einem 
+-- Schritt erreicht werden können.
+procedure oneStepSet(M, R);
+    return { b : [ a, b ] in R | a in M };
+end oneStepSet;
+
+-- Aufgabe 2:  Der Aufruf reachable(x, R) berechnet für einen Punkt x und eine 
+-- binäre Relation R alle die Punkte, die von x aus in beliebig vielen Schritten
+-- erreicht werden können. 
+procedure reachable(x, R);
+    M := { x };
+    loop
+        OldM := M;
+        M := M + oneStepSet(M, R);
+        if M = OldM then
+            return M;
+        end if;
+    end loop;
+end reachable;
+
+end main;
+
+

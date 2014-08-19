@@ -1,0 +1,172 @@
+-- Die Türme von Hanoi.
+program main;
+    All := { 1, 2, 3 };
+
+    -- P ist die Menge aller Punkte.  Jeder Punkt repräsentiert einen Zustand
+    -- der Türme von Hanoi.  Punkte sind deshalb 3-Tupel der Form 
+    --                                                            
+    --              [ S1, S2, S3 ]                                
+    --                                                            
+    -- Dabei sind L1, L2 und L3 Mengen von Scheiben. Zum Beispiel repräsentiert 
+    -- die Menge { 1, 2, 3 } einen Turm, der folgendes Aussehen hat:
+    --                                                              
+    --                     |                                        
+    --                    111                                       
+    --                   22222                                      
+    --                  3333333                                     
+    --              ===============                                 
+    --                                                              
+    -- Hier liegt oben die Scheibe 1, darunter die Scheibe 2 und ganz unten die 
+    -- Scheibe 3. Die Menge L1 repräsentiert den ersten Turm, L2 repräsentiert 
+    -- den Turm in der Mitte und L3 repräsentiert den letzten Turm.  Das 3-Tupel
+    --  [ {1,2,3}, {}, {} ] repräsentiert also die Ausgangs-Situation bei der 
+    -- drei Scheiben auf dem ersten Turm liegen und die anderen beiden Türme 
+    -- leer sind:                                                     
+    --                                                                
+    --           |                    |                   |           
+    --          111                   |                   |           
+    --         22222                  |                   |           
+    --        3333333                 |                   |           
+    -- ===============================================================
+    --                                                                
+    P := { [ S1, S2, S3 ] : S1 in pow All, S2 in pow All, S3 in pow All 
+                          | partition(S1, S2, S3, All) };
+    print("P = ", P);
+
+    --    R12 := relation(P, 1, 2);
+    --    R21 := relation(P, 2, 1);
+    --    R13 := relation(P, 1, 3);
+    --    R31 := relation(P, 3, 1);
+    --    R23 := relation(P, 2, 3);
+    --    R32 := relation(P, 3, 2);
+    --	      
+    --    R := R12 + R21 + R13 + R31 + R23 + R32;
+
+    R := +/ { relation(P, i, j) : i in {1,2,3}, j in {1,2,3} | i /= j };
+
+    --    Testausgabe von R
+    print("R:");
+    for [x,y] in R loop
+        print(x, "  ->   ", y);
+    end loop; 
+    print();
+
+    -- Am Anfang sind alle links.
+    start := [ {1,2,3}, {}, {} ];
+    -- Am Ende sollen alle Scheiben in der Mitte sein.
+    goal  := [ {2}, {1}, {3} ];
+    -- Berechne den Pfad zum Ziel.
+    path  := reachable(start, goal, R);
+    -- Gebe diesen Pfad Schritt für Schritt aus.
+    printPath(path);
+
+    -- Berechne die Relation, die aus allen Paaren besteht, wo eine Scheibe
+    -- vom Turm i genommen wird und auf den Turm j gelegt wird.
+    procedure relation(P, i, j);
+        return { [ A, move(A, i, j) ] : A in P | movePossible(A(i), A(j)) };
+    end relation;
+
+    -- Die Prozedur move nimmt die oberste Scheibe vom i-ten Turm und legt
+    -- sie auf den j-ten Turm.
+    procedure move(Triple, i, j);
+        Result    := Triple;   -- set all three components, change the
+                               -- components Result(i) and Result(j) later
+        Result(i) := Triple(i) - { min/ Triple(i) };
+        Result(j) := Triple(j) + { min/ Triple(i) };
+        return Result;
+    end move;
+    
+    -- Die Prozedur partition(S1, S2, S3, All) liefert genau dann "true",
+    -- wenn die Menge {S1, S2, S3} eine Partition der Menge All ist.
+    procedure partition(S1, S2, S3, All);
+        return S1 + S2 + S3 = All and  #S1 + #S2 + #S3 = #All;
+    end partition;
+
+    -- Aufgabe 3:
+    -- Die Prozedur movePossible(Source, Target) nimmt als Argumente 
+    -- zwei Mengen, die jeweils den Zustand eines Turms repräsentieren.  Die 
+    -- Funktion liefert das Ergebnis true, wenn die oberste Scheibe von dem 
+    -- Turm Source auf den Turm Target gelegt werden darf.
+    -- Die oberste Scheibe des durch Source repräsentierten Turms darf dann auf 
+    -- den durch Target repräsentierten Turm gelegt werden, wenn Sie kleiner ist 
+    -- als die oberste Scheibe, die auf dem Turm Target liegt, oder wenn
+    -- der Turm Target leer ist.
+    procedure movePossible(Source, Target);
+        return 4 min/ Source < 4 min/ Target;
+    end movePossible;
+
+    --------------------------------------------------------------------------
+    --                                                                      --
+    -- Ausdrucken der Lösung                                                --
+    --                                                                      --
+    --------------------------------------------------------------------------    
+    
+    procedure printPath(path);
+        for i in [1 .. #path] loop
+            t1 := lastChars(path(i)(1), 20);
+            t2 := lastChars(path(i)(2), 20);
+            t3 := lastChars(path(i)(3), 20);
+            print(t1, t2, t3);
+        end loop;
+    end printPath;
+
+    -- Die Prozedur lastChars(x, n) wandelt x in einen String der Länge n um.
+    -- Dabei wird der String von links mit Leerzeichen aufgefüllt.
+    procedure lastChars(x, n);
+        s := str(x);
+        m := n - #s;
+        return m * " " + s;
+    end lastChars;
+
+    --------------------------------------------------------------------------
+    --                                                                      --
+    -- Die unten aufgeführten Prozeduren sind 1-zu-1 aus dem Programm zur   --
+    -- Lösung des Wolf-Ziege-Kohl-Problems kopiert.                         --
+    --                                                                      --
+    --------------------------------------------------------------------------
+
+    -- PS ist eine Menge von Pfaden, R ist eine binäre Relation.  Die Prozedur
+    -- verlängert alle Pfade aus PR, die mit einem Punkt y enden, für den es
+    -- ein Paar [y,z] in R gibt. 
+    procedure oneStep(PS, R);
+           return { p + [ z ] : p in PS, [y, z] in R | p(#p) = y };
+    end oneStep;
+    
+    -- Entfernt alle Pfade aus PS die zyklisch sind.
+    procedure eliminateCycles(PS);
+       	return { p in PS | not cyclic(p) };
+    end eliminateCycles;
+    
+    -- Liefert true, wenn der Pfad p einen Zyklus enthält.
+    procedure cyclic(p);
+        return #{ x : x in p } < #p;
+    end cyclic;
+
+    -- Berechnet eine Pfad von x nach y. Dabei beschreibt die Relation R die 
+    -- Verbindungen zwischen den Punkten.  Falls kein Pfad gefunden werden
+    -- kann wird Omega zurück gegeben.
+    procedure reachable(x, y, R);
+        PS := { [x] };
+        loop
+            old_PS := PS;
+            PS := eliminateCycles(PS + oneStep(PS, R));
+            -- P ist die Menge aller Pfade, die am Zielpunkt y enden.
+            P := { p in PS | p(#p) = y };
+            if P /= {} then
+                -- Wenn P nicht leer ist, geben wir ein beliebiges Element aus P
+                -- zurück.
+                return arb P;
+            end if;
+            if old_PS = PS then
+               -- Wenn das Programm bis hier kommt, sind alle möglichen Pfade 
+               -- berechnet worden.  Aufgrund des obigen Tests P /= {} wissen
+               -- wir, dass keiner dieser Pfade zum Ziel führt.  Daher können
+               -- wir jetzt Omega zurück geben.  Omega wird implizit dann zurück
+               -- gegeben, wenn hinter mdem "return" kein Wert steht.
+               return;
+           end if;
+        end loop;
+    end reachable;
+
+end main;
+

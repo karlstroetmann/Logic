@@ -1,0 +1,94 @@
+program main;
+    a     := "a";
+    b     := "b";
+    U     := { a, b };
+    eins  := { [ [], a ] };
+    mal   := { [ [ a, a ], a ],  [ [ a, b ], b ],  [ [ b, a ], b ],  [ [ b, b ], b ] };
+    equal :=  { [ [ a, a ], true ],  [ [ a, b ], false ],  [ [ b, a ], false ],  [ [ b, b ], true ] };
+    S     := [ U, { [ "1", eins ], [ "*", mal ], [ "=", equal ] } ];
+    I     := { [ "x", a ], [ "y", b ], [ "z", a ] }; 
+    
+    e  := [ "1", [] ];
+    t1 := [ "*", e, "x" ];
+    t2 := [ "*", t1, t1 ];
+    t3 := [ "*", t1, "y" ];
+    f1 := [ "=", t1, t3 ];
+
+    print("x: ", evalTerm("x", S, I));
+    print("y: ", evalTerm("y", S, I));
+    print("1: ", evalTerm(e, S, I));
+    print("t1: ", evalTerm(t1, S, I));
+    print("t2: ", evalTerm(t2, S, I));
+    print("t3: ", evalTerm(t3, S, I));
+    print("f1: ", evalFormula(f1, S, I));
+
+    -- This procedure evaluates the formula f in the structure S
+    -- using the variable assignment I.
+    procedure evalFormula(f, S, I);
+        case
+            when f  = 1       =>  return TRUE;
+            when f  = 0       =>  return FALSE;
+            when f(1) = "-"   =>  return not evalFormula(f(2), S, I);
+            when f(2) = "*"   =>  return evalFormula(f(1), S, I) and  evalFormula(f(3), S, I);
+            when f(2) = "+"   =>  return evalFormula(f(1), S, I) or   evalFormula(f(3), S, I);
+            when f(2) = "->"  =>  return not evalFormula(f(1), S, I) or evalFormula(f(3), S, I);
+            when f(2) = "<->" =>  return evalFormula(f(1), S, I) = evalFormula(f(3), S, I);
+            when f(1) = "forall" =>
+                x := f(2);
+                g := f(3);
+                U := S(1);                
+                return { c in U | evalFormula(g, S, modify(I, x, c)) } = U;
+            when f(1) = "exists" =>
+                x := f(2);
+                g := f(3);
+                U := S(1);                
+                return { c in U | evalFormula(g, S, modify(I, x, c)) } /= {};
+            otherwise => return evalTerm(f, S, I);  -- atomic formula
+        end case;
+        
+    end evalFormula;
+
+    -- This procedure evaluates the term t in the structure S
+    -- using the variable assignment I.
+    procedure evalTerm(t, S, I);
+        print("t ", t);
+        if is_string(t) then
+            return I(t);
+        end if;
+        f    := t(1); -- function symbol
+        J    := S(2);
+        fJ   := J(f);
+        args := t(2..);
+        argsVal := evalTermList(args, S, I);
+        result := fJ(argsVal); 
+        print(t, " -> ", result);
+        return result;
+    end evalTerm;
+
+    -- This procedure evaluates the term list tl, given the structure S and the variable
+    -- assignment I.
+    procedure evalTermList(tl, S, I);
+        if tl = [] then
+            return [];
+        end if;
+        if tl = [ [] ] then
+            return [];
+        end if;
+        head := evalTerm(tl(1), S, I);
+        tail := evalTermList(tl(2..), S, I);
+        result := [ head ] + tail;
+        print(tl, " -->> ", result);
+        return result;
+    end evalTermList;
+
+    -- Given a variable assignement I, a variable x, and an element c from the universe,
+    -- this function computes the variable assignement I[x/c] which satisfies
+    --     I[x/c](x) = c,
+    --     I[x/c](y) = I(y) if x /= y.
+    procedure modify(I, x, c);
+        J := I;
+        J(x) := c;
+        return J;
+    end modify;
+
+end main;

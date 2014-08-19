@@ -1,0 +1,503 @@
+\documentclass{article}
+\usepackage[latin1]{inputenc}
+\usepackage{fleqn}
+\usepackage{ngerman}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{fancyvrb}
+
+\setlength{\topmargin}{-0.5cm}
+\setlength{\mathindent}{1.3cm}
+%\setlength{\evensidemargin}{-0.5cm}
+%\setlength{\oddsidemargin}{-0.5cm}
+%\setlength{\textwidth}{17cm}
+
+\def\pair(#1,#2){\langle #1, #2 \rangle}
+
+\renewcommand{\labelenumi}{(\alph{enumi})}
+\renewcommand{\labelenumii}{\arabic{enumii}.}
+
+\newcommand{\exercise}{\vspace*{0.1cm}
+\stepcounter{aufgabe}
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Lösung Aufgabe \arabic{aufgabe}}: }
+
+\newcommand{\solution}{
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Lösung}: }
+
+\newcounter{aufgabe}
+
+\newcommand{\schluss}[2]{\frac{\displaystyle\quad \rule[-6pt]{0pt}{12pt}#1 \quad}{\displaystyle\quad \rule{0pt}{10pt}#2 \quad}}
+\newcommand{\vschlus}[1]{{\displaystyle\rule[-6pt]{0pt}{12pt} \atop \rule{0pt}{10pt}#1}}
+
+\newcommand{\punkte}[1]{\hspace*{\fill} \mbox{(#1 Punkte)}}
+\newcommand{\struct}{\mathcal{S}}
+\newcommand{\FV}{\textsl{FV}}
+\newcommand{\BV}{\textsl{BV}}
+\newcommand{\var}{\textsl{Var}}
+\newcommand{\qed}{\hspace*{\fill} $\Box$}
+\newcommand{\el}{\!\in\!}
+\newcommand{\verum}{\top}
+\newcommand{\falsum}{\bot}
+\newcommand{\gentzen}{\vdash_{G}}
+\newcommand{\komplement}[1]{\overline{#1}}
+\newcommand{\mathquote}[1]{\mbox{``}\mathtt{#1}\mbox{''}}
+
+\begin{document}
+
+\noindent
+{\large Lösungen zu den Aufgaben zur Vorlesung ``{\sl Grundlagen der Informatik}''}
+\vspace{0.3cm}
+
+\exercise
+\begin{enumerate}
+\item Die Behauptung ist korrekt, wir weisen die Gleichheit der beiden Mengen nach:
+      \[
+      \begin{array}[t]{ll}
+                      & y \el R(A \cup B)                                             \\[0.1cm]
+      \Leftrightarrow & \exists x : x \el A \cup B \wedge \pair(x,y) \el R            \\[0.1cm]
+      \Leftrightarrow & \exists x : (x \el A \vee x \el B) \wedge \pair(x,y) \el R    \\[0.1cm]
+      \Leftrightarrow & \exists x : \bigl(x \el A \wedge \pair(x,y) \el R\bigr) \vee 
+                                    \bigl(x \el B \wedge \pair(x,y) \el R\bigr)       \\[0.1cm]
+      \Leftrightarrow & \bigl(\exists x : x \el A \wedge \pair(x,y) \el R\bigr) \vee 
+                        \bigl(\exists x : x \el B \wedge \pair(x,y) \el R\bigr)       \\[0.1cm]
+      \Leftrightarrow & y \el R(A) \vee y \in R(B)                                    \\[0.1cm]
+      \Leftrightarrow & y \el R(A) \cup R(B). \hspace*{5cm} _\Box
+      \end{array}
+      \]
+\item Die Behauptung ``$R(A \cap B) = R(A) \cap R(B)$'' ist im Allgemeinen falsch.  Wir widerlegen die Behauptung
+      durch ein Gegenbeispiel.  Dazu setzen wir
+      \[ M := N := \{ 1, 2 \}, \quad A := \{1\}, \quad B:= \{2\} 
+         \quad \mbox{und} \quad R := \{ \pair(1,2), \pair(2,2) \}.  
+      \]
+      Dann haben wir einerseits
+      \[ A \cap B = \{\} \quad \mbox{und damit} \quad R(A \cap B) = \{\} \]
+      und andererseits gilt
+      \[ R(A) = \{ 2 \}, \quad R(B) = \{ 2 \} \quad \mbox{und damit} \quad R(A) \cap R(B) = \{ 2 \}. \]
+      Wegen $\{\} \not= \{ 2 \}$ ist die Behauptung widerlegt. \qed
+\end{enumerate}
+
+\exercise
+\begin{enumerate}
+\item Folgende Prozedur leistet das Gewünschte:
+      \begin{Verbatim}[ frame         = lines, 
+                        framesep      = 0.3cm, 
+                        labelposition = bottomline,
+                        numbers       = left,
+                        numbersep     = -0.2cm,
+                        xleftmargin   = 0.0cm,
+                        xrightmargin  = 0.0cm,
+                      ]
+    procedure both(l1, l2);
+        return { x in l1 | x in l2 };
+    end both;
+      \end{Verbatim}
+\item Folgende Prozedur leistet das Gewünschte:
+      \begin{Verbatim}[ frame         = lines, 
+                        framesep      = 0.3cm, 
+                        labelposition = bottomline,
+                        numbers       = left,
+                        numbersep     = -0.2cm,
+                        xleftmargin   = 0.0cm,
+                        xrightmargin  = 0.0cm,
+                      ]
+    procedure pythagoras(n);
+        return { [ x, y, z ] : x in {1..n}, y in {1..n}, z in {1..2*n} 
+                             | x*x + y*y = z*z and x * y < n 
+               };
+    end pythagoras;
+      \end{Verbatim}
+\end{enumerate}
+\pagebreak
+
+\exercise
+\begin{enumerate}
+\item Folgende Prozedur leistet das Gewünschte:
+      \begin{Verbatim}[ frame         = lines, 
+                        framesep      = 0.3cm, 
+                        labelposition = bottomline,
+                        numbers       = left,
+                        numbersep     = -0.2cm,
+                        xleftmargin   = 0.0cm,
+                        xrightmargin  = 0.0cm,
+                      ]
+    procedure compose(A1, A2);
+        return { [[x,z], d1 + d2] : 
+                 [[x,y1], d1] in A1, [[y2,z], d2] in A2 | y1 = y2 };
+    end compose;
+      \end{Verbatim}
+\item Folgende Prozedur leistet das Gewünschte:
+      \begin{Verbatim}[ frame         = lines, 
+                        framesep      = 0.3cm, 
+                        labelposition = bottomline,
+                        numbers       = left,
+                        numbersep     = -0.2cm,
+                        xleftmargin   = 0.0cm,
+                        xrightmargin  = 0.0cm,
+                      ]
+    procedure closure(A);
+        C    := A;
+        OldC := {};
+        while C /= OldC loop
+            OldC := C;
+            C := C + compose(C, C);
+            print(C);
+        end loop;
+        return C;
+    end closure;
+      \end{Verbatim}
+\end{enumerate}
+
+
+\exercise
+Die folgende Implementierung leistet das Gewünschte:
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    procedure toLists(M);
+        if M = {} then
+            return { [] };
+        end if;
+        return { [ x ] + l : x in M, l in toLists(M - {x}) };
+    end toLists;
+\end{Verbatim}
+\pagebreak
+
+\exercise
+\begin{enumerate}
+\item Die gesuchte Formel ist
+      \[ (q \wedge p) \wedge (r \vee \neg q) \rightarrow r \wedge p. \]
+\item Wir formen diese Formel in konjunktive Normalform um:
+      \[ 
+      \begin{array}[t]{ll}
+                      & (q \wedge p) \wedge (r \vee \neg q) \rightarrow r \wedge p                \\[0.1cm]
+      \Leftrightarrow & \neg \bigl((q \wedge p) \wedge (r \vee \neg q)\bigr) \vee (r \wedge p)    \\[0.1cm]
+      \Leftrightarrow & \bigl(\neg (q \wedge p) \vee \neg (r \vee \neg q)\bigr) \vee (r \wedge p) \\[0.1cm]
+      \Leftrightarrow & \bigl((\neg q \vee \neg p) \vee (\neg r \wedge q)\bigr) \vee (r \wedge p) \\[0.1cm]
+      \Leftrightarrow & \bigl((\neg q \vee \neg p \vee \neg r) \wedge 
+                              (\neg q \vee \neg p \vee q) \bigr) \vee (r \wedge p)                  \\[0.1cm]
+      \Leftrightarrow & \bigl((\neg q \vee \neg p \vee \neg r) \wedge \top \bigr) \vee (r \wedge p) \\[0.1cm]
+      \Leftrightarrow & (\neg q \vee \neg p \vee \neg r) \vee (r \wedge p) \\[0.1cm]
+      \Leftrightarrow & (\neg q \vee \neg p \vee \neg r \vee r) \wedge 
+                        (\neg q \vee \neg p \vee \neg r \vee p) \\[0.1cm]
+      \Leftrightarrow & \top \wedge \top \\[0.1cm]
+      \Leftrightarrow & \top             \\[0.1cm]
+      \Leftrightarrow & \{\}
+      \end{array}
+      \]
+\end{enumerate}
+
+\exercise
+\begin{enumerate}
+\item Die folgende Prozedur leistet das Gewünschte:
+      \begin{Verbatim}[ frame         = lines, 
+                        framesep      = 0.3cm, 
+                        labelposition = bottomline,
+                        numbers       = left,
+                        numbersep     = -0.2cm,
+                        xleftmargin   = 0.0cm,
+                        xrightmargin  = 0.0cm,
+                      ]
+    procedure allVars(E);
+        Operators := {"+", "-", "*", "/"};
+        case
+            when is_string(E)      => return { E };
+            when E(2) in Operators => return allVars(E(1)) + allVars(E(3));
+            otherwise              => abort("Error in allVars(" + E + ")");
+        end case;
+    end allVars;
+      \end{Verbatim}
+\item Die folgende Prozedur leistet das Gewünschte:
+      \begin{Verbatim}[ frame         = lines, 
+                        framesep      = 0.3cm, 
+                        labelposition = bottomline,
+                        numbers       = left,
+                        numbersep     = -0.2cm,
+                        xleftmargin   = -0.5cm,
+                        xrightmargin  = 0.0cm,
+                      ]
+    procedure countVars(E, x);
+        count := 0;
+        Ops   := {"+", "-", "*", "/"};
+        case
+            when x = E        => count := count + 1;
+            when is_string(E) => count := count;
+            when E(2) in Ops  => return countVars(E(1),x) + countVars(E(3),x);
+            otherwise         => abort("Error in countVars(" + E + ")");
+        end case;
+        return count;
+    end countVars;
+      \end{Verbatim}
+\item Die folgende Prozedur leistet das Gewünschte:
+      \begin{Verbatim}[ frame         = lines, 
+                        framesep      = 0.3cm, 
+                        labelposition = bottomline,
+                        numbers       = left,
+                        numbersep     = -0.2cm,
+                        xleftmargin   = 0.0cm,
+                        xrightmargin  = 0.0cm,
+                      ]
+    procedure singleVars(E);
+        return { x in allVars(E) | countVars(E,x) = 1 };
+    end singleVars;    
+      \end{Verbatim}
+\end{enumerate}
+
+\exercise
+Die folgende Kette von Anwendungen der Schnitt-Regel weist die Behauptung nach:
+\renewcommand{\labelenumi}{\arabic{enumi}.}
+\begin{enumerate}
+\item $\{ \neg t, \neg p \}, \{  \neg t, p \} \vdash  \{ \neg t \}$,
+\item $\{ \neg t \}, \{ t,  \neg q \}         \vdash  \{ \neg q \}$,
+\item $\{ \neg q \}, \{ q,  \neg p \}         \vdash  \{ \neg p \}$,
+\item $\{ \neg p \}, \{ t, p, \neg r \}       \vdash  \{ t, \neg r \}$,
+\item $\{ t, \neg r \}, \{ \neg t \}          \vdash  \{ \neg r \}$,
+\item $\{ \neg r \}, \{ t, q, r \}            \vdash  \{ t, q \}$,
+\item $\{ t, q \}, \{ \neg t \}               \vdash  \{ q \}$,
+\item $\{ q \}, \{ \neg q \}                  \vdash  \{ \}$.
+\end{enumerate}
+
+\pagebreak
+
+\exercise
+Da die Menge $M$ keine Unit-Klausel enthält, beginnen wir mit einer Fall-Unterscheidung.
+Wir führen die Fall-Unterscheidung bezüglich $p$ durch:
+\begin{enumerate}
+\item Als erstes betrachten wir daher die Menge $M_0 = M \cup \bigl\{\{p\}\bigr\}$.
+      Wir berechnen
+      \[ M_1 := \textsl{reduce}(M_0, p) =
+         \bigl\{ \;
+                    \{ r,  \neg t \},
+                    \{ \neg r, q \},
+                    \{ \neg q, s \},
+                    \{ \neg r,  \neg s \},
+                    \{ \neg s \},
+                    \{ q, t  \},
+                    \{ p \} 
+         \; \bigr\}.
+      \]
+      $M_1$ enthält die neue Unit-Klausel $\{ \neg s \}$.  Daher berechnen wir nun
+      \[ M_2 := \textsl{reduce}(M_1, \neg s) =
+         \bigl\{ \;
+                    \{ r,  \neg t \},
+                    \{ \neg r, q \},
+                    \{ \neg q \},
+                    \{ q, t  \},
+                    \{ p \}, 
+                    \{ \neg s \} 
+         \; \bigr\}.
+      \]
+      $M_2$ enthält die neue Unit-Klausel $\{ \neg q \}$.  Daher berechnen wir nun
+      \[ M_3 := \textsl{reduce}(M_2, \neg q) =
+         \bigl\{ \;
+                    \{ r,  \neg t \},
+                    \{ \neg r \},
+                    \{ t \},
+                    \{ p \}, 
+                    \{ \neg s \}, 
+                    \{ \neg q \}
+         \; \bigr\}.
+      \]
+      $M_3$ enthält die neue Unit-Klausel $\{ t \}$.  Daher berechnen wir nun
+      \[ M_4 := \textsl{reduce}(M_3,  t) =
+         \bigl\{ \;
+                    \{ r \},
+                    \{ \neg r \},
+                    \{ p \}, 
+                    \{ \neg s \}, 
+                    \{ \neg q \},
+                    \{ t \}
+         \; \bigr\}.
+      \]
+      Da $M_4$ sowohl die Unit-Klausel $\{r \}$ als auch die Unit-Klausel $\{\neg r \}$
+      enthält, ist $M_4$ nicht lösbar.
+\item Nun betrachten wir die Menge $M \cup \bigl\{\{ \neg p\}\bigr\}$.
+      \[ M_5 := \textsl{reduce}(M_0, \neg p) =
+         \bigl\{ \;
+                    \{ q \},
+                    \{ r, s \},
+                    \{ r, \neg s \},
+                    \{ \neg q, s \},
+                    \{ \neg r,  \neg s\},
+                    \{ \neg p \}
+         \; \bigr\}
+      \]
+      $M_5$ enthält die neue Unit-Klausel $\{ q \}$.  Daher berechnen wir nun
+      \[ M_6 := \textsl{reduce}(M_5, q) =
+         \bigl\{ \;
+                    \{ r, s \},
+                    \{ r, \neg s \},
+                    \{ s \},
+                    \{ \neg r, \neg s\},
+                    \{ \neg p \},
+                    \{ q \}
+         \; \bigr\}
+      \]
+      $M_6$ enthält die neue Unit-Klausel $\{ s \}$.  Daher berechnen wir nun
+      \[ M_7 := \textsl{reduce}(M_6, s) =
+         \bigl\{ \;
+                    \{ r \},
+                    \{ \neg r \},
+                    \{ \neg p \},
+                    \{ q \},
+                    \{ s \}
+         \; \bigr\}
+      \]
+      Da $M_7$ sowohl die Unit-Klausel $\{ r \}$ als auch die Unit-Klausel $\{ \neg r \}$
+      enthält, ist $M_7$ nicht lösbar.
+\end{enumerate}
+Da sowohl  $M \cup \bigl\{\{ p \}\bigr\}$ als auch $M \cup \bigl\{\{ \neg p \}\bigr\}$ unlösbar sind, ist
+auch die Menge $M$ unlösbar. \qed
+\pagebreak
+
+\renewcommand{\labelenumi}{(\alph{enumi})}
+
+\exercise
+Wir setzen $\mathcal{U} := \{ a, b \}$ und definieren die Interpretation $p^\mathcal{J}$
+des Prädikats-Zeichens $p$ als
+\[ p^\mathcal{J} := \bigl\{ \pair(a,a), \pair(b,b) \bigr\}. \]
+Dann gibt es in $U$ zwar für jedes $x$ ein $y$, so dass $p(x,y)$ gilt, denn wir können
+$y = x$ setzen.  Aber es gibt kein $y$, so dass für alle $x$ die Formel $p(x,y)$ gilt.
+Wollten wir dies mit dem in der Vorlesung gezeigten Programm testen, so könnten wir folgendes 
+definieren:
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                ]
+    a := "a";
+    b := "b";  
+    U := { a, b }; 
+    pJ := { [[a,a], true], [[a,b], false], [[b,a], false], [[b,b], true] };
+    J := { [ "p", pJ ] };
+    S := [ U, J ];
+    I := { [ "x", a ], [ "y", b ] }; 
+    f := parse("(forall x: exists y: p(x,y)) -> exists y: forall x: p(x,y)");
+\end{Verbatim}
+Dann würde der Aufruf ``\texttt{evalFormula(f, S, I)}'' den Wert \texttt{false} liefern.
+
+\exercise
+\[  
+\begin{array}[t]{lll}
+                & \Big(\forall x: \neg \exists y: \big(q(x) \rightarrow p(x,y)\big) \Big) \rightarrow 
+                  \big(\forall z: q(z)\big) 
+                  \\[0.1cm]
+\Leftrightarrow & \neg \Big(\forall x: \neg \big(\exists y: q(x) \rightarrow p(x,y)\big) \Big) \vee
+                  \big(\forall z: q(z)\big) 
+                  \\[0.1cm]
+\Leftrightarrow & \Big(\exists x: \exists y: \bigl( q(x) \rightarrow p(x,y)\bigr) \Big) \vee
+                  \big(\forall z: q(z)\big) 
+                  \\[0.1cm]
+\Leftrightarrow & \exists x: \Big( \exists y: \bigl( q(x) \rightarrow p(x,y)\bigr)  \vee
+                  \big(\forall z: q(z)\big) \Big)
+                  \\[0.1cm]
+\Leftrightarrow & \exists x: \exists y: \Big( \bigl( q(x) \rightarrow p(x,y)\bigr)  \vee
+                  \big(\forall z: q(z)\big) \Big)
+                  \\[0.1cm]
+\Leftrightarrow & \exists x: \exists y: \forall z: \Big( \bigl( q(x) \rightarrow p(x,y)\bigr) \vee q(z) \Big)
+                  \\[0.1cm]
+\Leftrightarrow & \exists y: \forall z: \Big( \bigl( q(s_1) \rightarrow p(s_1,y)\bigr) \vee q(z) \Big)
+                & \mbox{mit der Skolem-Konstante $s_1$ für $x$} 
+                  \\[0.1cm]
+\Leftrightarrow & \forall z: \Big( \bigl( q(s_1) \rightarrow p(s_1,s_2)\bigr) \vee q(z) \Big)
+                & \mbox{mit der Skolem-Konstante $s_2$ für $y$} 
+                  \\[0.1cm]
+\Leftrightarrow & \forall z: \neg q(s_1) \vee p(s_1,s_2) \vee q(z) 
+                  \\[0.1cm]
+\Leftrightarrow & \bigl\{ \{ \neg q(s_1),\; p(s_1,s_2),\; q(z) \} \bigr\} 
+\end{array}
+\]
+\pagebreak
+
+\exercise
+\begin{enumerate}
+\item Wir bezeichnen die Russel-Menge mit $R$. Dann lautet die Formel 
+      \[ \forall x: (x \el R \leftrightarrow \neg x \el x). \]
+\item \[ 
+      \begin{array}[t]{ll}
+                      & \forall x: (x \el R \leftrightarrow \neg x \el x)                          \\[0.1cm]
+      \Leftrightarrow & \forall x: \bigl((x \el R \rightarrow \neg x \el x) \wedge 
+                                         (\neg x \el x \rightarrow x \el R)\bigr)                  \\[0.1cm]
+      \Leftrightarrow & \forall x: \bigl((\neg x \el R \vee \neg x \el x) \wedge 
+                                         (x \el x \vee x \el R)\bigr)                              \\[0.1cm]
+      \Leftrightarrow & \bigl\{ \{ \neg x \el R, \neg x \el x \},\; \{ x \el x, x \el R\} \bigr\} 
+      \end{array}
+      \]
+\item Im ersten Schritt wenden wir auf beide Klauseln die Faktorisierungs-Regel an.
+      Es gilt einerseits
+      \[ \mu = \textsl{mgu}(\neg x \el R, \neg x \el x) = [ x \mapsto R ]. \]
+      Also folgt mit der Faktorisierungs-Regel
+      \[ \{ \neg x \el R, \neg x \el x \} \vdash \{ \neg R \el R \} \]
+      Andererseits haben wir
+      \[ \mu = \textsl{mgu}(x \el R, x \el x) = [ x \mapsto R ]. \]
+      Hier folgt mit der Faktorisierungs-Regel
+      \[ \{ x \el R, x \el x \} \vdash \{ R \el R \} \]
+      Aus den beiden so hergeleiteten Klauseln erschließen wir mit der Resolutions-Regel die leere Klausel:
+      \[ \{ \neg R \el R \}, \; \{ R \el R \} \; \vdash \; \{\}. \]
+      Also ist die oben angegebene Formel widersprüchlich.  Das können Sie natürlich auch direkt
+      sehen, wenn Sie in der obigen Formel für $x$ die Konstante $R$ einsetzen. \qed
+\end{enumerate}
+\pagebreak
+
+\exercise
+Wir rechnen wie folgt:
+\[
+\begin{array}[t]{ll}
+         & \Bigl\langle \big\{ f(x_1, x_2, h(x_1)) \doteq f(h(c), h(x_3), x_3) \bigr\}, [] \Bigr\rangle 
+           \\[0.3cm]
+\leadsto & \Bigl\langle \big\{ x_1 \doteq h(c), x_2 \doteq h(x_3), h(x_1) \doteq x_3 \bigr\}, [] \Bigr\rangle 
+           \\[0.3cm]
+\leadsto & \Bigl\langle \big\{ x_1 \doteq h(c), x_2 \doteq h(x_3), x_3 \doteq h(x_1) \bigr\}, [] \Bigr\rangle 
+           \\[0.3cm]
+\leadsto & \Bigl\langle \big\{ x_1 \doteq h(c), x_2 \doteq h(h(x_1)) \bigr\}, [x_3 \mapsto h(x_1)] 
+           \Bigr\rangle 
+           \\[0.3cm]
+\leadsto & \Bigl\langle \big\{ x_1 \doteq h(c) \bigr\}, [x_3 \mapsto h(x_1), x_2 \mapsto h(h(x_1))] 
+           \Bigr\rangle 
+           \\[0.3cm]
+\leadsto & \Bigl\langle \big\{ \bigr\}, [x_3 \mapsto h(h(c)), x_2 \mapsto h(h(h(c))), x_1 \mapsto h(c)] 
+           \Bigr\rangle 
+           \\[0.3cm]
+\end{array}
+\]
+Damit lautet die Lösung des oben gegebenen syntaktischen Gleichungs-Systems
+\[ \mu = [x_3 \mapsto h(h(c)), x_2 \mapsto h(h(h(c))), x_1 \mapsto h(c)]. \]
+
+\exercise
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                ]
+    % is_contained(+List(T), +List(T)).
+    
+    is_contained([], L).
+    
+    is_contained([ X | R ], L) :-
+        member(X, L),
+        is_contained(R, L).
+\end{Verbatim}
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

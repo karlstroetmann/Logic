@@ -1,0 +1,65 @@
+
+
+
+				CHAPTER 5
+
+
+				Procedures
+
+A procedure in SETL is a sequence of computational steps which have been
+given a name and which, using one or more data items passed to it for
+processing, will compute and deliver a value. Most of the built-in SETL
+operators, for example max, which returns the maximum of two values x and
+y, and cos, which returns the cosine of a floating-point number x passed
+to it, are procedures in this sense. However, since no finite collection
+will ever exhaust the whole catalog of procedures that a programmer may
+want to use, it is important to have a way of defining, and then using, as
+many additional operations as are helpful.
+
+
+5.1 Writing and Using Procedures
+
+To make the preceding point more convincing, we can consider a simple
+example Suppose that the weights of individual eggs in batches coming from
+a chicken farm are measured daily, thus producing batches of measurements,
+each of which can be thought of as a set of numbers, e.g.,
+
+
+			{2.7,2.85,1.90,...,1.86}					(1)
+
+Suppose that in order to enforce some sort of quality control, various
+statistical properties are to be reported for each batch, including the
+weights of the three largest and the three smallest eggs in the batch.
+
+To make this calculation easily, it would be convenient to use a
+pre-programmed procedure to which a set s like (1) can be passed, and
+which would then produce a tuple t
+
+
+			[1.90,1.86,...,2.7,2.85]					(2)
+
+such that all the members of s are arranged in increasing order. Since
+this procedure would simply sort the members of s, it can appropriately be
+called 'sort'. We would like to be able to produce the ordered tuple t
+from the set (1) simply by writing
+
+
+			t := sort(s).					(3)
+
+Note that if this can be done, then to print the three largest and three
+smallest measurements we have only to write
+
+
+	print("three smallest measurements are:",t(1),t(2),t(3));
+	print("three largest measurements are:",t(#t),t(#t-1), t(#-2));
+
+Of course, sorting the set s is not hard and can be done by the simple
+method explained in Section 4.7.2, which is to say, using the code
+
+
+				t := [ ];
+
+				while s /= { } loop
+					t with:= (x := min/s);  (4)
+					s less:= x;
+				end loop;

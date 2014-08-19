@@ -1,0 +1,111 @@
+-- iteration test
+class useiters;            
+    -- wrapper for iterator_start
+    procedure istart();  
+    -- wrapper for iterator_next
+    procedure inext();
+end useiters;
+
+-- iteration test
+class body useiters;            
+    -- wrapper for iterator_start
+    procedure istart(); 
+        return iterator_start();
+    end istart;    
+
+    -- wrapper for iterator_next
+    procedure inext(); 
+        return iterator_next();
+    end inext;        
+end useiters;
+
+-- coordinated iteration class
+class coord_iter;            
+    -- creator, parameters are list of objects and list of comparable keys 
+    procedure create(obj_tup, key_tup);            
+end coord_iter;
+
+class body coord_iter;        -- coordinated iteration class
+    use useiters;
+    -- next_fcns(j) is set to OM when objs(j) is exhausted
+    var objs, keymaps, current_vals, next_fcns;        
+
+    -- creator, parameters are list of objects and list of comparable keys 
+    procedure create(obj_tup, key_tup);            
+        objs    := obj_tup; 
+        keymaps := key_tup?[]; 
+        lot     := #obj_tup;
+        for j in [1 .. lot] loop  
+            keymaps(j) ?:= ident; 
+        end loop;
+        current_vals := [newat(): j in [1..lot]]; 
+        next_fcns    := [newat(): j in [1..lot]]; 
+    end create;
+    
+    -- identity mapping
+    procedure ident(x);    
+        return x; 
+    end ident;
+
+    -- begin iteration
+    procedure iterator_start;
+        for obj = objs(j) loop
+            -- obj is a tuple; start with first component. ^next_fcns(j) is iteration index
+            if is_tuple(obj) then
+                ^(next_fcns(j)) := if #obj = 0 then OM else 1 end if; 
+                ^(current_vals(j)) := obj(1);
+            else            -- object is not a tuple; start with first
+                obj.istart(); 
+                oin := obj.inext();
+                ^(next_fcns(j))    := if (val := oin()) = OM then OM else oin() end if;
+                ^(current_vals(j)) := if val = OM then OM else val(1) end if;
+            end if;
+        end loop;
+    end iterator_start;                
+
+    procedure iterator_next;            -- iteration cycle. Returns smallest item among non_exhausted, in pair
+
+        ix_smallest := smallest_val := OM;
+        was := false;
+        
+        for obj = objs(j) | ^(next_fcns(j)) /= OM loop            -- search for element to return
+            was := true;
+            if ix_smallest = OM then             -- first element
+                smallest_key := keymaps(j)(smallest_val := ^(current_vals(ix_smallest := j)));
+            elseif (possib_newkey := keymaps(j)(maybetter := ^(current_vals(j)))) < smallest_key then
+                smallest_key := possib_newkey; 
+                smallest_val := maybetter; ix_smallest := j;
+            end if;
+        end loop;
+
+        if not was then return OM; end if;        --  iteration is exhausted
+        
+        if is_integer(nf := ^(next_fcns(ix_smallest))) then        -- we are dealing with a tuple
+
+            if (newv := objs(ix_smallest)(nf +:= 1)) = OM then        -- object is exhausted
+                ^(next_fcns(ix_smallest)) := OM;            -- flag object as exhausted
+            else
+                ^(current_vals(ix_smallest)) := newv;            -- post the new current value
+                ^(next_fcns(ix_smallest)) := nf;
+            end if;
+
+        else        -- we are dealing with an object other than a tuple
+            if (newv := nf()) = OM then        -- object is exhausted
+                ^(next_fcns(ix_smallest)) := OM;            -- flag object as exhausted
+            else
+                ^(current_vals(ix_smallest)) := newv(1);            -- post the new current value
+            end if;
+        end if;
+        
+        return [[ix_smallest,smallest_val]];
+    end iterator_next;
+
+end coord_iter;
+
+-- test of coordinated iteration
+program main;  
+    use coord_iter;
+
+    cit := coord_iter([[3..12],[2..5],[1..10]],[]); 
+    print([[a,x]: [a,x] in cit]);            -- drop first  components
+end main;

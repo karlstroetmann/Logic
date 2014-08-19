@@ -1,0 +1,17 @@
+compose := procedure(a1, a2) {
+    return { [[x,z], d1 + d2] : [[x,y], d1] in a1, [[y,z], d2] in a2 };
+};
+
+closure := procedure(a) {
+    c    := a;
+    oldC := {};
+    while (c != oldC) {
+        oldC := c;
+        c    := c + compose(c, c);
+    }
+    return c;
+};
+
+a := { [[1,2], 1], [[2,3], 4], [[1,3], 2], [[3,4], 1], [[4,5], 1] };
+print(a);
+print(closure(a));

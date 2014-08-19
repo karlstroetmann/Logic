@@ -1,0 +1,23 @@
+program main;
+
+    print(insert("a", [1,2,3]));
+    print(allLists(3, ["a", "b"]));
+
+    procedure insert(x, L);
+        if L = [] then
+            return { [x] };
+        else
+            y := L(1); R := L(2..);
+            return { [ y ] + K : K in insert(x, R) } + { [x] + L };
+        end if;
+    end insert;
+
+    procedure allLists(n, M);
+        if n = 0 then
+            return { [] };
+        else
+            R := allLists(n-1, M);
+            return +/ { insert(x, L) : x in M, L in R };
+        end if;
+    end allLists;
+end main;

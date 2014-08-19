@@ -1,0 +1,22 @@
+program main;
+    Suits  := { "c", "h", "d", "s" };
+    Values := { "2", "3", "4", "5", "6", "7", "8", "9", 
+                "T", "J", "Q", "K", "A" }; 
+    -- Deck is the set of all cards.
+    Deck   := { [ v, s ] : v in Values, s in Suits };
+    -- Hole is the set of cards dealt to the player.
+    Hole   := { [ "8", "s" ], [ "9", "s" ] };
+    -- Rest is the set of remaining cards.
+    Rest   := Deck - Hole;
+    -- Flops is the set of all possible flops,
+    Flops  := { { k1, k2, k3 } : k1 in Rest, k2 in Rest, k3 in Rest 
+                               | #{ k1, k2, k3 } = 3 };
+    -- TwoSpades is the set of all flops containing two spades.
+    TwoSpades := { f in Flops | #{ k in f | k(2) = "s" } >= 2 };
+    print(1.0 * #TwoSpades / #Flops);
+
+    -- TwoSpades is the set of all flops containing three spades.
+    ThreeSpades := { f in Flops | #{ k in f | k(2) = "s" } = 3 };
+    print(1.0 * #ThreeSpades / #Flops);
+end main;
+

@@ -1,0 +1,430 @@
+\section{Der Cut-Operator}
+Wir haben ein Prädikat als \emph{funktional} definiert,
+wenn wir die einzelnen Argumente klar in Eingabe- und Ausgabe-Argumente
+aufteilen können.  Wir nennen ein Prädikat \emph{deterministisch} wenn es funktional ist
+und wenn außerdem zu jeder Eingabe höchstens eine Ausgabe berechnet
+wird.  Diese zweite Forderung ist durchaus nicht immer erfüllt.  Betrachten wir die ersten
+beiden Fakten zur Definition des Prädikats \texttt{mix/3}:
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    mix( [], Xs, Xs ).    
+    mix( Xs, [], Xs ).
+\end{Verbatim}
+Für die Anfrage ``\texttt{mix([], [], L)}'' können beide Fakten verwendet werden.
+Das Ergebnis ist zwar immer das selbe, nämlich \texttt{L = []}, es wird aber zweimal ausgegeben:
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    ?- mix([],[],L).
+    
+    L = [] ;
+    
+    L = [] 
+\end{Verbatim}
+Dies kann zu Ineffizienz führen.  Aus diesem Grunde gibt es in \textsl{Prolog} den
+Cut-Operator ``\texttt{!}''.  Mit diesem Operator ist es möglich, redundante Lösungen aus
+dem Suchraum heraus zu schneiden.  Schreiben wir die ersten beiden Klauseln der
+Implementierung von \texttt{mix/3} in der Form 
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    mix( [], Xs, Xs ) :- !.
+    mix( Xs, [], Xs ) :- !.
+\end{Verbatim}
+so wird auf die Anfrage  ``\texttt{mix([], [], L)}'' die Lösung \texttt{L = []} nur noch
+einmal generiert.  Ist allgemein eine Regel der Form \\[0.1cm]
+\hspace*{1.3cm} $P \;\texttt{:-}\; Q_1, \cdots, Q_m, \texttt{!}, R_1, \cdots, R_k$ \\[0.1cm]
+gegeben, und gibt es weiter eine Anfrage $A$, so dass $A$ und $P$  unifizierbar sind, so
+wird die Anfrage $A$ zunächst zu der Anfrage \\[0.1cm]
+\hspace*{1.3cm} $Q_1\mu, \cdots, Q_m\mu, \texttt{!}, R_1\mu, \cdots, R_k\mu$ \\[0.1cm]
+reduziert.  Außerdem wird ein Auswahl-Punkt gesetzt, wenn es noch weitere Klauseln gibt,
+deren Kopf mit $A$ unifiziert werden könnt.
+Bei der weiteren Abarbeitung dieser Anfrage gilt folgendes:
+\begin{enumerate}
+\item Falls bereits die Abarbeitung einer Anfrage der Form \\[0.1cm]
+      \hspace*{1.3cm} 
+      $Q_i\sigma, \cdots, Q_m\sigma, \texttt{!}, R_1\sigma, \cdots, R_k\sigma$ \\[0.1cm]
+      für ein $i\in\{1,\cdots,m\}$ scheitert, so wird der Cut nicht erreicht und hat keine
+      Wirkung.
+\item Eine Anfrage der Form \\[0.1cm]
+      \hspace*{1.3cm} 
+      $\texttt{!}, R_1\sigma, \cdots, R_k\sigma$ \\[0.1cm]
+      wird reduziert zu \\[0.1cm]
+      \hspace*{1.3cm} 
+      $R_1\sigma, \cdots, R_k\sigma$. \\[0.1cm]
+      Dabei werden alle Auswahl-Punkte, die bei der Beantwortung der Teilanfragen
+      $Q_1, \cdots, Q_m$ gesetzt worden sind, gelöscht.  Außerdem wird ein eventuell bei
+      der Reduktion der Anfrage $A$ auf die Anfrage \\[0.1cm]
+      \hspace*{1.3cm} $Q_1\mu, \cdots, Q_m\mu, \texttt{!}, R_1\mu, \cdots, R_k\mu$
+      \\[0.1cm]
+      gesetzter Auswahl-Punkte gelöscht.
+\item Sollte später die Beantwortung der Anfrage \\[0.1cm]
+      \hspace*{1.3cm} $R_1\sigma, \cdots, R_k\sigma$. \\[0.1cm]
+      scheitern, so scheitert auch die Beantwortung der Anfrage $A$.
+\end{enumerate}
+Zur Veranschaulichung betrachten wir ein Beispiel.
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    q(Z) :- p(Z).
+    q(1).
+
+    p(X) :- a(X), b(X), !, c(X,Y), d(Y).    
+    p(3).
+    
+    a(1).    a(2).    a(3).
+    
+    b(2).    b(3).
+    
+    c(2,2).  c(2,4).
+    
+    d(3).
+\end{Verbatim}
+Wir verfolgen die Beantwortung der Anfrage \ \texttt{q(U)}. 
+\begin{enumerate}
+\item Zunächst wird versucht \texttt{q(U)} mit dem Kopf der ersten Klausel 
+      des Prädikats \texttt{q/1}  zu unifizieren.  Dabei wird \texttt{Z} mit
+      \texttt{U} instantiert und die Anfrage wird reduziert zu \\[0.1cm]
+      \hspace*{1.3cm} \texttt{p(U)}. \\[0.1cm]
+      Da es noch eine weiter Klausel für das Prädikat \texttt{q/1} gibt, die zur
+      Beantwortung der Anfrage q(U) in Frage kommt, setzen wir Auswahl-Punkt Nr.~1.
+\item Jetzt wird versucht \texttt{p(U)} mit \texttt{p(X)} zu unifizieren.  Dabei
+      wird die Variable \texttt{X} an \texttt{U} gebunden und die ursprüngliche Anfrage
+      wird reduziert zu der Anfrage \\[0.1cm]
+      \hspace*{1.3cm}  
+      \texttt{a(U), b(U), !, c(U,Y), d(Y)}. \\[0.1cm]
+      Außerdem wird an dieser Stelle Auswahl-Punkt Nr.~2 gesetzt, denn die zweite Klausel
+      des Prädikats \texttt{p/1} kann ja ebenfalls mit der ursprünglichen Anfrage unifiziert
+      werden. 
+\item Um die Teilanfrage \texttt{a(U)} zu beantworten, wird \texttt{a(U)} mit
+      \texttt{a(1)} unifiziert.  Dabei wird \texttt{U} mit 1 instantiiert und die Anfrage wird reduziert zu \\[0.1cm]
+      \hspace*{1.3cm} 
+      \texttt{b(1), !, c(1,Y), d(Y)}. \\[0.1cm]
+      Da es für das Prädikat \texttt{a/1} noch weitere Klauseln gibt, wird Auswahl-Punkt Nr.~3
+      gesetzt.
+\item Jetzt wird versucht, die Anfrage \\[0.1cm]
+      \hspace*{1.3cm}    \texttt{b(1), !, c(1,Y), d(Y)}. \\[0.1cm]
+      zu lösen.  Dieser Versuch scheitert jedoch, da sich die für das Prädikat \texttt{b/1}
+      vorliegenden Fakten nicht mit \texttt{b(1)} unifizieren lassen.
+\item Also springen wir zurück zum letzten Auswahl-Punkt (das ist Auswahl-Punkt Nr.~3)
+      und machen die Instantiierung 
+      $\texttt{U} \mapsto 1$ rückgängig.  Wir haben jetzt also wieder das Ziel \\[0.1cm]
+      \hspace*{1.3cm} \texttt{a(U), b(U), !, c(U,Y), d(Y)}. 
+\item Diesmal wählen wir das Fakt \texttt{a(2)} um es mit \texttt{a(U)} zu unifizieren.  Dabei wird \texttt{U} mit
+      2 instantiiert und wir haben die  Anfrage \\[0.1cm]
+      \hspace*{1.3cm} \texttt{b(2), !, c(2,Y), d(Y)}. \\[0.1cm]
+      Da es noch eine weiter Klausel für das Prädikat \texttt{a/1} gibt, setzen wir 
+      Auswahl-Punkt Nr.~4 an dieser Stelle.
+\item Jetzt unifizieren wir  die Teilanfrage \texttt{b(2)} mit der ersten Klausel für das Prädikat
+      \texttt{b/1}.  Die verbleibende Anfrage ist \\[0.1cm]
+      \hspace*{1.3cm} \texttt{!, c(2,Y), d(Y)}. 
+\item Diese Anfrage wird reduziert zu \\[0.1cm]
+      \hspace*{1.3cm}  \texttt{c(2,Y), d(Y)}. \\[0.1cm]
+      Außerdem werden bei diesem Schritt die Auswahl-Punkte Nr.~2 und Nr.~4 gelöscht.
+\item Um diese Anfrage zu beantworten, unifizieren wir \texttt{c(2,Y)} mit dem Kopf der
+      ersten Klausel für das Prädikat \texttt{c/2}, also mit \texttt{c(2,2)}.
+      Dabei erhalten wir die Instantiierung
+      $\mathtt{Y} \mapsto 2$.  Die Anfrage ist damit reduziert zu \\[0.1cm]
+      \hspace*{1.3cm}  \texttt{d(2)}. \\[0.1cm]
+      Außerdem setzen wir an dieser Stelle Auswahl-Punkt Nr.~5, denn das Prädikat
+      \texttt{c/2} hat ja noch eine weitere Klausel, die in Frage kommt.
+\item Die Anfrage ``\texttt{d(2)}'' scheitert.  Also springen wir zurück zum Auswahl-Punkt
+      Nr.~5 und machen die Instantiierung $\mathtt{Y} \mapsto 2$ rückgängig.  Wir haben
+      also wieder die Anfrage \\[0.1cm]
+      \hspace*{1.3cm}  \texttt{c(2,Y), d(Y)}. 
+\item Zur Beantwortung dieser Anfrage nehmen wir nun die zweite Klausel der
+      Implementierung von \texttt{c/2} und erhalten die Instantiierung 
+      $\mathtt{Y} \mapsto 4$.  Die verbleibende Anfrage lautet dann \\[0.1cm]
+      \hspace*{1.3cm} \texttt{d(4)}.
+\item Da sich \texttt{d(4)} und \texttt{d(3)} nicht unifizieren lassen,
+      scheitert diese Anfrage.  Wir springen jetzt zurück zum Auswahl-Punkt Nr.~1 und
+      machen die Instantiierung $\mathtt{U} \mapsto \mathtt{Z}$ rückgängig.  Die Anfrage
+      lautet also wieder \\[0.1cm]
+      \hspace*{1.3cm} \texttt{p(U)}.
+\item Wählen wir nun die zweite Klausel der Implementierung von \texttt{q/1},
+      so müssen wir \texttt{q(U)} und \texttt{q(1)} unifizieren.  Diese Unifikation ist
+      erfolgreich und wir erhalten die Instantiierung $\mathtt{U} \mapsto 1$, die die Anfrage beantwortet.
+\end{enumerate}
+
+\subsection{Verbesserung der Effizienz von \textsl{Prolog}-Programmen durch den Cut-Operator}
+In der Praxis wird der Cut-Operator eingesetzt, um überflüssige Auswahl-Punkte zu
+entfernen und dadurch die Effizienz eines Programms zu steigern.  Als Beispiel
+betrachten wir eine Implementierung des Algorithmus 
+``\emph{Sortieren durch Vertauschen}'' (engl.~\emph{bubble sort}).
+Wir spezifizieren diesen Algorithmus zunächst durch bedingte Gleichungen.  Dabei 
+benutzen wir die Funktion \\[0.1cm]
+\hspace*{1.3cm} 
+$\texttt{append}: \textsl{List}(\textsl{Number}) \times \textsl{List}(\textsl{Number}) \rightarrow \textsl{List}(\textsl{Number})$
+\\[0.1cm]
+Der Aufruf $\texttt{append}(l_1, l_2)$ liefert eine Liste, die aus allen Elementen von
+$l_1$ gefolgt von den Elementen aus $l_2$ besteht.  In dem \textsl{SWI-Prolog}-System ist
+ein entsprechendes Prädikat \texttt{append/3} implementiert.  Die Implementierung dieses
+Prädikats deckt sich mit der Implementierung des Prädikats \texttt{concat/3}, die wir in
+einem früheren Abschnitt vorgestellt hatten.  
+
+Außerdem benutzen wir noch das Prädikat \\[0.1cm]
+\hspace*{1.3cm} 
+$\texttt{ordered}: \textsl{List}(\textsl{Number}) \rightarrow \mathbb{B}$, \\[0.1cm]
+das überprüft, ob eine Liste geordnet ist.
+Die bedingten Gleichungen
+zur Spezifikation der Funktion \\[0.1cm]
+\hspace*{1.3cm} 
+$\texttt{bubble\_sort}: \textsl{List}(\textsl{Number}) \rightarrow \textsl{List}(\textsl{Number})$
+\\[0.1cm]
+lauten nun:
+\begin{enumerate}
+\item $\mathtt{append}(l_1, [x,y|l_2], l) \wedge x > y \rightarrow \mathtt{bubble\_sort}(l) = \mathtt{bubble\_sort}(\mathtt{append}(l_1, [y,x|l_2]))$
+
+      Wenn die Liste $l$ in zwei Teile $l_1$ und $[x,y|l_2]$ zerlegt werden kann
+      und wenn weiter $x>y$ ist, dann vertauschen wir die Elemente $x$ und $y$
+      und sortieren die so entstandene Liste rekursiv.
+\item $\mathtt{ordered}(l) \rightarrow \mathtt{bubble\_sort}(l) = l$
+
+      Wenn die Liste $l$ bereits sortiert ist, dann kann die Funktion
+      $\mathtt{bubble\_sort}$ diese Liste unverändert als Ergebnis zurück geben.
+\end{enumerate}
+Die Gleichungen um das Prädikat \texttt{ordered} zu spezifizieren lauten:
+\begin{enumerate}
+\item $\mathtt{ordered}([]) = \mathtt{true}$
+
+      Die leere Liste ist offensichtlich sortiert.
+\item $\mathtt{ordered}([x]) = \mathtt{true}$
+
+      Eine Liste, die nur aus einem Element besteht, ist ebenfalls sortiert.
+\item $x \leq y \rightarrow \mathtt{ordered}([x,y|r]) = \mathtt{ordered}([y|r])$.
+
+      Eine Liste der Form $[x,y|r]$ ist sortiert, wenn $x \leq y$ ist und
+      wenn außerdem die Liste $[y|r]$ sortiert ist.
+\end{enumerate}
+
+\begin{figure}[!h]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    bubble_sort( L, Sorted ) :-
+        append( L1, [ X, Y | L2 ], L ),
+        X > Y,
+        append( L1, [ Y, X | L2 ], Cs ),
+        bubble_sort( Cs, Sorted ).
+    
+    bubble_sort( Sorted, Sorted ) :-
+        is_ordered( Sorted ).
+    
+    
+    is_ordered( [] ).
+    
+    is_ordered( [ _ ] ).
+    
+    is_ordered( [ X, Y | Ys ] ) :-
+        X < Y,
+        is_ordered( [ Y | Ys ] ).
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Der Bubble-Sort Algorithmus}
+  \label{fig:bubble_sort}
+\end{figure}
+
+Abbildung \ref{fig:bubble_sort} zeigt die Implementierung des Bubble-Sort Algorithmus in
+\textsl{Prolog}.  In Zeile 2 wird die als Eingabe gegebene Liste \texttt{L} in die beiden
+Liste \texttt{L1} und \texttt{[X, Y | L2]} zerlegt.  Da es im Allgemeinen mehrere
+Möglichkeiten gibt,  eine Liste in zwei Teillisten zu zerlegen, wird hierbei ein
+Auswahl-Punkt gesetzt.  Anschließend wird geprüft, ob \texttt{Y} kleiner als \texttt{X}
+ist.  Wenn dies der Fall ist, wird mit \texttt{append/3} die neue Liste 
+\\[0.1cm]
+\hspace*{1.3cm} $\mathtt{append(L_1, [Y,X|L_2])}$ \\[0.1cm]
+gebildet und diese Liste wird rekuriv sortiert.  Wenn es nicht möglich ist,
+die Liste \texttt{L} so in zwei Listen \texttt{L1} und \texttt{[X, Y | L2]} zu zerlegen,
+dass \texttt{Y} kleiner als \texttt{X} ist, dann muss die Liste \texttt{L} schon sortiert
+sein.  In diesem Fall greift die zweite Klausel, die allerdings noch überprüfen muss, ob
+\texttt{L} tatsächlich sortiert ist, denn sonst könnte beim Backtracking eine falsche
+Lösung berechnet werden.
+
+Das Problem bei dem obigen Programm ist die Effizienz.  Aufgrund der vielen Möglichkeiten
+eine Liste zu zerlegen, wird beim Backtracking immer wieder die selbe Lösung generiert. 
+Beispielsweise liefert die Anfrage \\[0.1cm]
+\hspace*{1.3cm} \texttt{bubble\_sort( [ 4, 3, 2, 1 ], L ), write(L), nl, fail.} \\[0.1cm]
+16 mal die selbe Lösung.  Abbildung \ref{fig:bubble_sort_cut} zeigt eine Implementierung,
+bei der nur eine Lösung berechnet wird.  Dies wird durch den Cut-Operator in Zeile 4
+erreicht.   Ist einmal eine Zerlegung der Liste \texttt{L} der Form
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{L} = \texttt{L}_1 +[ \texttt{X}, \mathtt{Y} | \mathtt{L}_2]$
+\\[0.2cm] 
+gefunden, bei der \texttt{Y} kleiner als \texttt{X} ist, so bringt es
+nichts mehr, nach anderen Zerlegungen zu suchen, denn die ursprünglich gegebene Liste
+\texttt{L} läßt sich ja auf jeden Fall dadurch sortieren, dass rekursiv die Liste 
+\\[0.2cm]
+\hspace*{1.3cm}
+ $\mathtt{L}_1 + [\mathtt{Y},\mathtt{X}|\mathtt{L}_2]$ 
+\\[0.1cm]
+sortiert wird.  Dann kann auch der Aufruf der Prädikats \texttt{ordered/1} im Rumpf der zweiten
+Klausel des Prädikats \texttt/2{bubble\_sort} entfallen, denn diese wird beim Backtracking
+ja nur dann erreicht, wenn es keine Zerlegung der Liste \texttt{L} in  \texttt{L1} und 
+\texttt{[X, Y | L2]} gibt, bei der \texttt{Y} kleiner als \texttt{X} ist.  Dann muß aber
+die Liste \texttt{L} schon sortiert sein.
+
+\begin{figure}[!h]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    bubble_sort( List, Sorted ) :-
+        append( L1, [ X, Y | L2 ], List ),
+        X > Y,
+        !,
+        append( L1, [ Y, X | L2 ], Cs ),
+        bubble_sort( Cs, Sorted ).
+    
+    bubble_sort( Sorted, Sorted ).
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Effiziente Implementierung des  Bubble-Sort Algorithmus}
+  \label{fig:bubble_sort_cut}
+\end{figure}
+
+Wenn wir bei der Entwicklung eines \textsl{Prolog}-Programms von bedingten Gleichungen
+ausgehen, dann gibt es ein einfaches Verfahren, um das entstandene
+\textsl{Prolog}-Programm durch die Einführung von Cut-Operator effizienter zu machen:
+Der Cut-Operator sollte nach den Tests, die vor dem Junktor ``$\rightarrow$'' stehen,
+gesetzt werden.  Wir erläutern dies durch ein Beispiel:  Unten sind noch einmal die
+Gleichungen zur Spezifikation des Algorithmus ``\emph{Sortieren durch Mischen}'' wiedergegeben.
+\begin{enumerate}
+\item $\mathtt{odd}([]) = []$.
+\item $\mathtt{odd}([h|t]) = [h|\mathtt{even}(t)]$.
+\item $\mathtt{even}([]) = []$.
+\item $\mathtt{even}([h|t]) = \mathtt{odd}(t)$.
+\item $\mathtt{merge}([], l) = l$.
+\item $\mathtt{merge}(l, []) = l$.
+\item $x \leq y \rightarrow \mathtt{merge}([x|s], [y|t]) = [x|\mathtt{merge}(s, [y|t])]$.
+\item $x  >   y \rightarrow \mathtt{merge}([x|s], [y|t]) = [y|\mathtt{merge}([x|s], t)]$.
+\item $\mathtt{sort}([]) = []$.
+\item $\mathtt{sort}([x]) = [x]$.
+\item $\mathtt{sort}([x,y|t]) = \mathtt{merge}( \mathtt{sort}(\mathtt{odd}([x,y|t])), \mathtt{sort}(\mathtt{even}([x,y|t])))$.
+\end{enumerate}
+Das \textsl{Prolog}-Programm mit Cut-Operatoren sieht dann so aus wie in Abbildung
+\ref{fig:merge-sort-cut} gezeigt.  Nur die Gleichungen 7.~und 8.~haben Bedingungen, bei
+allen anderen Gleichungen gibt es keine Bedingungen.  Bei den Gleichungen 7.~und 8.~wird
+der Cut-Operator daher nach dem Test der Bedingungen gesetzt, bei allen anderen Klauseln
+wird der Cut-Operator dann am Anfang des Rumpfes gesetzt.
+
+\begin{figure}[!h]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    % odd( +List(Number), -List(Number) ).    
+    odd( [], [] ) :- !.    
+    odd( [ X | Xs ], [ X | L ] ) :-
+        !,
+        even( Xs, L ).
+
+    % even( +List(Number), -List(Number) ).
+    even( [], [] ) :- !.
+    even( [ _X | Xs ], L ) :-
+        !,
+        odd( Xs, L ).
+    
+    % merge( +List(Number), +List(Number), -List(Number) ).
+    mix( [], Xs, Xs ) :- !.    
+    mix( Xs, [], Xs ) :- !.
+    mix( [ X | Xs ], [ Y | Ys ], [ X | Rest ] ) :-
+        X =< Y,
+        !,
+        mix( Xs, [ Y | Ys ], Rest ).
+    mix( [ X | Xs ], [ Y | Ys ], [ Y | Rest ] ) :-
+        X > Y,
+        !,
+        mix( [ X | Xs ], Ys, Rest ).
+    
+    % merge_sort( +List(Number), -List(Number) ).
+    merge_sort( [], [] ) :- !.
+    merge_sort( [ X ], [ X] ) :- !.
+    merge_sort( [ X, Y | Rest ], Sorted ) :-
+        !,
+        odd(  [ X, Y | Rest ], Odd  ),
+        even( [ X, Y | Rest ], Even ),
+        merge_sort( Odd,  Odd_Sorted  ),
+        merge_sort( Even, Even_Sorted ),
+        mix( Odd_Sorted, Even_Sorted, Sorted ).
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Sortieren durch Mischen mit Cut-Operatoren.}
+  \label{fig:merge-sort-cut}
+\end{figure}
+
+Analysieren wir das obige Programm genauer, so stellen wir fest, dass viele der
+Cut-Operatoren im Grunde überflüssig sind.  Beispielsweise kann immer nur eine der beiden
+Klauseln, die das Prädikat \texttt{odd/2} implementieren, greifen, denn entweder ist die
+eingegebene Liste leer oder nicht.  Also sind die Cut-Operatoren in den Zeilen 2 und 4
+redundant.  Andererseits stören sie auch nicht, so dass es für die Praxis das einfachste
+sein dürfte Cut-Operatoren stur nach dem oben angegebenen Rezept zu setzen.
+\pagebreak
+
+\vspace*{\fill}
+
+\section{Literaturhinweise}
+Für eine umfangreiche und dem Thema angemessene Darstellung der Sprache \textsl{Prolog} 
+fehlt in der einführenden Vorlesung leider die Zeit.  Daher wird dieses Thema in einer
+späteren Vorlesung auch wieder aufgegriffen.  Den Lesern, die ihre Kenntnisse jetzt schon
+vertiefen wollen, möchte ich die folgende Hinweise auf die Literatur geben:
+\begin{enumerate}
+\item \emph{The Art of Prolog} von Leon Sterling und Ehud Shapiro \cite{sterling:94}.
+      Dieses Werk ist ein ausgezeichnete Lehrbuch, das auch für den Anfänger gut lesbar ist.
+\item \emph{Prolog Programming for Artificial Intelligence} von Ivan Bratko
+      \cite{bratko:90}.  Neben der Sprache \textsl{Prolog} führt dieses Buch auch in die
+      künstliche Intelligenz ein.
+\item \emph{Foundations of Logic Programnming}   von J.~W.~Lloyd \cite{lloyd:87}
+      beschreibt die theoretischen Grundlagen der Sprache \textsl{Prolog}.
+\item \emph{Prolog: The Standard} von Pierre Deransart, Abdel Ali Ed-Dbali und Laurent
+      Cervoni \cite{deransart:96} gibt den ISO-Standard für die Sprache
+      \textsl{Prolog} wieder.
+\item \emph{SWI-Prolog 6.2.6 Reference Manual} von Jan Wielemaker \cite{wielemaker:2013}
+      beschreibt das SWI-Prolog-System.  Dieses Dokument ist im Internet unter der Adresse 
+      \\[0.1cm]
+      \hspace*{1.3cm}      
+      \href{http://www.swi-prolog.org/download/stable/doc/SWI-Prolog-6.2.6.pdf}{\texttt{http://www.swi-prolog.org/download/stable/doc/SWI-Prolog-6.2.6.pdf}}
+      \\[0.1cm]
+      verfügbar.
+\end{enumerate}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "logik"
+%%% End: 

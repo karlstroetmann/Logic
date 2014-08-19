@@ -1,0 +1,37 @@
+-- lexical scan program
+program main;
+
+    const num       := "0123456789",
+          alphanum := "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789";
+
+    print(lex_scan("now is the time for all good men 35 + 35.35 + 35. . . ;"));
+
+    -- lexical scan routine where the parameter is a string.
+    procedure lex_scan(stg);                        
+        tup   := [];            -- Initialize the tuple to be returned.
+        stg + := " ";         -- Add a terminating blank.
+        while stg /= "" loop
+            token := span(stg," \t");                                       
+            if token = "" then 
+                token := span(stg, num); 
+            end if;            
+            if token = "" then 
+                token := span(stg, alphanum); 
+            end if;      
+            if token = "" then 
+                token := len(stg,1); 
+            end if; 
+            if token(1) in " \t" then 
+                continue; 
+            end if;
+            if token(1) in num then 
+                if match(stg, ".") = "." then 
+                    token + := "." + span(stg, num);
+                end if;
+            end if;    
+            tup := tup + [ token ];
+        end loop;
+        return tup;         
+    end lex_scan;
+        
+end main;

@@ -1,0 +1,89 @@
+-- concordance generator
+program main; 
+    
+    var capital_of, alphabetics;         -- maps small letters to capitals
+    var line_number;                        -- number of the current line
+    var file_handle;                        -- handle to  file  being processed
+    
+    initialize(capital_of,alphabetics);     -- All upper and lower case alphabetics.
+    make_concordance("test_file");
+    
+    -- make concordance for specified file
+    procedure make_concordance(file_name);    
+    
+        line_number   := 0;                 
+        linesWordIsIn := {};          
+        file_handle   := open(file_name, "TEXT-IN");    -- open file  for reading
+        
+        while (tuple_of_words := breakNextLine(line_number)) /= OM loop
+            -- breakNextLine reads a line of text and decomposes it into the words it     
+            -- contains by capitalizing them and eliminating punctuation marks.
+            for word in tuple_of_words | #word > 4 loop
+                linesWordIsIn(word) :=  (linesWordIsIn(word)?[]) + [ line_number ];
+             end loop;
+        end loop;
+        -- Now sort, putting all words encountered into alphabetical order. This
+        -- is done by using the quicksort procedure described in Section 5.4.1.
+        for [word, lines] in sort(linesWordIsIn) loop
+            nprint((word + 20 * " ")(1..20)); 
+            arrange(lines);      -- Arrange the line numbers neatly.
+        end loop;
+    end make_concordance;
+    
+    -- Input and scanning routine.
+    -- This procedure reads a line of input and scans it to break out the words     
+    -- which it contains.  These words are capitalized and placed in a tuple.
+    procedure breakNextLine(rw line_number);
+        line_number +:= 1;                      -- Advance the line number.
+        geta(file_handle, line);               -- read line of raw input,as explained in section XXX
+        if line = OM then 
+            return OM;                            -- return OM as signal that there are no more lines
+        end if;    
+        words := [];                             -- Start a new tuple of words.
+        while line /= "" loop                    -- Until the line has been digested.
+            break(line, alphabetics);    
+            words with := capitalize(span(line,alphabetics));
+        end loop;
+        return words;
+    end breakNextLine;
+
+    procedure arrange(lines);
+        -- Routine to print sequence of line numbers.
+        -- This routine prints up to 10 line numbers per line of the concordance 
+        -- and arranges them neatly in fields six characters wide.
+
+        while lines /= [ ] loop                        -- Until all line numbers are  processed,
+          group := lines(1..10 min #lines);     -- break off a first group of up to ten lines.
+
+         lines := lines(11 min (#lines + 1)..);
+          print("" +/ [lpad(str(ln), 6): ln in group]);
+        end loop;
+
+    end arrange;
+
+    procedure capitalize(word);   -- Capitalizes its parameter
+        return "" +/ [capital_of(let)?let: let in word]; -- Returning capitalized version
+    end capitalize;
+
+    -- Quicksort procedure, second form
+    procedure sort(s);        
+        t  := [ y : y in s ];                 
+        t1 := t(1);                           -- Get first element of unsorted tuple
+        return 
+            if #t < 2 then 
+                t
+            else 
+                sort([y: y = t(i)|y(1) < t1(1)]) + [t1] + sort([y: y = t(i) | y(1) >= t1(1) and i > 1])
+            end if;
+    end sort;
+
+    -- Initialization routine
+    procedure initialize(rw capital_map, rw alphabet_string);    
+
+        small_lets := "abcdefghijklmnopqrstuvwxyz";
+        big_lets    := "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        alphabet_string := small_lets + big_lets;
+        capital_map := {[small_let, big_lets(i)]: small_let = small_lets(i)};
+    end initialize;
+
+end main;

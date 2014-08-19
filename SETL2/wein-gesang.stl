@@ -1,0 +1,154 @@
+program main;
+
+    -- R1:= { [[E1,E2],fuellen(E1-S,E2+S)]: E1 in {0..3}, E2 in {0..5}, S in {E1} };
+    R1:= { [[E1,E2],fuellen(0,E2+E1)]: E1 in {0..3}, E2 in {0..5} };
+
+    -- R2:= { [[E1,E2],fuellen(E1+S,E2-S)]: E1 in {0..3}, E2 in {0..5}, S in {E2} };
+    R2:= { [[E1,E2],fuellen(E1+E2,0)]: E1 in {0..3}, E2 in {0..5} };
+
+    R3:= { [[E1,E2], [3,E2]]: E1 in {0..3}, E2 in {0..5} };
+    R4:= { [[E1,E2], [E1,5]]: E1 in {0..3}, E2 in {0..5} };
+    R5:= { [[E1,E2], [0,E2]]: E1 in {0..3}, E2 in {0..5} };
+    R6:= { [[E1,E2], [E1,0]]: E1 in {0..3}, E2 in {0..5} };
+
+        --    Testausgabe
+        for [x,y] in R1 loop
+        print(x, "  ->   ", y);
+       end loop;
+
+    print("n");
+
+        for [x,y] in R2 loop
+        print(x, "  ->   ", y);
+       end loop;
+
+    print("n");
+
+        for [x,y] in R3 loop
+        print(x, "  ->   ", y);
+       end loop;
+
+    print("n");
+
+        for [x,y] in R4 loop
+        print(x, "  ->   ", y);
+       end loop;
+
+    R:= (R1+R2+R3+R4+R5+R6);
+
+    print("n");
+
+        --    Testausgabe
+        for [x,y] in R loop
+        print(x, "  ->   ", y);
+       end loop;
+   
+
+    print("n");
+
+    start := [0,0];
+    goal  := [0,4];
+    path  := reachable(start, goal, R);
+    print("Lösung: ");
+    print(path);
+
+    procedure fuellen(x,y);
+        if y>=5 then
+            E2:= 5;
+            E1:= y-5;
+            return [E1,E2];
+       
+        elseif x>=3 then
+            E1:= 3;
+            E2:= x-3;
+            return [E1,E2];
+
+        else
+            return [x,y];
+        end if;       
+    end fuellen;
+   
+--    procedure vomFassfuellenx(x,y);
+--        if x /= 3 then
+--            x:= 3;
+--            return [x,y];
+--        else
+--            return [x,y];
+--        end if;
+--    end vomFassfuellenx;
+
+    procedure vomFassfuellenx(x,y);
+        return [3,y];
+    end vomFassfuellenx;
+
+--    procedure leerenx(x,y);
+--        if x /= 0 then
+--            x:= 0;
+--            return [x,y];
+--        else
+--            return [x,y];
+--        end if;
+--    end leerenx;
+
+    procedure leerenx(x,y);
+        return [0,y];
+    end leerenx;
+
+--    procedure vomFassfuelleny(x,y);
+--        if y /= 5 then
+--            y:=5;
+--            return [x,y];
+--        else
+--            return [x,y];
+--        end if;
+--    end vomFassfuelleny;
+
+    procedure vomFassfuelleny(x,y);
+        return [x,5];
+    end vomFassfuelleny;
+
+--    procedure leereny(x,y);
+--        if y /= 0 then
+--            y:=0;
+--            return [x,y];
+--        else
+--            return [x,y];
+--        end if;
+--    end leereny;
+
+    procedure leereny(x,y);
+        return [x,0];
+    end leereny;
+
+    procedure reachable(x, y, R);
+    P := { [x] };
+    loop
+        Old_P := P;
+        P     := P + path_product(P, R);
+        Found := { p in P | p(#p) = y };
+        if Found /= {} then
+        return arb Found;
+        end if;
+        if P = Old_P then
+        return;
+        end if;
+    end loop;
+    end reachable;
+
+    -- The procedure call product(P, Q) computes the path product P * Q.
+    procedure path_product(P, Q);
+    return { add(p,q) : p in P, q in Q | p(#p) = q(1) and not cyclic(add(p,q)) };
+    end path_product;   
+
+    -- The procedure cyclic(p) checks whether the path p is cyclic.
+    procedure cyclic(p);
+    return #{ x : x in p } < #p;
+    end cyclic;
+
+    -- The product call add(p,q) computes the sum of the lists p and q.
+    -- The last point of p has to be the first point of q.
+    procedure add(p, q);
+    return p + q(2..);
+    end add;
+
+end main;

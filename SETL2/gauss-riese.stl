@@ -1,0 +1,307 @@
+program main;
+
+-- Die Summe zweier Mathematiker ergibt wieder einen Mathematiker.
+-- Die Zehn Buchstaben sollen durch die Ziffern 0 bis 9
+-- so ersetzt werden, dass die Addition stimmt.
+
+	-- Addition in Buchstaben
+	GAUSS := ["G","A","U","S","S"];
+	RIESE := ["R","I","E","S","E"];
+	EUKLID := ["E","U","K","L","I","D"];
+	TENABC := ["A", "D", "E", "G", "I", "K", "L", "R", "S", "U"];
+	
+	print ("      "+GAUSS);
+	print ("+     "+RIESE);
+	print ("---------------------------------------");
+	print (" " + EUKLID);
+	print ("");
+	
+-- ***************************************************************
+
+    -- Wir codieren das Problem aussagenlogisch wie folgt:  Zu jedem Buchstaben 
+    -- x aus der Menge { "A", "D", "E", "G", "I", "K", "L", "R", "S", "U" };
+    -- legen wir insgesamt 10 aussagenlogische Variablen an:
+    --     x0, x1, x2, x3, x4, x5, x6, x7, x8, x9
+    -- der Buchstabe soll genau dann den wert k haben, wenn die aussagenlogische
+    -- Varilable xk wahr ist.  Ausßerdem benötigen wir noch 6 Variablen
+    --    c0, c1, c2, c3, c4, c5
+    -- Die Variable ci ist genau dann gesetzt, wenn es bei der i-ten Addition
+    -- einen Übertrag gibt, der dann bei der folgenden Addition zu berücksichtigen
+    -- wäre. 
+
+    Clauses := createAllClauses();
+
+    -- Solve the set of clauses using the algorithm of Davis and Putnam.
+    -- The procedure DavisPutnam() is already implemented.
+    if Clauses /= om then
+        I := DavisPutnam(Clauses,{});
+    end if;
+
+    -- This prints the solution if there is one.
+    if I /= FALSE then
+        printSolution(I);
+    else
+        print("The problem is not solvable");
+    end if;
+
+
+    -- Die Prozedur createAllClauses erzeugt eine Menge von Klauseln, die das Problem
+    -- kodieren.
+    procedure createAllClauses();
+        Letters := { "A", "D", "E", "G", "I", "K", "L", "R", "S", "U" };
+        result  := {}; 
+        for x in Letters loop
+            result +:= atMostOne( { x + i : i in { 0 .. 9 } } );  -- höchstens eine Ziffer
+            result +:= { { x + i : i in { 0 .. 9 } } };           -- mindestens eine Ziffer
+        end loop;
+        -- Die Variablen stellen verschiedene Ziffern dar.
+        for i in { 0 .. 9 } loop
+            result +:= atMostOne( { x + i : x in Letters } );
+        end loop;
+        result +:= { { [ "-", "c0" ] } }; -- Kein Übertrag bei der ersten Addition
+        -- printSet( add("c0", "S", "E", "D", "c1") );  -- test
+        result +:= add("c0", "S", "E", "D", "c1");  -- S + E = D
+        result +:= add("c1", "S", "S", "I", "c2");  -- S + S = I
+        result +:= add("c2", "U", "E", "L", "c3");  -- U + E = L
+        result +:= add("c3", "A", "I", "K", "c4");  -- A + I = K
+        result +:= add("c4", "G", "R", "U", "c5");  -- G + R = U
+        result +:= { { "E1" }, { "c5" } };
+        return result;
+    end createAllClauses;
+    
+    -- This procedure take three variable names a, b, and c and two propositional
+    -- variables cin and cout.  The procedure returns a set of clauses that codes
+    -- the addition 
+    --               cin + a + b = c + 2 * cout
+    -- For example, two of the clauses will be
+    --               cin & a1 & b2 -> c3
+    --               cin & a1 & b2 -> !cout
+    -- These two clauses specifiy that 1 + 2 = 3 and that there is no carry
+    -- when building the sum 1 + 2.
+    procedure add(cin, a, b, c, cout);
+        result := {};
+        for i in { 0 .. 9 } loop
+            for j in { 0 .. 9 } loop
+                ai  := a + i;
+                bj  := b + j;
+                nai := [ "-", ai ];
+                nbj := [ "-", bj ];
+                nci := [ "-", cin ];
+                nco := [ "-", cout ];
+                k := i + j;
+                if k < 10 then
+                    ck := c + k;
+                    result +:= { { cin, nai, nbj, ck  } };
+                    result +:= { { cin, nai, nbj, nco } };
+                else
+                    k  := k mod 10;
+                    ck := c + k;
+                    result +:= { { cin, nai, nbj, ck   } };
+                    result +:= { { cin, nai, nbj, cout } };
+                end if;
+                k := i + j + 1;
+                if k < 10 then
+                    ck := c + k;
+                    result +:= { { nci, nai, nbj, ck  } };
+                    result +:= { { nci, nai, nbj, nco } };
+                else
+                    k  := k mod 10;
+                    ck := c + k;
+                    result +:= { { nci, nai, nbj, ck   } };
+                    result +:= { { nci, nai, nbj, cout } };
+                end if;
+            end loop;
+        end loop;
+        return result;
+    end add;
+
+    procedure printSolution(Units);
+        for U in Units loop
+            if #U = 1 then
+                L := arb U;
+                C := L(1);
+                K := L(2);
+                if C notin { "-", "c" } then
+                    print(C, " = ", K);
+                end if;
+            end if;
+        end loop;
+    end printSolution;
+
+
+    procedure printSet(Clauses);
+        for c in Clauses loop
+            print(c);
+        end loop;
+    end printSet;
+
+    -- S is a set of propositional variables. The call atMostOne(S) creates
+    -- a set of clauses.  This set expresses the fact that at most one of
+    -- the variables in S is true.
+    procedure atMostOne(S);
+        return { { [ "-", p ], [ "-", q ] } : p in S, q in S | p /= q };
+    end atMostOne;
+
+    -- This procedure computes a set of clauses.  This set of clauses is true
+    -- iff there is at most one queen on the given row.
+    procedure atMostOneInRow(board, row);
+        return atMostOne({ board(row)(j) : j in [1 .. #board] });
+    end atMostOneInRow;
+
+    -- This procedure computes a set of clauses.  This set of clauses is true
+    -- iff there is at least one queen on the given column.
+    procedure oneInColumn(board, column);
+        return { { board(row)(column) : row in { 1 .. #board } } };
+    end oneInColumn;
+    
+    
+    -- Addition stimmt
+    procedure checkADD(board, ABC);
+    	-- todo
+    end checkADD;
+    
+    procedure allClauses(board, ABC);
+        n := #board;
+        return   +/ { atMostOneInRow(board, row)         : row in {1..n}        }
+               + +/ { oneInColumn(board, column)         : column in {1 .. n}   };
+               --+ +/ { checkBoard(board, ABC)         };               
+    end allClauses;
+    
+        -- I is a set of unit clauses and board is a matrix of propositional 
+    -- variables representing a chessboard.   This procedure prints the 
+    -- chessboard.
+    procedure printBoard(I, board, ABC);
+        if I = om then
+            return;
+        end if;
+        n := #board;
+    
+        print("        ", ABC);
+        
+        print( "        " + ((8*n+1) * "-") );
+        for row in [1..n] loop
+            line := "        |";
+            for col in [1..n] loop
+                line +:= "       |";
+            end loop;
+            print("   ",line);
+            line := "        |";
+            for col in [1..n] loop
+                if { board(row)(col) } in I then
+                    line +:= "   Q   |";
+                else
+                    line +:= "       |";
+                end if;
+            end loop;
+            print(row-1," ",line);
+            line := "        |";
+            for col in [1..n] loop
+                line +:= "       |";
+            end loop;
+            print("   ",line);
+            print( "        " + ((8*n+1) * "-") );
+        end loop;
+    end printBoard;
+    
+    ----------------------------------------------------------
+    --                                                                     --
+    --     Below is the implementation of the Davis-Putnam algorithm.      --
+    --                                                                     --
+    ----------------------------------------------------------
+
+    -- Clauses ist eine Menge von Klauseln und Literals ist eine Menge
+    -- von Literalen.  Der Aufruf unsatisfiable(Clauses, Literals) versucht 
+    -- eine Lösung der Menge
+    --                        Clauses
+    -- zu berechnen.  Wenn dies gelingt, wird eine Menge von Unit-Klauseln 
+    -- zurück gegeben, die keine komplementären Literale enthält.  Aus dieser 
+    -- Menge kann dann unmittelbar eine Belegung berechnet werden, die Clauses
+    -- löst.
+    --       Wenn die Menge Clauses unlösbar ist, wird false zurück gegeben.
+    -- Das Argument Literals dient der Buchhaltung bei den rekursiven Aufrufen.
+    -- Hier werden alle die Literale aufgesammelt, mit denen die Menge Clauses
+    -- schon reduziert wurde.  Beim ersten Aufruf ist diese Menge leer.
+    procedure DavisPutnam( Clauses, Literals );
+        -- 1. Schritt: Bilde solange wie möglich Unit-Schnitte mit den Klauseln
+        --             aus Clauses und entferne subsumierte Klauseln.
+        Clauses := saturate(Clauses);
+        -- 2. Schritt: Falls {} in Clauses, ist Clauses unerfüllbar,
+        --             also gilt Clauses |= false und wir geben true zurück.
+        if {} in Clauses then
+            return false;
+        end if;
+        -- 3. Schritt: Falls für alle Klauseln k aus Clauses gilt card(k) = 1,
+        --             so ist die Menge Clauses erfüllbar, wir geben dann
+        --             die Menge Clauses zurück.
+        if { k in Clauses | #k = 1 } = Clauses then
+            return Clauses;
+        end if;
+        -- 4. Schritt: Wähle Literal l aus Clauses, dass noch nicht benutzt
+        --             worden ist.
+        literal := selectLiteral(Clauses, Literals);
+        --   Fall (a): Prüfe rekursiv, ob Clauses + { {l} } |= false.
+        --             Falls es eine Belegung I gibt, die die Menge Clauses + {l} erfüllt,
+        --             gebe I zurück.
+        --             Sonst weiter bei (b).
+        Result := DavisPutnam(Clauses + {{literal}}, Literals + { literal });
+        if Result /= false then
+            return Result;
+        end if;        
+        --   Fall (b): Prüfe rekursiv, ob Clauses + { {-l} } |= false.
+        --             Falls es eine Belegung I gibt, die die Menge Clauses + {-l} erfüllt,
+        --             gebe I zurück.
+        --             Sonst haben wir Clauses + {{l}} |= false. und Clauses + {{-l}} |= false
+        --             und daraus folgt Clauses |= false, wir geben also true zurück.
+        notLiteral := negateLiteral(literal);
+        return DavisPutnam(Clauses + {{notLiteral}}, Literals + { notliteral } );
+    end DavisPutnam;
+
+    -- Gegeben ist eine Menge S von Klauseln.  Der Aufruf saturate(S) berechnet alle
+    -- Klauseln, die mit Unit Schnitten aus S ableitbar sind.  Zusätzlich werden alle
+    -- Klauseln, die von Unit-Klauseln subsumiert werden, aus der Menge S entfernt.
+    procedure saturate(S);
+        -- Wir berechnen zunächst alle Unit-Klauseln.
+        Units := { k in S | #k = 1 };
+        -- Wir müssen uns merken, welche Unit-Klauseln wir schon benutzt haben.
+        Used := {};
+        -- Solange wir unbenutzte Unit-Klauseln haben, wählen wir eine 
+        -- Unit-Klausel aus, merken uns, dass wir diese Klausel benutzt haben 
+        -- und bilden alle möglichen Schnitte mit anderen Klauseln.  
+        while Units /= {} loop
+            unit := arb Units;
+            Used := Used + { unit };
+            literal := arb unit;
+            S := reduce(S, literal);
+            -- Da bei der Reduktion neue Unit-Klauseln entstehen können, 
+            -- müssen wir die Menge der Unit-Klauseln bei jedem Durchlauf
+            -- der Schleife neu berechnen.  
+            Units := { k in S | #k = 1 } - Used;        
+        end loop;
+        -- Wenn keine neuen Unit-Klauseln gefunden werden, geben wir S zurück.
+        return S;
+    end saturate;
+
+    -- Die Prozedur reduce(S,l) führt alle Unit-Schnitte und alle Unit-Subsumptionen,
+    -- die mit der Unit-Klausel {l} möglich sind, durch.
+    procedure reduce( S, l );
+        notL := negateLiteral(l);
+        return { k - { notL } : k in S | notL in k } + 
+               { k : k in S | not notL in k and (not l in k or k = {l}) };
+    end reduce;
+
+    -- Wir wählen ein beliebiges Literal aus einer beliebigen Klausel,
+    -- so dass weder dieses Literal noch die Negation benutzt wilurden.
+    procedure selectLiteral( S, Forbidden );
+        return arb { l : k in S, l in k | not l in Forbidden };
+    end selectLiteral;
+
+    -- Diese Prozedur berechnet das Komplement des Literals l.
+    procedure negateLiteral(l);
+        if l(1) = "-" then
+            return l(2);
+        else
+            return [ "-", l ];
+        end if;
+    end negateLiteral;
+
+end main;

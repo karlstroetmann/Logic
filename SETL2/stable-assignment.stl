@@ -1,0 +1,80 @@
+-- Gale-Shapley assignment algorithm
+program main;
+    const A := "A", B := "B", CC := "CC", D := "D";  -- constants designating colleges
+
+    -- students' choices
+    stpref := { [1, [A, B, CC]], 
+                [2, [B, CC, A, D]], 
+                [3, [CC, A, B]],
+                [4, [B, A, CC]],
+                [5, [B, A, CC, D]]
+              };
+
+    -- colleges' rankings of applicants
+    colpref:= { [A,[1,2,3,4]],
+                [B,[4,3,2,1]],
+                [CC,[2,4,3]],
+                [D,[1,2,4,5]]
+              };
+
+    -- size of entering classes              
+    quot := { [A,2], [B,1], [CC,1], [D,2] }; 
+
+    -- invoke assignment algorithm
+    print(assign(stpref, colpref, quot)); 
+    
+procedure assign(stud_pref,coll_pref,quota);         -- Gale_Shapley stable assignment algorithm
+        -- stud_pref maps each student into the vector of colleges he/she finds
+        -- acceptable, ranked in decreasing order of preference; coll_pref(c)(s1 s2)
+        -- is true if college c finds student s1 preferable to student s2, false otherwise.
+        -- The map quota gives the number of students each college will accept.
+    
+    colleges := domain(quota);
+    active := {[c,[]]: c in colleges};           -- set up an empty active list for each college
+    applicants := domain(stud_pref);             -- initialize the pool of applicants
+    maxits := 1 +/ [#colls: [-,colls] in stud_pref];    -- maximum reauired iterations; see preceding  remark
+    
+    for j in [1..maxits] loop      -- iterate as often as needed
+    
+        new_applicants := applicants; -- save the set of applicants, which will be iterated over
+    
+        for s in applicants | stud_pref(s) /= [] loop
+                -- each unsatisfied student who has a college to apply to does so
+            first_choice fromb stud_pref(s);
+            active(first_choice) with:= s;
+            new_applicants less:= s;
+        end loop;
+
+        applicants := new_applicants; -- bring the set of applicants into its new condition
+    
+        for c in colleges | #active(c) > quota(c) loop     -- drop all 'over quota' applicants
+
+            active(c) := pref_sort(active(c),coll_pref(c));     -- rerank all who have applied
+            
+            for k in [quota(c) + 1..#active(c)] loop
+                applicants with:= active(c)(k);        -- return student to applicant pool
+    
+            end loop;
+
+        active(c) := active(c)(1..#active(c) min quota(c));        -- cut back active list
+    
+        end loop;
+    
+        if not (exists s in applicants | stud_pref(c) /= []) then exit; end if;
+
+    end loop;
+
+    return [active, applicants];    -- pattern of assignments is complete
+                -- we  return  the list of  accepted students, by colleges, 
+                -- and the set of students not accepted by any college to which they applied
+end assign;
+
+-- this returns the current group of applicants in the order of the college's choice.
+procedure pref_sort(applicantsList, order);
+    -- convert to set
+    applicants := { x: x in applicantsList };
+    -- unranked students come last
+    return [ x in order | x in applicants ] + [ x in applicants | x notin order ];
+end pref_sort;
+
+end main;

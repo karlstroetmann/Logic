@@ -1,0 +1,57 @@
+native package tk;
+
+procedure tk_create();							-- create a Tk interpreter
+procedure tk_call(tkobj,cmd);					-- call the Tk interpreter, passing a command and getting its result
+procedure tk_createcommand(tkobj,cmd,fun);		-- pass a SETL callback routine to the Tk interpreter, along with
+												-- a generated Tk name for it. The callback routine routine should
+												-- have 0 parameters, unless it will be called by an event which
+												-- will return a tuple of parameters, in which case it will have 1
+												-- parameter
+procedure tk_dooneevent(tkobj);					-- request the Tk interpreter to handle one event
+procedure tk_mainloop(tkobj);					-- pass control to the main loop of the Tk interpreter
+procedure tk_quit(tkobj);						-- exit the main loop of the Tk interpreter			
+
+procedure tk_createtimer(interval,fun);			-- set up a timer and give it a  callback to invoke when it ticks
+												-- the interval should be in milliseconds. Note that when the timer
+												-- ticks it will expire, and so should be created again.
+procedure tk_idlecallback(fun);					-- pass a callback to be called when the Tk interpreter is idle
+procedure tk_destroy(tkobj);			-- destroy one of the Tk objects created, e.g. an interpreter or timer
+
+procedure tk_handle_event(tkobj);								-- execute one event in the Tk interpreter
+procedure tk_get_event_source_function();				-- get the event source function for this package
+
+
+procedure tk_gr_put(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport at position x, y
+procedure tk_gr_put_add(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'sum'
+procedure tk_gr_put_dif(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'dif'
+procedure tk_gr_put_mul(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'mul'
+procedure tk_gr_put_div(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'div'
+procedure tk_gr_put_min(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'min'
+procedure tk_gr_put_max(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'max'
+procedure tk_gr_put_pow(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'pow'
+procedure tk_gr_put_blend(tkobj, tkrport_pathname, gr_img, x, y, c1, c2);
+				-- blend the image gr_img with the tk widget at position x, y using coefficients c1 and c2
+procedure tk_gr_put_and_rotate(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport at position x, y
+procedure tk_gr_put_add_and_rotate(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'sum'
+procedure tk_gr_put_dif_and_rotate(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'dif'
+procedure tk_gr_put_mul_and_rotate(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'mul'
+procedure tk_gr_put_div_and_rotate(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'div'
+procedure tk_gr_put_min_and_rotate(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'min'
+procedure tk_gr_put_max_and_rotate(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'max'
+procedure tk_gr_put_pow_and_rotate(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'pow'
+procedure tk_gr_put_blend_and_rotate(tkobj, tkrport_pathname, gr_img, x, y, c1, c2);
+				-- blend the image gr_img with the tk widget at position x, y using coefficients c1 and c2
+procedure tk_gr_get(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport at position x, y
+procedure tk_gr_get_add(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'sum'
+procedure tk_gr_get_dif(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'dif'
+procedure tk_gr_get_mul(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'mul'
+procedure tk_gr_get_div(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'div'
+procedure tk_gr_get_min(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'min'
+procedure tk_gr_get_max(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'max'
+procedure tk_gr_get_pow(tkobj, tkrport_pathname, gr_img, x, y);	-- stuff gr_img into tkrport using 'pow'
+procedure tk_gr_get_blend(tkobj, tkrport_pathname, gr_img, x, y, c1, c2);
+						-- blend the image gr_img with the tk widget at position x, y using coefficients c1 and c2
+
+procedure tk_testrastport(tkobj, mimg);
+
+end;

@@ -1,0 +1,401 @@
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+// The following procedures are just needed to parse first order formula.     //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+// The global variables below are needed to parse formulas.
+var mTokenList; // list of all tokens 
+var mIndex;     // index to the next token
+var mVariables;
+mVariables := { "x", "y", "z" }; // We use three variables, "x", "y", and "z".
+
+// This procedure parses the given string s and transforms it into a formula.
+parse := procedure(s) {
+    mTokenList := scanFormula(s);
+    mIndex     := 1;
+    result     := parseFormula();
+    return result;
+};
+
+// The following procedure parses a first order formula using the grammar below:
+//
+//        formula         : implication "<->" implication
+//                        | implication
+//                        ;
+//
+//        implication     : conjunction "->" implication
+//                        | conjunction
+//                        ;
+//
+//        conjunction     : disjunction conjunctionRest;
+//                    
+//        conjunctionRest : "&&" disjunction conjunctionRest
+//                        | /* epsilon */
+//                        ;
+//
+//        disjunction     : negation disjunctionRest;
+//
+//        disjunctionRest : "||" negation disjunctionRest
+//                        | /* epsilon */
+//                        ;
+//
+//        negation        : "!" negation
+//                        | atomic
+//                        ;
+// 
+//        atomic          : "(" formula ")"
+//                        | "forall" IDENTIFIER ":" formula
+//                        | "exists" IDENTIFIER ":" formula
+//                        | IDENTIFIER "(" termList ")"
+//                        ;
+//
+//        termList        : term termListRest
+//                        ;
+//
+//        termListRest    : "," term termListRest
+//                        | /* epsilon */
+//                        ;
+//
+//        term            : IDENTIFIER "(" termList ")"
+//                        | IDENTIFIER
+//                        ;
+parseFormula := procedure() {
+    implicationLhs := parseImplication();
+    if (mIndex <= #mTokenList && mTokenList(mIndex) != ")" ) {
+        check("<->");
+        implicationRhs := parseImplication();
+        return [ implicationLhs, "<->", implicationRhs ];
+    } else {
+        return implicationLhs;    
+    }
+};
+
+// This procedure implements the following grammar rules:
+//
+//        implication     : conjunction "->" implication
+//                        | conjunction
+//                        ; 
+parseImplication := procedure() {
+    conjunction := parseConjunction();
+    if (mIndex <= #mTokenList && mTokenList(mIndex) notin { "<->", ")" }) {
+        check("->");
+        implication := parseImplication();
+        return [ conjunction, "->", implication ];
+    } else {
+        return conjunction;
+    }
+};
+
+// This procedure implements the following grammar rule:
+//
+//        conjunction     : disjunction conjunctionRest;
+//
+parseConjunction := procedure() {
+    disjunction := parseDisjunction();
+    return parseConjunctionRest(disjunction);
+};
+
+// This procedure implements the following grammar rule:
+//                    
+//        conjunctionRest : "*" disjunction conjunctionRest
+//                        | /* epsilon */
+//                        ;
+parseConjunctionRest := procedure(formula) {
+    if (check("&&")) {
+        disjunction := parseDisjunction();
+        return parseConjunctionRest([ formula, "&&", disjunction ]);
+    }
+    return formula;
+};
+
+// This procedure implements the following grammar rule:
+//
+//        disjunction     : negation disjunctionRest;
+//
+parseDisjunction := procedure() {
+    negation := parseNegation();
+    return parseDisjunctionRest(negation);
+};
+
+// This procedure implements the following grammar rule:
+//
+//        disjunctionRest : "||" negation disjunctionRest
+//                        | /* epsilon */
+//                        ;
+parseDisjunctionRest := procedure(formula) {
+    if (check("||")) {
+        negation := parseNegation();
+        return parseDisjunctionRest([ formula, "||", negation]);
+    }
+    return formula;
+};
+
+// This procedure implements the following grammar rule:
+//
+//        negation        : "!" negation
+//                        | atomic
+//                        ;
+parseNegation := procedure() {
+    if (check("!")) {
+        negation := parseNegation();
+        return [ "!", negation ];            
+    }
+    return parseAtomic();
+};
+
+// This procedure implements the following grammar rule:
+//
+//        atomic          : "(" formula ")"
+//                        | "forall" IDENTIFIER ":" formula
+//                        | "exists" IDENTIFIER ":" formula
+//                        | IDENTIFIER "(" termList ")"
+//                        ;
+parseAtomic := procedure() {
+    if (check("(")) {
+        formula := parseFormula();
+        if (!check(")")) {
+            abort("Parse Error, ')' expected");
+        }
+        return formula; 
+    } else if (check("forall")) {
+        x := mTokenList(mIndex);
+        mIndex := mIndex + 1;
+        if (!check(":")) {
+            abort("Parse Error, ':' expected");
+        }
+        g := parseFormula();
+        return [ "forall", x, g ];
+    } else if (check("exists")) {
+        x := mTokenList(mIndex);
+        mIndex := mIndex + 1;
+        if (!check(":")) {
+            abort("Parse Error, ':' expected");
+        }
+        g := parseFormula();
+        return [ "exists", x, g ];
+    } else if (isString(mTokenList(mIndex))) {
+        predicate := mTokenList(mIndex);
+        mIndex := mIndex + 1;
+        if (!check("(")) {
+            abort("Parse Error, '(' expected");
+        }
+        termList := parseTermList();
+        if (!check(")")) {
+            print("mIndex     = \"", mIndex,   "\"");
+            print("termList   = \"", termList, "\"");
+            abort("Parse Error, ')' expected");
+        }
+        return [ predicate ] + termList;
+    }
+    abort("Parse Error in parseFactor,");
+};
+
+// This procedure implements the following grammar rule:
+//        termList        : term termListRest
+//                        ;
+parseTermList := procedure() {
+    term     := parseTerm();
+    termList := parseTermListRest();
+    return [ term ] + termList;
+};
+
+// This procedure implements the following grammar rule:
+//        termListRest    : "," term termListRest
+//                        | /* epsilon */
+//                        ;
+parseTermListRest := procedure() {
+    if (check(",")) {
+        term     := parseTerm();
+        termList := parseTermListRest();
+        return [ term ] + termList;
+    }
+    return [];
+};
+
+// This procedure implements the following grammar rule:
+//        term            : IDENTIFIER "(" termList ")"
+//                        | IDENTIFIER
+//                        ;
+parseTerm := procedure() {
+    name   := mTokenList(mIndex);
+    mIndex := mIndex + 1;
+    if (check("(")) {
+        termList := parseTermList();
+        if (!check(")")) {
+            abort("Parse Error, ')' expected");
+        }
+        return [ name ] + termList;
+    }
+    if (name in mVariables) {
+        return name;
+    }
+    return [ name ];
+};
+
+// Check, whether token is the next input.
+check := procedure(token) {
+    // no tokens left
+    if (mIndex > #mTokenList) {
+        return false;
+    }
+    if (mTokenList(mIndex) == token) {
+        mIndex := mIndex + 1;
+        return true;
+    }
+    return false;
+};
+
+// Read a string and scan it.  Returns a list of tokens.
+scanFormula := procedure(s) {
+    letters := {};
+    // collect all letters and digits
+    for (x in { 48 .. 57 } + { 65 .. 90 } + { 97 .. 122 }) {
+        letters := letters + { char(x) };
+    }
+    switch {
+        case s == "": 
+             return [];
+        case s(1) == "(": 
+             return [ "(" ] + scanFormula( s(2..) );
+        case s(1) == ")": 
+             return [ ")" ] + scanFormula( s(2..) );
+        case #s >= 2 && s(1..2) == "||": 
+             return [ "||" ] + scanFormula( s(3..) );
+        case #s >= 2 && s(1..2) == "&&": 
+             return [ "&&" ] + scanFormula( s(3..) );
+        case #s >= 2 && s(1..2) == "->": 
+             return [ "->" ] + scanFormula( s(3..) );
+        case #s >= 3 && s(1..3) == "<->": 
+             return [ "<->" ] + scanFormula( s(4..) );
+        case s(1) == "+": 
+             return [ "+" ] + scanFormula( s(2..) );
+        case s(1) == "*": 
+             return [ "*" ] + scanFormula( s(2..) );
+        case s(1) == "!": 
+             return [ "!" ] + scanFormula( s(2..) );
+        case s(1) == ",": 
+             return [ "," ] + scanFormula( s(2..) );
+        case s(1) == "=": 
+             return [ "=" ] + scanFormula( s(2..) );
+        case s(1) == ":": 
+             return [ ":" ] + scanFormula( s(2..) );
+        case s(1) == " " || s(1) == "	":
+             return scanFormula( s(2..) );
+    }
+    index := 1;
+    word  := "";
+    if (s(index) notin letters) {
+        abort("Error in scanFormula(" + s + ")");
+    }
+    while (s(index) in letters && index < #s) {
+        index := index + 1;
+    }
+    if (!s(index) in letters) {
+        return [ s(1 .. index - 1) ] + scanFormula( s(index ..) );
+    }
+    if (index == #s) {
+        return [ s ];
+    }
+    print( "Error in scanFormula: s = ", s );
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  The code for evaluation first order formula starts here.                  //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+// This procedure evaluates the formula f in the structure s
+// using the variable assignment i.
+evalFormula := procedure(f, s, i) {
+    switch {
+        case f == 1        :  return true;
+        case f == 0        :  return false;
+        case f(1) == "!"   :  return !evalFormula(f(2), s, i);
+        case f(2) == "&&"  :  return evalFormula(f(1), s, i) && evalFormula(f(3), s, i);
+        case f(2) == "||"  :  return evalFormula(f(1), s, i) || evalFormula(f(3), s, i);
+        case f(2) == "->"  :  return !evalFormula(f(1), s, i) || evalFormula(f(3), s, i);
+        case f(2) == "<->" :  return evalFormula(f(1), s, i) == evalFormula(f(3), s, i);
+        case f(1) == "forall" : x := f(2);
+                                g := f(3);
+                                u := s(1); 
+                                return forall (c in u | evalFormula(g, s, modify(i, x, c)));
+        case f(1) == "exists" : x := f(2);
+                                g := f(3);
+                                u := s(1);                
+                                return exists (c in u | evalFormula(g, s, modify(i, x, c)));
+        default : return evalAtomic(f, s, i);  // atomic formula
+    }
+};
+
+// This procedure evaluates the atomic formula a in the structure s
+// using the variable assignment i.
+evalAtomic := procedure(a, s, i) {
+    // we do not support nullary predicates yet
+    j    := s(2);
+    p    := a(1); // predicate symbol
+    pJ   := j(p);
+    args := a(2..);
+    argsVal := evalTermList(args, s, i);
+    return argsVal in pJ;
+};  
+
+// This procedure evaluates the term t in the structure s
+// using the variable assignment i.
+evalTerm := procedure(t, s, i) {
+    if (isString(t)) {
+        return i(t);
+    }
+    j    := s(2);
+    f    := t(1); // function symbol
+    fJ   := j(f);
+    args := t(2..);
+    argsVal := evalTermList(args, s, i);
+    if (#argsVal > 0) {        
+        result := fJ(argsVal); 
+    } else {
+        result := fJ;   // t is a constant
+    }
+    return result;
+};
+
+// This procedure evaluates the term list tl, given the structure s and the variable
+// assignment i.
+evalTermList := procedure(tl, s, i) {
+    return [ evalTerm(t, s, i) : t in tl ];
+};
+
+// Given a variable assignement i, a variable x, and an element c from the universe,
+// this function computes the variable assignement i[x/c] which satisfies
+//     i[x/c](x) == c,
+//     i[x/c](y) == i(y) for x != y.
+modify := procedure(i, x, c) {
+    i(x) := c;
+    return i;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+// Below are some examples of structures and formula.                         //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+a := "a";
+b := "b";  
+u := { a, b };  // the universe
+// pJ is the interpretation of the predicate symbol "p".
+pJ := { [ a, a ], [ b, b ] };
+// The structure consists of the universe and the interpretation of
+// the function and predicate symbols.
+j := { [ "p", pJ ]};
+s := [ u, j ];
+// I is a variable assignment.
+i := { [ "x", a ], [ "y", b ] }; 
+f := parse("(forall x: exists y: p(x,y)) -> (exists y: forall x: p(x,y))");
+print(f);
+print(evalFormula(f, s, i));        
+
+
+
+

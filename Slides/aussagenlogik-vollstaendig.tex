@@ -1,0 +1,391 @@
+\documentclass{slides}
+\usepackage[latin1]{inputenc}
+\usepackage{german}
+\usepackage{epsfig}
+\usepackage{amssymb}
+
+\pagestyle{empty}
+\setlength{\textwidth}{17cm}
+\setlength{\textheight}{24cm}
+\setlength{\topmargin}{0cm}
+\setlength{\headheight}{0cm}
+\setlength{\headsep}{0cm}
+\setlength{\topskip}{0.2cm}
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\evensidemargin}{0.5cm}
+
+\newfont{\chess}{chess20}
+\newfont{\bigchess}{chess30}
+\newcommand{\chf}{\baselineskip20pt\lineskip0pt\chess}
+
+\newcommand{\qed}{\hspace*{\fill} $\Box$}
+\newcommand{\exend}{\hspace*{\fill} $\diamond$}
+\newcommand{\setl}{\textsc{Setl2}}
+\newcommand{\struct}{\mathcal{S}}
+\newcommand{\FV}{\textsl{FV}}
+\newcommand{\id}{\textrm{id}}
+\newcommand{\dom}{\textrm{dom}}
+\newcommand{\rng}{\textrm{rng}}
+\newcommand{\BV}{\textsl{BV}}
+\newcommand{\var}{\textsl{Var}}
+\newcommand{\el}{\!\in\!}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\verum}{\top}
+\newcommand{\falsum}{\bot}
+\newcommand{\gentzen}{\vdash}
+\newcommand{\komplement}[1]{\overline{#1}}
+\newcommand{\mathquote}[1]{\mbox{``}\mathtt{#1}\mbox{''}}
+
+\newcommand{\circneg}{\mbox{$\bigcirc\hspace*{-0.3cm}\neg$}}
+\newcommand{\circwedge}{\mbox{$\bigcirc\hspace*{-0.3cm}\wedge$}}
+\newcommand{\circvee}{\mbox{$\bigcirc\hspace*{-0.3cm}\vee$}}
+\newcommand{\circright}{\mbox{$\bigcirc\hspace*{-0.45cm}\rightarrow$}}
+\newcommand{\circleftright}{\mbox{$\bigcirc\hspace*{-0.45cm}\leftrightarrow$}}
+
+
+\def\pair(#1,#2){\langle #1, #2 \rangle}
+
+\newcommand{\is}{\;|\;}
+\newcommand{\schluss}[2]{\frac{\displaystyle\quad \rule[-8pt]{0pt}{18pt}#1 \quad}{\displaystyle\quad \rule{0pt}{14pt}#2 \quad}}
+\newcommand{\vschlus}[1]{{\displaystyle\rule[-6pt]{0pt}{12pt} \atop \rule{0pt}{10pt}#1}}
+
+\newcounter{mypage}
+
+\newtheorem{Definition}{Definition}
+\newtheorem{Notation}[Definition]{Notation}
+\newtheorem{Korollar}[Definition]{Korollar}
+\newtheorem{Lemma}[Definition]{Lemma}
+\newtheorem{Satz}[Definition]{Satz}
+\newtheorem{Theorem}[Definition]{Theorem}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}
+\begin{center}
+Widerlegungs-Vollständigkeit der Schnitt-Regel
+\end{center}
+\vspace*{0.5cm}
+
+\footnotesize
+\begin{Definition}[$\vdash$] \hspace*{\fill} \\[0.3cm]
+{\em
+    \hspace*{1cm} $M$: Menge von Klauseln \\[0.3cm]
+    \hspace*{1cm} $f$: \ Klausel 
+
+    Induktive Definition der Relation \quad  $M \vdash f$
+    \begin{enumerate}
+    \item $M \vdash \verum$
+    \item Wenn $f \el M$, dann $M \vdash f$.
+    \item Wenn $M \vdash k_1 \cup \{p\}$ und $M \vdash \{ \neg p \} \cup k_2$, \\[0.3cm]
+          dann $M \vdash k_1 \cup k_2$.
+    \end{enumerate}
+}
+\end{Definition}
+\vspace*{0.5cm}
+
+\begin{Definition}[Folgerungs-Begiff] \hspace*{\fill} \\[-0.9cm]
+  \begin{tabbing}
+  \textbf{Vor.:} \= $M$: \= Menge von AL-Formeln  \\[0.3cm]
+                 \> $f$: \> AL-Formel                \\[0.3cm]
+  \textbf{Def.:} \> $M \models f$ \quad g.d.w.    \\[0.3cm]
+                 \> $\forall \I \in \textsc{Ali}: \biggl(
+                     \bigl(\forall g \in M: 
+                     \I(g) = \mathtt{true}\bigr) \rightarrow   \I(f) = \mathtt{true}\biggr)$
+  \end{tabbing}
+\end{Definition}
+\vspace*{0.5cm}
+
+\begin{Satz}[Korrektheits-Satz] \hspace*{\fill} \\[-0.9cm]
+  \begin{tabbing}
+  \textbf{Vor.:} \= $\{k_1, \cdots, k_n \}$: \= Menge von Klauseln \\[0.3cm]
+                 \> $k$:                     \> Klausel \\[0.3cm]
+  \textbf{Beh.:} \> 
+  $\{k_1, \cdots, k_n \} \vdash k \quad\Rightarrow\quad \{k_1, \cdots, k_n\} \models k$.  
+  \end{tabbing}
+\end{Satz}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1} 
+\rule{17cm}{1mm}
+Widerlegungs-Vollständigkeit  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}
+\begin{center}
+Widerlegungs-Vollständigkeit der Schnitt-Regel
+\end{center}
+\vspace*{0.5cm}
+
+\footnotesize
+\begin{Satz}[Widerlegungs-Vollständigkeits-Satz] \hspace*{\fill} \\[-0.9cm]
+  \begin{tabbing}
+  \textbf{Vor.:} \= $\{k_1, \cdots, k_n \}$: \= Menge von Klauseln \\[0.3cm]
+                 \> $k$:                     \> Klausel \\[0.3cm]
+  \textbf{Beh.:} \> 
+  $\{k_1, \cdots, k_n \} \models \falsum \quad\Rightarrow\quad \{k_1, \cdots, k_n\} \vdash \falsum$.  
+  \end{tabbing}
+\end{Satz}
+\vspace*{0.5cm}
+
+\begin{Definition}[Redukt]  \hspace*{\fill} \\[-0.9cm]
+  \begin{tabbing}
+  \textbf{Vor.:} \= $M$: \= Menge von Klauseln \\[0.3cm]
+                 \> $k$: \>  Klausel \\[0.3cm]
+                 \> $l$: \> Literal  \\[0.3cm]
+                 
+  \textbf{Def.:} \> $\textsl{redukt}(k,l)$ \quad \= $:= \left\{ 
+     \begin{array}{ll}
+        \verum                &  \mathrm{falls}\; l \el k; \\
+        k \backslash \left\{ \komplement{\,l\,} \right\}  &
+   \mathrm{falls}\; l\not\in k\; \mathrm{und}\; \komplement{\,l\,} \el k; \\
+        k                     &  \mathrm{sonst}.
+     \end{array}
+     \right.
+  $  \\[0.3cm]
+   \> $\textsl{Redukt}(M, l)$ \> $:= \biggl\{\; \textsl{redukt}(k,l) \;|\; k \el M \;\biggr\}$.
+  \end{tabbing}
+\end{Definition}
+\textbf{Idee}: Vereinfache $k$ unter Annahme $l$
+\vspace*{0.5cm}
+
+\begin{Satz} (Semantische Eigenschaften von \textsl{Redukt})\hspace*{\fill} \\[-0.9cm]
+  \begin{tabbing}
+    \textbf{Vor.:} \ \= $M \subseteq \mathcal{K}$ \\[0.3cm]
+                     \> $l \el \mathcal{L}$       \\[0.3cm]
+    \textbf{Beh.:}   \> $M \models \falsum \quad \Rightarrow \quad \textsl{Redukt}(M, l) \models \falsum$
+  \end{tabbing}
+\end{Satz}
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1} 
+\rule{17cm}{1mm}
+Widerlegungs-Vollständigkeit  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}
+\begin{center}
+Widerlegungs-Vollständigkeit der Schnitt-Regel
+\end{center}
+\vspace*{0.5cm}
+
+\footnotesize
+\begin{Satz}  (Syntaktische Eigenschaften von \textsl{Redukt}) \hspace*{\fill} \\[-0.9cm]
+  \begin{tabbing}
+    \textbf{Vor.:} \ \= $M$: \= Menge von Klauseln \\[0.3cm]
+                     \> $f$: \> Klausel            \\[0.3cm]
+                     \> $l$: \> Literal            \\[0.3cm]
+    \textbf{Beh.:}   \> $\textsl{Redukt}(M,l) \gentzen f \quad \Rightarrow \quad 
+                         M \gentzen f \;\;\mbox{oder}\;\;
+                         M \gentzen f \cup \bigl\{\komplement{\,l\,}\bigr\}$
+  \end{tabbing}
+\end{Satz}
+
+\normalsize
+\begin{center}
+Davis-Putnam Verfahren
+\end{center}
+\vspace{0.5cm}
+
+\footnotesize
+\textbf{Geg.}:  $K$ Menge von Klauseln
+
+\textbf{Ges.}:  $\mathcal{I}$ aussagenlogische Belegung mit 
+                \[\forall k \in K:\mathcal{I}(k) = \mathtt{true} \]
+\textbf{Algorithmus}
+\begin{enumerate}
+\item Führe alle mögl. Schnitte mit Unit-Klauseln durch.
+\item Vereinfache mit Subsumption. 
+\item Falls $K$ trivial: fertig!
+\item Wähle aussagenlogische Variable $p$ aus $K$.
+      \begin{enumerate}
+      \item Suche rekursiv Lösung für $\mathcal{I}$ für $K \cup \biggl\{\{p\}\biggr\}$.
+
+      \item Falls (a) erfolglos ist:
+      
+            Suche rekursiv Lösung für $\mathcal{I}$ für $K \cup \biggl\{\{\neg p\}\biggr\}$
+      \end{enumerate}
+\end{enumerate}
+
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1} 
+\rule{17cm}{1mm}
+Davis-Putnam  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}
+\begin{center}
+8-Damen-Problem
+\end{center}
+\vspace*{0.5cm}
+
+\footnotesize
+Können 8 Damen so auf einem Schach--Brett
+aufgestellt werden, dass keine Dame eine andere Dame schlagen kann?
+
+Eine Dame kann eine andere schlagen falls diese
+\begin{itemize}
+\item in der selben Reihe steht,
+\item in der selben Spalte steht, oder
+\item in der selben Diagonale steht.
+\end{itemize}
+\vspace*{-1.0cm}
+
+\footnotesize
+\setlength{\unitlength}{1.5cm}
+
+\begin{picture}(10,10)
+
+\thicklines
+\put(1,1){\line(1,0){8}}
+\put(1,1){\line(0,1){8}}
+\put(1,9){\line(1,0){8}}
+\put(9,1){\line(0,1){8}}
+\put(0.9,0.9){\line(1,0){8.2}}
+\put(0.9,9.1){\line(1,0){8.2}}
+\put(0.9,0.9){\line(0,1){8.2}}
+\put(9.1,0.9){\line(0,1){8.2}}
+
+\thinlines
+\multiput(1,2)(0,1){7}{\line(1,0){8}}
+\multiput(2,1)(1,0){7}{\line(0,1){8}}
+\put(4.25,6.25){{\chess Q}}
+\multiput(5.25,6.5)(1,0){4}{\vector(1,0){0.5}}
+\multiput(3.75,6.5)(-1,0){3}{\vector(-1,0){0.5}}
+\multiput(5.25,7.25)(1,1){2}{\vector(1,1){0.5}}
+\multiput(5.25,5.75)(1,-1){4}{\vector(1,-1){0.5}}
+\multiput(3.75,5.75)(-1,-1){3}{\vector(-1,-1){0.5}}
+\multiput(3.75,7.25)(-1,1){2}{\vector(-1,1){0.5}}
+\multiput(4.5,7.25)(0,1){2}{\vector(0,1){0.5}}
+\multiput(4.5,5.75)(0,-1){5}{\vector(0,-1){0.5}}
+\end{picture}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1} 
+\rule{17cm}{1mm}
+8-Damen-Problem  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}
+\begin{center}
+Repräsentation des Problems
+\end{center}
+\vspace*{0.5cm}
+
+\footnotesize
+\setlength{\unitlength}{2.0cm}
+\hspace*{-2cm}
+\begin{picture}(10,9)
+\thicklines
+\put(0.9,0.9){\line(1,0){8.2}}
+\put(0.9,9.1){\line(1,0){8.2}}
+\put(0.9,0.9){\line(0,1){8.2}}
+\put(9.1,0.9){\line(0,1){8.2}}
+\put(1,1){\line(1,0){8}}
+\put(1,1){\line(0,1){8}}
+\put(1,9){\line(1,0){8}}
+\put(9,1){\line(0,1){8}}
+\thinlines
+\multiput(1,2)(0,1){7}{\line(1,0){8}}
+\multiput(2,1)(1,0){7}{\line(0,1){8}}
+
+%%  for (i = 1; i <= 8; i = i + 1) {
+%%for (j = 1; j <= 8; j = j + 1) \{
+%%   \put(\$j.15,<9-$i>.35){{\Large p<$i>\$j}}
+%%\}
+%%  }
+
+\put(1.15,8.40){{ p11}}
+\put(2.15,8.40){{ p12}}
+\put(3.15,8.40){{ p13}}
+\put(4.15,8.40){{ p14}}
+\put(5.15,8.40){{ p15}}
+\put(6.15,8.40){{ p16}}
+\put(7.15,8.40){{ p17}}
+\put(8.15,8.40){{ p18}}
+\put(1.15,7.40){{ p21}}
+\put(2.15,7.40){{ p22}}
+\put(3.15,7.40){{ p23}}
+\put(4.15,7.40){{ p24}}
+\put(5.15,7.40){{ p25}}
+\put(6.15,7.40){{ p26}}
+\put(7.15,7.40){{ p27}}
+\put(8.15,7.40){{ p28}}
+\put(1.15,6.40){{ p31}}
+\put(2.15,6.40){{ p32}}
+\put(3.15,6.40){{ p33}}
+\put(4.15,6.40){{ p34}}
+\put(5.15,6.40){{ p35}}
+\put(6.15,6.40){{ p36}}
+\put(7.15,6.40){{ p37}}
+\put(8.15,6.40){{ p38}}
+\put(1.15,5.40){{ p41}}
+\put(2.15,5.40){{ p42}}
+\put(3.15,5.40){{ p43}}
+\put(4.15,5.40){{ p44}}
+\put(5.15,5.40){{ p45}}
+\put(6.15,5.40){{ p46}}
+\put(7.15,5.40){{ p47}}
+\put(8.15,5.40){{ p48}}
+\put(1.15,4.40){{ p51}}
+\put(2.15,4.40){{ p52}}
+\put(3.15,4.40){{ p53}}
+\put(4.15,4.40){{ p54}}
+\put(5.15,4.40){{ p55}}
+\put(6.15,4.40){{ p56}}
+\put(7.15,4.40){{ p57}}
+\put(8.15,4.40){{ p58}}
+\put(1.15,3.40){{ p61}}
+\put(2.15,3.40){{ p62}}
+\put(3.15,3.40){{ p63}}
+\put(4.15,3.40){{ p64}}
+\put(5.15,3.40){{ p65}}
+\put(6.15,3.40){{ p66}}
+\put(7.15,3.40){{ p67}}
+\put(8.15,3.40){{ p68}}
+\put(1.15,2.40){{ p71}}
+\put(2.15,2.40){{ p72}}
+\put(3.15,2.40){{ p73}}
+\put(4.15,2.40){{ p74}}
+\put(5.15,2.40){{ p75}}
+\put(6.15,2.40){{ p76}}
+\put(7.15,2.40){{ p77}}
+\put(8.15,2.40){{ p78}}
+\put(1.15,1.40){{ p81}}
+\put(2.15,1.40){{ p82}}
+\put(3.15,1.40){{ p83}}
+\put(4.15,1.40){{ p84}}
+\put(5.15,1.40){{ p85}}
+\put(6.15,1.40){{ p86}}
+\put(7.15,1.40){{ p87}}
+\put(8.15,1.40){{ p88}}
+\end{picture}
+
+
+\vspace*{\fill}
+\tiny \addtocounter{mypage}{1} 
+\rule{17cm}{1mm}
+8-Damen-Problem  \hspace*{\fill} Seite \arabic{mypage}
+\end{slide}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
