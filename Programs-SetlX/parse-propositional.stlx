@@ -1,0 +1,229 @@
+
+myParse := procedure(s) {
+    mTokenList := myScanFormula(s);
+    mIndex     := 1;
+    result     := parseFormula();
+    return normalize(result);
+};
+
+
+var mTokenList; // list of all tokens 
+var mIndex;     // index to the next token
+
+// Diese Prozedur parst eine aussagenlogische Formel gem‰ﬂ der folgenden
+// Grammatik:
+//
+//        formula         : implication "<->" implication
+//                        | implication
+//                        ;
+//
+//        implication     : conjunction "->" implication
+//                        | conjunction
+//                        ;
+//
+//        conjunction     : disjunction conjunctionRest;
+//                    
+//        conjunctionRest : "&" disjunction conjunctionRest
+//                        | /* epsilon */
+//                        ;
+//
+//        disjunction     : negation disjunctionRest;
+//
+//        disjunctionRest : "|" negation disjunctionRest
+//                        | /* epsilon */
+//                        ;
+//
+//        negation        : "!" negation
+//                        | atomic
+//                        ;
+// 
+//        atomic          : "(" formula ")"
+//                        | IDENTIFIER
+//                        ;
+parseFormula := procedure() {
+    implicationLhs := parseImplication();
+    if (mIndex <= #mTokenList && mTokenList[mIndex] != ")") {
+        check("<->");
+        implicationRhs := parseImplication();
+        return [ implicationLhs, "<->", implicationRhs ];
+    } else {
+        return implicationLhs;    
+    }
+};
+
+// Diese Prozedur implementiert die folgenden Grammatik-Regeln:
+//
+//        implication : conjunction "->" implication
+//                    | conjunction
+//                    ; 
+parseImplication :=  procedure() {
+    conjunction := parseConjunction();
+    if (mIndex <= #mTokenList && mTokenList[mIndex] notin { "<->", ")" }) {
+        check("->");
+        implication := parseImplication();
+        return [ conjunction, "->", implication ];
+    } else {
+        return conjunction;
+    }
+};
+
+// Diese Prozedur implementiert die folgende Grammatik-Regel:
+//
+//        conjunction : disjunction conjunctionRest;
+//
+parseConjunction := procedure() {
+    disjunction := parseDisjunction();
+    return parseConjunctionRest(disjunction);
+};
+
+// Diese Prozedur implementiert die folgenden Grammatik-Regeln:
+//                    
+//        conjunctionRest : "&" disjunction conjunctionRest
+//                        | /* epsilon */
+//                        ;
+parseConjunctionRest := procedure(formula) {
+    if (check("&&")) {
+        disjunction := parseDisjunction();
+        return parseConjunctionRest([ formula, "&&", disjunction ]);
+    }
+    return formula;
+};
+
+// Diese Prozedur implementiert die folgende Grammatik-Regel:
+//
+//        disjunction : negation disjunctionRest;
+//
+parseDisjunction := procedure() {
+    negation := parseNegation();
+    return parseDisjunctionRest(negation);
+};
+
+// Diese Prozedur implementiert die folgenden Grammatik-Regeln:
+//
+//        disjunctionRest : "|" negation disjunctionRest
+//                        | /* epsilon */
+//                        ;
+parseDisjunctionRest := procedure(formula) {
+    if (check("||")) {
+        negation := parseNegation();
+        return parseDisjunctionRest([ formula, "||", negation]);
+    }
+    return formula;
+};
+
+// Diese Prozedur implementiert die folgenden Grammatik-Regeln:
+//
+//        negation : "!" negation
+//                 | atomic
+//                 ;
+parseNegation := procedure() {
+    if (check("!")) {
+        negation := parseNegation();
+        return [ "!", negation ];            
+    }
+    return parseAtomic();
+};
+
+// Diese Prozedur implementiert die folgenden Grammatik-Regeln:
+//
+//        atomic          : "(" formula ")"
+//                        | IDENTIFIER
+//                        ;
+parseAtomic := procedure() {
+    if (check("(")) {
+        formula := parseFormula();
+        if (!check(")")) {
+            abort("Parse Error, ')' expected");
+        }
+        return formula; 
+    }
+    if (isString(mTokenList[mIndex])) {
+        result := mTokenList[mIndex];
+        mIndex := mIndex + 1;
+        return result;
+    }
+    abort("Parse Error in parseFactor,");
+};
+
+// ‹berpr¸fe, ob als n‰chstes der String token in der Eingabe steht.
+check := procedure(token) {
+    // no tokens left
+    if (mIndex > #mTokenList) {
+        return false;
+    }
+    if (mTokenList[mIndex] == token) {
+        mIndex := mIndex + 1;
+        return true;
+    }
+    return false;
+};
+
+// Liest einen String und scannt den String.  Es wird eine Liste von Token
+// zur¸ck gegeben.
+myScanFormula := procedure(s) {
+    letters := {};
+    // collect all letters and digits
+    for (x in { 48 .. 57 } + { 65 .. 90 } + { 97 .. 122 }) {
+        letters := letters + { char(x) };
+    }
+    switch {
+        case s == "": 
+             return [];
+        case s[1] == "(": 
+             return [ "(" ] + myScanFormula( s[2..] );
+        case s[1] == ")": 
+             return [ ")" ] + myScanFormula( s[2..] );
+        case #s >= 2 && s[1..2] == "&&": 
+             return [ "&&" ] + myScanFormula( s[3..] );
+        case #s >= 2 && s[1..2] == "||": 
+             return [ "||" ] + myScanFormula( s[3..] );
+        case #s >= 2 && s[1..2] == "->": 
+             return [ "->" ] + myScanFormula( s[3..] );
+        case #s >= 3 && s[1..3] == "<->": 
+             return [ "<->" ] + myScanFormula( s[4..] );
+        case s[1] == "!": 
+             return [ "!" ] + myScanFormula( s[2..] );
+        case s[1] == " " || s[1] == "	": 
+             return myScanFormula( s[2..] );
+    }
+    index := 1;
+    word  := "";
+    if (s[index] notin letters) {
+        abort("Error in myScanFormula(" + s + ")");
+    }
+    while (s[index] in letters && index < #s) {
+        index := index + 1;
+    }
+    if (!s[index] in letters) {
+        return [ s[1 .. index - 1] ] + myScanFormula( s[index ..] );
+    }
+    if (index == #s) {
+        return [ s ];
+    }
+    abort(@"Error in myScanFormula: s = $" + s);
+};
+
+// Druckt die Formel f am Bildschirm aus.
+prettyPrint := procedure(f) {
+    switch {
+        case f == 1: 
+             return "1";
+        case f == 0: 
+             return "0";
+        case isString(f): 
+             return f;
+        case f[1] == "!": 
+             return "!" + prettyPrint(f[2]);
+        case f[2] == "&&": 
+             return "(" + prettyPrint(f[1]) + " && " + prettyPrint(f[3]) + ")";
+        case f[2] == "||": 
+             return "(" + prettyPrint(f[1]) + " || " + prettyPrint(f[3]) + ")";
+        case f[2] == "->": 
+             return "(" + prettyPrint(f[1]) + " -> "  + prettyPrint(f[3]) + ")";
+        case f[2] == "<->": 
+             return "(" + prettyPrint(f[1]) + " <-> " + prettyPrint(f[3]) + ")";
+        default: 
+            abort("Error in prettyPrint: " + str(f));
+    }
+};
+

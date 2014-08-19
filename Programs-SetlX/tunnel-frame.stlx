@@ -1,0 +1,139 @@
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+// Die folgenden Prozeduren dienen dem Ausdrucken und dem Berechnen eines     //
+// Pfades.                                                                    //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+// Druckt den Pfad aus
+printPath := procedure(list, all) {
+    for (i in [1 .. #list]) {
+        left  := list[i][1];
+        right := all - left;
+        print(left, " " * 70, right);
+        if (i < #list) {
+            if (list[i][2] == 1) {
+                print(" " * 40, ">>> ", list[i][1] - list[i+1][1], " >>>");
+            } else {
+                print(" " * 40, "<<< ", list[i+1][1] - list[i][1], " <<<");
+            }
+        }
+    }
+};
+    
+// Compute all points reachable from start in less then limit steps.
+reachable := procedure(start, r, limit) {
+    pathSet := { [ [start], 0 ] }; // start is reachable from start with a path of length 0
+    for (i in { 1 .. limit }) {
+        pathSet += pathProduct(pathSet, r);
+    }
+    return pathSet;
+};
+
+// The procedure call pathProduct(p, q) computes the path product p * q.
+pathProduct := procedure(p, q) {
+    return { [ add(x, y), l1 + l2 ] : [ x, l1 ] in p, [ y, l2 ] in q 
+                                    | x[#x] == y[1]      &&
+                                      !cyclic(add(x, y)) 
+           };
+}; 
+
+// The procedure cyclic(p) checks whether the path p is cyclic.
+cyclic := procedure(p) {
+    return #{ x : x in p } < #p;
+};
+
+// The product call add(p,q) computes the sum of the lists p and q.
+// The last point of p has to be the first point of q.
+add := procedure(p, q) {
+    return p + q[2..];
+};    
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+// Ab hier müssen Sie Prozeduren implementieren, die das Problem beschreiben. //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+// Die Prozedur pruefeDauer bekommt als erstes Argument die Relation dauer, die 
+// für jede Person angibt, wie lange diese Person benötigt, um 
+// den Tunnel zu durchqueren. Die Argumente x und y sind Elemente der unten definierten 
+// Menge p und d ist eine Zeit.  Die Prozedur gibt als Ergebnis true zurück, wenn
+// der Zustand y aus dem Zustand x dadurch erreicht werden kann, dass eine Gruppe
+// von Personen den Tunnel durchquert und wenn diese Gruppe dafür die Zeit d benötigt.
+pruefeDauer := procedure(dauer, x, y, d) {
+
+
+
+
+
+
+     
+};
+
+
+
+
+
+
+// Die Prozedur endsWith überprüft, ob der letzte Zustand in dem Pfad path
+// der Zustand goal ist.
+endsWith := procedure(path, goal) {
+    list := path[1];
+    return list[#list] == goal;
+};    
+
+// Vier Personen, Anton, Bruno, Charly und Daniel müssen eine Tunnel durchqueren.  Der Tunnel
+// ist so eng, dass immer nur zwei Personen gleichzeitig hindurch können.  Außerdem braucht
+// man zum Durchqueren eine Taschen-Lampe.  Die vier haben aber zusammen nur eine
+// Taschen-Lampe.  Die Zeiten, die Anton, Bruno, Charly und Daniel zum Durchqueren benötigen
+// sind 1 Minute, 2 Minuten, 4 Minuten und 5 Minuten.  Berechnen Sie einen Plan zum
+// Durchqueren des Tunnels, der die benötigte Zeit minimiert.
+
+all := { "Anton", "Bruno", "Charly", "Daniel" };
+
+// Dauer ist eine funktionale Relation, die für jede Person die Zeit
+// angibt, die diese Person benötigt, um durch den Tunnel zu kommen.
+dauer := { ["Anton", 1], ["Bruno", 2], ["Charly", 4], ["Daniel", 5] };
+
+// p ist die Menge aller Punkte.  Wir stellen Punkte durch Paare der Form
+// [ s, l ] dar.  Dabei ist s die Menge der Personen am Eingang des Tunnels.
+// l ist 1, wenn die Taschen-Lampe am Eingang ist.  Falls die Taschen-Lampe
+// sich am Ausgang befindet, dann ist l gleich 0.
+p := "?";
+
+for (a in p) {
+    print(a);
+}          
+
+// Die Relation r besteht aus Elementen der Form [ [ x, y ], d ].  Dabei sind
+// x und y Elemente der Menge p, so dass der Zustand y aus dem Zustand x dadurch hervorgeht,
+// dass ein oder zwei Personen den Tunnel durchqueren.  Die Zahl d gibt dann
+// die Zeit an, die dazu benötigt wird.
+r := "?";
+
+print("\n\n");
+for ([[x,y], d] in r) {
+    print([[x,y], d]);
+}
+
+// Am Anfang sind alle am Tunnel-Eingang.
+start := "?";
+// Am Ende sollen alle am Tunnel-Ausgang sein.
+goal  := "?";
+// Berechne alle Pfade, die zum Ziel führen und aus höchstens 7 Schritten bestehen.
+allPathes := reachable(start, r, 7);
+// Wähle aus der Menge aller Pfade diejenigen Pfade aus, die zum Ziel führen.
+usefulPathes := "?";
+// Berechne die minimale Dauer.
+minDauer := "?";
+print("\n\nMinimale Dauer: ", minDauer, "\n");
+// Wähle einen Pfad mit der minimalen Dauer aus.
+path := "?";
+
+// Gebe diesen Pfad Schritt für Schritt aus.
+printPath(path[1], all);
+
+
+
+

@@ -1,0 +1,127 @@
+// This procedure evaluates the formula f in the structure s
+// using the variable assignment i.
+evalFormula := procedure(f, s, i) {
+    u := s[1];
+    match (f) {
+        case true     :  return true;
+        case false    :  return false;
+        case !g       :  return !evalFormula(g, s, i);
+        case g && h   :  return evalFormula(g, s, i) && evalFormula(h, s, i);
+        case g || h   :  return evalFormula(g, s, i) || evalFormula(h, s, i);
+        case g => h   :  return evalFormula(g, s, i) => evalFormula(h, s, i);
+        case g <==> h :  return evalFormula(g, s, i) == evalFormula(h, s, i);
+        case forall (x in _ | g) : 
+             return forall (c in u | evalFormula(g, s, modify(i, x, c)));
+        case exists (x in _ | g) : 
+             return exists (c in u | evalFormula(g, s, modify(i, x, c)));
+        default : return evalAtomic(f, s, i);  // atomic formula
+    }
+};
+// This procedure evaluates the atomic formula a in the structure s
+// using the variable assignment i.
+evalAtomic := procedure(a, s, i) {
+    // we do not support nullary predicates 
+    j  := s[2];
+    p  := fct(a); // predicate symbol
+    pJ := j[p];
+    argList := args(a);
+    argsVal := evalTermList(argList, s, i);
+    return argsVal in pJ;
+};  
+// This procedure evaluates the term t in the structure s
+// using the variable assignment i.
+evalTerm := procedure(t, s, i) {
+    if (fct(t) == "^variable") {
+        varName := args(t)[1];
+        return i[varName];
+    }
+    j    := s[2];
+    f    := fct(t); // function symbol
+    fJ   := j[f];
+    argList := args(t);
+    argsVal := evalTermList(argList, s, i);
+    if (#argsVal > 0) {        
+        result := fJ[argsVal]; 
+    } else {
+        result := fJ;   // t is a constant
+    }
+    return result;
+};
+// This procedure evaluates the term list tl, given the structure s and the variable
+// assignment i.
+evalTermList := procedure(tl, s, i) {
+    return [ evalTerm(t, s, i) : t in tl ];
+};
+// Given a variable assignment i, a variable x, and an element c from the universe,
+// this function computes the variable assignement i[x/c] which satisfies
+//     i[x/c](x) == c,
+//     i[x/c](y) == i(y) for x != y.
+modify := procedure(i, v, c) {
+    x := args(v)[1];
+    i[x] := c;
+    return i;
+};
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+// Below are some examples of structures and formula.                         //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+// A simple commutative group with two elements a and b. 
+// The following definitions of the variables a and b are just a convenience.
+a := "a";
+b := "b"; 
+u := { a, b };  // the universe
+// product is the interpretation of the function symbol "*".
+product := { [ [ a, a ], a ],  [ [ a, b ], b ],  [ [ b, a ], b ],  [ [ b, b ], a ] };
+// equals is the interpretation of the predicate symbol "==".
+equals := { [ x, y ] : x in u, y in u | x == y };
+// The structure consists of the universe and the interpretation of
+// the function and predicate symbols.
+j := { [ "E", a ], [ "^product", product ], [ "^equals", equals ] };
+s := [ u, j ];
+// i is a variable assignment.
+i := { [ "x", a ], [ "y", b ], [ "z", a ] }; 
+
+// The following formulas are the axioms of commutative group theory.
+g1 := parse("forall (x in u | x * E() == x)");
+g2 := parse("forall (x in u | exists (y in u | x * y == E()))");
+g3 := parse("forall (x in u | forall (y in u | forall (z in u | (x*y)*z == x * (y*z) )))");
+g4 := parse("forall (x in u | forall (y in u | x * y == y * x))");
+gt := [ g1, g2, g3, g4 ];
+
+print("\nchecking group theory in the structure \n", s);
+for (f in gt) {
+    print( "checking $f$: $evalFormula(f, s, i)$" );
+}
+
+// A non-commutative group with 6 elements a0, a1, a2, a3, a4, a5. 
+a0 := "a0";
+a1 := "a1";
+a2 := "a2";
+a3 := "a3";
+a4 := "a4";
+a5 := "a5";
+u := { a0, a1, a2, a3, a4, a5 };  // the universe
+// product is the interpretation of the function symbol "*".
+product := { 
+ [[a0, a0], a0], [[a0, a1], a1], [[a0, a2], a2], [[a0, a3], a3], [[a0, a4], a4], [[a0, a5], a5],
+ [[a1, a0], a1], [[a1, a1], a2], [[a1, a2], a0], [[a1, a3], a5], [[a1, a4], a3], [[a1, a5], a4],
+ [[a2, a0], a2], [[a2, a1], a0], [[a2, a2], a1], [[a2, a3], a4], [[a2, a4], a5], [[a2, a5], a3],
+ [[a3, a0], a3], [[a3, a1], a4], [[a3, a2], a5], [[a3, a3], a0], [[a3, a4], a1], [[a3, a5], a2],
+ [[a4, a0], a4], [[a4, a1], a5], [[a4, a2], a3], [[a4, a3], a2], [[a4, a4], a0], [[a4, a5], a1],
+ [[a5, a0], a5], [[a5, a1], a3], [[a5, a2], a4], [[a5, a3], a1], [[a5, a4], a2], [[a5, a5], a0]
+};
+// equals is the interpretation of the predicate symbol "==".
+equals := { [ x, y ] : x in u, y in u | x == y };
+// The structure consists of the universe and the interpretation of
+// the function and predicate symbols.
+s := [ u, { [ "E", a0 ], [ "^product", product ], [ "^equals", equals ] } ];
+// I is a variable assignment.
+i := { [ "x", a0 ], [ "y", a1 ], [ "z", a2 ] }; 
+
+print("\nchecking group theory in the structure \n", s);
+for (f in gt) {
+    print( "checking ", f, ": ", evalFormula(f, s, i) );
+}
+

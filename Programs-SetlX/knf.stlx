@@ -1,0 +1,85 @@
+////////////////////////////////////////////////////////////////////////
+//                                                                    //
+// Überführung in konjunktive Normal-Form                             //
+//                                                                    //
+////////////////////////////////////////////////////////////////////////
+
+// Diese Prozedur überführt die Formel f in konjunktive Normalform.
+normalize := procedure(f) {
+    n1 := elimGdw(f);
+    n2 := elimFolgt(n1);
+    n3 := nnf(n2);
+    n4 := knf(n3);
+    return simplify(n4);
+};
+// Eliminiert den Operator "<==>" aus der eingegebenen Formel f.
+elimGdw := procedure(f) {
+    match (f) {
+        case !g       : return !elimGdw(g);
+        case g && h   : return elimGdw(g) && elimGdw(h);
+        case g || h   : return elimGdw(g) || elimGdw(h);
+        case g => h   : return elimGdw(g) => elimGdw(h);
+        case g <==> h : return elimGdw((g => h) && (h => g));
+        default       : return f; 
+    }
+};
+// Eliminiert den Operator "=>" aus der eingegebenen Formel f.
+elimFolgt := procedure(f) {
+    match (f) {
+        case !g     : return !elimFolgt(g);
+        case g && h : return  elimFolgt(g) && elimFolgt(h);
+        case g || h : return  elimFolgt(g) || elimFolgt(h);
+        case g => h : return  elimFolgt(!g || h);
+        default     : return f; 
+    }
+};
+// Berechnet die Negations-Normalform der Formel f.
+nnf := procedure(f) {
+    match (f) {
+        case !g     : return neg(g);
+        case g && h : return nnf(g) && nnf(h);
+        case g || h : return nnf(g) || nnf(h);
+        default     : return f; 
+    }
+};
+// Diese Funktion berechnet die Negations-Normalform von (-f) und schiebt dabei
+// das Negationszeichen soweit wie möglich nach innen.
+neg := procedure(f) {
+    match (f) {
+        case !g     : return nnf(g);
+        case g && h : return neg(g) || neg(h);
+        case g || h : return neg(g) && neg(h);
+        default     : return !f; 
+    }
+};
+knf := procedure(f) {
+    match (f) {
+        case !g     : return { { !g } };
+        case g && h : return knf(g) + knf(h);
+        case g || h : return { k1 + k2 : k1 in knf(g), k2 in knf(h) };
+        default     : return { { f } }; // f is a variable
+    }
+};
+// Die Prozedur simplify(k) eliminiert triviale Klauseln aus der KNF k.
+simplify := procedure(k) {
+    return { c : c in k | !isTrivial(c) };
+};
+
+// Die Prozedur isTrivial(c) testet ob die Klausel c trivial ist.
+isTrivial := procedure(c) {
+    return { p : p in c | fct(p) == "^variable" } * 
+           { args(l)[1] : l in c | fct(l) == "^not" } != {};
+};
+
+test := procedure(s) {
+    f := parse(s);
+    print("The knf of $f$ is $normalize(f)$");
+};
+
+test("p => p");
+test("(p && q => r) || !r => !p");
+test("(p => q) => (!p => q) => q");
+test("(p => q) && (q => r) => (p => r)");
+test("(p => q) => (!p => !q)");
+test("(p => q) && (!p => !q) => (q => p)");
+ 

@@ -1,0 +1,289 @@
+////////////////////////////////////////////////////////////////////////
+//                                                                    //
+// Parsing & Printing                                                 //
+//                                                                    //
+////////////////////////////////////////////////////////////////////////
+
+// Druckt die Formel f am Bildschirm aus.
+prettyPrint := procedure(f) {
+    switch {
+        case f == 1        :  return "1";
+        case f == 0        :  return "0";
+        case isString(f)   :  return f;
+        case f[1] == "-"   :  return "-" + prettyPrint( f[2] );
+        case f[2] == "*"   :  return "(" + prettyPrint( f[1] ) + " * "   + prettyPrint( f[3] ) + ")";
+        case f[2] == "+"   :  return "(" + prettyPrint( f[1] ) + " + "   + prettyPrint( f[3] ) + ")";
+        case f[2] == "->"  :  return "(" + prettyPrint( f[1] ) + " -> "  + prettyPrint( f[3] ) + ")";
+        case f[2] == "<->" :  return "(" + prettyPrint( f[1] ) + " <-> " + prettyPrint( f[3] ) + ")";
+        default : abort("Error in prettyPrint: " + f);
+    }
+};
+
+// Liest einen String und scannt den String.  Es wird eine Liste von Token
+// zurück gegeben.
+scanFormula := procedure(s) {
+    letters := {};
+    // collect all letters and digits
+    for (x in { 48 .. 57 } + { 65 .. 90 } + { 97 .. 122 }) {
+        letters := letters + { char(x) };
+    }
+    switch { 
+        case s == ""                      : return [];
+        case s[1] == "("                  : return [ "(" ] + scanFormula( s[2..] );
+        case s[1] == ")"                  : return [ ")" ] + scanFormula( s[2..] );
+        case s[1] == "+"                  : return [ "+" ] + scanFormula( s[2..] );
+        case s[1] == "*"                  : return [ "*" ] + scanFormula( s[2..] );
+        case #s >= 2 && s[1..2] == "->"   : return [ "->" ] + scanFormula( s[3..] );
+        case #s >= 3 && s[1..3] == "<->"  : return [ "<->" ] + scanFormula( s[4..] );
+        case s[1] == "-"                  : return [ "-" ] + scanFormula( s[2..] );
+        case s[1] == " " || s[1] == "	" : return scanFormula( s[2..] );
+    }
+    index := 1;
+    word  := "";
+    if (!s[index] in letters) {
+        print("Error in scanFormula(" + s + ")");
+    }
+    while (s[index] in letters && index < #s) {
+        index := index + 1;
+    }
+    if (!s[index] in letters) {
+        return [ s[1 .. index - 1] ] + scanFormula( s[index ..] );
+    }
+    if (index == #s) {
+        return [ s ];
+    }
+    print( "Error in scanFormula: s = ", s );
+};
+
+// Interpretiert eine Liste L von Tokens als Formel und gibt die gefundene 
+// Formel zurück.  Es wird ein Backtracking-Algorithmus verwendet.
+parseFormula := procedure(l) {
+    f := parseParentheses(l);
+    if (f != omega) {
+        return f;
+    }
+    // Nun wird nach einem binären Operator gesucht.  Die Reihenfolge, in der
+    // gesucht wird, richtet sich nach der Bindungsstärke der Operatoren 
+    f := parseEquivalence(l);
+    if (f != omega) {
+        return f;
+    }
+    f := parseImplication(l);
+    if (f != omega) {
+        return f;
+    }
+    f := parseDisjunction(l);
+    if (f != omega) {
+        return f;
+    }
+    f := parseConjunction(l);
+    if (f != omega) {
+        return f;
+    }
+    f := parseNegation(l);
+    if (f != omega) {
+        return f;
+    }
+    f := parseAtom(l);
+    if (f != omega) {
+        return f;
+    }
+};
+
+// l ist eine Liste von Tokens.  Wenn diese Liste eine geklammerte Formel
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseParentheses := procedure(l) {
+    if (l[1] == "(" && l[#l] == ")") {
+        return parseFormula( l[2 .. #l - 1] );
+    }
+};
+
+// l ist eine Liste von Tokens.  Wenn diese Liste eine Formel der Art
+//       f1 <-> f2
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseEquivalence := procedure(l) {
+    for (i in [ 2 .. #l - 1 ]) {
+        if (l[i] == "<->") {
+            f1 := parseFormula( l[1 .. i - 1] );
+            if (f1 != omega) {
+                f2 := parseFormula( l[i + 1 .. #l] );
+                if (f2 != omega) {
+                    return [ f1, "<->", f2 ];
+                }
+            }
+        }
+     }
+};
+
+// l ist eine Liste von Tokens.  Wenn diese Liste eine Formel der Art
+//       f1 -> f2
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseImplication := procedure(l) {
+    for (i in [ 2 .. #l - 1 ]) {
+        if (l[i] == "->") {
+            f1 := parseFormula( l[1 .. i - 1] );
+            if (f1 != omega) {
+                f2 := parseFormula( l[i + 1 .. #l] );
+                if (f2 != omega) {
+                    return [ f1, "->", f2 ];
+                }
+            }
+        }
+    }
+};
+
+// l ist eine Liste von Tokens.  Wenn diese Liste eine Formel der Art
+//       f1 + f2
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseDisjunction := procedure(l) {
+    for (i in [ #l - 1, #l - 2 .. 2 ]) {
+        if (l[i] == "+") {
+            f1 := parseFormula( l[1 .. i - 1] );
+            if (f1 != omega) {
+                f2 := parseFormula( l[i + 1 .. #l] );
+                if (f2 != omega) {
+                    return [ f1, "+", f2 ];
+                }
+            }
+        }
+    }
+};
+
+// l ist eine Liste von Tokens.  Wenn diese liste eine Formel der Art
+//       f1 * f2
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseConjunction := procedure(l) {
+    for (i in [ #l - 1, #l - 2 .. 2 ]) {
+        if (l[i] == "*") {
+            f1 := parseFormula( l[1 .. i - 1] );
+            if (f1 != omega) {
+                f2 := parseFormula( l[i + 1 .. #l] );
+                if (f2 != omega) {
+                    return [ f1, "*", f2 ];
+                }
+            }
+        }
+    }
+};
+
+// l ist eine Liste von Tokens.  Wenn diese Liste eine Formel der Art
+//       - f1
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseNegation := procedure(l) {
+    if (l[1] == "-") {
+        f := parseFormula( l[2 .. #l] );
+        if (f != omega) {
+            return [ "-", f ];
+        }
+    }
+};
+
+// L ist eine Liste von Tokens.  Wenn diese Liste eine atomare Formel 
+//       p
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseAtom := procedure(l) {
+    if (#l == 1) {
+        if (l[1] == "1") {
+            return 1;
+        } else if (l[1] == "0") {
+            return 0;
+        } else if (isString(l[1])) {
+            return l[1];
+        }
+    }
+};
+
+////////////////////////////////////////////////////////////////////////
+//                                                                    //
+//  Our program starts here                                           //
+//                                                                    //
+////////////////////////////////////////////////////////////////////////
+
+// Test, ob Formel f eine Tautologie ist.  Falls f keine Tautologie
+// ist, dann wird eine Belegung I zurück gegeben, so dass eval(f, I)
+// den Wert false ergibt.
+tautology := procedure(f) {
+    p := collectVars(f);
+    // a is the set of all propositional valuations.
+    a := { { [x, x in m] : x in p } : m in pow(p) };
+    if (forall (i in a | eval(f, i))) {
+        return {};
+    } else {
+        return arb({ i in a | !eval(f, i) });
+    }
+};
+
+// This function collects all propositional variables occurring in 
+// the propositional formula f.
+collectVars := procedure(f) {
+    switch {
+        case f == 1 :  
+             return {};
+        case f == 0 :  
+             return {};
+        case isString(f) : 
+             return { f };
+        case f[1] == "-" :  
+             return collectVars( f[2] );
+        case f[2] in { "*", "+", "->", "<->" } : 
+             return collectVars( f[1] ) + collectVars( f[3] );
+        default: 
+             print("malformed formula: ", f);
+    }
+};
+
+eval := procedure(f, i) {
+    switch {
+        case     f == 1:        return true;
+        case     f == 0:        return false;
+        case     isString(f):   return i[f];
+        case     f[1] == "-":   return !eval(f[2], i);
+        case     f[2] == "*":   return  eval(f[1], i) &&  eval(f[3], i);
+        case     f[2] == "+":   return  eval(f[1], i) ||  eval(f[3], i);
+        case     f[2] == "->":  return !eval(f[1], i) ||  eval(f[3], i);
+        case     f[2] == "<->": return eval(f[1], i) == eval(f[3], i);
+        default: print("eval($f$): syntax error ");
+    }
+};
+
+run := procedure() {
+    while (true) {
+        print("Enter formula: ");
+        s := read();
+        if (s == 0) {
+            break;
+        }
+        test(s);
+    }
+};
+
+test := procedure(s) {
+    l := scanFormula(s);
+    f := parseFormula(l);
+    print(f);
+    check := tautology(f);
+    if (check == {}) {
+        print("The formula \"" + prettyPrint(f) + "\" is a tautology.");
+    } else {
+        print("The formula \"" + prettyPrint(f) + "\" isn't a tautology.");
+        print("Counter example: ", check );
+    }
+};
+
+test("-(p + q) <-> -p * -q");
+test("(p -> q) -> (-p -> q) -> q");
+
+run();
+
+    
+
+
+
+

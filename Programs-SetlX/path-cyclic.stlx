@@ -1,0 +1,25 @@
+closure := procedure(r) {
+    p := r;
+    while (true) {
+        oldP := p;
+        p    := p + pathProduct(r, p);
+        if (p == oldP) {
+            return p;
+        }
+    }
+};
+pathProduct := procedure(p, q) {
+    return { add(x,y) : x in p, y in q | x[#x] == y[1] && noCycle(x,y) };
+};
+// returns true iff the concatenation of l1 and l2 has only one shared point
+noCycle := procedure(l1, l2) {
+    return #({ x : x in l1 } * { x : x in l2 }) == 1;
+};
+add := procedure(p, q) {
+    return p + q[2..];
+};
+r := { [1,2], [2,3], [1,3], [2,4], [4,5], [5, 1] };
+print( "r = ", r );
+print( "computing all paths" );
+p := closure(r);
+print( "p = ", p );

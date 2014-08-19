@@ -1,0 +1,403 @@
+////////////////////////////////////////////////////////////////////////
+//                                                                    //
+// Parsing & Printing                                                 //
+//                                                                    //
+////////////////////////////////////////////////////////////////////////
+
+// Liest einen String und scannt den String.  Es wird eine Liste von Token
+// zurück gegeben.
+scanFormula := procedure(s) {
+    letters := {};
+    // collect all letters and digits
+    for (x in { 48 .. 57 } + { 65 .. 90 } + { 97 .. 122 }) {
+        letters := letters + { char(x) };
+    }
+    switch { 
+        case s == ""                      : return [];
+        case s[1] == "("                  : return [ "(" ] + scanFormula( s[2..] );
+        case s[1] == ")"                  : return [ ")" ] + scanFormula( s[2..] );
+        case s[1] == "+"                  : return [ "+" ] + scanFormula( s[2..] );
+        case s[1] == "*"                  : return [ "*" ] + scanFormula( s[2..] );
+        case #s >= 2 && s[1..2] == "->"   : return [ "->" ] + scanFormula( s[3..] );
+        case #s >= 3 && s[1..3] == "<->"  : return [ "<->" ] + scanFormula( s[4..] );
+        case s[1] == "-"                  : return [ "-" ] + scanFormula( s[2..] );
+        case s[1] == " " || s[1] == "	" : return scanFormula( s[2..] );
+    }
+    index := 1;
+    word  := "";
+    if (!s[index] in letters) {
+        printErr("Error in scanFormula( $s$ )");
+    }
+    while (s[index] in letters && index < #s) {
+        index := index + 1;
+    }
+    if (!s[index] in letters) {
+        return [ s[1 .. index - 1] ] + scanFormula( s[index ..] );
+    }
+    if (index == #s) {
+        return [ s ];
+    }
+    printErr( "Error in scanFormula: s = $s$" );
+};
+
+// Interpretiert eine Liste L von Tokens als Formel und gibt die gefundene 
+// Formel zurück.  Es wird ein Backtracking-Algorithmus verwendet.
+parseFormula := procedure(l) {
+    f := parseParentheses(l);
+    if (f != omega) {
+        return f;
+    }
+    // Nun wird nach einem binären Operator gesucht.  Die Reihenfolge, in der
+    // gesucht wird, richtet sich nach der Bindungsstärke der Operatoren 
+    f := parseEquivalence(l);
+    if (f != omega) {
+        return f;
+    }
+    f := parseImplication(l);
+    if (f != omega) {
+        return f;
+    }
+    f := parseDisjunction(l);
+    if (f != omega) {
+        return f;
+    }
+    f := parseConjunction(l);
+    if (f != omega) {
+        return f;
+    }
+    f := parseNegation(l);
+    if (f != omega) {
+        return f;
+    }
+    f := parseAtom(l);
+    if (f != omega) {
+        return f;
+    }
+};
+
+// l ist eine Liste von Tokens.  Wenn diese Liste eine geklammerte Formel
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseParentheses := procedure(l) {
+    if (l[1] == "(" && l[#l] == ")") {
+        return parseFormula( l[2 .. #l - 1] );
+    }
+};
+
+// l ist eine Liste von Tokens.  Wenn diese Liste eine Formel der Art
+//       f1 <-> f2
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseEquivalence := procedure(l) {
+    for (i in [ 2 .. #l - 1 ]) {
+        if (l[i] == "<->") {
+            f1 := parseFormula( l[1 .. i - 1] );
+            if (f1 != omega) {
+                f2 := parseFormula( l[i + 1 .. #l] );
+                if (f2 != omega) {
+                    return [ f1, "<->", f2 ];
+                }
+            }
+        }
+     }
+};
+
+// l ist eine Liste von Tokens.  Wenn diese Liste eine Formel der Art
+//       f1 -> f2
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseImplication := procedure(l) {
+    for (i in [ 2 .. #l - 1 ]) {
+        if (l[i] == "->") {
+            f1 := parseFormula( l[1 .. i - 1] );
+            if (f1 != omega) {
+                f2 := parseFormula( l[i + 1 .. #l] );
+                if (f2 != omega) {
+                    return [ f1, "->", f2 ];
+                }
+            }
+        }
+    }
+};
+
+// l ist eine Liste von Tokens.  Wenn diese Liste eine Formel der Art
+//       f1 + f2
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseDisjunction := procedure(l) {
+    for (i in [ #l - 1, #l - 2 .. 2 ]) {
+        if (l[i] == "+") {
+            f1 := parseFormula( l[1 .. i - 1] );
+            if (f1 != omega) {
+                f2 := parseFormula( l[i + 1 .. #l] );
+                if (f2 != omega) {
+                    return [ f1, "+", f2 ];
+                }
+            }
+        }
+    }
+};
+
+// l ist eine Liste von Tokens.  Wenn diese liste eine Formel der Art
+//       f1 * f2
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseConjunction := procedure(l) {
+    for (i in [ #l - 1, #l - 2 .. 2 ]) {
+        if (l[i] == "*") {
+            f1 := parseFormula( l[1 .. i - 1] );
+            if (f1 != omega) {
+                f2 := parseFormula( l[i + 1 .. #l] );
+                if (f2 != omega) {
+                    return [ f1, "*", f2 ];
+                }
+            }
+        }
+    }
+};
+
+// l ist eine Liste von Tokens.  Wenn diese Liste eine Formel der Art
+//       - f1
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseNegation := procedure(l) {
+    if (l[1] == "-") {
+        f := parseFormula( l[2 .. #l] );
+        if (f != omega) {
+            return [ "-", f ];
+        }
+    }
+};
+
+// L ist eine Liste von Tokens.  Wenn diese Liste eine atomare Formel 
+//       p
+// darstellt, dann wird diese Formel zurück gegeben, sonst ist das Ergebnis
+// undefiniert, also Omega.
+parseAtom := procedure(l) {
+    if (#l == 1) {
+        if (l[1] == "1") {
+            return 1;
+        } else if (l[1] == "0") {
+            return 0;
+        } else if (isString(l[1])) {
+            return l[1];
+        }
+    }
+};
+
+// Wandelt die Formel f in einen String um.  Es wird angenommen, dass
+// f in konjunktiver Normalform vorliegt.
+prettyPrintKnf := procedure(f) {
+    if (f == {}) {
+        return "1";
+    }
+    if (#f == 1) {
+        return "(" + prettyPrintDisjunction(arb(f)) + ")";
+    }
+    k  := from(f);
+    s1 := prettyPrintDisjunction(k);
+    s2 := prettyPrintKnf(f);
+    return "(" + s1 + ") * " + s2;
+};
+
+// Wandelt die Formel d in einen String um.  Es wird angenommen, dass
+// d eine Disjunktion darstellt.
+prettyPrintDisjunction := procedure(d) {
+    if (d == {}) {
+        return "0";
+    }
+    if (#d == 1) {
+        return prettyPrint(arb(d));
+    }
+    l  := from(d);
+    s1 := prettyPrint(l);
+    s2 := prettyPrintDisjunction(d);
+    return s1 + " + " + s2;
+};
+
+// Wandelt die Formel f in einen String um.
+prettyPrint := procedure(f) {
+    switch {
+        case f == 1:  
+             return "1";
+        case f == 0:  
+             return "0";
+        case isString(f) :
+             return f;
+        case f[1] == "-": 
+             return "-" + prettyPrint( f[2] );
+        case f[2] == "*":  
+             return "(" + prettyPrint( f[1] ) + " * " + prettyPrint( f[3] ) + ")";
+        case f[2] == "+":  
+             return "(" + prettyPrint( f[1] ) + " + " + prettyPrint( f[3] ) + ")";
+        case f[2] == "->":
+             return "(" + prettyPrint( f[1] ) + " -> "  + prettyPrint( f[3] ) + ")";
+        case f[2] == "<->":  
+             return "(" + prettyPrint( f[1] ) + " <-> " + prettyPrint( f[3] ) + ")";
+        default: 
+             printErr("Error in prettyPrint: $f$");
+    }
+};
+
+////////////////////////////////////////////////////////////////////////
+//                                                                    //
+// Überführung in konjunktive Normal-Form                             //
+//                                                                    //
+////////////////////////////////////////////////////////////////////////
+
+// Diese Prozedur überführt die Formel f in konjunktive Normalform.
+normalize := procedure(f) {
+    n1 := elimGdw(f);
+    n2 := elimFolgt(n1);
+    n3 := nnf(n2);
+    n4 := knf(n3);
+    return simplify(n4);
+};
+
+// Eliminiert den Operator "gdw" aus der eingegebenen Formel f.
+elimGdw := procedure(f) {
+    switch {
+        case f == 1: 
+             return 1;
+        case f == 0: 
+             return 0;
+        case isString(f): 
+             return f;
+        case f[1] == "-":
+             return [ "-", elimGdw(f[2]) ];
+        case f[2] == "*":
+             return [ elimGdw(f[1]), "*", elimGdw(f[3]) ];
+        case f[2] == "+": 
+             return [ elimGdw(f[1]), "+", elimGdw(f[3]) ];
+        case f[2] == "->": 
+             return [ elimGdw(f[1]), "->", elimGdw(f[3]) ];
+        case f[2] == "<->": 
+             return elimGdw([[f[1], "->", f[3]], "*", [f[3], "->", f[1] ]]);
+        default:  
+             printErr("Fehler in elimGdw( $f$ )" );
+    }
+};
+
+// Eliminiert den Operator "->" aus der eingegebenen Formel f.
+// Es wird vorausgesetzt, dass der Operator "<->" bereits vorher 
+// eliminiert wurde.
+elimFolgt := procedure(f) {
+    switch {
+        case f == 1:  
+             return 1;
+        case f == 0:  
+             return 0;
+        case isString(f):  
+             return f;
+        case f[1] == "-":
+             return [ "-", elimFolgt(f[2]) ];
+        case f[2] == "*":  
+             return [ elimFolgt(f[1]), "*", elimFolgt(f[3]) ];
+        case f[2] == "+":  
+             return [ elimFolgt(f[1]), "+", elimFolgt(f[3]) ];
+        case f[2] == "->":  
+             return elimFolgt([["-", f[1]], "+", f[3]]);
+        default:  
+             printErr("Fehler in elimFolgt( $f$ )" );
+    }
+};
+
+// Berechnet die Negations-Normalform der Formel f.
+nnf := procedure(f) {
+    switch {
+        case f == 1: 
+             return 1;
+        case f == 0:
+             return 0;
+        case isString(f): 
+             return f;
+        case f[1] == "-":
+             return neg( f[2] );
+        case f[2] == "*":
+             return [ nnf(f[1]), "*", nnf(f[3]) ];
+        case f[2] == "+": 
+             return [ nnf(f[1]), "+", nnf(f[3]) ];
+        default:
+             printErr("Fehler in nnf( $f$ )" );
+    }
+};
+
+// Diese Funktion berechnet die Negations-Normalform von (-f) und schiebt dabei
+// das Negationszeichen soweit wie möglich nach innen.
+neg := procedure(f) {
+    switch {
+        case f == 1:
+             return 0;
+        case f == 0:
+             return 1;
+        case isString(f):
+             return [ "-", f ];
+        case f[1] == "-":
+             return nnf( f[2] );
+        case f[2] == "*":  
+             return [ neg(f[1]), "+", neg(f[3]) ];
+        case f[2] == "+":
+             return [ neg(f[1]), "*", neg(f[3]) ];
+        default:  
+             printErr("Fehler in neg( $f$ )" );
+    }
+};
+
+// Diese Funktion berechnet die KNF von f durch Ausmultiplizieren.
+// Die KNF wird als Menge von Mengen dargestellt.  Es wird vorausgesetzt,
+// dass die Funktion f bereits in Negations-Normalform ist.
+knf := procedure(f) {
+    switch {
+        case f == 1: 
+             return {};
+        case f == 0: 
+             return { {} };
+        case isString(f): 
+             return { { f } };
+        case f[1] == "-": 
+             return { { f } };
+        case f[2] == "*": 
+             return knf(f[1]) + knf(f[3]);
+        case f[2] == "+": 
+             return { k1 + k2 : k1 in knf(f[1]), k2 in knf(f[3]) };
+        default: 
+             printErr("Fehler in knf( $f$ )" );
+    }
+};
+
+// Die Prozedur simplify(k) eliminiert triviale Klauseln aus der KNF k.
+simplify := procedure(k) {
+    return { c in k | !isTrivial(c) };
+};
+
+// Die Prozedur isTrivial(c) testet ob die Klausel c trivial ist.
+isTrivial := procedure(c) {
+    return { p in c | isString(p) } * { p[2] : p in c | #p == 2 } != {};
+};
+
+run := procedure() {
+    while (true) {
+        print("Enter formula: ");
+        s := read();
+        if (s == 0) {
+            break;
+        }
+        test(s);
+    }
+};
+
+test := procedure(s) {
+    l := scanFormula(s);
+    f := parseFormula(l);
+    print(f);
+    n := normalize(f);
+    print(prettyPrintKnf(n));
+};
+
+test("-(p + q) <-> -p * -q");
+test("(p -> q) -> (-p -> q) -> q");
+test("(p -> q) * (q -> r) -> (p -> r)");
+test("(p -> q) -> (-p -> -q)");
+
+run();
+

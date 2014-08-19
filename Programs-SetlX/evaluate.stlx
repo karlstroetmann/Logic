@@ -1,0 +1,29 @@
+// Die Prozedur eval(f, I) wertet die aussagen-logische Formel f unter
+// der aussagen-logischen Interpretation I aus.
+evaluate := procedure(f, i) {
+    match (f) {
+        case true:         return true;
+        case false:        return false;
+        case ^variable(p): return i[p];
+        case !g:           return !evaluate(g, i);
+        case g && h:       return  evaluate(g, i) && evaluate(h, i);
+        case g || h:       return  evaluate(g, i) || evaluate(h, i);
+        case g => h:       return  evaluate(g, i) => evaluate(h, i);
+        case g <==> h:     return  evaluate(g, i) == evaluate(h, i);
+        default:           abort("syntax error in evaluate($f$, $i$)");
+    }
+};
+
+f := parse("(p => q) => (!p => q) => q");
+i := { [ "p", true ], [ "q", true ] };
+print( "evaluate($f$, $i$) = $evaluate(f, i)$" );
+i := { [ "p", true ], [ "q", false ] };
+print( "evaluate($f$, $i$) = $evaluate(f, i)$" );
+i := { [ "p", false ], [ "q", true ] };
+print( "evaluate($f$, $i$) = $evaluate(f, i)$" );
+i := { [ "p", false ], [ "q", false ] };
+print( "evaluate($f$, $i$) = $evaluate(f, i)$" );
+
+
+
+   

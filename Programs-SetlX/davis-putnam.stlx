@@ -1,0 +1,68 @@
+// clauses ist eine Menge von Klauseln und literals ist eine Menge
+// von Literalen.  Der Aufruf DavisPutnam(clauses, literals) versucht 
+// eine Lösung der Menge
+//                        clauses
+// zu berechnen.  Wenn dies gelingt, wird eine Menge von Unit-Klauseln 
+// zurück gegeben, die keine komplementären Literale enthält.  Aus dieser 
+// Menge kann dann unmittelbar eine Belegung berechnet werden, die clauses
+// löst.
+//       Wenn die Menge clauses unlösbar ist, wird { {} } zurück gegeben.
+// Das Argument literals dient der Buchhaltung bei den rekursiven Aufrufen.
+// Hier werden alle die Literale aufgesammelt, mit denen die Menge clauses
+// schon reduziert wurde.  Beim ersten Aufruf ist diese Menge leer.
+davisPutnam := procedure(clauses, literals) {
+    clauses := saturate(clauses);
+    if ({} in clauses) {
+        return { {} };
+    }
+    if (forall (c in clauses | #c == 1)) {
+        return clauses;
+    }
+    l := selectLiteral(clauses, literals);
+    notL := negateLiteral(l);    
+    r := davisPutnam(clauses + { {l} }, literals + { l, notL });
+    if (r != { {} }) {
+        return r;
+    }     
+    return davisPutnam(clauses + { {notL} }, literals + { l, notL });
+};
+// Gegeben ist eine Menge S von Klauseln.  Der Aufruf saturate(S) berechnet alle
+// Klauseln, die mit Unit Schnitten aus S ableitbar sind.  Zusätzlich werden alle
+// Klauseln, die von Unit-Klauseln subsumiert werden, aus der Menge S entfernt.
+saturate := procedure(s) {
+    units := { k : k in s | #k == 1 };
+    used  := {};
+    while (units != {}) {
+        unit  := arb(units);
+        used  += { unit };
+        l     := arb(unit);
+        s     := reduce(s, l);
+        units := { k : k in s | #k == 1 } - used;        
+    }
+    return s;
+};
+// Die Prozedur reduce(s,l) führt alle Unit-Schnitte und alle Unit-Subsumptionen,
+// die mit der Unit-Klausel {l} möglich sind, durch.
+reduce := procedure(s, l) {
+    notL := negateLiteral(l);
+    return   { k - { notL } : k in s | notL in k } 
+           + { k : k in s | !(notL in k) && !(l in k) } 
+           + { {l} };
+};
+
+// Wir wählen ein beliebiges Literal aus einer beliebigen Klausel,
+// so dass weder dieses Literal noch die Negation benutzt wurden.
+selectLiteral := procedure(s, forbidden) {
+    return arb(+/ s - forbidden);
+};
+
+// Diese Prozedur berechnet das Komplement des Literals l.
+negateLiteral := procedure(l) {
+    match (l) {
+        case !p : return p;
+        case  p : return !p;
+    }
+};
+
+m := parse("{ {r,p,s}, {r,s}, {q,p,s}, {!p,!q}, {!p,s,!r}, {p,!q,r}, {!r,!s,q}, {p,q,r,s}, {r,!s,q}, {!r,s,!q}, {s,!r} }");
+print(davisPutnam(m,{}));

@@ -1,0 +1,119 @@
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// Die folgenden Prozeduren sind 1-zu-1 aus dem Programm zur            //
+// Lösung des Wolf-Ziege-Kohl-Problems kopiert.                         //
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////
+
+// Check wether there is a path from x to y in R and compute it.
+findPath := procedure(x, y, r) {
+    p := { [x] };
+    while (true) {
+        oldP  := p;
+        p     := p + pathProduct(p, r);
+        found := { l : l in p | l[#l] == y };
+        if (found != {}) {
+            return arb(found);
+        }
+        if (p == oldP) {
+            return [];
+        }
+    }
+};
+
+// The procedure call product(p, q) computes the path product p * q.
+pathProduct := procedure(p, q) {
+    return { add(x,y) : x in p, y in q | x[#x] == y[1] && !cyclic(add(x,y)) };
+};
+
+// The procedure not_cyclic(p) checks whether the path p is cyclic.
+cyclic := procedure(p) {
+    return #{ x : x in p } < #p;
+};
+
+// The product call add(p,q) computes the sum of the lists p and q.
+// The last point of p has to be the first point of q.
+add := procedure(p, q) {
+    return p + q[2..];
+};
+
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// printPath ist die Funktion zur Ausgabe der Lösung.                   //
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////
+
+printPath := procedure(path, all) {
+    for (i in [1 .. #path]) {
+        left  := path[i];
+        right := all - left;
+        if (#left == 9 || #right == 9) {
+            print(left - { "Boot" }, 18 * " ", right - { "Boot" });
+            print("");
+        } else {
+            print(left - { "Boot" }, 20 * " ", right - { "Boot" });
+            print("");
+        }
+        if (i == #path) {
+            break;
+        }
+        if ("Boot" in left) {
+            m := left - path[i+1] - { "Boot" };
+            print("                                >>>> ", m, " >>>> " );
+        } else {
+            m := right - (all - path[i+1]) - { "Boot" };
+            print("                                <<<< ", m, " <<<< " );
+        }
+        print("");
+    }
+};
+
+// Ein Polizist, ein Verbrecher, Mutter, Vater, Anton, Bruno, Cindy, und Doris wollen einen 
+// Fluss überqueren.  Dabei sollen die folgenden Spielregeln eingehalten werden:
+// 1.  Wenn der Verbrecher auf einer Seite des Flusses ist und sich auf dieser Seite noch andere 
+//     Personen aufhalten, dann soll er von dem Polizisten bewacht werden.
+// 2.  Wenn Cindy oder Doris auf einer Seite des Flusses ist und sich der Vater ebenfalls
+//     auf dieser Seite befindet, dann muss auch die Mutter auf dieser Seite sein.
+//     (Die beiden Töchter Cindy und Doris dürfen also nicht mit ihrem Vater allein sein.)
+// 3.  Wenn Anton oder Bruno auf einer Seite des Flusses ist und sich die Mutter ebenfalls
+//     auf dieser Seite befindet, dann muss auch der Vater auf dieser Seite sein.
+//     (Die beiden Söhne Anton und Bruno dürfen also nicht mit ihrer Mutter allein sein.)
+// 4.  Im Boot können höchstens zwei Personen fahren.
+// 5.  Nur der Polizist, die Mutter und der Vater können das Boot steuern.
+
+all := { "Polizist", "Verbrecher", "Mutter", "Vater", "Anton", "Bruno", "Cindy", "Doris", "Boot" };
+
+verboten := procedure(s) {
+    boys  := { "Anton", "Bruno" };
+    girls := { "Cindy", "Doris" };
+           
+
+    return "???";
+};
+
+// p ist die Menge aller Punkte.
+p := { "???" };
+
+bootOK := procedure(b) {
+    canRow := { "Mutter", "Vater", "Polizist" };  
+
+    return "???";
+};
+
+r1 := { "???" };
+r2 := { "???" };
+
+// R ist die Menge aller möglichen Verbindungen zwischen zwei Punkten.
+r := r1 + r2;
+// Am Anfang sind alle links.
+start := all;
+// Am Ende sollen alle rechts sein, also ist links dann niemand mehr.
+goal := {};
+// Berechne einen Pfad zum Ziel.
+path := findPath(start, goal, r);
+// Gebe diesen Pfad Schritt für Schritt aus.
+printPath(path, all);
+print(#path);
+
+
+

@@ -1,0 +1,31 @@
+// Die Prozedur eval(f, I) wertet die aussagen-logische Formel f unter
+// der aussagen-logischen Interpretation I aus.
+evaluate := procedure(f, i) {
+    switch {
+        case     f  == 1:       return true;
+        case     f  == 0:       return false;
+        case     isString(f):   return i[f];
+        case     f[1] == "-":   return !evaluate(f[2], i);
+        case     f[2] == "*":   return  evaluate(f[1], i) &&  evaluate(f[3], i);
+        case     f[2] == "+":   return  evaluate(f[1], i) ||  evaluate(f[3], i);
+        case     f[2] == "->":  return !evaluate(f[1], i) ||  evaluate(f[3], i);
+        case     f[2] == "<->": return evaluate(f[1], i) == evaluate(f[3], i);
+        default: print("evaluate($f$): syntax error ");
+    }
+};
+
+f := [ [ "p", "->", "q" ], "->", [ [ [ "-", "p" ], "->", "q" ], "->", "q" ] ];
+f := [ [ "p", "->", "q" ], "->", [ [ "p", "->", [ "-", "q" ] ], "->", "q" ] ];
+
+i := { [ "p", true ], [ "q", true ] };
+print( "evaluate($f$, $i$) = $evaluate(f, i)$" );
+i := { [ "p", true ], [ "q", false ] };
+print( "evaluate($f$, $i$) = $evaluate(f, i)$" );
+i := { [ "p", false ], [ "q", true ] };
+print( "evaluate($f$, $i$) = $evaluate(f, i)$" );
+i := { [ "p", false ], [ "q", false ] };
+print( "evaluate($f$, $i$) = $evaluate(f, i)$" );
+
+
+
+   

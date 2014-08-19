@@ -1,0 +1,115 @@
+// Solutions to the n-queens problem are represented as lists of the form
+//    [x_1,x_2, ..., x_n]
+// where x_i in {1, ..., n} and x_i specifies, that in the ith column the 
+// queen is positioned in row x_i.  This representation automatically ensures
+// that there is exactly one queen per column.
+// 
+// For example, the list [1, 5, 8, 6, 3, 7, 2, 4] represents the following
+// solution to the 8-queens problem.  In the diagramm below, the rows are
+// numbered form top to button, so the topmost row is numbered 1, while the
+// row at the bottom is numbered 8.
+//
+//     -----------------------------------------------------------------
+//     |       |       |       |       |       |       |       |       |
+//     |   Q   |       |       |       |       |       |       |       |
+//     |       |       |       |       |       |       |       |       |
+//     -----------------------------------------------------------------
+//     |       |       |       |       |       |       |       |       |
+//     |       |       |       |       |       |       |   Q   |       |
+//     |       |       |       |       |       |       |       |       |
+//     -----------------------------------------------------------------
+//     |       |       |       |       |       |       |       |       |
+//     |       |       |       |       |   Q   |       |       |       |
+//     |       |       |       |       |       |       |       |       |
+//     -----------------------------------------------------------------
+//     |       |       |       |       |       |       |       |       |
+//     |       |       |       |       |       |       |       |   Q   |
+//     |       |       |       |       |       |       |       |       |
+//     -----------------------------------------------------------------
+//     |       |       |       |       |       |       |       |       |
+//     |       |   Q   |       |       |       |       |       |       |
+//     |       |       |       |       |       |       |       |       |
+//     -----------------------------------------------------------------
+//     |       |       |       |       |       |       |       |       |
+//     |       |       |       |   Q   |       |       |       |       |
+//     |       |       |       |       |       |       |       |       |
+//     -----------------------------------------------------------------
+//     |       |       |       |       |       |       |       |       |
+//     |       |       |       |       |       |   Q   |       |       |
+//     |       |       |       |       |       |       |       |       |
+//     -----------------------------------------------------------------
+//     |       |       |       |       |       |       |       |       |
+//     |       |       |   Q   |       |       |       |       |       |
+//     |       |       |       |       |       |       |       |       |
+//     -----------------------------------------------------------------
+//
+// The interpretation of the parameters is as follows:
+//      l: list of those queens, that have already been placed
+//      n: size of the board
+solve := procedure(l, n) { 
+    if (#l == n) {
+        return l;
+    }
+    for (x in {1 .. n } - {r : r in l}) {
+        check {
+            testNext(l, x);
+            // if this works, try to add more queens
+            return solve(l + [x], n);
+        } 
+    }
+    // if we haven't found a solution so far, there is none for this valiue of l
+    backtrack;
+};
+
+// Check whether it is safe to add a queen in row x in the column that
+// follows those columns that are already specified in the list l of
+// queens already placed.  It is assumed that the queens already 
+// placed cannot attack each other.
+testNext := procedure(l, x) {
+    m := #l;
+    if (exists (i in {1 .. m} | i-l[i] == m+1-x || i+l[i] == m+1+x)) {
+        backtrack;
+    }
+};
+
+// This procedure is used for pretty-printing a solution.
+// l is a list representing a solution to the n-queens-problem.
+printBoard := procedure(l) {
+    n := #l;             // number of queens
+    print( "        " + ((8*n+1) * "-") );
+    for (row in [1..n]) {
+        line := "        |";
+        for (col in [1..n]) {
+            line += "       |";
+        }
+        print(line);
+        line := "        |";
+        for (col in [1..n]) {
+            if (l[col] == row) {
+                line += "   Q   |";
+            } else {
+                line += "       |";
+            }
+        }
+        print(line);
+        line := "        |";
+        for (col in [1..n]) {
+            line += "       |";
+        }
+        print(line);
+        print( "        " + ((8*n+1) * "-") );
+    }
+};
+
+// Try to solve the n-queens puzzle and print the solution.
+solveAndPrint := procedure(n) {
+    try {
+        l := solve([], n);
+        print(l);
+        printBoard(l);
+    } catch (e) {
+        print("There is no solution for n = $n$.");
+    }
+};
+
+solveAndPrint(8);    

@@ -1,0 +1,179 @@
+// Drei Missionare und drei Kannibalen wollen zusammen einen Fluß 
+// überqueren. Das Boot hat nur Platz für zwei Passagiere.  Die Kannibalen
+// sind hungrig, wenn die Missionare an einem Ufer in der Unterzahl sind, 
+// haben sie ein Problem.  Die Aufgabe besteht darin, einen Fahrplan zu 
+// erstellen, so dass hinterher alle am anderen Ufer ankommen und die
+// Missionare nicht gefressen werden.
+
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// Die folgenden Prozeduren dienen nur dem Ausdrucken der Lösung und    //
+// zum Debuggen.
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////    
+
+// Dieses Prädikat druckt die Lösung aus.
+printPath := procedure(path) {
+    print("Lösung:\n");
+    for (i in [1 .. #path - 1]) {
+        [ m1, k1, b1 ] := path[i];
+        [ m2, k2, b2 ] := path[i+1];
+        printState(m1, k1, b1);
+        printBoat(m1, k1, b1, m2, k2, b2);
+    }
+    [ m, k, b ] := path[#path];
+    printState(m, k, b);
+};
+
+
+// Die Prozedur printState(m, k, b) druckt den Zustand, bei dem
+// m Missionare, k Kannibalen und b Boote am linken Ufer sind.
+printState := procedure(m, k, b) {
+     print( fillCharsRight(m * "M", 6) + 
+            fillCharsRight(k * "K", 6) + 
+            fillCharsRight(b * "B", 3) + "    |~~~~~|    " + 
+            fillCharsLeft((3 - m) * "M", 6) + 
+            fillCharsLeft((3 - k) * "K", 6) + 
+            fillCharsLeft((1 - b) * "B", 3) 
+          );
+};
+
+// Die Prozedur printBoat(m1, k1, b1, m2, k2, b2) druckt den Zustand des
+// Bootes, wenn der Zustand sich von [m1, k1, b1] zu [m2, k2, b2] ändert.
+printBoat := procedure(m1, k1, b1, m2, k2, b2) {
+    if (b1 == 1) {
+        if (m1 < m2) {
+            print("Fehler in printBoat: negative Anzahl von Missionaren im Boot!");
+        }
+        if (k1 < k2) {
+            print("Fehler in printBoat: negative Anzahl von Kannibalen im Boot!");
+        }
+        print( 19 * " " + "> " + fillCharsBoth( (m1 - m2) * "M" + " " + (k1 - k2) * "K", 3 ) + " >" );
+    } else {
+        if (m1 > m2) {
+            print("Fehler in printBoat: negative Anzahl von Missionaren im Boot!");
+        }
+        if (k1 > k2) {
+            print("Fehler in printBoat: negative Anzahl von Kannibalen im Boot!");
+        }
+        print( 19 * " " + "< " + fillCharsBoth( (m2 - m1) * "M" + " " + (k2 - k1) * "K", 3 ) + " <" );
+    }
+};
+
+// Die Prozedur fillCharsLeft(x, n) wandelt x in einen String der Länge n um.
+// Dabei wird der String von links mit Leerzeichen aufgefüllt.
+fillCharsLeft := procedure(x, n) {
+    s := x + "";
+    m := n - #s;
+    return m * " " + s;
+};
+
+// Die Prozedur fillCharsRight(x, n) wandelt x in einen String der Länge n um.
+// Dabei wird der String von rechts mit Leerzeichen aufgefüllt.
+fillCharsRight := procedure(x, n) {
+    s := x + "";
+    m := n - #s;
+    return s + m * " ";
+};
+
+// Die Prozedur fillCharsBoth(x, n) wandelt x in einen String der Länge n um.
+// Dabei wird der String von links und rechts mit Leerzeichen aufgefüllt.
+fillCharsBoth := procedure(x, n) {
+    s  := x + "";
+    ml := (n     - #s) \ 2;
+    mr := (n + 1 - #s) \ 2;
+    return ml * " " + s + mr * " ";
+};
+
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// Die unten aufgeführten Prozeduren sind 1-zu-1 aus dem Programm zur   //
+// Lösung des Wolf-Ziege-Kohl-Problems kopiert.                         //
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////
+
+// Check wether there is a path from x to y in R and compute it.
+findPath := procedure(x, y, r) {
+    p := { [x] };
+    while (true) {
+        oldP  := p;
+        p     := p + pathProduct(p, r);
+        found := { l : l in p | l[#l] == y };
+        if (found != {}) {
+            return arb(found);
+        }
+        if (p == oldP) {
+            return;  // no solution, return undefined value om
+        }
+    }
+};
+// The procedure call product(p, q) computes the path product p * q.
+pathProduct := procedure(p, q) {
+    return { add(x,y) : x in p, y in q | x[#x] == y[1] && !cyclic(add(x,y)) };
+};
+// The procedure cyclic(p) checks whether the path p is cyclic.
+cyclic := procedure(p) {
+    return #{ x : x in p } < #p;
+};
+// The product call add(p,q) computes the sum of the lists p and q.
+// The last point of p has to be the first point of q.
+add := procedure(p, q) {
+    return p + q[2..];
+};
+
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// Ab hier beginnt der Code zur Lösung des Problems.                    //
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////
+
+// Die einzelnen Punkte werden durch Tripel beschrieben.  Das Tripel
+// [ m, k, b ] gibt an, dass m Missionare, k Kannibalen und b Boote am
+// linken Ufer sind. Die Zahl der Missionare am rechten Ufer ist damit
+// automatisch 3 - m, die Zahl der Kannibalen am rechten Ufer ist 3 - k
+// und die Zahl der Boote am rechten Ufer ist 1 - b.
+
+// P beschreibt alle möglichen Zustände.
+p := "?";
+
+// Es gibt ein Problem, wenn es an einem Ufer weniger Missionare als 
+// Kannbialen sind, es sei denn, dass an dem Ufer überhaupt keine 
+// Missionare sind.
+problem := procedure(m, k) {
+    return "?";
+};
+
+// r1 beschreibt Zustandsübergänge, bei denen das Boot vom linken Ufer
+// zum rechten Ufer fährt. PM ist die Anzahl der Missionare, die im Boot
+// übersetzen und PK ist die Anzahl der Kannibalen im Boot.
+r1 := "?";
+             // Das Boot darf nicht leer sein und faßt maximal zwei Passagiere.
+             // Es können nicht mehr Missionare übersetzen, als Missionare am linken Ufer sind.
+             // Es können nicht mehr Kannibalen übersetzen, als Kannibalen am linken Ufer sind.
+             // Der neue Zustand muss links erlaubt sein.
+             // Der neue Zustand muss rechts erlaubt sein.
+
+// r2 beschreibt Zustandsübergänge, bei denen das Boot vom rechten Ufer
+// zum linken Ufer fährt. pm ist die Anzahl der Missionare, die im Boot
+// übersetzen und pk ist die Anzahl der Kannibalen im Boot.
+r2 := "?";
+
+// r ist die Menge aller Verbindungen zwischen Punkten.
+r := r1 + r2;
+
+// Am Anfang sind alle links.
+start := "?";
+// Am Ende sollen alle rechts sein, links ist dann niemand mehr.
+goal  := "?";
+// Berechne alle möglichen Pfade.
+path  := findPath(start, goal, r);
+// und geben diesen Schritt für Schritt aus.
+if (path != om) {
+    print(#path);
+    printPath(path);
+} else {
+    print("No solution found!");
+}
+
+
+

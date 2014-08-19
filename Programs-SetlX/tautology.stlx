@@ -1,0 +1,76 @@
+// Test, ob Formel f eine Tautologie ist.  Falls f keine Tautologie
+// ist, dann wird eine Belegung I zurück gegeben, so dass evaluate(f, I)
+// den Wert false ergibt.
+tautology := procedure(f) {
+    p := collectVars(f);
+    // a is the set of all propositional valuations.
+    a := { { [x, x in m] : x in p } : m in 2 ** p };
+    if (forall (i in a | evaluate(f, i))) {
+        return {};
+    } else {
+        return arb({ i : i in a | !evaluate(f, i) });
+    }
+};
+
+// This function collects all propositional variables occurring in 
+// the propositional formula f.
+collectVars := procedure(f) {
+    match (f) {
+        case true:         return {};
+        case false:        return {};
+        case ^variable(p): return { p };
+        case !g:           return collectVars(g);
+        case g && h:       return collectVars(g) + collectVars(h);
+        case g || h:       return collectVars(g) + collectVars(h);
+        case g => h:       return collectVars(g) + collectVars(h);
+        case g <==> h:     return collectVars(g) + collectVars(h);
+        default:           abort("syntax error in collectVars($f$)");
+    }
+};
+
+evaluate := procedure(f, i) {
+    match (f) {
+        case true:         return true;
+        case false:        return false;
+        case ^variable(p): return i[p];
+        case !g:           return !evaluate(g, i);
+        case g && h:       return  evaluate(g, i) && evaluate(h, i);
+        case g || h:       return  evaluate(g, i) || evaluate(h, i);
+        case g => h:       return  evaluate(g, i) => evaluate(h, i);
+        case g <==> h:     return  evaluate(g, i) == evaluate(h, i);
+        default:           abort("syntax error in evaluate($f$, $i$)");
+    }
+};
+
+run := procedure() {
+    while (true) {
+        print("Enter formula: ");
+        s := read();
+        if (s == "false") {
+            break;
+        }
+        test(s);
+    }
+};
+
+test := procedure(s) {
+    f := parse(s);
+    counterExample := tautology(f);
+    if (counterExample == {}) {
+        print("The formula $f$ is a tautology.");
+    } else {
+        print("The formula $f$ isn't a tautology.");
+        print("Counter example: ", counterExample );
+    }
+};
+
+test("!(p || q) <==> !p && !q");
+test("(p => q) => (!p => q) => q");
+
+run();
+
+    
+
+
+
+

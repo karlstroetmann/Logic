@@ -1,0 +1,34 @@
+// p is a set of propostional variables.  This functions computes the set
+// of all propositional valuations that can be build with the variables
+// of p.
+allValuations := procedure(p) {
+    if (p == {}) {
+        return { {} };
+    }
+    x := from(p);
+    a := allValuations(p);
+    return { { [x, true] } + i : i in a } + { { [x, false] } + i : i in a };
+};
+
+test := procedure(p) {
+    print("testing $p$");
+    for (i in allValuations(p)) { 
+        print(i); 
+    }
+};
+
+run := procedure(n) {
+    for (k in [1 .. n]) {
+        print("n = $k$:");
+        p := { "x" + i : i in [1 .. k] };
+        test(p);
+    }
+};
+
+run(5);
+
+    
+
+
+
+

@@ -1,0 +1,170 @@
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// Ausdrucken der Lösung                                                //
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////    
+
+printPath := procedure(path) {
+    for (i in [1 .. #path]) {
+        t1 := lastChars(path[i][1], 20);
+        t2 := lastChars(path[i][2], 20);
+        t3 := lastChars(path[i][3], 20);
+        print(t1, t2, t3);
+    }
+};
+
+// Die Prozedur lastChars(x, n) wandelt x in einen String der Länge n um.
+// Dabei wird der String von links mit Leerzeichen aufgefüllt.
+lastChars := procedure(x, n) {
+    s := str(x);
+    m := n - #s;
+    return m * " " + s;
+};
+
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// Die unten aufgeführten Prozeduren sind 1-zu-1 aus dem Programm zur   //
+// Lösung des Wolf-Ziege-Kohl-Problems kopiert.                         //
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////
+
+// ps ist eine Menge von Pfaden, r ist eine binäre Relation.  Die Prozedur
+// verlängert alle Pfade aus pr, die mit einem Punkt y enden, für den es
+// ein Paar [y,z] in R gibt. 
+oneStep := procedure(ps, r) {
+       return { p + [ z ] : p in ps, [y, z] in r | p[#p] == y };
+};
+
+// Entfernt alle Pfade aus PS die zyklisch sind.
+eliminateCycles := procedure(ps) {
+   	return { p in ps | !cyclic(p) };
+};
+
+// Liefert true, wenn der Pfad p einen Zyklus enthält.
+cyclic := procedure(p) {
+    return #{ x : x in p } < #p;
+};
+
+// Berechnet eine Pfad von x nach y. Dabei beschreibt die Relation R die 
+// Verbindungen zwischen den Punkten.  Falls kein Pfad gefunden werden
+// kann wird Omega zurück gegeben.
+reachable := procedure(x, y, r) {
+    ps := { [x] };
+    while (true) {
+        oldPS := ps;
+        ps    := eliminateCycles(ps + oneStep(ps, r));
+        // p ist die Menge aller Pfade, die am Zielpunkt y enden.
+        p := { path in ps | path[#path] == y };
+        if (p != {}) {
+            // Wenn P nicht leer ist, geben wir ein beliebiges Element aus P
+            // zurück.
+            return arb(p);
+        }
+        if (oldPS == ps) {
+           // Wenn das Programm bis hier kommt, sind alle möglichen Pfade 
+           // berechnet worden.  Aufgrund des obigen Tests p /= {} wissen
+           // wir, dass keiner dieser Pfade zum Ziel führt.  Daher können
+           // wir jetzt Omega zurück geben.  Omega wird implizit dann zurück
+           // gegeben, wenn hinter dem "return" kein Wert steht.
+           return;
+        }
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////
+//                                                                          //
+// Ab hier beginnt der Code zur Lösung des Problems "Die Türme von Hanoi".  //
+//                                                                          //
+//////////////////////////////////////////////////////////////////////////////
+
+// Berechne die Relation, die aus allen Paaren besteht, wo eine Scheibe
+// vom Turm i genommen wird und auf den Turm j gelegt wird.
+relation := procedure(p, i, j) {
+    
+};
+
+// Die Prozedur move nimmt die oberste Scheibe vom i-ten Turm und legt
+// sie auf den j-ten Turm.
+move := procedure(triple, i, j) {
+
+
+
+
+
+
+
+};
+
+// Die Prozedur partition(s1, s2, s3, all) liefert genau dann "true",
+// wenn die Menge {s1, s2, s3} eine Partition der Menge all ist.
+partition := procedure(s1, s2, s3, all) {
+
+};
+
+// Die Prozedur movePossible(source, target) nimmt als Argumente 
+// zwei Mengen, die jeweils den Zustand eines Turms repräsentieren.  Die 
+// Funktion liefert das Ergebnis true, wenn die oberste Scheibe von dem 
+// Turm source auf den Turm target gelegt werden darf.
+// Die oberste Scheibe des durch source repräsentierten Turms darf dann auf 
+// den durch target repräsentierten Turm gelegt werden, wenn Sie kleiner ist 
+// als die oberste Scheibe, die auf dem Turm target liegt, oder wenn
+// der Turm target leer ist.
+// Es ist zu beachten, dass das Minimum der leeren Menge den Wert "Unendlich" hat,
+// der in SetlX als oo dargestellt wid.
+movePossible := procedure(source, target) {
+
+};
+
+// p ist die Menge aller Punkte.  Jeder Punkt repräsentiert einen Zustand
+// der Türme von Hanoi.  Punkte sind deshalb 3-Tupel der Form 
+//                                                            
+//              [ s1, s2, s3 ]                                
+//                                                            
+// Dabei sind s1, s2 und s3 Mengen von Scheiben. Zum Beispiel repräsentiert 
+// die Menge { 1, 2, 3 } einen Turm, der folgendes Aussehen hat:
+//                                                              
+//                     |                                        
+//                    111                                       
+//                   22222                                      
+//                  3333333                                     
+//              ===============                                 
+//                                                              
+// Hier liegt oben die Scheibe 1, darunter die Scheibe 2 und ganz unten die 
+// Scheibe 3. Die Menge s1 repräsentiert den ersten Turm, s2 repräsentiert 
+// den Turm in der Mitte und s3 repräsentiert den letzten Turm.  Das 3-Tupel
+//  [ {1,2,3}, {}, {} ] repräsentiert also die Ausgangs-Situation bei der 
+// drei Scheiben auf dem ersten Turm liegen und die anderen beiden Türme 
+// leer sind:                                                     
+//                                                                
+//           |                    |                   |           
+//          111                   |                   |           
+//         22222                  |                   |           
+//        3333333                 |                   |           
+// ===============================================================
+//                                                                
+
+all := { 1 .. 3 };
+p   := "Your code here.";
+// print("p = ", p);
+
+r12 := "?";
+r21 := "?";
+r13 := "?";
+r31 := "?";
+r23 := "?";
+r32 := "?";
+    
+r := r12 + r21 + r13 + r31 + r23 + r32;
+
+// r := +/ { relation(p, i, j) : i in {1,2,3}, j in {1,2,3} | i != j };
+
+// Am Anfang sind alle links.
+start := "?";
+// Am Ende sollen alle Scheiben in der Mitte sein.
+goal  := "?";
+// Berechne den Pfad zum Ziel.
+path  := reachable(start, goal, r);
+// Gebe diesen Pfad Schritt für Schritt aus.
+printPath(path);
+
+
