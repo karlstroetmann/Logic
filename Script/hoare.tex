@@ -1,0 +1,862 @@
+\chapter{Hoare Logic}
+In this chapter we introduce \href{http://en.wikipedia.org/wiki/Hoare_logic}{\emph{Hoare logic}}.
+This is a formal system that is used to prove the correctness of imperative computer programs.  
+Hoare logic has been introduced 1969 by  
+\href{http://en.wikipedia.org/wiki/C._A._R._Hoare}{Sir Charles Antony Richard Hoare}, 
+who is the inventor of the \href{http://en.wikipedia.org/wiki/Quicksort}{quicksort} algorithm.
+ 
+
+\section{Preconditions and Postconditions}
+Hoare logic is based on preconditions and postconditions.  If \texttt{P}
+ is a program fragment and if $F$ and $G$ are logical formul\ae, then we call
+$F$ a precondition and $G$ a postcondition for the program fragment \texttt{P}
+if the following holds:  If \texttt{P} is executed in a state $s$ such that the formula $F$ holds in
+$s$, then the execution of \texttt{P} will change the state $s$ into a new state $s'$ such that 
+$G$ holds in $s'$.  This is written as
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \hoare{F}{P}{G} $.
+\\[0.2cm]
+We will read this notation as ``\emph{executing $P$ changes $F$ into $G$}''.
+The formula
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \hoare{F}{P}{G} $
+\\[0.2cm]
+is called a \emph{Hoare triple}.
+\vspace*{0.3cm}
+
+
+\examples
+\begin{enumerate}
+\item The assignment ``\texttt{x := 1;}'' satisfies the specification
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $ \hoare{\mathtt{true}}{x := 1;}{x = 1}. $
+      \\[0.2cm]
+      Here, the precondition is the trivial condition ``\texttt{true}'', since
+      the postcondition ``$x = 1$'' will always be satisfied after this assignment.
+\item The assignment  ``\texttt{x = x + 1;}'' satisfies the specification
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $ \hoare{x=1}{x := x + 1;}{x=2}. $
+      \\[0.2cm]
+      If the precondition is ``$x = 1$'', then it is obvious that the postcondition has to be  
+      ``$x = 2$''.
+\item Let us consider the assignment ``\texttt{x = x + 1;}'' again.  However, this time
+      the precondition is given as ``$\textsl{prime}(x)$'', which is only true if $x$ is a
+      prime number.  This time, the Hoare triple is given as
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $ \hoare{\textsl{prime}(x)}{x := x + 1;}{\textsl{prime}(x-1)}$.
+      \\[0.2cm]
+      This might look strange at first.  Many students think that this Hoare triple should rather
+      be written as
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $ \hoare{\textsl{prime}(x)}{x := x + 1;}{\textsl{prime}(x+1)} $.
+      \\[0.2cm]
+      However, this can easily be refuted by taking $x$ to have the value $2$.  Then, the
+      precondition $\textsl{prime}(x)$ is satisfied since $2$ is a prime number.  After the
+      assignment, $x$ has the value $3$ and
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $x - 1 = 3 - 1 = 2$
+      \\[0.2cm]
+      still is a prime number.  However, we also have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $x + 1 = 3 + 1 = 4$ 
+      \\[0.2cm]
+      and as $4 = 2 \cdot 2$ we see that $x + 1$ is not a prime number!
+\end{enumerate}
+Let us proceed to show how the different parts of a program can be specified using Hoare triples.
+We start with the analysis of assignments.
+ 
+\subsection{Assignments}
+Let us generalize the previous example.  Let us therefore assume that we have an assignment of the
+form 
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \texttt{x := h(x);} $
+\\[0.2cm]
+and we want to investigate how the postcondition $G$ of this assignment is related to the
+precondition $F$.  To simplify matters, let us assume that the function
+$h$ is invertible, i.~e.~we assume that there is a function $h^{-1}$ such that we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$ h^{-1}\bigl(h(x)\bigr) = x \quad \mathtt{and} \quad h\bigl(h^{-1}(x)\bigr) = x $
+\\[0.2cm]
+for all $x$.  Then, the function $h^{-1}$ is the inverse of the function $h$.
+In order to understand the problem of computing the postcondition for the assignment statement given
+above, let us first consider an example.  The assignment
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \texttt{x := x + 1;} $
+\\[0.2cm]
+can be written as
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \texttt{x := h(x);} $
+\\[0.2cm]
+where the function $h$ is given as
+\\[0.2cm]
+\hspace*{1.3cm}
+$ h(x) = x + 1 $
+\\[0.2cm]
+and the inverse function $h^{-1}$ is 
+\\[0.2cm]
+\hspace*{1.3cm}
+$h^{-1}(x) = x - 1$. 
+\\[0.2cm]
+Now we are able to compute the postcondition of the assignment ``\texttt{x := h(x);}'' from the
+precondition.  We have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\hoare{F}{x := h(x);}{F\sigma}$ \quad where \quad 
+$\sigma = \bigl[x \mapsto h^{-1}(x)\bigr]$.
+\\[0.2cm]
+Here, $F\sigma$ denotes the application of the substitution $\sigma$ to the formula $F$.  The
+expression  $F\sigma$ is computed from the expression $F$ by replacing every occurrence of the variable
+$x$ by the term $h^{-1}(x)$.  Therefore, the substitution $\sigma$ undoes the effect of the
+assignment and restores the variables in $F$ to the state before the assignment.
+
+In order to understand why this is the correct way to compute the 
+postcondition, we consider the assignment
+``\texttt{x := x + 1}'' again and choose the formula $x = 7$ as precondition.  
+Since $h^{-1}(x) = x - 1$, the substitution $\sigma$ is given as
+$\sigma = [ x \mapsto x - 1 ]$.  Therefore, $F\sigma$ has the form
+\\[0.2cm]
+\hspace*{1.3cm}
+$ (x = 7)[x \mapsto x - 1] \;\equiv\; (x - 1 = 7). $
+\\[0.2cm]
+I have used the symbol ``$\equiv$'' here in order to express that these formul\ae\ are
+syntactically identical.  
+Therefore, we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \hoare{x = 7}{x := x + 1;}{x - 1 = 7}. $
+\\[0.2cm]
+Since the formula $x - 1 = 7$ is equivalent to the formula $x = 8$ the Hoare triple above can be
+rewritten as  
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \hoare{x = 7}{x := x + 1;}{x = 8} $
+\\[0.2cm]
+and this is obviously correct:  If the value of $x$ is $7$ before the assignment
+\\[0.2cm]
+\hspace*{1.3cm}
+``\texttt{x := x + 1;}'' 
+\\[0.2cm]
+is executed, then after the assignment is executed, $x$ will have the value $8$.
+
+Let us try to understand why
+\\[0.2cm]
+\hspace*{1.3cm}
+$\hoare{F}{x := h(x);}{F\sigma}$ \quad where \quad 
+$\sigma = \bigl[x \mapsto h^{-1}(x)\bigr] $
+\\[0.2cm]
+is, indeed, correct:   Before the assignment ``x \texttt{:=} h(x);'' is executed,
+the variable $x$ has some fixed value $x_0$.  The precondition $F$ is valid for $x_0$.  Therefore,
+the formula $F[x \mapsto x_0]$ is valid before the assignment is executed.  However,
+the variable $x$ does not occur in the formula $F[x \mapsto x_0]$ because it has been replaced by
+the fixed value $x_0$.  Therefore, the formula
+\\[0.2cm]
+\hspace*{1.3cm}
+$ F[x \mapsto x_0] $
+\\[0.2cm]
+remains valid after the assignment  ``\texttt{x = h(x);}'' is executed.  After this assignment,
+the variable $x$ is set to $h(x_0)$. Therefore, we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$x = h(x_0)$.
+\\[0.2cm]  
+Let us solve this equation for $x_0$.  We find
+\\[0.2cm]
+\hspace*{1.3cm}
+$h^{-1}(x) = x_0$.
+\\[0.2cm]
+Therefore, after the assignment the formula 
+\\[0.2cm]
+\hspace*{1.3cm}
+$ F[x \mapsto x_0] \equiv  F[x \mapsto h^{-1}(x)]$ 
+\\[0.2cm]
+is valid and  this is the formula that is written as $F\sigma$ above.
+
+We conclude this discussion with another example.  The unary predicate \textsl{prime} checks whether
+its argument is a prime number.  Therefore, $\textsl{prime}(x)$ is true if $x$ is a prime number.
+Then we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\hoare{\textsl{prime}(x)}{x := x + 1;}{\textsl{prime}(x-1)}$.
+\\[0.2cm]
+The correctness of this Hoare triple should be obvious: If $x$ is a prime and if $x$ is then
+incremented by $1$, then afterwards $x-1$ is prime.
+
+\paragraph{Different Forms of Assignments}
+Not all assignments can be written in the form ``\texttt{x := h(x);}'' where the function $h$ is invertible.
+Often, a constant $c$ is assigned to some variable $x$.  If $x$ does not occur in the precondition
+$F$, then we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \hoare{F}{x := c;}{F \wedge x = c}. $
+\\[0.2cm]
+The formula $F$ can be used to restrict the values of other variables occurring in the program under
+consideration.
+
+
+\paragraph{General Form of the Assignment Rule}
+In the literature the rule for specifying an assignment is given as
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \hoare{F[x \mapsto t]}{x := t;}{F}. $
+\\[0.2cm]
+Here, $t$ is an arbitrary term that can contain the variable $x$.  This rule can be read as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+\begin{minipage}[c]{0.8\linewidth}
+``\emph{If the formula $F(t)$ is valid in some state and $t$ is assigned to $x$,
+        then after this assignment we have $F(x)$.}'' 
+\end{minipage}
+\\[0.2cm]
+This rule is obviously correct.  However, it is not very useful because in order to apply this rule 
+we first have to rewrite the precondition as $F(t)$.  If $t$ is some complex term, this is often
+very difficult to do.
+
+
+\subsection{The Weakening Rule}
+If a program fragment $P$ satisfies the specification
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \hoare{F}{P}{G} $
+\\[0.2cm]
+and if, furthermore, the formula $G$ implies the validity of the formula $H$, that is if
+\\[0.2cm]
+\hspace*{1.3cm}
+$G \rightarrow H$
+\\[0.2cm]
+holds, then the program fragment $P$ satisfies
+\\[0.2cm]
+\hspace*{1.3cm}
+$\hoare{F}{P}{H}$.
+\\[0.2cm]
+The reasoning is as follows:  If after executing $P$ we know that $G$
+is valid, then, since $G$ implies $H$,  the formula $H$ has to be
+valid, too.
+Therefore, the  following \emph{verification rule}, which is known as the \emph{weakening rule}, is valid:
+\\[0.4cm]
+$\bruch{\quad \hoare{F}{P}{G}, \qquad G \rightarrow H \quad}{\hoare{F}{P}{H}}$ 
+\\[0.2cm]
+The formul\ae\ written over the fraction line are called the \emph{premisses} and the formula under the
+fraction line is called the \emph{conclusion}.   The conclusion and the first premiss  are 
+Hoare triples, the second premiss is a formula of first order logic.
+The interpretation of this rule is that the conclusion is true if the premisses are true.
+
+
+\subsection{Compound Statements}
+If the program fragments $\texttt{P}$ and $\texttt{Q}$ have the specifications
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \hoare{F_1}{P}{G_1}$  \quad and \quad $\hoare{F_2}{Q}{G_2}$
+\\[0.2cm]
+and if, furthermore, the postcondition $G_1$ implies the precondition $F_2$,
+then the composition $\texttt{P;Q}$ of $\texttt{P}$ and $\texttt{Q}$ satisfies the specification
+\\[0.2cm]
+\hspace*{1.3cm}
+$\hoare{F_1}{P;Q}{G_2}$.
+\\[0.2cm]
+The reasoning is as follows:  If, initially, $F_1$ is satisfied and we execute $P$ then we have
+$G_1$ afterwards.  Therefore we also have $F_2$ and if we now execute $Q$ then afterwards we will have
+$G_2$.  This chain of thoughts is combined in the following verification rule:
+\\[0.4cm]
+\hspace*{1.3cm}
+$\bruch{\quad\hoare{F_1}{P}{G_1}, \qquad G_1 \rightarrow F_2, \qquad \hoare{F_2}{Q}{G_2}\quad}{\hoare{F_1}{P;Q}{G_2}} 
+$
+\\[0.2cm] 
+If the formul\ae\ $G_1$ and $F_2$ are identical, then this rule can be simplified as follows:
+\\[0.4cm]
+\hspace*{1.3cm}
+$\bruch{\quad\hoare{F_1}{P}{G_1}, \qquad \hoare{G_1}{Q}{G_2}\quad}{ \hoare{F_1}{P;Q}{G_2}}$
+
+
+\example
+Let us analyse the program fragment shown in Figure \ref{fig:swap}.  
+We start our analysis by using the precondition
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \texttt{x} = a \wedge \texttt{y} = b. $
+\\[0.2cm]
+Here, $a$ and $b$ are two variables that we use to store the initial values of \texttt{x} and
+\texttt{y}.  The first assignment yields the Hoare triple
+\\[0.2cm]
+\hspace*{1.3cm}
+$\hoare{\texttt{x} = a \wedge \texttt{y} = b}{x := x - y;}{(\texttt{x} = a \wedge \texttt{y} =  b)\sigma}$
+\\[0.2cm] 
+where $\sigma = [x \mapsto x + y]$. The form of $\sigma$ follows from the fact that the function $x \mapsto x + y$ is the inverse of the
+function $x \mapsto x - y$.  If we apply $\sigma$ to the formula $x = a \wedge y = b$
+we get
+\begin{equation}
+  \label{eq:swap1}
+ \hoare{\texttt{x} = a \wedge \texttt{y} = b}{x := x - y;}{\texttt{x + y} = a \wedge \texttt{y} = b}.   
+\end{equation}
+The second assignment yields the Hoare triple
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \hoare{\texttt{x + y} = a \wedge \texttt{y} = b}{y := y + x;}{(\texttt{x + y} = a \wedge  \texttt{y} = b)\sigma}$
+\\[0.2cm] 
+where $\sigma = [y \mapsto y - x]$.  The reason is that the function $y \mapsto y - x$ is the inverse of the function $y \mapsto y + x$.
+This time, we get
+\[ \hoare{\texttt{x + y} = a \wedge \texttt{y} = b}{y := y + x;}{
+          \texttt{x + y - x} = a \wedge \texttt{y - x} = b}.
+\]
+Simplifying the postcondition yields
+\begin{equation}
+  \label{eq:swap2}
+ \hoare{\texttt{x + y} = a \wedge \texttt{y} = b}{y := y + x;}{ \texttt{y} = a \wedge \texttt{y - x} = b}.
+\end{equation}
+Let us consider the last assignment.  We have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\hoare{\texttt{y} = a \wedge \texttt{y - x} = b}{x := y - x;}{ (\texttt{y} = a \wedge \texttt{y - x} = b)\sigma}$ 
+\\[0.2cm] 
+where $\sigma = [x \mapsto y - x]$,
+since the function $x \mapsto y - x$ is the inverse of the function $x \mapsto y - x$.
+This yields
+\[ \hoare{\texttt{y} = a \wedge \texttt{y - x} = b}{x := y - x;}{
+          \texttt{y} = a \wedge \texttt{y - (y - x)} = b} 
+\]
+Simplifying the postcondition gives
+\begin{equation}
+  \label{eq:swap3}
+  \hoare{\texttt{y} = a \wedge \texttt{y - x} = b}{x := y - x;}{ \texttt{y} = a \wedge \texttt{x} = b}.   
+\end{equation}
+Combining the Hoare triples (\ref{eq:swap1}), (\ref{eq:swap2}) and (\ref{eq:swap3})
+we get
+\begin{equation}
+  \label{eq:swap}
+  \hoare{\texttt{x} = a \wedge \texttt{y} = b}{x:=x-y; y:=y+x; x:=y-x;}{ 
+         \texttt{y} = a \wedge \texttt{x} = b}.   
+\end{equation}
+The Hoare triple (\ref{eq:swap}) shows that the program fragment shown in Figure
+\ref{fig:swap} swaps the values of the variables $x$ and $y$: If the value of 
+$x$ is $a$ and $y$ has the value $b$ before the program is executed, then afterwards
+$y$ has the value $a$ and $x$ has the value $b$.  The trick shown in Figure
+\ref{fig:swap} 
+can be used to swap variables without using an auxiliary variable.  This is useful because when this
+code is compiled into machine language, the resulting code will only use two registers.
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    x := x - y;
+    y := y + x;
+    x := y - x;
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{A tricky way to swap variables.}
+\label{fig:swap}
+\end{figure}
+
+
+
+\subsection{Conditional Statements}
+In order to compute the effect of a conditional of the form
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{if ($B$) \{ P \} else \{  Q \}}
+\\[0.2cm]
+let us assume that before the conditional statement is executed, the
+precondition $F$ is satisfied.   We have to analyse the effect of the program fragments $P$ and $Q$.
+The program fragment $P$ is only executed when $B$ is true.  Therefore, the precondition for $P$ is 
+$F \wedge B$.  On the other hand, the precondition for the program fragment $Q$ is $F \wedge \neg B$,
+since $Q$ is only executed if $B$ is false.
+Hence, we have the following verification rule:
+\begin{equation}
+  \label{eq:hoareIf}
+  \bruch{\quad\hoare{F \wedge B}{P}{G}, \qquad \hoare{F \wedge \neg B}{Q}{G}\quad}{
+              \hoare{F}{if ($B$) P else Q}{G}}  
+\end{equation}
+In this form, the rule is not always applicable.  The reason is that the analysis of the program
+fragments \texttt{P} and \texttt{Q} yields Hoare triple of the form
+\begin{equation}
+  \label{eq:hoareI}
+ \hoare{F \wedge B}{P}{G_1} \qquad \mathrm{and} \qquad \hoare{F \wedge \neg B}{Q}{G_2},   
+\end{equation}
+and in general $G_1$ and $G_2$ will be different from each other.  In order to be able to apply the
+rule for conditionals we have to find a formula $G$ that is a consequence of $G_1$ and also a
+consequence of $G_2$, i.~e.~we want to have
+\[ G_1 \rightarrow G \qquad \mathrm{and} \qquad G_2 \rightarrow G. \]
+If we find $G$, then the weakening rule  can be applied to conclude the validity of
+\[ \hoare{F \wedge B}{P}{G} \qquad \mathrm{and} \qquad \hoare{F \wedge \neg B}{Q}{G},    \] 
+and this gives us the premisses that are needed for the rule
+(\ref{eq:hoareIf}).
+
+\example
+Let us analyze the following program fragment:
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{if (x < y) \{ z := x; \} else \{ z := y; \}}
+\\[0.2cm]
+We start with the precondition
+\\[0.2cm]
+\hspace*{1.3cm}
+$F = \bigl(\texttt{x} = a \wedge \texttt{y} = b\bigr)$
+\\[0.2cm]
+and want to show that the execution of the conditional establishes the postcondition
+\\[0.2cm]
+\hspace*{1.3cm}
+$G = \bigl(z = \textsl{min}(a, b)\bigr)$.
+\\[0.2cm]
+The first assignment ``\texttt{z := x;}'' gives the Hoare triple 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\hoare{\texttt{x} = a \wedge \texttt{y} = b \wedge \texttt{x} < \texttt{y}}{z := x}{
+          \texttt{x} = a \wedge \texttt{y} = b \wedge \texttt{x} < \texttt{y} \wedge \texttt{z} = \texttt{x}}
+$.
+\\[0.2cm]
+In the same way, the second assignment ``\texttt{z := y}'' yields
+\\[0.2cm]
+\hspace*{1.3cm}
+$\hoare{\texttt{x} = a \wedge \texttt{y} = b \wedge \texttt{x} \geq \texttt{y}}{z := y}{
+          \texttt{x} = a \wedge \texttt{y} = b \wedge \texttt{x} \geq \texttt{y} \wedge
+          \texttt{z} = \texttt{y}}$.
+\\[0.2cm]
+Since we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{x} = a \wedge \texttt{y} = b \wedge \texttt{x} < \texttt{y} \wedge \texttt{z} = \texttt{x}
+   \rightarrow \texttt{z} = \min(a,b)$
+\\[0.2cm]
+and also
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \texttt{x} = a \wedge \texttt{y} = b \wedge \texttt{x} \geq \texttt{y} \wedge \texttt{z} = \texttt{y} 
+   \rightarrow \texttt{z} = \min(a,b)
+$.
+\\[0.2cm]
+Using the weakening rule we conclude that 
+\begin{eqnarray*}
+\hoare{\texttt{x} = a \wedge \texttt{y} = b \wedge \texttt{x} < \texttt{y}}{z := x;}{
+       \texttt{z} = \min(a,b)} & & \mathrm{and} \\
+\hoare{\texttt{x} = a \wedge \texttt{y} = b \wedge \texttt{x} \geq \texttt{y}}{z := y;}{
+          \texttt{z} = \min(a,b)}
+\end{eqnarray*}
+holds.  Now we can apply the rule for the conditional and conclude
+that 
+\\[0.2cm]
+$ \hoare{\texttt{x} = a \wedge \texttt{y} = b}{if (x < y) \{ z := x; \} else \{ z := y; \}}{ \texttt{z} = \min(a,b)} $
+\\[0.2cm]
+holds.  Thus we have shown that the program fragment above computes
+the minimum of the numbers $a$ and $b$.
+
+\subsection{Loops}
+Finally, let us analyze the effect of a loop of the form
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{while ($B$) \{ P \}} 
+\\[0.2cm]
+The important point here is that the postcondition of the $n$-th
+execution of the body of the loop $P$ is the precondition of the $(n\!+\!1)$-th
+execution of $P$.  Basically this means that the precondition and the
+postcondition of $P$ have to be more or less the same.
+Hence, this condition is called the \emph{loop invariant}.  Therefore,
+the details of the verification rule for \texttt{while} loops are as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bruch{\hoare{I \wedge B}{P}{I}}{\quad \hoare{I}{while ($B$) \{ P \}}{I \wedge \neg B}\quad}$
+\\[0.2cm]
+The premiss of this rule expresses the fact that the invariant $I$ remains valid on execution of $P$.
+However, since $P$ is only executed as long as $B$ is \texttt{true}, the precondition for $P$ is actually 
+the formula $I \wedge B$.  The conclusion of the rule says that if the invariant $I$ is true before
+the loop is executed, then $I$ will be true after the loop has finished.  This result is intuitive
+since every time $P$ is executed $I$ remains valid.  Furthermore, the loop only terminates once $B$
+gets \texttt{false}.  Therefore, the postcondition of the loop can be strengthened by adding $\neg B$.
+
+
+
+\section{The Euclidean  Algorithm}
+In this section we show how the verification rules of the last section can be used to prove the
+correctness of a non-trivial program.
+We will show that the algorithm shown in Figure \ref{fig:gcd.stlx} on page \pageref{fig:gcd.stlx} is correct.
+The procedure shown in this figure implements the
+\href{http://en.wikipedia.org/wiki/Euclidean_algorithm}{\emph{Euclidean algorithm}}
+to compute the greatest common divisor of two natural numbers.  Our proof is based on the following
+property of the function \texttt{gcd}:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{gcd}(x + y, y) = \texttt{gcd}(x,y) \quad \mbox{for all $x, y \in \mathbb{N}$}$.
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    gcd := procedure(x, y) {
+        while (x != y) {
+            if (x < y) {
+                y := y - x;
+            } else {
+                x := x - y;
+            }
+        }
+        return x;
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{The Euclidean Algorithm to compute the greatest common divisor.}
+\label{fig:gcd.stlx}
+\end{figure}
+
+\subsection{Correctness Proof of the Euclidean Algorithm} 
+To start our correctness proof we formulate the invariant of the \texttt{while} loop.
+Let us define
+\\[0.2cm]
+\hspace*{1.3cm}
+$ I := \bigl(x > 0 \wedge y > 0 \wedge \texttt{gcd}(x,y) = \texttt{gcd}(a,b) \bigr)$
+\\[0.2cm]
+In this formula we have defined the initial values of $x$ and $y$ as $a$ and $b$.
+In order to establish the invariant at the beginning we have to ensure that the function
+\texttt{gcd} is only called with positive natural numbers.  If we denote these numbers as 
+$a$ and $b$, then the invariant $I$ is valid initially.  The reason is that $x = a$ and $y = b$
+implies $\texttt{gcd}(x,y) = \texttt{gcd}(a,b)$.
+
+
+In order to prove that the invariant $I$ is maintained in the loop we formulate the Hoare triples
+for both alternatives of the conditional.  For the first conditional we know that
+\\[0.2cm]
+\hspace*{1.3cm}
+$\hoare{I \wedge x \not= y \wedge x < y}{y := y - x;}{(I \wedge x \not= y \wedge x < y)\sigma}$
+\\[0.2cm]
+holds, where $\sigma$ is defined as $\sigma = [y \mapsto y + x]$.  Here, the condition $x \not= y$
+is the condition controlling the execution of the  
+\texttt{while} loop and the condition $x < y$ is the condition of the \texttt{if} conditional.
+We rewrite the formula $(I \wedge x \not= y \wedge x < y)\sigma$:
+\begin{eqnarray*}
+ &                 & \bigl(I \wedge x \not= y \wedge x < y\bigr)\sigma \\
+ & \leftrightarrow & \bigl(I \wedge x < y\bigr)\sigma 
+                     \qquad\qquad \mbox{because $x < y$ implies $x \not= y$} \\
+ & \leftrightarrow & \bigl(x > 0 \wedge y > 0 \wedge \texttt{gcd}(x,y) = \texttt{gcd}(a,b) \wedge 
+                     x < y\bigr)[y \mapsto y + x] \\
+ & \leftrightarrow & x > 0 \wedge y + x > 0 \wedge \texttt{gcd}(x,y+x) = \texttt{gcd}(a,b)
+                     \wedge x < y + x \\
+ & \leftrightarrow & x > 0 \wedge y + x > 0 \wedge \texttt{gcd}(x,y) = \texttt{gcd}(a,b) \wedge 0 < y
+\end{eqnarray*}
+In the last step we have used the formula
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \texttt{gcd}(x,y+x) = \texttt{gcd}(x,y) $
+\\[0.2cm]
+and we have simplified the inequality $x < y + x$ as $0 < y$.
+The last formula implies
+\\[0.2cm]
+\hspace*{1.3cm}
+$ x > 0 \wedge y > 0 \wedge \texttt{gcd}(x,y) = \texttt{gcd}(a,b) $.
+\\[0.2cm]
+However, this is precisely the invariant $I$.  Therefore we have shown that
+\begin{equation}
+  \label{eq:if1}
+  \hoare{I \wedge x \not= y \wedge x < y}{y := y - x;}{I}
+\end{equation}
+holds.  Next, let us consider the second alternative of the \texttt{if} conditional.  We have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\hoare{I \wedge x \not= y \wedge x \geq y}{x := x - y;}{(I \wedge x \not= y \wedge x \geq y)\sigma}$ 
+\\[0.2cm]
+where $\sigma = [x \mapsto x + y]$. The expression $(I \wedge x \not= y \wedge x \geq y)\sigma$ is rewritten as follows:
+\begin{eqnarray*}
+ &   & \bigl(I \wedge x \not= y \wedge x \geq y\bigr)\sigma \\
+ & \leftrightarrow & \bigl(I \wedge x > y \bigr)\sigma \\
+ & \leftrightarrow & \bigl(x > 0 \wedge y > 0 \wedge \texttt{gcd}(x,y) = \texttt{gcd}(a,b) \wedge 
+             x > y \bigr)[x \mapsto x + y] \\
+ & \leftrightarrow & x + y > 0 \wedge y > 0 \wedge \texttt{gcd}(x+y,y) = \texttt{gcd}(a,b) 
+       \wedge x + y > y  \\
+ & \leftrightarrow & x + y > 0 \wedge y > 0 \wedge \texttt{gcd}(x,y) = \texttt{gcd}(a,b) 
+       \wedge x > 0 
+\end{eqnarray*}
+The last formula implies that
+\\[0.2cm]
+\hspace*{1.3cm}
+$ x > 0 \wedge y > 0 \wedge \texttt{gcd}(x,y) = \texttt{gcd}(a,b). $
+\\[0.2cm]
+holds.  Again, this is our invariant $I$.  Therefore we have shown that
+\begin{equation}
+  \label{eq:if2}
+  \hoare{I \wedge x \not= y \wedge x \geq y}{x := x - y;}{I} 
+\end{equation}
+holds.  If we use the Hoare triples (\ref{eq:if1}) and (\ref{eq:if2}) as premisses
+for the rule for conditionals we have shown that
+\\[0.2cm]
+\hspace*{1.3cm}
+$  \hoare{I \wedge x \not= y}{if (x < y) \{ y := y - x; \} else \{  x := x - y; \}}{I} $
+\\[0.2cm]
+holds.  Now the verification rule for \texttt{while} loops yields
+\pagebreak
+
+\noindent
+\hspace*{1.3cm} 
+$\{ I \}$
+\\[0.1cm]
+\hspace*{2.2cm}
+\texttt{while (x != y ) \{} \\[0.1cm]
+\hspace*{3.2cm}
+         \texttt{if (x < y) \{ y := y - x; \} else \{ x := x - y;\}}
+\\[0.1cm]
+\hspace*{2.2cm}
+\texttt{\}} \quad 
+\\[0.1cm]
+\hspace*{1.3cm}
+$\{ I \wedge x = y \}$. 
+\\[0.2cm]
+Expanding the invariant $I$ in the formula $I \wedge x = y$ shows that the postcondition of the 
+\texttt{while} loop is given as
+\\[0.2cm]
+\hspace*{1.3cm}
+$x > 0 \wedge y > 0 \wedge \texttt{gcd}(x,y) = \texttt{gcd}(a,b) \wedge x = y$.
+\\[0.2cm]
+Now the correctness of the Euclidean algorithm can be established as follows:
+\begin{eqnarray*}
+&             &  x > 0 \wedge y > 0 \wedge \texttt{gcd}(x,y) = \texttt{gcd}(a,b) \wedge x = y \\
+& \Rightarrow & \texttt{gcd}(x,y) = \texttt{gcd}(a,b) \wedge x = y \\
+& \Rightarrow & \texttt{gcd}(x,x) = \texttt{gcd}(a,b)  \\
+& \Rightarrow & x = \texttt{gcd}(a,b) \qquad\qquad \mathrm{because} \quad \texttt{gcd}(x,x) = x.
+\end{eqnarray*}
+All in all we have shown the following: If the \texttt{while} loop terminates, then
+the variable $x$ will be set to the greatest common divisor of $a$ and $b$, where $a$ and $b$ are
+the initial values of the variables $x$ and $y$.  In order to finish our correctness proof we have
+to show that the \texttt{while} loop does indeed terminate for all choices of $a$ and $b$.
+To this end let us define the variable $s$ as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$ s := x + y. $
+\\[0.2cm]
+The variables $x$ and $y$ are natural numbers.  Therefore $s$ is a natural number, too.
+Every iteration of the loop reduces the number $s$: either $x$ is subtracted from $s$
+or $y$ is subtracted from  $s$ and the invariant $I$ shows that both $x$ and $y$ are
+positive.  Therefore, if the \texttt{while} loop would run forever, at some point $s$ would get
+negative.  Since $s$ can not be negative, the loop must terminate.
+Hence we have shown the correctness of the Euclidean  algorithm.
+\pagebreak
+
+\exercise
+Show that the function $\texttt{power}(x,y)$ that is defined in Figure
+\ref{fig:power-iterative.stlx} does compute $x^y$, i.~e.~show that $\texttt{power}(x,y) = x^y$ 
+for all natural numbers $x$ and $y$.
+
+
+\begin{figure}[!h]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 1.3cm,
+                  xrightmargin  = 1.3cm,
+                ]
+    power := procedure(x, y) {
+        r := 1;
+        while (y > 0) {
+            if (y % 2 == 1) {
+                r := r * x;
+            }
+            x := x * x;
+            y := y \ 2;
+        }
+        return r;
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{A program to compute $x^y$ iteratively.}
+\label{fig:power-iterative.stlx}
+\end{figure}
+
+
+\noindent
+\textbf{Hints}: 
+\begin{enumerate}
+\item If the initial values of $x$ and $y$ are called $a$ and $b$,
+      then an invariant for the \texttt{while} loop is given as 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $I := \bigl(r \cdot x^y = a^b\bigr)$.
+\item The verification rule for the conditional without \texttt{else} is given as
+      \\[0.4cm]
+      \hspace*{1.3cm}
+      $\bruch{\quad\hoare{F \wedge B}{P}{G}, \qquad F \wedge \neg B \rightarrow G\quad}{
+                     \hoare{F}{if ($B$) \{ P \}}{G}}
+      $
+      \\[0.2cm]
+      This rule is interpreted as follows:
+      \begin{enumerate}
+      \item If both the precondition $F$ and the condition $B$ is valid, then execution of the
+            program fragment $P$ has to establish the validity of the postcondition $G$.
+      \item If the precondition $F$ is valid but we have $\neg B$, then this must imply the postcondition
+            $G$.
+      \end{enumerate}
+\end{enumerate}
+
+\remark
+Proving the correctness of a nontrivial program is very tedious.
+Therefore, various attempts have been made to automate the task.  For
+example, \href{http://www.key-project.org/download/hoare/}{\emph{KeY Hoare}}
+is a tool that can be used to verify the correctness of programs.  It is based on
+Hoare calculus.
+
+
+\section{Symbolic  Program Execution}
+The last section has shown that using Hoare logic to verify a program can be quite difficult.
+There is another method to prove the correctness of imperative programs.  This method is called
+\emph{symbolic program execution}.  Let us demonstrate this method.  Consider the program
+shown in Figure \ref{fig:power-iterative-annotated.stlx}.
+
+
+\begin{figure}[!h]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 1.3cm,
+                  xrightmargin  = 1.3cm,
+                  codes         = {\catcode`_=8\catcode`$=3},
+                  commandchars  = \\\{\},
+                ]
+    power := procedure(x$_0$, y$_0$) \{
+        r$_0$ := 1;
+        while (y$_n$ > 0) \{
+            if (y$_n$ % 2 == 1) \{
+                r$_{n+1}$ := r$_n$ * x$_n$;
+            \} 
+            x$_{n+1}$ := x$_n$ * x$_n$;
+            y$_{n+1}$ := y$_n$ \symbol{92} 2;            
+        \} 
+        return r$_N$;
+    \};
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{An annotated programm to compute powers.}
+\label{fig:power-iterative-annotated.stlx}
+\end{figure} % $
+
+The main difference between a mathematical formula and a program is that in a formula all
+occurrences of a variable refer to the same value.   This is different in a program because the
+variables change their values dynamically.  In order to deal with this property of program variables
+we have to be able to distinguish the different occurrences of a variable.  To this end,  we 
+index the program variables. 
+When doing this we have to be aware of the fact that the same occurrence of a program variable can
+still denote different values if the variable occurs inside  a loop.  In this case we have to index
+the variables in a way that the index includes a counter that counts the number of loop iterations.
+For concreteness, consider the  program shown in 
+Figure \ref{fig:power-iterative-annotated.stlx}.  
+Here, in line 5 the variable \texttt{r} has the index $n$ on the right side of the assignment,
+while it has the index $r_{n+1}$ on the left side of the assignment in line 5.  Here, $n$ denotes 
+the number of times the \texttt{while} loop has been iterated.
+After the loop in line 10 the variable is indexed as
+$\texttt{r}_N$, where $N$ denotes the total number of loop iterations.
+We show the correctness of the given program next.  Let us define
+\\[0.2cm]
+\hspace*{1.3cm}
+$ a := x_0, \quad b := y_0$.
+\\[0.2cm]
+We show, that the \texttt{while} loop satisfies the invariant
+\begin{equation}
+  \label{eq:powerInv}
+   r_n \cdot x_n^{y_n} = a^b.
+\end{equation}
+This claim is proven by induction on the number of loop iterations.
+\begin{enumerate}
+\item[B.C.] $n=0$: Since we have $r_0 = 1$, $x_0 = a$, and $y_0 = b$ we have 
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $r_n \cdot x_n^{y_n} = r_0 \cdot x_0^{y_0} = 1 \cdot a^{b} = a^b$.
+\item[I.S.] $n \mapsto n + 1$:  We need a case distinction with respect to $y \mod 2$:
+            \begin{enumerate}
+            \item $y_n \mod 2 = 1$.  Then we have $y_{n} = 2 \cdot (y_n\symbol{92}2) + 1$ and
+                  $r_{n+1} = r_n \cdot x_n$.  Hence
+                  \begin{eqnarray*}
+                      &   & r_{n+1} \cdot x_{n+1}^{y_{n+1}} \\[0.2cm] 
+                      & = & (r_{n} \cdot x_n) \cdot (x_{n} \cdot x_{n})^{y_{n}\symbol{92}2} \\[0.2cm] 
+                      & = & r_{n} \cdot x_n^{2 \cdot (y_{n}\symbol{92}2) + 1} \\[0.2cm] 
+                      & = & r_{n} \cdot x_n^{y_n} \\
+                      & \stackrel{i.h.}{=} & a^{b} 
+                  \end{eqnarray*}
+\pagebreak
+
+            \item $y_n \mod 2 = 0$.  Then we have $y_{n} = 2 \cdot (y_n\symbol{92}2)$ and $r_{n+1} = r_n$.
+                  Therefore
+                  \begin{eqnarray*}
+                      &   & r_{n+1} \cdot x_{n+1}^{y_{n+1}} \\[0.2cm] 
+                      & = & r_{n} \cdot (x_{n} \cdot x_{n})^{y_{n}\symbol{92}2} \\[0.2cm] 
+                      & = & r_{n} \cdot x_n^{2 \cdot (y_{n} \symbol{92} 2)} \\[0.2cm] 
+                      & = & r_{n} \cdot x_n^{y_n} \\
+                      & \stackrel{i.h.}{=} & a^{b} 
+                  \end{eqnarray*}
+            \end{enumerate}
+\end{enumerate}
+This shows the validity of the equation (\ref{eq:powerInv}).   If the \texttt{while} loop
+terminates, we must have $y_N = 0$.  If $n=N$, then equation (\ref{eq:powerInv}) yields:
+\\[0.2cm]
+\hspace*{1.3cm}
+$r_N \cdot x_N^{y_N} = x_0^{y_0} 
+ \;\Longleftrightarrow\; r_N \cdot x_N^{0}   = a^b
+ \;\Longleftrightarrow\;  r_N \cdot 1         = a^b
+ \;\Longleftrightarrow\;  r_N                 = a^b
+$
+\\[0.2cm]
+This shows $r_N = a^b$ and since we already know that the
+\texttt{while} loop terminates, we have proven that
+$\texttt{power}(a,b) =a^b$.
+
+\exercise
+Use the method of symbolic program execution to prove the correctness of the implementation of the
+Euclidean algorithm that is shown in Figure \ref{fig:gcd.stlx}.  During the proof you should make
+use of the fact that for all positive natural numbers $a$ and $b$ the equation
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{gcd}(a, b) = \mathtt{gcd}(a \,\texttt{\%}\, b, b)$
+\\[0.2cm]
+is valid.  
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    gcd := procedure(a, b) {
+        while (b != 0) {
+            [a, b] := [b, a % b];
+        }
+        return a;
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{An efficient version of the Euclidean algorithm.}
+\label{fig:gcd.stlx}
+\end{figure}
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "logik"
+%%% End: 

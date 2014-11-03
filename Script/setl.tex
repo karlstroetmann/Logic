@@ -1,9 +1,9 @@
 \chapter{Die Programmier-Sprache \textsc{SetlX}}
-Die im letzten Kapitel vorgestellten Begriffs-Bildungen aus der Mengenlehre bereiten
+Die in der Mathematik-Vorlesung vorgestellten Begriffs-Bildungen aus der Mengenlehre bereiten
 erfahrungsgemäß dem Anfänger aufgrund ihrer Abstraktheit gewisse Schwierigkeiten.  Um
 diese Begriffe vertrauter werden zu lassen, stelle ich daher nun eine Programmier-Sprache
 vor, die mit diesen Begriffen arbeitet.  Dies ist die Sprache \textsc{SetlX}.
-Diese Sprache basiert auf der Ende der siebziger Jahre von Jacob T.~Schwartz eingeführten
+Diese Sprache basiert auf der Ende der sechziger Jahre von Jacob T.~Schwartz eingeführten
 Sprache \href{http://en.wikipedia.org/wiki/SETL}{\textsc{Setl}} \cite{setl86}.  
 Die Sprache \textsc{SetlX} lehnt sich in ihrer Syntax stark an die Programmiersprache \texttt{C} an,
 ist vom Konzept her aber als Derivat von \textsc{Setl} zu sehen. Sie finden auf der Webseite 
@@ -29,12 +29,12 @@ eingehen.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-    -====================================setlX=============================v2.2.0=-
+    -====================================setlX=============================v2.3.2=-
     
     Welcome to the setlX interpreter!
     
     Open Source Software from http://setlX.randoom.org/
-    (c) 2011-2013 by Herrmann, Tom
+    (c) 2011-2014 by Herrmann, Tom
     
     You can display some helpful information by using '--help' as parameter when
     launching this program.
@@ -78,7 +78,6 @@ die folgende Ausgabe:
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    Hallo
     ~< Result: 3 >~
     
     => 
@@ -111,8 +110,9 @@ Hier hat der Interpreter zunächst den Befehl \texttt{print(\symbol{34}Hallo\symb
 den Text ``\texttt{Hallo}'' ausgegeben.  In der Zeile darunter wird der Wert des zuletzt
 ausgegebenen Ausdrucks angezeigt.  Da die Funktion $\texttt{print}()$ kein Ergebnis
 berechnet, ist der Rückgabe-Wert undefiniert.  Ein undefinierter Wert wird in
-\textsc{SetlX} mit $\Omega$ bezeichnet, was in der Ausgabe durch den String
-``\texttt{om}'' dargestellt wird.
+\textsc{SetlX} mit dem griechischen Buchstaben
+\href{http://en.wikipedia.org/wiki/Greek_alphabet}{$\Omega$} bezeichnet, was in der Ausgabe durch
+den String ``\texttt{om}'' dargestellt wird.
 
 Die Funktion $\mathtt{print}()$ akzeptiert beliebig viele Argumente.  Wenn Sie
 beispielsweise das Ergebnis der Rechnung $36 \cdot 37 / 2$ ausgeben wollen, so können Sie dies über den Befehl
@@ -126,7 +126,7 @@ Wenn Sie nun die Eingabe-Taste betätigen, wird der Ausdruck ausgewertet und das 
 
 Der \textsc{SetlX}-Interpreter lässt sich nicht nur interaktiv betreiben, sondern er kann auch vollständige
 Programme ausführen.  Speichern wir das in Abbildung \ref{fig:sum.stlx} gezeigte 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/sum.stlx}{Programm} in einer Datei mit
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/sum.stlx}{Programm} in einer Datei mit
 dem Namen ``\texttt{sum.stlx}'' ab, so können wir in der Kommando-Zeile den Befehl
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -134,7 +134,12 @@ dem Namen ``\texttt{sum.stlx}'' ab, so können wir in der Kommando-Zeile den Befe
 \\[0.2cm] 
 eingeben.  Dann wird zunächst der Text ``\texttt{Type a natural number} $\cdots$'' gefolgt von einem
 Doppelpunkt als Prompt ausgegeben.  Geben wir nun eine Zahl $n$ ein und betätigen die Eingabe-Taste, so wird
-als Ergebnis die Summe $\sum_{i=1}^n i$ ausgegeben.
+als Ergebnis die Summe der ersten $n$ natürlichen Zahlen, also
+\\[0.2cm]
+\hspace*{1.3cm}
+$\sum\limits_{i=1}^n i$ 
+\\[0.2cm]
+ausgegeben.
 
 \begin{figure}[!ht]
 \centering
@@ -172,7 +177,7 @@ dieser Programme besser auf einzelne Zeilen Bezug nehmen zu können.
 \item Die zweite Zeile enthält eine Zuweisung.  Die Funktion $\textsl{read}()$ gibt
       zunächst den Text aus, der den Benutzer zur Eingabe einer Zahl auffordert und liest dann
       den vom Benutzer eingegebenen String.  Falls der Benutzer eine Zahl eingibt, wird
-      dies erkannt und die eingegebene Zahl wird  Hilfe des
+      dies erkannt und die eingegebene Zahl wird mit Hilfe des
       Zuweisungs-Operators ``\texttt{:=}'' der Variablen \texttt{n} zugewiesen.
       An dieser Stelle gibt es zwei wichtige Unterschiede zur Syntax der Sprache
       \texttt{C}:
@@ -180,14 +185,16 @@ dieser Programme besser auf einzelne Zeilen Bezug nehmen zu können.
       \item \texttt{SetlX} verwendet den Zuweisungs-Operator ``\texttt{:=}'', während
             die Programmiersprache \texttt{C} den String ``\texttt{=}'' als
             Zuweisungs-Operator benutzt.
-      \item Alle Variablen müssen in der Sprache \textsc{SetlX} mit einem kleinen
-            Buchstaben beginnen.  In \texttt{C} können Variablen auch mit einem großen
-            Buchstaben beginnen.  Dasselbe gilt für die Namen von Funktionen.
+      \item Die Namen von Variablen oder Funktion müssen in der Sprache \textsc{SetlX} mit einem
+            kleinen Buchstaben beginnen.  Daneben können die Namen von  Variablen und Funktionen
+            noch beliebig viele Buchstaben, Ziffern und den Unterstrich ``\texttt{\_}'' enthalten.
+            In Gegensatz dazu dürfen diese Namen in \texttt{C} auch mit einem großen
+            Buchstaben oder mit dem Unterstrich ``\texttt{\_}'' beginnen.  
       \end{enumerate}
-      Im Gegensatz zu der Sprache \texttt{C} ist die Sprache \textsc{SetlX} \emph{ungetypt}.
-      Daher ist es weder notwendig noch möglich, die Variable \texttt{n} zu deklarieren.
-      Würde der Benutzer an Stelle einer Zahl einen String eingeben, so würde das Programm später mit einer
-      Fehlermeldung abbrechen.
+      Im Gegensatz zu der Sprache \texttt{C} ist die Sprache \textsc{SetlX} nicht statisch
+      \emph{getypt}. Daher ist es weder notwendig noch möglich, die Variable \texttt{n} zu
+      deklarieren.  Würde der Benutzer an Stelle einer Zahl einen String eingeben, so würde das
+      Programm später mit einer Fehlermeldung abbrechen.
 \item Die dritte Zeile zeigt zunächst, wie sich Mengen als Aufzählungen definieren lassen.  Sind
       $a$ und $b$ ganze Zahlen mit $a < b$, so berechnet der Ausdruck
       \\[0.2cm]
@@ -214,7 +221,7 @@ dieser Programme besser auf einzelne Zeilen Bezug nehmen zu können.
 \end{enumerate}
 Als nächstes betrachten wir das in Abbildung \ref{fig:sum-recursive.stlx} auf Seite
 \pageref{fig:sum-recursive.stlx} gezeigte Programm 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/sum-recursive.stlx}{\texttt{sum-recursive.stlx}}, 
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/sum-recursive.stlx}{\texttt{sum-recursive.stlx}}, 
 das die Summe $\sum\limits_{i=0}^n i$ mit Hilfe einer Rekursion berechnet.
 
 \begin{figure}[!ht]
@@ -275,9 +282,9 @@ das die Summe $\sum\limits_{i=0}^n i$ mit Hilfe einer Rekursion berechnet.
         \textbf{\}}
       \end{Verbatim}
       \vspace*{-0.1cm}
-      Die Semantik der Fallunterscheidung ist wie folgt:
+      Eine solche  Fallunterscheidung wird dann wie folgt ausgewertet:
       \begin{enumerate}
-      \item Zunächst wird der Ausdruck \textsl{test} ausgewertet.  Bei der Auswertung
+      \item Zunächst wird der Ausdruck \textsl{test} evaluiert.  Dabei
             muss sich entweder der Wert ``\texttt{true}'' oder ``\texttt{false}'' ergeben.
       \item Falls sich ``\texttt{true}'' ergibt, werden anschließend die Kommandos
             in  \textsl{body}$_1$ ausgeführt.  Dabei ist \textsl{body}$_1$ 
@@ -288,7 +295,7 @@ das die Summe $\sum\limits_{i=0}^n i$ mit Hilfe einer Rekursion berechnet.
       \begin{enumerate}
       \item Bei dem \texttt{if}-Befehl müssen Sie auch dann geschweifte Klammern
             verwenden, wenn $\textsl{body}_1$ und $\textsl{body}_2$ nur aus einem einzigen
-            Befehl bestehen.
+            Befehl bestehen.  
       \item Die Definition der Prozedur muss durch ein Semikolon abgeschlossen werden.
       \end{enumerate}
       
@@ -331,7 +338,7 @@ besteht darin, dass \textsc{SetlX} die Verwendung von Mengen und Listen unmittel
 Um zu zeigen, wie wir in \textsc{SetlX} mit Mengen umgehen können, zeigen wir ein
  einfaches Programm, das Vereinigung, Schnitt und
 Differenz zweier Mengen berechnet.   Abbildung \ref{fig:simple.stlx} zeigt die Datei
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/simple.stlx}{\texttt{simple.stlx}}.  
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/simple.stlx}{\texttt{simple.stlx}}.  
 Das in dieser Abbildung gezeigte Programm zeigt die Verwendung der
 elementaren Mengen-Operatoren in \textsc{SetlX}.
 
@@ -363,6 +370,8 @@ elementaren Mengen-Operatoren in \textsc{SetlX}.
     print("pow(", a, ") = ", c);
     // \emph{Überprüfung einer Teilmengen-Beziehung}  a $\subseteq$ b
     print("(", a, " <= ", b, ") = ", (a <= b)); 
+    // \emph{Testen, ob} 1 $\in$ a gilt
+    print("1 in ", a, " = ", 1 in a);
 \end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{Berechnung von $\cup$, $\cap$, $\backslash$ und Potenz-Menge}
@@ -386,6 +395,7 @@ erhalten wir die folgende Ausgabe:
     {1, 2, 3} - {2, 3, 4} = {1}
     pow({1, 2, 3}) = {{}, {1}, {1, 2}, {1, 2, 3}, {1, 3}, {2}, {2, 3}, {3}}
     ({1, 2, 3} <= {2, 3, 4}) = false
+    1 in {1, 2, 3} = true
 \end{verbatim}
 Um interessantere Programme zeigen zu können, stellen wir jetzt weitere
 Möglichkeiten vor, mit denen wir in \textsc{SetlX} Mengen definieren können.
@@ -418,7 +428,7 @@ Definieren wir $\textsl{step} = \textsl{second} - \textsl{start}$ und ist \texts
 diese Menge formal wie folgt definieren: 
 \\[0.2cm]
 \hspace*{1.3cm} 
-$\texttt{a} = \{ \textsl{start} + n * \textsl{step} \mid n \in \mathbb{N} \wedge \textsl{start} + n * \textsl{step} \leq\textsl{stop} \}$. 
+$\texttt{a} = \{ \textsl{start} + n \cdot \textsl{step} \mid n \in \mathbb{N}_0 \wedge \textsl{start} + n \cdot \textsl{step} \leq\textsl{stop} \}$. 
 \\[0.2cm]
 Beachten Sie, dass $\textsl{stop}$ nicht unbedingt ein Element der Menge 
 \\[0.2cm]
@@ -450,7 +460,7 @@ $\mathtt{p} = \bigl\{ n \cdot m \mid n \in \mathbb{N} \wedge m \in \mathbb{N} \w
 $. 
 \\[0.2cm]
 Wie ausdruckstark Iteratoren sind, lässt sich an dem Programm 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-difference.stlx}{\texttt{primes-difference.stlx}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-difference.stlx}{\texttt{primes-difference.stlx}}
 erkennen, das in Abbildung \ref{fig:primes-sieve.stlx} auf Seite \pageref{fig:primes-sieve.stlx}
 gezeigt ist.  Das Programm berechnet die Menge der Primzahlen bis zu einer
 vorgegebenen Größe $n$ und ist so kurz wie eindrucksvoll.  Die zugrunde liegende
@@ -532,7 +542,7 @@ gilt.  Damit liefert \\[0.2cm]
 \\[0.2cm]
 genau die Menge aller Teiler von $p$ und $p$ ist eine Primzahl, wenn diese Menge
 nur aus den beiden Zahlen $1$ und $p$ besteht.  Das Programm aus der Datei 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-slim.stlx}{\texttt{primes-slim.stlx}}, 
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-slim.stlx}{\texttt{primes-slim.stlx}}, 
 das in Abbildung
 \ref{fig:primes-slim.stlx} auf Seite \pageref{fig:primes-slim.stlx} gezeigt wird, benutzt diese Methode
 zur Berechnung der Primzahlen.
@@ -571,7 +581,7 @@ sowohl links-total als auch rechts-eindeutig ist, auch als Funktion auffassen
 können.  Ist $R$ eine solche Menge und $x \in \textsl{dom}(R)$, so bezeichnet in
 \textsc{SetlX} der Ausdruck $R(x)$  das eindeutig bestimmte Element $y$, für das
 $\langle x, y \rangle \in R$ gilt.  Das Programm 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/function.stlx}{\texttt{function.stlx}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/function.stlx}{\texttt{function.stlx}}
 in Abbildung
 \ref{fig:function.stlx} auf Seite \pageref{fig:function.stlx} zeigt dies konkret.
 Zusätzlich zeigt das Programm noch, dass in \textsc{SetlX} bei einer binären
@@ -627,7 +637,7 @@ Es ist naheliegend zu fragen, was bei der Auswertung eines Ausdrucks der Form
 $R(x)$ passiert, wenn die Menge $\{ y \mid \langle x, y \rangle \in R \}$
 entweder leer ist oder aber aus mehr als einem Element besteht. 
 Das Programm 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/buggy-function.stlx}{\texttt{buggy-function.stlx}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/buggy-function.stlx}{\texttt{buggy-function.stlx}}
 in Abbildung
 \ref{fig:buggy-function.stlx} auf Seite \pageref{fig:buggy-function.stlx} beantwortet
 diese Frage auf experimentellem Wege.
@@ -686,7 +696,7 @@ die entsprechenden eckigen Klammern ``\texttt{[}'' und ``\texttt{]}'' ersetzt
 werden.  Dann können Tupel durch explizite Aufzählung, arithmetische Aufzählung, Iteration und das
 Auswahlprinzip in derselben Weise wie Mengen gebildet werden.  In \textsc{SetlX} werden Tupel in
 der Regel als \emph{Listen} bezeichnet.  Das Programm 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-tuple.stlx}{\texttt{primes-tuple.stlx}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-tuple.stlx}{\texttt{primes-tuple.stlx}}
 in Abbildung \ref{fig:primes-tuple.stlx} zeigt, wie wir in \textsc{SetlX} mit Listen arbeiten
 können.  Dieses Programm berechnet die Primzahlen nach dem selben 
 Verfahren wir das Programm in Abbildung \ref{fig:primes-slim.stlx} auf Seite
@@ -718,7 +728,7 @@ zur Darstellung der Menge der Teiler.
 
 \section{Spezielle Funktionen und Operatoren auf Mengen}
 Das Programm 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/sort.stlx}{\texttt{sort.stlx}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/sort.stlx}{\texttt{sort.stlx}}
 in Abbildung \ref{fig:sort.stlx} auf Seite
 \pageref{fig:sort.stlx} zeigt ein einfaches Verfahren
  um eine Liste von Zahlen zu sortieren.  
@@ -798,7 +808,7 @@ ausgeführt, so wird ein nicht näher spezifiziertes Element aus der Menge $s$
 entfernt.  Dieses Element wird darüber hinaus der Variablen $x$ zugewiesen.
 Falls $s$ leer ist, so erhält $x$ den undefinierten Wert ``\texttt{om}'' und
 $s$ bleibt unverändert.  Das Programm 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/from.stlx}{\texttt{from.stlx}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/from.stlx}{\texttt{from.stlx}}
 in Abbildung \ref{fig:from.stlx} auf Seite
 \pageref{fig:from.stlx} nutzt diese Anweisung um eine Menge elementweise
 auszugeben.  Jedes Element wird dabei in einer eigenen Zeile ausgedruckt.
@@ -900,7 +910,7 @@ ausführen, hat \texttt{x} also anschließend den Wert 1.
 \end{figure} %\$
 
 Das Programm 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/simple-tuple.stlx}{\texttt{simple-tuple.stlx}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/simple-tuple.stlx}{\texttt{simple-tuple.stlx}}
 in Abbildung \ref{fig:simple-tuple.stlx} auf Seite
 \pageref{fig:simple-tuple.stlx} demonstriert die eben vorgestellten Operatoren.  
 Zusätzlich sehen wir in Zeile 19, dass \textsc{SetlX} simultane Zuweisungen unterstützt.
@@ -963,7 +973,7 @@ Liste $L$ zu sortieren, kann wie folgt beschrieben werden:
       $\textsl{sort}(L) = [ \min(L) ] + \textsl{sort}([ x \in L \mid x \not= \min(L) ])$.
 \end{enumerate}
 Abbildung \ref{fig:min-sort.stlx} auf Seite \pageref{fig:min-sort.stlx} zeigt das Programm
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/min-sort.stlx}{\texttt{min-sort.stlx}},
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/min-sort.stlx}{\texttt{min-sort.stlx}},
 das diese Idee in \textsc{SetlX} umsetzt. 
 
 
@@ -1057,7 +1067,7 @@ Wahrheitswert als Ergebnis zurück liefert.  Die Auswertung des oben angegebenen 
 dann \texttt{true} wenn die Auswertung von \textsl{cond} für alle Elemente der Menge $s$ den Wert
 \texttt{true} ergibt.  Abbildung \ref{fig:primes-forall.stlx} auf Seite
 \pageref{fig:primes-forall.stlx} zeigt das Programm
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-forall.stlx}{\texttt{primes-forall.stlx}},
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-forall.stlx}{\texttt{primes-forall.stlx}},
 welches die  Primzahlen mit Hilfe eines Allquantors berechnet.
 Die Bedingung
 \\[0.2cm]
@@ -1100,7 +1110,6 @@ Neben dem Allquantor gibt es noch den Existenzquantor. Die Syntax ist:
 Hierbei ist wieder eine $s$ eine Menge und \textsl{cond} ist ein Ausdruck, der zu \texttt{true} oder
 \texttt{false} ausgewertet werden kann.  Falls es wenigstens ein $x$ gibt, so dass die Auswertung von
 \textsl{cond} true ergibt, liefert die Auswertung des Existenzquantor ebenfalls den Wert \texttt{true}.
-\pagebreak
 
 \remark
 Liefert die Auswertung eines Ausdrucks der Form
@@ -1153,7 +1162,7 @@ nur ist die Verwendung eines \texttt{switch}-Blocks oft
 \end{figure} 
 
 Abbildung \ref{fig:switch.stlx} zeigt das Programm
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/switch.stlx}{\texttt{switch.stlx}},
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/switch.stlx}{\texttt{switch.stlx}},
 bei dem es darum  geht, in Abhängigkeit von der letzte Ziffer einer Zahl eine Meldung auszugeben.  Bei
 der Behandlung der Aussagenlogik werden wir noch realistischere Anwendungs-Beispiele für den
 \texttt{switch}-Block kennenlernen.
@@ -1231,7 +1240,7 @@ der Sprache \texttt{C}.
 
 Abbildung \ref{fig:primes-while.stlx} auf Seite
 \pageref{fig:primes-while.stlx} zeigt das Programm
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-while.stlx}{\texttt{primes-while.stlx}},
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-while.stlx}{\texttt{primes-while.stlx}},
 das die Primzahlen mit Hilfe einer \texttt{while}-Schleife berechnet.
 Hier ist die Idee, dass eine Zahl genau dann Primzahl ist, wenn es keine
 kleinere Primzahl gibt, die diese Zahl teilt.
@@ -1282,7 +1291,7 @@ Schleifenrumpf \textsl{body} ausgeführt.
 
 Abbildung \ref{fig:primes-for.stlx} auf Seite
 \pageref{fig:primes-for.stlx} zeigt das Programm
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-for.stlx}{\texttt{primes-for.stlx}},
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-for.stlx}{\texttt{primes-for.stlx}},
 das die Primzahlen mit Hilfe einer \texttt{for}-Schleife berechnet.
 Der dabei verwendete Algorithmus ist als das \emph{Sieb des Eratosthenes}
 bekannt.  Das funktioniert wie folgt: Sollen alle Primzahlen kleiner oder gleich
@@ -1338,7 +1347,7 @@ noch verbessert werden:
 
       Abbildung \ref{fig:primes-eratosthenes.stlx} auf Seite
       \pageref{fig:primes-eratosthenes.stlx} zeigt das Programm
-      \href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/primes-eratosthenes.stlx}{\texttt{primes-eratosthenes.stlx}},
+      \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-eratosthenes.stlx}{\texttt{primes-eratosthenes.stlx}},
       das diese Ideen umsetzt.
       Um den Durchlauf der inneren while Schleife in dem Fall, dass
       \texttt{primes[i] = 0} ist, zu überspringen, haben wir den Befehl ``\texttt{continue}''
@@ -1377,7 +1386,6 @@ noch verbessert werden:
 \vspace*{-0.3cm}
 \caption{Effizientere Berechnung der Primzahlen nach Eratosthenes.}  \label{fig:primes-eratosthenes.stlx}
 \end{figure} %\$
-\pagebreak
 
 
 \subsection{Fixpunkt-Algorithmen}
@@ -1389,7 +1397,7 @@ Beobachtung, dass die Folge $(x_n)_n$, die durch \\[0.2cm]
 \hspace*{1.3cm} $x_0 := 0$ und $x_{n+1} := \mathtt{cos}(x_n)$ für alle $n \in \mathbb{N}$ \\[0.2cm]
 definiert ist, gegen eine Lösung der obigen Gleichung konvergiert.  Damit führt das in
 Abbildung \ref{fig:solve.stlx} auf Seite \pageref{fig:solve.stlx} angegebene Programm
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/solve.stlx}{\texttt{solve.stlx}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/solve.stlx}{\texttt{solve.stlx}}
 zum Ziel.
 
 \begin{figure}[!ht]
@@ -1455,7 +1463,7 @@ In der Sprache \textsl{C} hat das Kommando ``\texttt{break}'' dieselbe Funktion.
 \end{figure}
 
 Abbildung \ref{fig:fixpoint.stlx} zeigt das Program
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/fixpoint.stlx}{\texttt{fixpoint.stlx}}.
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/fixpoint.stlx}{\texttt{fixpoint.stlx}}.
 Hier ist eine generische Funktion \texttt{solve} implementiert, die zwei Argumente verarbeitet: 
 \begin{enumerate}
 \item Das Argument \texttt{f} ist die Funktion, für die ein Fixpunkt berechnet werden soll.
@@ -1890,7 +1898,7 @@ solange durchführen bis $T_{n+1} = T_n$ gilt, denn dann gilt auch $T_n = R^+$.
 
 \noindent
 Das Programm 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/transitive-closure.stlx}{\texttt{transitive-closure.stlx}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/transitive-closure.stlx}{\texttt{transitive-closure.stlx}}
 in Abbildung
 \ref{fig:transitive-closure.stlx} auf Seite \pageref{fig:transitive-closure.stlx}  zeigt
 eine Implementierung dieses Gedankens.
@@ -2019,7 +2027,7 @@ Damit können wir das Programm in Abbildung
 \ref{fig:transitive-closure.stlx} so abändern, dass alle möglichen Verbindungen zwischen zwei
 Punkten berechnet werden.  Abbildung
 \ref{path.stlx} zeigt das resultierende Programm
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/path.stlx}{\texttt{path.stlx}}. 
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/path.stlx}{\texttt{path.stlx}}. 
 Leider funktioniert das Programm dann nicht mehr, wenn der Graph Zyklen enthält.
 Abbildung
 \ref{fig:graph-zykl} zeigt einen Graphen, der einen Zyklus enthält.  In diesem Graphen
@@ -2055,7 +2063,7 @@ eliminieren.
 \end{figure} %\$
 
 Abbildung \ref{fig:path-cyclic.stlx} zeigt einen Ausschnitt des geänderten Programms
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/path-cyclic.stlx}{\texttt{path-cyclic.stlx}},
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/path-cyclic.stlx}{\texttt{path-cyclic.stlx}},
 das auch für zyklische Graphen funktioniert. 
 \begin{enumerate}
 \item In Zeile 2 berücksichtigen wir nur die Pfade $x \oplus y$, die nicht zyklisch sind.
@@ -2076,7 +2084,7 @@ eine Verbindung finden.  Abbildung \ref{fig:find-path} zeigt die Implementierung
 Prozedur $\texttt{reachable}(x, y, r)$, die überprüft, ob es in dem Graphen $r$ eine
 Verbindung von $x$ nach $y$ gibt und die diese Verbindung berechnet.  Das vollständige
 Programm finden Sie in der Datei
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/find-path.stlx}{\texttt{find-path.stlx}}.
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/find-path.stlx}{\texttt{find-path.stlx}}.
 Wir diskutieren nun die Implementierung der Prozedur \texttt{reachable}.
 \begin{enumerate}
 \item In Zeile 2 initialisieren wir $p$ so, dass zunächst nur der Pfad der Länge 0,
@@ -2229,7 +2237,7 @@ $\bigl\langle \{\}, \{ \squote{Bauer}, \squote{Wolf}, \squote{Ziege},\squote{Koh
 Damit haben wir das Problem in der Mengenlehre modelliert und können die im letzten
 Abschnitt entwickelte Prozedur \texttt{reachable} benutzen, um das Problem zu lösen.
 In der Abbildung \ref{fig:wolf-ziege} finden Sie das Programm 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/wolf-goat-cabbage.stlx}{\texttt{wolf-goat-cabbage.stlx}},
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/wolf-goat-cabbage.stlx}{\texttt{wolf-goat-cabbage.stlx}},
 in dem die oben ausgeführten Überlegungen in \textsc{SetlX} umgesetzt wurden.
 Die von diesem Programm berechnete Lösung finden Sie in Abbildung \ref{fig:wolf-ziege-solution}.
 
@@ -2295,10 +2303,7 @@ Die von diesem Programm berechnete Lösung finden Sie in Abbildung \ref{fig:wolf-
 \caption{Ein Fahrplan für den Bauern}  
 \label{fig:wolf-ziege-solution}
 \end{figure} %$
-\pagebreak
 
-\vspace*{\fill}
-\pagebreak
 
 \section{Terme und Matching}
 Neben den bisher vorgestellten Datenstrukturen gibt es noch eine weitere wichtige
@@ -2468,7 +2473,7 @@ zugreifen können und es gibt eine Funktion, mit deren Hilfe wir Terme konstruier
 
 In Abbildung  \ref{fig:append.stlx} auf Seite \pageref{fig:append.stlx} sehen Sie die
 Implementierung  einer Funktion
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/append.stlx}{\texttt{append}},
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/append.stlx}{\texttt{append}},
 deren Aufgabe es ist, ein Element $x$ am Ende einer Liste $l$ einzufügen, wobei vorausgesetzt ist,
 dass die Liste $l$ als Term mit Hilfe der Funktions-Zeichen ``\texttt{Cons}'' und ``\texttt{Nil}''
 dargestellt wird.
@@ -2504,7 +2509,7 @@ darstellen.
 Der Umgang mit Termen wäre sehr mühsam, wenn wir die Terme jedesmal mit Hilfe der Funktionen
 \texttt{fct} und \texttt{args} auseinander nehmen müssten.  Abbildung \ref{fig:append-match.stlx} 
 zeigt eine weitere Implementierung der Funktion
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/append-match.stlx}{\texttt{append}}, 
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/append-match.stlx}{\texttt{append}}, 
 bei der wir die Kontroll-Struktur \texttt{match} an Stelle der Funktionen ``\texttt{fct}''
 and ``\texttt{args}'' verwendet haben.  In Zeile 3 wird  überprüft, ob die Liste $l$ leer ist.
 Die wahre Stärke des Matchings sehen wir allerdings ist in Zeile 4, denn dort wird nicht nur
@@ -2625,7 +2630,7 @@ ersatzweise $\textsl{body}_{n+1}$ ausgeführt.
 \noindent
 Wir zeigen zum Abschluss dieses Abschnitts ein komplexeres Beispiel.  Die in Abbildung
 \ref{fig:diff.stlx} auf Seite \pageref{fig:diff.stlx} gezeigte Funktion
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/diff.stlx}{\texttt{diff}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/diff.stlx}{\texttt{diff}}
 wird mit zwei Argumenten aufgerufen:
 \begin{enumerate}
 \item Das erste  Argument $t$ ist ein Term, der einen arithmetischen Ausdruck repräsentiert.
