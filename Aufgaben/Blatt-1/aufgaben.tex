@@ -5,11 +5,32 @@
 \usepackage{amssymb}
 \usepackage{fancyvrb}
 \usepackage{alltt}
+\usepackage{hyperref}
+\usepackage{fancyvrb}
+\usepackage{fancyhdr}
+\usepackage{lastpage} 
+\usepackage[all]{hypcap}
+\hypersetup{
+	colorlinks = true, % comment this to make xdvi work
+	linkcolor  = blue,
+	citecolor  = red,
+        filecolor  = Gold,
+        urlcolor   = [rgb]{0.5, 0.1, 0.0},
+	pdfborder  = {0 0 0} 
+}
 
-\pagestyle{empty}
+\pagestyle{fancy}
+\fancyfoot[C]{--- \thepage/\pageref{LastPage}\ ---}
 
 \renewcommand{\labelenumi}{(\alph{enumi})}
 \renewcommand{\labelenumii}{\arabic{enumii}.}
+
+\newcounter{aufgabe}
+\newcommand{\exercise}{\vspace*{0.3cm}
+\stepcounter{aufgabe}
+
+\noindent
+\textbf{Aufgabe \arabic{aufgabe}}: }
 
 \newcommand{\club }{\ensuremath{\clubsuit   }}
 \newcommand{\spade}{\ensuremath{\spadesuit  }}
@@ -20,8 +41,8 @@
 \begin{document}
 
 
-\noindent
-\textbf{Aufgabe 1}: Eine Zahl $m\in \mathbb{N}$ ist ein \emph{echter Teiler} einer Zahl
+\exercise
+Eine Zahl $m\in \mathbb{N}$ ist ein \emph{echter Teiler} einer Zahl
 $n \in \mathbb{N}$ genau dann, wenn $m$ ein Teiler von $n$ ist und wenn auﬂerdem $m < n$ gilt.
 
 Eine Zahl $n \in \mathbb{N}$ heiﬂt \emph{perfekt}, wenn $n$ gleich der Summe aller echten Teiler von
@@ -35,20 +56,22 @@ von 6 ist $\{1,2,3\}$ und es gilt $1 + 2 + 3 = 6$.
 \end{enumerate}
 \vspace{0.3cm}
 
-\noindent
-\textbf{Aufgabe 2}:
+\exercise
 \begin{enumerate}
 \item Implementieren Sie eine Prozedur \texttt{gt}, so dass der Aufruf 
       $\mathtt{gt}(m,n)$ f¸r zwei nat¸rliche Zahlen $m$ und $n$ die Menge aller gemeinsamen
       Teiler von $m$ und $n$ berechnet.
+
+      \textbf{Hinweis}: Berechnen Sie zun‰chst die Menge der Teiler von $m$ und 
+      die Menge der Teiler von $n$.  ‹berlegen Sie, wie die Mengenlehre Ihnen weiterhilft,
+      wenn Sie diese beiden Mengen berechnet haben.
 \item Implementieren Sie nun eine Prozedur \texttt{ggt}, so dass der Aufruf
       $\mathtt{ggt}(m,n)$ den grˆﬂten gemeinsamen Teiler der beiden Zahlen $m$ und $n$
       berechnet. 
 \end{enumerate}
 \vspace{0.3cm}
 
-\noindent
-\textbf{Aufgabe 3}:
+\exercise
 Implementieren Sie  eine Prozedur \texttt{kgv}, so dass der Aufruf
 $\mathtt{kgv}(m,n)$ f¸r zwei nat¸rliche  Zahlen $m$ und $n$ das kleinste gemeinsame
 Vielfache der Zahlen $m$ und $n$ berechnet. 
@@ -58,8 +81,8 @@ Vielfache der Zahlen $m$ und $n$ berechnet.
 \textbf{Hinweis}: Es gilt $\texttt{kgv}(m,n) \leq m \cdot n$.
 \vspace{0.3cm}
 
-\noindent
-\textbf{Aufgabe 4}: Nehmen Sie an, ein Spieler hat im Poker (Texas Hold'em) die beiden
+\exercise
+Nehmen Sie an, ein Spieler hat im Poker (Texas Hold'em) die beiden
 Karten $\pair(8,\spade)$ und $\pair(9,\spade)$ bekommen.  Schreiben Sie ein
 \textsc{SetlX}-Programm, dass die folgenden Fragen beantworten.
 \begin{enumerate}
@@ -68,33 +91,41 @@ Karten $\pair(8,\spade)$ und $\pair(9,\spade)$ bekommen.  Schreiben Sie ein
 \item Wie groﬂ ist die Wahrscheinlichkeit, dass alle drei Karten im Flop
       die Farbe $\spade$ haben?
 \end{enumerate}
-\vspace{0.3cm}
+\pagebreak
 
-\noindent
-\textbf{Hausaufgabe}:
-Nach dem ihr Schiff gesunken ist, werden drei Matrose an eine einsame Insel gesp¸lt.  Dort
-wachsen nur Kokosn¸sse. Sie pfl¸cken alle Kokosn¸sse, legen diese auf einen Haufen
-und gehen schlafen.  Es sind insgesamt weniger als 100 Kokosn¸sse.
-Am n‰chsten Morgen wollen Sie die Kokosn¸sse aufteilen. 
+\exercise
+Eine Liste der Form $[a, b, c]$ wird als 
+\emph{geordnetes} \href{http://de.wikipedia.org/wiki/Pythagoreisches_Tripel}{\emph{pythagoreisches Tripel}}
+bezeichnet, wenn 
+\\[0.2cm]
+\hspace*{1.3cm}
+$a^2 + b^2 = c^2$ \quad und \quad $a < b$
+\\[0.2cm]
+gilt.  Beispielsweise ist $[3,4,5]$ ein geordnetes pythagoreisches Tripel, denn $3^2 + 4^2 = 5^2$.
+\begin{enumerate}
+\item Implementieren Sie eine Prozedur \texttt{pythagoras}, so dass der Aufruf
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{pythagoras}(n)$
+      \\[0.2cm]
+      die Menge aller geordneten  pythagoreischen Tripel $[a,b,c]$ berechnet, f¸r die $c \leq n$ ist.
+\item Ein pythagoreisches Tripel $[a,b,c]$ ist ein \emph{reduziertes} Tripel, wenn
+      die Zahlen $a$, $b$ und $c$ keinen nicht-trivialen gemeinsamen Teiler haben.
+      Implementieren Sie eine Funktion \texttt{isReduced}, die als Argumente drei nat¸rliche Zahlen 
+      $a$, $b$ und $c$ erh‰lt und die genau dann \texttt{true} als Ergebnis zur¸ck liefert,
+      wenn das Tripel $[a, b, c]$ reduziert ist.
+\item Implementieren Sie eine Prozedur \texttt{reducedPythagoras}, so dass der Aufruf
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{reducedPythagoras}(n)$
+      \\[0.2cm]
+      die Menge aller geordneten pythagoreischen Tripel $[a,b,c]$ berechnet, die reduziert sind.
 
-Der erste Matrose steht nachts um 22:00 auf, und da er seinen Kollegen nicht traut, teilt den
-Haufen Kokosn¸sse in 3 gleich groﬂe Haufen.  Dabei bleibt eine Kokosnuss ¸brig, die er dem auf
-der Insel ans‰ssigen Affen schenkt. Seinen eigenen Haufen versteckt der Matrose, aus den
-¸brigen Kokosn¸ssen bildet er wieder einen groﬂen Haufen und legt sich schlafen.
+      Berechnen Sie mit dieser Prozedur alle reduzierten geordneten pythagoreischen Tripel
+      $[a,b,c]$, f¸r die $c \leq 50$ ist. 
+\end{enumerate}
 
-Der zweite Matrose steht um 24:00 auf, teilt den verbliebenen Haufen in 3 gleiche Teile, wobei
-wieder eine Kokosnuss ¸brig bleibt, die an den Affen f‰llt.  Der zweite Matrose versteckt 
-seinen eigenen Haufen, bildet aus den ¸brigen Kokosn¸ssen wieder einen groﬂen Haufen und legt sich schlafen.
 
-Der dritte Matrose steht um 2:00 auf, teilt den verbliebenen Haufen  in 3 gleiche Teile, wobei
-wieder eine Kokosnuss ¸brig bleibt, die an den Affen f‰llt.  Der dritte Matrose versteckt 
-seinen eigenen Haufen, bildet aus den ¸brigen Kokosn¸ssen wieder einen groﬂen Haufen und legt sich schlafen.
-
-Am n‰chsten Morgen stehen alle wieder auf und teilen gemeinsam den verbliebenen Haufen in 
-drei gleich groﬂe Teile.  Es bleibt wieder eine Kokosnuss f¸r den Affen ¸brig.  
-Schreiben Sie ein \textsc{SetlX}-Programm, das die Zahl der am Anfang vorhandenen
-Kokosn¸sse berechnet.
-\vspace{0.2cm}
 \end{document}
 
 %%% Local Variables: 
