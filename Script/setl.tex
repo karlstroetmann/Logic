@@ -1625,17 +1625,14 @@ liefert als Ergebnis die $n$-malige Verkettung von $s$.  Beispielsweise ist das 
 \hspace*{1.3cm}
 \texttt{3 * \squote{abc};}
 \\[0.2cm]
-der String
-\\[0.2cm]
-\hspace*{1.3cm}
-\squote{abcabcabc}.
+der String \squote{abcabcabc}.
 
 \section{Fallstudie: Berechnung von Wahrscheinlichkeiten}
 Wir wollen in diesem kurzen Abschnitt zeigen, wie sich Wahrscheinlichkeiten für die Poker-Variante
 \textsl{Texas Hold'em} berechnen lassen.  Bei dieser Poker-Variante gibt es insgesamt 52 Karten. Jeder
 dieser Karten hat eine Farbe, die ein Element der Menge
 \\[0.2cm]
-\hspace*{1.3cm} $\textsl{suits} = \{ \club, \spade, \heart, \diamondsuit \}$
+\hspace*{1.3cm} $\textsl{suits} = \{ \club, \heart, \diamondsuit, \spade \}$
 \\[0.2cm]
 ist und außerdem einen Wert hat, der ein Element der Menge
 \\[0.2cm]
@@ -1668,13 +1665,11 @@ gezeigte Programm führt diese Berechnung durch.
                   xrightmargin  = 0.0cm,
                 ]
     suits  := { "c", "h", "d", "s" };
-    values := { "2", "3", "4", "5", "6", "7", "8", "9", 
-                "T", "J", "Q", "K", "A" }; 
+    values := { "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A" }; 
     deck   := { [ v, s ] : v in values, s in suits };
     hole   := { [ "3", "c" ], [ "3", "s" ] };
     rest   := deck - hole;
-    flops  := { { k1, k2, k3 } : k1 in rest, k2 in rest, k3 in rest 
-                               | #{ k1, k2, k3 } == 3 };
+    flops  := { { k1, k2, k3 } : k1 in rest, k2 in rest, k3 in rest | #{ k1, k2, k3 } == 3 };
     print(#flops);
     trips  := { f : f in flops | [ "3", "d" ] in f || [ "3", "h" ] in f };
     print(1.0 * #trips / #flops);
@@ -1686,36 +1681,59 @@ gezeigte Programm führt diese Berechnung durch.
 
 \begin{enumerate}
 \item In Zeile 1 definieren wir die Menge \texttt{suits} der Farben einer Karte.
-\item In Zeile 2 und 3  definieren wir die Menge \texttt{values} der möglichen Werte einer
-      Karte.
-\item In Zeile 4 stellen wir die Menge aller Karten, die wir mit \textsl{deck} bezeichnen,
+      Dabei werden die folgenden Abkürzungen verwendet:
+      \begin{enumerate}
+      \item ``\texttt{c}'' steht für $\club$, (Englisch: \emph{club}),
+      \item ``\texttt{h}'' steht für $\heart$, (Englisch: \emph{heart}), 
+      \item ``\texttt{d}'' steht für $\diamondsuit$, (Englisch: \emph{diamond}) und
+      \item ``\texttt{s}'' steht für $\spade$, (Englisch: \emph{spade}). 
+      \end{enumerate} 
+\item In Zeile 2 definieren wir die Menge \texttt{values} der möglichen Werte einer
+      Karte.  Dabei wurden die folgenden Abkürzungen verwendet:
+      \begin{enumerate}
+      \item ``\texttt{T}'' steht für ``\emph{Ten}'',
+      \item ``\texttt{J}'' steht für ``\emph{Jack}'',
+      \item ``\texttt{Q}'' steht für ``\emph{Queen}'',
+      \item ``\texttt{K}'' steht für ``\emph{King}'' und
+      \item ``\texttt{A}'' steht für ``\emph{Ace}''.
+      \end{enumerate}
+\item In Zeile 3 stellen wir die Menge aller Karten, die wir mit \texttt{deck} bezeichnen,
       als Menge von Paaren dar, wobei die erste Komponente der Paare den Wert und die zweite Komponente 
       die Farbe der Karte angibt.
-\item Die in Zeile 5 definierte Menge \textsl{hole} stellt die Menge der Karten des Spielers dar.
-\item Die verbleibenden Karten bezeichnen wir in Zeile 6 als \textsl{rest}.
-\item In Zeile 7 und 8 berechnen wir die Menge aller möglichen Flops.  Da die Reihenfolge der Karten im
+\item Die in Zeile 4 definierte Menge \texttt{hole} stellt die Menge der Karten des Spielers dar.
+\item Die verbleibenden Karten bezeichnen wir in Zeile 5 als \texttt{rest}.
+\item In Zeile 6 berechnen wir die Menge aller möglichen Flops.  Da die Reihenfolge der Karten im
       Flop keine Rolle spielt, verwenden wir zur Darstellung der einzelnen Flops eine Menge.
       Dabei müssen wir aber darauf achten, dass der Flop auch wirklich aus drei
-      \underline{verschiedenen}  Karten
-      besteht.  Daher haben wir bei der Auswahl der Menge die Bedingung
+      \underline{verschiedenen}  Karten besteht.  Dazu müssen wir fordern, dass die Ungleichungen
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{k1} \not= \mathtt{k2}$, \quad 
+      $\mathtt{k1} \not= \mathtt{k3}$  \quad und \quad
+      $\mathtt{k2} \not= \mathtt{k3}$
+      \\[0.2cm]
+      erfüllt sind.  Dies ist aber genau dann der Fall, wenn die Menge
+      $\{ \mathtt{k1}, \mathtt{k2}, \mathtt{k3} \}$ aus genau drei Elementen besteht.
+      Daher haben wir bei der Auswahl von \texttt{k1}, \texttt{k2} und \texttt{k3} die Bedingung
       \\[0.2cm]
       \hspace*{1.3cm}
       \texttt{\# \{ k1, k2, k3 \} == 3 }
       \\[0.2cm]
       zu beachten.
-\item Die Teilmenge der Flops, in denen mindestens eine weitere 3 auftritt, wird in Zeile 10 
-      berechnet.
+\item Die Teilmenge der Flops, in denen mindestens eine weitere 3 auftritt, wird in Zeile 8
+      berechnet.  Beachten Sie dass es sich dabei nur um die Karten ``$\diamondsuit 3$'' und
+      ``$\heart 3$'' handeln kann, denn die anderen beiden Karten mit dem Wert $3$ befinden sich bereits
+      beim Spieler.
 \item Schließlich berechnet sich die Wahrscheinlichkeit für eine 3 im Flop als das Verhältnis der 
       Anzahl der günstigen Fälle zu der Anzahl der möglichen Fälle.  Wir müssen also nur die Anzahl
       der Elemente der entsprechenden Mengen ins Verhältnis setzen.  
 
-      Hier gibt es aber noch eine Klippe, die umschifft werden muss: Da die Variablen
-      \texttt{\#Trips} und \texttt{\#Flops} mit ganzen Zahlen belegt sind, würde die Division
-      \texttt{\#Trips / \#Flops} als ganzzahlige Division ausgeführt und das Ergebnis wäre
-      eine rationale Zahl.
+      Hier gibt es aber noch eine Klippe, die umschifft werden muss: Da die Auswertung der Ausdrücke
+      \texttt{\#trips} und \texttt{\#flops} ganze Zahlen als Ergebnis liefert, ist das Resultat der Division
+      \texttt{\#trips / \#flops} eine rationale Zahl.
       Daher ist es erforderlich, zunächst eine der beiden Zahlen in eine Fließkomma-Zahl zu konvertieren,
       damit der Quotienten als Fließkomma-Zahl berechnet wird.  Dies können wir beispielsweise dadurch
-      erreichen, dass wir den Dividenden \texttt{\#Trips} mit der Fließkomma-Zahl $1.0$
+      erreichen, dass wir den Dividenden \texttt{\#trips} mit der Fließkomma-Zahl $1.0$
       multiplizieren.
 \end{enumerate}
 Lassen wir das Programm laufen, so sehen wir, dass die Wahrscheinlichkeit, ein
