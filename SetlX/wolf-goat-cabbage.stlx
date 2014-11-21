@@ -12,7 +12,7 @@ findPath := procedure(x, y, r) {
     while (true) {
         oldP  := p;
         p     := p + pathProduct(p, r);
-        found := { l : l in p | l[#l] == y };
+        found := { l : l in p | l[-1] == y };
         if (found != {}) {
             return arb(found);
         }
@@ -23,7 +23,7 @@ findPath := procedure(x, y, r) {
 };
 
 pathProduct := procedure(p, q) {
-    return { add(x,y) : x in p, y in q | x[#x] == y[1] && noCycle(x,y) };
+    return { add(x,y) : x in p, y in q | x[-1] == y[1] && noCycle(x,y) };
 };
 
 noCycle := procedure(l1, l2) {
@@ -41,7 +41,11 @@ printPath := procedure(path, all) {
     for (i in [1 .. #path]) {
         s1 := path[i][1];
         s2 := path[i][2];
-        print(s1, 65 * " ", s2);
+        if (#s1 == 0 || #s2 == 0) {
+            print(s1, 63 * " ", s2);
+        } else {
+            print(s1, 65 * " ", s2);
+        }
         if (i == #path) { 
             break;
         }
@@ -63,11 +67,11 @@ problem := procedure(s) {
 
 all := { "farmer", "wolf", "goat", "cabbage" };
 p   := { [ s1, s2 ] : s1 in 2 ** all, s2 in 2 ** all | s1 + s2 == all && s1 * s2 == {} };
-r1  := { [ [ s1, s2 ], [ s1 - b, s2 + b ] ]: [s1, s2 ] in p, b in 2 ** s1 
-                      | "farmer" in b && #b <= 2 && !problem(s1 - b) 
+r1  := { [[s1, s2], [s1-b, s2+b]]: [s1, s2] in p, b in 2 ** s1 
+                                 | "farmer" in b && #b <= 2 && !problem(s1 - b)
        };
-r2  := { [ [ s1, s2 ], [ s1 + b, s2 - b ] ]: [s1, s2] in p, b in 2 ** s2 
-                      | "farmer" in b && #b <= 2 && !problem(s2 - b)
+r2  := { [[s1, s2], [s1+b, s2-b]]: [s1, s2] in p, b in 2 ** s2 
+                                 | "farmer" in b && #b <= 2 && !problem(s2 - b)
        };
 r   := r1 + r2;
 
@@ -76,6 +80,7 @@ goal  := [ {}, all ];
 
 path := findPath(start, goal, r);
 print(path);
+print("");
 printPath(path, all);
 
 
