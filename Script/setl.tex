@@ -839,7 +839,7 @@ auszugeben.  Jedes Element wird dabei in einer eigenen Zeile ausgedruckt.
 \end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{Menge elementweise ausdrucken.}  \label{fig:from.stlx}
-\end{figure} %\$
+\end{figure} 
 
 Neben der Funktion ``\texttt{from}'' gibt es noch die Funktion
 ``\texttt{arb}'',  die ein beliebiges Element aus einer Menge auswählt, die Menge selbst
@@ -1240,7 +1240,7 @@ Ergibt die Auswertung ``\texttt{false}'', so ist die Auswertung der
 die Auswertung der Schleife dann wieder von vorne, d.h.~es wird wieder
 \textsl{test} ausgewertet und danach wird abhängig von dem Ergebnis dieser
 wieder \textsl{body} ausgewertet.  Das ganze passiert so lange, bis irgendwann
-einmal die Auswertung von \textsl{test} den Wert ``\textsl{false}'' ergibt.
+einmal die Auswertung von \textsl{test} den Wert ``\texttt{false}'' ergibt.
 Die von \textsc{SetlX} unterstützten \texttt{while}-Schleifen funktionieren genauso wie in
 der Sprache \texttt{C}.
 
@@ -1292,9 +1292,10 @@ kleinere Primzahl gibt, die diese Zahl teilt.
 Die allgemeine Syntax der \texttt{for}-Schleife ist in Abbildung \ref{fig:for} auf Seite
 \pageref{fig:for} gezeigt.  Hierbei ist $s$ eine Menge, eine Liste, oder ein String und $x$ ist  der
 Name einer 
-Variablen. Diese Variable wird nacheinander mit allen Werten aus der Menge $s$
+Variablen. Diese Variable wird nacheinander mit allen Werten aus der Menge (oder Liste) $s$
 belegt und anschließend wird mit dem jeweiligen Wert von $x$ der
-Schleifenrumpf \textsl{body} ausgeführt.  
+Schleifenrumpf \textsl{body} ausgeführt.  Falls $s$ ein String ist, dann iteriert die Schleife über
+die Buchstaben aus $s$.
 
 \begin{figure}[!ht]
   \centering
@@ -1324,7 +1325,6 @@ gegebenes $i$ über alle Werte $i \cdot j$, für die das Produkt $i \cdot j \leq n
 Schließlich werden in der letzten  Zeile alle die
 Indizes $i$ ausgedruckt, für die $\mathtt{primes}[i]$  nicht auf 0 gesetzt worden ist,
 denn das sind genau die Primzahlen.
-
 
 \begin{figure}[!ht]
   \centering
@@ -1481,7 +1481,7 @@ In der Sprache \textsl{C} hat das Kommando ``\texttt{break}'' dieselbe Funktion.
 \label{fig:fixpoint.stlx}
 \end{figure}
 
-Abbildung \ref{fig:fixpoint.stlx} zeigt das Program
+Abbildung \ref{fig:fixpoint.stlx} zeigt das Programm
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/fixpoint.stlx}{\texttt{fixpoint.stlx}}.
 Hier ist eine generische Funktion \texttt{solve} implementiert, die zwei Argumente verarbeitet: 
 \pagebreak
@@ -1502,7 +1502,7 @@ Funktion $x \mapsto \frac{1}{1+x}$ in \textsc{SetlX} durch den Ausdruck
 \hspace*{1.3cm}
 \texttt{x |-> 1.0/(1+x)}
 \\[0.2cm]
-definieren können.  Hier habe ich die Fließkomma-Zahl $1.0$ verwendet, das \textsc{SetlX} sonst mit
+definieren können.  Hier habe ich die Fließkomma-Zahl $1.0$ verwendet, da \textsc{SetlX} sonst mit
 rationalen Zahlen rechnen würde, was wesentlich aufwendiger ist.
 
 
@@ -1796,9 +1796,9 @@ Verbindung auch berechnet wird.
 Als erstes bemerken wir, dass ein Graph $R$ nichts anderes ist als eine binäre Relation.
 Um feststellen zu können, ob es zwischen zwei Punkten eine Verbindung gibt,
 müssen wir den transitiven Abschluss $R^+$ der Relation $R$ bilden.  Wir haben bereits
-früher in dem Kapitel zur Mengenlehre gezeigt, dass $R^+$ wie folgt
+in der Mathematik-Vorlesung gezeigt, dass $R^+$ wie folgt
 berechnet werden kann: \\[0.2cm]
-\hspace*{1.3cm} $R^+ = \bigcup\limits_{i=1}^{\infty} R^i = R \cup R^2 \cup R^3 \cup \cdots$  \\[0.2cm]
+\hspace*{1.3cm} $R^+ = \bigcup\limits_{i=1}^{\infty} R^i = R^1 \cup R^2 \cup R^3 \cup \cdots$  \\[0.2cm]
 Auf den ersten Blick betrachtet sieht diese Formel so aus, als ob wir unendlich
 lange rechnen müssten.  Aber versuchen wir einmal, diese Formel anschaulich zu
 verstehen.  Zunächst steht da $R$.  Das sind die Verbindungen, die unmittelbar  gegeben
@@ -1930,7 +1930,7 @@ solange durchführen bis $T_{n+1} = T_n$ gilt, denn dann gilt auch $T_n = R^+$.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    closure := procedure(r) {
+    transClosure := procedure(r) {
         t := r;
         while (true) {
             oldT := t;
@@ -1946,7 +1946,7 @@ solange durchführen bis $T_{n+1} = T_n$ gilt, denn dann gilt auch $T_n = R^+$.
     r := { [1,2], [2,3], [1,3], [2,4], [4,5] };
     print( "r = ", r );
     print( "computing transitive closure of r" );
-    t := closure(r);
+    t := transClosure(r);
     print( "r+ = ", t );
 \end{Verbatim} 
 \vspace*{-0.3cm}
@@ -2002,7 +2002,7 @@ Auswertung von
     s2 := { [ "a", "b" ], [ "c", "d" ] };
     m := { [ x1, x2, x3, y1, y2 ] : [ x1, x2, x3 ] in s1, [ y1, y2 ] in s2 };
 \end{verbatim}
-für \texttt{M} die Menge
+für \texttt{m} die Menge
 \begin{verbatim}
     { [1, 2, 3, "a", "b"], [5, 6, 7, "c", "d"],  
       [1, 2, 3, "c", "d"], [5, 6, 7, "a", "b"] }
@@ -2044,7 +2044,7 @@ $P_1 \bullet P_2 := \bigl\{\; p_1 \oplus p_2 \mid p_1 \in P_1 \wedge p_2 \in P_2
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    closure := procedure(r) {
+    transClosure := procedure(r) {
         p := r;
         while (true) {
             oldP := p;
@@ -2055,7 +2055,7 @@ $P_1 \bullet P_2 := \bigl\{\; p_1 \oplus p_2 \mid p_1 \in P_1 \wedge p_2 \in P_2
         }
     };
     pathProduct := procedure(p, q) {
-        return { add(x, y) : x in p, y in q | x[#x] == y[1] };
+        return { add(x, y) : x in p, y in q | x[-1] == y[1] };
     };    
     add := procedure(p, q) {
         return p + q[2..];
@@ -2063,7 +2063,7 @@ $P_1 \bullet P_2 := \bigl\{\; p_1 \oplus p_2 \mid p_1 \in P_1 \wedge p_2 \in P_2
     r := { [1,2], [2,3], [1,3], [2,4], [4,5] };
     print( "r = ", r );
     print( "computing all paths" );
-    p := closure(r);
+    p := transClosure(r);
     print( "p = ", p );
 \end{Verbatim} 
 \vspace*{-0.3cm}
@@ -2109,7 +2109,7 @@ eliminieren.
                   xrightmargin  = 0.0cm,
                 ]
     pathProduct := procedure(p, q) {
-        return { add(x,y) : x in p, y in q | x[#x] == y[1] && noCycle(x,y) };
+        return { add(x,y) : x in p, y in q | x[-1] == y[1] && noCycle(x,y) };
     };
     noCycle := procedure(l1, l2) {
         return #({ x : x in l1 } * { x : x in l2 }) == 1;
@@ -2172,7 +2172,7 @@ Wir diskutieren nun die Implementierung der Prozedur \texttt{reachable}.
         while (true) {
             oldP  := p;
             p     := p + pathProduct(p, r);
-            found := { l in p | l[#l] == y };
+            found := { l : l in p | l[-1] == y };
             if (found != {}) {
                 return arb(found);
             }
@@ -2188,7 +2188,7 @@ Wir diskutieren nun die Implementierung der Prozedur \texttt{reachable}.
 \end{figure} %\$
 
 \subsection{Der Bauer mit dem Wolf, der Ziege und dem Kohl}
-Wir präsentieren nun eine betriebswissenschaftliche Anwendung des oben entwickelten Algorithmus und
+Wir präsentieren nun eine betriebswirtschaftliche Anwendung des oben entwickelten Algorithmus und
 betrachten folgendes Problem.
 \vspace*{0.3cm}
 
