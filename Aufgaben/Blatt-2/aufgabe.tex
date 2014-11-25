@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage{german}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{fancyvrb}
+\usepackage{alltt}
+\usepackage{hyperref}
+
+\pagestyle{empty}
+
+\begin{document}
+\noindent
+{\Large \textbf{Aufgaben-Blatt}: Missionare und Kannibalen}
+\vspace{0.5cm}
+
+
+\noindent
+Drei Missionare und drei Kannibalen wollen zusammen einen Fluss 
+überqueren. Sie haben nur ein Boot, indem maximal zwei Passagiere fahren können.  
+Sowohl die Kannibalen als auch die Missionare können rudern.
+Die Kannibalen sind hungrig, wenn die Missionare an einem der Ufer in der Unterzahl sind, 
+haben sie ein Problem.  Die Aufgabe besteht darin, einen Fahrplan zu 
+erstellen, so dass hinterher alle das andere  Ufer erreichen und die
+Missionare zwischendurch kein Problem bekommen.                                                          
+Unter 
+\\[0.2cm]
+\hspace*{-0.8cm}      
+\href{https://github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-2/missionare-frame.stlx}{\texttt{https://github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-2/missionare-frame.stlx}} 
+\\[0.2cm]
+finden Sie ein Program-Gerüst, in dem Sie noch verschiedene Teile implementieren müssen
+um das Problem zu lösen.   Für Sie relevant ist erst der Code ab Zeile 124.
+\begin{enumerate}
+\item In Zeile 137 ist die Menge \texttt{p} aller möglichen Zustände zu definieren.  Die Idee
+      ist, dass jeder Zustand durch ein Tripel der Form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{[$m$, $k$, $b$]}
+      \\[0.2cm]
+      dargestellt wird.  Dabei ist $m$ die Anzahl der Missionare am linken Ufer, $k$ ist
+      die Zahl der Kannibalen und $b$ ist die Zahl der Boote.
+\item Definieren Sie in Zeile 142 eine Prozedur $\texttt{problem}(m, k)$. Dabei ist $m$ die Zahl der
+      Missionare  und $k$ ist die Zahl der Kannibalen.
+      Die Prozedur soll genau dann \texttt{true} liefern, wenn es für die Missionare ein Problem gibt.
+\item Definieren Sie  eine Relation $r_{1}$ auf der Menge der Zustände $p$.
+      Ein Paar 
+      \[ \bigl\langle \langle m_1, k_1, b_1 \rangle, \langle m_2, k_2, b_2 \rangle \bigr\rangle \]
+      soll dann in $R_{1}$ liegen, wenn der Zustand $\langle m_2, k_2, b_2\rangle$ aus dem Zustand 
+      $\langle m_1, k_1, b_1\rangle$
+      dadurch hervorgeht, dass das Boot vom linken Ufer zum rechten Ufer mit maximal zwei
+      Passagieren übersetzt und zusätzlich die Missionare  in dem neuen Zustand 
+      kein Problem haben.
+
+      (Zeile 149 in \texttt{missionare-frame.stlx})
+\item Definieren Sie analog zu Teilaufgabe 3 eine Relationen $r_{2}$,
+      die das Übersetzen des Bootes vom rechten Ufer zum linken Ufer beschreibt.
+
+      (Zeile 159 in \texttt{missionare-frame.stlx}.)
+\item Tragen Sie in Zeile 165 und 167 die korrekten Werte für den Start-Zustand
+      und den Ziel-Zustand ein.
+\end{enumerate}
+Wenn Sie alle Teilaufgaben bis hierher richtig gelöst haben, dann kann das Programm nun
+die Lösung des Problems berechnen.
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
