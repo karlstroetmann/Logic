@@ -1,7 +1,8 @@
 \chapter{Grenzen der Berechenbarkeit}
 In jeder Disziplin der Wissenschaft wird die Frage gestellt, welche Grenzen die
 verwendeten Methoden haben.   Wir wollen daher in diesem Kapitel beispielhaft ein Problem
-untersuchen, bei dem die Informatik an ihre Grenzen stößt.  Es handelt sich um das Halte-Problem. 
+untersuchen, bei dem die Informatik an ihre Grenzen stößt.  Es handelt sich um das
+\href{http://de.wikipedia.org/wiki/Halteproblem}{Halte-Problem}.  
 
 \section{Das Halte-Problem}
 Das Halte-Problem ist die Frage, ob eine gegebene Funktion für eine bestimmte Eingabe 
@@ -22,7 +23,7 @@ zeigen wir dann die Unlösbarkeit des Halte-Problems.
                   numbers       = left,
                   numbersep     = -0.2cm,
                   xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
+                  xrightmargin  = 0.8cm
                 ]
     legendre := procedure(n) {
         k := n * n + 1;
@@ -42,16 +43,19 @@ zeigen wir dann die Unlösbarkeit des Halte-Problems.
            }
         }
     };
-\end{Verbatim}
+\end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{Eine Funktion zur Überprüfung der Vermutung von Legendre.}
 \label{fig:legendre.stlx}
 \end{figure}
 
-Um zu verstehen, warum das Halte-Problem schwer ist, betrachten wir 
+Um zu verstehen, warum das Halte-Problem schwer ist, betrachten wir  
 das in Abbildung \ref{fig:legendre.stlx} gezeigte Programm. 
-Dieses Programm ist dazu gedacht, die \emph{Legendre Vermutung} zu überprüfen.  Der französische
-Mathematiker  Adrien-Marie Legendre (1752 --- 1833) hatte vor etwa 200 Jahren die Vermutung
+Dieses Programm ist dazu gedacht, die
+\href{http://de.wikipedia.org/wiki/Legendresche_Vermutung}{\emph{Legendresche Vermutung}} zu
+überprüfen.  Der französische 
+Mathematiker  \href{http://de.wikipedia.org/wiki/Adrien-Marie_Legendre}{Adrien-Marie Legendre} 
+(1752 --- 1833) hatte vor etwa 200 Jahren die Vermutung 
 ausgesprochen, dass zwischen zwei positiven Quadratzahlen immer eine Primzahl liegt.  Die Frage, ob diese
 Vermutung richtig ist, ist auch Heute noch unbeantwortet.  Die in Abbildung \ref{fig:legendre.stlx}
 definierte Funktion $\texttt{legendre}(n)$ überprüft für eine gegebene positive natürliche Zahl $n$,
@@ -99,12 +103,11 @@ Es gibt eine Reihe weiterer offener  mathematischer Probleme, die alle auf die F
 werden können, ob eine gegebene Funktion terminiert.  Daher zeigen die vorhergehenden Überlegungen,
 dass es sehr nützlich wäre, eine Funktion wie \texttt{stops} zur Verfügung zu haben.  Andererseits
 können wir an dieser Stelle schon ahnen, dass die Implementierung der Funktion \texttt{stops}
-zumindest sehr schwierig wird.  Im Gegensatz zu Herrn Legendre, der seine Vermutung nicht bewiesen
-hat, werden wir unsere Vermutung im nächsten Abschnitt formal begründen.
+zumindest sehr schwierig wird.  
 
  
 \subsection{Formale Analyse des Halte-Problems}
-Wir werden zeigen, dass das Halte-Problem nicht durch ein Programm gelöst werden
+Wir werden in diesem Abschnitt beweisen, dass das Halte-Problem nicht durch ein Programm gelöst werden
 kann.  Dazu führen wir folgende Definition ein.
 
 \begin{Definition}[Test-Funktion] 
@@ -158,8 +161,8 @@ die Definition des Begriffs der Test-Funktion gegeben haben, so gilt:
 \end{enumerate} 
 
 \noindent
-Das \emph{Halte-Problem} für \textsc{SetlX}-Funktionen ist die Frage, ob es eine
-\texttt{SetlX}-Funktion \\[0.1cm] 
+Das \emph{Halte-Problem} für
+\textsc{SetlX}-Funktionen ist die Frage, ob es eine \texttt{SetlX}-Funktion \\[0.1cm] 
 \hspace*{1.3cm} 
 $\texttt{stops := procedure}(t,\;a)\; \{\;\cdots\;\}$ \\[0.1cm]
 gibt, die als Eingabe eine Testfunktion $t$ und einen String $a$ erhält und die folgende
@@ -185,7 +188,7 @@ Eigenschaft hat:
 Falls eine \textsc{SetlX}-Funktion \texttt{stops} mit den obigen Eigenschaften existiert, dann
 sagen wir, dass das Halte-Problem für \textsc{SetlX} entscheidbar ist.
 
-\begin{Theorem}[Turing, 1936]
+\begin{Theorem}[\href{http://de.wikipedia.org/wiki/Alan_Turing}{Alan Turing}, 1936]
 {\em
   Das Halte-Problem ist unentscheidbar.
 } 
@@ -235,7 +238,7 @@ Mit dieser Definition ist klar, dass \texttt{turing} eine Test-Funktion ist: \\[
 Damit sind wir in der Lage, den String \texttt{turing} als Eingabe der Funktion \texttt{stops}
 zu verwenden.  Wir betrachten nun den folgenden Aufruf: \\[0.3cm]
 \hspace*{1.3cm} \texttt{stops(\texttt{turing}, \texttt{turing});} \\[0.3cm]
-Offenbar ist \texttt{turing} eine Test-Funktion.  Daher können nur zwei Fälle auftreten:
+Da \texttt{turing} eine Test-Funktion ist, können nur zwei Fälle auftreten:
 \\[0.1cm]
 \hspace*{1.3cm} 
 $\texttt{stops(\texttt{turing}, \texttt{turing})} \leadsto 0 \quad \vee\quad
@@ -251,7 +254,7 @@ Diese beiden Fälle analysieren wir nun im Detail:
       wird dann getestet, ob \texttt{result} den Wert 1 hat.  Dieser Test schlägt fehl.
       Daher wird der Block der \texttt{if}-Anweisung nicht ausgeführt und die Funktion liefert als
       nächstes in Zeile 8 den Wert 0 zurück.  Insbesondere terminiert der Aufruf also, im
-      Widerspruch zu dem, was die Funktion \texttt{stops} behauptet hat.
+      Widerspruch zu dem, was die Funktion \texttt{stops} behauptet hat. $\lightning$
 
       Damit ist der erste Fall ausgeschlossen.
 \item  $\mathtt{stops}(\texttt{turing}, \texttt{turing}) \leadsto 1$. 
@@ -265,12 +268,14 @@ Diese beiden Fälle analysieren wir nun im Detail:
       Daher wird der Block der \texttt{if}-Anweisung ausgeführt.  Dieser Block
       besteht aber nur aus einer Endlos-Schleife, aus der wir nie wieder zurück kommen.
       Das steht im Widerspruch zu dem, was die Funktion \texttt{stops} behauptet hat.
+      $\lightning$
 
       Damit ist der zweite Fall ausgeschlossen.
 \end{enumerate}
 Insgesamt haben wir also in jedem Fall einen Widerspruch erhalten.  
-Also ist die Annahme, dass die \textsc{SetlX}-Funktion \texttt{stops}
-das Halte-Problem löst, falsch.  Insgesamt haben wir gezeigt, dass es keine \textsc{SetlX}-Funktion
+Damit muss die Annahme, dass die \textsc{SetlX}-Funktion \texttt{stops}
+das Halte-Problem löst, falsch sein, denn diese Annahme ist die Ursache für die Widersprüche, die
+wir erhalten haben.  Insgesamt haben wir daher gezeigt, dass es keine \textsc{SetlX}-Funktion
 geben kann, die das Halte-Problem löst. \hspace*{\fill} $\Box$
 \vspace*{0.3cm}
 
@@ -297,12 +302,12 @@ die andere Programmier-Sprache übertragen lässt.
 
 \section{Unlösbarkeit des Äquivalenz-Problems}
 Es gibt noch eine ganze Reihe anderer Funktionen, die nicht berechenbar sind.  In der
-Regel werden wir den Nachweis, dass eine bestimmt Funktion nicht berechenbar ist, dadurch führen, dass
-wir zunächst annehmen, dass die gesuchte Funktion doch implementierbar ist.  Unter dieser Annahme
-konstruieren wir dann eine Funktion, die das Halte-Problem löst, was im Widerspruch zu dem am Anfang dieses Abschnitts
-bewiesen Sachverhalts steht.
-Dieser Widerspruch zwingt uns zu der Folgerung, dass die gesuchte Funktion nicht implementierbar ist.
-Wir werden dieses Verfahren an einem Beispiel demonstrieren. Vorweg benötigen wir aber
+Regel werden wir den Nachweis, dass eine bestimmt Funktion nicht berechenbar ist, indirekt führen
+und annehmen, dass die gesuchte Funktion doch berechenbar ist.  Unter dieser Annahme
+konstruieren wir dann eine Funktion, die das Halte-Problem löst, was im Widerspruch zu der Unlösbarkeit
+des Halte-Problems steht.
+Dieser Widerspruch zwingt uns zu der Folgerung, dass die gesuchte Funktion nicht berechenbar ist.
+Wir werden dieses Verfahren an einem Beispiel demonstrieren.  Vorweg benötigen wir aber
 noch eine Definition.
 
 \begin{Definition}[$\simeq$] 
@@ -312,13 +317,17 @@ Es seien $t_1$ und $t_2$ zwei \textsc{SetlX}-Funktionen und
 \hspace*{1.3cm} $t_1(a_1,\cdots,a_k) \simeq t_2(a_1,\cdots,a_k)$ \\[0.1cm]
 g.d.w. einer der beiden folgen Fälle auftritt:
 \begin{enumerate}
-\item $t_1(a_1,\cdots,a_k)\uparrow \quad\wedge\quad t_2(a_1,\cdots,a_k)\uparrow$
-\item $\exists r: \Bigl(t_1(a_1,\cdots,a_k) \leadsto r \;\wedge\; t_2(a_1,\cdots,a_k) \leadsto r\Bigr)$
+\item $t_1(a_1,\cdots,a_k)\uparrow \quad\wedge\quad t_2(a_1,\cdots,a_k)\uparrow$,
 
+      beide Funktionen divergieren also für die gegebenen Argumente.
+\item $\exists r: \Bigl(t_1(a_1,\cdots,a_k) \leadsto r \;\wedge\; t_2(a_1,\cdots,a_k) \leadsto r\Bigr)$,
+
+      die Funktionen liefern also für die gegebenen Argumente das gleiche Ergebnis.
+\end{enumerate}
       In diesem Fall sagen wir, dass die beiden Funktions-Aufrufe 
-      $t_1(a_1,\cdots,a_k) \simeq t_2(a_1,\cdots,a_k)$ \emph{partiell äquivalent} sind.
-      \hspace*{\fill} $\Box$
-\end{enumerate}}
+      $t_1(a_1,\cdots,a_k) \simeq t_2(a_1,\cdots,a_k)$ \emph{partiell äquivalent} sind.  
+      \qed
+}
 \end{Definition}
 
 \noindent
@@ -402,7 +411,8 @@ geben, die das Äquivalenz-Problem löst.
 
 \noindent
 Die Unlösbarkeit des Äquivalenz-Problems und vieler weiterer praktisch interessanter
-Problem folgen aus einem 1953 von Henry G.~Rice \cite{rice:53} bewiesenen Satz.
+Probleme folgen aus dem 1953 von Henry G.~Rice \cite{rice:53} bewiesenen
+\href{http://de.wikipedia.org/wiki/Satz_von_Rice}{Satz von Rice}.
 
 
 %%% Local Variables: 
