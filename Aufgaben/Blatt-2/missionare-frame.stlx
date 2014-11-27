@@ -25,7 +25,6 @@ printPath := procedure(path) {
     printState(m, k, b);
 };
 
-
 // Die Prozedur printState(m, k, b) druckt den Zustand, bei dem
 // m Missionare, k Kannibalen und b Boote am linken Ufer sind.
 printState := procedure(m, k, b) {
@@ -37,29 +36,31 @@ printState := procedure(m, k, b) {
             fillCharsLeft((1 - b) * "B", 3) 
           );
 };
-
 // Die Prozedur printBoat(m1, k1, b1, m2, k2, b2) druckt den Zustand des
 // Bootes, wenn der Zustand sich von [m1, k1, b1] zu [m2, k2, b2] ändert.
 printBoat := procedure(m1, k1, b1, m2, k2, b2) {
     if (b1 == 1) {
         if (m1 < m2) {
             print("Fehler in printBoat: negative Anzahl von Missionaren im Boot!");
+            return;
         }
         if (k1 < k2) {
             print("Fehler in printBoat: negative Anzahl von Kannibalen im Boot!");
+            return;
         }
         print( 19 * " " + "> " + fillCharsBoth( (m1 - m2) * "M" + " " + (k1 - k2) * "K", 3 ) + " >" );
     } else {
         if (m1 > m2) {
             print("Fehler in printBoat: negative Anzahl von Missionaren im Boot!");
+            return;
         }
         if (k1 > k2) {
             print("Fehler in printBoat: negative Anzahl von Kannibalen im Boot!");
+            return;
         }
         print( 19 * " " + "< " + fillCharsBoth( (m2 - m1) * "M" + " " + (k2 - k1) * "K", 3 ) + " <" );
     }
 };
-
 // Die Prozedur fillCharsLeft(x, n) wandelt x in einen String der Länge n um.
 // Dabei wird der String von links mit Leerzeichen aufgefüllt.
 fillCharsLeft := procedure(x, n) {
@@ -67,7 +68,6 @@ fillCharsLeft := procedure(x, n) {
     m := n - #s;
     return m * " " + s;
 };
-
 // Die Prozedur fillCharsRight(x, n) wandelt x in einen String der Länge n um.
 // Dabei wird der String von rechts mit Leerzeichen aufgefüllt.
 fillCharsRight := procedure(x, n) {
