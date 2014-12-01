@@ -322,8 +322,9 @@ Wir haben in der Mengenlehre gesehen, dass Funktionen als spezielle Relationen
 aufgefasst werden können.  Die Funktion $\circneg$ dreht die Wahrheits-Werte um und
 kann daher als Relation wie folgt geschrieben werden:
 \[ \circneg = \bigl\{ \pair(\texttt{true},\texttt{false}), \pair(\texttt{false},\texttt{true}) \bigr\}. \]
-Es ist anschaulicher, die
-Funktionen durch eine Tabelle zu definieren.  Diese Tabelle ist auf Seite
+Wir könnten auch die Funktionen $\circwedge$, $\circvee$, $\circright$ und $\circleftright$ als
+Relationen definieren, es ist aber anschaulicher, wenn wir die Werte dieser
+Funktionen durch eine Tabelle festlegen.  Diese Tabelle ist oben auf Seite
 \pageref{tab:aussagen-logik} abgebildet. 
 
 \begin{table}[!ht]
@@ -347,7 +348,7 @@ Funktionen durch eine Tabelle zu definieren.  Diese Tabelle ist auf Seite
   \caption{Interpretation der Junktoren.}
   \label{tab:aussagen-logik}
 \end{table}
-Nun können wir den Wert, den eine aussagenlogische Formel $f$ unter einer
+Nun können wir den Wert, den eine aussagenlogische Formel $f$ unter einer gegebenen
 aussagenlogischen Interpretation $\mathcal{I}$ annimmt, durch Induktion nach dem Aufbau
 der Formel $f$ definieren.  Wir werden diesen Wert mit $\widehat{\mathcal{I}}(f)$
 bezeichnen.  Wir setzen:
@@ -468,6 +469,10 @@ als sinnlos erkennen.  Insofern ist die extensionale Interpretation des sprachli
 ``\textsl{wenn $\cdots$, dann}'' nur eine Approximation der umgangssprachlichen Interpretation, die sich für die
 Mathematik und die Informatik aber als ausreichend erwiesen hat.
 
+Es gibt durchaus andere Logiken, in denen die Interpretation des Operators ``$\rightarrow$'' von der
+hier gegebenen Definition abweicht.  Diese Logiken sind allerdings wesentlich komplizierter als die
+Form der Logik, die wir hier betrachten.
+
 \subsection{Implementierung in \textsc{SetlX}} 
 Um die bisher eingeführten Begriffe nicht zu abstrakt werden zu lassen,
 entwickeln wir in \textsc{SetlX} ein Programm, mit dessen Hilfe sich Formeln
@@ -509,8 +514,8 @@ Weise darstellen.
       Der Grund für diese zunächst seltsam anmutende Darstellung der Variable liegt darin,
       dass \textsc{SetlX} intern Variablen in der obigen Form darstellt.  Wenn wir später
       einen \texttt{String} mit Hilfe der \textsc{SetlX}-Funktion \texttt{parse} in eine
-      aussagenlogische Formel umwandeln wollen, so müssen wir Variablen in dieser Form repräsentieren.
-      Damit haben wir also
+      aussagenlogische Formel umwandeln wollen, dann werden Variablen automatisch in dieser Form
+      dargestellt. Damit haben wir also
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{rep}(p) := \texttt{\symbol{94}variable}(p)$ \quad für alle $p \in \mathcal{P}$.
@@ -541,7 +546,7 @@ sind wir weitgehend frei.  Wir hätten oben sicher auch eine andere Repräsentatio
 verwenden können.  Beispielsweise wurden in einer früheren Version dieses Skriptes die
 aussagenlogischen Formeln als Listen repräsentiert.
 Eine gute Repräsentation sollte einerseits möglichst intuitiv sein, andererseits ist
-es auch wichtig, dass die Repräsentation für die zu entwickelnden Algorithmen \underline{adäquat}
+es auch wichtig, dass die Repräsentation für die zu entwickelnden Algorithmen \underline{adä}q\underline{uat}
 ist.  Im wesentlichen heißt dies, dass es einerseits einfach sein sollte, auf
 die Komponenten einer Formel zuzugreifen, andererseits sollte es auch leicht sein,
 die entsprechende Repräsentation zu erzeugen.  Da wir zur Darstellung der
@@ -566,10 +571,13 @@ Formel in \textsc{SetlX} intern als Term dargestellt wird.  Die Eingabe
 in der Kommandozeile liefert uns das Ergebnis
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{\symbol{94}implication(\symbol{94}variable(\symbol{34}p\symbol{34}), \symbol{94}disjunction(\symbol{94}variable(\symbol{34}p\symbol{34}), \symbol{94}negation(\symbol{94}variable(\symbol{34}q\symbol{34}))))}
+\texttt{\symbol{94}implication(\symbol{94}variable(\symbol{34}p\symbol{34}), \symbol{94}disjunction(\symbol{94}variable(\symbol{34}p\symbol{34}), \symbol{94}not(\symbol{94}variable(\symbol{34}q\symbol{34}))))}
 \\[0.2cm]
-Wir erkennen beispielsweise, dass in \textsc{SetlX} der Operator ``\texttt{=>}'' intern
+Wir erkennen, dass in \textsc{SetlX} der Operator ``\texttt{=>}'' intern
 durch das Funktions-Zeichen ``\texttt{\symbol{94}implication}'' dargestellt wird.
+Dem Operator ``\texttt{||}'' entspricht das Funktions-Zeichen ````\texttt{\symbol{94}disjunction}'',
+der Operator ``\texttt{\&\&}'' wird durch ``\texttt{\symbol{94}conjunction}'' repräsentiert und
+der Operator ``\texttt{!}'' wird intern als  ``\texttt{\symbol{94}not}'' geschrieben.
 
 Als nächstes geben wir an, wie wir eine aussagenlogische Interpretation in \textsc{SetlX}
 darstellen.  Eine aussagenlogische Interpretation ist eine Funktion \\[0.2cm]
@@ -579,10 +587,10 @@ $\mathbb{B}$.  Ist eine Formel $f$ gegeben, so ist klar, dass bei der
 Interpretation ${\cal I}$ nur die Aussage-Variablen $p$ eine Rolle spielen,
 die auch in der Formel $f$ auftreten.  Wir können daher die Interpretation
 ${\cal I}$ durch eine funktionale Relation darstellen, also durch eine Menge von
-Paaren \texttt{[ $p$, $b$ ]}, für die $p$ eine Aussage-Variable ist und für die zusätzlich
+Paaren der Form \texttt{[ $p$, $b$ ]}, für die $p$ eine Aussage-Variable ist und für die zusätzlich
 $b \in \mathbb{B}$ gilt:
 \[ \mathcal{I} \subseteq \mathcal{P} \times \mathbb{B}. \]
-Damit können wir jetzt eine einfache Funktion schreiben, dass den Wahrheitswert
+Damit können wir jetzt eine einfache Funktion schreiben, die den Wahrheitswert
 einer aussagenlogischen Formel $f$ unter einer gegebenen aussagenlogischen
 Interpretation ${\cal I}$ berechnet. Die Funktion
 \href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/evaluate.stlx}{\texttt{evaluate.stlx}}
@@ -697,7 +705,7 @@ Wenn es genau eine Belegungen gibt, für die dies der Fall ist, dann liefert uns 
 Belegung den oder die Täter.  Eine Belegung entspricht dabei 1-zu-1 der Menge der Täter.
 Hätten wir beispielsweise \\[0.2cm]
 \hspace*{1.3cm} 
-$\mathcal{I} = \bigl\{ \pair(a,\mathtt{false}), \pair(b,\mathtt{false}), \pair(c,\mathtt{true}) \bigr\}$.
+$\mathcal{I} = \bigl\{ \pair(a,\mathtt{false}), \pair(b,\mathtt{false}), \pair(c,\mathtt{true}) \bigr\}$,
 \\[0.2cm]
 so wäre Claus der alleinige Täter.  Diese Belegung löst unser Problem offenbar
 nicht, denn Sie widerspricht der dritten Aussage: Da Bruno unschuldig wäre, wäre dann auch
@@ -717,7 +725,7 @@ Wir diskutieren diese Programm nun Zeile für Zeile.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    // This procedure turns a subset m of set set of all variables 
+    // This procedure turns a subset m of the set of all variables 
     // into a propositional valuation i, such that i(x) is true 
     // iff x is an element of m.
     createValuation := procedure(m, v) {
@@ -740,12 +748,12 @@ Wir diskutieren diese Programm nun Zeile für Zeile.
     print("p = ", p);
     // b is the set of all propositional valuations.
     b  := { createValuation(m, v) : m in p };
-    s  := { i in b | forall (f in fs | evaluate(f, i)) };
+    s  := { i : i in b | forall (f in fs | evaluate(f, i)) };
     print("Set of all valuations satisfying all facts: ", s);
     if (#s == 1) {
         i := arb(s);
-        taeter := { x in v | i[x] };
-        print("Set of culprits: ", taeter);
+        offenders := { x : x in v | i[x] };
+        print("Set of offenders: ", offenders);
     }
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -800,7 +808,7 @@ Wir diskutieren diese Programm nun Zeile für Zeile.
 \end{enumerate}
 Lassen wir das Programm laufen, so erhalten wir als Ausgabe
 \begin{verbatim}
-    Set of culprits: {"b", "c"}
+    Set of offenders: {"b", "c"}
 \end{verbatim}
 Damit liefern unsere ursprünglichen Formeln ausreichende Information um die Täter zu überführen:
 Bruno und Claus sind schuldig.
@@ -951,7 +959,7 @@ gegebene aussagenlogische Formel $f$ testet, of $f$ eine Tautologie ist.
     tautology := procedure(f) {
         p := collectVars(f);
         // a is the set of all propositional valuations.
-        a := { { [x, x in m] : x in p } : m in pow(p) };
+        a := { { [x, x in m] : x in p } : m in 2 ** p };
         if (forall (i in a | evaluate(f, i))) {
             return {};
         } else {
@@ -1026,7 +1034,7 @@ Wir diskutieren die Definition der Funktion $\textsl{tautology}$ nun Zeile für Z
 
       ${\cal I}(m_1) := \bigl\{ \bigl\langle x, x \!\in\! \{\} \bigl\rangle\, |\, x \!\in\! \{p,q\} = \bigl\{ \bigl\langle p, p \!\in\! \{\} \bigl\rangle,\, \bigl\langle q, q \!\in\! \{\} \bigl\rangle \bigr\} = \bigl\{ \bigl\langle p, \mathtt{false} \bigl\rangle,\, \bigl\langle q, \mathtt{false} \bigl\rangle \bigr\}$.
 
-      ${\cal i}(m_2) := \bigl\{ \bigl\langle x, x \!\in\! \{p\} \bigl\rangle\, |\, x \!\in\! \{p,q\} \bigr\} = \bigl\{ \bigl\langle p, p \!\in\! \{p\} \bigl\rangle,\, \bigl\langle q, q \!\in\! \{p\} \bigl\rangle \bigr\} = \bigl\{ \bigl\langle p, \mathtt{true} \bigl\rangle,\, \bigl\langle q, \mathtt{false} \bigl\rangle \bigr\}$.
+      $\mathcal{I}(m_2) := \bigl\{ \bigl\langle x, x \!\in\! \{p\} \bigl\rangle\, |\, x \!\in\! \{p,q\} \bigr\} = \bigl\{ \bigl\langle p, p \!\in\! \{p\} \bigl\rangle,\, \bigl\langle q, q \!\in\! \{p\} \bigl\rangle \bigr\} = \bigl\{ \bigl\langle p, \mathtt{true} \bigl\rangle,\, \bigl\langle q, \mathtt{false} \bigl\rangle \bigr\}$.
 
       ${\cal I}(m_3) := \bigl\{ \bigl\langle x, x \!\in\! \{q\} \bigl\rangle\, |\, x \!\in\! \{p,q\} \bigr\} = \bigl\{ \bigl\langle p, p \!\in\! \{q\} \bigl\rangle,\, \bigl\langle q, q \!\in\! \{q\} \bigl\rangle \bigr\} = \bigl\{ \bigl\langle p, \mathtt{false} \bigl\rangle,\, \bigl\langle q, \mathtt{true} \bigl\rangle \bigr\}$.
 
@@ -1610,20 +1618,20 @@ Klausel $c$ zunächst die Menge
 aller Variablen, die in der Klausel $c$ auftreten.  Anschließend wird die Menge
 \\[0.2cm]
 \hspace*{1.3cm}
-\verb'{ args(l)[1] : l in c | fct(l) == "^negation" }'
+\verb'{ args(l)[1] : l in c | fct(l) == "^not" }'
 \\[0.2cm]
 berechnet.  Diese Menge enthält alle die aussagenlogischen Variablen $p$, für die $\neg p$
 ein Element der Klausel $c$ ist, denn die Formel $\neg p$ wird intern in \textsc{SetlX}
 durch den Term
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{\symbol{94}negation(p)}
+\texttt{\symbol{94}not(p)}
 \\[0.2cm]
 dargestellt.  Falls also das Literal $l$ die Form $l = \neg p$ hat, so hat der Term $l$
-das Funktions-Zeichen \texttt{\symbol{94}negation}.  Die Anwendung der Funktion
+das Funktions-Zeichen \texttt{\symbol{94}not}.  Die Anwendung der Funktion
 \texttt{fct} auf $l$ liefert uns genau dieses Funktions-Zeichen.  Der Ausdruck
 $\texttt{args}(l)$ berechnet die Liste der Argumente des Funktions-Zeichens 
-\texttt{\symbol{94}negation} und diese Liste enthält als einziges Element gerade die
+\texttt{\symbol{94}not} und diese Liste enthält als einziges Element gerade die
 aussagenlogische Variable $p$, die wir daher durch den Ausdruck
 \\[0.2cm]
 \hspace*{1.3cm}

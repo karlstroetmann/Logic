@@ -1,0 +1,45 @@
+// Die Prozedur eval(f, I) wertet die aussagen-logische Formel f unter
+// der aussagen-logischen Interpretation I aus.
+evaluate := procedure(f, i) {
+    match (f) {
+        case true:         return true;
+        case false:        return false;
+        case ^variable(p): return i[p];
+        case !g:           return !evaluate(g, i);
+        case g && h:       return  evaluate(g, i) && evaluate(h, i);
+        case g || h:       return  evaluate(g, i) || evaluate(h, i);
+        case g => h:       return  evaluate(g, i) => evaluate(h, i);
+        case g <==> h:     return  evaluate(g, i) == evaluate(h, i);
+        default:           abort("syntax error in evaluate($f$, $i$)");
+    }
+};
+// This procedure turns a subset m of the set of all variables 
+// into a propositional valuation i, such that i(x) is true 
+// iff x is an element of m.
+createValuation := procedure(m, v) {
+    return { [ x, x in m ] : x in v };
+};
+// Austin, Brian, or Colin is guilty.
+f1 := parse("a || b || c");
+// If Austin is guilty, he has exactly one accomplice.
+f2 := parse("a => b || c");    // at least one accomplice
+f3 := parse("a => !(b && c)"); // at most  one accomplice
+// If Brian is innocent, then Colin is innocent, too.
+f4 := parse("!b => !c"); 
+// If exactly two are guilty, then Colin is one of them.
+f5 := parse("!(a && b && !c)"); 
+// If Colin is innocent, then Austin is guilty.
+f6 := parse("!c => a");
+fs := { f1, f2, f3, f4, f5, f6 };
+v  := { "a", "b", "c" };
+p  := 2 ** v;
+print("p = ", p);
+// b is the set of all propositional valuations.
+b  := { createValuation(m, v) : m in p };
+s  := { i : i in b | forall (f in fs | evaluate(f, i)) };
+print("Set of all valuations satisfying all facts: ", s);
+if (#s == 1) {
+    i := arb(s);
+    offenders := { x : x in v | i[x] };
+    print("Set of offenders: ", offenders);
+}
