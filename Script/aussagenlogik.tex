@@ -593,7 +593,7 @@ $b \in \mathbb{B}$ gilt:
 Damit können wir jetzt eine einfache Funktion schreiben, die den Wahrheitswert
 einer aussagenlogischen Formel $f$ unter einer gegebenen aussagenlogischen
 Interpretation ${\cal I}$ berechnet. Die Funktion
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/evaluate.stlx}{\texttt{evaluate.stlx}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/evaluate.stlx}{\texttt{evaluate.stlx}}
 ist in Abbildung \ref{fig:evaluate.stlx} auf Seite \pageref{fig:evaluate.stlx} gezeigt.
 
 \begin{figure}[!ht]
@@ -712,7 +712,7 @@ nicht, denn Sie widerspricht der dritten Aussage: Da Bruno unschuldig wäre, wäre
 Claus unschuldig.  Da es zu zeitraubend ist, alle Belegungen von Hand auszuprobieren,
 schreiben wir besser ein Programm, das für uns die notwendige Berechnung durchführt.
 Abbildung \ref{fig:watson.stlx} zeigt das Programm
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/watson.stlx}{\texttt{watson.stlx}}.
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/watson.stlx}{\texttt{watson.stlx}}.
 Wir diskutieren diese Programm nun Zeile für Zeile.
 
 \begin{figure}[!ht]
@@ -988,11 +988,11 @@ gegebene aussagenlogische Formel $f$ testet, of $f$ eine Tautologie ist.
 \noindent
 Die in Abbildung \ref{fig:tautology.stlx} auf Seite \pageref{fig:tautology.stlx}
 gezeigte Funktion
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/tautology.stlx}{\texttt{tautology}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/tautology.stlx}{\texttt{tautology}}
 testet, ob die als Argument übergebene
 aussagenlogische Formel $f$ allgemeingültig ist.   
 Die Prozedur verwendet die Funktion 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/evaluate.stlx}{\texttt{evaluate}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/evaluate.stlx}{\texttt{evaluate}}
 aus dem in Abbildung
 \ref{fig:evaluate.stlx} auf Seite \pageref{fig:evaluate.stlx} gezeigten Programm.
 Wir diskutieren die Definition der Funktion $\textsl{tautology}$ nun Zeile für Zeile:
@@ -1375,7 +1375,7 @@ die das Verhalten der Funktion $\texttt{elimGdw}()$ beschreiben:
 Abbildung
 \ref{fig:eliminate-gdw} auf Seite \pageref{fig:eliminate-gdw} zeigt die Implementierung der
 Prozedur 
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/knf.stlx}{\texttt{elimGdw}}.
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{elimGdw}}.
 
 \begin{figure}[!ht]
   \centering
@@ -1393,7 +1393,7 @@ Prozedur
             case g && h   : return elimGdw(g) && elimGdw(h);
             case g || h   : return elimGdw(g) || elimGdw(h);
             case g => h   : return elimGdw(g) => elimGdw(h);
-            case g <==> h : return (elimGdw(g) => elimGdw(h)) && (elimGdw(h) => elimGdw(g));
+            case g <==> h : return elimGdw((g => h) && (h => g));
             default       : return f; 
         }
     };
@@ -1407,7 +1407,7 @@ Als nächstes betrachten wir die Prozedur zur Elimination des Junktors ``$\righta
 Abbildung
 \ref{fig:eliminate-folgt} auf Seite \pageref{fig:eliminate-folgt} zeigt die
 Implementierung der Funktion
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/knf.stlx}{\texttt{elimFolgt}}.
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{elimFolgt}}.
 Die der Implementierung zu Grunde liegende Idee ist dieselbe wie bei der Elimination des
 Junktors ``$\leftrightarrow$''.  Der einzige Unterschied besteht darin, dass wir jetzt die
 Äquivalenz \\[0.2cm]
@@ -1443,8 +1443,8 @@ bereits vorher eliminiert wurde.  Dadurch entfällt ein Fall.
 Als nächstes zeigen wir die Routinen zur Berechnung der Negations-Normalform.
 Abbildung
 \ref{fig:nnf} auf Seite \pageref{fig:nnf} zeigt die Implementierung der Funktionen
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/knf.stlx}{\texttt{nnf}} und
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/knf.stlx}{\texttt{neg}},
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{nnf}} und
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{neg}},
 die sich wechselseitig aufrufen.  Dabei berechnet \texttt{neg($f$)}
 die Negations-Normalform von $\neg f$, während \texttt{nnf($f$)} die
 Negations-Normalform von $f$ berechnet, es gilt also
@@ -1526,7 +1526,7 @@ von Literalen dargestellt.  Dabei interpretieren wir eine Menge von Literalen al
 Disjunktion der Literale und eine Menge von Klauseln interpretieren wir als Konjunktion
 der Klauseln.
 Abbildung \ref{fig:knf} auf Seite \pageref{fig:knf} zeigt die Implementierung der Funktion
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/knf.stlx}{\texttt{knf}}.
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{knf}}.
 \begin{enumerate}
 \item Falls die Formel $f$, die wir in KNF transformieren wollen, die Form \\[0.2cm]
       \hspace*{1.3cm} $f = \neg g$ \\[0.2cm]
@@ -1641,8 +1641,8 @@ aus dem Literal $l$ extrahieren können.  Falls nun die beiden oben berechneten M
 gemeinsames Element haben, so ist die Klausel $c$ trivial.  Dies wird dadurch geprüft,
 dass der Schnitt der beiden Mengen berechnet wird.
 Das vollständige Programm zur Berechnung der konjunktiven Normalform finden Sie als die Datei
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/knf.stlx}{\texttt{knf.stlx}}
-auf meiner Webseite.
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{knf.stlx}}
+unter GitHub..
 
 \begin{figure}[!ht]
   \centering
@@ -1699,7 +1699,7 @@ an, um zu entscheiden, ob $p \rightarrow r$ aus den beiden Formeln $p \rightarro
 $q \rightarrow r$ folgt.   Wir bilden also die konjunktive Normalform der Formel 
 \[ h := (p \rightarrow q) \wedge (q \rightarrow r) \rightarrow p \rightarrow r
 \]
-und erhalten 
+und erhalten nach mühsamer Rechnung
 \[
    (p \vee \neg p \vee r \vee \neg r) \wedge (\neg q \vee \neg p \vee r \vee \neg r) \wedge
    (\neg q \vee \neg p \vee q \vee r) \wedge (p \vee \neg p \vee q \vee r). 
@@ -3169,7 +3169,7 @@ ausdruckt.  Das funktioniert allerdings nur, wenn ein Font verwendet wird, bei d
 selbe Breite haben.  Diese Prozedur ist der Vollständigkeit halber in Abbildung \ref{fig:printBoard}
 gezeigt, wir wollen die Implementierung aber nicht weiter diskutieren.
 Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
-\href{http://wwwlehre.dhbw-stuttgart.de/stroetmann/Logic/SetlX/queens.stlx}{\texttt{queens.stlx}}.
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/queens.stlx}{\texttt{queens.stlx}}.
 
 
 \begin{figure}[!ht]
