@@ -4,37 +4,23 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-findPath := procedure(x, y, r) {
-    p := { [x] };
-    while (true) {
-        oldP  := p;
-        p     := pathProduct(p, r);
-        m     := { l[#l] : l in p };  // m contains all reachable points
-        if (y in m) {
-            return arb({ l in p | l[#l] == y });
-        }
-        // reduce p so that there is only one path to a given point
-        p := { arb({ l in p | l[#l] == u }) : u in m };
-        if (p == oldP) {
-            return;
+findPath := procedure(start, goal, rltn) {
+    paths    := { [start] };
+    states   := { start };   // reachbles states
+    explored := {};          // explored states
+    while (states != explored) {
+        explored := states;
+        paths    := { l : l in pathProduct(paths, rltn) | !(l[-1] in states) };
+        states   += { l[-1] : l in paths };  
+        if (goal in states) {
+            return arb({ l : l in paths | l[-1] == goal });
         }
     }
 };
 
 // The procedure call product(p, q) computes the path product p * q.
 pathProduct := procedure(p, q) {
-    return { add(x,y) : x in p, y in q | x[#x] == y[1] && !cyclic(add(x,y)) };
-};
-
-// The procedure not_cyclic(p) checks whether the path p is cyclic.
-cyclic := procedure(p) {
-    return #{ x : x in p } < #p;
-};
-
-// The product call add(p,q) computes the sum of the lists p and q.
-// The last point of p has to be the first point of q.
-add := procedure(p, q) {
-    return p + q[2..];
+    return { x + [ y[2] ] : x in p, y in q | x[-1] == y[1] };
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -46,7 +32,7 @@ add := procedure(p, q) {
 
 // This procedure prints the solution.
 printPath := procedure(path) {
-    print("Lösung:\n");
+    print("Solution:\n");
     for ([a, b, c] in path) {
         printState(a, b, c);
     }
@@ -77,8 +63,22 @@ toList := procedure(s) {
 // Example:
 // inverse({ ["a", 1], ["b", 2] }) = {[1, "a"], [2, "b"]}
 inverse := procedure(r) {
-
+    return { [ y, x ] : [ x, y ] in r };	
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -169,5 +169,4 @@ goal := [ [], [0], [3,1,2] ];
 path := findPath(start, goal, r);
 // und gebe diesen Schritt für Schritt aus.
 printPath(path);
-
 
