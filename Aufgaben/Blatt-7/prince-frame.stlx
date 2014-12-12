@@ -1,0 +1,221 @@
+////////////////////////////////////////////////////////////////////////
+//                                                                    //
+// Überführung in konjunktive Normal-Form                             //
+//                                                                    //
+////////////////////////////////////////////////////////////////////////
+
+// Diese Prozedur überführt die Formel f in konjunktive Normalform.
+normalize := procedure(f) {
+    n1 := elimGdw(f);
+    n2 := elimFolgt(n1);
+    n3 := nnf(n2);
+    n4 := knf(n3);
+    return simplify(n4);
+};
+// Eliminiert den Operator "<==>" aus der eingegebenen Formel f.
+elimGdw := procedure(f) {
+    match (f) {
+        case !g       : return !elimGdw(g);
+        case g && h   : return elimGdw(g) && elimGdw(h);
+        case g || h   : return elimGdw(g) || elimGdw(h);
+        case g => h   : return elimGdw(g) => elimGdw(h);
+        case g <==> h : return elimGdw((g => h) && (h => g));
+        default       : return f; 
+    }
+};
+// Eliminiert den Operator "=>" aus der eingegebenen Formel f.
+elimFolgt := procedure(f) {
+    match (f) {
+        case !g     : return !elimFolgt(g);
+        case g && h : return  elimFolgt(g) && elimFolgt(h);
+        case g || h : return  elimFolgt(g) || elimFolgt(h);
+        case g => h : return  elimFolgt(!g || h);
+        default     : return f; 
+    }
+};
+// Berechnet die Negations-Normalform der Formel f.
+nnf := procedure(f) {
+    match (f) {
+        case !g     : return neg(g);
+        case g && h : return nnf(g) && nnf(h);
+        case g || h : return nnf(g) || nnf(h);
+        default     : return f; 
+    }
+};
+// Diese Funktion berechnet die Negations-Normalform von (-f) und schiebt dabei
+// das Negationszeichen soweit wie möglich nach innen.
+neg := procedure(f) {
+    match (f) {
+        case !g     : return nnf(g);
+        case g && h : return neg(g) || neg(h);
+        case g || h : return neg(g) && neg(h);
+        default     : return !f; 
+    }
+};
+knf := procedure(f) {
+    match (f) {
+        case !g     : return { { !g } };
+        case g && h : return knf(g) + knf(h);
+        case g || h : return { k1 + k2 : k1 in knf(g), k2 in knf(h) };
+        default     : return { { f } }; // f is a variable
+    }
+};
+// Die Prozedur simplify(k) eliminiert triviale Klauseln aus der KNF k.
+simplify := procedure(k) {
+    return { c : c in k | !isTrivial(c) };
+};
+
+// Die Prozedur isTrivial(c) testet ob die Klausel c trivial ist.
+isTrivial := procedure(c) {
+    positiveLiterals := { p : p in c | fct(p) == "^variable" };
+    negativeLiterals := { args(l)[1] : l in c | fct(l) == "^not" };
+    return positiveLiterals * negativeLiterals != {};
+};
+
+// clauses ist eine Menge von Klauseln und literals ist eine Menge
+// von Literalen.  Der Aufruf DavisPutnam(clauses, literals) versucht 
+// eine Lösung der Menge
+//                        clauses
+// zu berechnen.  Wenn dies gelingt, wird eine Menge von Unit-Klauseln 
+// zurück gegeben, die keine komplementären Literale enthält.  Aus dieser 
+// Menge kann dann unmittelbar eine Belegung berechnet werden, die clauses
+// löst.
+//       Wenn die Menge clauses unlösbar ist, wird { {} } zurück gegeben.
+// Das Argument literals dient der Buchhaltung bei den rekursiven Aufrufen.
+// Hier werden alle die Literale aufgesammelt, mit denen die Menge clauses
+// schon reduziert wurde.  Beim ersten Aufruf ist diese Menge leer.
+davisPutnam := procedure(clauses, literals) {
+    clauses := saturate(clauses);
+    if ({} in clauses) {
+        return { {} };
+    }
+    if (forall (c in clauses | #c == 1)) {
+        return clauses;
+    }
+    l := selectLiteral(clauses, literals);
+    notL := negateLiteral(l);    
+    r := davisPutnam(clauses + { {l} }, literals + { l, notL });
+    if (r != { {} }) {
+        return r;
+    }     
+    return davisPutnam(clauses + { {notL} }, literals + { l, notL });
+};
+// Gegeben ist eine Menge S von Klauseln.  Der Aufruf saturate(S) berechnet alle
+// Klauseln, die mit Unit Schnitten aus S ableitbar sind.  Zusätzlich werden alle
+// Klauseln, die von Unit-Klauseln subsumiert werden, aus der Menge S entfernt.
+saturate := procedure(s) {
+    units := { k : k in s | #k == 1 };
+    used  := {};
+    while (units != {}) {
+        unit  := arb(units);
+        used  += { unit };
+        l     := arb(unit);
+        s     := reduce(s, l);
+        units := { k : k in s | #k == 1 } - used;        
+    }
+    return s;
+};
+// Die Prozedur reduce(s,l) führt alle Unit-Schnitte und alle Unit-Subsumptionen,
+// die mit der Unit-Klausel {l} möglich sind, durch.
+reduce := procedure(s, l) {
+    notL := negateLiteral(l);
+    return   { k - { notL } : k in s | notL in k } 
+           + { k : k in s | !(notL in k) && !(l in k) } 
+           + { {l} };
+};
+
+// Wir wählen ein beliebiges Literal aus einer beliebigen Klausel,
+// so dass weder dieses Literal noch die Negation benutzt wurden.
+selectLiteral := procedure(s, forbidden) {
+    return arb(+/ s - forbidden);
+};
+
+// Diese Prozedur berechnet das Komplement des Literals l.
+negateLiteral := procedure(l) {
+    match (l) {
+        case !p : return p;
+        case  p : return !p;
+    }
+};
+
+// Aufgabe: Der König führt den Prinzen in einen Raum mit 9 Türen. An
+// jeder Tür hängt ein Schild. In einem Zimmer ist eine Prinzessin, jedes
+// andere Zimmer ist leer oder es steckt ein Tiger drin. Der Prinz möchte
+// die Prinzessin haben.
+
+// Die Prozedur computeClauses berechnet eine Menge von Klauseln, die das Problem
+// als aussagenlogische Formel beschreibt.  Die Variable 
+//     P(i)    ist für i in { 1, ..., n }
+// genau dann wahr, wenn die Prinzessin in dem i-ten Zimmer ist.  Die Variable
+//     T(i)    ist für i in { 1, ..., n }
+// genau dann wahr, wenn in dem i-ten Zimmer ein Tiger ist.  Die Variable
+//     Z(i)    ist für i in { 1, ..., n }
+// genau dann wahr, wenn die Aufschrift des i-ten Zimmers wahr ist.  Die Variable
+//     w       
+// ist genau dann wahr, wenn alle Aufschriften an leeren Zimmern wahr sind.
+computeClauses := procedure() {
+    // Die Prinzessin muss irgendwo sein
+    clauses := "?";
+    // Es gibt nur eine Prinzessin.
+    clauses += "?";
+    // Der König sagt: In dem Zimmer, wo die Prinzessin ist, ist die Aufschrift wahr. 
+    clauses += "?";
+    // In Zimmern wo Tiger drin sind, ist die Aufschrift falsch.  
+    clauses += "?";
+    // 1. Zimmer: Prinzessin ist in einem Zimmer mit ungerader Zimmernummer.
+    //            In den Zimmern mit gerader Nummer ist kein Tiger.
+    clauses += "?";
+    // 2. Zimmer: Dieses Zimmer ist leer.
+    clauses += "?";
+    // 3. Zimmer: Die Aufschrift an Zimmer 5 ist wahr, die Aufschrift an Zimmer 7 ist falsch
+    //            und in Zimmer 3 ist ein Tiger. 
+    clauses += "?"; 
+    // 4. Zimmer: Die Aufschrift an Zimmer 1 ist falsch, in Zimmer 8 ist kein Tiger,
+    //            und die Aufschrift an Zimmer 9 ist richtig.
+    clauses += "?";
+    // 5. Zimmer: Wenn die Aufschrift an Zimmer 2 oder an Zimmer 4 wahr ist,
+    //            dann ist kein Tiger im Zimmer 1.
+    clauses += "?";
+    // 6. Zimmer: Die Aufschrift an Zimmer 3 ist falsch, die Prinzessin ist im Zimmer 2 
+    //            und im Zimmer 2 ist kein Tiger.
+    clauses += "?";
+    // 7. Zimmer: Die Prinzessin ist im Zimmer 1 und die Aufschrift an Zimmer 5 ist wahr.
+    clauses += "?";
+    // 8. Zimmer: In diesem Zimmer ist kein Tiger und Zimmer 9 ist leer.
+    clauses += "?";
+    // 9. Zimmer: Weder in diesem Zimmer noch in Zimmer 1 ist ein Tiger und die Aufschrift 
+    //            an Zimmer 6 ist wahr.
+    clauses += "?";
+    // Entweder sind alle Aufschriften an leeren Zimmern wahr, oder alle Aufschriften an
+    // leeren Zimmern sind falsch.
+    clauses += "?";
+    return clauses;
+};
+// s is a set of propositional variables. The call atMostOne(s) creates
+// a set of clauses.  This set expresses the fact that at most one of
+// the variables in s is true.
+atMostOne := procedure(s) {
+    return { { !p, !q } : p in s, q in s | p != q };
+};
+// Parse a propositional formula and transform the result into a conjunctive
+// normal form in set notation.
+parseKNF := procedure(f) {
+    return normalize(parse(f));
+};
+solve := procedure() {
+    clauses := computeClauses();
+    possible := {};  // Räume, in denen die Prinzessin sein könnte
+    for (r in {1 .. 9}) {
+        if (davisPutnam(clauses + {{ P(r) }}, {}) != {{}}) {
+            possible += { r };
+        }
+    }
+    if (#possible == 1) {
+        r := arb(possible);
+        print("Die Prinzessin ist im Zimmer Nr. $r$.");
+    } else {
+        print("Das Problem ist nicht eindeutig lösbar!");
+    }   
+};
+
+solve();

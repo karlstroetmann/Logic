@@ -1,25 +1,20 @@
 load("davis-putnam.stlx");
-
 // s is a set of propositional variables. The call atMostOne(s) creates
 // a set of clauses.  This set expresses the fact that at most one of
 // the variables in s is true.
 atMostOne := procedure(s) {
     return { { !p, !q } : p in s, q in s | p != q };
 };
-
 // This procedure computes a set of clauses.  This set of clauses is true
 // iff there is at most one queen on the given row.
 atMostOneInRow := procedure(row, n) {
     return atMostOne({ Var(row, j) : j in [1 .. n] });
 };
-
 // This procedure computes a set of clauses.  This set of clauses is true
 // iff there is at least one queen on the given column.
 oneInColumn := procedure(column, n) {
     return { { Var(row, column) : row in { 1 .. n } } };
 };
-
-
 // This procedure computes a set of clauses.  This set of clauses is true
 // iff there is at most one queen on the diagonal satisfying the equation 
 //    row + column = k.
@@ -27,7 +22,6 @@ atMostOneInUpperDiagonal := procedure(k, n) {
     s := { Var(r, c) : c in [1..n], r in [1..n] | r + c == k };
     return atMostOne(s);
 };
-
 // This procedure computes a set of clauses.  This set of clauses is true
 // iff there is at most one queen on the diagonal satisfying the equation 
 //    row - column = k.
@@ -62,7 +56,6 @@ allClauses := procedure(n) {
            + +/ { atMostOneInUpperDiagonal(k, n) : k in {3 .. 2*n - 1}  }
            + +/ { oneInColumn(column, n)         : column in {1 .. n}   };
 };
-
 // Solve the n-queens puzzle.
 solve := procedure(n) {
     clauses  := allClauses(n);
@@ -76,7 +69,6 @@ solve := procedure(n) {
         print("Try to increase the number of queens.");
     }
 };
-
 // i is a set of unit clauses and board is a matrix of propositional 
 // variables representing a chessboard.   This procedure prints the 
 // chessboard.
@@ -108,7 +100,6 @@ printBoard := procedure(i, n) {
         print( "        " + ((8*n+1) * "-") );
     }
 };
-
-solve(3);
+solve(8);
 
 
