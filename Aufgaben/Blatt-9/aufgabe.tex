@@ -1,0 +1,110 @@
+\documentclass{article}
+\usepackage{german}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{fancyvrb}
+\usepackage{alltt}
+\usepackage{epsfig}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{lastpage} 
+\usepackage{color}
+\hypersetup{
+	colorlinks = true, % comment this to make xdvi work
+	linkcolor  = blue,
+	citecolor  = red,
+        filecolor  = blue,
+        urlcolor   = [rgb]{0.5, 0.4, 0.0},
+	pdfborder  = {0 0 0} 
+}
+
+\renewcommand*{\familydefault}{\sfdefault}
+
+\pagestyle{fancy}
+
+\fancyfoot[C]{--- \thepage/\pageref{LastPage}\ ---}
+ 
+\def\pair(#1,#2){\langle #1, #2 \rangle}
+%\renewcommand{\labelenumi}{(\alph{enumi})}
+\renewcommand{\labelenumi}{\arabic{enumi}.}
+
+\begin{document}
+\noindent
+{\Large \textbf{Aufgaben-Blatt}: \quad Der Tunnel}
+\vspace{0.5cm}
+
+
+
+\noindent
+Vier Personen, Alice, Britney, Charly und Daniel, müssen eine Tunnel durchqueren.  Der Tunnel
+ist so eng, dass immer nur zwei Personen gleichzeitig hindurch können.  Außerdem braucht
+man zum Durchqueren des Tunnels eine Fackel.  Die vier haben aber zusammen nur eine einzige
+Fackel.  Die Zeiten, die Alice, Britney, Charly und Daniel zum Durchqueren benötigen,
+sind 1 Minute, 2 Minuten, 4 Minuten und 5 Minuten.  Berechnen Sie einen Plan zum
+Durchqueren des Tunnels, der die benötigte Zeit minimiert.
+Verwenden Sie zur Lösung des Problems die Vorlage, die Sie im Netz unter der Adresse
+\noindent
+\\[0.2cm]
+\hspace*{0.3cm}
+\href{https://github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-9/tunnel-frame.stlx}{\texttt{github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-9/tunnel-frame.stlx}} 
+\\[0.2cm]
+finden.  Gehen Sie bei der Lösung des Problems in folgenden Schritten vor:
+\begin{enumerate}
+\item Implementieren Sie in Zeile 85 eine Funktion \texttt{timeSet}, die für eine gegebene 
+      Menge $s$ von Personen berechnet, wie lange es für die Gruppe $s$ dauern würde, den Tunnel zu
+      durchqueren.  Beachten Sie, dass die Menge $s$ auch das Element
+      \texttt{\symbol{34}Torch\symbol{34}} enthält.
+
+      \textbf{Hinweis}:  Die Funktion \texttt{timeSet} ist als \texttt{closure} deklariert, damit
+      Sie bei der Implementierung auf die funktionale Relation \texttt{timeNeeded} zurück greifen
+      können.  Diese Relation ist in Zeile 79 bereits definiert.
+\item Implementieren Sie in Zeile 95 eine Funktion
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{timeTransition}(\textsl{stateBefore}, \textsl{stateBefore})$.
+      \\[0.2cm]
+      Hier bezeichnet \textsl{stateBefore} den Zustand am Eingang des Tunnels bevor eine Gruppe den
+      Tunnel in eine der beiden Richtungen durchquert, während \textsl{stateAfter} den Zustand nach
+      der Durchquerung beschreibt.  Zustände werden dabei  durch Teilmengen der in Zeile 76
+      definierten Menge \texttt{all} kodiert.
+\item Implementieren Sie in Zeile 105 eine Funktion \texttt{timePath}, so dass der Aufruf
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{timePath}(l)$
+      \\[0.2cm]
+      für eine Liste $l$ von aufeinander folgenden Zuständen die Zeit berechnet, die insgesamt für alle
+      Transitionen benötigt wird.  
+
+      \textbf{Beispiel}: Falls die Liste $l$ die Form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $l = [s_1, s_2, s_3, s_4]$
+      \\[0.2cm]
+      hätte, dann könnte $\texttt{timePath}(l)$ durch den Ausdruck
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{timeTransition}(s_1, s_2) + \texttt{timeTransition}(s_2, s_3) +\texttt{timeTransition}(s_3, s_4)$
+      \\[0.2cm]
+      berechnet werden.
+\item Definieren Sie in Zeile 115 die Menge aller Zustände.  Ein einzelner Zustand ist dabei eine
+      Teilmenge der in Zeile 76 definierten Menge \texttt{all}.
+\item Definierten Sie in Zeile 117 die Relation \texttt{r1}, mit der die Zustandsübergänge
+      beschrieben werden, bei denen eine Gruppe von Personen den Tunnel vom Eingang zum Ausgang
+      durchquert. 
+\item Definierten Sie in Zeile 119 die Relation \texttt{r2}, mit der die Zustandsübergänge
+      beschrieben werden, bei denen eine Gruppe von Personen im  Tunnel vom Ausgang zum Eingang
+      zurück läuft. 
+\item Definieren Sie den Startzustand in Zeile 122.
+\item Definieren Sie den Zustand, der am Ende erreicht werden soll, in Zeile 124.
+\item Die Lösung wird nun in Zeile 126 berechnet und in Zeile 129 ausgegeben.  Bei der optimalen
+      Lösung werden insgesamt 12 Minuten zur Durchquerung des Tunnels benötigt.
+
+      Auf meinem Rechner dauert die Berechnung der Lösung etwas weniger als 7 Sekunden.
+\end{enumerate}
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
