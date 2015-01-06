@@ -1,0 +1,322 @@
+// clauses ist eine Menge von Klauseln und literals ist eine Menge
+// von Literalen.  Der Aufruf DavisPutnam(clauses, literals) versucht 
+// eine Lösung der Menge
+//                        clauses
+// zu berechnen.  Wenn dies gelingt, wird eine Menge von Unit-Klauseln 
+// zurück gegeben, die keine komplementären Literale enthält.  Aus dieser 
+// Menge kann dann unmittelbar eine Belegung berechnet werden, die clauses
+// löst.
+//       Wenn die Menge clauses unlösbar ist, wird { {} } zurück gegeben.
+// Das Argument literals dient der Buchhaltung bei den rekursiven Aufrufen.
+// Hier werden alle die Literale aufgesammelt, mit denen die Menge clauses
+// schon reduziert wurde.  Beim ersten Aufruf ist diese Menge leer.
+davisPutnam := procedure(clauses, literals) {
+    clauses := saturate(clauses);
+    if ({} in clauses) {
+        return { {} };
+    }
+    if (forall (c in clauses | #c == 1)) {
+        return clauses;
+    }
+    l := selectLiteral(clauses, literals);
+    notL := negateLiteral(l);    
+    r := davisPutnam(clauses + { {l} }, literals + { l, notL });
+    if (r != { {} }) {
+        return r;
+    }     
+    return davisPutnam(clauses + { {notL} }, literals + { l, notL });
+};
+// Gegeben ist eine Menge S von Klauseln.  Der Aufruf saturate(S) berechnet alle
+// Klauseln, die mit Unit Schnitten aus S ableitbar sind.  Zusätzlich werden alle
+// Klauseln, die von Unit-Klauseln subsumiert werden, aus der Menge S entfernt.
+saturate := procedure(s) {
+    units := { k : k in s | #k == 1 };
+    used  := {};
+    while (units != {}) {
+        unit  := arb(units);
+        used  += { unit };
+        l     := arb(unit);
+        s     := reduce(s, l);
+        units := { k : k in s | #k == 1 } - used;        
+    }
+    return s;
+};
+// Die Prozedur reduce(s,l) führt alle Unit-Schnitte und alle Unit-Subsumptionen,
+// die mit der Unit-Klausel {l} möglich sind, durch.
+reduce := procedure(s, l) {
+    notL := negateLiteral(l);
+    return   { k - { notL } : k in s | notL in k } 
+           + { k : k in s | !(notL in k) && !(l in k) } 
+           + { {l} };
+};
+
+// Wir wählen ein beliebiges Literal aus einer beliebigen Klausel,
+// so dass weder dieses Literal noch die Negation benutzt wurden.
+selectLiteral := procedure(s, forbidden) {
+    return arb(+/ s - forbidden);
+};
+
+// Diese Prozedur berechnet das Komplement des Literals l.
+negateLiteral := procedure(l) {
+    match (l) {
+        case !p : return p;
+        case  p : return !p;
+    }
+};
+
+// Parse a propositional formula and transform the result into a conjunctive
+// normal form in set notation.
+parseKNF := procedure(f) {
+    return normalize(parse(f));
+};
+
+// Diese Prozedur überführt die Formel f in konjunktive Normalform.
+normalize := procedure(f) {
+    n1 := elimGdw(f);
+    n2 := elimFolgt(n1);
+    n3 := nnf(n2);
+    n4 := knf(n3);
+    return simplify(n4);
+};
+// Eliminiert den Operator "<==>" aus der eingegebenen Formel f.
+elimGdw := procedure(f) {
+    match (f) {
+        case !g       : return !elimGdw(g);
+        case g && h   : return elimGdw(g) && elimGdw(h);
+        case g || h   : return elimGdw(g) || elimGdw(h);
+        case g => h   : return elimGdw(g) => elimGdw(h);
+        case g <==> h : return elimGdw((g => h) && (h => g));
+        default       : return f; 
+    }
+};
+// Eliminiert den Operator "=>" aus der eingegebenen Formel f.
+elimFolgt := procedure(f) {
+    match (f) {
+        case !g     : return !elimFolgt(g);
+        case g && h : return  elimFolgt(g) && elimFolgt(h);
+        case g || h : return  elimFolgt(g) || elimFolgt(h);
+        case g => h : return  elimFolgt(!g || h);
+        default     : return f; 
+    }
+};
+// Berechnet die Negations-Normalform der Formel f.
+nnf := procedure(f) {
+    match (f) {
+        case !g     : return neg(g);
+        case g && h : return nnf(g) && nnf(h);
+        case g || h : return nnf(g) || nnf(h);
+        default     : return f; 
+    }
+};
+// Diese Funktion berechnet die Negations-Normalform von (-f) und schiebt dabei
+// das Negationszeichen soweit wie möglich nach innen.
+neg := procedure(f) {
+    match (f) {
+        case !g     : return nnf(g);
+        case g && h : return neg(g) || neg(h);
+        case g || h : return neg(g) && neg(h);
+        default     : return !f; 
+    }
+};
+knf := procedure(f) {
+    match (f) {
+        case !g     : return { { !g } };
+        case g && h : return knf(g) + knf(h);
+        case g || h : return { k1 + k2 : k1 in knf(g), k2 in knf(h) };
+        default     : return { { f } }; // f is a variable
+    }
+};
+// Die Prozedur simplify(k) eliminiert triviale Klauseln aus der KNF k.
+simplify := procedure(k) {
+    return { c : c in k | !isTrivial(c) };
+};
+
+// Die Prozedur isTrivial(c) testet ob die Klausel c trivial ist.
+isTrivial := procedure(c) {
+    return { p : p in c | fct(p) == "^variable" } * 
+           { args(l)[1] : l in c | fct(l) == "^not" } != {};
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+// The problem specific code starts here.                                     //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+// Given a set s of propositional variables, the call atMostOne(s) creates
+// a set of clauses.  This set expresses the fact that at most one of
+// the variables in s is true.
+atMostOne := procedure(s) {
+    return { { !p, !q } : p in s, q in s | p != q };
+};
+
+// Given a function symbol f and an index i, this procedure generates the 
+// propositional variable f(i).  For example, the expression
+//
+//   propVar("German", 2)
+// 
+// generates the propositional variable German(i).
+propVar := procedure(f, i) {
+    return makeTerm(f, [i]);
+};
+
+// We use the following propositional variable:
+//
+// Briton(i):  The Briton lives in house number i, where i is an element of the
+//             set {1..5}.  The other nationalities are coded using the
+//             propositional variables
+//                      German(i), Swede(i), American(i), and Norwegian(i).
+// Red(i):     The house with number i is red.
+//             similarly: Green(i), White(i), Blue(i), Yellow(i).
+// Dunhill(i): The inhabitant of house number i smokes Dunhill.
+//             similarly: Camel(i), Marlboro(i), Winfield(i), Rothmanns(i).
+// Dog(i):     The dog lives in house number i.
+//             similarly: Parrot(i), Cat(i), Pig(i), Zebra(i).
+// Whiskey(i): The inhabitant of house number i drinks Whiskey.
+//             similarly: Coffee(i), Beer(i), Milk(i), Water(i).
+
+// If this function is called as 
+//      onePerHouse({"German", "Briton", "Swede", "American", "Norwegian"});    
+// then it will generate clauses stating that
+//      1.  There is a house where the German lives.
+//      2.  There is a house where the Briton lives.
+//          ...
+//      3.  The Briton and the Swede do not live in the same house and
+//          similarly for all other pairs of nationalities.
+//      4.  Someone lives in the 1. house.
+//      5.  Someone lives in the 2. house.
+//          ...
+onePerHouse := procedure(m) {
+	return    { somewhere(x): x in m } 
+         + +/ { atMostOneAt(m, i): i in {1 .. 5} }
+         +    { someone(m, i): i in {1 .. 5}};
+    
+};
+// If this function is called as 
+//       somewhere("Briton")
+// it willl generate a clause stating that the Briton lives somewhere.
+somewhere := procedure(x) {
+	return { propVar(x, i): i in {1 .. 5} };
+};
+// This procedure generates a clause that expresses that some variable from the set m 
+// is true for the index i.  For example, the call
+//
+//    someone({ "German", "Briton", "Swede", "Norwegian", "American" }, 2)
+// 
+// generates a clause expressing that somebody lives in the house with  number 2.
+someone := procedure(m, i) {
+
+};
+// The argument m is a set of function symbols. For example,
+//
+//   m = { "German", "Briton", "Swede", "Norwegian", "American" }.
+//
+// The argument i is an integer in the set {1..5}.  This variable represents
+// the number of a house.  Continuing the example, atMostOneAt(m, i) generates 
+// a set of clauses that is true iff at most one of the propositional variables
+//
+//    German(i), Briton(i), Swede(i), Norwegian(i), American(i)
+//
+// is true.
+atMostOneAt := procedure(m, i) {
+	return atMostOne({ propVar(x, i): x in m});
+};
+
+// This procedure can be called as sameHouse("Briton", "Red") to express
+// the fact that the Briton lives in the red house.
+sameHouse := procedure(a, b) {
+    result := {};
+    for (i in [1..5]) {
+        result += parseKNF("$propVar(a, i)$ <==> $propVar(b, i)$");
+    }
+    return result;
+};
+
+// nextTo(a, b) is true if a is next to b.  This procedure might be called as
+// nextTo("Marlboro", "Cat") to generate a set of clauses that express the fact
+// that the person smoking Marlboro lives next to the person who owns a cat.
+nextTo := procedure(a, b) {
+
+
+
+
+
+    
+};
+
+leftTo := procedure(a, b) {
+
+
+
+
+
+
+};
+
+allClauses := procedure() {
+    clauses := {};
+    // Every house has exactly one inhabitant.  This inhabitant has exactly one
+    // nationality, one pet, smokes one brand of cigarettes, and has one type
+    // of drink.  Furthermore, every house has exactly one color.
+
+
+
+    
+    // The Briton lives in the red house. 
+
+    // The Swede has a dog.
+
+    // The American drinks whiskey.
+
+    // The inhabitant of the green house drinks coffee.
+
+    // The person who owns a parrot smokes Camel.
+
+    // The person in the yellow house smokes Dunhill.
+
+    // The person smoking Winfield drinks beer.
+
+    // The German smokes Rothmanns.
+
+    // The green house is left to the white house.
+
+    // The inhabitant of the third house drinks milk.
+
+    // The Norwegian lives in the first house. 
+
+    // The person smoking Marlboro lives next to the person who owns a cat.
+
+    // The person with the pig lives next to the Dunhill smoker.
+
+    // The Norwegian lives next to the blue house.
+
+    // The Marlboro smoker lives next to the house where water is drunken.
+
+    return clauses;
+};
+
+solve := procedure() {
+    clauses  := allClauses();
+    solution := davisPutnam(clauses, {});
+    printSolution(solution);
+    print("checking uniqueness ...");
+    for (i in {1 .. 5}) {
+	    solution := davisPutnam(clauses + { { propVar("Zebra", i) } }, {});
+        if (solution == {{}}) {
+            print("The zebra cannot be in house number " + i + ".");
+        } else {
+            print("The zebra might be in house number " + i + ".");
+        }
+    }
+};
+
+printSolution := procedure(solution) {
+    for (clause in solution) {
+        match (arb(clause)) {
+            case !p: // skip
+            case  p: print(p);
+        }
+    }
+};
+
+solve();
