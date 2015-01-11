@@ -53,7 +53,7 @@ einer Spezifikation der Stelligkeit dieser Zeichen.
 Als Bezeichner für Objekte verwenden wir Ausdrücke, die aus Variablen und
 Funktions-Zeichen aufgebaut sind.  Solche Ausdrücke nennen wir \emph{Terme}.  
 Formal werden diese wie folgt definiert.
-\begin{Definition}[Terme]
+\begin{Definition}[Terme,  $\mathcal{T}_\Sigma$]
   Ist $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ eine Signatur, so definieren wir die Menge der $\Sigma$-Terme
   $\mathcal{T}_\Sigma$ induktiv:
   \begin{enumerate}
@@ -92,10 +92,15 @@ Dann können wir wie folgt $\Sigma_{\mathrm{arith}}$-Terme konstruieren:
       denn $\mathtt{+}(0,x) \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$, $1 \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$ und
       $*$ ist ein 2-stelliges Funktions-Zeichen.
 \end{enumerate}
+In der Praxis werden wir für bestimmte zweistellige Funktionen eine Infix-Schreibweise
+verwenden.  Diese ist dann als Abkürzung für die oben definierte Darstellung zu verstehen.
+\eox
+
 
 Als nächstes definieren wir den Begriff der \emph{atomaren Formeln}.  Darunter verstehen wir
-solche Formeln, die man nicht in kleinere Formeln zerlegen kann, atomare Formeln enthalten also weder Junktoren noch Quantoren.
-\begin{Definition}[Atomare Formeln]
+solche Formeln, die man nicht in kleinere Formeln zerlegen kann, atomare Formeln enthalten also
+weder Junktoren noch Quantoren. 
+\begin{Definition}[Atomare Formeln,  $\mathcal{A}_\Sigma$]
   Gegeben sei eine Signatur $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$. 
   Die Menge der atomaren $\Sigma$-Formeln $\mathcal{A}_\Sigma$
   wird wie folgt definiert:  Ist $p \el \mathcal{P}$ ein $n$-stelliges Prädikats-Zeichen
@@ -107,42 +112,53 @@ solche Formeln, die man nicht in kleinere Formeln zerlegen kann, atomare Formeln
   \eox
 \end{Definition}
 
-Setzen wir das obige Beispiel fort, so können wir sehen, dass \\[0.2cm]
+\example
+Setzen wir das letzte Beispiel fort, so können wir sehen, dass \\[0.2cm]
 \hspace*{1.3cm} $\mathtt{=}(*(\mathtt{+}(0,x),1),0)$ \\[0.2cm]
 eine atomare $\Sigma_\mathrm{arith}$-Formel ist.  Beachten Sie, dass wir bisher noch nichts über den Wahrheitswert von solchen 
 Formeln ausgesagt haben.  Die Frage, wann eine Formel als wahr oder falsch gelten soll,
 wird erst im nächsten Abschnitt untersucht.
-\vspace{0.1cm}
+\eox
 
 \noindent
 Bei der Definition der prädikatenlogischen Formeln ist es notwendig,
 zwischen sogenannten \emph{gebundenen} und \emph{freien} Variablen zu unterscheiden.
 Wir führen diese Begriffe zunächst informal mit Hilfe eines Beispiels aus der Analysis ein.
 Wir betrachten die folgende Identität: \\[0.2cm]
-\hspace*{1.3cm} $\int\limits_{0}^{x} y \cdot  t\, d t = \frac{1}{2} x^2 \cdot  y$ \\[0.2cm]
+\hspace*{1.3cm}
+ $\ds\int_{0}^{x} y \cdot  t\, d t = \frac{1}{2} \cdot x^2 \cdot  y$ 
+\\[0.2cm]
 In dieser Gleichung treten die Variablen $x$ und $y$ \emph{frei} auf, während die Variable $t$ durch das Integral
 \emph{gebunden} wird.  Damit meinen wir folgendes: Wir können in dieser Gleichung für $x$ und $y$ beliebige Werte
  einsetzen, ohne dass sich an der 
 Gültigkeit der Formel etwas ändert.  Setzen wir zum Beispiel für $x$ den Wert $2$ ein, so erhalten wir \\[0.2cm]
-\hspace*{1.3cm}  $\int\limits_{0}^{2} y \cdot  t\, d t = \frac{1}{2} 2^2 \cdot  y$ \\[0.2cm]
+\hspace*{1.3cm}
+$\ds\int_{0}^{2} y \cdot  t\, d t = \frac{1}{2} \cdot 2^2 \cdot  y$ \\[0.2cm]
 und diese Identität ist ebenfalls gültig.  Demgegenüber macht es keinen Sinn, wenn wir für die gebundene Variable
  $t$ eine Zahl einsetzen würden.
 Die linke Seite der entstehenden Gleichung wäre einfach undefiniert.  Wir können für $t$
 höchstens eine andere Variable einsetzen. 
 Ersetzen wir die Variable $t$ beispielsweise durch $u$, so erhalten wir \\[0.2cm]
-\hspace*{1.3cm} $\int\limits_{0}^{x} y \cdot  u\, d u = \frac{1}{2} x^2 \cdot  y$ \\[0.2cm]
+\hspace*{1.3cm}
+$\ds\int_{0}^{x} y \cdot  u\, d u = \frac{1}{2} \cdot x^2 \cdot  y$ 
+\\[0.2cm]
 und das ist dieselbe Aussage wie oben.  Das funktioniert allerdings nicht mit jeder Variablen. Setzen wir
 für $t$ die Variable $y$ ein, so erhalten wir \\[0.2cm]
-\hspace*{1.3cm}  $\int\limits_{0}^{x} y \cdot  y\, d y = \frac{1}{2} x^2 \cdot  y$. \\[0.2cm]
+\hspace*{1.3cm}
+$\ds\int_{0}^{x} y \cdot  y\, d y = \frac{1}{2} \cdot x^2 \cdot  y$. \\[0.2cm]
 Diese Aussage ist aber falsch!  Das Problem liegt darin, dass bei der Ersetzung von $t$ durch $y$ die vorher freie Variable
 $y$ gebunden wurde.  
 
 Ein ähnliches Problem erhalten wir, wenn wir für $y$ beliebige Terme einsetzen.  Solange diese Terme die Variable $t$ 
 nicht enthalten, geht alles gut.  Setzen wir beispielsweise für $y$  den Term $x^2$ ein, so erhalten
 wir \\[0.2cm]
-\hspace*{1.3cm}  $\int\limits_{0}^{x} x^2 \cdot  t\, d t = \frac{1}{2} x^2 \cdot  x^2$ \\[0.2cm]
+\hspace*{1.3cm}
+$\ds\int_{0}^{x} x^2 \cdot  t\, d t = \frac{1}{2} \cdot x^2 \cdot  x^2$ 
+\\[0.2cm]
 und diese Formel ist gültig.  Setzen wir allerdings für $y$ den Term $t^2$ ein, so erhalten wir \\[0.2cm]
-\hspace*{1.3cm} $\int\limits_{0}^{x} t^2 \cdot  t\, d t = \frac{1}{2} x^2 \cdot  t^2$ \\[0.2cm]
+\hspace*{1.3cm}
+$\ds\int_{0}^{x} t^2 \cdot  t\, d t = \frac{1}{2} \cdot x^2 \cdot  t^2$ 
+\\[0.2cm]
 und diese Formel ist nicht mehr gültig. 
 
 In der Prädikatenlogik binden die Quantoren ``$\forall$'' (\emph{für alle}) und ``$\exists$''
@@ -164,7 +180,7 @@ $\Sigma$-Term $t$ die Menge der in $t$ enthaltenen Variablen.
 \end{Definition}
 
 
-\begin{Definition}[$\Sigma$-Formel, gebundene und freie Variablen] 
+\begin{Definition}[$\Sigma$-Formel,  $\mathbb{F}_\Sigma$, gebundene und freie Variablen, $\textsl{BV}(F)$,  $\textsl{FV}(F)$] 
 \label{praedikaten-formel} \hspace*{\fill} \\
     Es sei $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ eine Signatur.
     Die Menge der $\Sigma$-\emph{Formeln} bezeichnen wir mit $\mathbb{F}_\Sigma$.
@@ -185,8 +201,9 @@ $\Sigma$-Term $t$ die Menge der in $t$ enthaltenen Variablen.
           \item $\BV\bigl( \neg F \bigr) := \BV(F)$.
           \end{enumerate}
     \item Sind $F, G \in \mathbb{F}_\Sigma$ und gilt außerdem \\[0.2cm]
-          \hspace*{1.3cm} $\FV(F) \cap \BV(G) = \{\}$ \quad und \quad
-                          $\FV(G) \cap \BV(F) = \{\}$, \\[0.2cm]
+          \hspace*{1.3cm}
+          $\bigl(\FV(F) \cup \FV(G)\bigr) \cap \bigl(\BV(F) \cup \BV(G)) = \{\}$,
+          \\[0.2cm]
           so gilt auch
           \begin{enumerate}
           \item $(F \wedge G) \in \mathbb{F}_\Sigma$,
@@ -218,17 +235,19 @@ $\Sigma$-Term $t$ die Menge der in $t$ enthaltenen Variablen.
 Bei der oben gegebenen Definition haben wir darauf geachtet, dass eine Variable nicht gleichzeitig
 frei und gebunden in einer Formel auftreten kann, denn durch eine leichte Induktion nach dem Aufbau
 der Formeln lässt sich zeigen, dass für alle $F \in \mathbb{F}_\Sigma$ folgendes gilt:
-\[ \FV(F) \cap \BV(F) = \{\}. \]
+\\[0.2cm]
+\hspace*{1.3cm}
+$ \FV(F) \cap \BV(F) = \{\}$. 
 
 
-\noindent
-\textbf{Beispiel}: Setzen wir das oben begonnene Beispiel fort, so  sehen wir, dass \\[0.2cm]
+\example
+Setzen wir das oben begonnene Beispiel fort, so  sehen wir, dass \\[0.2cm]
 \hspace*{1.3cm} $(\exists x \colon\, \leq\!(\mathtt{+}(y, x),y))$ \\[0.2cm]
 eine Formel aus $\mathbb{F}_{\Sigma_{\mathrm{arith}}}$ ist. 
 Die Menge der gebundenen Variablen ist $\{x\}$, die Menge der freien Variablen ist 
-$\{ y \}$. 
+$\{ y \}$. \eox
 
-Wenn wir Formeln immer in dieser Form anschreiben würden, dann würde die Lesbarkeit unverhältnismäßig leiden.
+Wenn wir Formeln immer in der oben definierten Präfix-Notation anschreiben würden, dann würde die Lesbarkeit unverhältnismäßig leiden. 
 Zur Abkürzung vereinbaren wir, dass in der Prädikatenlogik dieselben Regeln zur Klammer-Ersparnis
 gelten sollen,  die wir schon in der Aussagenlogik verwendet haben.  Zusätzlich werden
 gleiche Quantoren zusammengefasst: Beispielsweise schreiben wir  
@@ -244,14 +263,18 @@ Wir schreiben beispielsweise \\[0.2cm]
 Die Formel $(\exists x \colon \leq(\mathtt{+}(y, x),y))$ wird dann lesbarer als \\[0.2cm]
 \hspace*{1.3cm} $\exists x \colon y + x \leq y$ \\[0.2cm]
 geschrieben.  Außerdem finden Sie in der Literatur häufig Ausdrücke der Form
-$\forall x\el M: F$ oder $\exists x\el M: F$.  Hierbei handelt es sich um Abkürzungen, die
-wie folgt definiert sind:
-\[ \bigl(\forall x\el M: F\bigr) \stackrel{def}{\Longleftrightarrow} \forall x: \bigl(x \el M \rightarrow F\bigr),\]
-\[ \bigl(\exists x\el M: F\bigr) \stackrel{def}{\Longleftrightarrow} \exists x: \bigl(x \el M \wedge F\bigr).\]
+$\forall x\el M: F$ oder $\exists x\el M: F$.  Hierbei handelt es sich um Abkürzungen, die durch
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds \bigl(\forall x\el M: F\bigr) \stackrel{\mathrm{def}}{\Longleftrightarrow} \forall x: \bigl(x \el M \rightarrow F\bigr)$,
+\quad und \quad 
+$\ds\bigl(\exists x\el M: F\bigr) \stackrel{\mathtt{def}}{\Longleftrightarrow} \exists x: \bigl(x \el M \wedge F\bigr)$.
+\\[0.2cm]
+definiert sind.
 
 \section{Semantik der Prädikatenlogik}
-Als nächstes legen wir die Bedeutung der Formeln fest.  Dazu definieren wir mit Hilfe der
-Mengenlehre den Begriff einer \emph{$\Sigma$-Struktur}.  Eine solche Struktur legt fest, wie die
+Als nächstes legen wir die Bedeutung der Formeln fest.  Dazu definieren wir 
+den Begriff einer \emph{$\Sigma$-Struktur}.  Eine solche Struktur legt fest, wie die
 Funktions- und Prädikats-Zeichen der Signatur $\Sigma$ zu interpretieren sind.
 
 \begin{Definition}[Struktur]
@@ -287,8 +310,8 @@ Funktions- und Prädikats-Zeichen der Signatur $\Sigma$ zu interpretieren sind.
     \end{enumerate}
 \end{Definition}
 
-\noindent
-\textbf{Beispiel}: Wir geben ein Beispiel für eine $\Sigma_{\mathrm{arith}}$-Struktur
+\example
+Wir geben ein Beispiel für eine $\Sigma_{\mathrm{arith}}$-Struktur
 $\struct_{\mathrm{arith}} = \langle \mathcal{U}_{\mathrm{arith}}, \mathcal{J}_{\mathrm{arith}} \rangle$,
 indem wir definieren:
 \begin{enumerate}
@@ -299,11 +322,11 @@ indem wir definieren:
       der natürlichen Zahlen zu interpretieren sind.
 
       Ebenso sollen die Prädikats-Zeichen $=$ und $\leq$ durch die Gleichheits-Relation
-      und die Kleiner-Gleich-Relation interpretiert werden.
+      und die Kleiner-Gleich-Relation interpretiert werden. \eox
 \end{enumerate}
 
-\noindent
-\textbf{Beispiel}: Wir geben ein weiteres  Beispiel.
+\example
+ Wir geben ein weiteres  Beispiel.
 Die Signatur  $\Sigma_G$ der Gruppen-Theorie sei definiert als \\[0.2cm]
 \hspace*{1.3cm} $\Sigma_G = \langle \mathcal{V}, \mathcal{F}, \mathcal{P},\textsl{arity}\rangle$ 
 \quad mit
@@ -330,7 +353,7 @@ wie folgt festlegen:
                                  \bigl\langle\pair(b,b), \mathtt{true}\bigr\rangle \Bigr\}$
                                  
       Beachten Sie, dass wir bei der Interpretation des Gleichheits-Zeichens 
-      keinen Spielraum haben!
+      keinen Spielraum haben! \eox
 \end{enumerate}
 
 Falls wir Terme auswerten wollen, die Variablen enthalten, so müssen wir für diese
@@ -372,8 +395,8 @@ nun.
     \end{enumerate}
 \end{Definition}
 
-\noindent
-\textbf{Beispiel}: Mit der oben definieren $\Sigma_\mathrm{arith}$-Struktur
+\example
+Mit der oben definieren $\Sigma_\mathrm{arith}$-Struktur
 $\struct_{\mathrm{arith}}$ definieren wir eine
 $\struct_{\mathrm{arith}}$-Variablen-Belegung $\mathcal{I}$ durch
 \\[0.2cm]
@@ -396,10 +419,10 @@ Dann gilt offenbar \\[0.2cm]
                      \eox
 \end{Definition}
 
-\noindent
-\textbf{Beispiel}:  In Fortführung des obigen Beispiels gilt: \\[0.2cm]
+\example
+In Fortführung des obigen Beispiels gilt: \\[0.2cm]
 \hspace*{1.3cm}  $\struct\bigl(\mathcal{I},z \leq x + y \bigr) = \mathtt{false}$.
-\vspace{0.1cm}
+\eox
 
 Um die Semantik beliebiger $\Sigma$-Formeln definieren zu können, nehmen wir an, dass wir,
 genau wie in der Aussagenlogik, die folgenden Funktionen zur Verfügung haben:
@@ -439,10 +462,10 @@ Die Semantik dieser Funktionen hatten wir durch die Tabelle in Abbildung
     \end{enumerate}
 \end{Definition}
 
-\noindent
-\textbf{Beispiel}: 
+\example
 In Fortführung des obigen Beispiels gilt \\[0.2cm]
 \hspace*{1.3cm}  $\struct\bigl(\mathcal{I}, \forall \mathtt{x}: x *  0 < 1 \bigr) = \mathtt{true}$.
+\eox
 
 \begin{Definition}[Allgemeingültig]
     Ist $F$ eine $\Sigma$-Formel, so dass für jede $\Sigma$-Struktur $\struct$ und für jede
@@ -1258,8 +1281,8 @@ Als nächstes zeigen wir, wie  Substitutionen miteinander verknüpft werden können
     \eox
 \end{Definition}
 
-\noindent
-\textbf{Beispiel}:  Wir führen das obige Beispiel fort und setzen \\[0.2cm]
+\example
+Wir führen das obige Beispiel fort und setzen \\[0.2cm]
 \hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto c,\; x_2 \mapsto f(x_3) \big]$
                 \quad und \quad $\tau := \big[ x_3 \mapsto h(c,c),\; x_4 \mapsto d \big]$. \\[0.2cm]
 Dann gilt: \\[0.2cm]
@@ -1310,8 +1333,8 @@ und ist $\sigma$ eine Substitution, so definieren wir \\[0.2cm]
 \vspace{0.3cm}
 
 
-\noindent
-\textbf{Beispiel}: Wir verdeutlichen die bisher eingeführten Begriffe anhand eines
+\example
+ Wir verdeutlichen die bisher eingeführten Begriffe anhand eines
 Beispiels.  
 Wir betrachten die Gleichung \\[0.2cm]
 \hspace*{1.3cm} $p(x_1, f(x_4)) \doteq p( x_2, x_3)$ \\[0.2cm]
@@ -1319,8 +1342,8 @@ und definieren die Substitution \\[0.2cm]
 \hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \big]$. \\[0.2cm]
 Die Substitution $\sigma$ löst die obige syntaktische Gleichung, denn es gilt \\[0.2cm]
 \hspace*{1.3cm} $p(x_1, f(x_4))\sigma = p(x_2, f(x_4))$ \quad und \quad \\[0.2cm]
-\hspace*{1.3cm} $p(x_2, x_3)\sigma \;\quad = p(x_2, f(x_4))$. 
-\vspace{0.3cm}
+\hspace*{1.3cm} $p(x_2, x_3)\sigma \;\quad = p(x_2, f(x_4))$.  \eox
+
 
 Als nächstes entwickeln wir ein Verfahren, mit dessen Hilfe wir von einer vorgegebenen
 Menge $E$ von syntaktischen Gleichungen entscheiden können, ob es einen Unifikator $\sigma$ für $E$
@@ -1411,8 +1434,8 @@ obigen Regeln anwenden.  Diese geht solange bis einer der folgenden Fälle eintri
       \textsl{mgu} steht hier für ``\emph{most general unifier}''.
 \end{enumerate}
 
-\noindent
-\textbf{Beispiel}: Wir wenden das oben dargestellte Verfahren an, um die syntaktische Gleichung \\[0.2cm]
+\example
+Wir wenden das oben dargestellte Verfahren an, um die syntaktische Gleichung \\[0.2cm]
 \hspace*{1.3cm}  $p(x_1, f(x_4)) \doteq p( x_2, x_3)$  \\[0.2cm]
 zu lösen.  Wir haben die folgenden Reduktions-Schritte:
 $$
@@ -1426,9 +1449,9 @@ $$
 $$
 In diesem Fall ist das Verfahren also erfolgreich und wir erhalten die Substitution \\[0.2cm]
 \hspace*{1.3cm} $\big[ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \big]$ \\[0.2cm]
-als Lösung der oben gegebenen syntaktischen Gleichung.  
+als Lösung der oben gegebenen syntaktischen Gleichung.  \eox
 
-\noindent
+\example
 Wir geben ein weiteres Beispiel und betrachten das Gleichungs-System 
 \[ E = \big\{ p(h(x_1,c)) \doteq p(x_2),\; q(x_2, d) \doteq q(h(d,c),x_4) \big\} \]
 Wir haben folgende Reduktions-Schritte:
@@ -1446,7 +1469,8 @@ $$
 \end{array}
 $$
 Damit haben wir die Substitution  $\big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \big]$ als Lösung 
-des anfangs gegebenen syntaktischen Gleichungs-Systems gefunden.  \hspace*{\fill} $\Box$
+des anfangs gegebenen syntaktischen Gleichungs-Systems gefunden.  
+\eox
 
 
 
@@ -1603,6 +1627,8 @@ prädikatenlogischer Formel $f$ die Frage, ob $\models f$ gilt, untersuchen zu kö
       Wenn diese gelingt, haben wir damit die Allgemeingültigkeit der ursprünglich
       gegebenen Formel $f$ gezeigt.
 \end{enumerate}
+
+\example
 Zum Abschluss demonstrieren wir das skizzierte Verfahren an einem Beispiel.
 Wir gehen von folgenden Axiomen aus:
 \begin{enumerate}
@@ -1777,7 +1803,7 @@ Wir  zeigen, dass $M \vdash \falsum$ gilt:
 Da wir im letzten Schritt die leere Klausel erhalten haben,  ist insgesamt $M \vdash
 \falsum$ 
 nachgewiesen worden und damit haben wir gezeigt, dass alle kommunistischen Drachen glücklich sind. 
-
+\eox
 
 \exercise
 Die von Bertrant Russell definierte \emph{Russell-Menge} $R$ ist
