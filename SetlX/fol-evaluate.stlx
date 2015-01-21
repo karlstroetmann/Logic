@@ -41,11 +41,10 @@ evalTerm := procedure(t, s, i) {
     argList := args(t);
     argsVal := evalTermList(argList, s, i);
     if (#argsVal > 0) {        
-        result := fJ[argsVal]; 
+        return fJ[argsVal]; 
     } else {
-        result := fJ;   // t is a constant
+        return fJ;   // t is a constant
     }
-    return result;
 };
 // This procedure evaluates the term list tl, given the structure s and the variable
 // assignment i.
@@ -86,7 +85,7 @@ i := { [ "x", a ], [ "y", b ], [ "z", a ] };
 // The following formulas are the axioms of commutative group theory.
 g1 := parse("forall (x in u | x * E() == x)");
 g2 := parse("forall (x in u | exists (y in u | x * y == E()))");
-g3 := parse("forall (x in u | forall (y in u | forall (z in u | (x*y)*z == x * (y*z) )))");
+g3 := parse("forall (x in u | forall (y in u | forall (z in u | (x*y)*z == x*(y*z) )))");
 g4 := parse("forall (x in u | forall (y in u | x * y == y * x))");
 gt := [ g1, g2, g3, g4 ];
 
