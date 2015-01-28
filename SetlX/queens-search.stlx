@@ -1,0 +1,80 @@
+// Search for a solution starting from state start. Once we have found a
+// solution, we pick an arbitrary solution and return it.
+// next is a function computing all states reachable from a given state.
+// isGoal is a function checking whether a given state is a solution.
+search := procedure(start, next, isGoal) {
+    fringe := { start };
+    while (true) {
+        print(#fringe);
+        fringe    := { k : s in fringe, k in next(s) };
+        solutions := { s : s in fringe | isGoal(s) };
+        if (solutions != {}) {
+            print("The number of different solutions is $#solutions$.");
+            return arb(solutions);
+        }
+    }
+};
+// A state is represented as a list of length of numbers from the set
+// {1 .. 8}. This list has a length less or equal than 8.  If a state is
+// given by the list
+//     [a1, a2, a3]
+// the the queen in the first column is in row a1, the queen in the second
+// column is in row a2, the queen in the third column is in row a3, and
+// columns number 4 up to number 8 are empty.
+//
+// This procedure returns true iff placing the next queen in row is safe
+// given the current state.
+admissable := procedure(state, row) {
+    if (row in state) {
+        return false;
+    }
+    n   := #state;
+    col := n + 1;
+    for (c in [1..n]) {
+        if (state[c] + c == row + col || state[c] - c == row - col) {
+            return false;
+        }
+    }
+    return true;
+};
+// The function next computes all admissable states that can be reached
+// in one step from the state s.
+next := procedure(s) {
+    return { s + [ r ] : r in [1..8] | admissable(s, r) };
+};
+// Check whether the list is a solution.
+isGoal := l |-> #l == 8;
+// At the start, no queen has yet been placed on the board.
+start := [];
+solution := search(start, next, isGoal);
+print("solution = $solution$");
+
+// This procedure prints the chessboard.
+printBoard := procedure(solution) {
+    n := #solution;
+    print( "        " + ((8*n+1) * "-") );
+    for (row in [1..n]) {
+        line := "        |";
+        for (col in [1..n]) {
+            line += "       |";
+        }
+        print(line);
+        line := "        |";
+        for (col in [1..n]) {
+            if (solution[col] == row) {
+                line += "   Q   |";
+            } else {
+                line += "       |";
+            }
+        }
+        print(line);
+        line := "        |";
+        for (col in [1..n]) {
+            line += "       |";
+        }
+        print(line);
+        print( "        " + ((8*n+1) * "-") );
+    }
+};
+
+printBoard(solution);
