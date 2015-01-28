@@ -1,0 +1,107 @@
+// Es war einmal ein König, der wog 195 Pfund, und seine Tochter, die Prinzessin, wog 105 Pfund. Der
+// Diener der Prinzessin war noch ein Kind und wog nur 90 Pfund. Dies alles wird so genau berichtet,
+// weil es eine große Rolle spielte, als die drei eines Tages fliehen mußten. Sie gerieten auf der
+// Flucht in einen Wald und versteckten sich dort in einem Turm. Unglücklicherweise brach beim
+// Besteigen des Turmes die Treppe unter dem // schwergewichtigen König zusammen, so daß die drei
+// oben festsaßen. Als der König aber zufällig aus dem Turmfenster blickte, sah er, daß außen an der
+// Mauer ein Mechanismus angebracht war, der den Heuaufzügen glich, welche die Bauern an ihren Scheunen
+// haben. In der Tat handelte es sich um einen doppelten Korbaufzug. Hoch oben am Dach des Turmes war
+// eine Rolle befestigt, über die ein dickes Seil lief. Ein Korb fand sich direkt unter dem Fenster,
+// und der andere berührte unten den Boden. Die Prinzessin entdeckte auch eine Inschrift neben dem
+// Fenster, welche besagte, daß bei der Personenbeförderung ein Gewichtsunterschied von maximal
+// 15 Pfund zwischen den beiden Körben erlaubt sei.  Wäre der Unterschied größer, so würde der
+// schwerere Korb so schnell nach unten rauschen, dass die Passagiere dies nicht überleben würden.
+// Glücklicherweise befand sich oben auf dem Turm noch eine Stahlkugel, die ein Gewicht von 75
+// Pfund hatte.  Wie gelang es dem König, den Turm zu verlassen.  
+
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// Die unten aufgeführten Prozeduren sind 1-zu-1 aus dem Programm zur   //
+// Lösung des Wolf-Ziege-Kohl-Problems kopiert.                         //
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////
+
+// Check wether there is a path from x to y in R and compute it.
+findPath := procedure(x, y, r) {
+    p := { [x] };
+    while (true) {
+        oldP  := p;
+        p     := p + pathProduct(p, r);
+        found := { l : l in p | l[#l] == y };
+        if (found != {}) {
+            return arb(found);
+        }
+        if (p == oldP) {
+            return;
+        }
+    }
+};
+
+// The procedure call product(p, q) computes the path product p * q.
+pathProduct := procedure(p, q) {
+    return { add(x,y) : x in p, y in q | x[#x] == y[1] && !cyclic(add(x,y)) };
+};
+
+// The procedure not_cyclic(p) checks whether the path p is cyclic.
+cyclic := procedure(p) {
+    return #{ x : x in p } < #p;
+};
+
+// The product call add(p,q) computes the sum of the lists p and q.
+// The last point of p has to be the first point of q.
+add := procedure(p, q) {
+    return p + q[2..];
+};
+
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// Ab hier beginnt der Code zur Lösung des Problems.                    //
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////
+
+all    := { "Koenig", "Tochter", "Diener", "Kugel" };
+weight := { ["Koenig", 195], ["Tochter", 105], ["Diener", 90], ["Kugel", 75] };
+
+weightSet := closure(m) {
+    return 0 +/ { weight[x] : x in m };
+};
+// Ein Zustand ist die Menge der Personen, die oben auf dem Turm sind
+// und p bezeichnet die Menge aller Zustände.
+p := "???";  
+
+// r ist eine Relation auf der Menge p und beschreibt die Zustandsübergänge.
+r := "???";
+
+// Am Anfang sind alle oben auf dem Turm.
+start := "???";
+// Am Ende ist keiner mehr oben auf dem Turm.
+goal  := "???";
+// Berechne einen Pfad
+path  := findPath(start, goal, r);
+
+// Print the path.
+printPath := procedure(path, all) {
+    for (i in [1 .. #path]) {
+        oben  := path[i];
+        unten := all - oben;
+        if (#oben == 0 || #unten == 0) {
+            print(oben, 63 * " ", unten);
+        } else {
+            print(oben, 65 * " ", unten);
+        }
+        if (i == #path) { 
+            break;
+        }
+        down := path[i] - path[i+1];
+        up   := (all - path[i]) - (all - path[i+1]);
+        print(" " * 40, "vvvvv", " " * 15, "^^^^^^");
+        if (up != {}) {
+            print(" " * 38,  down, " " * 10, up);
+        } else {
+            print(" " * 38,  down, " " * 15, up);
+        }
+        print(" " * 40, "vvvvv", " " * 15, "^^^^^^");
+    }
+};
+printPath(path, all);
+
