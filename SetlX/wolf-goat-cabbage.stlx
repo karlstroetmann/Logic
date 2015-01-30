@@ -1,3 +1,4 @@
+load("graph-2-dot.stlx");
 // Es war einmal ein Bauer, der wollte mit einem wolf, einer goat und
 // einer Kiste cabbage über einen Fluss übersetzen.  In dem Boot war aber
 // nicht genug Platz für alles, der Bauer konnte maximal ein Tiere oder 
@@ -33,11 +34,42 @@ add := procedure(p, q) {
     return p + [ q[2] ];
 };
 
+// The state [s1, s2] presents a problem if at the side opposite to the farmer
+// either the goat is with the cabbage or the wolf is with the goat.
+problem := procedure(s1, s2) {
+    if ("farmer" in s1) {
+        return problemSide(s2);
+    } else {
+        return problemSide(s1);
+    }
+};
+
+problemSide := procedure(s) {
+    return "goat" in s && "cabbage" in s || "wolf" in s && "goat" in s;
+};
+
+all := { "farmer", "wolf", "goat", "cabbage" };
+p   := { s: s in 2 ** all | !problem(s, all -s) };
+r1  := { [s1,s1-b]: s1 in p, b in 2 ** s1 
+                  | "farmer" in b && #b <= 2 && !problemSide(s1 - b)
+       };
+r2  := { [a, b]: [b, a] in r1 };
+r   := r1 + r2;
+
+start := all;
+goal  := {};
+
+path  := findPath(start, goal, r);
+print(path);
+
+mkPair := s |=> [s, all - s];
+graph  := { [mkPair(s1), mkPair(s2)] : [s1, s2] in r1 };
+graph2Dot(graph, mkPair(start), mkPair(goal), "wolf-goat-cabbage");
+
 // Print the path.
 printPath := procedure(path, all) {
     for (i in [1 .. #path]) {
-        s1 := path[i][1];
-        s2 := path[i][2];
+        [s1, s2] := mkPair(path[i]);
         if (#s1 == 0 || #s2 == 0) {
             print(s1, 63 * " ", s2);
         } else {
@@ -46,42 +78,16 @@ printPath := procedure(path, all) {
         if (i == #path) { 
             break;
         }
+        [t1, t2] := mkPair(path[i+1]);        
         if ("farmer" in s1) {
-	    b := s1 - path[i+1][1];
+            b := s1 - t1;
             print("                                     >>>> ", b, " >>>> " );
         } else {
-	    b := s2 - path[i+1][2];
+            b := s2 - t2;
             print("                                     <<<< ", b, " <<<< " );
         }
     }
 };
 
-// The set S presents a problem if either the goat and the cabbage or the
-// wolf and the goat are contained in S.
-problem := procedure(s) {
-    return "goat" in s && "cabbage" in s || "wolf" in s && "goat" in s;
-};
-
-all := { "farmer", "wolf", "goat", "cabbage" };
-p   := { [ s1, s2 ] : s1 in 2 ** all, s2 in 2 ** all | s1 + s2 == all && s1 * s2 == {} };
-r1  := { [[s1, s2], [s1-b, s2+b]]: [s1, s2] in p, b in 2 ** s1 
-                                 | "farmer" in b && #b <= 2 && !problem(s1 - b)
-       };
-r2  := { [[s1, s2], [s1+b, s2-b]]: [s1, s2] in p, b in 2 ** s2 
-                                 | "farmer" in b && #b <= 2 && !problem(s2 - b)
-       };
-r   := r1 + r2;
-
-start := [ all, {} ];
-goal  := [ {}, all ];
-
-path := findPath(start, goal, r);
-print(path);
 print("");
 printPath(path, all);
-
-
-
-
-
-

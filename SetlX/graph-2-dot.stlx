@@ -1,0 +1,43 @@
+// This function takes a relation together with a start and goal state 
+// and convertsthis relation into a representation that is suitable for 
+// the tool neato.  Then neato is called to compute a graphical
+// representation.  The tool neato is part of the graphviz tool set for
+// graph visualization.  This tool set is freely available for download at
+// http://www.graphviz.org/.
+graph2Dot := procedure(relation, start, goal, file) {
+    graph  := "graph G {\n";
+    graph  += "    node [shape = box];\n";
+    graph  += "    overlap = scale;\n";
+    states := domain(relation) + range(relation);
+    names  := { [ start, 1 ] };
+    graph  += "    1 [label = \"$state2String(start)$\", shape = ellipse, color = skyblue, style = filled];\n";
+    count  := 2;
+    for (s in states | s != start && s != goal) {
+        graph += "    $count$ [label = \"$state2String(s)$\"];\n";
+        names += { [s, count] };
+        count += 1;
+    }
+    names  += { [ goal, count ] };
+    graph  += "    $count$ [label = \"$state2String(goal)$\", shape = ellipse, color = green, style = filled];\n";
+    for ([a, b] in relation) {
+        na := names[a];
+        nb := names[b];
+        graph += "    $na$ -- $nb$;\n";
+    }
+    graph += "}\n";
+    writeFile("$file$.dot", [ graph ]);
+    run("neato -Tpdf $file$.dot -o $file$.pdf");
+    run("open $file$.pdf");
+};
+
+// Turn an object into a string and remove any double quotes.
+removeQuote := s |-> +/ [ c: c in str(s) | c != '"' ];
+
+// Transform a state into a string that is suitable as a node label.
+// Lists are written one element per line.
+state2String := procedure(state) {
+    if (isList(state)) {
+        return join([removeQuote(x) : x in state], "\\n");
+    }
+    return removeQuote(state);
+};
