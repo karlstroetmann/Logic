@@ -1,5 +1,5 @@
 \chapter{Aussagenlogik}
-\section{Motivation}
+\section{Überblick}
 Die Aussagenlogik beschäftigt sich mit der Verknüpfung einfacher Aussagen durch
 \emph{Junktoren}.  Dabei sind Junktoren Worte wie ``\textsl{und}'', ``\textsl{oder}'',
 ``\textsl{nicht}'', ``\textsl{wenn $\cdots$, dann}'', und ``\textsl{genau dann, wenn}''.
@@ -18,7 +18,7 @@ Einfache Aussagen dieser Art bezeichnen wir auch als \emph{atomare} Aussagen, we
 zerlegen lassen.  Atomare Aussagen lassen sich mit Hilfe der eben angegebenen Junktoren zu 
 \emph{zusammengesetzten Aussagen} verknüpfen.  
 Ein Beispiel für eine zusammengesetzte Aussage wäre \\[0.2cm]
-\hspace*{0.3cm} \textsl{Wenn die Sonne scheint und es regnet, dann ist ein Regenbogen am Himmel.} 
+\hspace*{1.3cm} \textsl{Wenn die Sonne scheint und es regnet, dann ist ein Regenbogen am Himmel.} 
 \hspace*{\fill} (1)
 \\[0.2cm]
 Die Aussage ist aus den drei atomaren Aussagen ``\textsl{Die Sonne scheint.}'', ``\textsl{Es regnet.}'', und
@@ -41,7 +41,97 @@ folgenden Abkürzungen ein:
 \item $a \rightarrow b$   \quad für \quad \textsl{wenn} $a$, \textsl{dann} $b$
 \item $a \leftrightarrow b$ \quad für \quad  $a$ \textsl{genau dann, wenn} $b$
 \end{enumerate}
-Aussagenlogische Formeln werden aus Aussage-Variablen mit Hilfe von Junktoren aufgebaut.
+Aussagenlogische Formeln werden aus Aussage-Variablen mit Hilfe von Junktoren aufgebaut
+und können beliebig komplex sein.  Die Aussage (1) können wir mit Hilfe der Junktoren  kürzer als
+ \\[0.2cm]
+\hspace*{1.3cm} $\mathtt{SonneScheint} \wedge \mathtt{EsRegnet} \rightarrow \mathtt{Regenbogen}$ \\[0.2cm]
+schreiben.   Das \emph{Beweis-Prinzip}, das wir oben
+verwendet haben, ist dabei wie folgt: Aus den Aussagen
+\begin{enumerate}
+\item \texttt{SonneScheint}
+\item \texttt{EsRegnet}
+\item $\mathtt{SonneScheint} \wedge \mathtt{EsRegnet} \rightarrow \mathtt{Regenbogen}$
+\end{enumerate}
+\emph{folgt logisch} die Aussage \\[0.2cm]
+\hspace*{1.3cm}  \texttt{Regenbogen}. \\[0.2cm]
+ Um Beweis-Prinzipien übersichtlicher angeben zu können,
+führen wir die folgende Notation ein: 
+$$ \schluss{\mathtt{SonneScheint} \quad\quad \mathtt{EsRegnet} \quad\quad \mathtt{SonneScheint} \wedge \mathtt{EsRegnet} \rightarrow
+       \mathtt{Regenbogen}}{\mathtt{Regenbogen}} 
+$$
+Die Aussagen über dem Bruchstrich bezeichnen wir als \emph{Prämissen}, die Aussage unter dem Bruchstrich ist die \emph{Konklusion}.
+Statt Beweis-Prinzip sagen wir oft auch \emph{Schluss-Regel}.
+
+ Wir stellen fest, dass die obige Schluss-Regel unabhängig von dem Wahrheitswert der Aussagen in dem folgenden Sinne
+gültig ist: Wenn alle Prämissen gültig sind, dann folgt aus logischen Gründen auch die Gültigkeit der Konklusion.
+ Um dieses weiter formalisieren zu können, ersetzen wir die Aussage-Variablen
+ \texttt{SonneScheint}, \texttt{EsRegnet} und \texttt{Regenbogen} durch die
+ \emph{Meta-Variablen} $p$, $q$ und $r$, die für beliebige aussagenlogische Formeln stehen.
+  Die obige Schluss-Regel ist dann eine Instanz der folgenden allgemeinen Schluss-Regel:
+$$ \schluss{p \quad q \quad p \wedge q \rightarrow r}{r}  $$
+
+\exercise
+Formalisieren Sie die Schluss-Regel, die in dem folgenden Argument verwendet wird.
+\begin{center}
+\begin{minipage}[c]{7.9cm}
+\textsl{Wenn es regnet, ist die Straße nass.  Es regnet nicht.  Also ist die Straße nicht nass. \eox} 
+\end{minipage}  
+\end{center}
+
+\solution
+Es wird die folgende Schluss-Regel verwendet: \\[0.2cm]
+\hspace*{1.3cm} $\schluss{p \rightarrow q \quad\quad \neg p}{\neg q}$\\[0.2cm]
+Diese Schluss-Regel ist nicht korrekt.  Wenn Sie das nicht einsehen, sollten Sie bei strahlendem Sonnenschein einen Eimer Wasser
+auf die Straße kippen.  \qed
+\vspace*{0.1cm}
+
+Dadurch, dass wir ausgehend von Beobachtungen und als wahr erkannten Tatsachen und Zusammenhängen
+mehrere \emph{logische Schlüsse} aneinander fügen, erhalten wir einen \emph{Beweis}. 
+Die als wahr erkannten Tatsachen und Beobachtungen bezeichnet wir dabei als \emph{Axiome}.
+Wir verwenden in diesem Zusammenhang die folgende  Notation: \\[0.2cm]
+\hspace*{1.3cm} $M \vdash r$. \\[0.2cm]
+Hierbei gilt:
+\begin{itemize}
+\item $M$ ist eine Menge von Aussagen.
+\item $\vdash$ bezeichnet ein System von Schluss-Regeln.  Eine solches System bezeichnen wir auch als \emph{Kalkül}.
+\item $r$ ist eine Aussage.  
+\end{itemize}
+Die Schreibweise $M \vdash r$ wäre dann als \\[0.2cm]
+\hspace*{1.3cm} ``\emph{Aus den Axiomen der Menge $M$ kann die Aussage $r$ hergeleitet werden}'' \\[0.2cm]
+zu interpretieren.  Wir lesen  $M \vdash r$ als ``\emph{$M$ leitet $r$ her}''.
+Damit ist gemeint, dass wir ausgehend von den Axiomen in $M$ durch sukzessives
+Anwenden verschiedener Schluss-Regeln die Aussage $r$ beweisen können.
+Das Zeichen $\vdash$ steht für die Menge aller Schluss-Regeln und symbolisiert damit den
+\emph{Herleitungs-Begriff}, den wir auch als \emph{Kalkül} bezeichnen.  Wir werden  in einem
+späteren Abschnitt den Kalkül formal definieren.
+Parallel zu dem Herleitungsbegriff, der seiner Natur nach syntaktisch ist, gibt es auch
+einen \emph{semantischen}, also inhaltlichen \emph{Folgerungs-Begriff}.  Wir schreiben \\[0.2cm]
+\hspace*{1.3cm} $M \models r$, \\[0.2cm]
+wenn die Aussage $r$ logisch aus den Aussagen $M$ folgt.  
+Die Notation $M \models r$ wird gelesen als ``\emph{$r$ folgt aus $M$}''.
+Das können wir anders auch so
+formulieren:  Immer wenn alle Aussagen aus $M$ wahr sind, dann ist auch die Aussage $r$ wahr.
+Wir können den Begriff der \emph{logischen Folgerung} aber
+erst dann präzise definieren, wenn wir die Semantik der Junktoren mathematisch festgelegt haben.
+
+Ziel der Aussagenlogik ist es, einen
+Herleitungsbegriff zu finden, der die folgenden beiden Bedingungen erfüllt:
+\begin{enumerate}
+\item Der Herleitungsbegriff sollte {\bf korrekt} sein, es sollte also nicht möglich sein,
+      Unsinn zu beweisen.  Es sollte also gelten \\[0.2cm]
+      \hspace*{1.3cm} Aus $M \vdash r$ folgt $M \models r$. 
+      \\[0.2cm]
+      Wenn wir die Aussage $r$ aus den Axiomen der Menge $M$ herleiten können, dann 
+      soll $r$ auch aus $M$ folgen.
+\item Der Herleitungsbegriff sollte {\bf vollständig} sein, d.h.~wenn eine Aussage $r$
+      aus einer Menge von anderen Aussagen $M$ logisch folgt, dann sollte sie
+      auch aus $M$ beweisbar sein: \\[0.2cm]
+      \hspace*{1.3cm} Aus $M \models r$ folgt $M \vdash r$. 
+      \\[0.2cm]
+      Wenn die Aussage $r$ aus $M$ folgt, dann soll $r$ auch aus der Menge $M$
+      hergeleitet werden können.
+\end{enumerate}
+
 Bestimmte aussagenlogische Formeln sind offenbar immer wahr, egal was
  wir für die einzelnen Teilaussagen einsetzen.  Beispielsweise ist eine Formel der Art
 \\[0.2cm]
@@ -60,95 +150,6 @@ gibt, bei der die Formel wahr wird.  Im Rahmen der Vorlesung werden wir verschie
 entwickeln, mit denen es möglich ist zu entscheiden, ob eine aussagenlogische Formel eine
 Tautologie ist oder ob Sie wenigstens erfüllbar ist.  Solche Verfahren spielen
 in der Praxis eine wichtige Rolle.
-
-%Die Aussage (1) können wir jetzt  kürzer als
-% \\[0.2cm]
-%\hspace*{1.3cm} $\mathtt{SonneScheint} \wedge \mathtt{EsRegnet} \rightarrow \mathtt{Regenbogen}$ \\[0.2cm]
-%schreiben.   Das \emph{Beweis-Prinzip}, das wir oben
-%verwendet haben, ist dabei wie folgt: Aus den Aussagen
-%\begin{enumerate}
-%\item \texttt{SonneScheint}
-%\item \texttt{EsRegnet}
-%\item $\mathtt{SonneScheint} \wedge \mathtt{EsRegnet} \rightarrow \mathtt{Regenbogen}$
-%\end{enumerate}
-%\emph{folgt logisch} die Aussage \\[0.2cm]
-%\hspace*{1.3cm}  \texttt{Regenbogen}. \\[0.2cm]
-% Um Beweis-Prinzipien übersichtlicher angeben zu können,
-%führen wir die folgende Notation ein: 
-%$$ \schluss{\mathtt{SonneScheint} \quad\quad \mathtt{EsRegnet} \quad\quad \mathtt{SonneScheint} \wedge \mathtt{EsRegnet} \rightarrow
-%       \mathtt{Regenbogen}}{\mathtt{Regenbogen}} 
-%$$
-%Die Aussagen über dem Bruchstrich bezeichnen wir als \emph{Prämissen}, die Aussage unter dem Bruchstrich ist die \emph{Konklusion}.
-%Statt Beweis-Prinzip sagen wir oft auch \emph{Schluss-Regel}.
-
-% Wir stellen fest, dass die obige Schluss-Regel unabhängig von dem Wahrheitswert der Aussagen in dem folgenden Sinne
-%gültig ist: Wenn alle Prämissen gültig sind, dann folgt aus logischen Gründen auch die Gültigkeit der Konklusion.
-% Um dieses weiter formalisieren zu können, ersetzen wir die Aussage-Variablen
-% \texttt{SonneScheint}, \texttt{EsRegnet} und \texttt{Regenbogen} durch die
-% \emph{Meta-Variablen} $p$, $q$ und $r$, die für beliebige aussagenlogische Formeln stehen.
-%  Die obige Schluss-Regel ist dann eine Instanz der folgenden allgemeinen Schluss-Regel:
-%$$ \frac{\;p \quad q \quad p \wedge q \rightarrow r\;}{\;r\;}  $$
-
-%\noindent
-%\textbf{Aufgabe:} Formalisieren Sie die Schluss-Regel, die in dem folgenden Argument verwendet wird.
-%\begin{center}
-%\begin{minipage}[c]{8.2cm}
-%\textsl{ Wenn es regnet, ist die Straße nass.  Es regnet nicht.  Also ist die Straße nicht nass.}
-%\end{minipage}  
-%\end{center}
-%\textbf{Lösung:} Es wird die folgende Schluss-Regel verwendet: \\[0.2cm]
-%\hspace*{1.3cm} $\schluss{p \rightarrow q \quad\quad \neg p}{\neg q}$\\[0.2cm]
-%Diese Schluss-Regel ist nicht korrekt.  Wenn Sie das nicht einsehen, sollten Sie bei strahlendem Sonnenschein einen Eimer Wasser
-%auf die Straße kippen.  \qed
-%\vspace*{0.1cm}
-
-%Dadurch, dass wir ausgehend von Beobachtungen und als wahr erkannten Tatsachen und Zusammenhängen
-%mehrere \emph{logische Schlüsse} aneinander fügen, erhalten wir einen \emph{Beweis}. 
-%Die als wahr erkannten Tatsachen und Beobachtungen bezeichnet wir dabei als \emph{Axiome}.
-%Wir verwenden in diesem Zusammenhang die folgende  Notation: \\[0.2cm]
-%\hspace*{1.3cm} $M \vdash r$. \\[0.2cm]
-%Hierbei gilt:
-%\begin{itemize}
-%\item $M$ ist eine Menge von Aussagen.
-%\item $\vdash$ bezeichnet eine Menge von Schluss-Regeln.  Eine solche Menge bezeichnen wir
-%      auch als \emph{Kalkül}.
-%\item $r$ ist eine Aussage.  
-%\end{itemize}
-%Die obige Schreibweise wäre dann als \\[0.2cm]
-%\hspace*{1.3cm} ``\emph{Aus den Axiomen der Menge $M$ kann die Aussage $r$ hergeleitet werden}'' \\[0.2cm]
-%zu interpretieren.  Wir lesen  $M \vdash r$ als ``\emph{$M$ leitet $r$ her}''.
-%Damit ist gemeint, dass wir ausgehend von den Axiomen in $M$ durch sukzessives
-%Anwenden verschiedener Schluss-Regeln die Aussage $r$ beweisen können.
-%Das Zeichen $\vdash$ steht für die Menge aller Schluss-Regeln und symbolisiert damit den
-%\emph{Herleitungs-Begriff}, den wir auch als \emph{Kalkül} bezeichnen.  Wir werden  in einem
-%späteren Abschnitt den Kalkül formal definieren.
-%Parallel zu dem Herleitungsbegriff, der seiner Natur nach syntaktisch ist, gibt es auch
-%einen \emph{semantischen}, also inhaltlichen \emph{Folgerungs-Begriff}.  Wir schreiben \\[0.2cm]
-%\hspace*{1.3cm} $M \models r$, \\[0.2cm]
-%wenn die Aussage $r$ logisch aus den Aussagen $M$ folgt.  
-%Die Notation $M \models r$ wird gelesen als ``\emph{$r$ folgt aus $M$}''.
-%Das können wir anders auch so
-%formulieren:  Immer wenn alle Aussagen aus $M$ wahr sind, dann ist auch die Aussage $r$ wahr.
-%Wir können den Begriff der \emph{logischen Folgerung} aber
-%erst dann präzise definieren, wenn wir die Semantik der Junktoren mathematisch festgelegt haben.
-
-%Ziel der Aussagenlogik ist es, einen
-%Herleitungsbegriff zu finden, der die folgenden beiden Bedingungen erfüllt:
-%\begin{enumerate}
-%\item Der Herleitungsbegriff sollte {\bf korrekt} sein, es sollte also nicht möglich sein,
-%      Unsinn zu beweisen.  Es sollte also gelten \\[0.2cm]
-%      \hspace*{1.3cm} Aus $M \vdash r$ folgt $M \models r$. 
-%      \\[0.2cm]
-%      Wenn wir die Aussage $r$ aus den Axiomen der Menge $M$ herleiten können, dann 
-%      soll $r$ auch aus $M$ folgen.
-%\item Der Herleitungsbegriff sollte {\bf vollständig} sein, d.h.~wenn eine Aussage $r$
-%      aus einer Menge von anderen Aussagen $M$ logisch folgt, dann sollte sie
-%      auch aus $M$ beweisbar sein: \\[0.2cm]
-%      \hspace*{1.3cm} Aus $M \models r$ folgt $M \vdash r$. 
-%      \\[0.2cm]
-%      Wenn die Aussage $r$ aus $M$ folgt, dann soll $r$ auch aus der Menge $M$
-%      hergeleitet werden können.
-%\end{enumerate}
 
 \section{Anwendungen der Aussagenlogik}
 Die Aussagenlogik bildet nicht nur die Grundlage für die Prädikatenlogik, sondern sie hat auch wichtige praktische
@@ -295,10 +296,10 @@ Damit können wir nun
 den Begriff einer \emph{aussagenlogischen Interpretation} festlegen.
 
 \begin{Definition}[Aussagenlogische Interpretation]
-{\em Eine \emph{aussagenlogische Interpretation} ist eine Funktion \\[0.2cm]
-\hspace*{1.3cm} $\mathcal{I}:\mathcal{P} \rightarrow \mathbb{B}$, \\[0.2cm]
-die jeder Aussage-Variablen $p\in \mathcal{P}$ einen Wahrheitswert $\mathcal{I}(p) \in \mathbb{B}$ zuordnet.
-}   \eox
+  Eine \emph{aussagenlogische Interpretation} ist eine Funktion \\[0.2cm]
+  \hspace*{1.3cm} $\mathcal{I}:\mathcal{P} \rightarrow \mathbb{B}$, \\[0.2cm]
+  die jeder Aussage-Variablen $p\in \mathcal{P}$ einen Wahrheitswert $\mathcal{I}(p) \in \mathbb{B}$ zuordnet.
+  \eox
 \end{Definition}
 Eine aussagenlogische Interpretation wird oft auch als \emph{Belegung} der
 Aussage-Variablen mit Wahr\-heits-Werten bezeichnet.  
@@ -820,13 +821,11 @@ $$  (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $$
 für jede aussagenlogische Interpretation wahr ist, denn in der letzten Spalte dieser Tabelle steht immer der
 Wert \texttt{true}.  Formeln mit dieser Eigenschaft  bezeichnen wir als \emph{Tautologie}.
 \begin{Definition}[Tautologie]
-{\em
-Ist $f$ eine aussagenlogische Formel und gilt \\[0.2cm]
-\hspace*{1.3cm} $\mathcal{I}(f) = \mathtt{true}$ \quad für jede aussagenlogische Interpretation $\mathcal{I}$, \\[0.2cm]
-dann ist $f$ eine \emph{Tautologie}.  In diesem Fall schreiben wir \\[0.2cm]
-\hspace*{1.3cm} $\models f$.
-}
-\eox
+  Ist $f$ eine aussagenlogische Formel und gilt \\[0.2cm]
+  \hspace*{1.3cm} $\mathcal{I}(f) = \mathtt{true}$ \quad für jede aussagenlogische Interpretation $\mathcal{I}$, \\[0.2cm]
+  dann ist $f$ eine \emph{Tautologie}.  In diesem Fall schreiben wir \\[0.2cm]
+  \hspace*{1.3cm} $\models f$.
+  \eox
 \end{Definition}
 
 \noindent
@@ -851,12 +850,11 @@ ist.  Ziel dieses Kapitels ist daher die Entwicklung besserer Verfahren.
 
 Die letzten beiden Beispiele in der obigen Aufzählung geben Anlass zu einer neuen Definition.
 \begin{Definition}[Äquivalent]
-{\em
   Zwei Formeln $f$ und $g$ heißen \emph{äquivalent} g.d.w.  \\[0.2cm]
-\hspace*{1.3cm} $\models f \leftrightarrow g$ 
-\\[0.1cm]
+  \hspace*{1.3cm} $\models f \leftrightarrow g$ 
+  \\[0.1cm]
   gilt.
-} \eox
+  \eox
 \end{Definition}
 
 \noindent
@@ -1099,7 +1097,6 @@ Die Umformungen in dem obigen Beweis sind nach einem bestimmten System durchgefü
 präzise formulieren zu können, benötigen wir noch einige Definitionen.
 
 \begin{Definition}[Literal]
-{\em
   Eine aussagenlogische Formel $f$ heißt \emph{Literal} g.d.w. einer der folgenden Fälle vorliegt:
   \begin{enumerate}
   \item $f = \verum$ oder $f = \falsum$.
@@ -1112,7 +1109,6 @@ präzise formulieren zu können, benötigen wir noch einige Definitionen.
   \end{enumerate}
   Die Menge aller Literale bezeichnen wir mit $\mathcal{L}$.
   \eox
-} 
 \end{Definition}
 
 Später werden wird noch den Begriff des \emph{Komplements} eines Literals benötigen.
@@ -1130,14 +1126,12 @@ Negation von $l$ ist, wir haben also
 $\models \komplement{\,l\,} \leftrightarrow \neg l$.
 
 \begin{Definition}[Klausel]
-{\em
   Eine aussagenlogische Formel $k$ ist eine \emph{Klausel} wenn $k$ die Form \\[0.2cm]
-\hspace*{1.3cm} $k = l_1 \vee \cdots \vee l_r$ \\[0.2cm]
-hat, wobei $l_i$ für alle $i=1,\cdots,r$ ein Literal ist.  Eine Klausel ist also eine
-Disjunktion von Literalen. 
-Die Menge aller Klauseln bezeichnen wir mit $\mathcal{K}$.
-\eox
-}
+  \hspace*{1.3cm} $k = l_1 \vee \cdots \vee l_r$ \\[0.2cm]
+  hat, wobei $l_i$ für alle $i=1,\cdots,r$ ein Literal ist.  Eine Klausel ist also eine
+  Disjunktion von Literalen. 
+  Die Menge aller Klauseln bezeichnen wir mit $\mathcal{K}$.
+  \eox
 \end{Definition}
 
 Oft werden Klauseln auch einfach als \emph{Mengen} von Literalen betrachtet.  
@@ -1183,21 +1177,18 @@ $\{\falsum \} \leftrightarrow \{\}$.
 Damit sehen wir, dass die leere Menge von Literalen als $\falsum$ zu interpretieren ist.
 
 \begin{Definition}
-{\em 
-Eine Klausel $k$ ist \emph{trivial}, wenn einer der beiden folgenden Fälle vorliegt:
-\begin{enumerate}
-\item $\verum \in k$.
-\item Es existiert $p \in \mathcal{P}$ mit $p \in k$ und $\neg p \in k$.
+  Eine Klausel $k$ ist \emph{trivial}, wenn einer der beiden folgenden Fälle vorliegt:
+  \begin{enumerate}
+  \item $\verum \in k$.
+  \item Es existiert $p \in \mathcal{P}$ mit $p \in k$ und $\neg p \in k$.
 
-      In diesem Fall bezeichnen wir $p$ und $\neg p$ als \emph{komplementäre Literale}.
- \eox
+        In diesem Fall bezeichnen wir $p$ und $\neg p$ als \emph{komplementäre Literale}.
+        \eox
 \end{enumerate}
-} 
 \end{Definition}
 
 \begin{Satz} \label{satz:trivial}
-{\em
-Eine Klausel ist genau dann eine Tautologie, wenn sie trivial ist.}
+  Eine Klausel ist genau dann eine Tautologie, wenn sie trivial ist.
 \end{Satz}
 \textbf{Beweis}:  Wir nehmen zunächst an, dass die Klausel $k$ trivial ist.
 Falls nun $\verum \el k$ ist, dann gilt wegen der Gültigkeit der Äquivalenz 
@@ -1224,21 +1215,17 @@ Tautologie sein.  Also ist die Annahme, dass $k$ nicht trivial ist, falsch.
 \hspace*{\fill}  $\Box$
 
 \begin{Definition}[Konjunktive Normalform]  
-{\em
-Eine Formel $f$ ist in \emph{konjunktiver Normalform} (kurz KNF)
-genau dann, wenn $f$ eine Konjunktion von Klauseln ist, wenn also gilt \\[0.2cm]
-\hspace*{1.3cm} $f = k_1 \wedge \cdots \wedge k_n$, \\[0.2cm]
-wobei die $k_i$ für alle $i=1,\cdots,n$ Klauseln sind. \eox
-}
+  Eine Formel $f$ ist in \emph{konjunktiver Normalform} (kurz KNF)
+  genau dann, wenn $f$ eine Konjunktion von Klauseln ist, wenn also gilt \\[0.2cm]
+  \hspace*{1.3cm} $f = k_1 \wedge \cdots \wedge k_n$, \\[0.2cm]
+  wobei die $k_i$ für alle $i=1,\cdots,n$ Klauseln sind. \eox
 \end{Definition}
 
 \noindent
 Aus der Definition der KNF folgt sofort:
 \begin{Korollar} \label{korollar:knf}
-{\em
-Ist $f = k_1 \wedge \cdots \wedge k_n$ in konjunktiver Normalform, so gilt\\[0.2cm]
-\hspace*{1.3cm} $\models f$ \quad genau dann, wenn \quad $\models k_i$ \quad für alle $i=1,\cdots,n$. \qed
-}
+  Ist $f = k_1 \wedge \cdots \wedge k_n$ in konjunktiver Normalform, so gilt\\[0.2cm]
+  \hspace*{1.3cm} $\models f$ \quad genau dann, wenn \quad $\models k_i$ \quad für alle $i=1,\cdots,n$. \qed
 \end{Korollar}
 
 Damit können wir für eine Formel $f = k_1 \wedge \cdots \wedge k_n$ in konjunktiver
@@ -1714,7 +1701,6 @@ ist es, die Formel $f$ mit Hilfe von \emph{Schluss-Regeln} aus den gegebenen For
 $f_1, \cdots, f_n$ herzuleiten.
   Das Konzept einer Schluss-Regel wird in der nun folgenden Definition festgelegt.
 \begin{Definition}[Schluss-Regel]
-{\em
     Eine \emph{Schluss-Regel} ist eine Paar  $\langle \{f_1, \cdots, f_n\}, k \rangle$.
     Dabei ist 
     $\{f_1, \cdots, f_n\}$ eine Menge von Formeln und $k$ ist eine einzelne Formel.  
@@ -1730,7 +1716,6 @@ $f_1, \cdots, f_n$ herzuleiten.
     Wir lesen diese Schluss-Regel wie folgt: 
     ``\textsl{Aus $f_1$, $\cdots$, $f_n$ kann auf $k$ geschlossen werden.}''
     \eox
-} 
 \end{Definition}
 \vspace*{0.3cm}
 
@@ -1756,14 +1741,13 @@ bzw.~Konklusion verwendet werden können, nicht weiter ein.  Es ist aber sicher n
 sinnvoll, beliebige Schluss-Regeln zuzulassen.  Wollen wir Schluss-Regeln in Beweisen
 verwenden, so sollten die Schluss-Regeln in dem in der folgenden Definition erklärten
 Sinne \emph{korrekt} sein.
+\pagebreak
 
 \begin{Definition}[Korrekte Schluss-Regel]
-{\em
-    Eine Schluss-Regel \\[0.2cm]
-    \hspace*{1.3cm} $\schluss{f_1 \quad \cdots \quad f_n}{k}$ \\[0.2cm]
-    ist genau dann \emph{korrekt}, wenn 
-     $\models f_1 \wedge \cdots \wedge f_n \rightarrow k$ gilt. \eox
-}
+  Eine Schluss-Regel der Form \\[0.2cm]
+  \hspace*{1.3cm} $\schluss{f_1 \quad \cdots \quad f_n}{k}$ \\[0.2cm]
+  ist genau dann \emph{korrekt}, wenn 
+  $\models f_1 \wedge \cdots \wedge f_n \rightarrow k$ gilt. \eox
 \end{Definition}
 Mit dieser Definition sehen wir, dass 
 die oben als ``\emph{Modus Ponens}'' und ``\emph{Modus Ponendo Tollens}'' bezeichneten
@@ -1777,7 +1761,6 @@ Probleme die Gestalt von Klauseln.  Daher stellen wir jetzt eine Schluss-Regel v
 sowohl die Prämissen als auch die Konklusion Klauseln sind.
      
 \begin{Definition}[Schnitt-Regel]
-{\em
     Ist $p$ eine aussagenlogische Variable und sind $k_1$ und $k_2$ Mengen von Literalen,
     die wir als Klauseln interpretieren, so bezeichnen wir die folgende Schluss-Regel
     als die \emph{Schnitt-Regel}: 
@@ -1785,7 +1768,6 @@ sowohl die Prämissen als auch die Konklusion Klauseln sind.
     \hspace*{1.3cm}
     $\displaystyle \schluss{ k_1 \cup \{p\} \quad \{\neg p\} \cup k_2 }{k_1 \cup k_2}$. 
     \eox
-}
 \end{Definition}
 
 \noindent
@@ -1801,9 +1783,7 @@ Die Regel \emph{Modus Tollens} ist ebenfalls ein Spezialfall der Schnitt-Regel. 
 erhalten diese Regel, wenn wir in der Schnitt-Regel $k_1 = \{ \neg q \}$ und $k_2 = \{\}$ setzen.
 
 \begin{Satz}
-{\em
   Die Schnitt-Regel ist korrekt.
-}
 \end{Satz}
 \textbf{Beweis}:  Wir müssen zeigen, dass \\[0.2cm]
 \hspace*{1.3cm} $\models (k_1 \vee p) \wedge (\neg p \vee k_2) \rightarrow k_1 \vee k_2$ \\[0.2cm]
@@ -1838,7 +1818,6 @@ $$
 
 
 \begin{Definition}[$\vdash$]
-{\em
     Es sei $M$ eine Menge von Klauseln  und $f$ sei eine einzelne Klausel.  
     Die Formeln aus $M$ bezeichnen wir als unsere Annahmen.  Unser Ziel ist es, mit diesen
     Annahmen die Formel $f$ zu beweisen.  Dazu definieren wir induktiv die Relation \\[0.2cm]
@@ -1855,11 +1834,8 @@ $$
           \hspace*{1.3cm} 
           Falls sowohl $M \vdash k_1 \cup \{p\}$ als auch $M \vdash \{ \neg p \} \cup k_2$
           gilt, dann gilt auch $M \vdash k_1 \cup k_2$.
-
-          Dies ist die Schnitt-Regel.
     \eox
     \end{enumerate}
-}
 \end{Definition}
 
 
@@ -1898,11 +1874,9 @@ folgt.  Der Beweis besteht aus einer einzigen Anwendung der Schnitt-Regel:
 Die Relation $\vdash$ hat zwei wichtige Eigenschaften:
 
 \begin{Satz}[Korrektheit]
-{\em
   Ist $\{k_1, \cdots, k_n \}$ eine Menge von Klauseln und $k$ eine einzelne Klausel,
   so haben wir: \\[0.2cm]
   \hspace*{3.3cm} Wenn $\{k_1, \cdots, k_n \} \vdash k$ gilt, \quad dann gilt auch $\models k_1 \wedge \cdots \wedge k_n \rightarrow k$.  
-}
 \end{Satz}
 
 \noindent
@@ -1923,7 +1897,7 @@ Die Relation $\vdash$ hat zwei wichtige Eigenschaften:
       \]
       gilt und daraus haben wir mit der Schnitt-Regel auf
       \[ \{ k_1, \cdots, k_n \} \vdash g \cup h \]
-      geschlossen mit $k = g \cup h$. 
+      geschlossen, wobei $k = g \cup h$ gilt. 
 
       Nach Induktions-Voraussetzung haben wir dann
       \[ \models k_1 \wedge \cdots \wedge k_n \rightarrow g \vee p \quad \mathrm{und} \quad 
@@ -1939,300 +1913,476 @@ Die Relation $\vdash$ hat zwei wichtige Eigenschaften:
 Die Umkehrung dieses Satzes gilt leider nur in abgeschwächter Form und zwar dann, wenn $k$
 die leere Klausel ist, also im Fall $k = \falsum$.
 \begin{Satz}[Widerlegungs-Vollständigkeit] \label{widerlegungs-vollstaendig}
-{\em
-  Ist $\{k_1, \cdots, k_n \}$ eine Menge von Klauseln,
+  Ist  $M = \{k_1, \cdots, k_n \}$ eine Menge von Klauseln,
   so haben wir: \\[0.1cm]
   \hspace*{1.3cm} 
-  Wenn $\models k_1 \wedge \cdots \wedge k_n \rightarrow \falsum$ gilt, \quad dann gilt auch $\{k_1, \cdots, k_n \} \vdash \{\}$.
-}
+  Wenn $\models \{ k_1, \cdots, k_n \} \rightarrow \falsum$ gilt, dann gilt auch  $M \vdash \{\}$.
 \end{Satz}
 \vspace*{0.2cm}
 
+
+
+\subsection{Beweis der Widerlegungs-Vollständigkeit}
+Der Beweis der Widerlegungs-Vollständigkeit der Aussagenlogik benötigt den  Begriff der
+\emph{Erfüllbarkeit}, den wir jetzt formal einführen. 
+
+\begin{Definition}[Erfüllbarkeit]
+  Es sei $M$ eine Menge von aussagenlogischen Formeln.
+  Falls es eine aussagenlogische Interpretation $\I$ gibt, die alle Formeln aus $M$ erfüllt, nennen
+  wir $M$ \emph{erfüllbar}. 
+
+  Wir sagen, dass $M$ \emph{unerfüllbar} ist und schreiben 
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $M \models \falsum$
+  \\[0.2cm]
+  wenn es keine aussagenlogische Interpretation $\I$ gibt, die alle Formel aus $M$ erfüllt.
+  Bezeichnen wir die Menge der aussagenlogischen Interpretationen mit
+  \textsc{Ali}, so schreibt sich das formal als
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $M \models \falsum \quad \mbox{g.d.w.} \quad \forall \I \in \textsc{Ali}: \exists g \in M: \I(g) = \mathtt{false}$.   
+  \eox
+\end{Definition}
+
+\remark 
+Ist $M = \{ k_1, \cdots, k_n \}$ eine Menge von Klauseln, so können Sie sich leicht überlegen, dass
+$M$ genau dann nicht erfüllbar ist, wenn
+\\[0.2cm]
+\hspace*{1.3cm}
+$\models k_1 \wedge \cdots \wedge k_n \rightarrow \falsum$
+\\[0.2cm]
+gilt. \eox
+
+Wir führen den Bewies der Widerlegungs-Vollständigkeit mit Hilfe eines Programms, das in den
+Abbildungen \ref{fig:completeness.stlx-1}, \ref{fig:completeness.stlx-2} und
+\ref{fig:completeness.stlx-3} auf den folgenden Seiten gezeigt ist.  Die Grundidee
+bei diesem Programm besteht darin, dass wir versuchen, aus einer gegebenen Menge $M$ von Klauseln
+alle Klauseln abzuleiten, die überhaupt aus $M$ ableitbar sind.  Wenn wir dabei auch
+die leere Klausel ableiten, dann ist $M$ aufgrund der Korrektheit der Schnitt-Regel offenbar
+unerfüllbar.  Falls es uns aber nich  t gelingt, die leere Klausel aus $M$ abzuleiten, dann konstruieren wir
+aus der Menge aller Klauseln, die wir aus $M$ abgeleitet haben, eine aussagenlogische Interpretation
+$\I$, die alle Klauseln aus $M$ erfüllt.
+
+Wir diskutieren zunächst die Hilfsprozeduren, die in Abbildung \ref{fig:completeness.stlx-1} gezeigt
+sind. 
+\begin{enumerate}
+\item Die Funktion \texttt{complement} erhält als Argument ein Literal $l$ und berechnet das
+      \emph{Komplement} $\komplement{\,l\,}$ dieses Literals.  Falls $l$ die Form $\neg p$ mit einer
+      aussagenlogischen Variablen $p$ hat, so gilt $\komplement{\neg p} = p$.   Falls das Literal
+      $l$ eine aussagenlogische Variable $p$ ist, haben wir $\komplement{p} = \neg p$.
+\item Die Funktion \texttt{extractVar} extrahiert die aussagenlogische Variable aus einem Literal $l$.
+      Die Implementierung verläuft analog zur Implementierung der Funktion \texttt{complement} über eine
+      Fallunterscheidung, bei der wir berücksichtigen, dass $l$ entweder die Form $\neg p$ oder die
+      Form $p$ hat, wobei $p$ eine aussagenlogische Variable ist.
+\item Die Funktion \texttt{collectVars} erhält als Argument eine Menge $m$ von Klauseln, wobei die
+      einzelnen Klauseln $c \in m$ als Mengen von Literalen dargestellt werden.  Aufgabe der
+      Funktion \texttt{collectVars} ist es, die Menge aller aussagenlogischen Variablen zu
+      berechnen, die in einer der Klauseln $c$ aus $m$ vorkommen.  Bei der Implementierung iterieren
+      wir zunächst über die Klauseln $c$ der Menge $m$ und dann für jede Klausel $c$ über die in $c$
+      vorkommenden Literale $l$, wobei die Literale mit Hilfe der Funktion \texttt{extractVar} in
+      aussagenlogische Variablen umgewandelt werden.
+\item Die Funktion \texttt{cutRule} erhält als Argumente zwei Klauseln $c_1$ und $c_2$ und berechnet
+      alle die Klauseln, die mit Hilfe der Schnittregel aus $c_1$ und $c_2$ gefolgert werden
+      können.  Beispielsweise können wir aus den beiden Klauseln
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\{ p, q \}$ \quad und \quad $\{ \neg p, \neg q \}$ 
+      \\[0.2cm]
+      mit der Schnitt-Regel sowohl die Klausel
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\{q, \neg q\}$ \quad als auch die Klausel \quad $\{p, \neg p \}$
+      \\[0.2cm]
+      herleiten.
+\end{enumerate}
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    complement := procedure(l) {
+        match (l) {
+            case !p : return  p;
+            case  p : return !p;
+        }
+    };
+    extractVar := procedure(l) {
+        match (l) {
+            case !p : return p;
+            case  p : return p;
+        }
+    };
+    collectVars := procedure(m) {
+        return { extractVar(l) : c in m, l in c };
+    };
+    cutRule := procedure(c1, c2) {
+        return { (c1 - {l}) + (c2 - {complement(l)}) : l in c1
+                                                     | complement(l) in c2
+               };
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Verschiedene Hilfsprozeduren, die in Abbildung \ref{fig:completeness.stlx-2} genutzt werden.}
+\label{fig:completeness.stlx-1}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = last,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    saturate := procedure(clauses) {
+        while (true) {
+            derived := {} +/ { cutRule(c1, c2) : c1 in clauses, c2 in clauses };
+            if ({} in derived) {
+                return { {} };  // clauses are inconsistent
+            }
+            derived -= clauses;
+            if (derived == {}) {
+                return clauses;
+            }
+            clauses += derived;
+        }
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Die Funktion \texttt{saturate}.}
+\label{fig:completeness.stlx-2}
+\end{figure}
+
+Abbildung \ref{fig:completeness.stlx-2} zeigt die Funktion \texttt{saturate}.  Die Funktion erhält
+als Eingabe eine Menge \texttt{clauses} von aussagenlogischen Klauseln, die als Mengen von Literalen
+dargestellt werden.  Aufgabe der Funktion ist es, alle Klauseln herzuleiten, die mit Hilfe der
+Schnittregel auf direktem oder indirekten Wege aus der Menge \texttt{clauses} hergeleitet werden
+können.  Genauer sagen wir, dass die Menge $S$ der Klauseln, die von der Funktion \texttt{saturate}
+zurück gegeben wird, unter Anwendung der Schnitt-Regel \emph{saturiert} ist, was formal wie folgt
+definiert ist:
+\begin{enumerate}
+\item Falls $S$ die leere Klausel $\{\}$ enthält, dann ist $S$ saturiert.
+\item Andernfalls muss \texttt{clauses} eine Teilmenge von $S$ sein und es muss zusätzlich Folgendes
+      gelten: Falls $c_1 \cup \{ l \}$ und  $c_2 \cup \bigl\{ \komplement{\,l\,} \bigr\}$ Klauseln aus $S$
+      sind, dann ist auch die Klausel $c_1 \cup c_2$ ein Element der Klauselmenge $S$.
+\end{enumerate}
+Wir erläutern nun die Implementierung der Funktion \texttt{saturate}.
+\begin{enumerate}
+\item Die \texttt{while}-Schleife, die in Zeile 22 beginnt, hat die Aufgabe, die Schnitt-Regel
+      solange wie möglich anzuwenden um mit Hilfe der Schnitt-Regel neue Klauseln aus den gegebenen
+      Klauseln herzuleiten.  Da die Bedingung dieser Schleife den Wert \texttt{true} hat, kann diese
+      Schleife nur durch die Ausführung eines \texttt{return}-Befehls abgebrochen werden.
+\item In Zeile 23 wird die Menge \texttt{derived} dadurch berechnet, dass alle Klauseln berechnet
+      werden, die mit Hilfe der Schnitt-Regel aus zwei der Klauseln in der Menge \texttt{clauses} 
+      gefolgert werden können.
+\item Falls die Menge \texttt{derived} die leere Klausel enthält, dann ist die Menge
+      \texttt{clauses} widersprüchlich und die Funktion \texttt{saturate} gibt als Ergebnis die
+      Menge $\bigl\{ \{\} \bigr\}$ zurück.
+\item Andernfalls ziehen wir in Zeile 27 von der Menge \texttt{derived} zunächst die Klauseln ab, die wir schon
+      vorher hatten, denn es geht uns darum festzustellen, ob wir im letzten Schritt tatsächlich
+      neue Klauseln gefunden haben, oder ob alle Klauseln, die wir im letzten Schritt in Zeile 23
+      abgeleitet haben, eigentlich schon vorher  bekannt  waren.
+\item Falls wir nun in Zeile 28 feststellen, dass wir keine neuen Klauseln hergeleitet haben,
+      dann ist die Menge \texttt{clauses} saturiert und wir geben diese Menge in Zeile 29 zurück.
+\item Andernfalls fügen wir in Zeile 31 die Klauseln, die wir neu gefunden haben, zu der Menge
+      \texttt{clauses} hinzu und setzen die \texttt{while}-Schleife fort.
+\end{enumerate}
+An dieser Stelle müssen wir uns überlegen, dass die \texttt{while}-Schleife tatsächlich irgendwann
+abbricht.  Das hat zwei Gründe:  
+\begin{enumerate}
+\item In jeder Iteration der Schleife wird die Anzahl der Elemente der Menge \texttt{clauses}
+      mindestens um Eins erhöht, denn wir wissen ja, dass die Menge \texttt{derived}, die wir zu
+      \texttt{clauses} hinzufügen, einerseits nicht leer ist und andererseits auch nur solche
+      Klauseln enthält, die nicht bereits in \texttt{clauses} auftreten.
+\item Die Menge \texttt{clauses}, mit der wir ursprünglich starten, enthält eine bestimmte Anzahl $n$
+      von aussagenlogischen Variablen.  Bei der Anwendung der Schnitt-Regel werden aber keine neue
+      Variablen erzeugt.  Daher bleibt die Anzahl der aussagenlogischen Variablen, die in
+      \texttt{clauses} auftreten, immer gleich.  Damit ist natürlich auch die Anzahl der Literale,
+      die in \texttt{clauses} auftreten, beschränkt: Wenn es nur $n$ aussagenlogische Variablen gibt,
+      dann kann es auch höchstens $2 \cdot n$ Literale geben.  Jede Klausel aus \texttt{clauses} ist
+      aber eine Teilmenge der Menge aller Literale.  Da eine Menge mit $k$ Elementen insgesamt $2^k$
+      Teilmengen hat, gibt es höchstens $2^{2 \cdot n}$ verschiedene Klauseln, die in
+      \texttt{clauses} auftreten können.  
+\end{enumerate}
+Aus den beiden oben angegebenen Gründen können wir schließen, dass die \texttt{while}-Schleife in
+Zeile 22 nach spätestens $2^{2 \cdot n}$ Iterationen abgebrochen wird. 
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = last,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    findValuation := procedure(clauses) {
+        vars    := collectVars(clauses);
+        clauses := saturate(clauses);
+        if ({} in clauses) {
+            return false;
+        }
+        literals := {};  // refuted literal
+        for (p in vars) {
+            if (exists(c in clauses | p in c && c <= literals + {p})) {
+                literals += { !p };
+            } else {
+                literals += { p };
+            }
+        }
+        return { complement(p) : p in literals };
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Die Funktion \texttt{findValuation}.}
+\label{fig:completeness.stlx-3}
+\end{figure}
+
+Als nächstes diskutieren wir die Implementierung der Funktion \texttt{findValuation}, die in
+Abbildung \ref{fig:completeness.stlx-3} gezeigt ist.  Diese Funktion erhält als Eingabe eine Menge
+\texttt{clauses} von Klauseln.  Falls diese Menge widersprüchlich ist, soll die Funktion
+das Ergebnis \texttt{false} zurück geben.  Andernfalls soll eine aussagenlogische Belegung $\I$ berechnet werden,
+unter der alle Klauseln aus der Menge \texttt{clauses} erfüllt sind.  Im Detail arbeitet die
+Funktion \texttt{findValuation} wie folgt.
+\begin{enumerate}
+\item Zunächst berechnen wir in Zeile 35 die Menge aller aussagenlogischen Variablen, die in
+      der Menge \texttt{clauses} auftreten.  Wir benötigen diese Menge, denn wir müssen diese
+      Variablen ja auf die Menge $\{ \mathtt{true}, \mathtt{false} \}$ abbilden.
+\item In Zeile 36 saturieren wir die Menge \texttt{clauses} und berechnen alle Klauseln, die aus der
+      ursprünglich gegebenen Menge von Klauseln mit Hilfe der Schnitt-Regel abgeleitet werden
+      können.  Hier können zwei Fälle auftreten:
+      \begin{enumerate}
+      \item Falls die leere Klausel abgeleitet werden kann, dann ist die ursprünglich gegebene Menge
+            von Klauseln widersprüchlich und wir geben als Ergebnis an Stelle einer Belegung den
+            Wert \texttt{false} zurück, denn eine widersprüchliche Menge von Klauseln ist sicher
+            nicht erfüllbar.
+      \item Andernfalls berechnen wir nun eine aussagenlogische Belegung, unter der alle Klauseln aus
+            \texttt{clauses} wahr werden.  Zu diesem Zweck berechnen wir zunächst eine Menge von
+            Literalen \texttt{literals}.  Die Idee ist dabei, dass wir die Variable $p$ genau
+            dann in die Menge \texttt{literals} aufnehmen, wenn die gesuchte Belegung $\I$ die
+            Variable $p$ zu \texttt{false} auswertet.  Andernfalls nehmen wir an Stelle von $p$ das
+            Literal $\neg p$ in der Menge \texttt{literals} auf.  Als Ergebnis geben wir daher in
+            Zeile 48 die Menge zurück, bei der wir jedes Literal $l$ aus der Menge \texttt{literals}
+            durch sein Komplement $\komplement{\,l\,}$ ersetzen.  
+
+            Im engeren Sinne ist diese Menge $K$
+            keine aussagenlogische Belegung, aber wir können aus dieser Menge leicht eine
+            aussagenlogische Belegung $\I$ erzeugen, indem wir $\I$ wie folgt definieren:
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $\I(p) := \left\{
+            \begin{array}{ll}
+              \mathtt{true} & \mbox{falls $p \in K$;}  \\
+              \mathtt{false} & \mbox{sonst.}
+            \end{array}
+            \right.
+            $
+      \end{enumerate}
+\item Die Berechnung der Menge \texttt{literals} erfolgt nun über eine \texttt{for}-Schleife.
+      Dabei ist die Idee, dass wir für eine aussagenlogische Variable $p$ genau dann das Literal
+      $\neg p$ zu der Menge \texttt{literals} hinzufügen, wenn die Belegung $\I$ die Variable $p$
+      auf \texttt{true} abbilden muss um die Klauseln zu erfüllen.  
+
+      Die Bedingung dafür ist wie folgt: Angenommen, wir haben bereits Werte für die Variablen
+      $p_1$, $\cdots$, $p_n$ in der Menge \texttt{literals}  gefunden.
+      Die Werte dieser Variablen seien durch die Literale $l_1$, $\cdots$, $l_n$ in der oben
+      dargelegten Weise festgelegt, d.h.~wenn $\I(p_i) = \mathtt{true}$ ist, gilt $l_i = \neg p_i$
+      und im Falle $\I(p_i) = \mathtt{false}$ gilt $l_i = p_i$.
+      Nehmen wir nun weiter an, dass eine Klausel $c$ in der Menge \texttt{clauses} existiert, so dass
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $c \subseteq \{ l_1, \cdots, l_n, p \}$ \quad und \quad $p \in c$
+      \\[0.2cm]
+      gilt.  Wenn $\I(c) = \mathtt{true}$ gelten soll, dann muss $\I(p) = \mathtt{true}$ gelten, denn
+      nach Konstruktion von $\I$ gilt 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\I(p_i) = \mathtt{false}$ \quad für alle $i \in \{1,\cdots,n\}$
+      \\[0.2cm]
+      und damit ist $p$ das einzige Literal in der Klausel $c$, das wir mit Hilfe der Belegung $\I$ überhaupt noch wahr machen
+      können.  In diesem Fall fügen wir also das Literal $\neg p$ in die Menge \texttt{literals} ein.
+
+      Falls wir keine solche Klausel $c$ finden, dann setzen wir $\mathtt{I}(p) := \mathtt{false}$
+      und fügen daher das Literal $p$ in die Menge \texttt{literals} ein.
+\end{enumerate}
+Der entscheidende Punkt ist nun der Nachweis, dass die Funktion \texttt{findValuation} in dem Falle,
+dass in Zeile 38 nicht der Wert \texttt{false} zurück gegeben wird, eine aussagenlogische Belegung $\I$ berechnet, bei der
+alle Klauseln aus der Menge \texttt{clauses} den Wert \texttt{true} erhalten.  Um diesen Nachweis zu
+erbringen, nummerieren wie die aussagenlogischen Variablen, die in der Menge \texttt{clauses}
+auftreten, in der selben Reihenfolge, in der diese Variablen in der \texttt{for}-Schleife in Zeile
+41 betrachtet werden.  Wir bezeichnen diese Variablen als
+\\[0.2cm]
+\hspace*{1.3cm}
+ $p_1, p_2, p_3, \cdots, p_k$
+\\[0.2cm]
+und zeigen durch Induktion nach $n$, dass nach $n$ Durchläufen der Schleife für jede Klausel $d \in \mathtt{clauses}$, in der nur
+die Variablen $p_1$, $\cdots$, $p_n$ vorkommen, 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\I(d) = \mathtt{true}$
+\\[0.2cm]
+gilt.
+\begin{enumerate}
+\item[I.A.:] $n = 0$.
+
+             Die einzige Klausel, in der überhaupt keine Variablen vorkommen, ist die leere Klausel.
+             Da wir aber vorausgesetzt haben, dass \texttt{clauses} die leere Klausel nicht enthält,
+             ist die zu zeigende Behauptung trivialerweise wahr.
+\item[I.S.:] $n \mapsto n+1$.
+
+             Wir setzen nun voraus, dass die Behauptung vor dem $n\!+\!1$-ten Durchlauf der
+             \texttt{for}-Schleife gilt und haben zu zeigen, dass die Behauptung dann auch nach
+             diesem Durchlauf erfüllt ist.  Sei dazu $d$ eine Klausel, in der nur die Variablen
+             $p_1$, $\cdots$, $p_n$, $p_{n+1}$ vorkommen.  Die Klausel ist dann eine Teilmenge einer
+             Menge der Form
+             \\[0.2cm]
+             \hspace*{1.3cm}
+             $\{ l_1, \cdots, l_n, l_{n+1} \}$, \quad wobei $l_i \in \{ p_i, \neg p_i \}$ für alle
+             $i \in \{1,\cdots, n+1\}$ gilt.
+             \\[0.2cm]
+             Nun gibt es mehrere Möglichkeiten, die wir getrennt untersuchen.
+             \begin{enumerate}
+             \item Es gibt ein $i \in \{1,\cdots,n\}$, so dass $l_i \in d$ und  $\I(l_i) =
+               \mathtt{true}$ ist.  
+
+                   Da eine Klausel als Disjunktion ihrer Literale aufgefasst wird, gilt dann auch
+                   $\I(d) = \mathtt{true}$ unabhängig davon, ob $\I(l_{n+1})$ den Wert \texttt{true} oder
+                   \texttt{false} hat.
+             \item Für alle $i \in \{1,\cdots,n\}$ mit $l_i \in d$ gilt $\I(l_i) = \mathtt{false}$ und es gilt $l_{n+1} = p_{n+1}$.
+                   
+                   Dann gilt für die Klausel $d$ gerade die Bedingung
+                   \\[0.2cm]
+                   \hspace*{1.3cm}
+                   $d \subseteq \mathtt{literals} \cup \{ p_{n+1} \}$
+                   \\[0.2cm]
+                   und daher wird in Zeile 43 der Funktion \texttt{findValuation} das Literal $\neg p_{n+1}$ 
+                   zu der Menge Literals hinzugefügt.  Nach Definition der Belegung $\I$, 
+                   die von der Funktion \texttt{findValuation} zurück gegeben wird, heißt dies
+                   gerade, dass 
+                   \\[0.2cm]
+                   \hspace*{1.3cm}
+                   $\I(p_{n+1}) = \mathtt{true}$
+                   \\[0.2cm]
+                   ist und dann gilt natürlich auch $\I(d) = \mathtt{true}$.
+             \item Für alle $i \in \{1,\cdots,n\}$ mit $l_i \in d$ gilt $\I(l_i) = \mathtt{false}$ und es gilt $l_{n+1} = \neg p_{n+1}$.
+
+                   An dieser Stelle ist eine weitere Fall-Unterscheidung notwendig.
+                   \begin{enumerate}
+                   \item Es gibt eine Klausel $c$ in der Menge \texttt{clauses}, so dass
+                         \\[0.2cm]
+                         \hspace*{1.3cm}
+                         $c \subseteq \mathtt{literals} \cup \{p_{n+1}\}$
+                         \\[0.2cm]
+                         gilt.  Hier sieht es zunächst so aus, als ob wir ein Problem hätten, denn
+                         in diesem Fall würde ja das Literal $\neg p_{n+1}$ zur Menge
+                         \texttt{literals} hinzugefügt und damit wäre zunächst $\I(p_{n+1}) = \mathtt{true}$ 
+                         und damit $\I(\neg p_{n+1}) = \mathtt{false}$, woraus insgesamt 
+                         $\I(d) = \mathtt{false}$ folgern würde.  In diesem Fall würden aber
+                         Klauseln $c' \in \mathtt{clauses}$ und $d' \in \mathtt{clauses}$  existieren, so dass
+                         \\[0.2cm]
+                         \hspace*{1.3cm}
+                         $c = c' \cup \{p_{n+1}\}$, \quad $d = d' \cup \{ \neg p_{n+1} \}$, \quad
+                         $c' \subseteq \mathtt{literals}$,  \quad und \quad $d' \subseteq \mathtt{literals}$
+                         \\[0.2cm]
+                         gilt. Aus der Tasache, dass sowohl $c' \subseteq \mathtt{literals}$, als auch $d' \subseteq \mathtt{literals}$ 
+                         gilt, würde sowohl
+                         \\[0.2cm]
+                         \hspace*{1.3cm}
+                         $\I(c') = \mathtt{false}$ \quad als auch \quad $\I(d') = \mathtt{false}$
+                         \\[0.2cm]
+                         und dann gilt natürlich auch
+                         \\[0.2cm]
+                         \hspace*{1.3cm}
+                         $\I(c' \cup d') = \mathtt{false}$. \hspace*{\fill} $(*)$
+                         \\[0.2cm]
+                         Die entscheidende Beobachtung ist nun, dass die Klausel $c' \cup d'$ mit
+                         Hilfe der Schnitt-Regel aus den beiden Klauseln
+                         \\[0.2cm]
+                         \hspace*{1.3cm}
+                         $c = c' \cup \{p_{n+1}\}$, \quad $d = d' \cup \{ \neg p_{n+1} \}$, 
+                         \\[0.2cm]
+                         gefolgert werden kann.  Das heißt dann aber, dass die Klausel $c' \cup d'$ ein
+                         Element der Menge \texttt{clauses} sein muss, denn die Menge
+                         \texttt{clauses} ist ja saturiert!  Da die Klausel $c' \cup d'$ außerdem
+                         nur die aussagenlogischen Variablen $p_1, \cdots, p_n$ enthält, gilt nach
+                         Induktions-Voraussetzung 
+                         \\[0.2cm]
+                         \hspace*{1.3cm}
+                         $\I(c' \cup d') = \mathtt{true}$.
+                         \\[0.2cm]
+                         Dies steht im Widerspruch zu $(*)$.  Dieser Widerspruch zeigt, dass 
+                         es keine Klausel $c \in \mathtt{clauses}$ mit 
+                         \\[0.2cm]
+                         \hspace*{1.3cm}
+                         $c \subseteq \mathtt{literals} \cup \{p_{n+1}\}$ \quad und \quad $p_{n+1} \in c$
+                         \\[0.2cm]
+                         geben kann und damit tritt der hier untersuchte Fall gar nicht auf. $\lightning$
+                   \item Es gibt \underline{keine} Klausel $c$ in der Menge \texttt{clauses}, so dass
+                         \\[0.2cm]
+                         \hspace*{1.3cm}
+                         $c \subseteq \mathtt{literals} \cup \{p_{n+1}\}$ \quad und \quad $p_{n+1} \in c$
+                         \\[0.2cm]
+                         gilt.  In diesem Fall wird das Literal $p_{n+1}$ zur Menge \texttt{literals}
+                         hinzugefügt und damit gilt zunächst $\I(p_{n+1}) = \mathtt{false}$ und folglich
+                         $\I(\neg p_{n+1}) = \mathtt{true}$, woraus schließlich $\I(d) = \mathtt{true}$ folgt.
+                   \end{enumerate}
+                   Wir sehen, dass der erste Fall der vorherigen Fall-Unterscheidung nicht
+                   auftritt und dass im zweiten Fall $\I(d) = \mathtt{true}$ gilt, womit wir insgesamt 
+                   $\I(d) = \mathtt{true}$ gezeigt haben.  Damit ist der Induktions-Schritt
+                   abgeschlossen.
+             \end{enumerate}
+             Da jede Klausel $c \in \mathtt{clauses}$ nur eine endliche Anzahl von Variablen
+             enthält, haben wir insgesamt gezeigt, dass für alle diese Klauseln 
+             $\I(c) = \mathtt{true}$ gilt. \qed
+\end{enumerate}
+
 \noindent
-Diesen Satz im Rahmen der Vorlesung zu beweisen würde zuviel Zeit kosten.
-Ein Beweis findet sich beispielsweise in dem Buch von Schöning \cite{schoening87}.
-
-%\subsection{Beweis der Widerlegungs-Vollständigkeit*}
-%\noindent
-%Der Beweis der Widerlegungs-Vollständigkeit ist nicht-trivial.  Wir werden diesen Beweis liefern, nachdem wir
-%gezeigt haben, wozu der Satz von der Widerlegungs-Vollständigkeit benutzt werden kann.
-%Haben wir eine Menge von Klauseln $M = \{k_1,\cdots,k_n\}$ gegeben und wollen zeigen,
-%dass eine Formel $f$ aus $M$ folgt, so wird es im allgemeinen nicht gelingen, $f$ direkt
-%aus $M$ herzuleiten.  Wir können uns aber mit einem Trick behelfen:  Aufgrund der Tautologie
-%$f \leftrightarrow \neg f \rightarrow \falsum$ gilt 
-%\[ \models k_1 \wedge \cdots \wedge k_n \rightarrow f \quad \mathrm{g.d.w.} \quad
-%   \models k_1 \wedge \cdots \wedge k_n \wedge \neg f \rightarrow \falsum.
-%\]
-%Anstatt also $f$ herzuleiten, negieren wir $f$, überführen die Negation $\neg f$ in konjunktive
-%Normalform und fügen die Klauseln der Menge $\mathtt{knf}(\neg f)$ den ursprünglichen
-%Annahmen in der Menge $M$ hinzu.  Wenn sich nun aus $M \cup \mathtt{knf}(\neg f)$ die Formel
-%$\falsum$ herleiten
-%lässt, dann folgt $f$ aus $M$: 
-%\[ \models k_1 \wedge \cdots \wedge k_n \rightarrow f \quad \mathrm{g.d.w.} \quad
-%   \{ k_1, \cdots, k_n \} \cup \mathtt{knf}(\neg f) \vdash \{\}.
-%\]
-%Wir erläutern das Verfahren mit einem Beispiel.  Wir wollen zeigen,
-%dass aus \\[0.2cm]
-%\hspace*{1.3cm} $u \rightarrow s \vee t$, \quad
-%$s \rightarrow p$ \quad und \quad $t \rightarrow p$, \\[0.2cm]
-%die Formel $u \rightarrow p$
-%folgt.  Die Umwandlung der Annahmen in Klauseln ist trivial, wir erhalten 
-%\[ M = \bigl\{ \{\neg u, s, t \}, \{ \neg s, p \}, \{ \neg t, p \} \bigr\}. \]
-%Jetzt negieren wir die Formel $\neg(u \rightarrow p)$ und wandeln die Negation in
-%konjunktive Normalform um. Es gilt 
-%\[\mathtt{knf}\bigl(\neg(u \rightarrow p)\bigr) = \bigl\{ \{u\},\; \{\neg p\}\bigr\}. \]
-%Anschließend müssen wir die beiden Klauseln, die wir bei der Berechnung der konjunktiven
-%Normalform gefundenen haben, zu der Menge $M$ hinzufügen.  Wir bilden also die Menge
-%\[ N := M \cup \mathtt{knf}\bigl(\neg(u \rightarrow p)\bigr) = \bigl\{
-%  \{\neg u, s, t \},\; \{\neg s, p \},\; \{ \neg t, p \},\; \{u\},\; \{\neg p\} \bigr\}. 
-%\]
-%Schließlich müssen wir aus der Menge $N$ mit Hilfe der Schnitt-Regel die leere Klausel,
-%die ja der Formel $\falsum$ entspricht, herleiten:
-%\begin{enumerate}
-%\item $\{u\},\; \{\neg u, s, t \} \;\vdash\; \{ s, t \}$
-%\item $\{s,t\},\;  \{\neg s, p \} \;\vdash\; \{t,p\}$
-%\item $\{t,p\},\;  \{\neg p \} \;\vdash\; \{t\}$
-%\item $\{t\},\;    \{\neg t, p \} \;\vdash\; \{p\}$
-%\item $\{p\},\;    \{\neg p \} \;\vdash\; \{\}$
-%\end{enumerate}
-%Der Rest dieses Abschnittes widmet sich dem Beweis der Widerlegungs-Vollständigkeit.
-%Wir beginnen mit dem Begriff der Erfüllbarkeit.
-%
-%\begin{Definition}[Unerfüllbar]
-%{\em
-%  Es sei $M$ eine Menge von aussagenlogischen Formeln.
-%  Wir sagen, dass $M$ \emph{unerfüllbar} ist und schreiben 
-%  \[ M \models \falsum \]
-%  wenn es keine aussagenlogische Interpretation $\I$ gibt, die alle Formel aus $M$ erfüllt.
-%  Bezeichnen wir die Menge der aussagenlogischen Interpretationen mit
-%  \textsc{Ali}, so schreibt sich das formal als
-%  \[ M \models \falsum \quad \mbox{g.d.w.} \quad 
-%     \forall \I \in \textsc{Ali}: \exists g \in M: \I(g) = \mathtt{false}. 
-%     \hspace*{5.2cm} _\Box
-%  \]
-%}  
-%\end{Definition}
-%
-%Im nächsten Lemma beschäftigen wir uns mit folgender Situation: Angenommen, wir leiten aus einer Menge von
-%Klauseln, die die Form $M \cup \bigl\{ \{ l \} \bigr\}$ hat, eine Klausel $k$ her.
-%Wenn uns nun die Klausel $\{ l \}$ nicht mehr als Annahme zur Verfügung steht,
-%werden wir im allgemeinen die Klausel $k$ nicht mehr herleiten können.  Es bleibt die Möglichkeit, dass wir
-%eine irgendwie abgeschwächte Version von $k$ herleiten können.  Das nachfolgende Lemma zeigt, dass
-%dies tatsächlich so ist.
-%
-%\begin{Lemma} \label{lemma:l1} 
-%{\em 
-%  Es sei $l \in \mathcal{L}$ ein Literal und $M \subseteq \mathcal{K}$ eine Menge von Klauseln.
-%  Außerdem gelte
-%  \[ M \cup \bigl\{ \{ l \} \bigr\} \vdash k. \]
-%  Dann gilt auch
-%  \[ M \vdash k \cup \bigl\{ \komplement{\,l\,} \bigr\}. \]
-%}
-%\end{Lemma}
-%
-%\noindent
-%\textbf{Beweis}: Wir führen den Beweis durch Induktion nach der Herleitung 
-%\[ M \cup \bigl\{ \{ l \} \bigr\} \vdash k. \]
-%\begin{enumerate}
-%\item Fall: $k = \{ p, \neg p \}$. Offenbar gilt
-%      \[ M \vdash \{ p, \neg p \} \]
-%      und mit der Abschwächungs-Regel folgt daraus
-%      \[ M \vdash \bigl\{ p, \neg p, \komplement{\,l\,} \bigr\}. \]
-%      Wegen $k = \{ p, \neg p \}$ ist das die Behauptung.
-%\item Fall: $k \in M \cup \bigl\{ \{ l \} \bigr\}$. 
-%    
-%      Dann gibt es zwei Möglichkeiten: $k \in M$ oder $k = \{l\}$, die wir getrennt
-%      betrachten:
-%      \begin{enumerate}
-%      \item $k \in M$. Dann folgt nach Definition des Herleitungs-Begriffs sofort
-%            \[  M \vdash k \]
-%            und mit der Abschwächungs-Regel folgt
-%            \[ M \vdash k \cup \bigl\{ \bigl\{ \komplement{\,l} \bigr\} \bigr\}. \]  
-%      \item $k = \{l\}$.  Es gilt
-%            \[ M \vdash \bigl\{ l, \komplement{\,l\,} \bigr\} \]
-%            und wegen 
-%            $k \cup \bigl\{ \bigl\{ \komplement{\,l\,} \bigr\} \bigr\} = \bigl\{ l, \komplement{\,l\,} \bigr\}$
-%            ist das die Behauptung.
-%      \end{enumerate}
-%\item Fall: Der letzte Schluss war eine Anwendung der Abschwächungs-Regel der Gestalt
-%      \[ \frac{\;k_1 \;}{\;k_1 \cup \{ h \}\;}. \]
-%      Dann gilt also
-%      \[ M \cup \bigl\{\{ l \}\bigr\} \vdash k_1 \quad \mathrm{mit} \quad k = k_1 \cup \{ h \} \]
-%      und die Induktions-Voraussetzung liefert 
-%      \[ M \vdash k_1 \cup \bigl\{ \komplement{\,l\,} \bigr\}. \]
-%      Daraus folgt mit einer Anwendung der Abschwächungs-Regel
-%      \[ M \vdash k_1 \cup \{ h \} \cup \bigl\{ \komplement{\,l\,} \bigr\} \]
-%      und wegen 
-%      $k \cup \bigl\{ \komplement{\,l\,} \bigr\} = k_1 \cup \{ h \} \cup \bigl\{ \komplement{\,l\,} \bigr\}$
-%      ist das die Behauptung.
-%\item Fall: Der letzte Schluss war eine Anwendung der Schnitt-Regel der Gestalt
-%      \[ \frac{\;k_1 \cup \{ h \} \qquad k_2 \cup \{ \komplement{\,h\,} \bigr\}\;}{k_1 \cup k_2}. \]
-%      Dann haben wir also:
-%      \begin{enumerate}
-%      \item  $M \cup \bigl\{ \{ l \} \bigr\} \vdash k_1 \cup \{h\}$,
-%      \item  $M \cup \bigl\{ \{ l \} \bigr\} \vdash k_2 \cup \bigl\{ \komplement{\,h\,} \bigr\}$ und
-%      \item  $k = k_1 \cup k_2$.
-%      \end{enumerate}
-%      Aus $M \vdash k_1 \cup \{h\}$         folgt nach Induktions-Voraussetzung
-%      \begin{equation}
-%        \label{eq:al1}
-%        M \vdash k_1 \cup \{h\} \cup \bigl\{ \komplement{\,l\,} \bigr\}. 
-%      \end{equation}
-%      Genauso folgt aus $M \vdash k_2 \cup \bigl\{ \komplement{\,h\,}\bigr\}$         nach Induktions-Voraussetzung
-%      \begin{equation}
-%        \label{eq:al2}
-%        M \vdash k_2 \cup \bigl\{ \komplement{\,h\,} \bigr\} \cup \bigl\{ \komplement{\,l\,} \bigr\}. 
-%      \end{equation}
-%      Wenden wir auf (\ref{eq:al1}) und (\ref{eq:al2}) die Schnitt-Regel an, so erhalten wir
-%      \[ M \vdash k_1 \cup k_2 \cup \bigl\{ \komplement{\,l\,} \bigr\} \]
-%      und wegen $k = k_1 \cup k_2$ ist das die Behauptung.  \qed
-%\end{enumerate}
-%
-%\begin{Lemma}[Konsistenz-Lemma] \label{lemma:l2}
-%{\em
-%  Es sei $M \subseteq \mathcal{K}$ eine Menge von Klauseln und $l \in \mathcal{L}$ sei ein
-%  Literal.  Falls dann sowohl 
-%  $M \cup \bigl\{               l    \bigr\} \vdash \{\}$ als auch 
-%  $M \cup \bigl\{ \komplement{\,l\,} \bigr\} \vdash \{\}$  gilt, dann folgt 
-%  $M \vdash \{\}$.
-%} 
-%\end{Lemma}
-%
-%\noindent
-%\textbf{Beweis}:  Aus den Voraussetzungen folgt mit Lemma \ref{lemma:l1}
-%\[ M \vdash \bigl\{ \komplement{\,l\,} \bigr\} \quad \mathrm{und} \quad
-%   M \vdash \bigl\{               l    \bigr\}. \]
-%Wenden wir hierauf die Schnitt-Regel an, so erhalten wir 
-%\[ M \vdash \{\} \]
-%und das ist die Behauptung. \qed
-%
-%\begin{Satz}[Widerlegungs-Vollständigkeit der Aussagenlogik] \label{satz:s5}
-%{\em
-%  Es sei $M \subseteq \mathcal{K}$ eine Menge von Klauseln. 
-%  \\[0.2cm]
-%  \hspace*{1.3cm}
-%  Wenn $M \models \falsum$ gilt, \quad dann gilt auch  $M \vdash \{\}$.
-%}
-%\end{Satz}
-%
-%\noindent
-%\textbf{Beweis}: Wir führen den Beweis indirekt und machen die
-%Annahme:
-%\begin{equation}
-%  \label{eq:c1}
-%  M \not\,\vdash \{\}.    
-%\end{equation}
-%Mit Hilfe dieser Annahme werden wir eine Belegungen $\mathcal{I}$ konstruieren
-%die alle Klauseln aus $M$ wahr macht, was im Widerspruch zur Unerfüllbarkeit von $M$ steht. 
-%
-%Zunächst sei $(p_n)_{n \in \mathbb{N}}$ eine Aufzählung der Menge $\mathcal{P}$ der
-%aussagenlogischen Variablen $\mathcal{P}$, es gelte also
-%\[ \mathcal{P} = \{ p_n \mid n \in \mathbb{N} \}. \]
-%Wir konstruieren induktiv eine
-%Folge $(M_n)_n$ von Klausel-Mengen:
-%\begin{description}
-%\item[I.A.] $n=0$: \ Wir setzen $M_0 := M$.
-%\item[I.S.] $n \mapsto n+1$: \ Wir definieren
-%\[ M_{n+1} \;:=\; 
-%\left\{ \begin{array}{ll}
-%        M_n \cup \bigl\{ \{ \;\; p_n \} \bigr\} & \mbox{falls $M_n\cup\{ \{p_n\} \} \not\,\vdash \{\}$;} \\
-%        M_n \cup \bigl\{ \{ \neg p_n \} \bigr\} & \mbox{sonst.}    \\
-%\end{array} \right. 
-%\]
-%\end{description}
-%Wir zeigen durch Induktion nach $n$, dass für alle $n\el\mathbb{N}$ gilt
-%\[ M_n \not\,\vdash \{\}. \]
-%\begin{enumerate}
-%\item[I.A.] $n=0$:  
-%             Wegen $M_0 = M$ folgt die Behauptung in diesem Fall aus unserer Annahme (\ref{eq:c1}).
-%\item[I.S.] $n \mapsto n+1$: 
-%             Hier führen wir eine Fallunterscheidung analog zur der Definition
-%             von $M_n$ durch:
-%             \begin{enumerate}
-%             \item $M_{n+1} = M_n \cup \bigl\{ \{ \neg p_n \} \bigr\}$. 
-%
-%                   In diesem Fall wissen wir aus der Definition von $M_{n+1}$, dass
-%                   \begin{equation}
-%                     \label{eq:c2}
-%                     M_n \cup \bigl\{ \{ p_n \} \bigr\} \vdash \{\} 
-%                   \end{equation}
-%                   gilt.  Würde außerdem $M_{n+1} \vdash \{\}$, also
-%                   \begin{equation}
-%                     \label{eq:c3}
-%                     M_n \cup \bigl\{ \{ \neg p_n \} \bigr\} \vdash \{\} 
-%                   \end{equation}
-%                   gelten, so würde mit Lemma \ref{lemma:l2} aus 
-%                   (\ref{eq:c2}) und (\ref{eq:c3}) folgen,
-%                   dass  auch $M_n \vdash \{\}$ gelten müsste, was aber im Widerspruch zur
-%                   Induktions-Voraussetzung stünde.
-%             \item $M_{n+1} = M_n \cup \bigl\{ \{ p_n \} \bigr\}$. 
-%             
-%                   Nach Definition von $M_{n+1}$ gilt dann
-%                   \[ M_n \cup \bigl\{ \{ p_n \} \bigr\} \not\,\vdash \{\} \]
-%                   und das ist gerade die Behauptung.
-%             \end{enumerate}
-%\end{enumerate}
-%Wir definieren nun die Klausel-Menge $\widehat{M}$ als \emph{Grenzwert} der monotonen Folge $(M_n)_n$
-%indem wir 
-%\[ \widehat{M}:=\bigcup_{n\in\mathbb{N}} M_n \] 
-%setzen. Würde $\widehat{M} \vdash \{\}$
-%gelten, so würde die Herleitung der leeren Klausel $\{\}$ mit endlich vielen Klauseln
-%$\{ k_1, \cdots ,k_l \}$ aus $\widehat{M}$ auskommen. Jede Klausel $k_i$ würde in
-%einer Menge $M_{n(i)}$ liegen. Wir definieren 
-%\[ n(0) := \max\{n(1),\cdots ,n(l) \}. \]
-%Da die Folge $(M_n)_n$ monoton wächst, was nichts anderes heißt, als dass
-%\[ M_n \subseteq M_{n+1} \quad \mbox{für alle $n \in \mathbb{N}$} \]
-%gilt, haben wir
-%\[ \{ k_1,\cdots ,k_l\} \subseteq M_{n(0)}.  \]
-%Daraus würde aber $M_{n(0)} \vdash \{\}$ folgen, was nach dem oben geführten Induktions-Beweis nicht
-%sein kann.  Folglich gilt 
-%\begin{equation}
-%  \label{eq:c4}
-%     \widehat{M} \not\,\vdash \{\}.     
-%\end{equation}
-%Damit sind wir in der Lage, eine aussagenlogische Belegungen $\mathcal{I}$ zu konstruieren, die alle
-%Klauseln aus $M$ wahr macht.  Wir setzen
-%\[ \mathcal{I} :=   \bigl\{ \langle p, \mathtt{true} \rangle : p \el \widehat{M}  \bigr\} 
-%   \cup \bigl\{ \langle p, \mathtt{false} \rangle : p \el \mathcal{P} \wedge p \notel \widehat{M} \bigr\} 
-%\]
-%und behaupten, dass alle Klauseln $k \el M$ unter der Belegungen $\mathcal{I}$ wahr werden:
-%\[ \mathcal{I}(k) = \mathtt{true} \quad \mbox{für alle $k \in M$.} \]
-%Wir argumentieren indirekt und nehmen an, dass eine
-%Klausel $k \el M$ existiert, die mit der Belegung $\mathcal{I}$ falsch wird.
-%Diese Klausel hat dann die Form
-%\[ k = \{ q_1, \cdots, q_a, \neg r_1, \cdots, \neg r_b \}, \]
-%wobei die $q_i$ für $i=1,\cdots,a$ und die $r_j$ für $j=1,\cdots,b$ Aussage-Variablen sind.
-%Wenn $k$ mit der Belegung $\mathcal{I}$ falsch wird, dann heißt das:
-%\[ \forall i \in \{1,\cdots,a\} : \mathcal{I}(q_i) = \mathtt{false}
-%    \quad \mbox{und} \quad
-%   \forall j \in \{1,\cdots,a\} : \mathcal{I}(r_i) = \mathtt{true} 
-%\]
-%Nach Definition der Belegung $\mathcal{I}$ folgt daraus
-%\[ \forall i \in \{1,\cdots,a\} : \{ q_i \} \notel \widehat{M}
-%    \quad \mbox{und} \quad
-%   \forall j \in \{1,\cdots,a\} : \{ r_i \} \el \widehat{M}
-%\]
-%Falls $\{ q_i \} \notel \widehat{M}$ ist, dann folgt aus der Konstruktion von $\widehat{M}$,
-%dass $\{\neg q_i\} \el \widehat{M}$ ist, denn die Konstruktion von 
-% der Folge $(M_n)_n$ war gerade so angelegt, dass für jede Primformel $q$ entweder $\{ q \}$ 
-%oder $\{\neg q \}$ in $\widehat{M}$ liegen muss.  Damit haben wir also
-%\[ \forall i \in \{1,\cdots,a\} \colon \{ \neg q_i \} \el \widehat{M}
-%    \quad \mbox{und} \quad
-%   \forall j \in \{1,\cdots,a\} \colon \{      r_i \} \el \widehat{M}.
-%\]
-%Andererseits ist durch genügend häufiges Anwenden der Schnittregel klar, dass
-%\[ \bigl\{ \{ q_1, \cdots, q_a, \neg r_1, \cdots, \neg r_b \}, \{ \neg q_1 \}, \cdots, \{ \neg q_a \}, \{ r_1 \}, \cdots, \{ r_b \} \bigr\} \vdash \{\}  \]
-%gilt.   Wegen $k = \{ q_1, \cdots, q_a, \neg r_1, \cdots, \neg r_b \}$ haben wir also einerseits
-%\[ \bigl\{ k, \{ \neg q_1 \}, \cdots, \{ \neg q_a \}, \{ r_1 \}, \cdots, \{ r_b \} \bigr\} \vdash \{\} \]
-%und andererseits 
-%\[ \bigr\{ k, \{ \neg q_1 \}, \cdots, \{ \neg q_a \}, \{ r_1 \}, \cdots, \{ r_b \} \bigr\} \subseteq
-%   \widehat{M}. \]
-%Dies ist ein Widerspruch zu (\ref{eq:c4}), denn wir aus der Annahme erhalten haben, dass die Belegung
-%$\mathcal{I}$ eine Klausel $k \el M$ falsch macht.  Dieser
-%Widerspruch zeigt, dass die Belegung $\mathcal{I}$  alle Klauseln aus $M$ wahr machen muss.  Damit ist
-%die Menge $M$ im Widerspruch zu der Voraussetzung $M \models \bot$ erfüllbar und damit ist die ganz am
-%Anfang des Beweises gemachte Annahme $M \not\,\vdash \{\}$ widerlegt.  \qed 
-
+\textbf{Beweis der Widerlegungs-Vollständigkeit der Schnitt-Regel:}
+Wir haben nun alles Material zusammen um zeigen zu können, dass die Schnitt-Regel
+widerlegungs-vollständig ist.  Wir nehmen also an, dass $M$ eine endliche Menge von Klauseln ist,  die nicht
+erfüllbar ist, was wir als
+\\[0.2cm]
+\hspace*{1.3cm}
+$M \models \falsum$ 
+\\[0.2cm]
+schreiben.  Wir rufen die Funktion \texttt{findValuation} mit dieser Menge $M$ als Argument auf.
+Jetzt gibt es zwei Möglichkeiten:
+\begin{enumerate}
+\item Fall: Die Funktion \texttt{findValuation} liefert als Ergebnis \texttt{false}.  Nach
+      Konstruktion der Funktionen \texttt{findValuation} \texttt{saturate} tritt dieser Fall nur
+      ein, wenn sich die leere Klausel $\{\}$ aus den Klauseln der Menge $M$ mit Hilfe der
+      Schnitt-Regel ableiten lässt.  Dann haben wir also
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $M \vdash \{\}$,
+      \\[0.2cm]
+      was zu zeigen war.
+\item Fall: Die Funktion \texttt{findValuation} liefert als Ergebnis eine aussagenlogische Belegung
+      $\I$.  Bei der Diskussion der Funktion \texttt{findValuation} haben wir gezeigt, dass für
+      alle Klauseln $d \in \mathtt{clauses}$
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\I(d) = \mathtt{true}$
+      \\[0.2cm]
+      gilt.  Die Menge \texttt{clauses} ist aber genau die Menge $M$ und damit sehen wir, dass die
+      Menge $M$ erfüllbar ist.  Dies steht im Widerspruch zu $M \models \falsum$ und damit kann der
+      zweite Fall gar nicht auftreten. $\lightning$
+\end{enumerate}
+Folglich liefert die Funktion \texttt{findValuation} für eine unerfüllbare Menge von Klauseln immer
+das Ergebnis \texttt{false}, was impliziert, dass $M \vdash \{\}$ gilt.  \qed
 
 \section{Das Verfahren von Davis und Putnam}
 In der Praxis stellt sich oft die Aufgabe, für eine gegebene Menge von Klauseln $K$ eine
@@ -2240,8 +2390,12 @@ Belegung $\I$ der Variablen zu berechnen, so dass
 \\[0.2cm]
 \hspace*{1.3cm} $\mathtt{eval}(k,\I) = \mathtt{true}$ \quad für alle $k\in K$ \\[0.2cm]
 gilt.  In diesem Fall sagen wir auch, dass die Belegung $\I$ eine \emph{Lösung} der
- Klausel-Menge $K$ ist.  Wir werden in diesem Abschnitt ein Verfahren vorstellen, mit dem eine solche
-Aufgabe bearbeitet werden kann.  Dieses Verfahren geht auf Davis und Putnam
+ Klausel-Menge $K$ ist.  Im letzten Abschnitt haben wir bereits die Prozedur \texttt{findValuation}
+ kennengelernt, mit der wir eine solche Belegung berechnen könnten.
+Bedauerlicherweise ist diese Prozedur für eine praktische Anwendung nicht effizient genug.
+Wir werden daher in diesem Abschnitt ein Verfahren vorstellen, mit dem die Berechnung einer Lösung
+einer aussagenlogischen Klausel-Menge auch in der Praxis möglich ist.
+Dieses Verfahren geht auf Davis und Putnam
 \cite{davis62} zurück.  Verfeinerungen dieses Verfahrens werden beispielsweise
 eingesetzt, um die Korrektheit digitaler elektronischer Schaltungen nachzuweisen.  
 
@@ -2283,16 +2437,13 @@ wahr und falsch machen.
 Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass für zwei Definitionen.
 
 \begin{Definition}[Unit-Klausel]
-{\em
   Eine Klausel $k$ heißt \emph{Unit-Klausel}, wenn $k$ nur aus einem Literal besteht.
   Es gilt dann \\[0.2cm]
   \hspace*{1.3cm} $k = \{p\}$ \quad oder \quad $k = \{\neg p\}$ \\[0.2cm]
   für eine Aussage-Variable $p$. \eox
-}
 \end{Definition}
 
 \begin{Definition}[Triviale Klausel-Mengen]
-{\em
   Eine Klausel-Menge $K$ heißt \emph{trivial} wenn einer der beiden folgenden Fälle
   vorliegt.
   \begin{enumerate}
@@ -2316,7 +2467,6 @@ Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass
         \\[0.2cm]
         eine Lösung von $K$. \eox
   \end{enumerate}
-}
 \end{Definition}
 
 
@@ -2405,11 +2555,9 @@ Eine solche Möglichkeit bietet das Prinzip der
 Satz.
 
 \begin{Satz}
-{\em
   Ist $K$ eine Menge von Klauseln und ist $p$ eine aussagenlogische Variable, 
   so ist $K$ genau dann erfüllbar, wenn $K \cup \bigl\{\{p\}\bigr\}$ oder 
   $K \cup \bigl\{\{\neg p\}\bigr\}$ erfüllbar ist.  
-}  
 \end{Satz}
 Beweis: 
 Ist $K$ erfüllbar durch eine

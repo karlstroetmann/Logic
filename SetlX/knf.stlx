@@ -71,15 +71,19 @@ isTrivial := procedure(c) {
            { args(l)[1] : l in c | fct(l) == "^not" } != {};
 };
 
+parseKNF := procedure(s) {
+    return normalize(parse(s));
+};
+
 test := procedure(s) {
     f := parse(s);
     print("The knf of $f$ is $normalize(f)$");
 };
 
-test("p => p");
-test("(p && q => r) || !r => !p");
-test("(p => q) => (!p => q) => q");
-test("(p => q) && (q => r) => (p => r)");
-test("(p => q) => (!p => !q)");
-test("(p => q) && (!p => !q) => (q => p)");
+// test("p => p");
+// test("(p && q => r) || !r => !p");
+// test("(p => q) => (!p => q) => q");
+// test("(p => q) && (q => r) => (p => r)");
+// test("(p => q) => (!p => !q)");
+// test("(p => q) && (!p => !q) => (q => p)");
  
