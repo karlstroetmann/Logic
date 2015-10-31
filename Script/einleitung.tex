@@ -1,43 +1,43 @@
 \chapter{Einleitung}
-In diesem einführenden Kapitel möchte ich zunächst motivieren, warum wir in der Informatik
-nicht darum herum kommen uns mit den formalen Methoden der mathematischen Logik zu beschäftigen.
-Anschließend gebe ich einen Überblick über den Rest der Vorlesung.
+In diesem einfÃ¼hrenden Kapitel mÃ¶chte ich zunÃ¤chst motivieren, warum wir in der Informatik
+nicht darum herum kommen uns mit den formalen Methoden der mathematischen Logik zu beschÃ¤ftigen.
+AnschlieÃŸend gebe ich einen Ãœberblick Ã¼ber den Rest der Vorlesung.
 
 \section{Motivation}
 Informationstechnische Systeme 
-(im Folgenden kurz als IT-Systeme bezeichnet) gehören zu den komplexesten Systemen, welche
-die Menschheit je entwickelt hat.  Das lässt sich schon an dem Aufwand erkennen,
-der bei der Erstellung von IT-Systemen anfällt.  So sind im Bereich der Telekommunikations-Industrie
-IT-Projekte, bei denen mehr als 1000 Entwickler über mehrere Jahre zusammenarbeiten,
+(im Folgenden kurz als IT-Systeme bezeichnet) gehÃ¶ren zu den komplexesten Systemen, welche
+die Menschheit je entwickelt hat.  Das lÃ¤sst sich schon an dem Aufwand erkennen,
+der bei der Erstellung von IT-Systemen anfÃ¤llt.  So sind im Bereich der Telekommunikations-Industrie
+IT-Projekte, bei denen mehr als 1000 Entwickler Ã¼ber mehrere Jahre zusammenarbeiten,
 die Regel.  Es ist offensichtlich, dass ein Scheitern solcher Projekte mit enormen
-Kosten verbunden ist.  Einige Beispiele mögen dies verdeutlichen.
+Kosten verbunden ist.  Einige Beispiele mÃ¶gen dies verdeutlichen.
 \begin{enumerate}
-\item Am 9.~Juni 1996 stürzte die Rakete Ariane 5 auf ihrem Jungfernflug ab.
+\item Am 9.~Juni 1996 stÃ¼rzte die Rakete Ariane 5 auf ihrem Jungfernflug ab.
       Ursache war ein Kette von Software-Fehlern:  Ein Sensor im Navigations-System
-      der Ariane 5 misst die horizontale Neigung und speichert diese zunächst als Gleitkomma-Zahl
-      mit einer Genauigkeit von 64 Bit ab.  Später wird dieser Wert dann in eine 
+      der Ariane 5 misst die horizontale Neigung und speichert diese zunÃ¤chst als Gleitkomma-Zahl
+      mit einer Genauigkeit von 64 Bit ab.  SpÃ¤ter wird dieser Wert dann in eine 
       16 Bit Festkomma-Zahl konvertiert.
-      Bei dieser Konvertierung trat ein Überlauf ein, da die zu konvertierende Zahl
-      zu groß war, um als 16 Bit Festkomma-Zahl dargestellt werden zu können.
+      Bei dieser Konvertierung trat ein Ãœberlauf ein, da die zu konvertierende Zahl
+      zu groÃŸ war, um als 16 Bit Festkomma-Zahl dargestellt werden zu kÃ¶nnen.
       In der Folge gab das Navigations-System auf dem Datenbus, der dieses System mit
       der Steuerungs-Einheit verbindet, eine Fehlermeldung aus.
        Die Daten dieser Fehlermeldung wurden von der Steuerungs-Einheit als Flugdaten 
       interpretiert.  Die Steuer-Einheit leitete daraufhin eine Korrektur des
-      Fluges ein, die dazu führte, dass die Rakete auseinander brach und die 
-      automatische Selbstzerstörung eingeleitet werden musste.
+      Fluges ein, die dazu fÃ¼hrte, dass die Rakete auseinander brach und die 
+      automatische SelbstzerstÃ¶rung eingeleitet werden musste.
       Die Rakete war mit 4 Satelliten beladen. Der wirtschaftliche Schaden, der durch den Verlust dieser
       Satelliten entstanden ist, lag bei mehreren 100 Millionen Dollar.
       
-      Ein vollständiger Bericht über die Ursache des Absturzes des Ariane 5 findet sich
+      Ein vollstÃ¤ndiger Bericht Ã¼ber die Ursache des Absturzes des Ariane 5 findet sich
       im Internet unter der Adresse \\[0.1cm]
       \hspace*{1.3cm} 
       \href{http://www.ima.umn.edu/~arnold/disasters/ariane5rep.html}{\texttt{http://www.ima.umn.edu/\symbol{126}arnold/disasters/ariane5rep.html}}
-\item Die Therac 25 ist ein medizinisches Bestrahlungs-Gerät, das durch 
+\item Die Therac 25 ist ein medizinisches Bestrahlungs-GerÃ¤t, das durch 
       Software kontrolliert wird.  Durch  Fehler in dieser Software erhielten 1985
-      mindestens 6 Patienten eine Überdosis an Strahlung.  Drei dieser Patienten sind an den Folgen dieser 
-      Überdosierung gestorben, die anderen wurden schwer verletzt.
+      mindestens 6 Patienten eine Ãœberdosis an Strahlung.  Drei dieser Patienten sind an den Folgen dieser 
+      Ãœberdosierung gestorben, die anderen wurden schwer verletzt.
 
-      Einen detailierten Bericht über diese Unfälle finden Sie unter \\[0.1cm]
+      Einen detailierten Bericht Ã¼ber diese UnfÃ¤lle finden Sie unter \\[0.1cm]
       \hspace*{1.3cm} 
       \href{http://courses.cs.vt.edu/~cs3604/lib/Therac_25/Therac_1.html}{\texttt{http://courses.cs.vt.edu/\symbol{126}cs3604/lib/Therac\_25/Therac\_1.html}}
 \item Im ersten Golfkrieg konnte eine irakische \textsl{Scud} Rakete von dem \textsl{Patriot} Flugabwehrsystem
@@ -52,55 +52,55 @@ Kosten verbunden ist.  Einige Beispiele mögen dies verdeutlichen.
       \hspace*{0.3cm}
         article/2515483/enterprise-applications/epic-failures--11-infamous-software-bugs.html}}
       \\[0.2cm]
-      eine Auflistung von schweren Unfällen, die auf Software-Fehler zurückgeführt werden konnten.
+      eine Auflistung von schweren UnfÃ¤llen, die auf Software-Fehler zurÃ¼ckgefÃ¼hrt werden konnten.
 \end{enumerate}
-Diese Beispiele zeigen, dass bei der Konstruktion von IT-Systemen mit großer Sorgfalt
-und Präzision gearbeitet werden sollte.  Die Erstellung von IT-Systemen muss auf einer 
-wissenschaftlich fundierten Basis erfolgen, denn nur dann ist es möglich, die Korrekheit
+Diese Beispiele zeigen, dass bei der Konstruktion von IT-Systemen mit groÃŸer Sorgfalt
+und PrÃ¤zision gearbeitet werden sollte.  Die Erstellung von IT-Systemen muss auf einer 
+wissenschaftlich fundierten Basis erfolgen, denn nur dann ist es mÃ¶glich, die Korrekheit
 solcher Systeme zu \emph{verifizieren}, also mathematisch zu beweisen.
-Diese wissenschaftliche Basis für die Entwicklung von IT-Systemen ist die Informatik, 
-und diese hat ihre Wurzeln in der mathematischen Logik.  Zur präzisen Definition der
-Bedeutung logischer Formeln benötigen wir die Mengenlehre, die in der Mathematik-Vorlesung
+Diese wissenschaftliche Basis fÃ¼r die Entwicklung von IT-Systemen ist die Informatik, 
+und diese hat ihre Wurzeln in der mathematischen Logik.  Zur prÃ¤zisen Definition der
+Bedeutung logischer Formeln benÃ¶tigen wir die Mengenlehre, die in der Mathematik-Vorlesung
 vorgestellt wird.  Daher sind die Logik und die Mengenlehre die beiden Gebiete, mit denen 
-Informatiker sich zu Beginn Ihres Studiums beschäftigen.  Sowohl die Mengenlehre als auch die Logik
+Informatiker sich zu Beginn Ihres Studiums beschÃ¤ftigen.  Sowohl die Mengenlehre als auch die Logik
 haben unmittelbare praktische Anwendungen in der Informatik.
 \begin{enumerate}
-\item Die Schnittstellen komplexer Systeme können mit Hilfe logischer Formeln
-      exakt spezifiziert werden.  Spezifikationen, die mit Hilfe natürlicher Sprache
-      erstellt werden, haben gegenüber formalen Spezifikationen den Nachteil,
+\item Die Schnittstellen komplexer Systeme kÃ¶nnen mit Hilfe logischer Formeln
+      exakt spezifiziert werden.  Spezifikationen, die mit Hilfe natÃ¼rlicher Sprache
+      erstellt werden, haben gegenÃ¼ber formalen Spezifikationen den Nachteil,
       dass sie oft mehrdeutig sind.
 \item Die korrekte Funktionsweise digitaler Schaltungen kann mit Hilfe automatischer
       Beweiser verifiziert werden.  
 \item Die Mengenlehre und die damit verbundene Theorie der Relationen bietet die Grundlage
       der Theorie der relationalen Datenbanken.  
 \end{enumerate}
-Die obige Auflistung ließe sich leicht fortsetzen, aber
-neben den unmittelbaren Anwendungen von Logik und Mengenlehre hat die Beschäftigung mit
+Die obige Auflistung lieÃŸe sich leicht fortsetzen, aber
+neben den unmittelbaren Anwendungen von Logik und Mengenlehre hat die BeschÃ¤ftigung mit
 diesen beiden Gebiete noch eine andere, sehr wichtige Funktion:
-Ohne die Einführung geeigneter Abstraktionen sind komplexe Systeme nicht beherrschbar.
+Ohne die EinfÃ¼hrung geeigneter Abstraktionen sind komplexe Systeme nicht beherrschbar.
 Kein Mensch ist in der Lage, alle Details eines Software-Systems, dass aus mehreren
 $100\,000$ Programm-Zeilen besteht, zu verstehen.   Die einzige Chance um ein solches
-System zu beherrschen besteht in der Einführung geeigneter Abstraktionen.
-Daher gehört ein überdurchschnittliches Abstraktionsvermögen zu den wichtigsten Werkzeugen
-eines Informatikers.  Die Beschäfigung mit Logik und Mengenlehre trainiert gerade dieses
-abstrakte Denkvermögen. 
+System zu beherrschen besteht in der EinfÃ¼hrung geeigneter Abstraktionen.
+Daher gehÃ¶rt ein Ã¼berdurchschnittliches AbstraktionsvermÃ¶gen zu den wichtigsten Werkzeugen
+eines Informatikers.  Die BeschÃ¤figung mit Logik und Mengenlehre trainiert gerade dieses
+abstrakte DenkvermÃ¶gen. 
 
-% Schließlich gibt es für Sie noch einen sehr gewichtigen Grund, sich intensiv mit Logik und
-% Mengenlehre zu beschäftigen, den ich Ihnen nicht verschweigen möchte:  Es handelt sich
+% SchlieÃŸlich gibt es fÃ¼r Sie noch einen sehr gewichtigen Grund, sich intensiv mit Logik und
+% Mengenlehre zu beschÃ¤ftigen, den ich Ihnen nicht verschweigen mÃ¶chte:  Es handelt sich
 % dabei um die Klausur am Ende des ersten Semesters!  
 
-Aus meiner Erfahrung weiß ich, dass einige der Studenten sich unter dem Thema Informatik etwas Anderes
-vorgestellt haben als die Diskussion abstrakter Konzepte.  Für diese Studenten ist die Beherrschung
-einer Programmiersprache und einer dazugehörigen Programmierumgebung das Wesentliche der Informatik.
-Natürlich ist die Beherrschung einer Programmiersprache für einen Informatiker unabdingbar.  Sie
-sollten sich allerdings darüber im klaren sein, dass das damit verbundene Wissen sehr vergänglich
+Aus meiner Erfahrung weiÃŸ ich, dass einige der Studenten sich unter dem Thema Informatik etwas Anderes
+vorgestellt haben als die Diskussion abstrakter Konzepte.  FÃ¼r diese Studenten ist die Beherrschung
+einer Programmiersprache und einer dazugehÃ¶rigen Programmierumgebung das Wesentliche der Informatik.
+NatÃ¼rlich ist die Beherrschung einer Programmiersprache fÃ¼r einen Informatiker unabdingbar.  Sie
+sollten sich allerdings darÃ¼ber im klaren sein, dass das damit verbundene Wissen sehr vergÃ¤nglich
 ist, denn niemand kann Ihnen heute sagen, in welcher Programmiersprache Sie in 10 Jahren programmieren werden.
-Im Gegensatz dazu sind die mathematischen Grundlagen der Informatik wesentlich beständiger.
+Im Gegensatz dazu sind die mathematischen Grundlagen der Informatik wesentlich bestÃ¤ndiger.
 
 
-\section{Überblick über den Inhalt der Vorlesung} 
-Die erste Informatik-Vorlesung legt die Grundlagen, die für das weitere Studium
-der Informatik benötigt werden.  Bei der Diskussion dieser Grundlagen werden wir uns in dieser
+\section{Ãœberblick Ã¼ber den Inhalt der Vorlesung} 
+Die erste Informatik-Vorlesung legt die Grundlagen, die fÃ¼r das weitere Studium
+der Informatik benÃ¶tigt werden.  Bei der Diskussion dieser Grundlagen werden wir uns in dieser
 Vorlesung auf die Logik konzentrieren, denn die Mengenlehre ist bereits Gegenstand der
 Mathematik-Vorlesung.  Daher ist diese Vorlesung wie folgt aufgebaut:
 \begin{enumerate}
@@ -109,9 +109,9 @@ Mathematik-Vorlesung.  Daher ist diese Vorlesung wie folgt aufgebaut:
       \href{http://randoom.org/Software/SetlX}{\textsc{SetlX}} (\underline{set} \underline{l}anguage
       e\underline{x}tended) ist eine \emph{mengenbasierte} 
       Programmiersprache, in der dem Programmierer die Operationen der Mengenlehre zur
-      Verfügung gestellt werden.  Zusätzlich unterstützt die Sprache \emph{funktionales Programmieren}.
-      Da \textsc{SetlX} mengenbasiert ist, ist es einfach möglich,  Algorithmen in der Sprache der
-      Mengenlehre zu formulieren.  Eine solche Formulierung ist oft sowohl klarer als auch kürzer
+      VerfÃ¼gung gestellt werden.  ZusÃ¤tzlich unterstÃ¼tzt die Sprache \emph{funktionales Programmieren}.
+      Da \textsc{SetlX} mengenbasiert ist, ist es einfach mÃ¶glich,  Algorithmen in der Sprache der
+      Mengenlehre zu formulieren.  Eine solche Formulierung ist oft sowohl klarer als auch kÃ¼rzer
       als die Implementierung des Algorithmus in einer klassischen Programmier-Sprache wie
       beispielsweise \texttt{C} oder \textsl{Java}.  Daher diskutiert das zweite Kapitel die Sprache
       \textsc{SetlX}.  In den folgenden Kapitel werden wir \textsc{SetlX} zur Implementierung
@@ -120,87 +120,87 @@ Mathematik-Vorlesung.  Daher ist diese Vorlesung wie folgt aufgebaut:
 
       Jeder Informatiker sollte wissen, dass bestimmte Probleme nicht algorithmisch entscheidbar
       sind.  Beispielsweise ist die Frage, ob ein gegebenes Programm mit einer vorgegebenen Eingabe
-      irgendwann anhält und eine Ergebnis liefert, oder ob es unendlich lange rechnen würde,
+      irgendwann anhÃ¤lt und eine Ergebnis liefert, oder ob es unendlich lange rechnen wÃ¼rde,
       unentscheidbar.  Diese Frage wird auch als das \emph{Halte-Problem} bezeichnet.
       Dieses Problem ist unentscheidbar, was wir im dritten Kapitel beweisen werden.
 \item Aussagen-Logik.
 
       Die Theorie der Logik unterscheidet zwischen \emph{Aussagen-Logik} und
-      \emph{Prädikaten-Logik}.  Die Aussagen-Logik untersucht nur die Junktoren 
+      \emph{PrÃ¤dikaten-Logik}.  Die Aussagen-Logik untersucht nur die Junktoren 
       \\[0.2cm]
       \hspace*{1.3cm}
       ``$\neg$'', ``$\wedge$'', ``$\vee$'', ``$\rightarrow$'' und ``$\leftrightarrow$'',
       \\[0.2cm]
-      während die Prädikaten-Logik zusätzlich noch die Quantoren
+      wÃ¤hrend die PrÃ¤dikaten-Logik zusÃ¤tzlich noch die Quantoren
       \\[0.2cm]
       \hspace*{1.3cm}
       ``$\forall$'' und ``$\exists$''
       \\[0.2cm]
-      betrachtet. Wir wenden uns im vierten  Kapitel zunächst der \emph{Aussagen-Logik}
+      betrachtet. Wir wenden uns im vierten  Kapitel zunÃ¤chst der \emph{Aussagen-Logik}
       zu.  Die Handhabung  aussagenlogischer Formeln ist einfacher als die 
-      Handhabung prädikatenlogischer Formeln.  Daher bietet sich die Aussagen-Logik als
+      Handhabung prÃ¤dikatenlogischer Formeln.  Daher bietet sich die Aussagen-Logik als
       Trainings-Objekt an um mit den Methoden der Logik vertraut zu werden.  Die Aussagen-Logik hat
-      gegenüber der Prädikaten-Logik noch einen weiteren Vorteil: Sie ist \emph{entscheidbar}, d.h.~wir
-      können ein Programm schreiben, das als Eingabe eine aussagenlogische Formel verarbeitet und welches
-      dann entscheidet, ob diese Formel allgemeingültig ist.  Es ist hingegen nicht möglich, ein Programm zu
-      erstellen, das für eine prädikatenlogische Formel entscheiden kann, ob diese allgemeingültig ist.
+      gegenÃ¼ber der PrÃ¤dikaten-Logik noch einen weiteren Vorteil: Sie ist \emph{entscheidbar}, d.h.~wir
+      kÃ¶nnen ein Programm schreiben, das als Eingabe eine aussagenlogische Formel verarbeitet und welches
+      dann entscheidet, ob diese Formel allgemeingÃ¼ltig ist.  Es ist hingegen nicht mÃ¶glich, ein Programm zu
+      erstellen, das fÃ¼r eine prÃ¤dikatenlogische Formel entscheiden kann, ob diese allgemeingÃ¼ltig ist.
 
-      Ein weiteres Argument, sich zunächst mit der Aussagenlogik zu beschäftigen liefern die Anwendungen
+      Ein weiteres Argument, sich zunÃ¤chst mit der Aussagenlogik zu beschÃ¤ftigen liefern die Anwendungen
       der Aussagenlogik:  Es gibt in der Praxis eine Reihe von Problemen, die
-      bereits mit Hilfe der Aussagenlogik gelöst werden können.  Beispielsweise lässt sich die Frage nach der
+      bereits mit Hilfe der Aussagenlogik gelÃ¶st werden kÃ¶nnen.  Beispielsweise lÃ¤sst sich die Frage nach der
       Korrektheit kombinatorischer digitaler Schaltungen auf die Entscheidbarkeit einer aussagenlogischen
-      Formel zurückführen.  Außerdem gibt es eine Reihe kombinatorischer Probleme, die sich auf
+      Formel zurÃ¼ckfÃ¼hren.  AuÃŸerdem gibt es eine Reihe kombinatorischer Probleme, die sich auf
       aussagenlogische Probleme reduzieren lassen.  Als ein Beispiel zeigen wir, wie sich das
-      8-Damen-Problem mit Hilfe der Aussagenlogik lösen lässt.
-\item Prädikaten-Logik.
+      8-Damen-Problem mit Hilfe der Aussagenlogik lÃ¶sen lÃ¤sst.
+\item PrÃ¤dikaten-Logik.
 
-      Im fünften Kapitel behandeln wir die Prädikatenlogik und analysieren den Begriff
-      des prädikatenlogischen Beweises mit Hilfe eines \emph{Kalküls}.  Ein
-      \emph{Kalkül} ist dabei ein formales Verfahren, einen mathematischen Beweis zu führen.
-      Ein solches Verfahren lässt sich programmieren.  Wir stellen zu diesem Zweck den 
-      \emph{Resolutions-Kalkül} vor, mit dem sich Beweise führen lassen.
-      Dieser Kalkül ist die Grundlage verschiedener Verfahren zum automatischen Beweisen.
+      Im fÃ¼nften Kapitel behandeln wir die PrÃ¤dikatenlogik und analysieren den Begriff
+      des prÃ¤dikatenlogischen Beweises mit Hilfe eines \emph{KalkÃ¼ls}.  Ein
+      \emph{KalkÃ¼l} ist dabei ein formales Verfahren, einen mathematischen Beweis zu fÃ¼hren.
+      Ein solches Verfahren lÃ¤sst sich programmieren.  Wir stellen zu diesem Zweck den 
+      \emph{Resolutions-KalkÃ¼l} vor, mit dem sich Beweise fÃ¼hren lassen.
+      Dieser KalkÃ¼l ist die Grundlage verschiedener Verfahren zum automatischen Beweisen.
 
-      Als Anwendungen der Prädikaten-Logik werden wir schließlich die Systeme \textsl{Prover9} und
+      Als Anwendungen der PrÃ¤dikaten-Logik werden wir schlieÃŸlich die Systeme \textsl{Prover9} und
       \textsl{Mace4} diskutieren.  Bei \textsl{Prover9} handelt es sich um einen automatischen
-      Beweiser, während \textsl{Mace4} eine Programm ist, das dazu benutzt werden kann, ein
-      Gegenbeispiel für eine mathematische Vermutung zu finden.
+      Beweiser, wÃ¤hrend \textsl{Mace4} eine Programm ist, das dazu benutzt werden kann, ein
+      Gegenbeispiel fÃ¼r eine mathematische Vermutung zu finden.
 
 \item Verifikation von Programmen.
 
-      Die Korrektheit eines Programms lässt sich mathematisch nachweisen.  Wir stellen hier drei
-      verschiedene Methoden vor: Der Hoare-Kalkül und die Methode der symbolischen
-      Programm-Ausführung eignen sich zur Verifikation \emph{iterativer} Prozeduren.  (Iterative
-      Programme sind Programme, die hauptsächlich mit Hilfe von Schleifen arbeiten.)
-      Demgegenüber ist die Methode der Wertverlaufs-Induktion besser geeignet um die Korrektheit
+      Die Korrektheit eines Programms lÃ¤sst sich mathematisch nachweisen.  Wir stellen hier drei
+      verschiedene Methoden vor: Der Hoare-KalkÃ¼l und die Methode der symbolischen
+      Programm-AusfÃ¼hrung eignen sich zur Verifikation \emph{iterativer} Prozeduren.  (Iterative
+      Programme sind Programme, die hauptsÃ¤chlich mit Hilfe von Schleifen arbeiten.)
+      DemgegenÃ¼ber ist die Methode der Wertverlaufs-Induktion besser geeignet um die Korrektheit
       \emph{rekursiver} Funktionen nachzuweisen.
 \end{enumerate}
 \pagebreak
 
 \remark
-Zum Schluss möchte ich hier noch ein Paar Worte zum Gebrauch von neuer und alter
+Zum Schluss mÃ¶chte ich hier noch ein Paar Worte zum Gebrauch von neuer und alter
 Rechtschreibung und der Verwendung von Spell-Checkern in diesem Skript sagen.
 Dieses Skript wurde unter Verwendung strengster wirtschaftlicher Kriterien
-erstellt.  Im Klartext heißt das: Zeit ist Geld und als Dozent an der DHBW hat man
+erstellt.  Im Klartext heiÃŸt das: Zeit ist Geld und als Dozent an der DHBW hat man
 weder das eine noch das andere.  Daher ist es sehr wichtig zu wissen, wo eine
-zusätzliche Investition von Zeit noch einen für die Studenten nützlichen Effekt
+zusÃ¤tzliche Investition von Zeit noch einen fÃ¼r die Studenten nÃ¼tzlichen Effekt
 bringt und wo dies nicht der Fall ist.  Ich habe mich an aktuellen
 Forschungs-Ergebnissen zum Nutzen der Rechtschreibung orientiert. Diese zeigen,
 dass es nicht wichtig ist, in welcher Reihenfolge die Bcushatebn in eniem Wrot
 setehn, das eniizge was wihtcig ist, ist dass der esrte und der ltzete Bcusthabe
-an der rcihitgen Psoiiton sthet. Der Rset knan ein ttolaer Böldisnn sien,
+an der rcihitgen Psoiiton sthet. Der Rset knan ein ttolaer BÃ¶ldisnn sien,
 trtodzem knan man ihn onhe Porbelme lseen. Das ist so, wiel wir nciht jdeen
 Buhctsaben eniezln lseen, snoedrn das Wrot als gseatmes.  Wie sie sheen, ist das
-tastcähilch der Flal. $\displaystyle\smiley$
+tastcÃ¤hilch der Flal. $\displaystyle\smiley$
 
-Nichtsdestotrotz möchte ich Sie darum bitten, mir Tipp- und sonstige Fehler, die Ihnen in diesem
+Nichtsdestotrotz mÃ¶chte ich Sie darum bitten, mir Tipp- und sonstige Fehler, die Ihnen in diesem
 Skript auffallen, per Email an
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{karl.stroetmann@dhbw-mannheim.de}
 \\[0.2cm]
 zu melden.  Es bringt nichts, wenn Sie mir diese Fehler nach der
-Vorlesung mitteilen, denn bis ich dazu komme, die Fehler zu korrigieren, habe ich längst vergessen,
+Vorlesung mitteilen, denn bis ich dazu komme, die Fehler zu korrigieren, habe ich lÃ¤ngst vergessen,
 was das Problem war.
 
 %%% Local Variables: 

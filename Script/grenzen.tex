@@ -1,15 +1,15 @@
 \chapter{Grenzen der Berechenbarkeit}
 In jeder Disziplin der Wissenschaft wird die Frage gestellt, welche Grenzen die
 verwendeten Methoden haben.   Wir wollen daher in diesem Kapitel beispielhaft ein Problem
-untersuchen, bei dem die Informatik an ihre Grenzen stößt.  Es handelt sich um das
+untersuchen, bei dem die Informatik an ihre Grenzen stÃ¶ÃŸt.  Es handelt sich um das
 \href{http://de.wikipedia.org/wiki/Halteproblem}{Halte-Problem}.  
 
 \section{Das Halte-Problem}
-Das Halte-Problem ist die Frage, ob eine gegebene Funktion für eine bestimmte Eingabe 
-terminiert.  Bevor wir formal beweisen, dass das Halte-Problem im Allgemeinen unlösbar ist, wollen 
+Das Halte-Problem ist die Frage, ob eine gegebene Funktion fÃ¼r eine bestimmte Eingabe 
+terminiert.  Bevor wir formal beweisen, dass das Halte-Problem im Allgemeinen unlÃ¶sbar ist, wollen 
 wir versuchen, anschaulich zu verstehen, warum dieses Problem schwer sein muss.  Dieser informalen
-Betrachtung des Halte-Problems ist der nächste Abschnitt gewidmet.  Im Anschluss an diesen Abschluss
-zeigen wir dann die Unlösbarkeit des Halte-Problems. 
+Betrachtung des Halte-Problems ist der nÃ¤chste Abschnitt gewidmet.  Im Anschluss an diesen Abschluss
+zeigen wir dann die UnlÃ¶sbarkeit des Halte-Problems. 
 
 \subsection{Informale Betrachtungen zum Halte-Problem}
 
@@ -45,7 +45,7 @@ zeigen wir dann die Unlösbarkeit des Halte-Problems.
     };
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Eine Funktion zur Überprüfung der Vermutung von Legendre.}
+\caption{Eine Funktion zur ÃœberprÃ¼fung der Vermutung von Legendre.}
 \label{fig:legendre.stlx}
 \end{figure}
 
@@ -53,68 +53,68 @@ Um zu verstehen, warum das Halte-Problem schwer ist, betrachten wir
 das in Abbildung \ref{fig:legendre.stlx} gezeigte Programm. 
 Dieses Programm ist dazu gedacht, die
 \href{http://de.wikipedia.org/wiki/Legendresche_Vermutung}{\emph{Legendresche Vermutung}} zu
-überprüfen.  Der französische 
+Ã¼berprÃ¼fen.  Der franzÃ¶sische 
 Mathematiker  \href{http://de.wikipedia.org/wiki/Adrien-Marie_Legendre}{Adrien-Marie Legendre} 
 (1752 --- 1833) hatte vor etwa 200 Jahren die Vermutung 
 ausgesprochen, dass zwischen zwei positiven Quadratzahlen immer eine Primzahl liegt.  Die Frage, ob diese
 Vermutung richtig ist, ist auch Heute noch unbeantwortet.  Die in Abbildung \ref{fig:legendre.stlx}
-definierte Funktion $\texttt{legendre}(n)$ überprüft für eine gegebene positive natürliche Zahl $n$,
+definierte Funktion $\texttt{legendre}(n)$ Ã¼berprÃ¼ft fÃ¼r eine gegebene positive natÃ¼rliche Zahl $n$,
 ob zwischen $n^2$ und $(n+1)^2$ eine Primzahl liegt.  Falls dies, wie von Legendre vorhergesagt, der
-Fall ist, gibt die Funktion als Ergebnis \texttt{true} zurück, andernfalls wird \texttt{false}
-zurück gegeben.
+Fall ist, gibt die Funktion als Ergebnis \texttt{true} zurÃ¼ck, andernfalls wird \texttt{false}
+zurÃ¼ck gegeben.
 
-Abbildung \ref{fig:legendre.stlx} enthält darüber hinaus die Definition der Funktion
-$\texttt{findCounterExample}(n)$, die versucht, für eine gegebene positive natürliche Zahl $n$ eine
+Abbildung \ref{fig:legendre.stlx} enthÃ¤lt darÃ¼ber hinaus die Definition der Funktion
+$\texttt{findCounterExample}(n)$, die versucht, fÃ¼r eine gegebene positive natÃ¼rliche Zahl $n$ eine
 Zahl $k \geq n$ zu finden, so dass zwischen $k^2$ und $(k+1)^2$ keine Primzahl liegt.  Die Idee bei
-der Implementierung dieser Funktion ist einfach:  Zunächst überprüfen wir durch den Aufruf
+der Implementierung dieser Funktion ist einfach:  ZunÃ¤chst Ã¼berprÃ¼fen wir durch den Aufruf
 $\texttt{legendre}(n)$, ob zwischen $n^2$ und $(n+1)^2$
-eine Primzahl ist.  Falls dies der Fall ist, untersuchen wir anschließend das Intervall von
+eine Primzahl ist.  Falls dies der Fall ist, untersuchen wir anschlieÃŸend das Intervall von
 $(n+1)^2$ bis $(n+2)^2$, dann das Intervall von 
-$(n+2)^2$ bis $(n+3)^2$ und so weiter, bis wir schließlich eine Zahl $k$ finden, so dass zwischen
+$(n+2)^2$ bis $(n+3)^2$ und so weiter, bis wir schlieÃŸlich eine Zahl $k$ finden, so dass zwischen
 $k^2$ und $(k+1)^2$ keine Primzahl liegt.  Falls Legendre Recht hatte, werden wir nie ein solches
 $k$ finden und in diesem Fall wird der Aufruf $\texttt{findCounterExample}(1)$ nicht terminieren. 
 
-Nehmen wir nun an, wir hätten ein schlaues Programm, nennen wir es \texttt{stops}, das als Eingabe
+Nehmen wir nun an, wir hÃ¤tten ein schlaues Programm, nennen wir es \texttt{stops}, das als Eingabe
 eine \textsc{SetlX} Funktion $f$ und ein Argument $a$ verarbeitet und dass uns die Frage, ob die Berechnung von $f(a)$
-terminiert, beantworten kann.  Die Idee wäre im wesentlichen, dass gilt:
+terminiert, beantworten kann.  Die Idee wÃ¤re im wesentlichen, dass gilt:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{stops}(f, a) = 1$ \quad g.d.w. \quad der Aufruf $f(a)$ terminiert.
 \\[0.2cm]
 Falls der Aufruf $f(a)$ nicht terminiert,  sollte statt dessen $\texttt{stops}(f,a) = 0$ gelten.
-Wenn wir eine solche Funktion \texttt{stops} hätten, dann könnten wir 
+Wenn wir eine solche Funktion \texttt{stops} hÃ¤tten, dann kÃ¶nnten wir 
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{stops(findCounterExample, 1)}
 \\[0.2cm]
-aufrufen und wüssten anschließend, ob die Vermutung von Legendre wahr ist oder nicht:  Wenn
+aufrufen und wÃ¼ssten anschlieÃŸend, ob die Vermutung von Legendre wahr ist oder nicht:  Wenn
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{stops(findCounterExample, 1)} = 1$
  \\[0.2cm]
-ist, dann würde das heißen,
+ist, dann wÃ¼rde das heiÃŸen,
 dass der Funktions-Aufruf $\texttt{findCounterExample}(1)$ terminiert.  Das passiert aber nur dann,
-wenn ein Gegenbeispiel gefunden wird.  Würde der Aufruf \texttt{stops(findCounterExample, 1)}
-statt dessen eine $0$ zurück liefern, so könnten wir schließen, dass der Aufruf \texttt{findCounterExample(1)}
-nicht terminiert. Mithin würde die Funktion \texttt{findCounterExample} kein Gegenbeispiel finden und
-das würde heißen, dass die Vermutung von Legendre stimmt.
+wenn ein Gegenbeispiel gefunden wird.  WÃ¼rde der Aufruf \texttt{stops(findCounterExample, 1)}
+statt dessen eine $0$ zurÃ¼ck liefern, so kÃ¶nnten wir schlieÃŸen, dass der Aufruf \texttt{findCounterExample(1)}
+nicht terminiert. Mithin wÃ¼rde die Funktion \texttt{findCounterExample} kein Gegenbeispiel finden und
+das wÃ¼rde heiÃŸen, dass die Vermutung von Legendre stimmt.
 
 Es gibt eine Reihe weiterer offener  mathematischer Probleme, die alle auf die Frage abgebildet
-werden können, ob eine gegebene Funktion terminiert.  Daher zeigen die vorhergehenden Überlegungen,
-dass es sehr nützlich wäre, eine Funktion wie \texttt{stops} zur Verfügung zu haben.  Andererseits
-können wir an dieser Stelle schon ahnen, dass die Implementierung der Funktion \texttt{stops}
+werden kÃ¶nnen, ob eine gegebene Funktion terminiert.  Daher zeigen die vorhergehenden Ãœberlegungen,
+dass es sehr nÃ¼tzlich wÃ¤re, eine Funktion wie \texttt{stops} zur VerfÃ¼gung zu haben.  Andererseits
+kÃ¶nnen wir an dieser Stelle schon ahnen, dass die Implementierung der Funktion \texttt{stops}
 zumindest sehr schwierig wird.  
 
  
 \subsection{Formale Analyse des Halte-Problems}
-Wir werden in diesem Abschnitt beweisen, dass das Halte-Problem nicht durch ein Programm gelöst werden
-kann.  Dazu führen wir folgende Definition ein.
+Wir werden in diesem Abschnitt beweisen, dass das Halte-Problem nicht durch ein Programm gelÃ¶st werden
+kann.  Dazu fÃ¼hren wir folgende Definition ein.
 
 \begin{Definition}[Test-Funktion] 
 {\em Ein String $t$ ist eine \emph{Test-Funktion} wenn $t$ 
  die Form \\[0.3cm]
 \hspace*{1.3cm} {\tt procedure(x) \{ $\cdots$ \}} \\[0.3cm]
-hat und sich als \textsc{SetlX}-Funktion parsen lässt.  Die Menge der
+hat und sich als \textsc{SetlX}-Funktion parsen lÃ¤sst.  Die Menge der
 Test-Funktionen bezeichnen wir mit $T\!F$.}  \hspace*{\fill} $\Box$
 \end{Definition}
 
@@ -129,11 +129,11 @@ Test-Funktionen bezeichnen wir mit $T\!F$.}  \hspace*{\fill} $\Box$
       $s_2$ ist eine Test-Funktion. 
 \item $s_3$ = ``{\tt procedure(x) \{ return ++x; \}}''
 
-      $s_3$ ist keine Test-Funktion, denn da \textsc{SetlX} den Präfix-Operator
-      ``\texttt{++}'' nicht unterstützt, lässt sich der String $s_3$  nicht fehlerfrei parsen.
+      $s_3$ ist keine Test-Funktion, denn da \textsc{SetlX} den PrÃ¤fix-Operator
+      ``\texttt{++}'' nicht unterstÃ¼tzt, lÃ¤sst sich der String $s_3$  nicht fehlerfrei parsen.
 \end{enumerate}
-Um das Halte-Problem übersichtlicher formulieren zu können, führen wir noch drei
-zusätzliche Notationen ein.
+Um das Halte-Problem Ã¼bersichtlicher formulieren zu kÃ¶nnen, fÃ¼hren wir noch drei
+zusÃ¤tzliche Notationen ein.
 \begin{Notation}[$\leadsto$, $\downarrow$, $\uparrow$]
 {\em
 Ist $t$ eine \textsc{SetlX}-Funktion, die $k$ Argumente verarbeitet und sind $a_1$, $\cdots$, $a_k$ Argumente,
@@ -161,32 +161,32 @@ die Definition des Begriffs der Test-Funktion gegeben haben, so gilt:
 \end{enumerate} 
 
 \noindent
-Das \emph{Halte-Problem} für
+Das \emph{Halte-Problem} fÃ¼r
 \textsc{SetlX}-Funktionen ist die Frage, ob es eine \texttt{SetlX}-Funktion \\[0.1cm] 
 \hspace*{1.3cm} 
 $\texttt{stops := procedure}(t,\;a)\; \{\;\cdots\;\}$ \\[0.1cm]
-gibt, die als Eingabe eine Testfunktion $t$ und einen String $a$ erhält und die folgende
+gibt, die als Eingabe eine Testfunktion $t$ und einen String $a$ erhÃ¤lt und die folgende
 Eigenschaft hat:
 \begin{enumerate}
 \item $t \not\in T\!F \quad\Leftrightarrow\quad \mathtt{stops}(t, a) \leadsto 2$.
 
-      Der Aufruf \texttt{stops($t$, $a$)} liefert genau dann den Wert 2 zurück, 
+      Der Aufruf \texttt{stops($t$, $a$)} liefert genau dann den Wert 2 zurÃ¼ck, 
       wenn $t$ keine Test-Funktion ist.
 
 \item $t \in T\!F \,\wedge\, t(a)\downarrow \quad\Leftrightarrow\quad
        \mathtt{stops}(t, a) \leadsto 1$.
 
-      Der Aufruf \texttt{stops($t$, $a$)} liefert genau dann den Wert 1 zurück,
+      Der Aufruf \texttt{stops($t$, $a$)} liefert genau dann den Wert 1 zurÃ¼ck,
       wenn $t$ eine Test-Funktion ist und der Aufruf $t(a)$ terminiert.
 
 \item $t \in T\!F \,\wedge\, t(a)\uparrow \quad\Leftrightarrow\quad
        \mathtt{stops}(t, a) \leadsto 0$.
 
-      Der Aufruf \texttt{stops($t$, $a$)} liefert genau dann den Wert 0 zurück,
+      Der Aufruf \texttt{stops($t$, $a$)} liefert genau dann den Wert 0 zurÃ¼ck,
       wenn $t$ eine Test-Funktion ist und der Aufruf $t(a)$ \underline{nicht} terminiert.
 \end{enumerate}
 Falls eine \textsc{SetlX}-Funktion \texttt{stops} mit den obigen Eigenschaften existiert, dann
-sagen wir, dass das Halte-Problem für \textsc{SetlX} entscheidbar ist.
+sagen wir, dass das Halte-Problem fÃ¼r \textsc{SetlX} entscheidbar ist.
 
 \begin{Theorem}[\href{http://de.wikipedia.org/wiki/Alan_Turing}{Alan Turing}, 1936]
 {\em
@@ -195,14 +195,14 @@ sagen wir, dass das Halte-Problem für \textsc{SetlX} entscheidbar ist.
 \end{Theorem}
 
 \noindent
-\textbf{Beweis}:  Zunächst eine Vorbemerkung.  Um die Unentscheidbarkeit des
-Halte-Problems nachzuweisen, müssen wir zeigen, dass etwas, nämlich eine Funktion mit
-gewissen Eigenschaften nicht existiert.  Wie kann so ein Beweis überhaupt funktionieren?
-Wie können wir überhaupt zeigen, dass irgendetwas nicht existiert?
-Die einzige Möglichkeit zu zeigen, dass etwas nicht existiert ist indirekt:
-Wir nehmen also an, dass eine Funktion \texttt{stops} existiert, die das Halte-Problem löst.
+\textbf{Beweis}:  ZunÃ¤chst eine Vorbemerkung.  Um die Unentscheidbarkeit des
+Halte-Problems nachzuweisen, mÃ¼ssen wir zeigen, dass etwas, nÃ¤mlich eine Funktion mit
+gewissen Eigenschaften nicht existiert.  Wie kann so ein Beweis Ã¼berhaupt funktionieren?
+Wie kÃ¶nnen wir Ã¼berhaupt zeigen, dass irgendetwas nicht existiert?
+Die einzige MÃ¶glichkeit zu zeigen, dass etwas nicht existiert ist indirekt:
+Wir nehmen also an, dass eine Funktion \texttt{stops} existiert, die das Halte-Problem lÃ¶st.
 Aus dieser Annahme werden wir einen Widerspruch ableiten.  Dieser Widerspruch zeigt
-uns dann, dass eine Funktion \texttt{stops} mit den gewünschten Eigenschaften nicht
+uns dann, dass eine Funktion \texttt{stops} mit den gewÃ¼nschten Eigenschaften nicht
 existieren kann.
 Um zu einem Widerspruch zu kommen, definieren wir den String \texttt{turing} wie in Abbildung
 \ref{fig:turing-string} gezeigt.
@@ -238,22 +238,22 @@ Mit dieser Definition ist klar, dass \texttt{turing} eine Test-Funktion ist: \\[
 Damit sind wir in der Lage, den String \texttt{turing} als Eingabe der Funktion \texttt{stops}
 zu verwenden.  Wir betrachten nun den folgenden Aufruf: \\[0.3cm]
 \hspace*{1.3cm} \texttt{stops(\texttt{turing}, \texttt{turing});} \\[0.3cm]
-Da \texttt{turing} eine Test-Funktion ist, können nur zwei Fälle auftreten:
+Da \texttt{turing} eine Test-Funktion ist, kÃ¶nnen nur zwei FÃ¤lle auftreten:
 \\[0.1cm]
 \hspace*{1.3cm} 
 $\texttt{stops(\texttt{turing}, \texttt{turing})} \leadsto 0 \quad \vee\quad
  \texttt{stops(\texttt{turing}, \texttt{turing})} \leadsto 1$. \\[0.1cm]
-Diese beiden Fälle analysieren wir nun im Detail:
+Diese beiden FÃ¤lle analysieren wir nun im Detail:
 \begin{enumerate}
 \item $\texttt{stops(\texttt{turing}, \texttt{turing})} \leadsto 0$. 
 
       Nach der Spezifikation von \texttt{stops} bedeutet dies \\[0.1cm]
       \hspace*{1.3cm} $\texttt{turing}(\texttt{turing}) \uparrow$ \\[0.1cm]
       Schauen wir nun, was wirklich beim Aufruf \texttt{turing(\texttt{turing})} passiert:
-      In Zeile 2 erhält die Variable \texttt{result} den Wert 0 zugewiesen.  In Zeile 3
-      wird dann getestet, ob \texttt{result} den Wert 1 hat.  Dieser Test schlägt fehl.
-      Daher wird der Block der \texttt{if}-Anweisung nicht ausgeführt und die Funktion liefert als
-      nächstes in Zeile 8 den Wert 0 zurück.  Insbesondere terminiert der Aufruf also, im
+      In Zeile 2 erhÃ¤lt die Variable \texttt{result} den Wert 0 zugewiesen.  In Zeile 3
+      wird dann getestet, ob \texttt{result} den Wert 1 hat.  Dieser Test schlÃ¤gt fehl.
+      Daher wird der Block der \texttt{if}-Anweisung nicht ausgefÃ¼hrt und die Funktion liefert als
+      nÃ¤chstes in Zeile 8 den Wert 0 zurÃ¼ck.  Insbesondere terminiert der Aufruf also, im
       Widerspruch zu dem, was die Funktion \texttt{stops} behauptet hat. $\lightning$
 
       Damit ist der erste Fall ausgeschlossen.
@@ -263,10 +263,10 @@ Diese beiden Fälle analysieren wir nun im Detail:
       $\texttt{turing}(\texttt{turing})$ terminiert: \\[0.1cm]
       \hspace*{1.3cm} $\mathtt{turing}(\texttt{turing}) \downarrow$ \\[0.1cm]
       Schauen wir nun, was wirklich beim Aufruf \texttt{turing(\texttt{turing})} passiert:
-      In Zeile 2 erhält die Variable \texttt{result} den Wert 1 zugewiesen.  In Zeile 3
+      In Zeile 2 erhÃ¤lt die Variable \texttt{result} den Wert 1 zugewiesen.  In Zeile 3
       wird dann getestet, ob \texttt{result} den Wert 1 hat.  Diesmal gelingt der Test.
-      Daher wird der Block der \texttt{if}-Anweisung ausgeführt.  Dieser Block
-      besteht aber nur aus einer Endlos-Schleife, aus der wir nie wieder zurück kommen.
+      Daher wird der Block der \texttt{if}-Anweisung ausgefÃ¼hrt.  Dieser Block
+      besteht aber nur aus einer Endlos-Schleife, aus der wir nie wieder zurÃ¼ck kommen.
       Das steht im Widerspruch zu dem, was die Funktion \texttt{stops} behauptet hat.
       $\lightning$
 
@@ -274,16 +274,16 @@ Diese beiden Fälle analysieren wir nun im Detail:
 \end{enumerate}
 Insgesamt haben wir also in jedem Fall einen Widerspruch erhalten.  
 Damit muss die Annahme, dass die \textsc{SetlX}-Funktion \texttt{stops}
-das Halte-Problem löst, falsch sein, denn diese Annahme ist die Ursache für die Widersprüche, die
+das Halte-Problem lÃ¶st, falsch sein, denn diese Annahme ist die Ursache fÃ¼r die WidersprÃ¼che, die
 wir erhalten haben.  Insgesamt haben wir daher gezeigt, dass es keine \textsc{SetlX}-Funktion
-geben kann, die das Halte-Problem löst. \hspace*{\fill} $\Box$
+geben kann, die das Halte-Problem lÃ¶st. \hspace*{\fill} $\Box$
 \vspace*{0.3cm}
 
 \noindent
 \textbf{Bemerkung}:
-Der Nachweis, dass das Halte-Problem unlösbar ist, wurde 1936 von Alan Turing (1912 -- 1954)
-\cite{turing:36} erbracht.  Turing hat das Problem damals natürlich nicht für die Sprache
-\textsc{SetlX} gelöst, sondern für die heute nach ihm benannten \emph{Turing-Maschinen}.  
+Der Nachweis, dass das Halte-Problem unlÃ¶sbar ist, wurde 1936 von Alan Turing (1912 -- 1954)
+\cite{turing:36} erbracht.  Turing hat das Problem damals natÃ¼rlich nicht fÃ¼r die Sprache
+\textsc{SetlX} gelÃ¶st, sondern fÃ¼r die heute nach ihm benannten \emph{Turing-Maschinen}.  
 Eine Turing-Maschine ist abstrakt gesehen nichts anderes als eine Beschreibung eines
 Algorithmus.  Turing hat also gezeigt, dass es keinen Algorithmus gibt, der entscheiden
 kann, ob ein gegebener anderer Algorithmus terminiert.
@@ -291,52 +291,52 @@ kann, ob ein gegebener anderer Algorithmus terminiert.
 
 \noindent
 \textbf{Bemerkung}:
-An dieser Stelle können wir uns fragen, ob es vielleicht eine andere Programmier-Sprache
-gibt, in der wir das Halte-Problem dann vielleicht doch lösen könnten.  
+An dieser Stelle kÃ¶nnen wir uns fragen, ob es vielleicht eine andere Programmier-Sprache
+gibt, in der wir das Halte-Problem dann vielleicht doch lÃ¶sen kÃ¶nnten.  
 Wenn es in dieses Programmier-Sprache Unterprogramme gibt, und wenn wir dort
-Programm-Texte als Argumente von Funktionen übergeben können, dann ist leicht zu sehen,
+Programm-Texte als Argumente von Funktionen Ã¼bergeben kÃ¶nnen, dann ist leicht zu sehen,
 dass der obige Beweis der 
-Unlösbarkeit des Halte-Problems sich durch geeignete syntaktische Modifikationen auch auf
-die andere Programmier-Sprache übertragen lässt.
+UnlÃ¶sbarkeit des Halte-Problems sich durch geeignete syntaktische Modifikationen auch auf
+die andere Programmier-Sprache Ã¼bertragen lÃ¤sst.
 
 
-\section{Unlösbarkeit des Äquivalenz-Problems}
+\section{UnlÃ¶sbarkeit des Ã„quivalenz-Problems}
 Es gibt noch eine ganze Reihe anderer Funktionen, die nicht berechenbar sind.  In der
-Regel werden wir den Nachweis, dass eine bestimmt Funktion nicht berechenbar ist, indirekt führen
+Regel werden wir den Nachweis, dass eine bestimmt Funktion nicht berechenbar ist, indirekt fÃ¼hren
 und annehmen, dass die gesuchte Funktion doch berechenbar ist.  Unter dieser Annahme
-konstruieren wir dann eine Funktion, die das Halte-Problem löst, was im Widerspruch zu der Unlösbarkeit
+konstruieren wir dann eine Funktion, die das Halte-Problem lÃ¶st, was im Widerspruch zu der UnlÃ¶sbarkeit
 des Halte-Problems steht.
 Dieser Widerspruch zwingt uns zu der Folgerung, dass die gesuchte Funktion nicht berechenbar ist.
-Wir werden dieses Verfahren an einem Beispiel demonstrieren.  Vorweg benötigen wir aber
+Wir werden dieses Verfahren an einem Beispiel demonstrieren.  Vorweg benÃ¶tigen wir aber
 noch eine Definition.
 
 \begin{Definition}[$\simeq$] 
 {\em 
 Es seien $t_1$ und $t_2$ zwei \textsc{SetlX}-Funktionen und
-  $a_1$, $\cdots$, $a_k$ seien Argumente, mit denen wir diese Funktionen füttern können. Wir definieren \\[0.1cm]
+  $a_1$, $\cdots$, $a_k$ seien Argumente, mit denen wir diese Funktionen fÃ¼ttern kÃ¶nnen. Wir definieren \\[0.1cm]
 \hspace*{1.3cm} $t_1(a_1,\cdots,a_k) \simeq t_2(a_1,\cdots,a_k)$ \\[0.1cm]
-g.d.w. einer der beiden folgen Fälle auftritt:
+g.d.w. einer der beiden folgen FÃ¤lle auftritt:
 \begin{enumerate}
 \item $t_1(a_1,\cdots,a_k)\uparrow \quad\wedge\quad t_2(a_1,\cdots,a_k)\uparrow$,
 
-      beide Funktionen divergieren also für die gegebenen Argumente.
+      beide Funktionen divergieren also fÃ¼r die gegebenen Argumente.
 \item $\exists r: \Bigl(t_1(a_1,\cdots,a_k) \leadsto r \;\wedge\; t_2(a_1,\cdots,a_k) \leadsto r\Bigr)$,
 
-      die Funktionen liefern also für die gegebenen Argumente das gleiche Ergebnis.
+      die Funktionen liefern also fÃ¼r die gegebenen Argumente das gleiche Ergebnis.
 \end{enumerate}
       In diesem Fall sagen wir, dass die beiden Funktions-Aufrufe 
-      $t_1(a_1,\cdots,a_k) \simeq t_2(a_1,\cdots,a_k)$ \emph{partiell äquivalent} sind.  
+      $t_1(a_1,\cdots,a_k) \simeq t_2(a_1,\cdots,a_k)$ \emph{partiell Ã¤quivalent} sind.  
       \qed
 }
 \end{Definition}
 
 \noindent
-Wir kommen jetzt zum \emph{Äquivalenz-Problem}.  Die Funktion $\texttt{equal}$, die die Form
+Wir kommen jetzt zum \emph{Ã„quivalenz-Problem}.  Die Funktion $\texttt{equal}$, die die Form
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{equal := procedure(p1, p2, a) \{ ... \}}$
 \\[0.2cm]
-hat, möge folgender Spezifikation genügen:
+hat, mÃ¶ge folgender Spezifikation genÃ¼gen:
 \begin{enumerate}
 \item $p_1 \not\in T\!F \;\vee\; p_2 \not\in T\!F \quad\Leftrightarrow\quad \mathtt{equal}(p_1, p_2, a) \leadsto 2$.
 \item Falls 
@@ -350,18 +350,18 @@ hat, möge folgender Spezifikation genügen:
 \item Ansonsten gilt \\[0.1cm]
       \hspace*{1.3cm} $\mathtt{equal}(p_1, p_2, a) \leadsto 0$.
 \end{enumerate}
-Wir sagen, dass eine Funktion, die der eben angegebenen Spezifikation genügt, das
-\emph{Äquivalenz-Problem} löst.
+Wir sagen, dass eine Funktion, die der eben angegebenen Spezifikation genÃ¼gt, das
+\emph{Ã„quivalenz-Problem} lÃ¶st.
 
 \begin{Theorem}[Rice, 1953]
-Das Äquivalenz-Problem ist unlösbar.  
+Das Ã„quivalenz-Problem ist unlÃ¶sbar.  
 \end{Theorem}
 
 \noindent
 \textbf{Beweis}:
-Wir führen den Beweis indirekt und nehmen
+Wir fÃ¼hren den Beweis indirekt und nehmen
 an, dass es doch eine Implementierung der Funktion \texttt{equal} gibt, die das
-Äquivalenz-Problem löst.  Wir betrachten die in Abbildung 
+Ã„quivalenz-Problem lÃ¶st.  Wir betrachten die in Abbildung 
 \ref{fig:stops} angegeben Implementierung der Funktion \texttt{stops}.
 
 
@@ -397,20 +397,20 @@ folgende Form:
 \begin{verbatim}
       procedure(x) { while (true) { x := x + x; } };
 \end{verbatim}
-Es ist offensichtlich, dass diese Funktion für kein Ergebnis terminiert.
+Es ist offensichtlich, dass diese Funktion fÃ¼r kein Ergebnis terminiert.
 Ist also das Argument $p$ eine Test-Funktion, so liefert die Funktion
 \texttt{equal} immer dann den Wert 1, 
-wenn $p(a)$ nicht terminiert, andernfalls muss sie den Wert 0 zurück geben.
-Damit liefert die Funktion \texttt{stops} aber für eine Test-Funktion $p$ 
+wenn $p(a)$ nicht terminiert, andernfalls muss sie den Wert 0 zurÃ¼ck geben.
+Damit liefert die Funktion \texttt{stops} aber fÃ¼r eine Test-Funktion $p$ 
 und ein Argument 
-$a$ genau dann 1, wenn der Aufruf $p(a)$ terminiert und würde folglich das Halte-Problem
-lösen.  Das kann nicht sein, also kann es keine Funktion  \texttt{equal}
-geben, die das Äquivalenz-Problem löst. 
+$a$ genau dann 1, wenn der Aufruf $p(a)$ terminiert und wÃ¼rde folglich das Halte-Problem
+lÃ¶sen.  Das kann nicht sein, also kann es keine Funktion  \texttt{equal}
+geben, die das Ã„quivalenz-Problem lÃ¶st. 
 \qed
 \vspace*{0.3cm}
 
 \noindent
-Die Unlösbarkeit des Äquivalenz-Problems und vieler weiterer praktisch interessanter
+Die UnlÃ¶sbarkeit des Ã„quivalenz-Problems und vieler weiterer praktisch interessanter
 Probleme folgen aus dem 1953 von Henry G.~Rice \cite{rice:53} bewiesenen
 \href{http://de.wikipedia.org/wiki/Satz_von_Rice}{Satz von Rice}.
 

@@ -1,55 +1,55 @@
-\chapter{Prädikatenlogik}
-In der Aussagenlogik haben wir die Verknüpfung von elementaren Aussagen mit Junktoren untersucht.
-Die Prädikatenlogik untersucht zusätzlich auch die Struktur der Aussagen.  Dazu werden in der Prädikatenlogik 
-die folgenden zusätzlichen Begriffe eingeführt:
+\chapter{PrÃ¤dikatenlogik}
+In der Aussagenlogik haben wir die VerknÃ¼pfung von elementaren Aussagen mit Junktoren untersucht.
+Die PrÃ¤dikatenlogik untersucht zusÃ¤tzlich auch die Struktur der Aussagen.  Dazu werden in der PrÃ¤dikatenlogik 
+die folgenden zusÃ¤tzlichen Begriffe eingefÃ¼hrt:
 \begin{enumerate}
-\item Als Bezeichnungen für Objekte werden \emph{Terme} verwendet.
+\item Als Bezeichnungen fÃ¼r Objekte werden \emph{Terme} verwendet.
 \item Diese Terme werden aus \emph{Variablen} und \emph{Funktions-Zeichen}
       zusammengesetzt: 
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{vater}(x),\quad \textsl{mutter}(\textsl{isaac}), \quad x+7, \quad \cdots$.
-\item Verschiedene Objekte werden durch \emph{Prädikats-Zeichen} in Relation gesetzt:
+\item Verschiedene Objekte werden durch \emph{PrÃ¤dikats-Zeichen} in Relation gesetzt:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{istBruder}\bigl(\textsl{albert}, \textsl{vater}(\textsl{bruno})\bigr),\quad x+7 < x\cdot 7,\quad n \in \mathbb{N}, \quad \cdots$.
       \\[0.2cm]
       Die dabei entstehenden Formeln werden als \emph{atomare} Formeln bezeichnet.
-\item Atomare Formeln lassen sich durch aussagenlogische Junktoren verknüpfen:
+\item Atomare Formeln lassen sich durch aussagenlogische Junktoren verknÃ¼pfen:
       \\[0.2cm]
       \hspace*{1.3cm}
       $x > 1 \rightarrow x + 7 < x \cdot  7$.
-\item Schließlich werden \emph{Quantoren} eingeführt, um zwischen \emph{existentiell} und
+\item SchlieÃŸlich werden \emph{Quantoren} eingefÃ¼hrt, um zwischen \emph{existentiell} und
       \emph{universell} quantifizierten Variablen unterscheiden
-      zu können:
+      zu kÃ¶nnen:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\forall x \in \mathbb{R}: \exists n \in \mathbb{N}: x < n$.
 \end{enumerate}
-Wir werden im nächsten Abschnitt die Syntax der prädikatenlogischen Formeln festlegen und uns dann
-im darauf folgenden Abschnitt mit der Semantik dieser Formeln beschäftigen.
+Wir werden im nÃ¤chsten Abschnitt die Syntax der prÃ¤dikatenlogischen Formeln festlegen und uns dann
+im darauf folgenden Abschnitt mit der Semantik dieser Formeln beschÃ¤ftigen.
 
-\section{Syntax der Prädikatenlogik}
-Zunächst definieren wir den Begriff der \emph{Signatur}.  Inhaltlich ist das nichts anderes als eine 
-strukturierte Zusammenfassung von Variablen, Funktions- und Prädikats-Zeichen zusammen mit
+\section{Syntax der PrÃ¤dikatenlogik}
+ZunÃ¤chst definieren wir den Begriff der \emph{Signatur}.  Inhaltlich ist das nichts anderes als eine 
+strukturierte Zusammenfassung von Variablen, Funktions- und PrÃ¤dikats-Zeichen zusammen mit
 einer Spezifikation der Stelligkeit dieser Zeichen.
  
 \begin{Definition}[Signatur]
   Eine \emph{Signatur} ist ein 4-Tupel \\[0.2cm]
   \hspace*{1.3cm} $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$, \\[0.2cm]
-  für das Folgendes gilt: 
+  fÃ¼r das Folgendes gilt: 
   \begin{enumerate}
   \item $\mathcal{V}$ ist die Menge der Variablen.
   \item $\mathcal{F}$ ist die Menge der Funktions-Zeichen.
-  \item $\mathcal{P}$ ist die Menge der Prädikats-Zeichen.
-  \item $\textsl{arity}$ ist eine Funktion, die jedem Funktions- und jedem Prädikats-Zeichen seine
+  \item $\mathcal{P}$ ist die Menge der PrÃ¤dikats-Zeichen.
+  \item $\textsl{arity}$ ist eine Funktion, die jedem Funktions- und jedem PrÃ¤dikats-Zeichen seine
         \emph{Stelligkeit} zuordnet: \\[0.2cm]
         \hspace*{1.3cm} $\textsl{arity}: \mathcal{F} \cup \mathcal{P} \rightarrow \mathbb{N}_0$. \\[0.2cm]
-        Wir sagen, dass das Funktions- oder Prädikats-Zeichen $f$ ein
+        Wir sagen, dass das Funktions- oder PrÃ¤dikats-Zeichen $f$ ein
         $n$-stelliges Zeichen ist, falls $\textsl{arity}(f) = n$ gilt.
-  \item Da wir in der Lage sein müssen, Variablen, Funktions- und Prädikats-Zeichen
-        unterscheiden zu können, vereinbaren wir, dass die Mengen $\mathcal{V}$,
-        $\mathcal{F}$ und $\mathcal{P}$ paarweise disjunkt sein müssen: \\[0.2cm] 
+  \item Da wir in der Lage sein mÃ¼ssen, Variablen, Funktions- und PrÃ¤dikats-Zeichen
+        unterscheiden zu kÃ¶nnen, vereinbaren wir, dass die Mengen $\mathcal{V}$,
+        $\mathcal{F}$ und $\mathcal{P}$ paarweise disjunkt sein mÃ¼ssen: \\[0.2cm] 
         \hspace*{1.3cm} $\mathcal{V} \cap \mathcal{F} = \{\}$, \quad
                         $\mathcal{V} \cap \mathcal{P} = \{\}$, \quad und \quad
                         $\mathcal{F} \cap \mathcal{P} = \{\}$. \eox
@@ -57,14 +57,14 @@ einer Spezifikation der Stelligkeit dieser Zeichen.
 \end{Definition}
 
 \noindent
-Als Bezeichner für Objekte verwenden wir Ausdrücke, die aus Variablen und
-Funktions-Zeichen aufgebaut sind.  Solche Ausdrücke nennen wir \emph{Terme}.  
+Als Bezeichner fÃ¼r Objekte verwenden wir AusdrÃ¼cke, die aus Variablen und
+Funktions-Zeichen aufgebaut sind.  Solche AusdrÃ¼cke nennen wir \emph{Terme}.  
 Formal werden diese wie folgt definiert.
 \begin{Definition}[Terme,  $\mathcal{T}_\Sigma$]
   Ist $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ eine Signatur, so definieren wir die Menge der $\Sigma$-Terme
   $\mathcal{T}_\Sigma$ induktiv:
   \begin{enumerate}
-  \item Für jede Variable $x \in \mathcal{V}$ gilt $x \in \mathcal{T}_\Sigma$.
+  \item FÃ¼r jede Variable $x \in \mathcal{V}$ gilt $x \in \mathcal{T}_\Sigma$.
   \item Ist $f \in \mathcal{F}$ ein n-stelliges Funktions-Zeichen und sind 
         $t_1,\cdots,t_n \el \mathcal{T}_\Sigma$, so gilt auch \\[0.2cm]
         \hspace*{1.3cm} $f(t_1,\cdots,t_n) \el \mathcal{T}_\Sigma$. \\[0.2cm]
@@ -79,14 +79,14 @@ Es sei
 \begin{enumerate}
 \item $\mathcal{V} := \{ x, y, z \}$ die Menge der Variablen,
 \item $\mathcal{F} := \{ 0, 1, \mathtt{+}, \mathtt{-}, * \}$ die Menge der Funktions-Zeichen,
-\item $\mathcal{P} := \{\mathtt{=}, \leq\}$ die Menge der Prädikats-Zeichen,
+\item $\mathcal{P} := \{\mathtt{=}, \leq\}$ die Menge der PrÃ¤dikats-Zeichen,
 \item $\textsl{arity} := \bigl\{ \pair(0,0), \pair(1,0), \pair(\mathtt{+},2), \pair(\mathtt{-},2),
   \pair(*,2), \pair(=,2), \pair(\leq,2) \bigr\}$, \\[0.2cm]
-      gibt die Stelligkeit der Funktions- und Prädikats-Zeichen an und
+      gibt die Stelligkeit der Funktions- und PrÃ¤dikats-Zeichen an und
 \item $\Sigma_\mathrm{arith} := \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$
       sei eine Signatur.
 \end{enumerate}
-Dann können wir wie folgt $\Sigma_{\mathrm{arith}}$-Terme konstruieren:
+Dann kÃ¶nnen wir wie folgt $\Sigma_{\mathrm{arith}}$-Terme konstruieren:
 \begin{enumerate}
 \item $x, y, z \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$, \\[0.2cm]
       denn alle Variablen sind auch $\Sigma_{\mathrm{arith}}$-Terme.
@@ -99,80 +99,80 @@ Dann können wir wie folgt $\Sigma_{\mathrm{arith}}$-Terme konstruieren:
       denn $\mathtt{+}(0,x) \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$, $1 \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$ und
       $*$ ist ein 2-stelliges Funktions-Zeichen.
 \end{enumerate}
-In der Praxis werden wir für bestimmte zweistellige Funktionen eine Infix-Schreibweise
-verwenden.  Diese ist dann als Abkürzung für die oben definierte Darstellung zu verstehen.
+In der Praxis werden wir fÃ¼r bestimmte zweistellige Funktionen eine Infix-Schreibweise
+verwenden.  Diese ist dann als AbkÃ¼rzung fÃ¼r die oben definierte Darstellung zu verstehen.
 \eox
 
 
-Als nächstes definieren wir den Begriff der \emph{atomaren Formeln}.  Darunter verstehen wir
+Als nÃ¤chstes definieren wir den Begriff der \emph{atomaren Formeln}.  Darunter verstehen wir
 solche Formeln, die man nicht in kleinere Formeln zerlegen kann, atomare Formeln enthalten also
 weder Junktoren noch Quantoren. 
 \begin{Definition}[Atomare Formeln,  $\mathcal{A}_\Sigma$]
   Gegeben sei eine Signatur $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$. 
   Die Menge der atomaren $\Sigma$-Formeln $\mathcal{A}_\Sigma$
-  wird wie folgt definiert:  Ist $p \el \mathcal{P}$ ein $n$-stelliges Prädikats-Zeichen
+  wird wie folgt definiert:  Ist $p \el \mathcal{P}$ ein $n$-stelliges PrÃ¤dikats-Zeichen
   und sind $n$ $\Sigma$-Terme $t_1$, $\cdots$, $t_n$ gegeben, so ist
   $p(t_1,\cdots,t_n)$ eine atomaren $\Sigma$-Formel: \\[0.2cm]
   \hspace*{1.3cm} $p(t_1,\cdots,t_n) \in \mathcal{A}_\Sigma$.  \\[0.2cm]
-  Falls $p$ ein 0-stelliges Prädikats-Zeichen ist, dann schreiben wir auch $p$ anstelle von $p()$.
+  Falls $p$ ein 0-stelliges PrÃ¤dikats-Zeichen ist, dann schreiben wir auch $p$ anstelle von $p()$.
   In diesem Fall nennen wir $p$ eine \emph{Aussage-Variable}.
   \eox
 \end{Definition}
 
 \example
-Setzen wir das letzte Beispiel fort, so können wir sehen, dass \\[0.2cm]
+Setzen wir das letzte Beispiel fort, so kÃ¶nnen wir sehen, dass \\[0.2cm]
 \hspace*{1.3cm} $\mathtt{=}(*(\mathtt{+}(0,x),1),0)$ \\[0.2cm]
-eine atomare $\Sigma_\mathrm{arith}$-Formel ist.  Beachten Sie, dass wir bisher noch nichts über den Wahrheitswert von solchen 
+eine atomare $\Sigma_\mathrm{arith}$-Formel ist.  Beachten Sie, dass wir bisher noch nichts Ã¼ber den Wahrheitswert von solchen 
 Formeln ausgesagt haben.  Die Frage, wann eine Formel als wahr oder falsch gelten soll,
-wird erst im nächsten Abschnitt untersucht.
+wird erst im nÃ¤chsten Abschnitt untersucht.
 \eox
 
 \noindent
-Bei der Definition der prädikatenlogischen Formeln ist es notwendig,
+Bei der Definition der prÃ¤dikatenlogischen Formeln ist es notwendig,
 zwischen sogenannten \emph{gebundenen} und \emph{freien} Variablen zu unterscheiden.
-Wir führen diese Begriffe zunächst informal mit Hilfe eines Beispiels aus der Analysis ein.
-Wir betrachten die folgende Identität: \\[0.2cm]
+Wir fÃ¼hren diese Begriffe zunÃ¤chst informal mit Hilfe eines Beispiels aus der Analysis ein.
+Wir betrachten die folgende IdentitÃ¤t: \\[0.2cm]
 \hspace*{1.3cm}
  $\ds\int_{0}^{x} y \cdot  t\, d t = \frac{1}{2} \cdot x^2 \cdot  y$ 
 \\[0.2cm]
-In dieser Gleichung treten die Variablen $x$ und $y$ \emph{frei} auf, während die Variable $t$ durch das Integral
-\emph{gebunden} wird.  Damit meinen wir folgendes: Wir können in dieser Gleichung für $x$ und $y$ beliebige Werte
+In dieser Gleichung treten die Variablen $x$ und $y$ \emph{frei} auf, wÃ¤hrend die Variable $t$ durch das Integral
+\emph{gebunden} wird.  Damit meinen wir folgendes: Wir kÃ¶nnen in dieser Gleichung fÃ¼r $x$ und $y$ beliebige Werte
  einsetzen, ohne dass sich an der 
-Gültigkeit der Formel etwas ändert.  Setzen wir zum Beispiel für $x$ den Wert $2$ ein, so erhalten wir \\[0.2cm]
+GÃ¼ltigkeit der Formel etwas Ã¤ndert.  Setzen wir zum Beispiel fÃ¼r $x$ den Wert $2$ ein, so erhalten wir \\[0.2cm]
 \hspace*{1.3cm}
 $\ds\int_{0}^{2} y \cdot  t\, d t = \frac{1}{2} \cdot 2^2 \cdot  y$ \\[0.2cm]
-und diese Identität ist ebenfalls gültig.  Demgegenüber macht es keinen Sinn, wenn wir für die gebundene Variable
- $t$ eine Zahl einsetzen würden.
-Die linke Seite der entstehenden Gleichung wäre einfach undefiniert.  Wir können für $t$
-höchstens eine andere Variable einsetzen. 
+und diese IdentitÃ¤t ist ebenfalls gÃ¼ltig.  DemgegenÃ¼ber macht es keinen Sinn, wenn wir fÃ¼r die gebundene Variable
+ $t$ eine Zahl einsetzen wÃ¼rden.
+Die linke Seite der entstehenden Gleichung wÃ¤re einfach undefiniert.  Wir kÃ¶nnen fÃ¼r $t$
+hÃ¶chstens eine andere Variable einsetzen. 
 Ersetzen wir die Variable $t$ beispielsweise durch $u$, so erhalten wir \\[0.2cm]
 \hspace*{1.3cm}
 $\ds\int_{0}^{x} y \cdot  u\, d u = \frac{1}{2} \cdot x^2 \cdot  y$ 
 \\[0.2cm]
 und das ist dieselbe Aussage wie oben.  Das funktioniert allerdings nicht mit jeder Variablen. Setzen wir
-für $t$ die Variable $y$ ein, so erhalten wir \\[0.2cm]
+fÃ¼r $t$ die Variable $y$ ein, so erhalten wir \\[0.2cm]
 \hspace*{1.3cm}
 $\ds\int_{0}^{x} y \cdot  y\, d y = \frac{1}{2} \cdot x^2 \cdot  y$. \\[0.2cm]
 Diese Aussage ist aber falsch!  Das Problem liegt darin, dass bei der Ersetzung von $t$ durch $y$ die vorher freie Variable
 $y$ gebunden wurde.  
 
-Ein ähnliches Problem erhalten wir, wenn wir für $y$ beliebige Terme einsetzen.  Solange diese Terme die Variable $t$ 
-nicht enthalten, geht alles gut.  Setzen wir beispielsweise für $y$  den Term $x^2$ ein, so erhalten
+Ein Ã¤hnliches Problem erhalten wir, wenn wir fÃ¼r $y$ beliebige Terme einsetzen.  Solange diese Terme die Variable $t$ 
+nicht enthalten, geht alles gut.  Setzen wir beispielsweise fÃ¼r $y$  den Term $x^2$ ein, so erhalten
 wir \\[0.2cm]
 \hspace*{1.3cm}
 $\ds\int_{0}^{x} x^2 \cdot  t\, d t = \frac{1}{2} \cdot x^2 \cdot  x^2$ 
 \\[0.2cm]
-und diese Formel ist gültig.  Setzen wir allerdings für $y$ den Term $t^2$ ein, so erhalten wir \\[0.2cm]
+und diese Formel ist gÃ¼ltig.  Setzen wir allerdings fÃ¼r $y$ den Term $t^2$ ein, so erhalten wir \\[0.2cm]
 \hspace*{1.3cm}
 $\ds\int_{0}^{x} t^2 \cdot  t\, d t = \frac{1}{2} \cdot x^2 \cdot  t^2$ 
 \\[0.2cm]
-und diese Formel ist nicht mehr gültig. 
+und diese Formel ist nicht mehr gÃ¼ltig. 
 
-In der Prädikatenlogik binden die Quantoren ``$\forall$'' (\emph{für alle}) und ``$\exists$''
-(\emph{es gibt}) Variablen in ähnlicher Weise,  wie der Integral-Operator ``$\int \cdot\; \mathtt{d}t$'' in
-der Analysis Variablen bindet.  Die oben gemachten Ausführungen zeigen, dass es zwei verschiedene Arten von 
+In der PrÃ¤dikatenlogik binden die Quantoren ``$\forall$'' (\emph{fÃ¼r alle}) und ``$\exists$''
+(\emph{es gibt}) Variablen in Ã¤hnlicher Weise,  wie der Integral-Operator ``$\int \cdot\; \mathtt{d}t$'' in
+der Analysis Variablen bindet.  Die oben gemachten AusfÃ¼hrungen zeigen, dass es zwei verschiedene Arten von 
 Variable gibt: \emph{freie Variable} und \emph{gebundene Variable}.
-Um diese Begriffe präzisieren zu können, definieren wir zunächst für einen
+Um diese Begriffe prÃ¤zisieren zu kÃ¶nnen, definieren wir zunÃ¤chst fÃ¼r einen
 $\Sigma$-Term $t$ die Menge der in $t$ enthaltenen Variablen.
 
 \begin{Definition}[$\var(t)$]
@@ -180,7 +180,7 @@ $\Sigma$-Term $t$ die Menge der in $t$ enthaltenen Variablen.
     so definieren wir die Menge $\var(t)$ der Variablen, die in $t$
     auftreten, durch Induktion nach dem Aufbau des Terms:
     \begin{enumerate}
-    \item $\var(x) := \{ x \}$ \quad für alle $x \in \mathcal{V}$,
+    \item $\var(x) := \{ x \}$ \quad fÃ¼r alle $x \in \mathcal{V}$,
     \item $\var\bigl(f(t_1,\cdots,t_n)\bigr) := \var(t_1) \cup \cdots \cup \var(t_n)$.
           \eox
     \end{enumerate}
@@ -192,7 +192,7 @@ $\Sigma$-Term $t$ die Menge der in $t$ enthaltenen Variablen.
     Es sei $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ eine Signatur.
     Die Menge der $\Sigma$-\emph{Formeln} bezeichnen wir mit $\mathbb{F}_\Sigma$.
     Wir definieren diese Menge induktiv.
-    Gleichzeitig definieren wir für jede Formel $F\el \mathbb{F}_\Sigma$ die Menge $\textsl{BV}(F)$ der in $F$ 
+    Gleichzeitig definieren wir fÃ¼r jede Formel $F\el \mathbb{F}_\Sigma$ die Menge $\textsl{BV}(F)$ der in $F$ 
     \emph{gebunden} auftretenden Variablen und die Menge $\textsl{FV}(F)$ der in $F$ \emph{frei} auftretenden Variablen.
     \begin{enumerate}
     \item Es gilt $\falsum \in \mathbb{F}_\Sigma$ und $\verum \in \mathbb{F}_\Sigma$ und wir definieren \\[0.2cm]
@@ -207,7 +207,7 @@ $\Sigma$-Term $t$ die Menge der in $t$ enthaltenen Variablen.
           \item $\FV\bigl( \neg F \bigr) := \FV(F)$.
           \item $\BV\bigl( \neg F \bigr) := \BV(F)$.
           \end{enumerate}
-    \item Sind $F, G \in \mathbb{F}_\Sigma$ und gilt außerdem \\[0.2cm]
+    \item Sind $F, G \in \mathbb{F}_\Sigma$ und gilt auÃŸerdem \\[0.2cm]
           \hspace*{1.3cm}
           $\bigl(\FV(F) \cup \FV(G)\bigr) \cap \bigl(\BV(F) \cup \BV(G)) = \{\}$,
           \\[0.2cm]
@@ -218,7 +218,7 @@ $\Sigma$-Term $t$ die Menge der in $t$ enthaltenen Variablen.
           \item $(F \rightarrow G) \in \mathbb{F}_\Sigma$,
           \item $(F \leftrightarrow G) \in \mathbb{F}_\Sigma$.
           \end{enumerate}
-          Weiter definieren wir für alle Junktoren $\odot \in \{ \wedge, \vee, \rightarrow, \leftrightarrow \}$:
+          Weiter definieren wir fÃ¼r alle Junktoren $\odot \in \{ \wedge, \vee, \rightarrow, \leftrightarrow \}$:
           \begin{enumerate}
           \item $\FV\bigl(F \odot G \bigr) := \FV(F) \cup \FV(G)$.
           \item $\BV\bigl( F \odot G \bigr) := \BV(F) \cup \BV(G)$.
@@ -241,7 +241,7 @@ $\Sigma$-Term $t$ die Menge der in $t$ enthaltenen Variablen.
 
 Bei der oben gegebenen Definition haben wir darauf geachtet, dass eine Variable nicht gleichzeitig
 frei und gebunden in einer Formel auftreten kann, denn durch eine leichte Induktion nach dem Aufbau
-der Formeln lässt sich zeigen, dass für alle $F \in \mathbb{F}_\Sigma$ folgendes gilt:
+der Formeln lÃ¤sst sich zeigen, dass fÃ¼r alle $F \in \mathbb{F}_\Sigma$ folgendes gilt:
 \\[0.2cm]
 \hspace*{1.3cm}
 $ \FV(F) \cap \BV(F) = \{\}$. 
@@ -254,29 +254,29 @@ eine Formel aus $\mathbb{F}_{\Sigma_{\mathrm{arith}}}$ ist.
 Die Menge der gebundenen Variablen ist $\{x\}$, die Menge der freien Variablen ist 
 $\{ y \}$. \eox
 
-Wenn wir Formeln immer in der oben definierten Präfix-Notation anschreiben würden, dann würde die Lesbarkeit unverhältnismäßig leiden. 
-Zur Abkürzung vereinbaren wir, dass in der Prädikatenlogik dieselben Regeln zur Klammer-Ersparnis
-gelten sollen,  die wir schon in der Aussagenlogik verwendet haben.  Zusätzlich werden
+Wenn wir Formeln immer in der oben definierten PrÃ¤fix-Notation anschreiben wÃ¼rden, dann wÃ¼rde die Lesbarkeit unverhÃ¤ltnismÃ¤ÃŸig leiden. 
+Zur AbkÃ¼rzung vereinbaren wir, dass in der PrÃ¤dikatenlogik dieselben Regeln zur Klammer-Ersparnis
+gelten sollen,  die wir schon in der Aussagenlogik verwendet haben.  ZusÃ¤tzlich werden
 gleiche Quantoren zusammengefasst: Beispielsweise schreiben wir  
 \\[0.2cm]
 \hspace*{1.3cm}
 $\forall x, y \colon p(x, y)  \quad \mathrm{statt} \quad \forall x \colon ( \forall y \colon p(x,y))$.
 \\[0.2cm]
-Darüber hinaus legen wir fest, dass Quantoren stärker binden als die aussagenlogischen Junktoren.
-Damit können wir
+DarÃ¼ber hinaus legen wir fest, dass Quantoren stÃ¤rker binden als die aussagenlogischen Junktoren.
+Damit kÃ¶nnen wir
 \\[0.2cm]
 \hspace*{1.3cm}
 $\forall x \colon p(x) \wedge G \quad \mathrm{statt} \quad \bigl(\forall x \colon p(x)\bigr) \wedge G$
 \\[0.2cm]
 schreiben.
-Außerdem vereinbaren wir, dass wir zweistellige Prädikats- und Funktions-Zeichen auch in Infix-Notation angeben
-dürfen.  Um eine eindeutige Lesbarkeit zu erhalten, müssen wir dann gegebenenfalls Klammern setzen. 
+AuÃŸerdem vereinbaren wir, dass wir zweistellige PrÃ¤dikats- und Funktions-Zeichen auch in Infix-Notation angeben
+dÃ¼rfen.  Um eine eindeutige Lesbarkeit zu erhalten, mÃ¼ssen wir dann gegebenenfalls Klammern setzen. 
 Wir schreiben beispielsweise \\[0.2cm]
 \hspace*{1.3cm} $\mathtt{n}_1 = \mathtt{n}_2$  \quad anstelle von \quad $=(\mathtt{n}_1, \mathtt{n}_2)$. \\[0.2cm]
 Die Formel $(\exists x \colon \leq(\mathtt{+}(y, x),y))$ wird dann lesbarer als \\[0.2cm]
 \hspace*{1.3cm} $\exists x \colon y + x \leq y$ \\[0.2cm]
-geschrieben.  Außerdem finden Sie in der Literatur häufig Ausdrücke der Form
-$\forall x\el M: F$ oder $\exists x\el M: F$.  Hierbei handelt es sich um Abkürzungen, die durch
+geschrieben.  AuÃŸerdem finden Sie in der Literatur hÃ¤ufig AusdrÃ¼cke der Form
+$\forall x\el M: F$ oder $\exists x\el M: F$.  Hierbei handelt es sich um AbkÃ¼rzungen, die durch
 \\[0.2cm]
 \hspace*{1.3cm}
 $\ds \bigl(\forall x\el M: F\bigr) \stackrel{\mathrm{def}}{\Longleftrightarrow} \forall x: \bigl(x \el M \rightarrow F\bigr)$,
@@ -285,10 +285,10 @@ $\ds\bigl(\exists x\el M: F\bigr) \stackrel{\mathtt{def}}{\Longleftrightarrow} \
 \\[0.2cm]
 definiert sind.
 
-\section{Semantik der Prädikatenlogik}
-Als nächstes legen wir die Bedeutung der Formeln fest.  Dazu definieren wir 
+\section{Semantik der PrÃ¤dikatenlogik}
+Als nÃ¤chstes legen wir die Bedeutung der Formeln fest.  Dazu definieren wir 
 den Begriff einer \emph{$\Sigma$-Struktur}.  Eine solche Struktur legt fest, wie die
-Funktions- und Prädikats-Zeichen der Signatur $\Sigma$ zu interpretieren sind.
+Funktions- und PrÃ¤dikats-Zeichen der Signatur $\Sigma$ zu interpretieren sind.
 
 \begin{Definition}[Struktur]
     Es sei eine  Signatur \\[0.2cm]
@@ -297,9 +297,9 @@ Funktions- und Prädikats-Zeichen der Signatur $\Sigma$ zu interpretieren sind.
     Paar $\langle \mathcal{U}, \mathcal{J} \rangle$, so dass folgendes gilt:
     \begin{enumerate}
         \item $\mathcal{U}$ ist eine nicht-leere Menge. Diese Menge nennen wir auch das
-              \emph{Universum} der $\Sigma$-Struktur.  Dieses Universum enthält die Werte,
-              die sich später bei der Auswertung der Terme ergeben werden.
-        \item $\mathcal{J}$ ist die \emph{Interpretation} der Funktions-- und Prädikats-Zeichen.
+              \emph{Universum} der $\Sigma$-Struktur.  Dieses Universum enthÃ¤lt die Werte,
+              die sich spÃ¤ter bei der Auswertung der Terme ergeben werden.
+        \item $\mathcal{J}$ ist die \emph{Interpretation} der Funktions-- und PrÃ¤dikats-Zeichen.
               Formal definieren wir $\mathcal{J}$ als eine Abbildung mit folgenden Eigenschaften:
         \begin{enumerate}
         \item Jedem Funktions-Zeichen $f \el \mathcal{F}$ mit $\textsl{arity}(f) = m$ wird
@@ -307,13 +307,13 @@ Funktions- und Prädikats-Zeichen der Signatur $\Sigma$ zu interpretieren sind.
               \hspace*{1.3cm}
               $f^\mathcal{J}\colon \mathcal{U} \times \cdots \times \mathcal{U} \rightarrow \mathcal{U}$ \\[0.2cm]
               zugeordnet, die $m$-Tupel des Universums $\mathcal{U}$ in das Universum $\mathcal{U}$ abbildet.
-        \item Jedem Prädikats-Zeichen $p \el \mathcal{P}$ mit $\textsl{arity}(p) = n$ wird
+        \item Jedem PrÃ¤dikats-Zeichen $p \el \mathcal{P}$ mit $\textsl{arity}(p) = n$ wird
               eine $n$-stellige Funktion \\[0.2cm]
               \hspace*{1.3cm} 
               $p^\mathcal{J}\colon \mathcal{U} \times \cdots \times \mathcal{U} \rightarrow \mathbb{B}$ \\[0.2cm]
               zugeordnet, die jedem $n$-Tupel des Universums $\mathcal{U}$ einen Wahrheitswert aus
               der  Menge $\mathbb{B} =  \{\mathtt{true}, \mathtt{false}\}$ zuordnet.
-        \item Ist das Zeichen ``$=$'' ein Element der Menge der Prädikats-Zeichen $\mathcal{P}$, so gilt
+        \item Ist das Zeichen ``$=$'' ein Element der Menge der PrÃ¤dikats-Zeichen $\mathcal{P}$, so gilt
               \\[0.2cm]
               \hspace*{1.3cm}  
               $=^\mathcal{J}(u,v) = \mathtt{true}$ \quad g.d.w. \quad $u = v$, \\[0.2cm]
@@ -324,7 +324,7 @@ Funktions- und Prädikats-Zeichen der Signatur $\Sigma$ zu interpretieren sind.
 \end{Definition}
 
 \example
-Wir geben ein Beispiel für eine $\Sigma_{\mathrm{arith}}$-Struktur
+Wir geben ein Beispiel fÃ¼r eine $\Sigma_{\mathrm{arith}}$-Struktur
 $\struct_{\mathrm{arith}} = \langle \mathcal{U}_{\mathrm{arith}}, \mathcal{J}_{\mathrm{arith}} \rangle$,
 indem wir definieren:
 \begin{enumerate}
@@ -332,9 +332,9 @@ indem wir definieren:
 \item Die Abbildung $\mathcal{J}_{\mathrm{arith}}$ legen wir dadurch fest, dass die
       Funktions-Zeichen $0$, $1$, $\mathtt{+}$, $\mathtt{-}$, $*$
       durch die entsprechend benannten Funktionen auf der Menge $\mathbb{N}$ 
-      der natürlichen Zahlen zu interpretieren sind.
+      der natÃ¼rlichen Zahlen zu interpretieren sind.
 
-      Ebenso sollen die Prädikats-Zeichen $=$ und $\leq$ durch die Gleichheits-Relation
+      Ebenso sollen die PrÃ¤dikats-Zeichen $=$ und $\leq$ durch die Gleichheits-Relation
       und die Kleiner-Gleich-Relation interpretiert werden. \eox
 \end{enumerate}
 
@@ -349,7 +349,7 @@ Die Signatur  $\Sigma_G$ der Gruppen-Theorie sei definiert als \\[0.2cm]
 \item $\mathcal{P} := \{ \mathtt{=} \}$
 \item $\textsl{arity} = \bigl\{ \pair(1,0), \pair(*,2), \pair(\mathtt{=},2)\bigr\}$
 \end{enumerate}
-Dann können wir eine $\Sigma_G$ Struktur $\mathcal{Z} = \langle \{a,
+Dann kÃ¶nnen wir eine $\Sigma_G$ Struktur $\mathcal{Z} = \langle \{a,
 b\},\mathcal{J}\rangle$ definieren, 
 indem wir die Interpretation $\mathcal{J}$ 
 wie folgt festlegen:
@@ -359,7 +359,7 @@ wie folgt festlegen:
                                    \bigl\langle\pair(a,b), b\bigr\rangle,
                                    \bigl\langle\pair(b,a), b\bigr\rangle,
                                    \bigl\langle\pair(b,b), a\bigr\rangle \Bigr\}$
-\item $=^\mathcal{J}$ ist die Identität: \\[0.2cm]
+\item $=^\mathcal{J}$ ist die IdentitÃ¤t: \\[0.2cm]
        $=^\mathcal{J} \;:=\; \Bigl\{ \bigl\langle\pair(a,a), \mathtt{true}\bigr\rangle,
                                  \bigl\langle\pair(a,b), \mathtt{false}\bigr\rangle,
                                  \bigl\langle\pair(b,a), \mathtt{false}\bigr\rangle,
@@ -369,7 +369,7 @@ wie folgt festlegen:
       keinen Spielraum haben! \eox
 \end{enumerate}
 
-Falls wir Terme auswerten wollen, die Variablen enthalten, so müssen wir für diese
+Falls wir Terme auswerten wollen, die Variablen enthalten, so mÃ¼ssen wir fÃ¼r diese
 Variablen irgendwelche Werte aus dem Universum einsetzen.  Welche Werte wir einsetzen, kann
 durch eine \emph{Variablen-Belegung} festgelegt werden.  Diesen Begriff definieren wir
 nun.
@@ -384,7 +384,7 @@ nun.
 
     Ist $\mathcal{I}$ eine $\struct$-Variablen-Belegung,
     $x \in \mathcal{V}$ und $c \in \mathcal{U}$, so bezeichnet $\mathcal{I}[x/c]$ die Variablen-Belegung, die 
-    der Variablen $x$ den Wert $c$ zuordnet und die ansonsten mit $\mathcal{I}$ übereinstimmt: \\[0.2cm]
+    der Variablen $x$ den Wert $c$ zuordnet und die ansonsten mit $\mathcal{I}$ Ã¼bereinstimmt: \\[0.2cm]
     \hspace*{1.3cm} 
     $\mathcal{I}[x/c](y) := \left\{
     \begin{array}{ll}
@@ -396,12 +396,12 @@ nun.
 
 \begin{Definition}[Semantik der Terme]
     Ist $\struct = \pair(\mathcal{U},\mathcal{J})$ eine $\Sigma$-Struktur und $\mathcal{I}$ eine $\struct$-Variablen-Belegung,
-    so definieren wir für jeden Term $t$ den \emph{Wert} $\struct(\mathcal{I}, t)$ durch Induktion über den Aufbau
+    so definieren wir fÃ¼r jeden Term $t$ den \emph{Wert} $\struct(\mathcal{I}, t)$ durch Induktion Ã¼ber den Aufbau
     von $t$:
     \begin{enumerate}
-    \item Für Variablen $x \in \mathcal{V}$ definieren wir: \\[0.2cm]
+    \item FÃ¼r Variablen $x \in \mathcal{V}$ definieren wir: \\[0.2cm]
           \hspace*{1.3cm} $\struct(\mathcal{I}, x) := \mathcal{I}(x)$.
-    \item Für $\Sigma$-Terme der Form $f(t_1,\cdots,t_n)$ definieren wir \\[0.2cm]
+    \item FÃ¼r $\Sigma$-Terme der Form $f(t_1,\cdots,t_n)$ definieren wir \\[0.2cm]
           \hspace*{1.3cm} $\struct\bigl(\mathcal{I}, f(t_1,\cdots,t_n)\bigr) := 
                            f^\mathcal{J}\bigl( \struct(\mathcal{I}, t_1), \cdots, \struct(\mathcal{I}, t_n) \bigr)$.
                            \eox
@@ -425,7 +425,7 @@ Dann gilt offenbar \\[0.2cm]
 
 \begin{Definition}[Semantik der atomaren $\Sigma$-Formeln]
     Ist $\struct$ eine $\Sigma$-Struktur und $\mathcal{I}$ eine $\struct$-Variablen-Belegung,
-    so definieren wir für jede atomare $\Sigma$-Formel 
+    so definieren wir fÃ¼r jede atomare $\Sigma$-Formel 
     $p(t_1, \cdots, t_n)$ den Wert \\ $\struct\bigl(\mathcal{I}, p(t_1, \cdots, t_n) \bigr)$ wie folgt: \\[0.2cm]
     \hspace*{1.3cm} $\struct\bigl(\mathcal{I}, p(t_1,\cdots,t_n)\bigr) := 
                      p^\mathcal{J}\bigl( \struct(\mathcal{I}, t_1), \cdots, \struct(\mathcal{I}, t_n) \bigr)$.
@@ -433,12 +433,12 @@ Dann gilt offenbar \\[0.2cm]
 \end{Definition}
 
 \example
-In Fortführung des obigen Beispiels gilt: \\[0.2cm]
+In FortfÃ¼hrung des obigen Beispiels gilt: \\[0.2cm]
 \hspace*{1.3cm}  $\struct\bigl(\mathcal{I},z \leq x + y \bigr) = \mathtt{false}$.
 \eox
 
-Um die Semantik beliebiger $\Sigma$-Formeln definieren zu können, nehmen wir an, dass wir,
-genau wie in der Aussagenlogik, die folgenden Funktionen zur Verfügung haben:
+Um die Semantik beliebiger $\Sigma$-Formeln definieren zu kÃ¶nnen, nehmen wir an, dass wir,
+genau wie in der Aussagenlogik, die folgenden Funktionen zur VerfÃ¼gung haben:
 \begin{enumerate}
 \item $\circneg: \mathbb{B} \rightarrow \mathbb{B}$,
 \item $\circvee: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$,
@@ -451,8 +451,8 @@ Die Semantik dieser Funktionen hatten wir durch die Tabelle in Abbildung
 
 \begin{Definition}[Semantik der $\Sigma$-Formeln]
     Ist $\struct$ eine $\Sigma$-Struktur und $\mathcal{I}$ eine $\struct$-Variablen-Belegung,
-    so definieren wir für jede $\Sigma$-Formel $F$ den Wert $\struct(\mathcal{I},F)$
-    durch Induktion über den Aufbau von $F$:
+    so definieren wir fÃ¼r jede $\Sigma$-Formel $F$ den Wert $\struct(\mathcal{I},F)$
+    durch Induktion Ã¼ber den Aufbau von $F$:
     \begin{enumerate}
     \item $\struct(\mathcal{I},\verum) := \mathtt{true}$ und $\struct(\mathcal{I},\falsum) := \mathtt{false}$.
     \item $\struct(\mathcal{I}, \neg F) \;:=\; \circneg\bigl(\struct(\mathcal{I}, F)\bigr)$.
@@ -462,13 +462,13 @@ Die Semantik dieser Funktionen hatten wir durch die Tabelle in Abbildung
     \item $\struct(\mathcal{I}, F \leftrightarrow G) \;:=\; \circleftright\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
     \item $\struct\bigl(\mathcal{I}, \forall x\colon F\bigr) \;:=\; \left\{
       \begin{array}{ll}
-         \mathtt{true}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], F) = \mathtt{true}\quad \mbox{für alle}\; c\in \mathcal{U}\;\mbox{gilt}; \\
+         \mathtt{true}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], F) = \mathtt{true}\quad \mbox{fÃ¼r alle}\; c\in \mathcal{U}\;\mbox{gilt}; \\
          \mathtt{false} & \mbox{sonst}.
       \end{array}
       \right.$
     \item $\struct\bigl(\mathcal{I}, \exists x \colon F\bigr) \;:=\; \left\{
       \begin{array}{ll}
-         \mathtt{true}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], F) = \mathtt{true}\quad \mbox{für ein}\; c\in \mathcal{U}\;\mbox{gilt}; \\
+         \mathtt{true}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], F) = \mathtt{true}\quad \mbox{fÃ¼r ein}\; c\in \mathcal{U}\;\mbox{gilt}; \\
          \mathtt{false} & \mbox{sonst}.
       \end{array}
       \right.$\eox    
@@ -476,79 +476,79 @@ Die Semantik dieser Funktionen hatten wir durch die Tabelle in Abbildung
 \end{Definition}
 
 \example
-In Fortführung des obigen Beispiels gilt \\[0.2cm]
+In FortfÃ¼hrung des obigen Beispiels gilt \\[0.2cm]
 \hspace*{1.3cm}  $\struct\bigl(\mathcal{I}, \forall \mathtt{x}: x *  0 < 1 \bigr) = \mathtt{true}$.
 \eox
 
-\begin{Definition}[Allgemeingültig]
-    Ist $F$ eine $\Sigma$-Formel, so dass für jede $\Sigma$-Struktur $\struct$ und für jede
+\begin{Definition}[AllgemeingÃ¼ltig]
+    Ist $F$ eine $\Sigma$-Formel, so dass fÃ¼r jede $\Sigma$-Struktur $\struct$ und fÃ¼r jede
     $\struct$-Variablen-Belegung $\mathcal{I}$ \\[0.2cm]
     \hspace*{1.3cm} $\struct(\mathcal{I}, F) = \mathtt{true}$ \\[0.2cm]
-    gilt, so bezeichnen wir $F$ als \emph{allgemeingültig}.  In diesem Fall schreiben wir \\[0.2cm]
+    gilt, so bezeichnen wir $F$ als \emph{allgemeingÃ¼ltig}.  In diesem Fall schreiben wir \\[0.2cm]
     \hspace*{1.3cm} $\models F$. 
     \eox
 \end{Definition}
 
-Ist $F$ eine Formel für die $\FV(F) = \{\}$ ist, dann hängt der Wert $\struct(\mathcal{I}, F)$
+Ist $F$ eine Formel fÃ¼r die $\FV(F) = \{\}$ ist, dann hÃ¤ngt der Wert $\struct(\mathcal{I}, F)$
 offenbar gar nicht von der Interpretation $\mathcal{I}$ ab.  Solche Formeln bezeichnen wir auch als 
-\emph{geschlossene} Formeln.   In diesem Fall schreiben wir kürzer  $\struct(F)$
-an Stelle von $\struct(\mathcal{I}, F)$.  Gilt dann zusätzlich $\struct(F) = \mathtt{true}$, 
+\emph{geschlossene} Formeln.   In diesem Fall schreiben wir kÃ¼rzer  $\struct(F)$
+an Stelle von $\struct(\mathcal{I}, F)$.  Gilt dann zusÃ¤tzlich $\struct(F) = \mathtt{true}$, 
 so sagen wir auch dass $\struct$ ein \emph{Modell} von $F$ ist.  Wir schreiben dann \\[0.2cm]
 \hspace*{1.3cm} $\mathcal{S} \models F$.
 \vspace{0.1cm}
 
-Die Definition der Begriffe ``\emph{erfüllbar}'' und
-``\emph{äquivalent}'' lassen sich nun aus der Aussagenlogik übertragen. 
-Um unnötigen Ballast in den Definitionen zu vermeiden, nehmen wir im Folgenden immer eine
-feste Signatur $\Sigma$ als gegeben an.  Dadurch können wir in den folgenden Definitionen
+Die Definition der Begriffe ``\emph{erfÃ¼llbar}'' und
+``\emph{Ã¤quivalent}'' lassen sich nun aus der Aussagenlogik Ã¼bertragen. 
+Um unnÃ¶tigen Ballast in den Definitionen zu vermeiden, nehmen wir im Folgenden immer eine
+feste Signatur $\Sigma$ als gegeben an.  Dadurch kÃ¶nnen wir in den folgenden Definitionen
 von Termen, Formeln, Strukturen, etc.~sprechen und meinen damit  $\Sigma$-Terme,
 $\Sigma$-Formeln und $\Sigma$-Strukturen.
 
-\begin{Definition}[Äquivalent]
-  Zwei Formeln $F$ und $G$ heißen \emph{äquivalent} g.d.w. gilt \\[0.2cm]
+\begin{Definition}[Ã„quivalent]
+  Zwei Formeln $F$ und $G$ heiÃŸen \emph{Ã¤quivalent} g.d.w. gilt \\[0.2cm]
   \hspace*{1.3cm} $\models F \leftrightarrow G$.
   \eox
 \end{Definition}
 
 \noindent
-Alle aussagenlogischen Äquivalenzen sind auch prädikatenlogische Äquivalenzen.
+Alle aussagenlogischen Ã„quivalenzen sind auch prÃ¤dikatenlogische Ã„quivalenzen.
 
-\begin{Definition}[Erfüllbar]
-    Eine Menge $M \subseteq \mathbb{F}_\Sigma$ ist genau dann \emph{erfüllbar},
+\begin{Definition}[ErfÃ¼llbar]
+    Eine Menge $M \subseteq \mathbb{F}_\Sigma$ ist genau dann \emph{erfÃ¼llbar},
     wenn es eine Struktur $\struct$ und eine Variablen-Belegung $\mathcal{I}$ gibt, so dass 
       \\[0.2cm]
     \hspace*{1.3cm} $\forall m \el M: \struct(\mathcal{I},m) = \mathtt{true}$ \\[0.2cm]
-    gilt.  Andernfalls heißt $M$ \emph{unerfüllbar} oder auch \emph{widersprüchlich}. 
-    Wir schreiben dafür auch \\[0.2cm]
+    gilt.  Andernfalls heiÃŸt $M$ \emph{unerfÃ¼llbar} oder auch \emph{widersprÃ¼chlich}. 
+    Wir schreiben dafÃ¼r auch \\[0.2cm]
     \hspace*{1.3cm} $M \models \falsum$
     \eox
 \end{Definition}
 
 \noindent
-Unser Ziel ist es, ein Verfahren anzugeben, mit dem wir in der Lage sind zu überprüfen,
-ob eine Menge $M$ von Formeln \emph{widersprüchlich} ist, ob also 
+Unser Ziel ist es, ein Verfahren anzugeben, mit dem wir in der Lage sind zu Ã¼berprÃ¼fen,
+ob eine Menge $M$ von Formeln \emph{widersprÃ¼chlich} ist, ob also 
  $M \models \falsum$ gilt.  Es zeigt sich, dass dies im Allgemeinen nicht
-möglich ist, die Frage, ob $M \models \falsum$ gilt, ist unentscheidbar.  Ein Beweis
-dieser Tatsache geht allerdings über den Rahmen dieser Vorlesung heraus.
-Dem gegenüber ist es möglich, ähnlich wie in der Aussagenlogik
-einen \emph{Kalkül} $\vdash$ anzugeben, so dass gilt \\[0.2cm]
+mÃ¶glich ist, die Frage, ob $M \models \falsum$ gilt, ist unentscheidbar.  Ein Beweis
+dieser Tatsache geht allerdings Ã¼ber den Rahmen dieser Vorlesung heraus.
+Dem gegenÃ¼ber ist es mÃ¶glich, Ã¤hnlich wie in der Aussagenlogik
+einen \emph{KalkÃ¼l} $\vdash$ anzugeben, so dass gilt \\[0.2cm]
 \hspace*{1.3cm} $M \vdash \falsum$ \quad g.d.w. \quad $M \models \falsum$. \\[0.2cm]
-Ein solcher Kalkül kann dann zur Implementierung eines
-\emph{Semi-Entscheidungs-Verfahrens} benutzt werden:  Um zu überprüfen, ob
+Ein solcher KalkÃ¼l kann dann zur Implementierung eines
+\emph{Semi-Entscheidungs-Verfahrens} benutzt werden:  Um zu Ã¼berprÃ¼fen, ob
 $M \models \falsum$ gilt, versuchen wir, aus der Menge $M$ die Formel $\falsum$
 herzuleiten.  
-Falls wir dabei systematisch vorgehen, indem wir alle möglichen Beweise durchprobieren,
-so werden wir, falls tatsächlich $M \models \falsum$ gilt, auch irgendwann einen Beweis
+Falls wir dabei systematisch vorgehen, indem wir alle mÃ¶glichen Beweise durchprobieren,
+so werden wir, falls tatsÃ¤chlich $M \models \falsum$ gilt, auch irgendwann einen Beweis
 finden, der $M \vdash \falsum$ zeigt.   Wenn allerdings der Fall \\[0.2cm]
 \hspace*{1.3cm}  $M \not\models \falsum$ \\[0.2cm]
-vorliegt,  so werden wir dies im allgemeinen nicht feststellen können, denn die Menge aller Beweise ist unendlich groß
-und wir können nie alle Beweise ausprobieren.  Wir können lediglich sicherstellen, dass
-wir jeden Beweis irgendwann versuchen.  Wenn es aber keinen Beweis gibt, so können wir das
+vorliegt,  so werden wir dies im allgemeinen nicht feststellen kÃ¶nnen, denn die Menge aller Beweise ist unendlich groÃŸ
+und wir kÃ¶nnen nie alle Beweise ausprobieren.  Wir kÃ¶nnen lediglich sicherstellen, dass
+wir jeden Beweis irgendwann versuchen.  Wenn es aber keinen Beweis gibt, so kÃ¶nnen wir das
 nie sicher sagen, denn zu jedem festen Zeitpunkt haben wir ja immer nur einen Teil der in
-Frage kommenden Schlüsse ausprobiert.
+Frage kommenden SchlÃ¼sse ausprobiert.
 
-Die Situation ist ähnlich der, wie bei der Überprüfung bestimmter zahlentheoretischer
-Fragen.  Wir betrachten dazu ein konkretes Beispiel: Eine Zahl $n$ heißt \emph{perfekt},
+Die Situation ist Ã¤hnlich der, wie bei der ÃœberprÃ¼fung bestimmter zahlentheoretischer
+Fragen.  Wir betrachten dazu ein konkretes Beispiel: Eine Zahl $n$ heiÃŸt \emph{perfekt},
 wenn die Summe aller echten Teiler von $n$ wieder die Zahl $n$ ergibt.  Beispielsweise ist
 die Zahl $6$ perfekt, denn die Menge der echten Teiler von $6$ ist $\{1,2,3\}$ und es gilt
 \\[0.2cm]
@@ -557,8 +557,8 @@ $1 + 2 + 3 = 6$.
 \\[0.2cm]
 Bisher sind alle bekannten perfekten Zahlen durch $2$ teilbar.  Die Frage, ob es auch
 ungerade Zahlen gibt, die perfekt sind, ist ein offenes mathematisches Problem.  Um dieses
-Problem zu lösen könnten wir eine Programm schreiben, dass der Reihe nach für alle
-ungerade Zahlen überprüft, ob die Zahl perfekt ist.  Abbildung \ref{fig:find-perfect.stlx}
+Problem zu lÃ¶sen kÃ¶nnten wir eine Programm schreiben, dass der Reihe nach fÃ¼r alle
+ungerade Zahlen Ã¼berprÃ¼ft, ob die Zahl perfekt ist.  Abbildung \ref{fig:find-perfect.stlx}
 auf Seite \pageref{fig:find-perfect.stlx} zeigt ein solches Programm.  Wenn es eine ungerade perfekte Zahl
 gibt, dann wird dieses Programm diese Zahl auch irgendwann finden.  Wenn es aber keine
 ungerade perfekte Zahl gibt, dann wird das Programm bis zum St.~Nimmerleinstag rechnen und
@@ -598,27 +598,27 @@ wir werden nie mit Sicherheit wissen, dass es keine ungeraden perfekten Zahlen g
 \end{figure} 
 
 
-In den nächsten Abschnitten gehen wir daran, den oben erwähnten Kalkül $\vdash$ zu definieren.
+In den nÃ¤chsten Abschnitten gehen wir daran, den oben erwÃ¤hnten KalkÃ¼l $\vdash$ zu definieren.
 Es zeigt sich, dass die Arbeit wesentlich einfacher wird, wenn wir uns auf bestimmte
-Formeln, sogenannte \emph{Klauseln}, beschränken.  Wir zeigen daher zunächst im nächsten
+Formeln, sogenannte \emph{Klauseln}, beschrÃ¤nken.  Wir zeigen daher zunÃ¤chst im nÃ¤chsten
 Abschnitt, dass jede Formel-Menge $M$ so in eine Menge von Klauseln $K$ transformiert
-werden kann, dass $M$ genau dann erfüllbar ist, wenn $K$ erfüllbar ist.  Daher ist die
-Beschränkung auf Klauseln keine echte Einschränkung.
+werden kann, dass $M$ genau dann erfÃ¼llbar ist, wenn $K$ erfÃ¼llbar ist.  Daher ist die
+BeschrÃ¤nkung auf Klauseln keine echte EinschrÃ¤nkung.
 
 
-\subsection{Implementierung prädikatenlogischer Strukturen in \textsc{SetlX}}
-Der im letzten Abschnitt präsentierte Begriff einer prädikatenlogischen Struktur erscheint zunächst
+\subsection{Implementierung prÃ¤dikatenlogischer Strukturen in \textsc{SetlX}}
+Der im letzten Abschnitt prÃ¤sentierte Begriff einer prÃ¤dikatenlogischen Struktur erscheint zunÃ¤chst
 sehr abstrakt.  Wir wollen in diesem Abschnitt zeigen, dass sich dieser Begriff in einfacher Weise in
-\textsc{SetlX} implementieren lässt.  Dadurch gelingt es, diesen Begriff zu veranschaulichen.  Als konkretes
+\textsc{SetlX} implementieren lÃ¤sst.  Dadurch gelingt es, diesen Begriff zu veranschaulichen.  Als konkretes
 Beispiel wollen wir Strukturen zu Gruppen-Theorie betrachten.  Die Signatur $\Sigma_G$ der
 Gruppen-Theorie war im letzten Abschnitt durch die Definition
 \[ \Sigma_G = 
    \bigl\langle \{x,y,z\},\; \{1,*\},\; \{=\},\; \{ \pair(1,0), \pair(*,2), \pair(=,2) \} \bigr\rangle 
 \]
 gegeben worden.  Hierbei ist also ``$1$'' ein 0-stelliges Funktions-Zeichen, ``$*$'' ist
-eine 2-stelliges Funktions-Zeichen und ``$=$'' ist ein 2-stelliges Prädikats-Zeichen.
+eine 2-stelliges Funktions-Zeichen und ``$=$'' ist ein 2-stelliges PrÃ¤dikats-Zeichen.
 Wir hatten bereits eine Struktur $\mathcal{S}$ angegeben, deren Universum aus der Menge
-$\{ a, b \}$ besteht.  In \textsl{SetlX} können wir diese Struktur durch den in Abbildung
+$\{ a, b \}$ besteht.  In \textsl{SetlX} kÃ¶nnen wir diese Struktur durch den in Abbildung
 \ref{fig:gruppen.stl} gezeigten Code implementieren.
 
 \begin{figure}[!ht]
@@ -646,12 +646,12 @@ $\{ a, b \}$ besteht.  In \textsl{SetlX} können wir diese Struktur durch den in 
 \end{figure}
 
 \begin{enumerate}
-\item Zur Abkürzung haben wir in den Zeile 1 und 2 die Variablen $a$ und $b$
+\item Zur AbkÃ¼rzung haben wir in den Zeile 1 und 2 die Variablen $a$ und $b$
       als die Strings \texttt{\symbol{34}a\symbol{34}} und \texttt{\symbol{34}b\symbol{34}}
-      definiert.  Dadurch können wir weiter unten die Interpretation des
-      Funktions-Zeichens ``$*$'' kürzer angeben.
+      definiert.  Dadurch kÃ¶nnen wir weiter unten die Interpretation des
+      Funktions-Zeichens ``$*$'' kÃ¼rzer angeben.
 \item Das in Zeile 3 definierte Universum $u$ besteht aus den beiden Strings \quoted{a} und \quoted{b}.
-\item In Zeile 4 definieren wir eine Funktion \texttt{product} als binäre Relation.  Für
+\item In Zeile 4 definieren wir eine Funktion \texttt{product} als binÃ¤re Relation.  FÃ¼r
       die so definierte Funktion gilt
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -662,23 +662,23 @@ $\{ a, b \}$ besteht.  In \textsl{SetlX} können wir diese Struktur durch den in 
       $\mathtt{product}(\pair(\quoted{b},\quoted{a})) = \quoted{b}$, \quad
       $\mathtt{product}(\pair(\quoted{b},\quoted{b})) = \quoted{a}$.
       \\[0.2cm]  
-      Diese Funktion verwenden wir später als die Interpretation $*^\mathcal{J}$ des Funktions-Zeichens ``$*$''.
+      Diese Funktion verwenden wir spÃ¤ter als die Interpretation $*^\mathcal{J}$ des Funktions-Zeichens ``$*$''.
 \item Ebenso haben wir in Zeile 5 die Interpretation $=^\mathcal{J}$ des
-      Prädikats-Zeichens ``$=$'' als die binäre Relation \texttt{equals} dargestellt. 
+      PrÃ¤dikats-Zeichens ``$=$'' als die binÃ¤re Relation \texttt{equals} dargestellt. 
 \item In Zeile 6 fassen wir die einzelnen Interpretationen zu der Relation $j$
-      zusammen, so dass für ein Funktions-Zeichen $f$ die Interpretation $f^\mathcal{J}$ durch
+      zusammen, so dass fÃ¼r ein Funktions-Zeichen $f$ die Interpretation $f^\mathcal{J}$ durch
       den Wert $j(f)$ gegeben ist. 
 
-      Da wir später den in \textsc{SetlX} eingebauten Parser verwenden werden, stellen wir
+      Da wir spÃ¤ter den in \textsc{SetlX} eingebauten Parser verwenden werden, stellen wir
       den Operator ``\texttt{*}'' durch das Funktions-Zeichen
-      ``\texttt{\symbol{94}product}'' dar und das Prädikats-Zeichen ``\texttt{=}'' wird
+      ``\texttt{\symbol{94}product}'' dar und das PrÃ¤dikats-Zeichen ``\texttt{=}'' wird
       durch das Zeichen ``\texttt{\symbol{94}equals}'' dargestellt, denn dies sind die
       Namen, die von \textsc{SetlX} intern benutzt werden.  Das neutrale Element ``$1$''
-      stellen wir durch das Funktions-Zeichen ``\texttt{E}'' dar, so dass später der
-      Ausdruck ``$1$'' durch den Term ``\texttt{E()}'' repräsentiert wird.
+      stellen wir durch das Funktions-Zeichen ``\texttt{E}'' dar, so dass spÃ¤ter der
+      Ausdruck ``$1$'' durch den Term ``\texttt{E()}'' reprÃ¤sentiert wird.
 \item Die Interpretation $j$ wird dann in Zeile 7 mit dem
       Universum $u$ zu der Struktur $s$ zusammengefasst.  
-\item Schließlich zeigt Zeile 8, dass eine
+\item SchlieÃŸlich zeigt Zeile 8, dass eine
       Variablen-Belegung ebenfalls als Relation dargestellt werden kann.  Die erste Komponente
       der Paare, aus denen diese Relation besteht, sind die Variablen.  Die zweite Komponente
       ist ein Wert aus dem Universum.
@@ -714,17 +714,17 @@ $\{ a, b \}$ besteht.  In \textsl{SetlX} können wir diese Struktur durch den in 
    };
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Auswertung prädikatenlogischer Formeln}
+\caption{Auswertung prÃ¤dikatenlogischer Formeln}
 \label{fig:pl-evaluate.stlx}
 \end{figure}
 
-Als nächstes überlegen wir uns, wie wir prädikatenlogische Formeln in einer solchen Struktur
-auswerten können.  Abbildung \ref{fig:pl-evaluate.stlx} zeigt die Implementierung der Prozedur
-$\textsl{evalFormula}(f, S, I)$, der als Argumente eine prädikatenlogische Formel $f$, eine Struktur
-$\mathcal{S}$ und eine Variablen-Belegung $\mathcal{I}$ übergeben werden.  Die Formel wird
+Als nÃ¤chstes Ã¼berlegen wir uns, wie wir prÃ¤dikatenlogische Formeln in einer solchen Struktur
+auswerten kÃ¶nnen.  Abbildung \ref{fig:pl-evaluate.stlx} zeigt die Implementierung der Prozedur
+$\textsl{evalFormula}(f, S, I)$, der als Argumente eine prÃ¤dikatenlogische Formel $f$, eine Struktur
+$\mathcal{S}$ und eine Variablen-Belegung $\mathcal{I}$ Ã¼bergeben werden.  Die Formel wird
 dabei als Term dargestellt,  
-ganz ähnlich, wie wir das bei der Implementierung der Aussagenlogik schon praktiziert haben.
-Beispielsweise können wir die Formel
+ganz Ã¤hnlich, wie wir das bei der Implementierung der Aussagenlogik schon praktiziert haben.
+Beispielsweise kÃ¶nnen wir die Formel
 \[ \forall x: \forall y: x * y = y * x \]
 durch den Term
 \begin{verbatim}
@@ -744,10 +744,10 @@ mit Hilfe der in \textsc{SetlX} vordefinierten Funktion \texttt{parse} in einen 
 \remark
  An dieser Stelle wundern Sie sich vermutlich, warum wir oben 
 ``\texttt{x in \_}'' und ``\texttt{y in \_}'' schreiben, denn wir wollen die Variablen
-\texttt{x} und \texttt{y} eigentlich ja gar nicht einschränken.  Der Grund ist, dass die
+\texttt{x} und \texttt{y} eigentlich ja gar nicht einschrÃ¤nken.  Der Grund ist, dass die
 Syntax von \textsc{SetlX} nur solche Quantoren erlaubt, in denen die Variablen auf eine
-Menge eingeschränkt sind.  Daher sind wir gezwungen, bei der Verwendung von Quantoren die
-Variablen syntaktisch einzuschränken.  Wir schreiben deswegen 
+Menge eingeschrÃ¤nkt sind.  Daher sind wir gezwungen, bei der Verwendung von Quantoren die
+Variablen syntaktisch einzuschrÃ¤nken.  Wir schreiben deswegen 
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{forall (x in \_ | $g$)} \quad bzw. \quad
@@ -759,11 +759,11 @@ an Stelle von
 \texttt{forall (x | $g$)} \quad bzw. \quad
 \texttt{exists (x | $g$)}. 
 \\[0.2cm]
-Da wir $x$ hier nicht wirklich einschränken wollen, schreiben wir ``\texttt{x in \_}'' und benutzen
+Da wir $x$ hier nicht wirklich einschrÃ¤nken wollen, schreiben wir ``\texttt{x in \_}'' und benutzen
 ``\texttt{\_}'' als sogenannte \emph{anonyme Variable}.
 \eox
 
-Die Auswertung einer prädikatenlogischen Formel ist nun analog zu der in Abbildung \ref{fig:evaluate.stlx}
+Die Auswertung einer prÃ¤dikatenlogischen Formel ist nun analog zu der in Abbildung \ref{fig:evaluate.stlx}
 auf Seite \pageref{fig:evaluate.stlx} gezeigten Auswertung aussagenlogischer Formeln.  
 Neu ist nur die Behandlung der Quantoren.  In den Zeilen 11 und 12 behandeln wir die Auswertung
 allquantifizierter Formeln.  Ist $f$ eine Formel der Form $\forall y \in u \colon h$,
@@ -777,23 +777,23 @@ dargestellt.  Das Muster
 \hspace*{1.3cm}
 \texttt{forall (x in \_ | g)}
 \\[0.2cm]
-bindet daher \texttt{x} an die tatsächlich auftretende Variable $y$ und \texttt{g} an die Teilformel $h$.
+bindet daher \texttt{x} an die tatsÃ¤chlich auftretende Variable $y$ und \texttt{g} an die Teilformel $h$.
 Die Auswertung von $\forall x\colon g$
 geschieht nach der Formel
 \[\struct\bigl(\mathcal{I}, \forall x\colon g\bigr) \;:=\; \left\{
       \begin{array}{ll}
-         \mathtt{true}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], g) = \mathtt{true}\quad \mbox{für alle}\; c\in \mathcal{U}\;\mbox{gilt}; \\
+         \mathtt{true}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], g) = \mathtt{true}\quad \mbox{fÃ¼r alle}\; c\in \mathcal{U}\;\mbox{gilt}; \\
          \mathtt{false} & \mbox{sonst}.
       \end{array}
       \right.
 \]
-Um die Auswertung implementieren zu können, verwenden wir eine Prozedur $\textsl{modify}()$, welche die
-Variablen-Belegung $i$ an der Stelle $x$ zu $c$ abändert, es gilt also
+Um die Auswertung implementieren zu kÃ¶nnen, verwenden wir eine Prozedur $\textsl{modify}()$, welche die
+Variablen-Belegung $i$ an der Stelle $x$ zu $c$ abÃ¤ndert, es gilt also
 \[ \textsl{modify}(\mathcal{I},x,c) = \mathcal{I}[x/c]. \]
-Die Implementierung dieser Prozedur wird später in Abbildung \ref{fig:fol-evaluate-term.stlx}
-gezeigt.  Bei der Auswertung eines All-Quantors können wir ausnutzen, dass die Sprache \textsc{SetlX}
-selber den Quantor \texttt{forall} unterstützt.  Wir können also direkt testen, ob die
-Formel für alle möglichen Werte $c$, die wir für die Variable $x$ einsetzen können,
+Die Implementierung dieser Prozedur wird spÃ¤ter in Abbildung \ref{fig:fol-evaluate-term.stlx}
+gezeigt.  Bei der Auswertung eines All-Quantors kÃ¶nnen wir ausnutzen, dass die Sprache \textsc{SetlX}
+selber den Quantor \texttt{forall} unterstÃ¼tzt.  Wir kÃ¶nnen also direkt testen, ob die
+Formel fÃ¼r alle mÃ¶glichen Werte $c$, die wir fÃ¼r die Variable $x$ einsetzen kÃ¶nnen,
 richtig ist.  Die Auswertung eines Existenz-Quantors ist analog zur Auswertung eines All-Quantors.
 
 
@@ -848,44 +848,44 @@ richtig ist.  Die Auswertung eines Existenz-Quantors ist analog zur Auswertung e
 \end{figure}
 
 Abbildung \ref{fig:fol-evaluate-term.stlx} zeigt die Auswertung atomarer Formeln und
-prädikatenlogischer Terme.  Um eine atomare Formel der Form
+prÃ¤dikatenlogischer Terme.  Um eine atomare Formel der Form
 \\[0.2cm]
 \hspace*{1.3cm}
 $a = P(t_1, \cdots, t_n)$ 
 \\[0.2cm]
-auszuwerten, verschaffen wir uns in Zeile 4 zunächst die dem Prädikats-Zeichen $P$ in der
-Struktur $S$ zugeordnete Menge $pJ$.  Anschließend werten wir die Argumente $t_1, \cdots, t_n$ 
-aus und überprüfen dann, ob das Ergebnis dieser Auswertung tatsächlich ein Element der Menge $pJ$ ist.
+auszuwerten, verschaffen wir uns in Zeile 4 zunÃ¤chst die dem PrÃ¤dikats-Zeichen $P$ in der
+Struktur $S$ zugeordnete Menge $pJ$.  AnschlieÃŸend werten wir die Argumente $t_1, \cdots, t_n$ 
+aus und Ã¼berprÃ¼fen dann, ob das Ergebnis dieser Auswertung tatsÃ¤chlich ein Element der Menge $pJ$ ist.
 
 Die Prozedur $\texttt{evalTerm}()$ arbeitet wie folgt:
 Das erste Argument $t$  der Prozedur $\texttt{evalTerm}(t, \mathcal{S}, \mathcal{I})$  ist der
-auszuwertende Term. Das zweite Argument $\mathcal{S}$ ist eine prädikatenlogische 
+auszuwertende Term. Das zweite Argument $\mathcal{S}$ ist eine prÃ¤dikatenlogische 
 Struktur und das dritte Argument $\mathcal{I}$ ist eine Variablen-Belegung.
 \begin{enumerate}
-\item Falls $t$ eine Variable ist, so geben wir in Zeile 12 einfach den Wert zurück, der in
+\item Falls $t$ eine Variable ist, so geben wir in Zeile 12 einfach den Wert zurÃ¼ck, der in
       der Variablen-Belegung 
-      $\mathcal{I}$ für diese Variable eingetragen ist.  Die Variablen-Belegung wird dabei durch eine
+      $\mathcal{I}$ fÃ¼r diese Variable eingetragen ist.  Die Variablen-Belegung wird dabei durch eine
       zweistellige Relation dargestellt, die wir als Funktion benutzen.
 \item Falls der auszuwertende Term $t$ die Form 
       \\[0.2cm]
       \hspace*{1.3cm}
       $t = F(t_1,\cdots,t_n)$
       \\[0.2cm]
-      hat,  werden in Zeile 18 zunächst rekursiv die 
-      Subterme $t_1$, $\cdots$, $t_n$ ausgewertet.  Anschließend wird die Interpretation
+      hat,  werden in Zeile 18 zunÃ¤chst rekursiv die 
+      Subterme $t_1$, $\cdots$, $t_n$ ausgewertet.  AnschlieÃŸend wird die Interpretation
       $F^\mathcal{J}$ des Funktions-Zeichens $F$ herangezogen, um die Funktion
-      $F^\mathcal{J}$ für die gegebenen
-      Argumente auszuwerten, wobei in Zeile 20 der Fall betrachtet wird, dass tatsächlich Argumente
-      vorhanden sind, während  in Zeile 22 der Fall behandelt wird, dass es sich bei dem
+      $F^\mathcal{J}$ fÃ¼r die gegebenen
+      Argumente auszuwerten, wobei in Zeile 20 der Fall betrachtet wird, dass tatsÃ¤chlich Argumente
+      vorhanden sind, wÃ¤hrend  in Zeile 22 der Fall behandelt wird, dass es sich bei dem
       Funktions-Zeichen $F$ um eine Konstante handelt, deren Wert dann unmittelbar durch $F^\mathcal{J}$ gegeben ist.
 \end{enumerate}
 Die Implementierung der Prozedur $\texttt{evalTermList}()$ wendet die Funktion
 $\mathtt{evalTerm}()$ auf alle Terme der gegebenen Liste an.
 Bei der Implementierung der in Zeile 31 gezeigten Prozedur $\texttt{modify}(\textsl{I},x,c)$, 
 die als Ergebnis die Variablen-Belegung $\mathcal{I}[x/c]$ berechnet, nutzen wir aus, dass
-wir bei einer Funktion, die als binäre Relation gespeichert ist, den Wert, der in dieser
-Relation für ein Argument $x$ eingetragen ist, durch eine Zuweisung der Form
-$\mathcal{I}(x) \mathtt{:=} c$ abändern können.
+wir bei einer Funktion, die als binÃ¤re Relation gespeichert ist, den Wert, der in dieser
+Relation fÃ¼r ein Argument $x$ eingetragen ist, durch eine Zuweisung der Form
+$\mathcal{I}(x) \mathtt{:=} c$ abÃ¤ndern kÃ¶nnen.
 
 \begin{figure}[!ht]
 \centering
@@ -913,15 +913,15 @@ $\mathcal{I}(x) \mathtt{:=} c$ abändern können.
 \end{figure}
 
 Wir zeigen nun, wie sich die in Abbildung \ref{fig:pl-evaluate.stlx} gezeigte Funktion
-$\texttt{evalFormula}(f, \mathcal{S}, \mathcal{I})$ benutzen lässt um zu überprüfen, ob die
+$\texttt{evalFormula}(f, \mathcal{S}, \mathcal{I})$ benutzen lÃ¤sst um zu Ã¼berprÃ¼fen, ob die
 in Abbildung \ref{fig:gruppen.stl} gezeigte Struktur die Axiome der \emph{Gruppen-Theorie}
-erfüllt.  Die Axiome der Gruppen-Theorie sind wie folgt:
+erfÃ¼llt.  Die Axiome der Gruppen-Theorie sind wie folgt:
 \begin{enumerate}
 \item Die Konstante $1$ ist das rechts-neutrale Element der Multiplikation:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\forall x\colon x * 1 = x$.
-\item Für jedes Element $x$ gibt es ein rechts-inverses Element $y$, dass mit
+\item FÃ¼r jedes Element $x$ gibt es ein rechts-inverses Element $y$, dass mit
       dem Element $x$ multipliziert die $1$ ergibt:      
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -933,18 +933,18 @@ erfüllt.  Die Axiome der Gruppen-Theorie sind wie folgt:
 \end{enumerate}
 Diese Axiome sind in den Zeilen 1 bis 3 der Abbildung \ref{fig:gruppen-theorie.stl}
 wiedergegeben, wobei wir die ``$1$'' durch das Funktions-Zeichen ``\texttt{E}'' dargestellt haben.
-Die Schleife in den Zeilen 7 bis 9 überprüft schließlich, ob die Formeln in der oben
-definierten Struktur erfüllt sind.
+Die Schleife in den Zeilen 7 bis 9 Ã¼berprÃ¼ft schlieÃŸlich, ob die Formeln in der oben
+definierten Struktur erfÃ¼llt sind.
 \vspace*{0.3cm}
 \pagebreak
 
 \noindent
-\textbf{Bemerkung}:  Mit dem oben vorgestellten Programm können wir überprüfen, ob eine
-prädikatenlogische Formel in einer vorgegebenen endlichen Struktur erfüllt ist. Wir können damit
-allerdings nicht überprüfen, ob eine Formel allgemeingültig ist, denn einerseits können
+\textbf{Bemerkung}:  Mit dem oben vorgestellten Programm kÃ¶nnen wir Ã¼berprÃ¼fen, ob eine
+prÃ¤dikatenlogische Formel in einer vorgegebenen endlichen Struktur erfÃ¼llt ist. Wir kÃ¶nnen damit
+allerdings nicht Ã¼berprÃ¼fen, ob eine Formel allgemeingÃ¼ltig ist, denn einerseits kÃ¶nnen
 wir das Programm nicht anwenden, wenn die Strukturen ein unendliches Universum haben,
 andererseits ist selbst die Zahl der verschiedenen endlichen Stukturen, die wir ausprobieren
-müssten, unendlich groß.
+mÃ¼ssten, unendlich groÃŸ.
 
 \exercise
 \begin{enumerate}
@@ -953,23 +953,23 @@ müssten, unendlich groß.
       \hspace*{1.3cm}
       $\forall x: \exists y: p(x,y) \rightarrow \exists y: \forall x: p(x,y)$
       \\[0.2cm]
-      \underline{nicht} allgemeingültig ist, indem Sie eine geeignete prädikatenlogische Struktur
+      \underline{nicht} allgemeingÃ¼ltig ist, indem Sie eine geeignete prÃ¤dikatenlogische Struktur
       $\mathcal{S}$ implementieren, in der diese Formel falsch ist.
 \item Entwickeln Sie ein \textsc{SetlX}-Programm, dass die obige Formel in allen Strukturen
       ausprobiert, in denen das Universum  aus einer vorgegebenen Zahl $n$ verschiedener Elemente
-      besteht und testen Sie Ihr Programm für $n=2$.
-\item Überlegen Sie, wie viele verschiedene Strukturen mit $n$ Elementen es für die obige Formel gibt.
-\item Geben Sie eine \underline{erfüllbare} prädikatenlogische Formel $F$ an, die in einer prädikatenlogischen
+      besteht und testen Sie Ihr Programm fÃ¼r $n=2$.
+\item Ãœberlegen Sie, wie viele verschiedene Strukturen mit $n$ Elementen es fÃ¼r die obige Formel gibt.
+\item Geben Sie eine \underline{erfÃ¼llbare} prÃ¤dikatenlogische Formel $F$ an, die in einer prÃ¤dikatenlogischen
       Struktur $\mathcal{S} = \pair(\mathcal{U},\mathcal{J})$ immer falsch ist, wenn das Universum
       $\mathcal{U}$ endlich ist.  \exend  
 \end{enumerate}
 
-\section{Normalformen für prädikatenlogische Formeln}
-In diesem Abschnitt werden wir verschieden Möglichkeiten zur Umformung prädikatenlogischer Formeln
-kennenlernen.  Zunächst geben wir einige Äquivalenzen an, mit deren Hilfe Quantoren manipuliert werden können.
+\section{Normalformen fÃ¼r prÃ¤dikatenlogische Formeln}
+In diesem Abschnitt werden wir verschieden MÃ¶glichkeiten zur Umformung prÃ¤dikatenlogischer Formeln
+kennenlernen.  ZunÃ¤chst geben wir einige Ã„quivalenzen an, mit deren Hilfe Quantoren manipuliert werden kÃ¶nnen.
 
 \begin{Satz}
-  Es gelten die folgenden Äquivalenzen:
+  Es gelten die folgenden Ã„quivalenzen:
   \begin{enumerate}
   \item $\models \neg\big(\forall x\colon f\big) \leftrightarrow \big(\exists x\colon \neg f\big)$
   \item $\models \neg\big(\exists x\colon f\big) \leftrightarrow \big(\forall x\colon \neg f\big)$
@@ -977,10 +977,10 @@ kennenlernen.  Zunächst geben wir einige Äquivalenzen an, mit deren Hilfe Quanto
   \item $\models \big(\exists x\colon f\big) \vee \big(\exists x\colon g\big) \leftrightarrow \big(\exists x\colon f \vee g\big)$
   \item $\models \big(\forall x\colon \forall y\colon f \big) \leftrightarrow \big(\forall y\colon  \forall x\colon f \big)$
   \item $\models \big(\exists x\colon \exists y\colon f \big) \leftrightarrow \big(\exists y\colon  \exists x\colon f \big)$
-  \item Falls $x$ eine Variable ist, für die $x \not\in \FV(f)$ ist, so haben wir \\[0.2cm]
+  \item Falls $x$ eine Variable ist, fÃ¼r die $x \not\in \FV(f)$ ist, so haben wir \\[0.2cm]
         \hspace*{1.3cm} $\models  \big(\forall x\colon f) \leftrightarrow f$ \quad und \quad
                         $\models  \big(\exists x\colon f) \leftrightarrow f$.
-  \item Falls $x$ eine Variable ist, für die  $x \not\in \FV(g) \cup \BV(g)$ gilt, so haben wir die folgenden Äquivalenzen:
+  \item Falls $x$ eine Variable ist, fÃ¼r die  $x \not\in \FV(g) \cup \BV(g)$ gilt, so haben wir die folgenden Ã„quivalenzen:
     \begin{enumerate}
     \item $\models \big(\forall x\colon f) \vee g \leftrightarrow \forall x\colon (f \vee g)$
     \item $\models g \vee \big(\forall x\colon f) \leftrightarrow \forall x\colon (g \vee f)$
@@ -990,22 +990,22 @@ kennenlernen.  Zunächst geben wir einige Äquivalenzen an, mit deren Hilfe Quanto
   \end{enumerate}
 \end{Satz}
 
-Um die Äquivalenzen der letzten Gruppe anwenden zu können, ist es notwendig,
-gebundene Variablen umzubenennen. Ist $f$ eine prädikatenlogische Formel und sind $x$ und
+Um die Ã„quivalenzen der letzten Gruppe anwenden zu kÃ¶nnen, ist es notwendig,
+gebundene Variablen umzubenennen. Ist $f$ eine prÃ¤dikatenlogische Formel und sind $x$ und
 $y$ zwei Variablen, so bezeichnet $f[x/y]$ die Formel, die aus $f$ dadurch entsteht, dass
 jedes Auftreten der Variablen $x$ in $f$ durch $y$ ersetzt wird.  Beispielsweise gilt \\[0.2cm]
 \hspace*{1.3cm} $\bigl(\forall u : \exists v : p(u,v)\bigr)[u/z] = \forall z : \exists v : p(z,v)$
 \\[0.2cm]
-Damit können wir eine letzte Äquivalenz angeben: Ist $f$ eine prädikatenlogische Formel,
+Damit kÃ¶nnen wir eine letzte Ã„quivalenz angeben: Ist $f$ eine prÃ¤dikatenlogische Formel,
 ist $x \in BV(F)$ und ist $y$ eine Variable, die in $f$ nicht auftritt, so gilt \\[0.2cm]
 \hspace*{1.3cm} $\models f \leftrightarrow f[x/y]$.
 \vspace{0.3cm}
 
-Mit Hilfe der oben stehenden Äquivalenzen können wir eine Formel so umformen, dass die Quantoren nur
-noch außen stehen.  Eine solche Formel ist dann in \emph{pränexer Normalform}.  Wir führen
+Mit Hilfe der oben stehenden Ã„quivalenzen kÃ¶nnen wir eine Formel so umformen, dass die Quantoren nur
+noch auÃŸen stehen.  Eine solche Formel ist dann in \emph{prÃ¤nexer Normalform}.  Wir fÃ¼hren
 das Verfahren an einem Beispiel vor: Wir zeigen, dass die Formel \\[0.2cm]
 \hspace*{1.3cm} $\big(\forall x\colon p(x)\big) \rightarrow \big(\exists x\colon p(x)\big)$ \\[0.2cm]
-allgemeingültig ist: 
+allgemeingÃ¼ltig ist: 
 $$ 
 \begin{array}{ll}
                  & \big(\forall x\colon p(x)\big) \rightarrow \big(\exists x\colon p(x)\big)  \\
@@ -1017,34 +1017,34 @@ $$
 \end{array}
 $$
 \\[0.2cm]
-In diesem Fall haben wir Glück gehabt, dass es uns gelungen ist, die Formel als Tautologie zu
-erkennen.  Im Allgemeinen reichen die obigen Umformungen aber nicht aus, um prädikatenlogische
-Tautologien erkennen zu können.
-Um Formeln noch stärker normalisieren zu können, 
-führen wir einen weiteren
-Äquivalenz-Begriff ein.  Diesen Begriff wollen wir vorher durch ein Beispiel motivieren.
+In diesem Fall haben wir GlÃ¼ck gehabt, dass es uns gelungen ist, die Formel als Tautologie zu
+erkennen.  Im Allgemeinen reichen die obigen Umformungen aber nicht aus, um prÃ¤dikatenlogische
+Tautologien erkennen zu kÃ¶nnen.
+Um Formeln noch stÃ¤rker normalisieren zu kÃ¶nnen, 
+fÃ¼hren wir einen weiteren
+Ã„quivalenz-Begriff ein.  Diesen Begriff wollen wir vorher durch ein Beispiel motivieren.
 Wir betrachten die beiden Formeln \\[0.2cm]
 \hspace*{1.3cm} $f_1 = \forall x \colon \exists y \colon p(x,y)$ \quad und \quad $f_2 = \forall x \colon p\bigl(x,s(x)\bigr)$.\\[0.2cm]
-Die beiden Formeln $f_1$ und $f_2$ sind nicht äquivalent, denn sie entstammen noch nicht
+Die beiden Formeln $f_1$ und $f_2$ sind nicht Ã¤quivalent, denn sie entstammen noch nicht
 einmal der gleichen Signatur: In der Formel $f_2$ wird das Funktions-Zeichen $s$
-verwendet, das in der Formel $f_1$ überhaupt nicht auftritt. 
-Auch wenn die beiden Formeln $f_1$ und $f_2$ nicht äquivalent sind, so besteht zwischen
+verwendet, das in der Formel $f_1$ Ã¼berhaupt nicht auftritt. 
+Auch wenn die beiden Formeln $f_1$ und $f_2$ nicht Ã¤quivalent sind, so besteht zwischen
 ihnen doch die folgende Beziehung:  Ist $\textsl{S}_1$ eine
-prädikatenlogische Struktur, in der die Formel $f_1$ gilt:
+prÃ¤dikatenlogische Struktur, in der die Formel $f_1$ gilt:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{S}_1 \models f_1$,
 \\[0.2cm]
-dann können wir diese Struktur zu einer Struktur $\textsl{S}_2$ erweitern, in der die
+dann kÃ¶nnen wir diese Struktur zu einer Struktur $\textsl{S}_2$ erweitern, in der die
 Formel $f_2$ gilt:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{S}_2 \models f_2$.
 \\[0.2cm]
-Dazu muss lediglich die Interpretation des Funktions-Zeichens $s$ so gewählt werden, dass
-für jedes $x$ tatsächlich $p\bigl(x,s(x)\bigr)$ gilt.  Dies ist möglich, denn die Formel
-$f_1$ sagt ja aus, dass wir tatsächlich zu jedem $x$ einen Wert $y$ finden, für den
-$p(x,y)$ gilt.   Die Funktion $s$ muss also lediglich zu jedem $x$ dieses $y$ zurück geben.
+Dazu muss lediglich die Interpretation des Funktions-Zeichens $s$ so gewÃ¤hlt werden, dass
+fÃ¼r jedes $x$ tatsÃ¤chlich $p\bigl(x,s(x)\bigr)$ gilt.  Dies ist mÃ¶glich, denn die Formel
+$f_1$ sagt ja aus, dass wir tatsÃ¤chlich zu jedem $x$ einen Wert $y$ finden, fÃ¼r den
+$p(x,y)$ gilt.   Die Funktion $s$ muss also lediglich zu jedem $x$ dieses $y$ zurÃ¼ck geben.
 
 
 
@@ -1053,11 +1053,11 @@ $p(x,y)$ gilt.   Die Funktion $s$ muss also lediglich zu jedem $x$ dieses $y$ zu
   eine Signatur.  Ferner sei $f$ eine geschlossene $\Sigma$-Formel der Form \\[0.2cm]
   \hspace*{1.3cm} 
   $f = \forall x_1, \cdots, x_n \colon \exists y \colon g(x_1, \cdots, x_n, y)$. \\[0.2cm]
-  Dann wählen wir ein neues $n$-stelliges Funktions-Zeichen $s$, d.h.~wir nehmen ein Zeichen $s$, dass in
+  Dann wÃ¤hlen wir ein neues $n$-stelliges Funktions-Zeichen $s$, d.h.~wir nehmen ein Zeichen $s$, dass in
   der Menge $\mathcal{F}$ nicht auftritt und erweitern die Signatur $\Sigma$ zu der Signatur \\[0.2cm]
   \hspace*{1.3cm} 
   $\Sigma' := \Bigl\langle \mathcal{V}, \mathcal{F} \cup \{s\}, \mathcal{P}, \textsl{arity} \cup \bigl\{\pair(s,n)\bigr\} \Bigr\rangle$, \\[0.2cm]
-  in der wir $s$ als neues $n$-stelliges Funktions-Zeichen deklarieren.  Anschließend definieren wir die $\Sigma'$-Formel
+  in der wir $s$ als neues $n$-stelliges Funktions-Zeichen deklarieren.  AnschlieÃŸend definieren wir die $\Sigma'$-Formel
   $f'$ wie folgt: \\[0.2cm]
   \hspace*{1.3cm} 
   $f' := \textsl{Skolem}(f) := 
@@ -1070,14 +1070,14 @@ $p(x,y)$ gilt.   Die Funktion $s$ muss also lediglich zu jedem $x$ dieses $y$ zu
 \end{Definition}
 
 In welchem Sinne sind eine Formel $f$ und eine Formel $f'$, die aus $f$ durch einen 
-Skolem\-isierungs-Schritt hervorgegangen sind, äquivalent?  Zur Beantwortung dieser Frage
+Skolem\-isierungs-Schritt hervorgegangen sind, Ã¤quivalent?  Zur Beantwortung dieser Frage
 dient die folgende Definition. 
 
-\begin{Definition}[Erfüllbarkeits-Äquivalenz]
-   Zwei geschlossene Formeln $f$ und $g$ heißen 
-   \emph{erfüllbarkeits-äquivalent}
-   falls $f$ und $g$ entweder beide erfüllbar oder beide unerfüllbar sind.
-   Wenn $f$ und $g$ erfüllbarkeits-äquivalent sind, so schreiben wir \\[0.2cm]
+\begin{Definition}[ErfÃ¼llbarkeits-Ã„quivalenz]
+   Zwei geschlossene Formeln $f$ und $g$ heiÃŸen 
+   \emph{erfÃ¼llbarkeits-Ã¤quivalent}
+   falls $f$ und $g$ entweder beide erfÃ¼llbar oder beide unerfÃ¼llbar sind.
+   Wenn $f$ und $g$ erfÃ¼llbarkeits-Ã¤quivalent sind, so schreiben wir \\[0.2cm]
    \hspace*{1.3cm} $f \approx_e g$.
 \eox
 \end{Definition}
@@ -1086,73 +1086,73 @@ dient die folgende Definition.
 \noindent
 \begin{Satz}
   Falls die Formel $f'$ aus der Formel $f$ durch einen Skolemisierungs-Schritt 
-  hervorgegangen ist, so sind $f$ und $f'$ erfüllbarkeits-äquivalent.
+  hervorgegangen ist, so sind $f$ und $f'$ erfÃ¼llbarkeits-Ã¤quivalent.
 \end{Satz}
 
 
-Wir können nun ein einfaches Verfahren angeben, um Existenz-Quantoren aus einer Formel
-zu eliminieren.  Dieses Verfahren besteht aus zwei Schritten:  Zunächst bringen wir die Formel
-in pränexe Normalform. Anschließend können wir die Existenz-Quantoren der Reihe nach durch 
+Wir kÃ¶nnen nun ein einfaches Verfahren angeben, um Existenz-Quantoren aus einer Formel
+zu eliminieren.  Dieses Verfahren besteht aus zwei Schritten:  ZunÃ¤chst bringen wir die Formel
+in prÃ¤nexe Normalform. AnschlieÃŸend kÃ¶nnen wir die Existenz-Quantoren der Reihe nach durch 
 Skolemisierungs-Schritte eliminieren.  Nach dem eben gezeigten Satz ist die resultierende 
-Formel zu der ursprünglichen Formel erfüllbarkeits-äquivalent.  Dieses
-Verfahren der Eliminierung von Existenz-Quantoren durch die Einführung neuer
+Formel zu der ursprÃ¼nglichen Formel erfÃ¼llbarkeits-Ã¤quivalent.  Dieses
+Verfahren der Eliminierung von Existenz-Quantoren durch die EinfÃ¼hrung neuer
 Funktions-Zeichen wird als \emph{Skolemisierung} bezeichnet.  Haben wir eine Formel $F$
-in pränexe Normalform gebracht und anschließend skolemisiert, so hat das Ergebnis die Gestalt\\[0.2cm]
+in prÃ¤nexe Normalform gebracht und anschlieÃŸend skolemisiert, so hat das Ergebnis die Gestalt\\[0.2cm]
 \hspace*{1.3cm} $\forall x_1, \cdots, x_n: g$ \\[0.2cm]
 und in der Formel $g$ treten keine Quantoren mehr auf.  Die Formel $g$ wird auch als die
-\emph{Matrix} der obigen Formel bezeichnet.  Wir können nun  $g$ mit Hilfe
+\emph{Matrix} der obigen Formel bezeichnet.  Wir kÃ¶nnen nun  $g$ mit Hilfe
 der uns aus dem letzten Kapitel bekannten aussagenlogischen
- Äquivalenzen in konjunktive Normalform bringen.  Wir haben dann eine
+ Ã„quivalenzen in konjunktive Normalform bringen.  Wir haben dann eine
 Formel der Gestalt \\[0.2cm]
 \hspace*{1.3cm} $\forall x_1, \cdots, x_n: (k_1 \wedge \cdots \wedge k_m)$. \\[0.2cm]
-Dabei sind die $k_i$ Disjunktionen von \emph{Literalen}.  (In der Prädikatenlogik ist ein
+Dabei sind die $k_i$ Disjunktionen von \emph{Literalen}.  (In der PrÃ¤dikatenlogik ist ein
 Literal entweder eine atomare Formel oder die Negation einer atomaren Formel.)  Wenden wir
-hier  die Äquivalenz 
+hier  die Ã„quivalenz 
 $(\forall x\colon f_1\wedge f_2) \leftrightarrow (\forall x\colon f_1) \wedge (\forall x\colon f_2)$
-an, so können wir die All-Quantoren auf die einzelnen $k_i$ verteilen und
+an, so kÃ¶nnen wir die All-Quantoren auf die einzelnen $k_i$ verteilen und
 die resultierende Formel hat die Gestalt \\[0.2cm]
 \hspace*{1.3cm} 
 $\big(\forall x_1, \cdots, x_n: k_1\big) \wedge \cdots \wedge \big(\forall x_1, \cdots, x_n: k_m\big)$. \\[0.2cm]
 Ist eine Formel $F$ in der obigen
-Gestalt, so sagen wir, dass $F$ in {\em prädikatenlogischer Klausel-Normalform} ist und eine
+Gestalt, so sagen wir, dass $F$ in {\em prÃ¤dikatenlogischer Klausel-Normalform} ist und eine
 Formel der Gestalt \\[0.2cm]
 \hspace*{1.3cm} $\forall x_1, \cdots, x_n: k$, \\[0.2cm]
-bei der $k$ eine Disjunktion prädikatenlogischer Literale ist,
-bezeichnen wir als \emph{prädikatenlogische Klausel}.  Ist $M$
-eine Menge von Formeln deren Erfüllbarkeit wir untersuchen wollen, so können wir nach dem
-bisher gezeigten $M$ immer in eine Menge prädikatenlogischer Klauseln umformen.
-Da  dann nur noch All-Quantoren vorkommen, können wir hier die  Notation noch vereinfachen
+bei der $k$ eine Disjunktion prÃ¤dikatenlogischer Literale ist,
+bezeichnen wir als \emph{prÃ¤dikatenlogische Klausel}.  Ist $M$
+eine Menge von Formeln deren ErfÃ¼llbarkeit wir untersuchen wollen, so kÃ¶nnen wir nach dem
+bisher gezeigten $M$ immer in eine Menge prÃ¤dikatenlogischer Klauseln umformen.
+Da  dann nur noch All-Quantoren vorkommen, kÃ¶nnen wir hier die  Notation noch vereinfachen
 indem wir vereinbaren, dass alle Formeln implizit allquantifiziert sind, wir lassen also
 die All-Quantoren weg.
 
 Wozu sind nun die Umformungen in Skolem-Normalform gut?  Es geht darum, dass wir 
-ein Verfahren entwickeln wollen, mit dem es möglich ist für eine prädikatenlogische Formel
-$f$ zu zeigen, dass $f$ allgemeingültig ist, dass also \\[0.2cm]
+ein Verfahren entwickeln wollen, mit dem es mÃ¶glich ist fÃ¼r eine prÃ¤dikatenlogische Formel
+$f$ zu zeigen, dass $f$ allgemeingÃ¼ltig ist, dass also \\[0.2cm]
 \hspace*{1.3cm} $\models f$ \\[0.2cm]
 gilt.  Wir wissen, dass \\[0.2cm]
 \hspace*{1.3cm} $\models f$ \quad g.d.w. \quad $\{\neg f\} \models \falsum$ \\[0.2cm]
-gilt, denn die Formel $f$ ist genau dann allgemeingültig, wenn es keine Struktur gibt, in
-der die Formel $\neg f$ erfüllbar ist. 
- Wir bilden daher zunächst $\neg f$ und formen $\neg f$ in prädikatenlogische
+gilt, denn die Formel $f$ ist genau dann allgemeingÃ¼ltig, wenn es keine Struktur gibt, in
+der die Formel $\neg f$ erfÃ¼llbar ist. 
+ Wir bilden daher zunÃ¤chst $\neg f$ und formen $\neg f$ in prÃ¤dikatenlogische
 Klausel-Normalform um.  Wir erhalten Klauseln $k_1, \cdots, k_n$, so dass  \\[0.2cm]
 \hspace*{1.3cm} $\neg f \approx_e k_1 \wedge \cdots \wedge k_n$ \\[0.2cm]
-gilt.  Anschließend versuchen wir,
+gilt.  AnschlieÃŸend versuchen wir,
 aus den Klauseln $k_1,\cdots,k_n$ eine Widerspruch herzuleiten: \\[0.2cm]
 \hspace*{1.3cm} $\{k_1, \cdots, k_n\} \vdash \falsum$ \\[0.2cm]
-Wenn dies gelingt wissen wir, dass die Menge $\{k_1, \cdots, k_n\}$ unerfüllbar ist.
-Dann ist auch $\neg f$ unerfüllbar und damit ist $f$ allgemeingültig.
-Damit wir aus den Klauseln $k_1,\cdots,k_n$ einen Widerspruch herleiten können,
-brauchen wir natürlich noch einen Kalkül, der mit prädikatenlogischen Klauseln arbeitet. 
-Einen solchen Kalkül werden wir am Ende dieses Kapitel vorstellen.
+Wenn dies gelingt wissen wir, dass die Menge $\{k_1, \cdots, k_n\}$ unerfÃ¼llbar ist.
+Dann ist auch $\neg f$ unerfÃ¼llbar und damit ist $f$ allgemeingÃ¼ltig.
+Damit wir aus den Klauseln $k_1,\cdots,k_n$ einen Widerspruch herleiten kÃ¶nnen,
+brauchen wir natÃ¼rlich noch einen KalkÃ¼l, der mit prÃ¤dikatenlogischen Klauseln arbeitet. 
+Einen solchen KalkÃ¼l werden wir am Ende dieses Kapitel vorstellen.
 
-Um das Verfahren näher zu erläutern demonstrieren wir es an einem Beispiel. 
+Um das Verfahren nÃ¤her zu erlÃ¤utern demonstrieren wir es an einem Beispiel. 
 Wir wollen untersuchen, ob \\[0.2cm]
 \hspace*{1.3cm} 
 $\models \big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow \big(\forall y\colon \exists x\colon p(x,y)\big)$ \\[0.2cm]
-gilt.  Wir wissen, dass dies äquivalent dazu ist, dass  \\[0.2cm]
+gilt.  Wir wissen, dass dies Ã¤quivalent dazu ist, dass  \\[0.2cm]
 \hspace*{1.3cm} 
 $\Big\{ \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists x\colon p(x,y)\big)\Big)\Big\} \models \falsum$ \\[0.2cm]
-gilt.  Wir bringen zunächst die negierte Formel in pränexe Normalform. 
+gilt.  Wir bringen zunÃ¤chst die negierte Formel in prÃ¤nexe Normalform. 
 $$
 \begin{array}{ll}
                   & \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow \big(\forall y\colon \exists x\colon p(x,y)\big)\Big) \\
@@ -1162,7 +1162,7 @@ $$
   \leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \forall x\colon \neg p(x,y)\big) \\
 \end{array}
 $$
-Um an dieser Stelle weitermachen zu können, ist es nötig, die Variablen in dem  zweiten
+Um an dieser Stelle weitermachen zu kÃ¶nnen, ist es nÃ¶tig, die Variablen in dem  zweiten
 Glied der Konjunktion umzubenennen.  Wir ersetzen $x$ durch $u$ und $y$ durch $v$ und erhalten
 $$
 \begin{array}{ll}
@@ -1174,8 +1174,8 @@ $$
   \leftrightarrow &\exists v\colon  \exists x\colon \forall y\colon \forall u\colon \Big( p(x,y) \wedge \neg p(u,v) \Big)\\
 \end{array}
 $$
-An dieser Stelle müssen wir skolemisieren um die Existenz-Quantoren los zu werden. 
-Wir führen dazu zwei neue Funktions-Zeichen $s_1$ und $s_2$ ein. 
+An dieser Stelle mÃ¼ssen wir skolemisieren um die Existenz-Quantoren los zu werden. 
+Wir fÃ¼hren dazu zwei neue Funktions-Zeichen $s_1$ und $s_2$ ein. 
 Dabei gilt $\mathtt{arity}(s_1) = 0$ und $\mathtt{arity}(s_2) = 0$, denn vor den
 Existenz-Quantoren stehen keine All-Quantoren.
 $$
@@ -1185,42 +1185,42 @@ $$
  \approx_e & \forall y\colon \forall u\colon \Big( p(s_2,y) \wedge \neg p(u,s_1) \Big)\\
 \end{array}
 $$
-Da jetzt nur noch All-Quantoren auftreten, können wir diese auch noch weglassen,
+Da jetzt nur noch All-Quantoren auftreten, kÃ¶nnen wir diese auch noch weglassen,
 da wir ja vereinbart haben, dass alle freien Variablen implizit allquantifiziert sind.
-Damit können wir nun die prädikatenlogische Klausel-Normalform angeben, diese ist\\[0.2cm]
+Damit kÃ¶nnen wir nun die prÃ¤dikatenlogische Klausel-Normalform angeben, diese ist\\[0.2cm]
 \hspace*{1.3cm}
 $M := \Big\{ \big\{ p(s_2,y) \big\}, \big\{\neg p(u,s_1)\big\}\Big\}$. \\[0.2cm]
-Wir zeigen, dass die Menge $M$ widersprüchlich ist.
-Dazu betrachten wir zunächst die Klausel $\big\{ p(s_2,y) \big\}$ und setzen in
-dieser Klausel für $y$ die Konstante $s_1$ ein.  Damit erhalten wir die Klausel \\[0.2cm]
+Wir zeigen, dass die Menge $M$ widersprÃ¼chlich ist.
+Dazu betrachten wir zunÃ¤chst die Klausel $\big\{ p(s_2,y) \big\}$ und setzen in
+dieser Klausel fÃ¼r $y$ die Konstante $s_1$ ein.  Damit erhalten wir die Klausel \\[0.2cm]
 \hspace*{1.3cm}  $\big\{ p(s_2,s_1) \big\}$. \hspace*{\fill}(1)\\[0.2cm]
-Das Ersetzung von $y$ durch $s_1$ begründen wir damit, dass die obige Klausel ja implizit
-allquantifiziert ist und wenn etwas für alle $y$ gilt, dann sicher auch für $y = s_1$.
+Das Ersetzung von $y$ durch $s_1$ begrÃ¼nden wir damit, dass die obige Klausel ja implizit
+allquantifiziert ist und wenn etwas fÃ¼r alle $y$ gilt, dann sicher auch fÃ¼r $y = s_1$.
 
-Als nächstes betrachten wir die Klausel $\big\{\neg p(u,s_1)\big\}$.
-Hier setzen wir für die Variablen $u$ die Konstante $s_2$ ein und erhalten dann die
+Als nÃ¤chstes betrachten wir die Klausel $\big\{\neg p(u,s_1)\big\}$.
+Hier setzen wir fÃ¼r die Variablen $u$ die Konstante $s_2$ ein und erhalten dann die
 Klausel \\[0.2cm]
 \hspace*{1.3cm} $\big\{\neg p(s_2,s_1)\big\}$ \hspace*{\fill} (2) \\[0.2cm]
 Nun wenden wir auf die Klauseln (1) und (2) die Schnitt-Regel an und finden \\[0.2cm]
 \hspace*{1.3cm} 
 $\big\{ p(s_2,s_1) \big\}$, \quad$\big\{\neg p(s_2,s_1)\big\}$ \quad $\vdash \quad \{\}$.
 \\[0.2cm]
-Damit haben wir einen Widerspruch hergeleitet und gezeigt, dass die Menge $M$ unerfüllbar
+Damit haben wir einen Widerspruch hergeleitet und gezeigt, dass die Menge $M$ unerfÃ¼llbar
 ist. Damit ist dann auch \\[0.2cm]
 \hspace*{1.3cm} 
 $\Big\{ \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists x\colon p(x,y)\big)\Big)\Big\}$
 \\[0.2cm]
-unerfüllbar und folglich gilt \\[0.2cm]
+unerfÃ¼llbar und folglich gilt \\[0.2cm]
 \hspace*{1.3cm} 
 $\models \big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists x\colon p(x,y)\big)$.
 
 \section{Unifikation}
-In dem  Beispiel im letzten Abschnitt haben wir die Terme $s_1$ und $s_2$ geraten, die wir für die Variablen
+In dem  Beispiel im letzten Abschnitt haben wir die Terme $s_1$ und $s_2$ geraten, die wir fÃ¼r die Variablen
 $y$ und $u$ in den Klauseln $\big\{ p(s_2,y) \big\}$ und  $\big\{\neg p(u,s_1)\big\}$
-eingesetzt haben.  Wir haben diese Terme mit dem Ziel gewählt, später die Schnitt-Regel
-anwenden zu können.  In diesem Abschnitt zeigen wir nun ein Verfahren, mit dessen Hilfe
-wir die benötigten Terme ausrechnen können.
-Dazu benötigen wir zunächst den Begriff einer \emph{Substitution}.
+eingesetzt haben.  Wir haben diese Terme mit dem Ziel gewÃ¤hlt, spÃ¤ter die Schnitt-Regel
+anwenden zu kÃ¶nnen.  In diesem Abschnitt zeigen wir nun ein Verfahren, mit dessen Hilfe
+wir die benÃ¶tigten Terme ausrechnen kÃ¶nnen.
+Dazu benÃ¶tigen wir zunÃ¤chst den Begriff einer \emph{Substitution}.
 \begin{Definition}[Substitution]
     Es sei eine Signatur \\[0.2cm]
     \hspace*{1.3cm} $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ \\[0.2cm]
@@ -1230,13 +1230,13 @@ Dazu benötigen wir zunächst den Begriff einer \emph{Substitution}.
     \begin{enumerate}
     \item $x_i \in \mathcal{V}$, die $x_i$ sind also Variablen.
     \item $t_i \in \mathcal{T}_\Sigma$, die $t_i$ sind also Terme.
-    \item Für $i\not=j$ ist $x_i \not= x_j$, die Variablen sind also paarweise verschieden.
+    \item FÃ¼r $i\not=j$ ist $x_i \not= x_j$, die Variablen sind also paarweise verschieden.
     \end{enumerate}
     
     Ist $\sigma = \bigl\{ \langle x_1, t_1 \rangle, \cdots, \langle x_n, t_n \rangle \bigr\}$ eine
     $\Sigma$-Substitution, so schreiben wir  \\[0.2cm]
     \hspace*{1.3cm} $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$.  \\[0.2cm]
-    Außerdem definieren wir den \emph{Domain} einer Substitution als \\[0.2cm]
+    AuÃŸerdem definieren wir den \emph{Domain} einer Substitution als \\[0.2cm]
     \hspace*{1.3cm} $\textsl{dom}(\sigma) = \{ x_1, \cdots, x_n\}$.
     \\[0.2cm]
     Die Menge aller Substitutionen bezeichnen wir mit \textsl{Subst}.
@@ -1244,35 +1244,35 @@ Dazu benötigen wir zunächst den Begriff einer \emph{Substitution}.
 \end{Definition}
 
 \noindent
-Substitutionen werden für uns dadurch interessant, dass wir sie auf Terme \emph{anwenden}
-können.  Ist $t$ ein Term und  
+Substitutionen werden fÃ¼r uns dadurch interessant, dass wir sie auf Terme \emph{anwenden}
+kÃ¶nnen.  Ist $t$ ein Term und  
 $\sigma$ eine Substitution, so ist $t\sigma$ der Term, der aus $t$ dadurch entsteht, dass jedes Vorkommen einer Variablen
-$x_i$ durch den zugehörigen Term $t_i$ ersetzt wird.  Die formale Definition folgt. 
+$x_i$ durch den zugehÃ¶rigen Term $t_i$ ersetzt wird.  Die formale Definition folgt. 
 \begin{Definition}[Anwendung einer Substitution]
 \hspace*{\fill} \\
 Es sei $t$ ein Term und es sei $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$
-eine Substitution. Wir definieren die \emph{Anwendung} von $\sigma$ auf $t$ (Schreibweise $t\sigma$) durch Induktion über
+eine Substitution. Wir definieren die \emph{Anwendung} von $\sigma$ auf $t$ (Schreibweise $t\sigma$) durch Induktion Ã¼ber
 den Aufbau von $t$: 
 \begin{enumerate}
-\item Falls $t$ eine Variable ist, gibt es zwei Fälle:
+\item Falls $t$ eine Variable ist, gibt es zwei FÃ¤lle:
   \begin{enumerate}
-  \item $t = x_i$ für ein $i\in\{1,\cdots,n\}$.  Dann definieren wir \quad  $x_i\sigma := t_i$.
+  \item $t = x_i$ fÃ¼r ein $i\in\{1,\cdots,n\}$.  Dann definieren wir \quad  $x_i\sigma := t_i$.
   \item $t = y$ mit $y\in\mathcal{V}$, aber $y \not\in \{x_1,\cdots,x_n\}$. Dann definieren wir \quad $y\sigma := y$.
   \end{enumerate}
-\item Andernfalls muss $t$ die Form $t= f(s_1,\cdots,s_m)$ haben. Dann können wir $t\sigma$ durch \\[0.2cm]
+\item Andernfalls muss $t$ die Form $t= f(s_1,\cdots,s_m)$ haben. Dann kÃ¶nnen wir $t\sigma$ durch \\[0.2cm]
       \hspace*{1.3cm} $f(s_1, \cdots, s_m)\sigma := f(s_1\sigma, \cdots, s_m\sigma)$. \\[0.2cm]
-      definieren, denn nach Induktions-Voraussetzung sind die Ausdrücke $s_i\sigma$ bereits definiert.      
+      definieren, denn nach Induktions-Voraussetzung sind die AusdrÃ¼cke $s_i\sigma$ bereits definiert.      
       \eox
 \end{enumerate}
 \end{Definition}
 
-Genau wie wir Substitutionen auf Terme anwenden können, können wir eine Substitution
-auch auf prädikatenlogische Klauseln anwenden.  Dabei werden Prädikats-Zeichen und
+Genau wie wir Substitutionen auf Terme anwenden kÃ¶nnen, kÃ¶nnen wir eine Substitution
+auch auf prÃ¤dikatenlogische Klauseln anwenden.  Dabei werden PrÃ¤dikats-Zeichen und
 Junktoren wie Funktions-Zeichen behandelt.
-Wir ersparen uns eine formale Definition und geben statt dessen zunächst einige Beispiele. 
+Wir ersparen uns eine formale Definition und geben statt dessen zunÃ¤chst einige Beispiele. 
 Wir definieren eine Substitution $\sigma$ durch \\[0.2cm]
 \hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto c,\; x_2 \mapsto f(d) \big]$. \\[0.2cm]
-In den folgenden drei Beispielen demonstrieren wir zunächst, wie eine Substitution
+In den folgenden drei Beispielen demonstrieren wir zunÃ¤chst, wie eine Substitution
 auf einen Term angewendet werden kann.  Im vierten Beispiel wenden wir die Substitution
 dann auf eine Formel an:
 \begin{enumerate}
@@ -1284,7 +1284,7 @@ dann auf eine Formel an:
 
 
 \noindent
-Als nächstes zeigen wir, wie  Substitutionen miteinander verknüpft werden können.
+Als nÃ¤chstes zeigen wir, wie  Substitutionen miteinander verknÃ¼pft werden kÃ¶nnen.
 \begin{Definition}[Komposition von Substitutionen] 
     Es seien\\[0.2cm]
     \hspace*{1.3cm}  $\sigma = \big[ x_1 \mapsto s_1, \cdots, x_m \mapsto s_m \big]$ \quad und \quad  $\tau = \big[ y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \big]$ \\[0.2cm]
@@ -1295,7 +1295,7 @@ Als nächstes zeigen wir, wie  Substitutionen miteinander verknüpft werden können
 \end{Definition}
 
 \example
-Wir führen das obige Beispiel fort und setzen \\[0.2cm]
+Wir fÃ¼hren das obige Beispiel fort und setzen \\[0.2cm]
 \hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto c,\; x_2 \mapsto f(x_3) \big]$
                 \quad und \quad $\tau := \big[ x_3 \mapsto h(c,c),\; x_4 \mapsto d \big]$. \\[0.2cm]
 Dann gilt: \\[0.2cm]
@@ -1304,7 +1304,7 @@ Dann gilt: \\[0.2cm]
 \vspace{0.3cm}
 
 \noindent
-Die Definition der Komposition von Substitutionen ist mit dem Ziel gewählt worden, dass
+Die Definition der Komposition von Substitutionen ist mit dem Ziel gewÃ¤hlt worden, dass
 der folgende Satz gilt.
 \begin{Satz} \label{satz:komposition}
     Ist $t$ ein Term und sind $\sigma$ und $\tau$ Substitutionen mit 
@@ -1312,12 +1312,12 @@ der folgende Satz gilt.
     \hspace*{1.3cm} $(t \sigma)\tau = t (\sigma\tau)$.
     \hspace*{\fill} $\Box$
 \end{Satz}
-Der Satz kann durch Induktion über den Aufbau des Termes $t$ bewiesen werden.
+Der Satz kann durch Induktion Ã¼ber den Aufbau des Termes $t$ bewiesen werden.
 
 
 \begin{Definition}[Syntaktische Gleichung]
 Unter einer \emph{syntaktischen Gleichung} verstehen wir in diesem Abschnitt ein Konstrukt der Form
-$s \doteq t$, wobei einer der beiden folgenden Fälle vorliegen muss:
+$s \doteq t$, wobei einer der beiden folgenden FÃ¤lle vorliegen muss:
 \begin{enumerate}
 \item $s$ und $t$ sind Terme  oder
 \item $s$ und $t$ sind atomare Formeln.
@@ -1328,16 +1328,16 @@ von syntaktischen Gleichungen.
 \end{Definition}
 
 Was syntaktische Gleichungen angeht machen wir keinen Unterschied zwischen Funktions-Zeichen und
-Prädikats-Zeichen.   Dieser Ansatz ist deswegen berechtigt, weil wir Prädikats-Zeichen
-ja auch als spezielle Funktions-Zeichen auffassen können, nämlich als 
+PrÃ¤dikats-Zeichen.   Dieser Ansatz ist deswegen berechtigt, weil wir PrÃ¤dikats-Zeichen
+ja auch als spezielle Funktions-Zeichen auffassen kÃ¶nnen, nÃ¤mlich als 
 Funktions-Zeichen, die einen Wahrheitswert aus der Menge   $\mathbb{B}$ berechnen.
 
 \begin{Definition}[Unifikator]
-Eine Substitution $\sigma$ \emph{löst} eine syntaktische Gleichung $s \doteq t$ genau dann, wenn
+Eine Substitution $\sigma$ \emph{lÃ¶st} eine syntaktische Gleichung $s \doteq t$ genau dann, wenn
 $s\sigma = t\sigma$ ist, wenn also durch die Anwendung von $\sigma$ auf $s$ und $t$
-tatsächlich identische Objekte entstehen.  Ist $E$ ein syntaktisches Gleichungs-System, so 
+tatsÃ¤chlich identische Objekte entstehen.  Ist $E$ ein syntaktisches Gleichungs-System, so 
 sagen wir, dass $\sigma$ ein \emph{Unifikator} von $E$ ist wenn $\sigma$ jede
-syntaktische Gleichung in $E$ löst. 
+syntaktische Gleichung in $E$ lÃ¶st. 
 \eox
 \end{Definition}
 Ist $E = \{ s_1 \doteq t_1, \cdots, s_n \doteq t_n \}$ eine syntaktisches Gleichungs-System
@@ -1347,68 +1347,68 @@ und ist $\sigma$ eine Substitution, so definieren wir \\[0.2cm]
 
 
 \example
- Wir verdeutlichen die bisher eingeführten Begriffe anhand eines
+ Wir verdeutlichen die bisher eingefÃ¼hrten Begriffe anhand eines
 Beispiels.  
 Wir betrachten die Gleichung \\[0.2cm]
 \hspace*{1.3cm} $p(x_1, f(x_4)) \doteq p( x_2, x_3)$ \\[0.2cm]
 und definieren die Substitution \\[0.2cm]
 \hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \big]$. \\[0.2cm]
-Die Substitution $\sigma$ löst die obige syntaktische Gleichung, denn es gilt \\[0.2cm]
+Die Substitution $\sigma$ lÃ¶st die obige syntaktische Gleichung, denn es gilt \\[0.2cm]
 \hspace*{1.3cm} $p(x_1, f(x_4))\sigma = p(x_2, f(x_4))$ \quad und \quad \\[0.2cm]
 \hspace*{1.3cm} $p(x_2, x_3)\sigma \;\quad = p(x_2, f(x_4))$.  \eox
 
 
-Als nächstes entwickeln wir ein Verfahren, mit dessen Hilfe wir von einer vorgegebenen
-Menge $E$ von syntaktischen Gleichungen entscheiden können, ob es einen Unifikator $\sigma$ für $E$
-gibt.  Wir überlegen uns zunächst, in welchen Fällen wir eine syntaktischen Gleichung $s \doteq t$
-garantiert nicht lösen können.  Da gibt es zwei Möglichkeiten: Eine syntaktische Gleichung  \\[0.2cm]
+Als nÃ¤chstes entwickeln wir ein Verfahren, mit dessen Hilfe wir von einer vorgegebenen
+Menge $E$ von syntaktischen Gleichungen entscheiden kÃ¶nnen, ob es einen Unifikator $\sigma$ fÃ¼r $E$
+gibt.  Wir Ã¼berlegen uns zunÃ¤chst, in welchen FÃ¤llen wir eine syntaktischen Gleichung $s \doteq t$
+garantiert nicht lÃ¶sen kÃ¶nnen.  Da gibt es zwei MÃ¶glichkeiten: Eine syntaktische Gleichung  \\[0.2cm]
 \hspace*{1.3cm} $f(s_1,\cdots,s_m) \doteq g(t_1,\cdots, t_n)$ \\[0.2cm]
-ist sicher dann nicht durch eine Substitution lösbar, wenn $f$ und $g$ verschiedene
-Funktions-Zeichen sind, denn für jede Substitution $\sigma$ gilt ja \\[0.2cm]
+ist sicher dann nicht durch eine Substitution lÃ¶sbar, wenn $f$ und $g$ verschiedene
+Funktions-Zeichen sind, denn fÃ¼r jede Substitution $\sigma$ gilt ja \\[0.2cm]
 \hspace*{1.0cm} $f(s_1,\cdots,s_m)\sigma = f(s_1\sigma,\cdots,s_m\sigma)$ \quad und \quad
                 $g(t_1,\cdots, t_n)\sigma = g(t_1\sigma,\cdots,t_n\sigma)$. \\[0.2cm]
 Falls $f \not = g$ ist, haben die Terme  $f(s_1,\cdots,s_m)\sigma$ und $g(t_1,\cdots, t_n)\sigma$ verschieden
-Funktions-Zeichen und können daher syntaktisch nicht identisch werden.
+Funktions-Zeichen und kÃ¶nnen daher syntaktisch nicht identisch werden.
 
-Die andere Form einer syntaktischen Gleichung, die garantiert unlösbar ist, ist\\[0.2cm]
+Die andere Form einer syntaktischen Gleichung, die garantiert unlÃ¶sbar ist, ist\\[0.2cm]
 \hspace*{1.3cm} $x \doteq f(t_1,\cdots,t_n)$  \quad falls $x \in \textsl{Var}\big(f(t_1,\cdots,t_n)\big)$. \\[0.2cm]
-Das diese syntaktische Gleichung unlösbar ist liegt daran, dass die rechte Seite immer mindestens ein
-Funktions-Zeichen mehr enthält als die linke.  
+Das diese syntaktische Gleichung unlÃ¶sbar ist liegt daran, dass die rechte Seite immer mindestens ein
+Funktions-Zeichen mehr enthÃ¤lt als die linke.  
 
-Mit diesen Vorbemerkungen können wir nun ein Verfahren angeben, mit dessen Hilfe es
-möglich ist, Mengen von syntaktischen Gleichungen zu lösen, oder festzustellen, dass es
-keine Lösung gibt.  Das Verfahren operiert auf Paaren der Form 
+Mit diesen Vorbemerkungen kÃ¶nnen wir nun ein Verfahren angeben, mit dessen Hilfe es
+mÃ¶glich ist, Mengen von syntaktischen Gleichungen zu lÃ¶sen, oder festzustellen, dass es
+keine LÃ¶sung gibt.  Das Verfahren operiert auf Paaren der Form 
 $\langle F, \tau \rangle$.  Dabei ist $F$ ein syntaktisches Gleichungs-System und
 $\tau$ ist eine Substitution.  Wir starten das Verfahren mit dem Paar 
-$\langle E, [] \rangle$. Hierbei ist $E$ das zu lösende Gleichungs-System und $[]$ ist die leere Substitution.
+$\langle E, [] \rangle$. Hierbei ist $E$ das zu lÃ¶sende Gleichungs-System und $[]$ ist die leere Substitution.
 Das Verfahren arbeitet indem die im Folgenden
 dargestellten Reduktions-Regeln solange angewendet werden, bis entweder feststeht, dass
-die Menge der Gleichungen keine Lösung hat, oder aber ein Paar der Form 
+die Menge der Gleichungen keine LÃ¶sung hat, oder aber ein Paar der Form 
 $\langle \{\}, \sigma \rangle$ erreicht wird.  In diesem Fall ist $\sigma$ ein
 Unifikator der Menge $E$, mit der wir gestartet sind.  Es folgen die Reduktions-Regeln:
 \begin{enumerate}
 \item Falls $y\in\mathcal{V}$ eine Variable ist, die nicht in dem Term $t$ auftritt, so
-      können wir die folgende Reduktion durchführen: 
+      kÃ¶nnen wir die folgende Reduktion durchfÃ¼hren: 
       \[ \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \quad\leadsto\quad 
          \Big\langle E[y \mapsto t], \sigma\big[ y \mapsto t \big] \Big\rangle 
       \]
-      Diese Reduktions-Regel ist folgendermaßen zu lesen: Enthält die zu untersuchende
+      Diese Reduktions-Regel ist folgendermaÃŸen zu lesen: EnthÃ¤lt die zu untersuchende
       Menge von syntaktischen Gleichungen eine Gleichung der Form $y \doteq t$, wobei die
-      Variable $y$ nicht in $t$ auftritt, dann können wir diese Gleichung aus der
+      Variable $y$ nicht in $t$ auftritt, dann kÃ¶nnen wir diese Gleichung aus der
       gegebenen Menge von Gleichungen entfernen.  Gleichzeitig wird die Substitution
       $\sigma$ in die Substitution $\sigma\big[ y \mapsto t \big]$ transformiert und auf die restlichen syntaktischen Gleichungen
       wird die Substitution $[y \mapsto t]$ angewendet.
 \item Wenn die Variable $y$  in dem Term $t$ auftritt, falls also $y \in \textsl{var}(t)$
-      ist und wenn außerdem $t \not= y$ ist, dann hat das Gleichungs-System 
-      $E \cup \big\{ y \doteq t \big\}$ keine Lösung, wir schreiben 
+      ist und wenn auÃŸerdem $t \not= y$ ist, dann hat das Gleichungs-System 
+      $E \cup \big\{ y \doteq t \big\}$ keine LÃ¶sung, wir schreiben 
       \[ \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle\;\leadsto\; \Omega. \]
 \item Falls $y\in\mathcal{V}$ eine Variable ist und $t$ keine Variable ist, so haben wir folgende Reduktions-Regel:
       \[ \Big\langle E \cup \big\{ t \doteq y \big\}, \sigma \Big\rangle \quad\leadsto\quad 
          \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle.
       \]   
-      Diese Regel wird benötigt, um anschließend eine der ersten beiden Regeln anwenden zu
-      können.
-\item Triviale syntaktische Gleichungen von Variablen können wir einfach weglassen:
+      Diese Regel wird benÃ¶tigt, um anschlieÃŸend eine der ersten beiden Regeln anwenden zu
+      kÃ¶nnen.
+\item Triviale syntaktische Gleichungen von Variablen kÃ¶nnen wir einfach weglassen:
       \[ \Big\langle E \cup \big\{ x \doteq x \big\}, \sigma \Big\rangle \quad\leadsto\quad
          \Big\langle E, \sigma \Big\rangle.
       \]   
@@ -1420,37 +1420,37 @@ Unifikator der Menge $E$, mit der wir gestartet sind.  Es folgen die Reduktions-
       Eine syntaktische Gleichung der Form $f(s_1,\cdots,s_n) \doteq f(t_1,\cdots,t_n)$
       wird also ersetzt durch die $n$ syntaktische Gleichungen $s_1 \doteq t_1$, $\cdots$, $s_n \doteq t_n$      .
 
-      Diese Regel ist im Übrigen der Grund dafür, dass wir mit Mengen von syntaktischen Gleichungen
-      arbeiten müssen, denn auch wenn wir mit nur einer syntaktischen Gleichung starten, kann 
-      durch die Anwendung dieser Regel die Zahl der syntaktischen Gleichungen erhöht werden.
+      Diese Regel ist im Ãœbrigen der Grund dafÃ¼r, dass wir mit Mengen von syntaktischen Gleichungen
+      arbeiten mÃ¼ssen, denn auch wenn wir mit nur einer syntaktischen Gleichung starten, kann 
+      durch die Anwendung dieser Regel die Zahl der syntaktischen Gleichungen erhÃ¶ht werden.
 
       Ein Spezialfall dieser Regel ist 
       \[ \Big\langle E \cup \big\{ c \doteq c \big\}, \sigma \Big\rangle \;\leadsto\; 
          \Big\langle E, \sigma \Big\rangle.
       \]
-      Hier steht $c$ für eine Konstante, also ein 0-stelliges Funktions-Zeichen. 
-      Triviale Gleichungen über Konstanten können also einfach weggelassen werden.
+      Hier steht $c$ fÃ¼r eine Konstante, also ein 0-stelliges Funktions-Zeichen. 
+      Triviale Gleichungen Ã¼ber Konstanten kÃ¶nnen also einfach weggelassen werden.
 \item Das Gleichungs-System $E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\}$
-      hat keine Lösung, falls die Funk\-tions-Zeichen $f$ und $g$ verschieden sind, wir schreiben
+      hat keine LÃ¶sung, falls die Funk\-tions-Zeichen $f$ und $g$ verschieden sind, wir schreiben
       \[ \Big\langle E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\},
       \sigma \Big\rangle \;\leadsto\; \Omega \qquad \mbox{falls $f \not= g$}. \]
 \end{enumerate}
 Haben wir ein nicht-leeres Gleichungs-System $E$ gegeben und starten mit dem Paar 
-$\langle E, []\rangle$  , so lässt sich immer eine der
-obigen Regeln anwenden.  Diese geht solange bis einer der folgenden Fälle eintritt:
+$\langle E, []\rangle$  , so lÃ¤sst sich immer eine der
+obigen Regeln anwenden.  Diese geht solange bis einer der folgenden FÃ¤lle eintritt:
 \begin{enumerate}
 \item Die 2. oder 6. Regel ist anwendbar.  Dann ist das Ergebnis $\Omega$ und das Gleichungs-System 
-      $E$ hat keine Lösung.
+      $E$ hat keine LÃ¶sung.
 \item Das Paar $\langle E, [] \rangle$ wird reduziert zu einem Paar $\langle \{\}, \sigma\rangle$.
       Dann ist $\sigma$ ein Unifikator von $E$.  In diesem Falls schreiben wir $\sigma = \textsl{mgu}(E)$.
-      Falls $E = \{ s \doteq t \}$ ist, schreiben wir auch $\sigma = \textsl{mgu}(s, t)$.  Die Abkürzung
-      \textsl{mgu} steht hier für ``\emph{most general unifier}''.
+      Falls $E = \{ s \doteq t \}$ ist, schreiben wir auch $\sigma = \textsl{mgu}(s, t)$.  Die AbkÃ¼rzung
+      \textsl{mgu} steht hier fÃ¼r ``\emph{most general unifier}''.
 \end{enumerate}
 
 \example
 Wir wenden das oben dargestellte Verfahren an, um die syntaktische Gleichung \\[0.2cm]
 \hspace*{1.3cm}  $p(x_1, f(x_4)) \doteq p( x_2, x_3)$  \\[0.2cm]
-zu lösen.  Wir haben die folgenden Reduktions-Schritte:
+zu lÃ¶sen.  Wir haben die folgenden Reduktions-Schritte:
 $$
 \begin{array}{ll}
           &  \big\langle \big\{ p(x_1, f(x_4)) \doteq p( x_2, x_3) \big\}, \big[ \big] \big\rangle \\[0.2cm]
@@ -1462,7 +1462,7 @@ $$
 $$
 In diesem Fall ist das Verfahren also erfolgreich und wir erhalten die Substitution \\[0.2cm]
 \hspace*{1.3cm} $\big[ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \big]$ \\[0.2cm]
-als Lösung der oben gegebenen syntaktischen Gleichung.  \eox
+als LÃ¶sung der oben gegebenen syntaktischen Gleichung.  \eox
 
 \example
 Wir geben ein weiteres Beispiel und betrachten das Gleichungs-System 
@@ -1481,26 +1481,26 @@ $$
  \leadsto & \big\langle \big\{\big\}, \big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \big] \big\rangle \\[0.2cm]
 \end{array}
 $$
-Damit haben wir die Substitution  $\big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \big]$ als Lösung 
+Damit haben wir die Substitution  $\big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \big]$ als LÃ¶sung 
 des anfangs gegebenen syntaktischen Gleichungs-Systems gefunden.  
 \eox
 
 
 
 
-\section{Ein Kalkül für die Prädikatenlogik ohne Gleichheit}
+\section{Ein KalkÃ¼l fÃ¼r die PrÃ¤dikatenlogik ohne Gleichheit}
 In diesem Abschnitt setzen wir voraus, dass unsere Signatur $\Sigma$ das Gleichheits-Zeichen nicht
-verwendet, denn durch diese Einschränkung wird es wesentlich leichter, einen vollstängen Kalkül für
-die Prädikatenlogik einzuführen.  Zwar gibt es auch für den Fall, dass die Signatur $\Sigma$ das
-Gleichheits-Zeichen enthält, einen vollständigen Kalkül.  Dieser ist allerdings deutlich
-aufwendiger als der Kalkül, den wir jetzt einführen,  denn der Kalkül für die Prädikatenlogik ohne
+verwendet, denn durch diese EinschrÃ¤nkung wird es wesentlich leichter, einen vollstÃ¤ngen KalkÃ¼l fÃ¼r
+die PrÃ¤dikatenlogik einzufÃ¼hren.  Zwar gibt es auch fÃ¼r den Fall, dass die Signatur $\Sigma$ das
+Gleichheits-Zeichen enthÃ¤lt, einen vollstÃ¤ndigen KalkÃ¼l.  Dieser ist allerdings deutlich
+aufwendiger als der KalkÃ¼l, den wir jetzt einfÃ¼hren,  denn der KalkÃ¼l fÃ¼r die PrÃ¤dikatenlogik ohne
 das Gleichheits-Zeichen besteht nur aus zwei Schluss-Regeln, die wir jetzt definieren.
 \begin{Definition}[Resolution] 
     Es gelte:
     \begin{enumerate}
-    \item $k_1$ und $k_2$ sind prädikatenlogische Klauseln,
+    \item $k_1$ und $k_2$ sind prÃ¤dikatenlogische Klauseln,
     \item $p(s_1,\cdots,s_n)$ und $p(t_1,\cdots,t_n)$ sind atomare Formeln,
-    \item die syntaktische Gleichung $p(s_1,\cdots,s_n)  \doteq p(t_1,\cdots,t_n)$ ist lösbar mit 
+    \item die syntaktische Gleichung $p(s_1,\cdots,s_n)  \doteq p(t_1,\cdots,t_n)$ ist lÃ¶sbar mit 
           \[ \mu = \textsl{mgu}\bigl(p(s_1,\cdots,s_n), p(t_1,\cdots,t_n)\bigr). \]
     \end{enumerate}
      Dann ist 
@@ -1513,47 +1513,47 @@ das Gleichheits-Zeichen besteht nur aus zwei Schluss-Regeln, die wir jetzt defin
 Die Resolutions-Regel ist eine Kombination aus der \emph{Substitutions-Regel} und der 
 Schnitt-Regel.  Die Substitutions-Regel hat die Form
 \[ \schluss{k}{k\sigma}. \]
-Hierbei ist $k$ eine prädikatenlogische Klausel und $\sigma$ ist eine Substitution.
-Unter Umständen kann es sein, dass wir bei der Anwendung der Resolutions-Regel 
+Hierbei ist $k$ eine prÃ¤dikatenlogische Klausel und $\sigma$ ist eine Substitution.
+Unter UmstÃ¤nden kann es sein, dass wir bei der Anwendung der Resolutions-Regel 
 die Variablen in einer der beiden Klauseln erst umbenennen
-müssen bevor wir die Regel anwenden können.  Betrachten wir dazu ein Beispiel.
+mÃ¼ssen bevor wir die Regel anwenden kÃ¶nnen.  Betrachten wir dazu ein Beispiel.
 Die Klausel-Menge 
 \[ M = \Bigl\{ \bigl\{ p(x) \bigr\}, \bigl\{ \neg p(f(x)) \bigr\} \Bigr\} \]
-ist widersprüchlich.  Wir können die Resolutions-Regel aber nicht unmittelbar anwenden,
+ist widersprÃ¼chlich.  Wir kÃ¶nnen die Resolutions-Regel aber nicht unmittelbar anwenden,
 denn die syntaktische Gleichung 
 \[ p(x) \doteq p(f(x)) \]
-ist unlösbar.  Das liegt daran, dass \textbf{zufällig} in beiden Klauseln dieselbe Variable
+ist unlÃ¶sbar.  Das liegt daran, dass \textbf{zufÃ¤llig} in beiden Klauseln dieselbe Variable
 verwendet wird.  Wenn wir die Variable $x$ in der zweiten Klausel jedoch zu $y$ umbenennen, erhalten
 wir die Klausel-Menge 
 \[ \Bigl\{ \bigl\{ p(x) \bigr\}, \bigl\{ \neg p(f(y)) \bigr\} \Bigr\}. \]
-Hier können wir die Resolutions-Regel anwenden, denn die syntaktische Gleichung 
+Hier kÃ¶nnen wir die Resolutions-Regel anwenden, denn die syntaktische Gleichung 
 \[ p(x) \doteq p(f(y)) \]
-hat die Lösung $[x \mapsto f(y)]$.  Dann erhalten wir 
+hat die LÃ¶sung $[x \mapsto f(y)]$.  Dann erhalten wir 
 \[ \bigl\{ p(x) \bigr\}, \quad \bigl\{ \neg p(f(y)) \bigr\} \quad \vdash \quad \{\}. \]
 und haben damit die Inkonsistenz der Klausel-Menge $M$ nachgewiesen.
 
 \noindent
 Die Resolutions-Regel alleine ist nicht ausreichend, um aus einer Klausel-Menge $M$, die
 inkonsistent ist, in 
-jedem Fall die leere Klausel ableiten zu können: Wir brauchen noch eine zweite Regel.
+jedem Fall die leere Klausel ableiten zu kÃ¶nnen: Wir brauchen noch eine zweite Regel.
 Um das einzusehen, betrachten wir die Klausel-Menge 
 \[ M = \Bigl\{ \bigl\{p(f(x),y), p(u,g(v))\bigr\}, 
                \bigl\{\neg p(f(x),y), \neg p(u,g(v))\bigr\} \Bigr\} 
 \]
-Wir werden gleich zeigen, dass die Menge $M$ widersprüchlich ist.  Man kann nachweisen,
+Wir werden gleich zeigen, dass die Menge $M$ widersprÃ¼chlich ist.  Man kann nachweisen,
 dass mit der Resolutions-Regel alleine ein solcher Nachweis nicht gelingt.
-Ein einfacher, aber für die Vorlesung zu aufwendiger Nachweis dieser Behauptung kann
-geführt werden, indem wir ausgehend von der Menge $M$ alle möglichen Resolutions-Schritte
-durchführen.  Dabei würden wir dann sehen, dass die leere Klausel nie berechnet wird.
+Ein einfacher, aber fÃ¼r die Vorlesung zu aufwendiger Nachweis dieser Behauptung kann
+gefÃ¼hrt werden, indem wir ausgehend von der Menge $M$ alle mÃ¶glichen Resolutions-Schritte
+durchfÃ¼hren.  Dabei wÃ¼rden wir dann sehen, dass die leere Klausel nie berechnet wird.
 Wir stellen daher jetzt die
-Faktorisierungs-Regel vor, mir der wir später zeigen werden, dass $M$ widersprüchlich
+Faktorisierungs-Regel vor, mir der wir spÃ¤ter zeigen werden, dass $M$ widersprÃ¼chlich
 ist.
 
 \begin{Definition}[Faktorisierung] Es gelte 
   \begin{enumerate}
-  \item $k$ ist  eine prädikatenlogische Klausel,
+  \item $k$ ist  eine prÃ¤dikatenlogische Klausel,
   \item $p(s_1,\cdots,s_n)$ und $p(t_1,\cdots,t_n)$ sind atomare Formeln,
-  \item die syntaktische Gleichung $p(s_1,\cdots,s_n)  \doteq p(t_1,\cdots,t_n)$ ist lösbar, 
+  \item die syntaktische Gleichung $p(s_1,\cdots,s_n)  \doteq p(t_1,\cdots,t_n)$ ist lÃ¶sbar, 
   \item $\mu = \textsl{mgu}\bigl(p(s_1,\cdots,s_n), p(t_1,\cdots,t_n)\bigr)$.
   \end{enumerate}
   Dann sind \\[0.3cm]
@@ -1567,26 +1567,26 @@ ist.
 \end{Definition}
 
 \noindent
-Wir zeigen, wie sich mit Resolutions- und Faktorisierungs-Regel die Widersprüchlichkeit
-der Menge $M$ beweisen lässt.
+Wir zeigen, wie sich mit Resolutions- und Faktorisierungs-Regel die WidersprÃ¼chlichkeit
+der Menge $M$ beweisen lÃ¤sst.
 \begin{enumerate}
-\item Zunächst wenden wir die Faktorisierungs-Regel auf die erste Klausel an. 
+\item ZunÃ¤chst wenden wir die Faktorisierungs-Regel auf die erste Klausel an. 
       Dazu berechnen wir den Unifikator 
       \[ \mu = \textsl{mgu}\bigl(p(f(x),y), p(u,g(v))\bigr) = [y \mapsto g(v), u \mapsto f(x)]. \]
-      Damit können wir die Faktorisierungs-Regel anwenden: 
+      Damit kÃ¶nnen wir die Faktorisierungs-Regel anwenden: 
       \[ \bigl\{p(f(x),y), p(u,g(v))\bigr\} \quad \vdash \quad \bigl\{p(f(x),g(v))\bigr\}. \]
 \item Jetzt wenden wir die Faktorisierungs-Regel auf die zweite Klausel an.
       Dazu berechnen wir  den Unifikator 
       \[ \mu = \textsl{mgu}\bigl(\neg p(f(x),y), \neg p(u,g(v))\bigr) = [y \mapsto g(v), u \mapsto f(x)]. 
       \]
-      Damit können wir die Faktorisierungs-Regel anwenden: 
+      Damit kÃ¶nnen wir die Faktorisierungs-Regel anwenden: 
       \[ \bigl\{ \neg p(f(x),y), \neg p(u,g(v))\bigr\} \quad \vdash \quad \bigl\{\neg p(f(x),g(v))\bigr\}.
       \]
-\item Wir schließen den Beweis mit einer Anwendung der Resolutions-Regel ab.
+\item Wir schlieÃŸen den Beweis mit einer Anwendung der Resolutions-Regel ab.
       Der dabei verwendete Unifikator ist die leere Substitution, es gilt also $\mu = []$.      
       \[ \bigl\{p(f(x),g(v))\bigr\}, \quad \bigl\{\neg p(f(x),g(v))\bigr\} \quad \vdash \quad \{\}. \]
 \end{enumerate}
-Ist $M$ eine Menge von prädikatenlogischen Klauseln und ist $k$ eine prädikatenlogische
+Ist $M$ eine Menge von prÃ¤dikatenlogischen Klauseln und ist $k$ eine prÃ¤dikatenlogische
 Klausel, die durch Anwendung der Resolutions-Regel und der Faktorisierungs-Regel aus $M$
 hergeleitet werden kann, so schreiben wir \\[0.2cm]
 \hspace*{1.3cm} $M \vdash k$.
@@ -1594,37 +1594,37 @@ hergeleitet werden kann, so schreiben wir \\[0.2cm]
 Dies wird als \emph{$M$ leitet $k$ her} gelesen.
 
 \begin{Definition}[Allabschluss]
-  Ist $k$ eine prädikatenlogische Klausel und ist $\{x_1,\cdots,x_n\}$
+  Ist $k$ eine prÃ¤dikatenlogische Klausel und ist $\{x_1,\cdots,x_n\}$
   die Menge aller Variablen, die in $k$ auftreten, so definieren wir
   den \emph{Allabschluss}  $\forall(k)$  der Klausel k als \\[0.2cm]
   \hspace*{1.3cm} $\forall(k) := \forall x_1, \cdots,x_n \colon k$. \eox
 \end{Definition}
 
 \noindent
-Die für uns wesentlichen Eigenschaften des Beweis-Begriffs $M \vdash k$ werden in den folgenden
-beiden Sätzen zusammengefasst.
+Die fÃ¼r uns wesentlichen Eigenschaften des Beweis-Begriffs $M \vdash k$ werden in den folgenden
+beiden SÃ¤tzen zusammengefasst.
 \begin{Satz}[Korrektheits-Satz] \hspace*{\fill} \\
     Ist $M = \{k_1,\cdots,k_n\}$ eine Menge von Klauseln und gilt $M \vdash k$, so folgt \\[0.2cm]
     \hspace*{1.3cm} $\models \forall(k_1) \wedge \cdots \wedge \forall(k_n) \rightarrow \forall(k)$. \\[0.2cm]
     Falls also eine Klausel $k$ aus einer Menge $M$ hergeleitet werden kann,
-    so ist $k$ tatsächlich eine Folgerung aus $M$. \qed
+    so ist $k$ tatsÃ¤chlich eine Folgerung aus $M$. \qed
 \end{Satz}
 
 \noindent
-Die Umkehrung des obigen Korrektheits-Satzes gilt nur für die leere Klausel.
-\begin{Satz}[Widerlegungs-Vollständigkeit] \hspace*{\fill} \\
+Die Umkehrung des obigen Korrektheits-Satzes gilt nur fÃ¼r die leere Klausel.
+\begin{Satz}[Widerlegungs-VollstÃ¤ndigkeit] \hspace*{\fill} \\
   Ist $M = \{k_1,\cdots,k_n\}$ eine Menge von Klauseln und gilt 
   $\models \forall(k_1) \wedge \cdots \wedge \forall(k_n) \rightarrow \falsum$, so folgt \\[0.2cm]
   \hspace*{1.3cm} $M \vdash \{\}$.
     \qed
 \end{Satz}
 \noindent
-Damit haben wir nun ein Verfahren in der Hand, um für eine gegebene 
-prädikatenlogischer Formel $f$ die Frage, ob $\models f$ gilt, untersuchen zu können.
+Damit haben wir nun ein Verfahren in der Hand, um fÃ¼r eine gegebene 
+prÃ¤dikatenlogischer Formel $f$ die Frage, ob $\models f$ gilt, untersuchen zu kÃ¶nnen.
 \begin{enumerate}
-\item Wir berechnen zunächst die Skolem-Normalform von $\neg f$ und erhalten dabei so etwas wie \\[0.2cm]
+\item Wir berechnen zunÃ¤chst die Skolem-Normalform von $\neg f$ und erhalten dabei so etwas wie \\[0.2cm]
       \hspace*{1.3cm} $\neg f \approx_e \forall x_1, \cdots, x_m \colon g$.
-\item Anschließend bringen wir die Matrix $g$ in konjunktive Normalform: 
+\item AnschlieÃŸend bringen wir die Matrix $g$ in konjunktive Normalform: 
       \[ g \leftrightarrow k_1 \wedge \cdots \wedge k_n. \]
       Daher haben wir nun 
       \[ \neg f \approx_e k_1 \wedge \cdots \wedge k_n \] 
@@ -1634,14 +1634,14 @@ prädikatenlogischer Formel $f$ die Frage, ob $\models f$ gilt, untersuchen zu kö
           \{\neg f\} \models \falsum          \quad \mbox{g.d.w.} \quad 
           \{k_1,\cdots,k_n\} \models \falsum.
       \]
-\item Nach dem Korrektheits-Satz und dem Satz über die Widerlegungs-Vollständigkeit gilt
+\item Nach dem Korrektheits-Satz und dem Satz Ã¼ber die Widerlegungs-VollstÃ¤ndigkeit gilt
       \\[0.2cm]
       \hspace*{1.3cm} 
       $\{k_1,\cdots,k_n\} \models \falsum$ \quad g.d.w. \quad 
       $\{k_1,\cdots,k_n\} \vdash \falsum$. \\[0.2cm]
-      Wir versuchen also, nun die Widersprüchlichkeit der Menge $M = \{ k_1, \cdots, k_n \}$  zu zeigen, indem wir
+      Wir versuchen also, nun die WidersprÃ¼chlichkeit der Menge $M = \{ k_1, \cdots, k_n \}$  zu zeigen, indem wir
       aus $M$ die leere Klausel ableiten.
-      Wenn diese gelingt, haben wir damit die Allgemeingültigkeit der ursprünglich
+      Wenn diese gelingt, haben wir damit die AllgemeingÃ¼ltigkeit der ursprÃ¼nglich
       gegebenen Formel $f$ gezeigt.
 \end{enumerate}
 
@@ -1649,36 +1649,36 @@ prädikatenlogischer Formel $f$ die Frage, ob $\models f$ gilt, untersuchen zu kö
 Zum Abschluss demonstrieren wir das skizzierte Verfahren an einem Beispiel.
 Wir gehen von folgenden Axiomen aus:
 \begin{enumerate}
-\item Jeder Drache ist glücklich, wenn alle seine Kinder fliegen können.
-\item Rote Drachen können fliegen.
+\item Jeder Drache ist glÃ¼cklich, wenn alle seine Kinder fliegen kÃ¶nnen.
+\item Rote Drachen kÃ¶nnen fliegen.
 \item Die Kinder eines roten Drachens sind immer rot.
 \end{enumerate}
-Wie werden zeigen, dass aus diesen Axiomen folgt, dass alle roten Drachen glücklich sind.
-Als erstes formalisieren wir die Axiome und die Behauptung in der Prädikatenlogik.
-Wir wählen die folgende Signatur \\[0.2cm]
+Wie werden zeigen, dass aus diesen Axiomen folgt, dass alle roten Drachen glÃ¼cklich sind.
+Als erstes formalisieren wir die Axiome und die Behauptung in der PrÃ¤dikatenlogik.
+Wir wÃ¤hlen die folgende Signatur \\[0.2cm]
 \hspace*{1.3cm}  $\Sigma_\textsl{Drache} := \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ \quad mit
 \begin{enumerate}
 \item $\mathcal{V} := \{x,y,z\}$.
 \item $\mathcal{F} = \{\}$.
-\item $\mathcal{P} := \{ \textsl{rot}, \textsl{fliegt}, \textsl{glücklich}, \textsl{kind} \}$.
+\item $\mathcal{P} := \{ \textsl{rot}, \textsl{fliegt}, \textsl{glÃ¼cklich}, \textsl{kind} \}$.
 \item $\textsl{arity} := \bigl\{ \pair(\textsl{rot},1), \pair(\textsl{fliegt},1),
-  \pair(\textsl{glücklich},1), \pair(\textsl{kind},2)\bigr\}$
+  \pair(\textsl{glÃ¼cklich},1), \pair(\textsl{kind},2)\bigr\}$
 \end{enumerate}
-Das Prädikat  $\textsl{kind}(x,y)$ soll genau dann wahr sein, wenn $x$ ein Kind von $y$ ist.
+Das PrÃ¤dikat  $\textsl{kind}(x,y)$ soll genau dann wahr sein, wenn $x$ ein Kind von $y$ ist.
 Formalisieren wir die Axiome und die Behauptung, so erhalten wir die folgenden
 Formeln $f_1, \cdots, f_4$:
 \begin{enumerate}
-\item $f_1 := \forall x: \Bigl(\forall y: \big(\textsl{kind}(y,x) \rightarrow \textsl{fliegt}(y)\big) \rightarrow \textsl{glücklich}(x)\Bigr)$
+\item $f_1 := \forall x: \Bigl(\forall y: \big(\textsl{kind}(y,x) \rightarrow \textsl{fliegt}(y)\big) \rightarrow \textsl{glÃ¼cklich}(x)\Bigr)$
 \item $f_2 := \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{fliegt}(x)\bigr)$
 \item $f_3 := \forall x: \bigl(\textsl{rot}(x) \rightarrow \forall y:\bigl( \textsl{kind}(y,x) \rightarrow \textsl{rot}(y)\bigr)\bigr)$
-\item $f_4 := \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{glücklich}(x)\bigr)$
+\item $f_4 := \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{glÃ¼cklich}(x)\bigr)$
 \end{enumerate}
 Wir wollen zeigen, dass die Formel \\[0.2cm]
 \hspace*{1.3cm} $f := f_1 \wedge f_2 \wedge f_3 \rightarrow f_4$ \\[0.2cm]
-allgemeingültig ist.  Wir betrachten also die Formel $\neg f$ und stellen fest \\[0.2cm]
+allgemeingÃ¼ltig ist.  Wir betrachten also die Formel $\neg f$ und stellen fest \\[0.2cm]
 \hspace*{1.3cm} $\neg f \leftrightarrow f_1 \wedge f_2 \wedge f_3 \wedge \neg f_4$. \\[0.2cm]
-Als nächstes müssen wir diese Formel in eine Menge von Klauseln umformen.
-Da es sich hier um eine Konjunktion mehrerer Formeln handelt, können wir 
+Als nÃ¤chstes mÃ¼ssen wir diese Formel in eine Menge von Klauseln umformen.
+Da es sich hier um eine Konjunktion mehrerer Formeln handelt, kÃ¶nnen wir 
 die einzelnen Formeln 
  $f_1$, $f_2$, $f_3$ und  $\neg f_4$  getrennt in Klauseln umwandeln.
 \begin{enumerate}
@@ -1686,33 +1686,33 @@ die einzelnen Formeln
  $$ 
   \begin{array}{lcl}
     f_1 & =           & \forall x:\Bigl(\forall y: \big(\textsl{kind}(y,x)
-    \rightarrow \textsl{fliegt}(y)\big) \rightarrow \textsl{glücklich}(x) \Bigr) \\[0.2cm]
-    &\leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \textsl{kind}(y,x) \rightarrow \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \neg \textsl{kind}(y,x) \vee \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\leftrightarrow & \forall x: \Bigl(\exists y: \neg \big( \neg \textsl{kind}(y,x) \vee \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\leftrightarrow & \forall x: \Bigl( \exists y: \big(\textsl{kind}(y,x) \wedge \neg  \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\leftrightarrow & \forall x:  \exists y: \Bigl(\big( \textsl{kind}(y,x) \wedge \neg  \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\approx_e & \forall x: \Bigl(\big( \textsl{kind}(s(x),x) \wedge \neg  \textsl{fliegt}(s(x))\big) \vee \textsl{glücklich}(x) \Bigr)\\
+    \rightarrow \textsl{fliegt}(y)\big) \rightarrow \textsl{glÃ¼cklich}(x) \Bigr) \\[0.2cm]
+    &\leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \textsl{kind}(y,x) \rightarrow \textsl{fliegt}(y)\big) \vee \textsl{glÃ¼cklich}(x) \Bigr)\\[0.2cm]
+    &\leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \neg \textsl{kind}(y,x) \vee \textsl{fliegt}(y)\big) \vee \textsl{glÃ¼cklich}(x) \Bigr)\\[0.2cm]
+    &\leftrightarrow & \forall x: \Bigl(\exists y: \neg \big( \neg \textsl{kind}(y,x) \vee \textsl{fliegt}(y)\big) \vee \textsl{glÃ¼cklich}(x) \Bigr)\\[0.2cm]
+    &\leftrightarrow & \forall x: \Bigl( \exists y: \big(\textsl{kind}(y,x) \wedge \neg  \textsl{fliegt}(y)\big) \vee \textsl{glÃ¼cklich}(x) \Bigr)\\[0.2cm]
+    &\leftrightarrow & \forall x:  \exists y: \Bigl(\big( \textsl{kind}(y,x) \wedge \neg  \textsl{fliegt}(y)\big) \vee \textsl{glÃ¼cklich}(x) \Bigr)\\[0.2cm]
+    &\approx_e & \forall x: \Bigl(\big( \textsl{kind}(s(x),x) \wedge \neg  \textsl{fliegt}(s(x))\big) \vee \textsl{glÃ¼cklich}(x) \Bigr)\\
   \end{array}
      $$
       Im letzten Schritt haben wir dabei die Skolem-Funktion $s$ mit 
-      $\textsl{arity}(s) = 1$ eingeführt.  Anschaulich berechnet diese Funktion für jeden
-      Drachen $x$, der nicht glücklich ist, ein Kind $s(x)$, das nicht fliegen kann.
+      $\textsl{arity}(s) = 1$ eingefÃ¼hrt.  Anschaulich berechnet diese Funktion fÃ¼r jeden
+      Drachen $x$, der nicht glÃ¼cklich ist, ein Kind $s(x)$, das nicht fliegen kann.
       Wenn wir in der Matrix dieser Formel das ``$\vee$'' noch ausmultiplizieren, so
       erhalten wir die beiden Klauseln 
       \\[0.2cm]
-      \hspace*{1.3cm} $k_1 := \bigl\{ \textsl{kind}(s(x),x), \textsl{glücklich}(x) \bigl\}$,   \\[0.2cm]
-      \hspace*{1.3cm} $k_2 := \bigl\{ \neg \textsl{fliegt}(s(x)), \textsl{glücklich}(x) \bigl\}$. 
-\item Analog finden wir für $f_2$:
+      \hspace*{1.3cm} $k_1 := \bigl\{ \textsl{kind}(s(x),x), \textsl{glÃ¼cklich}(x) \bigl\}$,   \\[0.2cm]
+      \hspace*{1.3cm} $k_2 := \bigl\{ \neg \textsl{fliegt}(s(x)), \textsl{glÃ¼cklich}(x) \bigl\}$. 
+\item Analog finden wir fÃ¼r $f_2$:
  $$
         \begin{array}{lcl}
             f_2 & =  & \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{fliegt}(x) \bigr) \\[0.2cm]
             & \leftrightarrow  & \forall x: \bigl(\neg \textsl{rot}(x) \vee \textsl{fliegt}(x) \bigr)
         \end{array}
       $$ 
-      Damit ist $f_2$ zu folgender Klauseln äquivalent: \\[0.2cm]
+      Damit ist $f_2$ zu folgender Klauseln Ã¤quivalent: \\[0.2cm]
       \hspace*{1.3cm} $k_3 := \bigl\{ \neg \textsl{rot}(x), \textsl{fliegt}(x) \bigl\}$.
-\item Für $f_3$ sehen wir:
+\item FÃ¼r $f_3$ sehen wir:
  $$
         \begin{array}{lcl}
           f_3 & =          & \forall x: \Bigl(\textsl{rot}(x) \rightarrow 
@@ -1729,31 +1729,31 @@ die einzelnen Formeln
 \item Umformung der Negation von $f_4$ liefert:
  $$
         \begin{array}{lcl}
-\neg f_4 & =      & \neg \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{glücklich}(x)\bigr) 
+\neg f_4 & =      & \neg \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{glÃ¼cklich}(x)\bigr) 
          \\[0.2cm]
-         & \leftrightarrow & \neg \forall x: \bigl(\neg \textsl{rot}(x) \vee \textsl{glücklich}(x) \bigr)
+         & \leftrightarrow & \neg \forall x: \bigl(\neg \textsl{rot}(x) \vee \textsl{glÃ¼cklich}(x) \bigr)
          \\[0.2cm]
-         & \leftrightarrow & \exists x: \neg \bigl(\neg \textsl{rot}(x) \vee \textsl{glücklich}(x) \bigr)
+         & \leftrightarrow & \exists x: \neg \bigl(\neg \textsl{rot}(x) \vee \textsl{glÃ¼cklich}(x) \bigr)
          \\[0.2cm]
-         & \leftrightarrow & \exists x: \bigl(\textsl{rot}(x) \wedge \neg \textsl{glücklich}(x) \bigr)
+         & \leftrightarrow & \exists x: \bigl(\textsl{rot}(x) \wedge \neg \textsl{glÃ¼cklich}(x) \bigr)
          \\[0.2cm]
-         & \approx_e & \textsl{rot}(d) \wedge \neg \textsl{glücklich}(d) \\
+         & \approx_e & \textsl{rot}(d) \wedge \neg \textsl{glÃ¼cklich}(d) \\
         \end{array}
       $$
-      Die hier eingeführte Skolem-Konstante $d$ steht für einen unglücklichen roten Drachen.
-      Das führt zu den Klauseln \\[0.2cm]
+      Die hier eingefÃ¼hrte Skolem-Konstante $d$ steht fÃ¼r einen unglÃ¼cklichen roten Drachen.
+      Das fÃ¼hrt zu den Klauseln \\[0.2cm]
       \hspace*{1.3cm} $k_5 = \bigl\{ \textsl{rot}(d) \bigl\}$, \\[0.2cm]
-      \hspace*{1.3cm} $k_6 = \bigl\{ \neg \textsl{glücklich}(d) \bigl\}$.
+      \hspace*{1.3cm} $k_6 = \bigl\{ \neg \textsl{glÃ¼cklich}(d) \bigl\}$.
 \end{enumerate}
-Wir müssen also untersuchen, ob die Menge $M$, die aus den folgenden Klauseln besteht,
-widersprüchlich ist: 
+Wir mÃ¼ssen also untersuchen, ob die Menge $M$, die aus den folgenden Klauseln besteht,
+widersprÃ¼chlich ist: 
 \begin{enumerate}
-\item $k_1 = \bigl\{ \textsl{kind}(s(x),x),\; \textsl{glücklich}(x) \bigl\}$  
-\item $k_2 = \bigl\{ \neg \textsl{fliegt}(s(x)),\; \textsl{glücklich}(x) \bigl\}$
+\item $k_1 = \bigl\{ \textsl{kind}(s(x),x),\; \textsl{glÃ¼cklich}(x) \bigl\}$  
+\item $k_2 = \bigl\{ \neg \textsl{fliegt}(s(x)),\; \textsl{glÃ¼cklich}(x) \bigl\}$
 \item $k_3 = \bigl\{ \neg \textsl{rot}(x),\; \textsl{fliegt}(x) \bigl\}$
 \item $k_4 = \bigl\{ \neg \textsl{rot}(x),\; \neg \textsl{kind}(y,x),\; \textsl{rot}(y) \bigl\}$
 \item $k_5 = \bigl\{ \textsl{rot}(d) \bigl\}$ 
-\item $k_6 = \bigl\{ \neg \textsl{glücklich}(d) \bigl\}$
+\item $k_6 = \bigl\{ \neg \textsl{glÃ¼cklich}(d) \bigl\}$
 \end{enumerate}
 Sei also $M := \bigl\{k_1,k_2,k_3,k_4,k_5,k_6\bigl\}$.
 Wir  zeigen, dass $M \vdash \falsum$ gilt:
@@ -1763,13 +1763,13 @@ Wir  zeigen, dass $M \vdash \falsum$ gilt:
       \hspace*{1.3cm}
       $\textsl{mgu}\bigl(\textsl{rot}(d), \textsl{rot}(x)\bigr) = [x \mapsto d]$.
       \\[0.2cm]
-      Daher können wir die Resolutions-Regel auf die Klauseln $k_5$ und $k_4$ wie folgt anwenden:
+      Daher kÃ¶nnen wir die Resolutions-Regel auf die Klauseln $k_5$ und $k_4$ wie folgt anwenden:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\bigl\{\textsl{rot}(d)\bigl\}$, \ $\bigl\{\neg \textsl{rot}(x), \neg \textsl{kind}(y,x),
        \textsl{rot}(y)\bigl\}$ \ $\vdash$ \ $\bigl\{\neg \textsl{kind}(y,d), \textsl{rot}(y)\bigl\}$.
 \item Wir wenden nun auf die resultierende Klausel und auf die Klausel $k_1$ die
-      Resolutions-Regel an.  Dazu berechnen wir zunächst
+      Resolutions-Regel an.  Dazu berechnen wir zunÃ¤chst
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{mgu}\bigl(\textsl{kind}(y,d), \textsl{kind}(s(x),x)\bigr) = 
@@ -1779,20 +1779,20 @@ Wir  zeigen, dass $M \vdash \falsum$ gilt:
       \\[0.2cm]
       \hspace*{1.3cm}
        $\bigl\{\neg \textsl{kind}(y,d), \textsl{rot}(y)\bigl\}$, \ 
-       $\bigl\{\textsl{kind}(s(x),x), \textsl{glücklich}(x)\bigl\}$ \ $\vdash$ \ 
-       $\bigl\{\textsl{glücklich}(d), \textsl{rot}(s(d))\bigl\}$.
+       $\bigl\{\textsl{kind}(s(x),x), \textsl{glÃ¼cklich}(x)\bigl\}$ \ $\vdash$ \ 
+       $\bigl\{\textsl{glÃ¼cklich}(d), \textsl{rot}(s(d))\bigl\}$.
 \item Jetzt wenden wir auf die eben abgeleitete Klausel und die Klausel $k_6$ die
       Resolutions-Regel an.  Wir haben:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\textsl{mgu}\bigl(\textsl{glücklich}(d), \textsl{glücklich}(d)\bigr) = []$
+      $\textsl{mgu}\bigl(\textsl{glÃ¼cklich}(d), \textsl{glÃ¼cklich}(d)\bigr) = []$
       \\[0.2cm]
       Also erhalten wir
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\bigl\{\textsl{glücklich}(d), \textsl{rot}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{glücklich}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{rot}(s(d))\bigl\}$.
+      $\bigl\{\textsl{glÃ¼cklich}(d), \textsl{rot}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{glÃ¼cklich}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{rot}(s(d))\bigl\}$.
 \item Auf die Klausel $\bigl\{\textsl{rot}(s(d))\bigl\}$ und die Klausel $k_3$ wenden wir
-      die Resolutions-Regel an.  Zunächst haben wir
+      die Resolutions-Regel an.  ZunÃ¤chst haben wir
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{mgu}\bigl(\textsl{rot}(s(d)), \neg \textsl{rot}(x)\bigr) = [x \mapsto s(d)]$
@@ -1802,7 +1802,7 @@ Wir  zeigen, dass $M \vdash \falsum$ gilt:
       \hspace*{1.3cm}
       $\bigl\{\textsl{rot}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{rot}(x), \textsl{fliegt}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{fliegt}(s(d))\bigl\}$
 \item Um die so erhaltenen Klausel $\bigl\{\textsl{fliegt}(s(d))\bigl\}$ mit der Klausel
-      $k_3$ resolvieren zu können, berechnen wir
+      $k_3$ resolvieren zu kÃ¶nnen, berechnen wir
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{mgu}\bigl(\textsl{fliegt}(s(d)), \textsl{fliegt}(s(x))\bigr) = [x \mapsto d]$
@@ -1810,16 +1810,16 @@ Wir  zeigen, dass $M \vdash \falsum$ gilt:
       Dann liefert die Resolutions-Regel
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\bigl\{\textsl{fliegt}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{fliegt}(s(x)), \textsl{glücklich}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{glücklich}(d)\bigl\}$.
-\item Auf das Ergebnis $\bigl\{\textsl{glücklich}(d)\bigl\}$ und die Klausel $k_6$ können
+      $\bigl\{\textsl{fliegt}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{fliegt}(s(x)), \textsl{glÃ¼cklich}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{glÃ¼cklich}(d)\bigl\}$.
+\item Auf das Ergebnis $\bigl\{\textsl{glÃ¼cklich}(d)\bigl\}$ und die Klausel $k_6$ kÃ¶nnen
       wir nun die Resolutions-Regel anwenden:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\bigl\{\textsl{glücklich}(d)\bigl\}$, \  $\bigl\{\neg \textsl{glücklich}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\bigl\}$.
+      $\bigl\{\textsl{glÃ¼cklich}(d)\bigl\}$, \  $\bigl\{\neg \textsl{glÃ¼cklich}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\bigl\}$.
 \end{enumerate}
 Da wir im letzten Schritt die leere Klausel erhalten haben,  ist insgesamt $M \vdash
 \falsum$ 
-nachgewiesen worden und damit haben wir gezeigt, dass alle kommunistischen Drachen glücklich sind. 
+nachgewiesen worden und damit haben wir gezeigt, dass alle kommunistischen Drachen glÃ¼cklich sind. 
 \eox
 
 \exercise
@@ -1829,8 +1829,8 @@ definiert als die Menge aller der Mengen, die sich nicht selbst enthalten.   Dam
 \hspace*{1.3cm}
 $\forall x: \bigl( x \el R \leftrightarrow \neg x \el x)$.
 \\[0.2cm]
-Zeigen Sie mit Hilfe des in diesem Abschnitt definierten Kalküls, dass diese Formel
-widersprüchlich ist. 
+Zeigen Sie mit Hilfe des in diesem Abschnitt definierten KalkÃ¼ls, dass diese Formel
+widersprÃ¼chlich ist. 
 \vspace{0.3cm}
 
 \exercise
@@ -1843,22 +1843,22 @@ Zeigen Sie, dass aus diesen Axiomen logisch die folgende Aussage folgt: \\[0.3cm
 \hspace*{1.3cm} Alle Barbiere sind blond.
 
 \section{\textsl{Prover9} und \textsl{Mace4}}
-Der im letzten Abschnitt beschriebene Kalkül lässt sich automatisieren und bildet die Grundlage moderner
-automatischer Beweiser.  Gleichzeitig lässt sich auch die Suche nach Gegenbeispielen automatisieren.
+Der im letzten Abschnitt beschriebene KalkÃ¼l lÃ¤sst sich automatisieren und bildet die Grundlage moderner
+automatischer Beweiser.  Gleichzeitig lÃ¤sst sich auch die Suche nach Gegenbeispielen automatisieren.
 Wir stellen in diesem Abschnitt zwei Systeme vor, die diesen Zwecken dienen.
 \begin{enumerate}
-\item \textsl{Prover9} dient dazu, automatisch prädikatenlogische Formeln zu beweisen.
-\item \textsl{Mace4} untersucht, ob eine gegebene Menge prädikatenlogischer Formeln in einer endlichen
-  Struktur erfüllbar ist.  Gegebenenfalls wird diese Struktur berechnet.
+\item \textsl{Prover9} dient dazu, automatisch prÃ¤dikatenlogische Formeln zu beweisen.
+\item \textsl{Mace4} untersucht, ob eine gegebene Menge prÃ¤dikatenlogischer Formeln in einer endlichen
+  Struktur erfÃ¼llbar ist.  Gegebenenfalls wird diese Struktur berechnet.
 \end{enumerate}
 Die beiden Programme \textsl{Prover9} und \textsl{Mace4} wurden von William McCune \cite{mccune:2010} 
 entwickelt, stehen unter der \href{http://www.gnu.org/licenses/gpl.html}{GPL} (\emph{Gnu General
-  Public Licence}) und können unter der Adresse 
+  Public Licence}) und kÃ¶nnen unter der Adresse 
 \\[0.2cm]
 \hspace*{1.3cm}
 \href{http://www.cs.unm.edu/~mccune/prover9/download/}{\texttt{http://www.cs.unm.edu/\symbol{126}mccune/prover9/download/}}
 \\[0.2cm]
-im Quelltext heruntergeladen werden.  Wir diskutieren zunächst \textsl{Prover9} und schauen uns anschließend
+im Quelltext heruntergeladen werden.  Wir diskutieren zunÃ¤chst \textsl{Prover9} und schauen uns anschlieÃŸend
 \textsl{Mace4} an.
 
 \subsection{Der automatische Beweiser \textsl{Prover9}}
@@ -1866,45 +1866,45 @@ im Quelltext heruntergeladen werden.  Wir diskutieren zunächst \textsl{Prover9} 
 Formeln wird als Menge von \emph{Axiomen} interpretiert, die zweite Menge von Formeln sind die zu
 beweisenden \emph{Theoreme}, die aus den Axiomen gefolgert werden sollen.  Wollen wir beispielsweise zeigen,
 dass in der Gruppen-Theorie aus der Existenz eines  links-inversen Elements auch die Existenz eines
-rechts-inversen Elements folgt und dass außerdem das links-neutrale Element auch rechts-neutral ist,
-so können wir zunächst die Gruppen-Theorie wie folgt axiomatisieren:
+rechts-inversen Elements folgt und dass auÃŸerdem das links-neutrale Element auch rechts-neutral ist,
+so kÃ¶nnen wir zunÃ¤chst die Gruppen-Theorie wie folgt axiomatisieren:
 \begin{enumerate}
 \item $\forall x: e \cdot x = x$,
 \item $\forall x: \exists y: x \cdot y = e$,
 \item $\forall x: \forall y: \forall z: (x \cdot y) \cdot z = x \cdot (y \cdot z)$.
 \end{enumerate}
-Wir müssen nun zeigen, dass aus diesen Axiomen die beiden Formeln
+Wir mÃ¼ssen nun zeigen, dass aus diesen Axiomen die beiden Formeln
 \\[0.2cm]
 \hspace*{1.3cm}
 $\forall x: x \cdot e = x$ \quad und \quad $\forall x: \exists y: y \cdot x = e$ 
 \\[0.2cm]
-logisch folgen.  Wir können diese Formeln wie in Abbildung \ref{fig:group2.in} auf Seite
-\pageref{fig:group2.in} gezeigt für \textsl{Prover9} darstellen.
+logisch folgen.  Wir kÃ¶nnen diese Formeln wie in Abbildung \ref{fig:group2.in} auf Seite
+\pageref{fig:group2.in} gezeigt fÃ¼r \textsl{Prover9} darstellen.
 Der Anfang der Axiome wird in dieser Datei durch ``\texttt{formulas(sos)}'' eingeleitet und durch
-das Schlüsselwort ``\texttt{end\_of\_list}'' beendet.  Zu beachten ist, dass sowohl die Schlüsselwörter als
+das SchlÃ¼sselwort ``\texttt{end\_of\_list}'' beendet.  Zu beachten ist, dass sowohl die SchlÃ¼sselwÃ¶rter als
 auch die einzelnen Formel jeweils durch einen Punkt ``\texttt{.}'' beendet werden.  Die Axiome in den Zeilen
-2, 3, und 4 drücken aus, dass 
+2, 3, und 4 drÃ¼cken aus, dass 
 \begin{enumerate}
 \item \texttt{e} ein links-neutrales Element ist,
 \item zu jedem Element $x$ ein links-inverses Element $y$ existiert und
 \item das Assoziativ-Gesetz gilt.
 \end{enumerate}
-Aus diesen Axiomen folgt, dass das \texttt{e} auch ein rechts-neutrales Element ist und dass außerdem zu
+Aus diesen Axiomen folgt, dass das \texttt{e} auch ein rechts-neutrales Element ist und dass auÃŸerdem zu
 jedem Element $x$ ein rechts-neutrales Element $y$ existiert.  Diese beiden  Formeln sind die zu beweisenden 
 \emph{Ziele} und werden in der Datei durch ``\texttt{formulas}(goal)'' markiert.
-Trägt die in Abbildung \ref{fig:group2.in} gezeigte Datei den Namen ``\texttt{group2.in}'', so können wir das
+TrÃ¤gt die in Abbildung \ref{fig:group2.in} gezeigte Datei den Namen ``\texttt{group2.in}'', so kÃ¶nnen wir das
 Programm \textsl{Prover9} mit dem Befehl 
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{prover9 -f group2.in}
 \\[0.2cm]
 starten und erhalten als Ergebnis die Information, dass die beiden in Zeile 8 und 9 gezeigten Formeln
-tatsächlich aus den vorher angegebenen Axiomen folgen.  Ist eine Formel nicht beweisbar, so gibt es zwei Möglichkeiten:
-In bestimmten Fällen kann \textsl{Prover9} tatsächlich erkennen, dass ein Beweis unmöglich ist.  In
+tatsÃ¤chlich aus den vorher angegebenen Axiomen folgen.  Ist eine Formel nicht beweisbar, so gibt es zwei MÃ¶glichkeiten:
+In bestimmten FÃ¤llen kann \textsl{Prover9} tatsÃ¤chlich erkennen, dass ein Beweis unmÃ¶glich ist.  In
 diesem Fall bricht das Programm die Suche nach einem Beweis mit einer entsprechenden Meldung ab.
-Wenn die Dinge ungünstig liegen, ist es auf Grund der Unentscheidbarkeit der Prädikatenlogik nicht
-möglich zu erkennen, dass die Suche nach einem Beweis scheitern muss.  In einem solchen Fall
-läuft das Programm solange weiter, bis kein freier Speicher mehr zur Verfügung steht und
+Wenn die Dinge ungÃ¼nstig liegen, ist es auf Grund der Unentscheidbarkeit der PrÃ¤dikatenlogik nicht
+mÃ¶glich zu erkennen, dass die Suche nach einem Beweis scheitern muss.  In einem solchen Fall
+lÃ¤uft das Programm solange weiter, bis kein freier Speicher mehr zur VerfÃ¼gung steht und
 bricht dann mit einer Fehlermeldung ab.
 
 
@@ -1936,15 +1936,15 @@ bricht dann mit einer Fehlermeldung ab.
 \end{figure}
 
 
-\textsl{Prover9} versucht, einen indirekten Beweis zu führen.  Zunächst werden die Axiome in
-prädikatenlogische Klauseln 
-überführt. Dann wird jedes zu beweisenden Theorem negiert und die negierte Formel wird ebenfalls in 
-Klauseln überführt.  Anschließend versucht \textsl{Prover9} aus der Menge aller Axiome zusammen mit den
+\textsl{Prover9} versucht, einen indirekten Beweis zu fÃ¼hren.  ZunÃ¤chst werden die Axiome in
+prÃ¤dikatenlogische Klauseln 
+Ã¼berfÃ¼hrt. Dann wird jedes zu beweisenden Theorem negiert und die negierte Formel wird ebenfalls in 
+Klauseln Ã¼berfÃ¼hrt.  AnschlieÃŸend versucht \textsl{Prover9} aus der Menge aller Axiome zusammen mit den
 Klauseln, die sich aus der Negation eines der zu beweisenden Theoreme ergeben, die leere
-Klausel herzuleiten.  Gelingt dies, so ist bewiesen, dass das jeweilige  Theorem tatsächlich aus den Axiomen
+Klausel herzuleiten.  Gelingt dies, so ist bewiesen, dass das jeweilige  Theorem tatsÃ¤chlich aus den Axiomen
 folgt.   Abbildung \ref{fig:group-commutative.in} zeigt eine
-Eingabe-Datei für \textsl{Prover9}, bei der versucht wird, das Kommutativ-Gesetz aus den Axiomen der
-Gruppentheorie zu folgern.  Der Beweis-Versuch mit \textsl{Prover9} schlägt allerdings fehl.  In diesem Fall
+Eingabe-Datei fÃ¼r \textsl{Prover9}, bei der versucht wird, das Kommutativ-Gesetz aus den Axiomen der
+Gruppentheorie zu folgern.  Der Beweis-Versuch mit \textsl{Prover9} schlÃ¤gt allerdings fehl.  In diesem Fall
 wird die Beweissuche nicht endlos fortgesetzt.  Dies liegt daran, dass es \textsl{Prover9} gelingt, in
 endlicher Zeit alle aus den gegebenen Voraussetzungen folgenden Formeln abzuleiten.
 Leider ist ein solcher Fall eher die Ausnahme als die Regel.
@@ -1977,25 +1977,25 @@ Leider ist ein solcher Fall eher die Ausnahme als die Regel.
 
 
 \subsection{\textsl{Mace4} }
-Dauert ein Beweisversuch  mit \textsl{Prover9} endlos, so ist zunächst nicht klar, ob das zu beweisende
+Dauert ein Beweisversuch  mit \textsl{Prover9} endlos, so ist zunÃ¤chst nicht klar, ob das zu beweisende
 Theorem gilt.  Um sicher zu sein, 
 dass eine Formel nicht aus einer gegebenen Menge von Axiomen folgt, reicht es aus, eine Struktur zu
-konstruieren, in der alle Axiome erfüllt sind, in der das zu beweisende Theorem aber falsch ist.
-Das Programm \textsl{Mace4} dient genau dazu, solche Strukturen zu finden.  Das funktioniert natürlich nur,
+konstruieren, in der alle Axiome erfÃ¼llt sind, in der das zu beweisende Theorem aber falsch ist.
+Das Programm \textsl{Mace4} dient genau dazu, solche Strukturen zu finden.  Das funktioniert natÃ¼rlich nur,
 solange die Strukturen endlich sind.  Abbildung \ref{fig:group.in} zeigt eine Eingabe-Datei, mit deren Hilfe
 wir die Frage, ob es endliche nicht-kommutative Gruppen gibt, unter Verwendung von \textsl{Mace4} beantworten
-können.  In den Zeilen 2, 3 und 4 stehen die Axiome der Gruppen-Theorie.  Die Formel in Zeile 5 postuliert,
-dass für die beiden Elemente $a$ und $b$ das Kommutativ-Gesetz nicht gilt, dass also $a \cdot b \not= b \cdot
+kÃ¶nnen.  In den Zeilen 2, 3 und 4 stehen die Axiome der Gruppen-Theorie.  Die Formel in Zeile 5 postuliert,
+dass fÃ¼r die beiden Elemente $a$ und $b$ das Kommutativ-Gesetz nicht gilt, dass also $a \cdot b \not= b \cdot
 a$ ist.  Ist der in 
 Abbildung \ref{fig:group.in} gezeigte Text in einer Datei mit dem Namen ``\textsl{group.in}'' gespeichert, so
-können wir \textsl{Mace4} durch das Kommando
+kÃ¶nnen wir \textsl{Mace4} durch das Kommando
 \\[0.2cm]
 \hspace*{1.3cm}
 \textsl{mace4 -f group.in}
 \\[0.2cm]
-starten.  \textsl{Mace4} sucht für alle positiven natürlichen  Zahlen $n=1,2,3,\cdots$, ob es eine Struktur 
+starten.  \textsl{Mace4} sucht fÃ¼r alle positiven natÃ¼rlichen  Zahlen $n=1,2,3,\cdots$, ob es eine Struktur 
 $\mathcal{S} = \langle \mathcal{U}, \mathcal{J} \rangle$ mit $\textsl{card}(U) = n$ gibt, in der die
-angegebenen Formeln gelten.  Bei $n=6$ wird \textsl{Mace4} fündig und berechnet tatsächlich eine Gruppe mit 6
+angegebenen Formeln gelten.  Bei $n=6$ wird \textsl{Mace4} fÃ¼ndig und berechnet tatsÃ¤chlich eine Gruppe mit 6
 Elementen, in der das Kommutativ-Gesetz verletzt ist.
 
 \begin{figure}[!ht]
@@ -2055,7 +2055,7 @@ Diese Gruppen-Tafel zeigt, dass
 $a \circ b = 0 \circ 1 = 3$, \quad aber \quad
 $b \circ a = 1 \circ 0 = 4$
 \\[0.2cm]
-gilt, mithin ist das Kommutativ-Gesetz tatsächlich verletzt.
+gilt, mithin ist das Kommutativ-Gesetz tatsÃ¤chlich verletzt.
 
 \begin{figure}[!ht]
 \centering
@@ -2109,11 +2109,11 @@ nachzulesen unter
 \hspace*{1.3cm}
 \href{http://www.nytimes.com/library/cyber/week/1210math.html}{\texttt{http://www.nytimes.com/library/cyber/week/1210math.html}}.
 \\[0.2cm]
-Dies zeigt, dass automatische Theorem-Beweiser durchaus nützliche Werkzeuge sein
-können.  Nichtdestoweniger  ist die Prädikatenlogik unentscheidbar und bisher sind 
-nur wenige offene mathematische  Probleme mit Hilfe von automatischen Beweisern gelöst
-worden.  Das wird sich vermutlich auch in der näheren Zukunft nicht 
-ändern.  \qed
+Dies zeigt, dass automatische Theorem-Beweiser durchaus nÃ¼tzliche Werkzeuge sein
+kÃ¶nnen.  Nichtdestoweniger  ist die PrÃ¤dikatenlogik unentscheidbar und bisher sind 
+nur wenige offene mathematische  Probleme mit Hilfe von automatischen Beweisern gelÃ¶st
+worden.  Das wird sich vermutlich auch in der nÃ¤heren Zukunft nicht 
+Ã¤ndern.  \qed
 
 
 %%% Local Variables: 

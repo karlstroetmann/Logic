@@ -1,52 +1,52 @@
 \section{Probleme der deklarativen Semantik}
 Der der \textsl{Prolog-System} zugrunde liegende Algorithmus sucht systematisch alle
-Antworten auf eine Anfrage.  Dass heißt aber nicht,
+Antworten auf eine Anfrage.  Dass heiÃŸt aber nicht,
 dass er auch alle Antworten  findet!   Das folgende Programm zeigt das Problem:
 \begin{verbatim}
     loop :- loop.
     loop.
 \end{verbatim}
-Wird dieses Programm geladen und wird anschließend versucht, das Ziel \texttt{loop} zu
-lösen, so liefert der Prolog-Interpreter die Meldung
+Wird dieses Programm geladen und wird anschlieÃŸend versucht, das Ziel \texttt{loop} zu
+lÃ¶sen, so liefert der Prolog-Interpreter die Meldung
 \begin{verbatim}
     ERROR: Out of local stack
 \end{verbatim}
 
-In manchen Fällen kann  das Problem der Nicht-Terminierung 
+In manchen FÃ¤llen kann  das Problem der Nicht-Terminierung 
  durch eine Umordnung der Programm-Klauseln umgangen werden.
-Hätten wir das obige Programm in  der Form
+HÃ¤tten wir das obige Programm in  der Form
 \begin{verbatim}
   loop.
   loop :- loop.
 \end{verbatim}
-eingegeben, so wäre das Problem der Endlos-Schleife nicht aufgetreten.  Leider gibt es bei
+eingegeben, so wÃ¤re das Problem der Endlos-Schleife nicht aufgetreten.  Leider gibt es bei
 komplexeren Programmen oft keine Anordnung der Klauseln, die das Problem der
-Endlos-Schleifen löst.  
+Endlos-Schleifen lÃ¶st.  
 
-Die handelsüblichen Prolog-Interpreter haben noch ein weiteres Problem: Die Unifikation,
-das heißt der Algorithmus zum Lösen syntaktischer Gleichungen, ist (aus Effizienzgründen)
+Die handelsÃ¼blichen Prolog-Interpreter haben noch ein weiteres Problem: Die Unifikation,
+das heiÃŸt der Algorithmus zum LÃ¶sen syntaktischer Gleichungen, ist (aus EffizienzgrÃ¼nden)
 nicht korrekt implementiert.  Wir erinnern noch einmal an die Regeln zur Reduktion
 syntaktischer Gleichungen.  Die erste dieser Regeln lautete:
 \begin{enumerate}
 \item Falls $y\in\mathcal{V}$ eine Variable ist, {\em die nicht in dem Term $t$ auftritt}, so
-      können wir die folgende Reduktion durchführen: \\[0.1cm]
+      kÃ¶nnen wir die folgende Reduktion durchfÃ¼hren: \\[0.1cm]
       \hspace*{2.1cm} $\Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \quad\leadsto\quad \Big\langle E[y \mapsto t], \sigma\big[ y \mapsto t \big] \Big\rangle$.
 \end{enumerate}
-In den handelsüblichen Prolog-Interpretern ist statt dieser Regel die folgende Regel
+In den handelsÃ¼blichen Prolog-Interpretern ist statt dieser Regel die folgende Regel
 implementiert:
 \begin{enumerate}
 \item[$1'$.] Falls $y\in\mathcal{V}$ eine Variable ist, so
-      können wir die folgende Reduktion durchführen: \\[0.1cm]
+      kÃ¶nnen wir die folgende Reduktion durchfÃ¼hren: \\[0.1cm]
       \hspace*{2.1cm} $\Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \quad\leadsto\quad \Big\langle E[y \mapsto t], \sigma\big[ y \mapsto t \big] \Big\rangle$.
 \end{enumerate}
 Was hier fehlt ist der Test {\em die nicht in dem Term $t$ auftritt}.  Dieser Test
-wird als \emph{Occur-Check} bezeichnet.  Mit der modifizierten Regel können wir eine
+wird als \emph{Occur-Check} bezeichnet.  Mit der modifizierten Regel kÃ¶nnen wir eine
 Reduktion der Form
 \\[0.1cm]
 \hspace*{1.3cm} $\langle \{ x \doteq f(x) \}, [] \rangle \;\leadsto\; \langle \emptyset, [ x \mapsto f(x) ] \rangle$ \\[0.1cm]
-durchführen.  Dies liefert aber ein falsches Ergebnis, denn offensichtlich ist die Substitution 
-$[x \mapsto f(x)]$ keine Lösung der syntaktischen Gleichung $x \doteq f(x)$.  
-Ein  Programm $\mathcal{P}$, wo dieser Fall tatsächlich auftritt, ist durch die beiden folgenden Klausel gegeben: 
+durchfÃ¼hren.  Dies liefert aber ein falsches Ergebnis, denn offensichtlich ist die Substitution 
+$[x \mapsto f(x)]$ keine LÃ¶sung der syntaktischen Gleichung $x \doteq f(x)$.  
+Ein  Programm $\mathcal{P}$, wo dieser Fall tatsÃ¤chlich auftritt, ist durch die beiden folgenden Klausel gegeben: 
 \begin{verbatim}
       bug :- equal(X, s(X)).
       equal(X,X).
@@ -54,7 +54,7 @@ Ein  Programm $\mathcal{P}$, wo dieser Fall tatsächlich auftritt, ist durch die 
 Betrachten wir das Ziel \texttt{bug}, so liefert Prolog hier die Antwort ``\texttt{yes}'', obwohl \\[0.1cm]
 \hspace*{1.3cm} $\mathcal{P} \not\models \mathtt{bug}$ \\[0.1cm]
 gilt.
-Bei Prolog bleibt es dem Programmierer überlassen sicherzustellen, dass dergleichen nicht 
+Bei Prolog bleibt es dem Programmierer Ã¼berlassen sicherzustellen, dass dergleichen nicht 
 passiert.
 
 %%% Local Variables: 
