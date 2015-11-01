@@ -1,0 +1,16 @@
+
+// Compute the set of primes recursively using the algorithm of Eratosthenes.
+// 
+allPrimes := procedure(numbers) {
+    if (numbers == []) {
+        return [];
+    }
+    first := numbers[1];
+    return [ first ] + allPrimes([ n : n in numbers[2..] | n % first != 0 ]);
+};
+n := 10000;
+startTime := now();
+primes := allPrimes([2 .. n]);
+stopTime := now();
+print(primes);
+print("computation took $stopTime - startTime$ milliseconds");

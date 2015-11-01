@@ -1,0 +1,42 @@
+// The function checkTrue receives tow parameters:
+//   * f is a function that takes one argument
+//   * x can be anything
+// The function call checkTrue(f, x) is suposed to return true if and only if the
+// function call f(x) returns true.  If f(x) does not return true or if the
+// computation of f(x) does not terminate, then checkTrue(f, x) returns false.
+checkTrue := procedure(f, x) {
+    // To do: implement some magic!
+};
+
+// The function turing receives one argument, which has to be a function.
+turing := procedure(f) {
+    return !checkTrue(f, f);
+};
+
+answer := turing(turing);
+
+
+/* Let us consider the function call checkTrue(turing, turing).  This function
+   call has to return either true or false.  We consider these cases individually:
+
+   1. Case: checkTrue(turing, turing) == true
+
+            Then turing(turing) == false.  But according to its specification,
+            checkTrue(turing, turing) should have returned false!
+         
+   2. Case: checkTrue(turing, turing) == false
+
+            Then turing(turing) == true.  But according to its specification
+            checkTrue(turing, turing) should have returned true!
+
+   As we have a contradiction in either case, the function checkTrue does not exist!
+*/
+
+// return true iff f(x) terminates, false otherwise
+halting := procedure(f, x) {
+    // To do: implement some magic!
+};
+
+checkTrue := procedure(f, x) {
+    return halting(f, x) == true;
+};
