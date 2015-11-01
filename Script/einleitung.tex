@@ -1,206 +1,141 @@
-\chapter{Einleitung}
-In diesem einführenden Kapitel möchte ich zunächst motivieren, warum wir in der Informatik
-nicht darum herum kommen uns mit den formalen Methoden der mathematischen Logik zu beschäftigen.
-Anschließend gebe ich einen Überblick über den Rest der Vorlesung.
+\chapter{Introduction}
+In this short Chapter, I would like to motivate why it is that you have to learn logic when you study computer
+science.  After that, I will give a short overview of the lecture.
 
 \section{Motivation}
-Informationstechnische Systeme 
-(im Folgenden kurz als IT-Systeme bezeichnet) gehören zu den komplexesten Systemen, welche
-die Menschheit je entwickelt hat.  Das lässt sich schon an dem Aufwand erkennen,
-der bei der Erstellung von IT-Systemen anfällt.  So sind im Bereich der Telekommunikations-Industrie
-IT-Projekte, bei denen mehr als 1000 Entwickler über mehrere Jahre zusammenarbeiten,
-die Regel.  Es ist offensichtlich, dass ein Scheitern solcher Projekte mit enormen
-Kosten verbunden ist.  Einige Beispiele mögen dies verdeutlichen.
+Modern software systems are among the most complex systems developed by mankind.  You can get a
+sense of the complexity of these systems if you look at the amount of work that is necessary to
+build and maintain complex software systems.  For example, in the telecommunication industry it is 
+quite common that software projects require more than a thousand developers to collaborate to
+develop a new system.  Obviously, the failure of a project of this size is very costly.
+The page
+\\[0.2cm]
+\hspace*{1.3cm}
+\href{http://spectrum.ieee.org/static/the-staggering-impact-of-it-systems-gone-wrong}{Staggering Impact of IT Systems Gone Wrong}
+\\[0.2cm]
+presents a number of examples showing big software projects that have failed and have subsequently caused huge
+financial losses.  These examples show that the development of complex software systems requires a high level
+of precision and diligence.  Hence, the development of software needs a solid scientific
+foundation.  Both mathematical logic and set theory are important parts of this foundation.
+Furthermore, both set theory and logic have immediate applications in computer science.
 \begin{enumerate}
-\item Am 9.~Juni 1996 stürzte die Rakete Ariane 5 auf ihrem Jungfernflug ab.
-      Ursache war ein Kette von Software-Fehlern:  Ein Sensor im Navigations-System
-      der Ariane 5 misst die horizontale Neigung und speichert diese zunächst als Gleitkomma-Zahl
-      mit einer Genauigkeit von 64 Bit ab.  Später wird dieser Wert dann in eine 
-      16 Bit Festkomma-Zahl konvertiert.
-      Bei dieser Konvertierung trat ein Überlauf ein, da die zu konvertierende Zahl
-      zu groß war, um als 16 Bit Festkomma-Zahl dargestellt werden zu können.
-      In der Folge gab das Navigations-System auf dem Datenbus, der dieses System mit
-      der Steuerungs-Einheit verbindet, eine Fehlermeldung aus.
-       Die Daten dieser Fehlermeldung wurden von der Steuerungs-Einheit als Flugdaten 
-      interpretiert.  Die Steuer-Einheit leitete daraufhin eine Korrektur des
-      Fluges ein, die dazu führte, dass die Rakete auseinander brach und die 
-      automatische Selbstzerstörung eingeleitet werden musste.
-      Die Rakete war mit 4 Satelliten beladen. Der wirtschaftliche Schaden, der durch den Verlust dieser
-      Satelliten entstanden ist, lag bei mehreren 100 Millionen Dollar.
-      
-      Ein vollständiger Bericht über die Ursache des Absturzes des Ariane 5 findet sich
-      im Internet unter der Adresse \\[0.1cm]
-      \hspace*{1.3cm} 
-      \href{http://www.ima.umn.edu/~arnold/disasters/ariane5rep.html}{\texttt{http://www.ima.umn.edu/\symbol{126}arnold/disasters/ariane5rep.html}}
-\item Die Therac 25 ist ein medizinisches Bestrahlungs-Gerät, das durch 
-      Software kontrolliert wird.  Durch  Fehler in dieser Software erhielten 1985
-      mindestens 6 Patienten eine Überdosis an Strahlung.  Drei dieser Patienten sind an den Folgen dieser 
-      Überdosierung gestorben, die anderen wurden schwer verletzt.
-
-      Einen detailierten Bericht über diese Unfälle finden Sie unter \\[0.1cm]
-      \hspace*{1.3cm} 
-      \href{http://courses.cs.vt.edu/~cs3604/lib/Therac_25/Therac_1.html}{\texttt{http://courses.cs.vt.edu/\symbol{126}cs3604/lib/Therac\_25/Therac\_1.html}}
-\item Im ersten Golfkrieg konnte eine irakische \textsl{Scud} Rakete von dem \textsl{Patriot} Flugabwehrsystem
-      aufgrund eines Programmier-Fehlers in der Kontrollsoftware des Flugabwehrsystems
-      nicht abgefangen werden.  28 Soldaten verloren dadurch ihr Leben, 100 weitere wurden
-      verletzt. \\[0.1cm]
-      \hspace*{1.3cm} 
-      \href{http://www.ima.umn.edu/~arnold/disasters/patriot.html}{\texttt{http://www.ima.umn.edu/\symbol{126}arnold/disasters/patriot.html}}
-\item Im Internet finden Sie unter \\[0.2cm]
-      \hspace*{0.0cm}
-      \href{http://www.computerworld.com/article/2515483/enterprise-applications/epic-failures--11-infamous-software-bugs.html}{\texttt{http://www.computerworld.com/\\
-      \hspace*{0.3cm}
-        article/2515483/enterprise-applications/epic-failures--11-infamous-software-bugs.html}}
-      \\[0.2cm]
-      eine Auflistung von schweren Unfällen, die auf Software-Fehler zurückgeführt werden konnten.
+\item Logic can be used to specify the interfaces of complex systems.  
+\item The correctness of digital circuits can be verified using automatic theorem provers.
+\item Set theory and the theory of relations is the foundation of the theory of relational databases.
 \end{enumerate}
-Diese Beispiele zeigen, dass bei der Konstruktion von IT-Systemen mit großer Sorgfalt
-und Präzision gearbeitet werden sollte.  Die Erstellung von IT-Systemen muss auf einer 
-wissenschaftlich fundierten Basis erfolgen, denn nur dann ist es möglich, die Korrekheit
-solcher Systeme zu \emph{verifizieren}, also mathematisch zu beweisen.
-Diese wissenschaftliche Basis für die Entwicklung von IT-Systemen ist die Informatik, 
-und diese hat ihre Wurzeln in der mathematischen Logik.  Zur präzisen Definition der
-Bedeutung logischer Formeln benötigen wir die Mengenlehre, die in der Mathematik-Vorlesung
-vorgestellt wird.  Daher sind die Logik und die Mengenlehre die beiden Gebiete, mit denen 
-Informatiker sich zu Beginn Ihres Studiums beschäftigen.  Sowohl die Mengenlehre als auch die Logik
-haben unmittelbare praktische Anwendungen in der Informatik.
-\begin{enumerate}
-\item Die Schnittstellen komplexer Systeme können mit Hilfe logischer Formeln
-      exakt spezifiziert werden.  Spezifikationen, die mit Hilfe natürlicher Sprache
-      erstellt werden, haben gegenüber formalen Spezifikationen den Nachteil,
-      dass sie oft mehrdeutig sind.
-\item Die korrekte Funktionsweise digitaler Schaltungen kann mit Hilfe automatischer
-      Beweiser verifiziert werden.  
-\item Die Mengenlehre und die damit verbundene Theorie der Relationen bietet die Grundlage
-      der Theorie der relationalen Datenbanken.  
-\end{enumerate}
-Die obige Auflistung ließe sich leicht fortsetzen, aber
-neben den unmittelbaren Anwendungen von Logik und Mengenlehre hat die Beschäftigung mit
-diesen beiden Gebiete noch eine andere, sehr wichtige Funktion:
-Ohne die Einführung geeigneter Abstraktionen sind komplexe Systeme nicht beherrschbar.
-Kein Mensch ist in der Lage, alle Details eines Software-Systems, dass aus mehreren
-$100\,000$ Programm-Zeilen besteht, zu verstehen.   Die einzige Chance um ein solches
-System zu beherrschen besteht in der Einführung geeigneter Abstraktionen.
-Daher gehört ein überdurchschnittliches Abstraktionsvermögen zu den wichtigsten Werkzeugen
-eines Informatikers.  Die Beschäfigung mit Logik und Mengenlehre trainiert gerade dieses
-abstrakte Denkvermögen. 
+It is easy to extend this enumeration.  However, besides their immediate applications, 
+there is another reason you have to study both logic and set theory: Without the proper use of
+\colorbox{yellow}{abstractions}, complex software systems cannot be managed.  After all, nobody is able to keep
+millions of lines of program code in his head.  The only way to control a software system of this
+size is to introduce the right abstractions and to develop the system in layers.  Hence, the ability
+to work with abstract concepts is one of the main virtues of a modern computer scientist.  As logic
+and set theory are already abstract concepts, engaging students with logic and set theory trains
+their abilities to work with abstract concepts.
 
-% Schließlich gibt es für Sie noch einen sehr gewichtigen Grund, sich intensiv mit Logik und
-% Mengenlehre zu beschäftigen, den ich Ihnen nicht verschweigen möchte:  Es handelt sich
+% Schlie\3lich gibt es f\"{u}r Sie noch einen sehr gewichtigen Grund, sich intensiv mit Logik und
+% Mengenlehre zu besch\"{a}ftigen, den ich Ihnen nicht verschweigen m\"{o}chte:  Es handelt sich
 % dabei um die Klausur am Ende des ersten Semesters!  
 
-Aus meiner Erfahrung weiß ich, dass einige der Studenten sich unter dem Thema Informatik etwas Anderes
-vorgestellt haben als die Diskussion abstrakter Konzepte.  Für diese Studenten ist die Beherrschung
-einer Programmiersprache und einer dazugehörigen Programmierumgebung das Wesentliche der Informatik.
-Natürlich ist die Beherrschung einer Programmiersprache für einen Informatiker unabdingbar.  Sie
-sollten sich allerdings darüber im klaren sein, dass das damit verbundene Wissen sehr vergänglich
-ist, denn niemand kann Ihnen heute sagen, in welcher Programmiersprache Sie in 10 Jahren programmieren werden.
-Im Gegensatz dazu sind die mathematischen Grundlagen der Informatik wesentlich beständiger.
+From my past teaching experience I know that many students think that a good programmer already is a
+good computer scientist.  However, a good programmer need not be a scientist, while a 
+\colorbox{yellow}{computer \colorbox{red}{scientist}}, by its very name, is a
+\colorbox{red}{scientist}.  There is no denying that mathematics in general and 
+logic in particular is an important part of science, so you should master it.  Furthermore, this
+part of your education is much more permanent than the knowledge of a particular programming
+language.  Nobody knows which programming language will be en vogue in 10 years from now.  In three
+years, when you start your professional career, quite a lot of you will have to learn a new
+programming language.  What will count then will be much more your ability to quickly grasp new
+concepts rather than your skills in a particular programming language.
 
-
-\section{Überblick über den Inhalt der Vorlesung} 
-Die erste Informatik-Vorlesung legt die Grundlagen, die für das weitere Studium
-der Informatik benötigt werden.  Bei der Diskussion dieser Grundlagen werden wir uns in dieser
-Vorlesung auf die Logik konzentrieren, denn die Mengenlehre ist bereits Gegenstand der
-Mathematik-Vorlesung.  Daher ist diese Vorlesung wie folgt aufgebaut:
+\section{Overview} 
+The first lecture in theoretical computer science creates the foundation that is needed for future lectures.
+As set theory is already covered in the lecture on linear algebra, this lecture deals mostly with logic.
+Hence, this lecture is structured as follows.
 \begin{enumerate}
-\item Die Programmier-Sprache \textsc{SetlX}.
+\item We begin with the programming language \textsc{SetlX}.
 
       \href{http://randoom.org/Software/SetlX}{\textsc{SetlX}} (\underline{set} \underline{l}anguage
-      e\underline{x}tended) ist eine \emph{mengenbasierte} 
-      Programmiersprache, in der dem Programmierer die Operationen der Mengenlehre zur
-      Verfügung gestellt werden.  Zusätzlich unterstützt die Sprache \emph{funktionales Programmieren}.
-      Da \textsc{SetlX} mengenbasiert ist, ist es einfach möglich,  Algorithmen in der Sprache der
-      Mengenlehre zu formulieren.  Eine solche Formulierung ist oft sowohl klarer als auch kürzer
-      als die Implementierung des Algorithmus in einer klassischen Programmier-Sprache wie
-      beispielsweise \texttt{C} oder \textsl{Java}.  Daher diskutiert das zweite Kapitel die Sprache
-      \textsc{SetlX}.  In den folgenden Kapitel werden wir \textsc{SetlX} zur Implementierung
-      verschiedener Algorithmen verwenden.
-\item Grenzen der Berechenbarkeit.
+      e\underline{x}tended) is a programming language that is based on set theory.  This language
+      makes the tools of set theory available to the programmer as it supports the data structure of
+      sets and most of the operations that are used in set theory.  As \textsc{SetlX} is set based,
+      it is very easy to implement set theoretical algorithms in \textsc{SetlX}.  We will see in the
+      coming lectures that many algorithms from theoretical computer science have a very concise
+      and clear implementation in \textsc{SetlX}.  Hence, the second chapter introduces \textsc{SetlX}.
+\item Next, we investigate the limits of computability.
 
-      Jeder Informatiker sollte wissen, dass bestimmte Probleme nicht algorithmisch entscheidbar
-      sind.  Beispielsweise ist die Frage, ob ein gegebenes Programm mit einer vorgegebenen Eingabe
-      irgendwann anhält und eine Ergebnis liefert, oder ob es unendlich lange rechnen würde,
-      unentscheidbar.  Diese Frage wird auch als das \emph{Halte-Problem} bezeichnet.
-      Dieses Problem ist unentscheidbar, was wir im dritten Kapitel beweisen werden.
-\item Aussagen-Logik.
+      For certain problems there is no algorithm that can solve the problem algorithmically. 
+      For example, the question whether a given program will terminate for a given input is not
+      decidable.  This is known as the \colorbox{yellow}{\emph{halting problem}}.  We will prove the undecidability of
+      the halting problem in the third chapter. 
+\item The fourth chapter discusses \emph{propositional logic}.
 
-      Die Theorie der Logik unterscheidet zwischen \emph{Aussagen-Logik} und
-      \emph{Prädikaten-Logik}.  Die Aussagen-Logik untersucht nur die Junktoren 
+      In logic, we distinguish between  \emph{propositional logic},
+      \emph{first order logic}, and \emph{higher order logic}.  Propositional logic is only
+      concerned with the \emph{logical connectives}
       \\[0.2cm]
       \hspace*{1.3cm}
       ``$\neg$'', ``$\wedge$'', ``$\vee$'', ``$\rightarrow$'' und ``$\leftrightarrow$'',
       \\[0.2cm]
-      während die Prädikaten-Logik zusätzlich noch die Quantoren
+      while first-order logic also investigates the quantifiers
       \\[0.2cm]
       \hspace*{1.3cm}
-      ``$\forall$'' und ``$\exists$''
+      ``$\forall$'' and ``$\exists$'',
       \\[0.2cm]
-      betrachtet. Wir wenden uns im vierten  Kapitel zunächst der \emph{Aussagen-Logik}
-      zu.  Die Handhabung  aussagenlogischer Formeln ist einfacher als die 
-      Handhabung prädikatenlogischer Formeln.  Daher bietet sich die Aussagen-Logik als
-      Trainings-Objekt an um mit den Methoden der Logik vertraut zu werden.  Die Aussagen-Logik hat
-      gegenüber der Prädikaten-Logik noch einen weiteren Vorteil: Sie ist \emph{entscheidbar}, d.h.~wir
-      können ein Programm schreiben, das als Eingabe eine aussagenlogische Formel verarbeitet und welches
-      dann entscheidet, ob diese Formel allgemeingültig ist.  Es ist hingegen nicht möglich, ein Programm zu
-      erstellen, das für eine prädikatenlogische Formel entscheiden kann, ob diese allgemeingültig ist.
+      where these quantifiers range over the objects of the \emph{domain of discourse}.
+      Finally, in \emph{higher order logic} the quantifiers also range over functions and predicates.
 
-      Ein weiteres Argument, sich zunächst mit der Aussagenlogik zu beschäftigen liefern die Anwendungen
-      der Aussagenlogik:  Es gibt in der Praxis eine Reihe von Problemen, die
-      bereits mit Hilfe der Aussagenlogik gelöst werden können.  Beispielsweise lässt sich die Frage nach der
-      Korrektheit kombinatorischer digitaler Schaltungen auf die Entscheidbarkeit einer aussagenlogischen
-      Formel zurückführen.  Außerdem gibt es eine Reihe kombinatorischer Probleme, die sich auf
-      aussagenlogische Probleme reduzieren lassen.  Als ein Beispiel zeigen wir, wie sich das
-      8-Damen-Problem mit Hilfe der Aussagenlogik lösen lässt.
-\item Prädikaten-Logik.
+      As propositional logic is easier to grasp than first-order logic, we start our investigation
+      of logic with propositional logic.  Furthermore, propositional logic has the advantage of
+      being decidable:  We will present an algorithm that can check whether a propositional formula
+      is universally valid.  In contrast to propositional logic, first-order logic is not decidable.
 
-      Im fünften Kapitel behandeln wir die Prädikatenlogik und analysieren den Begriff
-      des prädikatenlogischen Beweises mit Hilfe eines \emph{Kalküls}.  Ein
-      \emph{Kalkül} ist dabei ein formales Verfahren, einen mathematischen Beweis zu führen.
-      Ein solches Verfahren lässt sich programmieren.  Wir stellen zu diesem Zweck den 
-      \emph{Resolutions-Kalkül} vor, mit dem sich Beweise führen lassen.
-      Dieser Kalkül ist die Grundlage verschiedener Verfahren zum automatischen Beweisen.
+      Next, we discuss applications of propositional logic:  We will show how the \emph{8 queens problem} 
+      can be reduced to propositional logic and we will then solve this problem using propositional logic.
+\item We continue to discuss first-order logic.
 
-      Als Anwendungen der Prädikaten-Logik werden wir schließlich die Systeme \textsl{Prover9} und
-      \textsl{Mace4} diskutieren.  Bei \textsl{Prover9} handelt es sich um einen automatischen
-      Beweiser, während \textsl{Mace4} eine Programm ist, das dazu benutzt werden kann, ein
-      Gegenbeispiel für eine mathematische Vermutung zu finden.
+      The most important concept of the fifth chapter will be the notion of a \emph{formal proof} in
+      first order logic.  To this end, we introduce a \emph{formal proof system} that is
+      \colorbox{red}{complete} for first order logic.  \emph{Completeness} means that we will develop an
+      algorithm that can \emph{prove} the correctness of every first-order formula that is
+      universally valid.  This algorithm is the foundation of automated theorem proving.
 
-\item Verifikation von Programmen.
+      As an application of theorem proving we discuss the systems \textsl{Prover9} and
+      \textsl{Mace4}.  \textsl{Prover9} is an automated theorem prover, while \textsl{Mace4} can be
+      used to refute a mathematical conjecture.
 
-      Die Korrektheit eines Programms lässt sich mathematisch nachweisen.  Wir stellen hier drei
-      verschiedene Methoden vor: Der Hoare-Kalkül und die Methode der symbolischen
-      Programm-Ausführung eignen sich zur Verifikation \emph{iterativer} Prozeduren.  (Iterative
-      Programme sind Programme, die hauptsächlich mit Hilfe von Schleifen arbeiten.)
-      Demgegenüber ist die Methode der Wertverlaufs-Induktion besser geeignet um die Korrektheit
-      \emph{rekursiver} Funktionen nachzuweisen.
+\item The last chapter deals with program verification.
+
+      The correctness of programs can be verified mathematically.  We will discuss two methods in
+      this lecture: \emph{Computational induction} can be used to verify the correctness of
+      recursive procedures, while \emph{symbolic execution} can be used to verify the correctness of
+      iterative procedures. (An iterative procedure uses loops instead of recursion.)
 \end{enumerate}
-\pagebreak
+
 
 \remark
-Zum Schluss möchte ich hier noch ein Paar Worte zum Gebrauch von neuer und alter
+Zum Schluss m\"{o}chte ich hier noch ein Paar Worte zum Gebrauch von neuer und alter
 Rechtschreibung und der Verwendung von Spell-Checkern in diesem Skript sagen.
 Dieses Skript wurde unter Verwendung strengster wirtschaftlicher Kriterien
-erstellt.  Im Klartext heißt das: Zeit ist Geld und als Dozent an der DHBW hat man
+erstellt.  Im Klartext hei\3t das: Zeit ist Geld und als Dozent an der DHBW hat man
 weder das eine noch das andere.  Daher ist es sehr wichtig zu wissen, wo eine
-zusätzliche Investition von Zeit noch einen für die Studenten nützlichen Effekt
+zus\"{a}tzliche Investition von Zeit noch einen f\"{u}r die Studenten n\"{u}tzlichen Effekt
 bringt und wo dies nicht der Fall ist.  Ich habe mich an aktuellen
 Forschungs-Ergebnissen zum Nutzen der Rechtschreibung orientiert. Diese zeigen,
 dass es nicht wichtig ist, in welcher Reihenfolge die Bcushatebn in eniem Wrot
 setehn, das eniizge was wihtcig ist, ist dass der esrte und der ltzete Bcusthabe
-an der rcihitgen Psoiiton sthet. Der Rset knan ein ttolaer Böldisnn sien,
+an der rcihitgen Psoiiton sthet. Der Rset knan ein ttolaer B\"{o}ldisnn sien,
 trtodzem knan man ihn onhe Porbelme lseen. Das ist so, wiel wir nciht jdeen
 Buhctsaben eniezln lseen, snoedrn das Wrot als gseatmes.  Wie sie sheen, ist das
-tastcähilch der Flal. $\displaystyle\smiley$
+tastc\"{a}hilch der Flal. $\displaystyle\smiley$
 
-Nichtsdestotrotz möchte ich Sie darum bitten, mir Tipp- und sonstige Fehler, die Ihnen in diesem
+Nichtsdestotrotz m\"{o}chte ich Sie darum bitten, mir Tipp- und sonstige Fehler, die Ihnen in diesem
 Skript auffallen, per Email an
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{karl.stroetmann@dhbw-mannheim.de}
 \\[0.2cm]
 zu melden.  Es bringt nichts, wenn Sie mir diese Fehler nach der
-Vorlesung mitteilen, denn bis ich dazu komme, die Fehler zu korrigieren, habe ich längst vergessen,
+Vorlesung mitteilen, denn bis ich dazu komme, die Fehler zu korrigieren, habe ich l\"{a}ngst vergessen,
 was das Problem war.
 
 %%% Local Variables: 
