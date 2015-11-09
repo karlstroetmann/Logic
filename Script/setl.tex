@@ -1627,32 +1627,48 @@ liefert als Ergebnis die $n$-malige Verkettung von $s$.  Beispielsweise ist das 
 \\[0.2cm]
 der String \squote{abcabcabc}.
 
-\section{Fallstudie: Berechnung von Wahrscheinlichkeiten}
-Wir wollen in diesem kurzen Abschnitt zeigen, wie sich Wahrscheinlichkeiten f\"{u}r die Poker-Variante
-\textsl{Texas Hold'em} berechnen lassen.  Bei dieser Poker-Variante gibt es insgesamt 52 Karten. Jeder
-dieser Karten hat eine Farbe, die ein Element der Menge
+\section{Case Study: Computation of Poker Probabilities}
+In this short section we are going to show how to compute probabilities for the
+\href{https://en.wikipedia.org/wiki/Texas_hold_%27em}{\textsl{Texas Hold'em}} variation of 
+\href{https://en.wikipedia.org/wiki/Poker}{poker}.   Texas Hold'em poker is played with a deck of 52
+cards.  Every card has a \emph{value}.  The value is an element of the set
 \\[0.2cm]
-\hspace*{1.3cm} $\textsl{suits} = \{ \club, \heart, \diamondsuit, \spade \}$
+\hspace*{1.3cm} 
+$\textsl{values} = \{ 2, 3, 4, 5, 6, 7, 8, 9, 10, \textsl{Jack}, \textsl{Queen}, \textsl{King}, \textsl{Ace} \}$.
 \\[0.2cm]
-ist und au\3erdem einen Wert hat, der ein Element der Menge
+Furthermore, every card has a \emph{suit}.  The suit is an element of the set
 \\[0.2cm]
-\hspace*{1.3cm} $\textsl{values} = \{ 2, 3, 4, 5, 6, 7, 8, 9, 10, \textsl{Jack}, \textsl{Queen},
-\textsl{King}, \textsl{Ace} \}$
+\hspace*{1.3cm} 
+$\textsl{suits} = \{ \club, \heart, \diamondsuit, \spade \}$.
 \\[0.2cm]
-ist.  Die einzelnen Karten k\"{o}nnen dann mathematisch als Paare dargestellt werden.  Die gesamte Menge von
-Karten w\"{a}re dann beispielsweise wie folgt gegeben:
+Hence, a card can be represented as a pair $\pair(v,s)$, where $v$ denotes the value while $s$ is
+the suit of the card.  Hence, the set of all cards can be represented as the set
 \\[0.2cm]
 \hspace*{1.3cm} 
 $\textsl{deck} = \{ \pair(v,s) \mid v \in \textsl{values} \wedge \textsl{s} \in \textsl{suits} \}$.
 \\[0.2cm]
-Jeder Spieler bekommt zun\"{a}chst zwei Karten.  Diese beiden Karten werden als \emph{Preflop}
-oder \emph{Hole} bezeichnet.  Nach einer Bietphase werden anschlie\3end drei weitere
-Karten, der sogenannte \textsl{Flop}, auf den Tisch gelegt.  Wir nehmen an, dass ein Spieler zun\"{a}chst die
-Karten $\{ \pair(3, \club), \pair(3, \spade) \}$ bekommen hat und nun wissen m\"{o}chte, wie gro\3 die
-Wahrscheinlichkeit daf\"{u}r ist, dass beim Flop eine weitere 3 auf den Tisch gelegt wird.
-Um diese Wahrscheinlichkeit zu berechnen, muss der Spieler die Anzahl aller Flops, bei denen eine weitere
-3 erscheinen kann, durch die gesamte Anzahl der Flops teilen.  Das in Abbildung \ref{fig:poker-triple.stlx}
-gezeigte Programm f\"{u}hrt diese Berechnung durch.
+At the start of a game of Texas Hold'em, every player receives two cards.  These two cards are known
+as \emph{preflop} or \emph{hole}.  Next, there is a bidding phase where players can bet on their
+cards.   After this bidding phase, the dealer puts three cards on the table.  These three cards are
+known as \emph{flop}.  Let us assume that a player has been dealt the set of cards
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{ \pair(3, \club), \pair(3, \spade) \}$.
+\\[0.2cm]
+This set of cards is known as a pocket pair.  Then the player would like to know the probability
+that the flop will contain another card with value $3$, as this would greatly increase her chance of
+winning the game.  In order to compute this probability we have to compute the number of possible
+flops that contain a card with value $3$ and we have to divide this number by the number of all
+possible flops:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds \frac{\;\mbox{number of flops containing a card with value $3$}\;}{\mbox{number of all possible flops}}$
+\\[0.2cm]
+The program
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/poker-triple.stlx}{poker-triple.stlx}
+shown in Figure \ref{fig:poker-triple.stlx} performs this computation.  We proceed to discuss this
+program line by line.
+
 
 \begin{figure}[!ht]
 \centering
@@ -1664,13 +1680,12 @@ gezeigte Programm f\"{u}hrt diese Berechnung durch.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-    suits  := { "c", "h", "d", "s" };
     values := { "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A" }; 
+    suits  := { "c", "h", "d", "s" };
     deck   := { [ v, s ] : v in values, s in suits };
     hole   := { [ "3", "c" ], [ "3", "s" ] };
     rest   := deck - hole;
     flops  := { { k1, k2, k3 } : k1 in rest, k2 in rest, k3 in rest | #{ k1, k2, k3 } == 3 };
-    print(#flops);
     trips  := { f : f in flops | [ "3", "d" ] in f || [ "3", "h" ] in f };
     print(1.0 * #trips / #flops);
 \end{Verbatim}
@@ -1680,72 +1695,64 @@ gezeigte Programm f\"{u}hrt diese Berechnung durch.
 \end{figure}
 
 \begin{enumerate}
-\item In Zeile 1 definieren wir die Menge \texttt{suits} der Farben einer Karte.
-      Dabei werden die folgenden Abk\"{u}rzungen verwendet:
+\item In line 1 the set \texttt{values} is defined to be the set of all possible values that a card
+      can take.  In defining this set we have made use of the following abbreviations:
       \begin{enumerate}
-      \item ``\texttt{c}'' steht f\"{u}r $\club$, (Englisch: \emph{club}),
-      \item ``\texttt{h}'' steht f\"{u}r $\heart$, (Englisch: \emph{heart}), 
-      \item ``\texttt{d}'' steht f\"{u}r $\diamondsuit$, (Englisch: \emph{diamond}) und
-      \item ``\texttt{s}'' steht f\"{u}r $\spade$, (Englisch: \emph{spade}). 
-      \end{enumerate} 
-\item In Zeile 2 definieren wir die Menge \texttt{values} der m\"{o}glichen Werte einer
-      Karte.  Dabei wurden die folgenden Abk\"{u}rzungen verwendet:
-      \begin{enumerate}
-      \item ``\texttt{T}'' steht f\"{u}r ``\emph{Ten}'',
-      \item ``\texttt{J}'' steht f\"{u}r ``\emph{Jack}'',
-      \item ``\texttt{Q}'' steht f\"{u}r ``\emph{Queen}'',
-      \item ``\texttt{K}'' steht f\"{u}r ``\emph{King}'' und
-      \item ``\texttt{A}'' steht f\"{u}r ``\emph{Ace}''.
+      \item ``\texttt{T}'' is short for ``\emph{Ten}'',
+      \item ``\texttt{J}'' is short for ``\emph{Jack}'',
+      \item ``\texttt{Q}'' is short for ``\emph{Queen}'',
+      \item ``\texttt{K}'' is short for ``\emph{King}'', and
+      \item ``\texttt{A}'' is short for ``\emph{Ace}''.
       \end{enumerate}
-\item In Zeile 3 stellen wir die Menge aller Karten, die wir mit \texttt{deck} bezeichnen,
-      als Menge von Paaren dar, wobei die erste Komponente der Paare den Wert und die zweite Komponente 
-      die Farbe der Karte angibt.
-\item Die in Zeile 4 definierte Menge \texttt{hole} stellt die Menge der Karten des Spielers dar.
-\item Die verbleibenden Karten bezeichnen wir in Zeile 5 als \texttt{rest}.
-\item In Zeile 6 berechnen wir die Menge aller m\"{o}glichen Flops.  Da die Reihenfolge der Karten im
-      Flop keine Rolle spielt, verwenden wir zur Darstellung der einzelnen Flops eine Menge.
-      Dabei m\"{u}ssen wir aber darauf achten, dass der Flop auch wirklich aus drei
-      \underline{verschiedenen}  Karten besteht.  Dazu m\"{u}ssen wir fordern, dass die Ungleichungen
+\item In line 2 the set \texttt{suits} represents the possible suits of a card.  Here, we have used
+      the following abbreviations:
+      \begin{enumerate}
+      \item ``\texttt{c}'' is short for $\club$, which is pronounced as \emph{club},
+      \item ``\texttt{h}'' is short for $\heart$, which is pronounced as \emph{heart}, 
+      \item ``\texttt{d}'' is short for $\diamondsuit$, which is pronounced as \emph{diamond}, and 
+      \item ``\texttt{s}'' is short for $\spade$, which is pronounced as \emph{spade}. 
+      \end{enumerate} 
+\item Line 3 defines the set of all cards.  This set is stored as the variable \texttt{deck}.  Every
+      card is represented as a pair $[v,s]$. Here, $v$ is the value of the card, while $s$ is its suit.
+\item Line 4 defines the set \texttt{hole}.  This set represents the two cards dealt to the player.
+\item The remaining cards are defined as the variable  \texttt{rest} in line 5.
+\item Line 6 computes the set of all possible flops.  Since the order of the cards in the flop does
+      not matter, we use sets to represent these flops.  However, we have to take care that the flop
+      does contain three \colorbox{red}{different} cards.  Hence, we have to ensure that the three
+      cards \texttt{k1}, \texttt{k2}, and \texttt{k3} that make up the flop satisfy the inequalities 
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{k1} \not= \mathtt{k2}$, \quad 
-      $\mathtt{k1} \not= \mathtt{k3}$  \quad und \quad
-      $\mathtt{k2} \not= \mathtt{k3}$
+      $\mathtt{k1} \not= \mathtt{k2}$, \quad $\mathtt{k1} \not= \mathtt{k3}$,  \quad and \quad $\mathtt{k2} \not= \mathtt{k3}$.
       \\[0.2cm]
-      erf\"{u}llt sind.  Dies ist aber genau dann der Fall, wenn die Menge
-      $\{ \mathtt{k1}, \mathtt{k2}, \mathtt{k3} \}$ aus genau drei Elementen besteht.
-      Daher haben wir bei der Auswahl von \texttt{k1}, \texttt{k2} und \texttt{k3} die Bedingung
+      However, these inequalities are satisfied if and only if the set 
+      $\{ \mathtt{k1}, \mathtt{k2}, \mathtt{k3} \}$ contains exactly three elements.  Hence, when
+      choosing \texttt{k1}, \texttt{k2}, and \texttt{k3} we have to make sure that the condition
       \\[0.2cm]
       \hspace*{1.3cm}
       \texttt{\# \{ k1, k2, k3 \} == 3 }
       \\[0.2cm]
-      zu beachten.
-\item Die Teilmenge der Flops, in denen mindestens eine weitere 3 auftritt, wird in Zeile 8
-      berechnet.  Beachten Sie dass es sich dabei nur um die Karten ``$\diamondsuit 3$'' und
-      ``$\heart 3$'' handeln kann, denn die anderen beiden Karten mit dem Wert $3$ befinden sich bereits
-      beim Spieler.
-\item Schlie\3lich berechnet sich die Wahrscheinlichkeit f\"{u}r eine 3 im Flop als das Verh\"{a}ltnis der 
-      Anzahl der g\"{u}nstigen F\"{a}lle zu der Anzahl der m\"{o}glichen F\"{a}lle.  Wir m\"{u}ssen also nur die Anzahl
-      der Elemente der entsprechenden Mengen ins Verh\"{a}ltnis setzen.  
+      holds.
+\item Line 7 computes the subset of flops that contain at least one more card with the value 3.
+      As the 3 of clubs and the 3 of spades have already been dealt to the player, the only cards
+      with value 3 that are left are the 3 of diamonds and the 3 of hearts.
+\item Finally, the probability for obtaining another card with value 3 in the flop is computed as
+      the ratio of the number of flops containing a card with value 3 to the number of all possible flops.
 
-      Hier gibt es aber noch eine Klippe, die umschifft werden muss: Da die Auswertung der Ausdr\"{u}cke
-      \texttt{\#trips} und \texttt{\#flops} ganze Zahlen als Ergebnis liefert, ist das Resultat der Division
-      \texttt{\#trips / \#flops} eine rationale Zahl.
-      Daher ist es erforderlich, zun\"{a}chst eine der beiden Zahlen in eine Flie\3komma-Zahl zu konvertieren,
-      damit der Quotienten als Flie\3komma-Zahl berechnet wird.  Dies k\"{o}nnen wir beispielsweise dadurch
-      erreichen, dass wir den Dividenden \texttt{\#trips} mit der Flie\3komma-Zahl $1.0$
-      multiplizieren.
+      However, we have to be careful here:  The evaluation of the expressions
+      \texttt{\#trips} and \texttt{\#flops} produces integer numbers.  Therefore, the division
+      \texttt{\#trips / \#flops} yields a rational number.  As we intend to compute a floating point
+      number we have to convert the result into a floating point number by multiplying the result
+      with the floating point number $1.0$.
 \end{enumerate}
-Lassen wir das Programm laufen, so sehen wir, dass die Wahrscheinlichkeit, ein
-Pocket-Paar im Flop auf Trips zu verbessern, bei etwa $11,8\%$ liegt.
-\vspace*{0.1cm}
+When we run the program we see that the probability of improving a pocket pair on the flop to trips
+is about  $11.8\%$.
 
-\noindent
-\textbf{Bemerkung}:  Die Berechnung von Wahrscheinlichkeiten ist in der oben dargestellten
-Weise nur dann m\"{o}glich, wenn die im Laufe der Berechnung auftretenden Mengen so klein
-sind, dass sie sich explizit im Rechner darstellen lassen.  Wenn diese Voraussetzung nicht
-mehr erf\"{u}llt ist, k\"{o}nnen die gesuchten Wahrscheinlichkeiten mit Hilfe der im zweiten Semester
-vorgestellten \emph{Monte-Carlo-Methode} berechnet werden.
+\remarkEng
+The method to compute probabilities that has been sketched above only works if the sets that have to
+be computed are small enough to be retained in memory.  If this condition is
+not satisfied we can use the \href{https://en.wikipedia.org/wiki/Monte_Carlo_method}{\emph{Monte Carlo method}} 
+to compute the probabilities instead.  This method will be discussed in the lecture on algorithms
+and their complexities. 
 
 
 \section{Fallstudie: Berechnung von Pfaden}
