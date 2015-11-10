@@ -2144,15 +2144,17 @@ In den meisten F\"{a}llen sind wird gar nicht daran interessiert, alle m\"{o}gli
 zwischen allen Punkten zu berechnen, das w\"{a}re n\"{a}mlich viel zu aufwendig, sondern wir
 wollen nur zwischen zwei gegebenen Punkten 
 eine Verbindung finden.  Abbildung \ref{fig:find-path} zeigt die Implementierung einer
-Prozedur $\texttt{reachable}(x, y, r)$, die \"{u}berpr\"{u}ft, ob es in dem Graphen $r$ eine
+Prozedur $\texttt{findPath}(x, y, r)$, die \"{u}berpr\"{u}ft, ob es in dem Graphen $r$ eine
 Verbindung von $x$ nach $y$ gibt und die diese Verbindung berechnet.  Das vollst\"{a}ndige
 Programm finden Sie in der Datei
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/find-path.stlx}{\texttt{find-path.stlx}}.
-Wir diskutieren nun die Implementierung der Prozedur \texttt{reachable}.
+Wir diskutieren nun die Implementierung der Prozedur \texttt{findPath}.
 \begin{enumerate}
 \item In Zeile 2 initialisieren wir $p$ so, dass zun\"{a}chst nur der Pfad der L\"{a}nge 0,
       der mit dem Punkt $x$  startet, in $p$ liegt.
-\item In Zeile 6 selektieren wir die Pfade aus $p$, die zum Ziel $y$ f\"{u}hren.
+\item In Zeile 5 versuchen wir, die Pfade, die wir bereits berechnet haben, mit Hilfe der Relation
+      $r$ zu verl\"{a}ngern.  Dabei erhalten wir gegebenenfalls neue Pfade.
+\item In Zeile 6 selektieren wir aus allen diesen Pfaden die Pfade aus, die zum Ziel $y$ f\"{u}hren.
 \item Wenn wir dann in Zeile 7 feststellen, dass wir einen solchen Pfad berechnet haben,
       geben wir einen dieser Pfade in Zeile 8 zur\"{u}ck.
 \item Falls es nicht gelingt einen solchen Pfad zu berechnen und wir keine neuen
@@ -2172,7 +2174,7 @@ Wir diskutieren nun die Implementierung der Prozedur \texttt{reachable}.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    reachable := procedure(x, y, r) {
+    findPath := procedure(x, y, r) {
         p := { [x] };
         while (true) {
             oldP  := p;
@@ -2190,119 +2192,115 @@ Wir diskutieren nun die Implementierung der Prozedur \texttt{reachable}.
 \vspace*{-0.3cm}
 \caption{Berechnung aller Verbindungen zwischen zwei Punkten}  
 \label{fig:find-path}
-\end{figure} %\$
+\end{figure}
 
-\subsection{Der Bauer mit dem Wolf, der Ziege und dem Kohl}
-Wir pr\"{a}sentieren nun eine betriebswirtschaftliche Anwendung des oben entwickelten Algorithmus und
-betrachten folgendes Problem.
+\subsection{The Wolf, the Goat, and the Cabbage}
+Next, we present an application of the theory developed so far.  We show how to solve a problem from
+agricultural economy.  The puzzle we want to solve is known as the 
+\href{http://jeux.lulu.pagesperso-orange.fr/html/anglais/loupChe/loupChe1.htm}{wolf-goat-cabbage puzzle}:  
 \vspace*{0.3cm}
 
 \begin{minipage}[c]{14cm}
 {\sl
-Ein Agrar\"{o}konom will mit einem Wolf, einer Ziege und einem Kohl \"{u}ber einen Fluss \"{u}bersetzen, um
-diese als Waren auf dem Markt zu verkaufen.
-Das Boot ist aber so klein, dass er nicht mehr als zwei Waren gleichzeitig mitnehmen kann.
-Wenn der Bauer den Wolf mit der Ziege allein l\"{a}sst, dann frisst der Wolf die Ziege und wenn er die
-Ziege mit dem Kohl allein l\"{a}sst, dann frisst die Ziege den Kohl. }
+An agricultural economist has to sell a wolf, a goat, and a cabbage on a market place.  In order to
+reach the market place, he has to cross a river.  The boat that he can use is so small that it can
+only accommodate either the goat, the wolf, or the cabbage in addition to the agricultural economist.
+Now if the agricultural economist leaves the wolf alone with the goat, the wolf will eat the goat.
+If, instead, the farmer leaves the goat alone with the cabbage, the goat will eat the cabbage.
+Is it possible for the agricultural economist to develop a schedule that allows him to cross the river
+without either the goat or the cabbage being eaten?
+}
 \end{minipage}
 \vspace*{0.3cm}
 
 \noindent
-Wir wollen einen Fahrplan entwickeln, mit dem der Agrar\"{o}konom alle seine Waren unbeschadet zum
-Markt bringen kann.  Dazu modellieren wir das R\"{a}tsel als Erreichbarkeits-Problem in einem
-Graphen.  
-Die Punkte des Graphen beschreiben dabei die einzelnen Situationen, die auftreten
-k\"{o}nnen.  Wir definieren eine Menge\\[0.2cm]
-\hspace*{1.3cm} 
-$\texttt{all} := \{ \squote{Bauer}, \squote{Wolf}, \squote{Ziege},\squote{Kohl} \}$.
+In order to compute a schedule, we first have to model the problem.  The various states of the problem will
+be regarded as nodes in a graph and this graph will be represented as a binary relation.
+To this end we define the set
 \\[0.2cm]
-Die einzelnen Punkte sind dann Paare von Mengen, haben also die Form \\[0.2cm]
 \hspace*{1.3cm} 
-$\langle s_1, s_2 \rangle$ \quad mit $s_1,s_2 \subseteq \texttt{all}$.
+$\texttt{all} := \{ \squote{farmer}, \squote{wolf}, \squote{goat},\squote{cabbage} \}$.
 \\[0.2cm]
-Dabei gibt die Menge $s_1$ an, was am linken Ufer ist und $s_2$ gibt an, was am rechten
-Ufer ist.  Die Menge aller Punkte k\"{o}nnen wir dann definieren als \\[0.2cm]
-\hspace*{1.3cm} 
-$p := \bigl\{ \langle s_1, s_2 \rangle \in 2^\texttt{all} \times 2^\texttt{all} \;|\;
-              s_1 \cup s_2 = \texttt{all} \;\wedge\; s_1 \cap s_2 = \{\} 
-      \bigr\}
-$.
-\\[0.2cm]
-Die Bedingung $s_1 \cup s_2 = \texttt{all}$ stellt dabei sicher, dass nichts verloren
-geht:  Jedes der Elemente aus \texttt{all} ist entweder am linken oder am rechten Ufer.
-Die Bedingung $s_1 \cap s_2 = \{\}$ verbietet die Bilokalisation von Objekten, sie stellt also sicher,
-dass kein Element aus der Menge \texttt{all}  gleichzeitig am  linken und am rechten Ufer ist.
-
-Als n\"{a}chstes definieren wir den Graphen $r$, also die m\"{o}glichen Verbindungen zwischen
-Punkten.  Dazu definieren wir eine Prozedur $\textsl{problem}(s)$. Hierbei ist $s$ eine
-Menge von Objekten, die an einem Ufer sind.  Die Prozedur $\textsl{problem}(s)$
-liefert genau dann \texttt{true}, wenn es bei der  Menge $s$ ein Problem gibt, weil entweder die Ziege
-mit dem Kohl allein ist, oder aber der Wolf die Ziege frisst.
+Every node will be represented as a subset \texttt{s} of the set \texttt{all}.  The idea is that \texttt{s}
+specifies those objects that are on the left side of the river.  We assume that initially the farmer
+is on the left side of the river. 
+Therefore, the set of all possible states can be defined as the set
 \begin{verbatim}
-    problem := procedure(s) {
-        return "goat" in s && "cabbage" in s || "wolf" in s && "goat" in s;
-    };
+        p := { s : s in 2 ** all | !problem(s) && !problem(all - s) };
 \end{verbatim}
-Damit k\"{o}nnen wir eine Relation $r_1$ wie folgt definieren:
-\\[0.2cm]
-\hspace*{1.3cm} 
-$r_1 := \Bigl\{ \bigl\langle \pair(s_1, s_2), \pair(s_1 \backslash b, s_2 \cup b)
-  \bigr\rangle \;|\; $ \\
-\hspace*{2.3cm} 
-$\pair(s_1, s_2) \in P \;\wedge\; b \subseteq s_1 \;\wedge\;
- \squote{Bauer} \in b \;\wedge\; \textsl{card}(b) \leq 2 \;\wedge\; \neg\textsl{problem}(s_1 \backslash b) \Bigr\}$.
-\\[0.2cm]
-Diese Menge beschreibt alle die Fahrten, bei denen der Bauer vom linken Ufer zum rechten Ufer
-f\"{a}hrt und bei denen zus\"{a}tzlich sichergestellt ist, dass am linken Ufer
-nach der Überfahrt kein Problem auftritt.  Die einzelnen Terme werden wie folgt
-interpretiert:
+Here, we have used the procedure \texttt{problem} to check whether a given set \texttt{s} has a problem. 
+Note that since \texttt{s} is the set of objects on the left side, the expression $\texttt{all - s}$
+computes the set of objects on the right side of the river.
+
+Next, a set \texttt{s} of objects has a problem if the following conditions
+are satisfied:
 \begin{enumerate}
-\item $\pair(s_1,s_2)$ ist der Zustand vor der Überfahrt des Bootes,
-      $s_1$ gibt also die Objekte am linken Ufer an, $s_2$ sind die Objekte am rechten Ufer.
-\item $b$ ist der Inhalt des Bootes, daher beschreibt 
-       $\pair(s_1 \backslash b, s_2 \cup b)$ den Zustand nach der Überfahrt des Bootes:
-       Links sind nun nur noch die Objekte aus $s_1 \backslash b$, daf\"{u}r sind rechts dann 
-       die Objekte $s_2 \cup b$.
-
-       Die Bedingungen lassen sich wie folgt interpretieren.
-\item $b \subseteq s_1$: Es k\"{o}nnen nat\"{u}rlich nur solche Objekte ins Boot genommen werden,
-       die vorher am linken Ufer waren.
-\item $\squote{Bauer} \in b$: Der Bauer muss auf jeden Fall ins Boot, denn weder der Wolf
-       noch die Ziege k\"{o}nnen rudern.
-\item $\textsl{card}(b) \leq 2$: Die Menge der Objekte im Boot darf nicht mehr als zwei
-       Elemente haben, denn im Boot ist nur f\"{u}r zwei Platz.
-\item $\neg\textsl{problem}(s_1 \backslash b)$:  Am linken Ufer soll es nach der Überfahrt
-       kein Problem geben, denn der Bauer ist ja hinterher am rechten Ufer.
+\item The farmer is not an element of \texttt{s} and
+\item either \texttt{s} contains both the goat and the cabbage or \texttt{s} contains both the wolf and the goat.
 \end{enumerate}
-In analoger Weise definieren wir nun eine Relation $r_2$ die die Überfahrten vom rechten
-Ufer zum linken Ufer beschreibt:\\[0.2cm]
-\hspace*{1.3cm} 
-$r_2 := \Bigl\{ \bigl\langle \pair(s_1, s_2), \pair(s_1 \cup b, s_2 \backslash b)
-  \bigr\rangle \;|\; $ \\
-\hspace*{2.3cm} 
-$\pair(s_1, s_2) \in P \;\wedge\; b \subseteq s_2 \;\wedge\;
- \squote{Bauer} \in b \;\wedge\; \textsl{card}(b) \leq 2 \;\wedge\; \neg\textsl{problem}(s_2 \backslash b) \Bigr\}$.
+Therefore, we can implement the function \texttt{problem} as follows:
+\begin{verbatim}
+        problem := procedure(s) {
+            return !("farmer" in s) &&
+                   ("goat" in s && "cabbage" in s || "wolf" in s && "goat" in s);
+        };
+\end{verbatim}
+We proceed to compute the relation \texttt{r} that contains all possible transitions between
+different states.  We will compute \texttt{r} using the formula:
 \\[0.2cm]
-Die gesamte Relation $r$ definieren wir nun als
+\hspace*{1.3cm}
+\texttt{r := r1 + r2;}
 \\[0.2cm]
-\hspace*{1.3cm} $r := r_1 \cup r_2$.\\[0.2cm]
-Als n\"{a}chstes m\"{u}ssen wir den Start-Zustand modellieren.
-Am Anfang sind alle am linken Ufer, also wird der Start-Zustand durch das Paar 
-\\[0.3cm]
+Here \texttt{r1} describes the transitions that result from the farmer crossing the river from left
+to right, while \texttt{r2} descibes the transitions that result from the farmer crossing the river
+from right to left.  We can define the relation \texttt{r1} as follows:
+\begin{verbatim}
+        r1  := { [s, s - b]: s in p, b in 2 ** s
+                           | s - b in p && "farmer" in b && #b <= 2
+               };
+\end{verbatim}
+Let us explain this definition in detail:
+\begin{enumerate}
+\item Initially, \texttt{s} is the set of objects on the left side of the river.  Hence, \texttt{s}
+      is an element of the set of all states that we have defined as \texttt{p}.
+\item \texttt{b} is the set of objects that are put into the boat and that do cross the river.  Of
+      course, for an object to go into the boat is has to be on the left side of the river to begin
+      with.  Therefore, \texttt{b} is a subset of \texttt{s} and hence an element of the power set
+      of \texttt{s}. 
+\item Then  \texttt{s-b} is the set of objects that are left on the left side of the river after
+      the boat has crossed.  Of course, the new state \texttt{s-b} has to be a state that does not
+      have a problem.  Therefore, we check that \texttt{s-b} is an element of \texttt{p}.
+\item Furthermore, the farmer has to be in the boat.  This explains the condition 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{\symbol{34}farmer\symbol{34} in b}.
+\item Finally, the boat can only have two passengers.  Therefore, we have added the condition
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{\#b <= 2}.
+\end{enumerate}
+Next, we have to define the relation \texttt{r2}.  However, as crossing the river from right to left
+is just the reverse of crossing the river from left to right, \texttt{r2} is just the inverse of
+\texttt{r1}.   Hence we define:
+\\[0.2cm]
 \hspace*{1.3cm}
-$\bigl\langle \{ \squote{Bauer}, \squote{Wolf}, \squote{Ziege},\squote{Kohl} \}, \{\} \bigr\rangle$.
-\\[0.3cm]
-Beim Ziel ist es genau umgekehrt, dann sollen alle auf der rechten Seite des Ufers sein:
-\\[0.3cm]
+\texttt{r2  := \{ [y, x] : [x, y] in r1 \};}
+\\[0.2cm]
+Finally, the start state has all objects on the left side.  Therefore, we have
+\\[0.2cm]
 \hspace*{1.3cm}
-$\bigl\langle \{\}, \{ \squote{Bauer}, \squote{Wolf}, \squote{Ziege},\squote{Kohl} \} \bigr\rangle$.
-\\[0.3cm]
-Damit haben wir das Problem in der Mengenlehre modelliert und k\"{o}nnen die im letzten
-Abschnitt entwickelte Prozedur \texttt{reachable} benutzen, um das Problem zu l\"{o}sen.
-In der Abbildung \ref{fig:wolf-ziege} finden Sie das Programm 
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/wolf-goat-cabbage.stlx}{\texttt{wolf-goat-cabbage.stlx}},
-in dem die oben ausgef\"{u}hrten Überlegungen in \textsc{SetlX} umgesetzt wurden.
-Die von diesem Programm berechnete L\"{o}sung finden Sie in Abbildung \ref{fig:wolf-ziege-solution}.
+\texttt{start := all;}
+\\[0.2cm]
+In the end, all objects have to be on the right side of the river.  That means that nothing is left
+on the left side.  Therefore, we define
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{goal := \{\};}
+\\[0.2cm]
+Figure \ref{fig:wolf-ziege} on page \pageref{fig:wolf-ziege} shows the program
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/wolf-goat-cabbage.stlx}{\texttt{wolf-goat-cabbage.stlx}}
+that combines the statements shown so far.  The solution computed by this program is shown in Figure
+ \ref{fig:wolf-ziege-solution}.
 
 \begin{figure}[!ht]
   \centering
@@ -2312,27 +2310,32 @@ Die von diesem Programm berechnete L\"{o}sung finden Sie in Abbildung \ref{fig:w
                   labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
                 ]
+    problem := procedure(s) {
+        return !("farmer" in s) &&
+               ("goat" in s && "cabbage" in s || "wolf" in s && "goat" in s);
+    };
+   
     all := { "farmer", "wolf", "goat", "cabbage" };
-    p   := pow(all);
-    r1  := { [ s, s - b ] : s in p, b in pow(s) 
-                          | "farmer" in b && #b <= 2 && !problem(s - b) 
+    p   := { s : s in 2 ** all | !problem(s) && !problem(all - s) };
+    r1  := { [s, s - b]: s in p, b in 2 ** s
+                       | s - b in p && "farmer" in b && #b <= 2
            };
-    r2  := { [ s, s + b ] : s in p, b in pow(all - s) 
-                          | "farmer" in b && #b <= 2 && !problem(all - (s + b))
-           };
+    r2  := { [y, x] : [x, y] in r1 };
     r   := r1 + r2;
-    start := [ all, {} ];
-    goal  := [ {}, all ];
-    path := findPath(start, goal, r);
+    
+    start := all;
+    goal  := {};
+    
+    path  := findPath(start, goal, r);
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Wie kommt der Bauer ans andere Ufer?}  
+\caption{Solving the wolf-goat-cabbage problem.}  
 \label{fig:wolf-ziege}
-\end{figure} %\$
-\noindent
+\end{figure}
+
 
 \begin{figure}[!ht]
   \centering
@@ -2342,30 +2345,29 @@ Die von diesem Programm berechnete L\"{o}sung finden Sie in Abbildung \ref{fig:w
                   labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                  commandchars  = \\\{\},
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
                 ]
-    \{"Kohl", "Ziege", "Wolf", "Bauer"\}                                        \{\}
-                              >> \{"Ziege", "Bauer"\} >>
-    \{"Kohl", "Wolf"\}                                          \{"Ziege", "Bauer"\}
-                              << \{"Bauer"\} <<<< 
-    \{"Kohl", "Wolf", "Bauer"\}                                          \{"Ziege"\}
-                              >> \{"Wolf", "Bauer"\} >>>
-    \{"Kohl"\}                                          \{"Ziege", "Wolf", "Bauer"\}
-                              << \{"Ziege", "Bauer"\} <<
-    \{"Kohl", "Ziege", "Bauer"\}                                          \{"Wolf"\}
-                              >> \{"Kohl", "Bauer"\} >>>
-    \{"Ziege"\}                                          \{"Kohl", "Wolf", "Bauer"\}
-                              << \{"Bauer"\} <<<< 
-    \{"Ziege", "Bauer"\}                                          \{"Kohl", "Wolf"\}
-                              >> \{"Ziege", "Bauer"\} >>    
-    \{\}                                        \{"Kohl", "Ziege", "Wolf", "Bauer"\}
+    {"cabbage", "farmer", "goat", "wolf"}                                 {}
+                             >>>> {"farmer", "goat"} >>>> 
+    {"cabbage", "wolf"}                                   {"farmer", "goat"}
+                             <<<< {"farmer"} <<<< 
+    {"cabbage", "farmer", "wolf"}                                   {"goat"}
+                             >>>> {"farmer", "wolf"} >>>> 
+    {"cabbage"}                                   {"farmer", "goat", "wolf"}
+                             <<<< {"farmer", "goat"} <<<< 
+    {"cabbage", "farmer", "goat"}                                   {"wolf"}
+                             >>>> {"cabbage", "farmer"} >>>> 
+    {"goat"}                                   {"cabbage", "farmer", "wolf"}
+                             <<<< {"farmer"} <<<< 
+    {"farmer", "goat"}                                   {"cabbage", "wolf"}
+                             >>>> {"farmer", "goat"} >>>> 
+    {}                                 {"cabbage", "farmer", "goat", "wolf"}
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Ein Fahrplan f\"{u}r den Bauern}  
+\caption{A schedule for the agricultural economist.}  
 \label{fig:wolf-ziege-solution}
-\end{figure} %$
+\end{figure}
 
 
 \section{Terme und Matching}
@@ -2403,7 +2405,7 @@ Die folgenden Strings k\"{o}nnen beispielsweise  als Funktions-Zeichen vewendet 
 \hspace*{1.3cm}
 \texttt{F}, \quad \texttt{FabcXYZ}, \quad \texttt{\symbol{94}sum}, \quad \texttt{Hugo\_}.
 \\[0.2cm]
-Damit sind wir nun in der Lage, Term zu definieren.  Ist $F$ ein Funktions-Zeichen und sind
+Damit sind wir nun in der Lage, Terme zu definieren.  Ist $F$ ein Funktions-Zeichen und sind
 $t_1$, $t_2$, $\cdots$, beliebige \setl-Werte, so ist der Ausdruck
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -2427,7 +2429,7 @@ worden ist.
 \end{enumerate}
 
 An dieser Stelle fragen Sie sich vielleicht, wie Terme ausgewertet werden.  Die Antwort ist:
-\textbf{Gar nicht!}  Terme werden nur dazu benutzt, Daten darzustellen.  Terme sind also bereits 
+\colorbox{red}{Gar nicht!}  Terme werden nur dazu benutzt, Daten darzustellen.  Terme sind also bereits 
 Werte  genauso wie auch Zahlen, Strings, Mengen oder Listen als Werte aufgefasst werden.
 Genausowenig wie Sie die Zahl \texttt{42} auswerten m\"{u}ssen, m\"{u}ssen Sie einen Term auswerten.
 
@@ -2541,8 +2543,8 @@ dass die Liste $l$ als Term mit Hilfe der Funktions-Zeichen ``\texttt{Cons}'' un
 dargestellt wird.
 \begin{enumerate}
 \item Zun\"{a}chst wird in Zeile 2 \"{u}berpr\"{u}ft, ob die Liste $l$ leer ist.  Die Liste $l$ ist genau dann
-      leer, wenn $l = \texttt{Nil()}$ gilt.  Daher k\"{o}nnen wir einfach das Funktions-Zeichen von dem
-      Term $l$ testen um herauszufinden, ob $l$ die leere Liste repr\"{a}sentiert.
+      leer, wenn $l = \texttt{Nil()}$ gilt.  Daher k\"{o}nnen wir einfach das Funktions-Zeichen des
+      Terms $l$ testen um herauszufinden, ob $l$ die leere Liste repr\"{a}sentiert.
 \item Falls $l$ nicht leer ist, muss $l$ die Form
       \\[0.2cm]
       \hspace*{1.3cm}
