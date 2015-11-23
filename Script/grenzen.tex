@@ -25,15 +25,18 @@ zeigen wir dann die Unl\"{o}sbarkeit des Halte-Problems.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    legendre := procedure(n) {
-        k := n * n + 1;
-        while (k < (n + 1) ** 2) {
-            if (isPrime(k)) { return true; }
-            k += 1;
-        }
-        return false;
-    };
     findCounterExample := procedure(n) {
+        legendre := procedure(n) {
+            k := n * n + 1;
+            while (k < (n + 1) ** 2) {
+                if (isPrime(k)) {
+                    print("$n$**2 < $k$ < $n+1$**2");
+                    return true;
+                }
+                k += 1;
+            }
+            return false;
+        };
         while (true) {
            if (legendre(n)) {
                n := n + 1;
@@ -100,18 +103,18 @@ nicht terminiert. Mithin w\"{u}rde die Funktion \texttt{findCounterExample} kein
 das w\"{u}rde hei\3en, dass die Vermutung von Legendre stimmt.
 
 Es gibt eine Reihe weiterer offener  mathematischer Probleme, die alle auf die Frage abgebildet
-werden k\"{o}nnen, ob eine gegebene Funktion terminiert.  Daher zeigen die vorhergehenden \"{u}berlegungen,
+werden k\"{o}nnen, ob eine gegebene Funktion terminiert.  Daher zeigen die vorhergehenden \"{U}berlegungen,
 dass es sehr n\"{u}tzlich w\"{a}re, eine Funktion wie \texttt{stops} zur Verf\"{u}gung zu haben.  Andererseits
 k\"{o}nnen wir an dieser Stelle schon ahnen, dass die Implementierung der Funktion \texttt{stops}
 zumindest sehr schwierig wird.  
 
  
 \subsection{Formale Analyse des Halte-Problems}
-Wir werden in diesem Abschnitt beweisen, dass das Halte-Problem nicht durch ein Programm gel\"{o}st werden
-kann.  Dazu f\"{u}hren wir folgende Definition ein.
+Wir werden in diesem Abschnitt beweisen, dass das Halte-Problem unl\"{o}sbar ist.  Dazu f\"{u}hren
+wir den Begriff einer Test-Funktion ein.  
 
 \begin{Definition}[Test-Funktion] 
-{\em Ein String $t$ ist eine \emph{Test-Funktion} wenn $t$ 
+{\em Ein String $t$ ist genau dann eine \emph{Test-Funktion}, wenn $t$ 
  die Form \\[0.3cm]
 \hspace*{1.3cm} {\tt procedure(x) \{ $\cdots$ \}} \\[0.3cm]
 hat und sich als \textsc{SetlX}-Funktion parsen l\"{a}sst.  Die Menge der
@@ -126,11 +129,17 @@ Test-Funktionen bezeichnen wir mit $T\!F$.}  \hspace*{\fill} $\Box$
       $s_1$ ist eine (sehr einfache) Test-Funktion.
 \item $s_2$ = ``{\tt procedure(x) \{ while (true) \{ x := x + 1; \} \}}''
 
-      $s_2$ ist eine Test-Funktion. 
+      $s_2$ ist ebenfalls eine Test-Funktion.  Offenbar liefert diese Test-Funktion nie ein
+      Ergebnis, aber f\"{u}r die Frage, ob $s_2$ eine Test-Funktion ist oder nicht, ist dies
+      irrelevant.
 \item $s_3$ = ``{\tt procedure(x) \{ return ++x; \}}''
 
       $s_3$ ist keine Test-Funktion, denn da \textsc{SetlX} den Pr\"{a}fix-Operator
       ``\texttt{++}'' nicht unterst\"{u}tzt, l\"{a}sst sich der String $s_3$  nicht fehlerfrei parsen.
+\item $s_4$ = ``{\tt procedure(x, y) \{ return x + y; \}}''
+
+      $s_4$ ist keine Test-Funktion, denn ein String ist nur dann eine Test-Funktion, wenn die Funktion
+      mit genau einen Parameter aufgerufen wird.
 \end{enumerate}
 Um das Halte-Problem \"{u}bersichtlicher formulieren zu k\"{o}nnen, f\"{u}hren wir noch drei
 zus\"{a}tzliche Notationen ein.
@@ -226,7 +235,7 @@ Um zu einem Widerspruch zu kommen, definieren wir den String \texttt{turing} wie
                        \}
                    \}
                    return result;
-               \};"
+               \}"
 \end{Verbatim}
   \vspace*{-0.3cm}
   \caption{Die Definition des Strings \texttt{turing}.}
@@ -293,7 +302,8 @@ kann, ob ein gegebener anderer Algorithmus terminiert.
 \textbf{Bemerkung}:
 An dieser Stelle k\"{o}nnen wir uns fragen, ob es vielleicht eine andere Programmier-Sprache
 gibt, in der wir das Halte-Problem dann vielleicht doch l\"{o}sen k\"{o}nnten.  
-Wenn es in dieses Programmier-Sprache Unterprogramme gibt, und wenn wir dort
+Wenn es in dieses Programmier-Sprache Prozeduren, \texttt{if}-Verzweigungen und
+\texttt{while}-Schleifen gibt, und wenn wir dort 
 Programm-Texte als Argumente von Funktionen \"{u}bergeben k\"{o}nnen, dann ist leicht zu sehen,
 dass der obige Beweis der 
 Unl\"{o}sbarkeit des Halte-Problems sich durch geeignete syntaktische Modifikationen auch auf
@@ -383,14 +393,14 @@ an, dass es doch eine Implementierung der Funktion \texttt{equal} gibt, die das
          } else {
              return 1 - e;
          }
-     }
+     };
 \end{Verbatim}
   \vspace*{-0.3cm}
   \caption{Eine Implementierung der Funktion \texttt{stops}.}
   \label{fig:stops}
 \end{figure}
 
-Zu beachten ist, dass in Zeile 2 die Funktion \texttt{equal} mit einem String aufgerufen
+Zu beachten ist, dass in Zeile 3 die Funktion \texttt{equal} mit einem String aufgerufen
 wird, der eine Test-Funktion ist.  Diese 
 Test-Funktion hat die
 folgende Form:
