@@ -11,6 +11,7 @@ findPath := procedure(start, goal, rltn) {
     while (states != explored) {
         explored := states;
         paths    := { l : l in pathProduct(paths, rltn) | !(l[-1] in states) };
+        paths    := clean(paths);
         states   += { l[-1] : l in paths };  
         if (goal in states) {
             return arb({ l : l in paths | l[-1] == goal });
@@ -23,6 +24,11 @@ pathProduct := procedure(p, q) {
     return { x + [ y[2] ] : x in p, y in q | x[-1] == y[1] };
 };
 
+// remove redundant paths
+clean := procedure(paths) {
+    states := { k[-1] : k in paths };
+    return { arb({ k : k in paths | k[-1] == s }) : s in states };
+};
 //////////////////////////////////////////////////////////////////////////
 //                                                                      //
 // The following procedure are only needed to print the solution in a   //
@@ -65,20 +71,6 @@ toList := procedure(s) {
 inverse := procedure(r) {
     return { [ y, x ] : [ x, y ] in r };	
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
