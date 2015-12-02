@@ -1,0 +1,185 @@
+// This program solves the eight-puzzle.
+
+// The function aStar is used to compute a path from start to goal. It takes
+// four arguments:
+// 1. start is the initial state where the search starts.
+// 2. goal is the state we want to reach.
+// 3. nextStates is a function taking a state and computing the set of states
+//    that can be reached from the given state.
+// 4. heuristic is a function taking a state and computing a conservative
+//    estimate how far this state is away from the goal.  This estimate should
+//    be a lower bound on the actual distance from the goal.
+aStar := procedure(start, goal, nextStates, heuristic) {
+    distanceStart := {};  // The distance from the start state.
+    predecessor   := {};  // The predecessor relation. 
+    estimate      := {};  // A conservative approximation of the distance to the goal.
+    distanceStart[start] := 0;
+    estimate     [start] := heuristic(start);
+    openQueue            := { [distanceStart[start], start] };
+    while(openQueue != {}) {
+        [fx, x] := fromB(openQueue);
+        if (x == goal) {
+            return buildPath(start, goal, predecessor);
+        }
+        for (y in nextStates(x) | distanceStart[y] == om || distanceStart[x] + 1 < distanceStart[y]) {
+            predecessor[y]   := x;
+            distanceStart[y] := min({distanceStart[x] + 1, distanceStart[y]});
+            openQueue        -= { [estimate[y], y] };
+            estimate[y]      := distanceStart[y] + heuristic(y);
+            openQueue        += { [estimate[y], y] };
+        }
+    }
+};
+
+/* print the path */
+buildPath := procedure(start, goal, predecessor) {
+    p    := goal;
+    path := [goal];
+    while (p != start) {
+        p    := predecessor[p];
+        path := [p] + path;
+    }
+    return path;
+};
+
+// The function stateToString converts the current state of the puzzle to a string.
+stateToString := procedure(state) {
+    n      := #state;
+    indent := " " * 4;
+    line   := indent + "+--" * n + "+\n";
+    result := "\n" + line;
+    for (row in [1 .. n]) {
+        result += indent + "|";
+        for (col in [1 .. n]) {
+            cell := state[row][col];
+            if (cell > 0 && cell < 10) {
+                result += " " + cell;
+            } else if (cell >= 10) {
+                result += cell;
+            } else {
+                result += "  ";
+            }
+            result += "|";
+        }
+        result += "\n";
+        result += line;
+    }
+    return result;
+};
+
+// Given a state s, compute the set of all states reachable form s.
+// The state is represented as an n times n array of numbers, where the empty
+// place is represented as the number 0.  The array is itself represented as
+// a list of lists, where each inner list represents a row of the array.
+nextStates := procedure(state) {
+    n := #state; 
+    [row, col] := findBlank(state);
+    result := {};
+    if (col > 1) {
+        result += { moveRight(state, row, col) };
+    }
+    if (col < n) {
+        result += { moveLeft(state, row, col) };
+    }
+    if (row > 1) {
+        result += { moveDown(state, row, col) };
+    }
+    if (row < n) {
+        result += { moveUp(state, row, col) };
+    }
+    return result;
+};
+
+// Move the tile below the blank up.
+moveUp := procedure(state, row, col) {
+    nextState := state;
+    nextState[row  ][col] := state[row+1][col];
+    nextState[row+1][col] := 0;
+    return nextState;
+};
+// Move the tile above the blank down.
+moveDown := procedure(state, row, col) {
+    nextState := state;
+    nextState[row  ][col] := state[row-1][col];
+    nextState[row-1][col] := 0;
+    return nextState;
+};
+// Move the tile left of the blank to the right.
+moveRight := procedure(state, row, col) {
+    nextState := state;
+    nextState[row][col  ] := state[row][col-1];
+    nextState[row][col-1] := 0;
+    return nextState;
+};
+// Move the tile right of the blank to the left.
+moveLeft := procedure(state, row, col) {
+    nextState := state;
+    nextState[row][col  ] := state[row][col+1];
+    nextState[row][col+1] := 0;
+    return nextState;
+};
+
+findBlank := procedure(state) {
+    n := #state;
+    for (row in [1 .. n]) {
+        for (col in [1 .. n]) {
+            if (state[row][col] == 0) {
+                return [row, col];
+            }
+        }
+    }
+    abort("Illegal state:\n$stateToString(s)$");
+};
+
+// Compute the weighted Manhattan distance from the given state to the goal
+// state.
+manhattan := procedure(state) {
+    n        := #state;
+    distance := 0;
+    for (row in [1 .. n]) {
+        for (col in [1 .. n]) {
+            cell     := state[row][col];
+            destRow  := floor(cell / n) + 1; // the row    where cell should be
+            destCol  := cell % n + 1;        // the column where cell should be
+            distance += cell * (abs(destRow-row) + abs(destCol-col));
+        }
+    }
+    return distance;
+};
+
+startTime := now();
+
+// start := [ [8, 0, 6],
+//            [5, 4, 7],
+//            [2, 3, 1] ];
+// 
+// goal  := [ [0, 1, 2],
+//            [3, 4, 5],
+//            [6, 7, 8] ];
+
+start := [ [ 0,  2,  5, 12],
+           [ 1, 14,  4, 13],
+           [ 9,  6,  3, 15],
+           [ 8,  7, 10, 11]
+         ];
+
+goal  := [ [ 0,  1,  2,  3],
+           [ 4,  5,  6,  7],
+           [ 8,  9, 10, 11],
+           [12, 13, 14, 15]
+         ];
+
+path := aStar(start, goal, nextStates, manhattan);
+stopTime := now();
+
+if (path != om) {
+    print("number of steps to solve the puzzle: $#path - 1$");
+    for (state in path) {
+        print(stateToString(state));
+    }
+} else {
+    print("No solution found.");
+}
+print("Time used: $stopTime - startTime$ milliseconds.");
+
+

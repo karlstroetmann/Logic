@@ -1,0 +1,62 @@
+/* algorithm */
+aStar := procedure(start, goal, relation, heuristic) {
+    distanceStart := {};  // The distance from the start state.
+    predecessor   := {};  // The predecessor relation. 
+    estimate      := {};  // A conservative approximation of the distance to the goal.
+
+    distanceStart[start] := 0;
+    estimate     [start] := heuristic[state];
+    openQueue            := { [distanceStart[start], start] };
+    print(openQueue);
+    while(openQueue != {}) {
+        [fx, x] := fromB(openQueue);
+        if (x == goal) {
+            return buildPath(start, goal, predecessor);
+        }
+        for (y in relation{x} | distanceStart[y] == om || distanceStart[x] + 1 < distanceStart[y]) {
+            predecessor[y]   := x;
+            distanceStart[y] := distanceStart[x] + 1;
+            openQueue        -= { [estimate[y], y] };
+            estimate[y]      := distanceStart[y] + heuristic[y];
+            openQueue        += { [estimate[y], y] };
+        }
+        print(openQueue);
+    }
+};
+
+heuristic   := {[1, 22], [2, 94], [3, 98], [4, 34], [5, 88], [6, 4], [7, 8], [8, 5], [9, 1], [10, 0]};
+connections := { [ 1,  4],  // there is a connection from point 1 to point 4
+                 [ 1,  5],
+                 [ 1, 10],
+                 [ 2,  9],
+                 [ 3,  2],
+                 [ 3,  4],
+                 [ 3,  9],
+                 [ 4,  3],
+                 [ 5,  7],
+                 [ 5, 10],
+                 [ 6,  5],
+                 [ 7,  4],
+                 [ 7,  8],
+                 [ 8,  9],
+                 [ 8,  6],
+                 [10,  6],
+                 [10,  7],
+                 [10,  8]
+               };
+
+/* print the path */
+buildPath := procedure(start, goal, predecessor) {
+    p    := goal;
+    path := [goal];
+    while (p != start) {
+        p    := predecessor[p];
+        path := [p] + path;
+    }
+    return path;
+};
+
+/* query */
+print(aStar(1, 9, connections, heuristic));
+print(aStar(3, 7, connections, heuristic));
+
