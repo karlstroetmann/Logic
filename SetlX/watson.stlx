@@ -1,21 +1,7 @@
-// Die Prozedur eval(f, I) wertet die aussagen-logische Formel f unter
-// der aussagen-logischen Interpretation I aus.
-evaluate := procedure(f, i) {
-    match (f) {
-        case true:         return true;
-        case false:        return false;
-        case ^variable(p): return i[p];
-        case !g:           return !evaluate(g, i);
-        case g && h:       return  evaluate(g, i) && evaluate(h, i);
-        case g || h:       return  evaluate(g, i) || evaluate(h, i);
-        case g => h:       return  evaluate(g, i) => evaluate(h, i);
-        case g <==> h:     return  evaluate(g, i) == evaluate(h, i);
-        default:           abort("syntax error in evaluate($f$, $i$)");
-    }
-};
+load("evaluate.stlx");
 // This procedure turns a subset m of the set of all variables 
-// into a propositional valuation i, such that i(x) is true 
-// iff x is an element of m.
+// v into a propositional valuation i, such that i[x] is true 
+// iff x is an element of the set m.
 createValuation := procedure(m, v) {
     return { [ x, x in m ] : x in v };
 };
@@ -32,10 +18,10 @@ f5 := parse("!(a && b && !c)");
 f6 := parse("!c => a");
 fs := { f1, f2, f3, f4, f5, f6 };
 v  := { "a", "b", "c" };
-p  := 2 ** v;
-print("p = ", p);
+all := 2 ** v;
+print("all = ", all);
 // b is the set of all propositional valuations.
-b  := { createValuation(m, v) : m in p };
+b  := { createValuation(m, v) : m in all };
 s  := { i : i in b | forall (f in fs | evaluate(f, i)) };
 print("Set of all valuations satisfying all facts: ", s);
 if (#s == 1) {

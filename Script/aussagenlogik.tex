@@ -596,6 +596,14 @@ einer aussagenlogischen Formel $f$ unter einer gegebenen aussagenlogischen
 Interpretation ${\cal I}$ berechnet. Die Funktion
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/evaluate.stlx}{\texttt{evaluate.stlx}}
 ist in Abbildung \ref{fig:evaluate.stlx} auf Seite \pageref{fig:evaluate.stlx} gezeigt.
+Die Funktion \texttt{evaluate} erwartet zwei Argumente:
+\begin{enumerate}
+\item Das erste Argument $f$ ist eine aussagenlogische Formel, die so durch einen Term dargestellt
+      wird, wie wir das weiter oben beschrieben haben.
+\item Das zweite Argument $i$ ist eine aussagenlogische Interpretation, die als funktionale Relation
+      dargestellt wird.  F\"{u}r eine aussagenlogische Variable mit dem Namen $p$ k\"{o}nnen wir den Wert,
+      der dieser Variablen durch $i$ zugeordnet wird, mittels des Ausdrucks $i[p]$ berechnen.
+\end{enumerate}
 
 \begin{figure}[!ht]
   \centering
@@ -701,17 +709,17 @@ Die Auswertung der Akten ergibt folgendes:
       \hspace*{1.3cm} $f_6 := \neg c \rightarrow a$
 \end{enumerate}
 Wir haben nun eine Menge $F = \{ f_1, f_2, f_3, f_4, f_5, f_6 \}$ von Formeln.
-Wir fragen uns nun, f\"{u}r welche Belegungen $\mathcal{I}$ alle Formeln aus $F$ wahr werden.
+Wir fragen uns nun, f\"{u}r welche Belegungen $\mathcal{I}$ alle Formeln aus der Menge $F$ wahr werden.
 Wenn es genau eine Belegungen gibt, f\"{u}r die dies der Fall ist, dann liefert uns die
 Belegung den oder die T\"{a}ter.  Eine Belegung entspricht dabei 1-zu-1 der Menge der T\"{a}ter.
 H\"{a}tten wir beispielsweise \\[0.2cm]
 \hspace*{1.3cm} 
 $\mathcal{I} = \bigl\{ \pair(a,\mathtt{false}), \pair(b,\mathtt{false}), \pair(c,\mathtt{true}) \bigr\}$,
 \\[0.2cm]
-so w\"{a}re Claus der alleinige T\"{a}ter.  Diese Belegung l\"{o}st unser Problem offenbar
+so w\"{a}re Claus der alleinige T\"{a}ter.  Diese Belegung l\"{o}st unser Problem allerdings
 nicht, denn Sie widerspricht der dritten Aussage: Da Bruno unschuldig w\"{a}re, w\"{a}re dann auch
 Claus unschuldig.  Da es zu zeitraubend ist, alle Belegungen von Hand auszuprobieren,
-schreiben wir besser ein Programm, das f\"{u}r uns die notwendige Berechnung durchf\"{u}hrt.
+schreiben wir besser ein Programm, das die notwendigen Berechnungen f\"{u}r uns durchf\"{u}hrt.
 Abbildung \ref{fig:watson.stlx} zeigt das Programm
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/watson.stlx}{\texttt{watson.stlx}}.
 Wir diskutieren diese Programm nun Zeile f\"{u}r Zeile.
@@ -727,8 +735,8 @@ Wir diskutieren diese Programm nun Zeile f\"{u}r Zeile.
                   xrightmargin  = 0.8cm
                 ]
     // This procedure turns a subset m of the set of all variables 
-    // into a propositional valuation i, such that i(x) is true 
-    // iff x is an element of m.
+    // v into a propositional valuation i, such that i[x] is true 
+    // iff x is an element of the set m.
     createValuation := procedure(m, v) {
         return { [ x, x in m ] : x in v };
     };
@@ -745,10 +753,10 @@ Wir diskutieren diese Programm nun Zeile f\"{u}r Zeile.
     f6 := parse("!c => a");
     fs := { f1, f2, f3, f4, f5, f6 };
     v  := { "a", "b", "c" };
-    p  := 2 ** v;
-    print("p = ", p);
+    all := 2 ** v;
+    print("all = ", all);
     // b is the set of all propositional valuations.
-    b  := { createValuation(m, v) : m in p };
+    b  := { createValuation(m, v) : m in all };
     s  := { i : i in b | forall (f in fs | evaluate(f, i)) };
     print("Set of all valuations satisfying all facts: ", s);
     if (#s == 1) {
@@ -763,7 +771,7 @@ Wir diskutieren diese Programm nun Zeile f\"{u}r Zeile.
 \end{figure}
 
 \begin{enumerate}
-\item In den Zeilen 6 -- 16 definieren wir die Formeln $f_1$, $\cdots$, $f_6$      .
+\item In den Zeilen 7 -- 17 definieren wir die Formeln $f_1$, $\cdots$, $f_6$      .
       Wir m\"{u}ssen hier die Formeln in die \textsc{SetlX}-Repr\"{a}sentation bringen.
       Diese Arbeit wird uns durch die Benutzung der Funktion \texttt{parse} leicht gemacht.
 \item Als n\"{a}chstes m\"{u}ssen wir uns \"{u}berlegen, wie wir alle Belegungen aufz\"{a}hlen k\"{o}nnen. 
@@ -773,7 +781,7 @@ Wir diskutieren diese Programm nun Zeile f\"{u}r Zeile.
       \hspace*{1.3cm}
       $\{ \squote{a}, \squote{b}, \squote{c} \}$. 
       \\[0.2cm]
-      Wir berechnen daher in Zeile 18 zun\"{a}chst die Menge aller dieser Teilmengen.
+      Wir berechnen daher in Zeile 20 zun\"{a}chst die Menge aller dieser Teilmengen.
 \item Wir brauchen jetzt eine M\"{o}glichkeit, eine Teilmenge in eine Belegung umzuformen.
       In den Zeilen 3 -- 5 haben wir eine Prozedur implementiert, die genau dies
       leistet.  Um zu verstehen, wie diese Funktion arbeitet, betrachten wir ein Beispiel
@@ -794,13 +802,13 @@ Wir diskutieren diese Programm nun Zeile f\"{u}r Zeile.
       Elemente aus $m$ wahrmachen, wie folgt schreiben:
       \\[0.2cm]
       \hspace*{1.3cm}      
-      \texttt{\{ [ x, true ] : x in m \} + \{ [ x, false ] : x in A | !(x in m) \}}
+      \texttt{\{ [ x, true ] : x in m \} + \{ [ x, false ] : x in all | !(x in m) \}}
       \\[0.2cm]
       Es geht aber einfacher, denn wir k\"{o}nnen beide F\"{a}lle zusammenfassen, indem wir fordern,
       dass das Paar $\pair(x, x \el m)$ ein Element der Belegung $\mathcal{I}$ ist. Genau
-      das steht in Zeile 4.
-\item In Zeile 22 sammeln wir in der Menge $b$ alle m\"{o}glichen Belegungen auf.
-\item In Zeile 23 berechnen wir die Menge $s$ aller der Belegungen $i$, f\"{u}r die alle 
+      das steht in Zeile 5.
+\item In Zeile 23 sammeln wir in der Menge $b$ alle m\"{o}glichen Belegungen auf.
+\item In Zeile 24 berechnen wir die Menge $s$ aller der Belegungen $i$, f\"{u}r die alle 
       Formeln aus der Menge $\textsl{fs}$ wahr werden. 
 \item Falls es genau eine Belegung gibt, die alle Formeln wahr macht, 
       dann haben wir das Problem l\"{o}sen k\"{o}nnen.  In diesem Fall
@@ -823,14 +831,14 @@ Wert \texttt{true}.  Formeln mit dieser Eigenschaft  bezeichnen wir als \emph{Ta
 \begin{Definition}[Tautologie]
   Ist $f$ eine aussagenlogische Formel und gilt \\[0.2cm]
   \hspace*{1.3cm} $\mathcal{I}(f) = \mathtt{true}$ \quad f\"{u}r jede aussagenlogische Interpretation $\mathcal{I}$, \\[0.2cm]
-  dann ist $f$ eine \emph{Tautologie}.  In diesem Fall schreiben wir \\[0.2cm]
+  dann ist $f$ eine \colorbox{yellow}{\emph{Tautologie}}.  In diesem Fall schreiben wir \\[0.2cm]
   \hspace*{1.3cm} $\models f$.
   \eox
 \end{Definition}
 
 \noindent
 Ist eine Formel $f$ eine Tautologie, so sagen wir auch, dass $f$
-\emph{allgemeing\"{u}ltig} ist.
+\colorbox{yellow}{\emph{allgemeing\"{u}ltig}} ist.
 
 \noindent
 \textbf{Beispiele}:
@@ -846,11 +854,11 @@ Wir k\"{o}nnen die Tatsache, dass es sich bei diesen Formeln um Tautologien hand
 eine Tabelle nachweisen, die analog zu der auf Seite \pageref{tab:tautologie} gezeigten
 Tabelle \ref{tab:tautologie} aufgebaut ist.  Dieses Verfahren ist zwar konzeptuell sehr
 einfach, allerdings zu ineffizient, wenn die Anzahl der aussagenlogischen Variablen gro\3
-ist.  Ziel dieses Kapitels ist daher die Entwicklung besserer Verfahren.
+ist.  Ziel dieses Kapitels ist daher die Entwicklung eines effizienteren Verfahren.
 
 Die letzten beiden Beispiele in der obigen Aufz\"{a}hlung geben Anlass zu einer neuen Definition.
 \begin{Definition}[Ãquivalent]
-  Zwei Formeln $f$ und $g$ hei\3en \emph{\"{a}quivalent} g.d.w.  \\[0.2cm]
+  Zwei Formeln $f$ und $g$ hei\3en \colorbox{yellow}{\emph{\"{a}quivalent}} g.d.w.  \\[0.2cm]
   \hspace*{1.3cm} $\models f \leftrightarrow g$ 
   \\[0.1cm]
   gilt.
@@ -874,11 +882,11 @@ $\begin{array}{lll}
  \models p \wedge (q \vee r)   \leftrightarrow (p \wedge q) \vee   (p \wedge r) & 
  \models p \vee   (q \wedge r) \leftrightarrow (p \vee q)   \wedge (p \vee   r) & \mbox{Distributivit\"{a}t} \\[0.2cm]
  \models \neg (p \wedge q) \leftrightarrow  \neg p \vee   \neg q &  \models \neg (p \vee   q) \leftrightarrow  \neg p \wedge \neg q &
- \mbox{DeMorgan'sche Regeln}  \\[0.2cm]
+ \mbox{\colorbox{yellow}{DeMorgan'sche Regeln}}  \\[0.2cm]
  \models (p \rightarrow q) \leftrightarrow \neg p \vee q & &  \mbox{Elimination von $\rightarrow$} \\[0.2cm]
  \models (p \leftrightarrow q) \leftrightarrow (\neg p \vee q) \wedge (\neg q \vee p) & & \mbox{Elimination von $\leftrightarrow$}
 \end{array}$ \\[0.3cm]
-Wir k\"{o}nnen diese Ãquivalenzen nachweisen, indem wir in einer Tabelle s\"{a}mtliche Belegungen
+Wir k\"{o}nnen diese \"{A}quivalenzen nachweisen, indem wir in einer Tabelle s\"{a}mtliche Belegungen
 durchprobieren.  Eine solche Tabelle hei\3t auch \emph{Wahrheits-Tafel}.
 Wir demonstrieren dieses Verfahren anhand der ersten DeMorgan'schen Regel.
 \begin{table}[!ht]
@@ -906,7 +914,7 @@ stehen.  Daher sind die Formeln, die zu diesen Spalten geh\"{o}ren, \"{a}quivale
 
 \subsection{Testen der Allgemeing\"{u}ltigkeit in \textsc{SetlX}}
 \noindent
- Die manuelle Ãberpr\"{u}fung der Frage, ob eine gegebene Formel $f$ eine Tautologie ist, 
+ Die manuelle \"{U}berpr\"{u}fung der Frage, ob eine gegebene Formel $f$ eine Tautologie ist, 
 l\"{a}uft auf die Erstellung umfangreicher Wahrheitstafeln heraus.   Solche Wahrheitstafeln
 von Hand zu erstellen ist viel zu zeitaufwendig. 
 Wir wollen daher nun ein \textsc{SetlX}-Programm entwickeln, mit dessen Hilfe wir die
@@ -979,7 +987,7 @@ gegebene aussagenlogische Formel $f$ testet, of $f$ eine Tautologie ist.
     };    
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Ãberpr\"{u}fung der Allgemeing\"{u}ltigkeit einer aussagenlogischen Formel.}
+  \caption{\"{U}berpr\"{u}fung der Allgemeing\"{u}ltigkeit einer aussagenlogischen Formel.}
   \label{fig:tautology.stlx}
 \end{figure} 
 
@@ -1016,7 +1024,7 @@ Wir diskutieren die Definition der Funktion $\textsl{tautology}$ nun Zeile f\"{u
       die Interpretation ${\cal I}(m)$ wie oben diskutiert mit Hilfe der Formel
       \\[0.2cm]
       \hspace*{1.3cm}
-      ${\cal I}(m) := \{ \pair(x, x \!\in\! m) \mid x \in V \}$.  
+      ${\cal I}(m) := \{ \pair(x, x \!\in\! m) \mid x \in \mathcal{P} \}$.  
       \\[0.2cm]
       Betrachten wir zur Verdeutlichung als Beispiel die Formel \\[0.2cm]
       \hspace*{1.3cm} $\neg (p \wedge q) \leftrightarrow \neg p \vee \neg q$. \\[0.2cm]
@@ -1050,7 +1058,7 @@ Wir diskutieren die Definition der Funktion $\textsl{tautology}$ nun Zeile f\"{u
       als Gegenbeispiel zur\"{u}ck geben.
 \end{enumerate}
 
-\subsection{Nachweis der Allgemeing\"{u}ltigkeit durch Ãquivalenz-Umformungen}
+\subsection{Nachweis der Allgemeing\"{u}ltigkeit durch \"{A}quivalenz-Umformungen}
 Wollen wir nachweisen, dass eine Formel eine Tautologie ist, k\"{o}nnen wir uns prinzipiell
 immer einer Wahrheits-Tafel bedienen. 
 Aber diese Methode hat einen Haken: Kommen in der Formel $n$
@@ -1097,21 +1105,21 @@ Die Umformungen in dem obigen Beweis sind nach einem bestimmten System durchgef\
 pr\"{a}zise formulieren zu k\"{o}nnen, ben\"{o}tigen wir noch einige Definitionen.
 
 \begin{Definition}[Literal]
-  Eine aussagenlogische Formel $f$ hei\3t \emph{Literal} g.d.w. einer der folgenden F\"{a}lle vorliegt:
+  Eine aussagenlogische Formel $f$ hei\3t \colorbox{yellow}{\emph{Literal}} g.d.w. einer der folgenden F\"{a}lle vorliegt:
   \begin{enumerate}
   \item $f = \verum$ oder $f = \falsum$.
   \item $f = p$, wobei $p$ eine aussagenlogische Variable ist.
 
-        In diesem Fall sprechen wir von einem \emph{positiven} Literal.
+        In diesem Fall sprechen wir von einem \colorbox{yellow}{\emph{positiven}} Literal.
   \item $f = \neg p$, wobei $p$ eine aussagenlogische Variable ist. 
 
-        In diesem Fall sprechen wir von einem \emph{negativen} Literal.
+        In diesem Fall sprechen wir von einem \colorbox{yellow}{\emph{negativen}} Literal.
   \end{enumerate}
   Die Menge aller Literale bezeichnen wir mit $\mathcal{L}$.
   \eox
 \end{Definition}
 
-Sp\"{a}ter werden wird noch den Begriff des \emph{Komplements} eines Literals ben\"{o}tigen.
+Sp\"{a}ter werden wird noch den Begriff des \colorbox{yellow}{\emph{Komplements}} eines Literals ben\"{o}tigen.
 Ist $l$ ein Literal, so wird das Komplement von $l$ mit $\komplement{\,l\,}$
 bezeichnet.  Das Komplement wird durch Fall-Unterscheidung definiert:
 \begin{enumerate}
@@ -1126,7 +1134,7 @@ Negation von $l$ ist, wir haben also
 $\models \komplement{\,l\,} \leftrightarrow \neg l$.
 
 \begin{Definition}[Klausel]
-  Eine aussagenlogische Formel $k$ ist eine \emph{Klausel} wenn $k$ die Form \\[0.2cm]
+  Eine aussagenlogische Formel $k$ ist eine \colorbox{yellow}{\emph{Klausel}} wenn $k$ die Form \\[0.2cm]
   \hspace*{1.3cm} $k = l_1 \vee \cdots \vee l_r$ \\[0.2cm]
   hat, wobei $l_i$ f\"{u}r alle $i=1,\cdots,r$ ein Literal ist.  Eine Klausel ist also eine
   Disjunktion von Literalen. 
@@ -1149,7 +1157,7 @@ Wir betrachten die beiden Klauseln
 $p \vee q \vee \neg r \vee p$ \quad und \quad $\neg r \vee q \vee \neg r \vee p$. 
 \\[0.2cm]
 Die beiden Klauseln sind zwar \"{a}quivalent, aber die Formeln sind verschieden.
-Ãberf\"{u}hren wir die beiden Klauseln in Mengen-Schreibweise, so erhalten wir
+\"{U}berf\"{u}hren wir die beiden Klauseln in Mengen-Schreibweise, so erhalten wir
 \\[0.2cm]
 \hspace*{1.3cm}
 $\{p, q, \neg r \}$ \quad und \quad $\{ \neg r, q, p \}$. 
@@ -1158,7 +1166,7 @@ In einer Menge kommt jedes Element h\"{o}chstens einmal vor und die Reihenfolge,
 Elemente auftreten, spielt auch keine Rolle.  Daher sind die beiden obigen Mengen gleich!
 Durch die Tatsache, dass Mengen von der Reihenfolge und der Anzahl der Elemente
 abstrahieren, implementiert die Mengen-Schreibweise die Assoziativit\"{a}t, Kommutativit\"{a}t und
-Idempotenz der Disjunktion.  Ãber\-tragen wir die  aussagenlogische \"{A}quivalenz
+Idempotenz der Disjunktion.  \"{U}ber\-tragen wir die  aussagenlogische \"{A}quivalenz
 \\[0.2cm]
 \hspace*{1.3cm}
 $l_1 \vee \cdots \vee l_r \vee \falsum \leftrightarrow l_1 \vee \cdots \vee l_r$
@@ -1177,12 +1185,12 @@ $\{\falsum \} \leftrightarrow \{\}$.
 Damit sehen wir, dass die leere Menge von Literalen als $\falsum$ zu interpretieren ist.
 
 \begin{Definition}
-  Eine Klausel $k$ ist \emph{trivial}, wenn einer der beiden folgenden F\"{a}lle vorliegt:
+  Eine Klausel $k$ ist \colorbox{yellow}{\emph{trivial}}, wenn einer der beiden folgenden F\"{a}lle vorliegt:
   \begin{enumerate}
   \item $\verum \in k$.
   \item Es existiert $p \in \mathcal{P}$ mit $p \in k$ und $\neg p \in k$.
 
-        In diesem Fall bezeichnen wir $p$ und $\neg p$ als \emph{komplement\"{a}re Literale}.
+        In diesem Fall bezeichnen wir $p$ und $\neg p$ als \colorbox{yellow}{\emph{komplement\"{a}re Literale}}.
         \eox
 \end{enumerate}
 \end{Definition}
@@ -1215,7 +1223,7 @@ Tautologie sein.  Also ist die Annahme, dass $k$ nicht trivial ist, falsch.
 \hspace*{\fill}  $\Box$
 
 \begin{Definition}[Konjunktive Normalform]  
-  Eine Formel $f$ ist in \emph{konjunktiver Normalform} (kurz KNF)
+  Eine Formel $f$ ist in \colorbox{yellow}{\emph{konjunktiver Normalform}} (kurz KNF)
   genau dann, wenn $f$ eine Konjunktion von Klauseln ist, wenn also gilt \\[0.2cm]
   \hspace*{1.3cm} $f = k_1 \wedge \cdots \wedge k_n$, \\[0.2cm]
   wobei die $k_i$ f\"{u}r alle $i=1,\cdots,n$ Klauseln sind. \eox
@@ -1272,7 +1280,7 @@ dem oben Gesagten k\"{o}nnen wir dann leicht entscheiden, ob $f$ eine Tautologie
       \end{enumerate}
       In dem Ergebnis, das wir nach diesem Schritt erhalten, stehen die Negationszeichen
       nur noch unmittelbar vor den aussagenlogischen Variablen.  Formeln mit dieser
-      Eigenschaft bezeichnen wir auch als Formeln in \emph{Negations-Normalform}.
+      Eigenschaft bezeichnen wir auch als Formeln in \colorbox{yellow}{\emph{Negations-Normalform}}.
 \item Stehen in der Formel jetzt ``$\vee$''-Junktoren \"{u}ber ``$\wedge$''-Junktoren, so k\"{o}nnen wir durch
       \emph{Ausmultiplizieren}, sprich Verwendung der Distributiv-Gesetze \\[0.2cm]
       \hspace*{1.3cm} 
@@ -1300,13 +1308,13 @@ Wir demonstrieren das Verfahren am Beispiel der Formel\\[0.2cm]
       \hspace*{1.3cm} $(p \wedge \neg q) \vee (p \vee \neg q)$.
 \item Durch ``Ausmultiplizieren'' erhalten wir \\[0.2cm]
       \hspace*{1.3cm} $(p \vee (p \vee \neg q)) \wedge (\neg q \vee (p \vee \neg q))$.
-\item Die Ãberf\"{u}hrung in die Mengen-Schreibweise ergibt zun\"{a}chst als Klauseln die beiden Mengen \\[0.2cm]
+\item Die \"{U}berf\"{u}hrung in die Mengen-Schreibweise ergibt zun\"{a}chst als Klauseln die beiden Mengen \\[0.2cm]
       \hspace*{1.3cm} $\{p, p, \neg q\}$ \quad und \quad $\{\neg q,  p,  \neg q\}$. \\[0.2cm]
       Da die Reihenfolge der Elemente einer Menge aber unwichtig ist und au\3erdem eine Menge
       jedes Element nur einmal enth\"{a}lt, stellen wir fest, dass diese beiden Klauseln gleich sind.
       Fassen wir jetzt die Klauseln noch in einer Menge zusammen, so erhalten wir \\[0.2cm]
       \hspace*{1.3cm} $\bigl\{ \{p, \neg q\} \bigr\}$. \\[0.2cm]
-      Beachten Sie, dass sich die Formel durch die Ãberf\"{u}hrung in 
+      Beachten Sie, dass sich die Formel durch die \"{U}berf\"{u}hrung in 
       Mengen-Schreibweise noch einmal deutlich vereinfacht hat.
 \end{enumerate}
 Damit ist die Formel in KNF \"{u}berf\"{u}hrt.
@@ -1701,11 +1709,11 @@ ist es, die Formel $f$ mit Hilfe von \emph{Schluss-Regeln} aus den gegebenen For
 $f_1, \cdots, f_n$ herzuleiten.
   Das Konzept einer Schluss-Regel wird in der nun folgenden Definition festgelegt.
 \begin{Definition}[Schluss-Regel]
-    Eine \emph{Schluss-Regel} ist eine Paar  $\langle \{f_1, \cdots, f_n\}, k \rangle$.
+    Eine \colorbox{yellow}{\emph{Schluss-Regel}} ist eine Paar  $\langle \{f_1, \cdots, f_n\}, k \rangle$.
     Dabei ist 
     $\{f_1, \cdots, f_n\}$ eine Menge von Formeln und $k$ ist eine einzelne Formel.  
     Die Formeln $f_1$, $\cdots$, $f_n$ bezeichnen wir als
-    \emph{Pr\"{a}missen}, die Formel $k$ hei\3t die \emph{Konklusion} der Schluss-Regel.
+    \colorbox{yellow}{\emph{Pr\"{a}missen}}, die Formel $k$ hei\3t die \colorbox{yellow}{\emph{Konklusion}} der Schluss-Regel.
     Ist das Paar 
     $\langle \{f_1, \cdots, f_n\}, k \rangle$ eine Schluss-Regel, so schreiben wir
     dies als: 
@@ -1741,12 +1749,11 @@ bzw.~Konklusion verwendet werden k\"{o}nnen, nicht weiter ein.  Es ist aber sich
 sinnvoll, beliebige Schluss-Regeln zuzulassen.  Wollen wir Schluss-Regeln in Beweisen
 verwenden, so sollten die Schluss-Regeln in dem in der folgenden Definition erkl\"{a}rten
 Sinne \emph{korrekt} sein.
-\pagebreak
 
 \begin{Definition}[Korrekte Schluss-Regel]
   Eine Schluss-Regel der Form \\[0.2cm]
   \hspace*{1.3cm} $\schluss{f_1 \quad \cdots \quad f_n}{k}$ \\[0.2cm]
-  ist genau dann \emph{korrekt}, wenn 
+  ist genau dann \colorbox{yellow}{\emph{korrekt}}, wenn 
   $\models f_1 \wedge \cdots \wedge f_n \rightarrow k$ gilt. \eox
 \end{Definition}
 Mit dieser Definition sehen wir, dass 
@@ -1763,7 +1770,7 @@ sowohl die Pr\"{a}missen als auch die Konklusion Klauseln sind.
 \begin{Definition}[Schnitt-Regel]
     Ist $p$ eine aussagenlogische Variable und sind $k_1$ und $k_2$ Mengen von Literalen,
     die wir als Klauseln interpretieren, so bezeichnen wir die folgende Schluss-Regel
-    als die \emph{Schnitt-Regel}: 
+    als die \colorbox{yellow}{\emph{Schnitt-Regel}}: 
     \\[0.2cm]
     \hspace*{1.3cm}
     $\displaystyle \schluss{ k_1 \cup \{p\} \quad \{\neg p\} \cup k_2 }{k_1 \cup k_2}$. 
@@ -1929,9 +1936,9 @@ Der Beweis der Widerlegungs-Vollst\"{a}ndigkeit der Aussagenlogik ben\"{o}tigt d
 \begin{Definition}[Erf\"{u}llbarkeit]
   Es sei $M$ eine Menge von aussagenlogischen Formeln.
   Falls es eine aussagenlogische Interpretation $\I$ gibt, die alle Formeln aus $M$ erf\"{u}llt, nennen
-  wir $M$ \emph{erf\"{u}llbar}. 
+  wir $M$ \colorbox{yellow}{\emph{erf\"{u}llbar}}. 
 
-  Wir sagen, dass $M$ \emph{unerf\"{u}llbar} ist und schreiben 
+  Wir sagen, dass $M$ \colorbox{yellow}{\emph{unerf\"{u}llbar}} ist und schreiben 
   \\[0.2cm]
   \hspace*{1.3cm}
   $M \models \falsum$
@@ -1968,7 +1975,7 @@ Wir diskutieren zun\"{a}chst die Hilfsprozeduren, die in Abbildung \ref{fig:comp
 sind. 
 \begin{enumerate}
 \item Die Funktion \texttt{complement} erh\"{a}lt als Argument ein Literal $l$ und berechnet das
-      \emph{Komplement} $\komplement{\,l\,}$ dieses Literals.  Falls $l$ die Form $\neg p$ mit einer
+      \colorbox{yellow}{\emph{Komplement}} $\komplement{\,l\,}$ dieses Literals.  Falls $l$ die Form $\neg p$ mit einer
       aussagenlogischen Variablen $p$ hat, so gilt $\komplement{\neg p} = p$.   Falls das Literal
       $l$ eine aussagenlogische Variable $p$ ist, haben wir $\komplement{p} = \neg p$.
 \item Die Funktion \texttt{extractVar} extrahiert die aussagenlogische Variable aus einem Literal $l$.
@@ -2069,7 +2076,7 @@ als Eingabe eine Menge \texttt{clauses} von aussagenlogischen Klauseln, die als 
 dargestellt werden.  Aufgabe der Funktion ist es, alle Klauseln herzuleiten, die mit Hilfe der
 Schnittregel auf direktem oder indirekten Wege aus der Menge \texttt{clauses} hergeleitet werden
 k\"{o}nnen.  Genauer sagen wir, dass die Menge $S$ der Klauseln, die von der Funktion \texttt{saturate}
-zur\"{u}ck gegeben wird, unter Anwendung der Schnitt-Regel \emph{saturiert} ist, was formal wie folgt
+zur\"{u}ck gegeben wird, unter Anwendung der Schnitt-Regel \colorbox{yellow}{\emph{saturiert}} ist, was formal wie folgt
 definiert ist:
 \begin{enumerate}
 \item Falls $S$ die leere Klausel $\{\}$ enth\"{a}lt, dann ist $S$ saturiert.
@@ -2389,7 +2396,7 @@ In der Praxis stellt sich oft die Aufgabe, f\"{u}r eine gegebene Menge von Klaus
 Belegung $\I$ der Variablen zu berechnen, so dass 
 \\[0.2cm]
 \hspace*{1.3cm} $\mathtt{eval}(k,\I) = \mathtt{true}$ \quad f\"{u}r alle $k\in K$ \\[0.2cm]
-gilt.  In diesem Fall sagen wir auch, dass die Belegung $\I$ eine \emph{L\"{o}sung} der
+gilt.  In diesem Fall sagen wir auch, dass die Belegung $\I$ eine \colorbox{yellow}{\emph{L\"{o}sung}} der
  Klausel-Menge $K$ ist.  Im letzten Abschnitt haben wir bereits die Prozedur \texttt{findValuation}
  kennengelernt, mit der wir eine solche Belegung berechnen k\"{o}nnten.
 Bedauerlicherweise ist diese Prozedur f\"{u}r eine praktische Anwendung nicht effizient genug.
@@ -2437,14 +2444,14 @@ wahr und falsch machen.
 Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass f\"{u}r zwei Definitionen.
 
 \begin{Definition}[Unit-Klausel]
-  Eine Klausel $k$ hei\3t \emph{Unit-Klausel}, wenn $k$ nur aus einem Literal besteht.
+  Eine Klausel $k$ hei\3t \colorbox{yellow}{\emph{Unit-Klausel}}, wenn $k$ nur aus einem Literal besteht.
   Es gilt dann \\[0.2cm]
   \hspace*{1.3cm} $k = \{p\}$ \quad oder \quad $k = \{\neg p\}$ \\[0.2cm]
   f\"{u}r eine Aussage-Variable $p$. \eox
 \end{Definition}
 
 \begin{Definition}[Triviale Klausel-Mengen]
-  Eine Klausel-Menge $K$ hei\3t \emph{trivial} wenn einer der beiden folgenden F\"{a}lle
+  Eine Klausel-Menge $K$ hei\3t \colorbox{yellow}{\emph{trivial}} wenn einer der beiden folgenden F\"{a}lle
   vorliegt.
   \begin{enumerate}
   \item $K$ enth\"{a}lt die leere Klausel: $\{\} \el K$.
@@ -2496,7 +2503,7 @@ Dieser Fall liegt vor, wenn einer der beiden Klauseln nur aus einem Literal best
 und folglich eine \emph{Unit-Klausel} ist.  Da es unser Ziel ist, die Klausel-Mengen
 zu vereinfachen, lassen wir nur solche Anwendungen der Schnitt-Regel zu, bei denen
 eine der Klausel eine Unit-Klausel ist.  Solche Schnitte bezeichnen wir als
-\emph{Unit-Schnitte}.  Um alle mit einer gegebenen Unit-Klausel $\{l\}$ m\"{o}glichen Schnitte
+\colorbox{yellow}{\emph{Unit-Schnitte}}.  Um alle mit einer gegebenen Unit-Klausel $\{l\}$ m\"{o}glichen Schnitte
 durchf\"{u}hren zu k\"{o}nnen, definieren wir eine Funktion
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -2523,7 +2530,7 @@ $\{p\}$ erf\"{u}llt ist, ist automatisch auch $\{q, p, \neg r\}$ erf\"{u}llt.  D
 \hspace*{1.3cm} $\models p \rightarrow q \vee p \vee \neg r$
 \\[0.2cm]
 gilt.  Allgemein sagen wir, dass eine Klausel $k$
- von einer Unit-Klausel $u$ \emph{subsumiert} wird, wenn
+ von einer Unit-Klausel $u$ \colorbox{yellow}{\emph{subsumiert}} wird, wenn
 \\[0.2cm]
 \hspace*{1.3cm} $u \subseteq k$ \\[0.2cm]
 gilt.  Ist $K$ eine Klausel-Menge mit $k \in K$ und $u \in K$ und wird
@@ -2551,7 +2558,7 @@ Ein Kalk\"{u}l, der nur mit Unit-Schnitten und Subsumption arbeitet, ist nicht
 widerlegungs-vollst\"{a}ndig.  Wir brauchen 
 daher eine weitere M\"{o}glichkeit, Klausel-Mengen zu vereinfachen.
 Eine solche M\"{o}glichkeit bietet das Prinzip der
-\emph{Fallunterscheidung}.  Dieses Prinzip basiert auf dem folgenden
+\colorbox{yellow}{\emph{Fallunterscheidung}}.  Dieses Prinzip basiert auf dem folgenden
 Satz.
 
 \begin{Satz}
