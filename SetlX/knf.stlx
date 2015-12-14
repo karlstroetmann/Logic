@@ -42,8 +42,8 @@ nnf := procedure(f) {
         default     : return f; 
     }
 };
-// Diese Funktion berechnet die Negations-Normalform von (-f) und schiebt dabei
-// das Negationszeichen soweit wie möglich nach innen.
+// Diese Funktion berechnet die Negations-Normalform von (-f) und 
+// schiebt dabei das Negationszeichen soweit wie möglich nach innen.
 neg := procedure(f) {
     match (f) {
         case !g     : return nnf(g);
@@ -71,20 +71,4 @@ isTrivial := procedure(c) {
            { args(l)[1] : l in c | fct(l) == "^not" } != {};
 };
 
-parseKNF := procedure(s) {
-    return normalize(parse(s));
-};
-
-test := procedure(s) {
-    f := parse(s);
-    print("The knf of $f$ is $normalize(f)$");
-};
-
-test("(a && !b) <==> (!b && a)");
-test(" (a => b) <==> (!b &&a)");
-// test("(p && q => r) || !r => !p");
-// test("(p => q) => (!p => q) => q");
-// test("(p => q) && (q => r) => (p => r)");
-// test("(p => q) => (!p => !q)");
-// test("(p => q) && (!p => !q) => (q => p)");
  

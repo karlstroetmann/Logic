@@ -1,4 +1,3 @@
-
 // This procedure computes the complement of the literal l.
 complement := procedure(l) {
     match (l) {
@@ -6,7 +5,6 @@ complement := procedure(l) {
         case  p : return !p;
     }
 };
-
 // This procedure extracts the variable from a literal l.
 extractVar := procedure(l) {
     match (l) {
@@ -14,21 +12,19 @@ extractVar := procedure(l) {
         case  p : return p;
     }
 };
-
 // Given a set of clauses m, this procedure returns a list containing all
 // propositional variables occurring in m.
 collectVars := procedure(m) {
     return { extractVar(l) : c in m, l in c };
 };
-
 // This procedure takes to clauses c1 and c2 and computes the set of all
 // clauses that result from an application of the cut rule to these clauses.
 cutRule := procedure(c1, c2) {
-    return { (c1 - {l}) + (c2 - {complement(l)}) : l in c1
-                                                 | complement(l) in c2
+    return { (c1 - {l}) + (c2 - {complement(l)})
+           : l in c1
+           | complement(l) in c2
            };
 };
-
 // This procedure takes a set of clauses and performs all applications
 // of the cut rule that are possible.  The resulting set of clauses is
 // returned.
@@ -41,28 +37,28 @@ saturate := procedure(clauses) {
         derived -= clauses;
         print("number of new clauses: $#derived$");
         if (derived == {}) {
-            return clauses;
+            return clauses;  // no new clauses found
         }
         clauses += derived;
     }
 };
-
 // Given a set of clauses, the procedure findValuation tries to find a
 // propositional valuation satisfying the clauses in m.  If there is no
 // such valuation, { {} } is returned instead.
 findValuation := procedure(clauses) {
-    vars    := collectVars(clauses);
-    clauses := saturate(clauses);
+    variables := collectVars(clauses);
+    clauses   := saturate(clauses);
     if ({} in clauses) {
         return false;
     }
-    literals := {};  // refuted literal
-    for (p in vars) {
+    literals  := {};  // refuted literals
+    for (p in variables) {
         if (exists(c in clauses | p in c && c <= literals + {p})) {
             literals += { !p };
         } else {
             literals += { p };
         }
     }
-    return { complement(p) : p in literals };
+    result := { complement(p) : p in literals };
+    return result; 
 };
