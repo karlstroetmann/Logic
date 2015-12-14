@@ -1,0 +1,14 @@
+load("knf.stlx");
+
+test := procedure(s) {
+    f := parse(s);
+    print("The knf of $f$ is $normalize(f)$");
+};
+
+test("(a && !b) <==> (!b && a)");
+test("(a => b) <==> (!a && b)");
+test("(p && q => r) || !r => !p");
+test("(p => q) => (!p => q) => q");
+test("(p => q) && (q => r) => (p => r)");
+test("(p => q) => (!p => !q)");
+test("(p => q) && (!p => !q) => (q => p)");

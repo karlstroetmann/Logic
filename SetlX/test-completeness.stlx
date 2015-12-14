@@ -1,0 +1,33 @@
+load("knf.stlx");
+load("completeness.stlx");
+createValuation := procedure(v) {
+    result := {};
+    for (c in v) {
+        match(c) {
+            case !p: result += { [p, false] };
+            case  p: result += { [p, true ] };
+        }
+    }
+    return result;
+};
+checkTautology := procedure(s) {
+    print("\nChecking whether \"$s$\" is a tautology ...");
+    f := normalize(parse("!(" + s + ")"));
+    v := findValuation(f);
+    if (v != false) {
+        print("The formula $s$ is not a tautology. Counter example:");
+        print(createValuation(v));
+    } else {
+        print("The formula $s$ is a tautology.");
+    }
+};
+s := "p => p";
+checkTautology(s);
+s := "((p => q) => p) => p";
+checkTautology(s);
+s := "(p => q) => (q => p)";
+checkTautology(s);
+s := "p || (q && r) <==> (p || q) && (p || r)";
+checkTautology(s);
+s := "p && (q || r) <==> (p && q) || (p && r)";
+checkTautology(s);
