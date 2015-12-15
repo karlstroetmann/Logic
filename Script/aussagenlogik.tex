@@ -1965,10 +1965,10 @@ Wir f\"{u}hren den Bewies der Widerlegungs-Vollst\"{a}ndigkeit mit Hilfe eines P
 Abbildungen \ref{fig:completeness.stlx-1}, \ref{fig:completeness.stlx-2} und
 \ref{fig:completeness.stlx-3} auf den folgenden Seiten gezeigt ist.  Die Grundidee
 bei diesem Programm besteht darin, dass wir versuchen, aus einer gegebenen Menge $M$ von Klauseln
-alle Klauseln abzuleiten, die \"{u}berhaupt aus $M$ ableitbar sind.  Wenn wir dabei auch
-die leere Klausel ableiten, dann ist $M$ aufgrund der Korrektheit der Schnitt-Regel offenbar
+alle Klauseln herzuleiten, die mit der Schnittregel aus $M$ herleitbar sind.  Wenn wir dabei auch
+die leere Klausel herleiten, dann ist $M$ aufgrund der Korrektheit der Schnitt-Regel offenbar
 unerf\"{u}llbar.  Falls es uns aber nicht gelingt, die leere Klausel aus $M$ abzuleiten, dann konstruieren wir
-aus der Menge aller Klauseln, die wir aus $M$ abgeleitet haben, eine aussagenlogische Interpretation
+aus der Menge aller Klauseln, die wir aus $M$ hergeleitet haben, eine aussagenlogische Interpretation
 $\I$, die alle Klauseln aus $M$ erf\"{u}llt.
 
 Wir diskutieren zun\"{a}chst die Hilfsprozeduren, die in Abbildung \ref{fig:completeness.stlx-1} gezeigt
@@ -2100,7 +2100,7 @@ Wir erl\"{a}utern nun die Implementierung der Funktion \texttt{saturate}.
 \item Andernfalls ziehen wir in Zeile 28 von der Menge \texttt{derived} zun\"{a}chst die Klauseln ab, die wir schon
       vorher hatten, denn es geht uns darum festzustellen, ob wir im letzten Schritt tats\"{a}chlich
       neue Klauseln gefunden haben, oder ob alle Klauseln, die wir im letzten Schritt in Zeile 23
-      abgeleitet haben, eigentlich schon vorher  bekannt  waren.
+      hergeleitet haben, eigentlich schon vorher  bekannt  waren.
 \item Falls wir nun in Zeile 29 feststellen, dass wir keine neuen Klauseln hergeleitet haben,
       dann ist die Menge \texttt{clauses} saturiert und wir geben diese Menge in Zeile 30 zur\"{u}ck.
 \item Andernfalls f\"{u}gen wir in Zeile 32 die Klauseln, die wir neu gefunden haben, zu der Menge
@@ -2171,10 +2171,10 @@ Funktion \texttt{findValuation} wie folgt.
       der Menge \texttt{clauses} auftreten.  Wir ben\"{o}tigen diese Menge, denn wir m\"{u}ssen diese
       Variablen ja auf die Menge $\{ \mathtt{true}, \mathtt{false} \}$ abbilden.
 \item In Zeile 37 saturieren wir die Menge \texttt{clauses} und berechnen alle Klauseln, die aus der
-      urspr\"{u}nglich gegebenen Menge von Klauseln mit Hilfe der Schnitt-Regel abgeleitet werden
+      urspr\"{u}nglich gegebenen Menge von Klauseln mit Hilfe der Schnitt-Regel hergeleitet werden
       k\"{o}nnen.  Hier k\"{o}nnen zwei F\"{a}lle auftreten:
       \begin{enumerate}
-      \item Falls die leere Klausel abgeleitet werden kann, dann ist die urspr\"{u}nglich gegebene Menge
+      \item Falls die leere Klausel hergeleitet werden kann, dann ist die urspr\"{u}nglich gegebene Menge
             von Klauseln widerspr\"{u}chlich und wir geben als Ergebnis an Stelle einer Belegung den
             Wert \texttt{false} zur\"{u}ck, denn eine widerspr\"{u}chliche Menge von Klauseln ist sicher
             nicht erf\"{u}llbar.
@@ -2378,7 +2378,7 @@ Jetzt gibt es zwei M\"{o}glichkeiten:
 \item Fall: Die Funktion \texttt{findValuation} liefert als Ergebnis \texttt{false}.  Nach
       Konstruktion der Funktionen \texttt{findValuation} \texttt{saturate} tritt dieser Fall nur
       ein, wenn sich die leere Klausel $\{\}$ aus den Klauseln der Menge $M$ mit Hilfe der
-      Schnitt-Regel ableiten l\"{a}sst.  Dann haben wir also
+      Schnitt-Regel herleiten l\"{a}sst.  Dann haben wir also
       \\[0.2cm]
       \hspace*{1.3cm}
       $M \vdash \{\}$,
