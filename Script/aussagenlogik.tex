@@ -2451,19 +2451,22 @@ Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass
 
 \begin{Definition}[Unit-Klausel]
   Eine Klausel $k$ hei\3t \colorbox{yellow}{\emph{Unit-Klausel}}, wenn $k$ nur aus einem Literal besteht.
-  Es gilt dann \\[0.2cm]
-  \hspace*{1.3cm} $k = \{p\}$ \quad oder \quad $k = \{\neg p\}$ \\[0.2cm]
-  f\"{u}r eine Aussage-Variable $p$. \eox
+  Es gilt dann entweder
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $k = \{p\}$ \quad oder \quad $k = \{\neg p\}$ 
+  \\[0.2cm]
+  f\"{u}r eine geeignete Aussage-Variable $p$. \eox
 \end{Definition}
 
 \begin{Definition}[Triviale Klausel-Mengen]
   Eine Klausel-Menge $K$ hei\3t \colorbox{yellow}{\emph{trivial}} wenn einer der beiden folgenden F\"{a}lle
   vorliegt.
   \begin{enumerate}
-  \item $K$ enth\"{a}lt die leere Klausel: $\{\} \el K$.
+  \item $K$ enth\"{a}lt die leere Klausel: \qquad $\{\} \el K$.
 
         In diesem Fall ist $K$ offensichtlich unl\"{o}sbar.
-  \item $K$ enth\"{a}lt nur Unit-Klausel mit verschiedenen Aussage-Variablen.
+  \item $K$ enth\"{a}lt nur Unit-Klauseln mit \colorbox{red}{verschiedenen} Aussage-Variablen.
         Bezeichnen wir die Menge der aussagenlogischen Variablen mit $\mathcal{P}$,
         so schreibt sich diese Bedingung als 
         \\[0.3cm]
@@ -2471,7 +2474,7 @@ Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass
         $\forall k \el K: \textsl{card}(k) = 1$ \quad und \quad
         $\forall p \el \mathcal{P}: \neg\bigl( \{p\} \in K \wedge \{\neg p\} \in K\bigr)$.
         \\[0.3cm]
-        Dann ist die aussagenlogische Belegung
+        In diesem Fall ist die aussagenlogische Belegung
         \\[0.2cm]
         \hspace*{1.3cm}
         $ \I = \bigl\{ \pair(p, \mathtt{true}) \mid \{p\} \in K \bigr\} \,\cup\, \bigl\{
@@ -2501,7 +2504,7 @@ Die hierbei erzeugte Klausel $k_1 \cup k_2$ wird in der Regel mehr Literale enth
 als die Pr\"{a}missen $k_1 \cup \{p\}$ und $\bigl\{\neg p\} \cup k_2$.  Enth\"{a}lt die
 Klausel $k_1 \cup \{p\}$ insgesamt $m+1$ Literale und enth\"{a}lt die Klausel
 $\bigl\{\neg p\} \cup k_2$ insgesamt $n+1$ Literale, so kann die Konklusion $k_1 \cup k_2$ 
-insgesamt $m + n$ Literale enthalten.  Nat\"{u}rlich k\"{o}nnen es auch weniger Literale 
+bis zu $m + n$ Literale enthalten.  Nat\"{u}rlich k\"{o}nnen es auch weniger Literale 
 sein, und zwar dann, wenn es Literale gibt, die sowohl in $k_1$ als auch in $k_2$
 auftreten.  Im allgemeinen ist $m + n$ gr\"{o}\3er als $m + 1$ und als $n + 1$.  Die
 Klauseln wachsen nur dann sicher nicht, wenn entweder $n = 0$ oder $m = 0$ ist.
@@ -2541,14 +2544,14 @@ gilt.  Allgemein sagen wir, dass eine Klausel $k$
 \hspace*{1.3cm} $u \subseteq k$ \\[0.2cm]
 gilt.  Ist $K$ eine Klausel-Menge mit $k \in K$ und $u \in K$ und wird
 $k$ durch $u$ subsumiert, so k\"{o}nnen wir $K$ durch Unit-Subsumption zu $K - \{k\}$
-vereinfachen, indem wir die Klausel $k$ aus $K$ l\"{o}schen.  Allgemein definieren wir eine Funktion
+vereinfachen, wir können also die Klausel $k$ aus $K$ l\"{o}schen.  Allgemein definieren wir eine Funktion
 \\[0.2cm]
 \hspace*{1.3cm}
 $\textsl{subsume}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$
 \\[0.2cm]
 die eine gegebene Klauselmenge $K$, welche die Unit-Klausel $\{l\}$ enth\"{a}lt, mittels Subsumption 
 dadurch vereinfacht, dass alle durch $\{l\}$ subsumierten Klauseln aus $K$ gel\"{o}scht werden.
-Die Unit-Klausel $\{l\}$ behalten wir nat\"{u}rlich.  Daher definieren wir:
+Die Unit-Klausel $\{l\}$ selbst behalten wir nat\"{u}rlich.  Daher definieren wir:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\textsl{subsume}(K, l) := 
@@ -2595,9 +2598,9 @@ erreicht.
 Andernfalls untersuchen wir rekursiv ob $K_2$ erf\"{u}llbar ist.
 Falls wir nun eine L\"{o}sung finden, ist dies auch eine L\"{o}sung von $K$ und wenn wir f\"{u}r $K_2$
 keine L\"{o}sung finden, dann hat auch $K$ keine L\"{o}sung.
-Die rekursive Untersuchung von $K_1$ bzw.~$K_2$ ist leichter,
-weil ja wir dort mit den Unit-Klausel $\{p\}$ bzw.~$\{\neg p\}$
-zun\"{a}chst Unit-Subsumption und anschlie\3end Unit-Schnitte durchf\"{u}hren k\"{o}nnen.
+Die rekursive Untersuchung von $K_1$ bzw.~$K_2$ ist leichter als die Untersuchung von $K$,
+weil wir ja in $K_1$ und $K_2$ mit den Unit-Klausel $\{p\}$ bzw.~$\{\neg p\}$
+zun\"{a}chst Unit-Subsumptionen und anschlie\3end Unit-Schnitte durchf\"{u}hren k\"{o}nnen.
 
 
 \subsection{Der Algorithmus}
@@ -2607,8 +2610,7 @@ suchen  also eine Belegung $\I$, so dass gilt: \\[0.2cm]
 \hspace*{1.3cm} $\I(k) = \mathtt{true}$ \quad f\"{u}r alle $k \in K$.\\[0.2cm]
 Das Verfahren von Davis und Putnam besteht nun aus den folgenden Schritten.
 \begin{enumerate}
-\item F\"{u}hre alle Unit-Schnitte aus, die mit Klauseln aus $K$ m\"{o}glich sind und f\"{u}hre
-      zus\"{a}tzlich alle Unit-Subsumptionen aus.
+\item F\"{u}hre alle Unit-Schnitte und Unit-Subsumptionen aus, die mit Klauseln aus $K$ m\"{o}glich sind.
 \item Falls $K$ nun trivial ist, sind wir fertig.
 \item Andernfalls w\"{a}hlen wir eine aussagenlogische Variable $p$, die in $K$ auftritt.
       \begin{enumerate}
@@ -2709,8 +2711,8 @@ durchf\"{u}hren m\"{u}ssen.
 Wir zeigen jetzt die Implementierung der Prozedur \texttt{davisPutnam}, 
 mit der die Frage, ob eine Menge von Klauseln erf\"{u}llbar ist, beantwortet werden kann. Die
 Implementierung ist in Abbildung \ref{fig:davisPutnam} auf Seite \pageref{fig:davisPutnam}
-gezeigt.  Die Prozedur erh\"{a}lt zwei Argumente: \texttt{clauses} und \texttt{literals}.
-\texttt{clauses} ist eine Menge von Klauseln und \texttt{literals} ist eine Menge von
+gezeigt.  Die Prozedur erh\"{a}lt zwei Argumente: Die Mengen \texttt{clauses} und \texttt{literals}.
+Hier ist \texttt{clauses} eine Menge von Klauseln und \texttt{literals} ist eine Menge von
 Literalen.  Falls  die Vereinigung dieser beiden Mengen erf\"{u}llbar ist, so liefert
 der Aufruf 
 \\[0.2cm]
@@ -2718,9 +2720,8 @@ der Aufruf
 \texttt{davisPutnam(clauses, literals)} 
 \\[0.2cm]
 eine Menge von Unit-Klauseln \texttt{r}, so
-dass jede Belegung $\I$, die alle Unit-Klauseln aus \texttt{r} erf\"{u}llt, auch die
-Menge $\mathtt{clauses} \cup \mathtt{literals}$ erf\"{u}llt.  Falls die Menge
-$\mathtt{clauses} \cup \mathtt{literals}$ nicht erf\"{u}llbar ist, liefert der Aufruf
+dass jede Belegung $\I$, die alle Unit-Klauseln aus \texttt{r} erf\"{u}llt, auch alle Klauseln aus
+der Menge  $\mathtt{clauses}$ erf\"{u}llt.  Falls die Menge $\mathtt{clauses}$ nicht erf\"{u}llbar ist, liefert der Aufruf
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{davisPutnam(clauses, literals)} 
@@ -2737,7 +2738,7 @@ Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie
 \begin{enumerate}
 \item In Zeile 2 reduzieren wir mit Hilfe der Methode \texttt{saturate} 
       solange wie m\"{o}glich die gegebene Klausel-Menge \texttt{clauses} mit Hilfe
-      von Unit-Schnitten und entfernen alle Klauseln die durch Unit-Klauseln
+      von Unit-Schnitten und entfernen alle Klauseln, die durch Unit-Klauseln
       subsumiert werden.
 \item Anschlie\3end testen wir in Zeile 3, ob die so vereinfachte Klausel-Menge
       die leere Klausel enth\"{a}lt und geben in diesem Fall als Ergebnis die Menge 
@@ -2755,9 +2756,14 @@ Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie
       \begin{enumerate}
       \item Falls diese Menge l\"{o}sbar ist, geben wir die L\"{o}sung dieser Menge als Ergebnis zur\"{u}ck.
 
-      \item Sonst  pr\"{u}fen wir rekursiv, ob die Menge \\[0.2cm]
-            \hspace*{1.3cm} $\mathtt{clauses} \cup \bigl\{ \{ \neg \mathtt{l}\} \bigr\}$ \\[0.2cm]
-            l\"{o}sbar ist.  
+      \item Sonst  pr\"{u}fen wir rekursiv, ob die Menge 
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $\mathtt{clauses} \cup \bigl\{ \{ \neg \mathtt{l}\} \bigr\}$ 
+            \\[0.2cm]
+            l\"{o}sbar ist.  Ist diese Menge l\"{o}sbar, so ist diese L\"{o}sung auch eine
+            L\"{o}sung der Menge $\mathtt{clauses}$ und wir geben diese L\"{o}sung zurück.  Ist die
+            Menge unl\"{o}sbar, dann muss auch die Menge $\mathtt{clauses}$ unlösbar sein.
       \end{enumerate}
 \end{enumerate}
 \begin{figure}[!ht]
@@ -2834,10 +2840,14 @@ Die Implementierung von \texttt{saturate} funktioniert wie folgt:
       In dieser Menge merken wir uns, welche Unit-Klauseln wir schon f\"{u}r Unit-Schnitte und
       Subsumptionen benutzt haben.
 \item Solange die Menge \texttt{units} der Unit-Klauseln nicht leer ist, w\"{a}hlen wir in Zeile 5
-      eine beliebige Unit-Klausel \texttt{unit} aus der Menge \texttt{units} aus.
+      mit Hilfe der Funktion $\mathtt{arb}$ eine beliebige Unit-Klausel \texttt{unit} aus der Menge
+      \texttt{units} aus. 
 \item In Zeile 6 f\"{u}gen wir die Klausel \texttt{unit} zu der Menge
       \texttt{used} der benutzten Klausel hinzu.  
-\item In Zeile 7 extrahieren mit \texttt{arb} das Literal \texttt{l} der Klausel \texttt{unit}.  
+\item In Zeile 7 extrahieren mit der Funktion \texttt{arb} das Literal \texttt{l} der Klausel
+      \texttt{unit}.  Die Funktion $\mathtt{arb}$ liefert ein beliebiges Element der Menge zurück,
+      die dieser Funktion als Argument übergeben wird.  Enth\"{a}lt diese Menge nur ein Element, so
+      wird also dieses Element zurück gegeben.
 \item In Zeile 8 wird  die eigentliche Arbeit durch einen Aufruf der Prozedur
       \texttt{reduce} geleistet.  Diese Funktion berechnet alle Unit-Schnitte, die mit der
       Unit-Klausel $\{\texttt{l}\}$ m\"{o}glich sind und entfernt dar\"{u}ber hinaus alle Klauseln, die

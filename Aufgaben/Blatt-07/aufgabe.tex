@@ -1,137 +1,1 @@
-\documentclass{article}
-\usepackage{german}
-\usepackage[latin1]{inputenc}
-\usepackage{a4wide}
-\usepackage{amssymb}
-\usepackage{fancyvrb}
-\usepackage{alltt}
-\usepackage{epsfig}
-\usepackage{hyperref}
-\usepackage{fancyhdr}
-\usepackage{lastpage} 
-\usepackage{color}
-\hypersetup{
-	colorlinks = true, % comment this to make xdvi work
-	linkcolor  = blue,
-	citecolor  = red,
-        filecolor  = blue,
-        urlcolor   = [rgb]{0.5, 0.4, 0.0},
-	pdfborder  = {0 0 0} 
-}
-
-\renewcommand*{\familydefault}{\sfdefault}
-
-\pagestyle{fancy}
-
-\fancyfoot[C]{--- \thepage/\pageref{LastPage}\ ---}
- 
-\def\pair(#1,#2){\langle #1, #2 \rangle}
-%\renewcommand{\labelenumi}{(\alph{enumi})}
-\renewcommand{\labelenumi}{\arabic{enumi}.}
-
-\newcounter{aufgabe}
-
-\newcommand{\qed}{\hspace*{\fill} $\Box$}
-\newcommand{\next}{\vspace*{0.1cm}
-
-\noindent}
-
-\newcommand{\exercise}{\vspace*{0.3cm}
-\stepcounter{aufgabe}
-
-\noindent
-\textbf{Aufgabe \arabic{aufgabe}}: }
-
-\newcommand{\solution}{\vspace*{0.3cm}
-
-\noindent
-\textbf{Lösung}: }
-
-\begin{document}
-\noindent
-\textbf{\large Aufgabe: \quad \emph{Der Prinz und die Tiger}}
-\vspace*{0.3cm}
-
-\noindent
-Es war einmal ein König, der seine Tochter mit einem Prinzen vermählen wollte.  Er ließ im
-ganzen Land verkünden, dass er einen Gemahl für seine Tochter suche.  Eines Tages kam nun
-ein Prinz vorbei, um sich zu bewerben.  Da der König seine Tochter nicht mit
-irgendeiner Dumpfbacke vermählen wollte, führte der König den Prinzen in einen Raum mit 9
-Türen.  Der König teilte dem Prinzen mit, dass die Prinzessin sich in einem der Zimmer befinden
-würde,  dass es aber andere Zimmer gäbe, hinter denen hungrige Tiger warten würden.
-Einige Zimmer wären auch leer.  Wenn nun der Prinz eine Tür mit einem Tiger dahinter öffnen
-würde, so wäre dies vermutlich sein letzter Fehler.  
-
-Weiter sagte der König, dass an allen Türen Schilder
-angebracht wären, auf denen eine Aussage steht.  In den Zimmern, wo ein Tiger drin wäre,
-da wäre die Aussage allerdings falsch. In dem Zimmer, in dem sich die Prinzessin befinde, wäre die
-Aussage richtig.  Was die leeren Zimmer anginge, so wäre der Sachverhalt so, dass entweder
-die Aufschriften an allen leeren Zimmern wahr wären, oder dass die Aufschriften an allen leeren
-Zimmern falsch wären.  Daraufhin laß der Prinz die Aufschriften.  Diese waren wie folgt:
-\begin{enumerate}
-\item Zimmer: Die Prinzessin ist in einem Zimmer mit ungerader Zimmernummer.
-      In den Zimmern mit gerader Nummer ist kein Tiger.
-\item Zimmer: Dieses Zimmer ist leer.
-\item Zimmer: Die Aufschrift an Zimmer Nr.~5 ist wahr, die Aufschrift an Zimmer Nr.~7 
-      ist falsch und in Zimmer Nr.~3 ist ein Tiger. 
-\item Zimmer: Die Aufschrift an Zimmer Nr.~1 ist falsch, in Zimmer Nr.~8 ist kein Tiger,
-      und die Aufschrift an Zimmer Nr.~9 ist wahr.
-\item Zimmer: Wenn die Aufschrift an Zimmer Nr.~2 oder an Zimmer Nr.~4 wahr ist,
-      dann ist kein Tiger im Zimmer Nr.~1.
-\item Zimmer: Die Aufschrift an Zimmer Nr.~3 ist falsch, die Prinzessin ist im Zimmer Nr.~2 
-      und im Zimmer Nr.~2 ist kein Tiger.
-\item Zimmer: Die Prinzessin ist im Zimmer Nr.~1 und die Aufschrift an Zimmer Nr.~5 ist wahr.
-
-\item Zimmer: In diesem Zimmer ist kein Tiger und Zimmer Nr.~9 ist leer.
-
-\item Zimmer: Weder in diesem Zimmer noch in Zimmer Nr.~1 ist ein Tiger und außerdem ist
-      die Aufschrift an Zimmer Nr.~6 wahr.
-\end{enumerate}
-Schreiben Sie ein Programm, das für den Prinzen ausrechnet, hinter welcher Tür die
-Prinzessin ist.  Verwenden Sie dazu die Vorlage, die Sie im Netz unter der Adresse
-\noindent
-\\[0.2cm]
-\hspace*{0.3cm}
-\href{https://github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-07/prince-frame.stlx}{\texttt{github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-07/prince-frame.stlx}} 
-\\[0.2cm]
-finden.  Diese Vorlage bindet die Prozeduren
-\begin{enumerate}
-\item \texttt{normalize}(f),
-\item \texttt{davisPutnam}(\textsl{clauses}, \textsl{literals}) \quad und
-\item \texttt{atMostOne}(s)
-\end{enumerate}
-ein.  Wir haben diese Prozeduren in der Vorlesung besprochen.  Zusätzlich stellt die Vorlage die
-Prozedur 
-\\[0.2cm]
-\hspace*{1.3cm}
-$\texttt{parseKNF}(s)$
-\\[0.2cm]
-zur Verfügung.  Diese Prozedur nimmt als Argument einen String, der eine aussagenlogische Formel
-darstellt und wandelt diesen String in eine Menge von Klauseln um.
-Ihre Aufgabe besteht darin, die obigen Aussagen als aussagenlogische Formel zu formalisieren und in
-einer Menge von Klauseln zusammen zu fassen, für die Sie dann alle  möglichen Lösungen berechnen.
-Aus der Tatsache, dass es nur genau ein Zimmer gibt, in dem die Prinzessin sein kann, können Sie
-dann folgern, dass die Aufgabe tatsächlich eindeutig lösbar ist.
-
-Der vorgegeben Rahmen enthält bereits eine Funktion \texttt{solve}, mit deren Hilfe Sie das
-Problem lösen können.  Ihre Aufgabe besteht lediglich darin, die Funktion \texttt{computeClauses} zu
-vervollständigen. 
-\vspace*{0.3cm}
-
-\noindent
-\textbf{Hinweis}: Die Aufgabe wird einfach, wenn Sie die richtigen aussagenlogischen Variablen
-verwenden, um die Aussagen des Königs zu kodieren.  In meiner Lösung habe ich die Variablen als
-Terme dargestellt und folgende Variablen verwendet:
-\begin{enumerate}
-\item $P(i)$ ist genau dann wahr, wenn die Prinzessin im $i$-ten Zimmer ist.  Der Index $i$ ist dabei ein
-      Element der Menge $\{1,\cdots,9\}$.
-\item $T(i)$ ist genau dann wahr, wenn im $i$-ten Zimmer ein Tiger ist.
-\item $Z(i)$ ist genau dann wahr, wenn die Aufschrift im $i$-ten Zimmer wahr ist.
-\item $W()$ ist genau dann wahr, wenn die Aufschriften an allen leeren Zimmern wahr ist.
-\end{enumerate} 
-\end{document}
-
-%%% Local Variables: 
-%%% mode: latex
-%%% TeX-master: t
-%%% End: 
+\documentclass{article}\usepackage{german}\usepackage[latin1]{inputenc}\usepackage{a4wide}\usepackage{amssymb}\usepackage{fancyvrb}\usepackage{alltt}\usepackage{epsfig}\usepackage{hyperref}\usepackage{fancyhdr}\usepackage{lastpage} \usepackage{color}\hypersetup{	colorlinks = true, % comment this to make xdvi work	linkcolor  = blue,	citecolor  = red,        filecolor  = blue,        urlcolor   = [rgb]{0.5, 0.4, 0.0},	pdfborder  = {0 0 0} }\renewcommand*{\familydefault}{\sfdefault}\pagestyle{fancy}\fancyfoot[C]{--- \thepage/\pageref{LastPage}\ ---} \def\pair(#1,#2){\langle #1, #2 \rangle}%\renewcommand{\labelenumi}{(\alph{enumi})}\renewcommand{\labelenumi}{\arabic{enumi}.}\begin{document}\noindent\textbf{\large Aufgabe: \quad \emph{Eine Logelei}}\vspace*{0.3cm}\noindentEin Teil der Familie Meier besucht die Familie M\"{u}ller.  Ziel der Aufgabe ist es herauszufinden,wer genau der Familie M\"{u}ller einen Besuch abstattet.  Die folgenden Fakten sind gegeben:\begin{enumerate}\item Wenn Herr Meier kommt, bringt er auch Frau Meier mit.\item Mindestens eines der beiden Kinder Walter und Katrin wird kommen.\item Entweder kommt Frau Meier oder Franziska, aber nicht beide.\item Entweder kommen Fransizka und Katrin zusammen oder beide kommen nicht.\item Wenn Walter kommt, dann kommen auch Katrin und Herr Meier.\end{enumerate}\noindent Verwenden Sie zur Lösung des Problems die Vorlage, die Sie im Netz unter der Adresse\noindent\\[0.2cm]\hspace*{0.3cm}\href{https://github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-8/logelei-frame.stlx}{\texttt{github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-07/logelei.stlx}} \\[0.2cm]finden.  Dieser Rahmen enthält bereits eine Implementierung der Funktion\\[0.2cm]\hspace*{1.3cm}$\texttt{evaluate}(f, i)$,\\[0.2cm]die eine Formel $f$ unter einer gegebenen Variablen-Belegung $i$ auswertet.  Gehen Sie ähnlich vorwie bei dem Programm\\[0.2cm]\hspace*{0.3cm}\href{https://github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-8/logelei-frame.stlx}{\texttt{github.com/karlstroetmann/Logik/blob/master/SetlX/watson.stlx}} \\[0.2cm]das wir in der Vorlesung besprochen haben.\end{document}%%% Local Variables: %%% mode: latex%%% TeX-master: t%%% End: 

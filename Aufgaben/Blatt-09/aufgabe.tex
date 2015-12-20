@@ -29,79 +29,106 @@
 %\renewcommand{\labelenumi}{(\alph{enumi})}
 \renewcommand{\labelenumi}{\arabic{enumi}.}
 
+\newcounter{aufgabe}
+
+\newcommand{\qed}{\hspace*{\fill} $\Box$}
+\newcommand{\next}{\vspace*{0.1cm}
+
+\noindent}
+
+\newcommand{\exercise}{\vspace*{0.3cm}
+\stepcounter{aufgabe}
+
+\noindent
+\textbf{Aufgabe \arabic{aufgabe}}: }
+
+\newcommand{\solution}{\vspace*{0.3cm}
+
+\noindent
+\textbf{Lösung}: }
+
 \begin{document}
 \noindent
-{\Large \textbf{Aufgaben-Blatt}: \quad Der Tunnel}
-\vspace{0.5cm}
-
-
+\textbf{\large Aufgabe: \quad \emph{Der Prinz und die Tiger}}
+\vspace*{0.3cm}
 
 \noindent
-Vier Personen, Alice, Britney, Charly und Daniel, müssen eine Tunnel durchqueren.  Der Tunnel
-ist so eng, dass immer nur zwei Personen gleichzeitig hindurch können.  Außerdem braucht
-man zum Durchqueren des Tunnels eine Fackel.  Die vier haben aber zusammen nur eine einzige
-Fackel.  Die Zeiten, die Alice, Britney, Charly und Daniel zum Durchqueren benötigen,
-sind 1 Minute, 2 Minuten, 4 Minuten und 5 Minuten.  Berechnen Sie einen Plan zum
-Durchqueren des Tunnels, der die benötigte Zeit minimiert.
-Verwenden Sie zur Lösung des Problems die Vorlage, die Sie im Netz unter der Adresse
+Es war einmal ein König, der seine Tochter mit einem Prinzen vermählen wollte.  Er ließ im
+ganzen Land verkünden, dass er einen Gemahl für seine Tochter suche.  Eines Tages kam nun
+ein Prinz vorbei, um sich zu bewerben.  Da der König seine Tochter nicht mit
+irgendeiner Dumpfbacke vermählen wollte, führte der König den Prinzen in einen Raum mit 9
+Türen.  Der König teilte dem Prinzen mit, dass die Prinzessin sich in einem der Zimmer befinden
+würde,  dass es aber andere Zimmer gäbe, hinter denen hungrige Tiger warten würden.
+Einige Zimmer wären auch leer.  Wenn nun der Prinz eine Tür mit einem Tiger dahinter öffnen
+würde, so wäre dies vermutlich sein letzter Fehler.  
+
+Weiter sagte der König, dass an allen Türen Schilder
+angebracht wären, auf denen eine Aussage steht.  In den Zimmern, wo ein Tiger drin wäre,
+da wäre die Aussage allerdings falsch. In dem Zimmer, in dem sich die Prinzessin befinde, wäre die
+Aussage richtig.  Was die leeren Zimmer anginge, so wäre der Sachverhalt so, dass entweder
+die Aufschriften an allen leeren Zimmern wahr wären, oder dass die Aufschriften an allen leeren
+Zimmern falsch wären.  Daraufhin laß der Prinz die Aufschriften.  Diese waren wie folgt:
+\begin{enumerate}
+\item Zimmer: Die Prinzessin ist in einem Zimmer mit ungerader Zimmernummer.
+      In den Zimmern mit gerader Nummer ist kein Tiger.
+\item Zimmer: Dieses Zimmer ist leer.
+\item Zimmer: Die Aufschrift an Zimmer Nr.~5 ist wahr, die Aufschrift an Zimmer Nr.~7 
+      ist falsch und in Zimmer Nr.~3 ist ein Tiger. 
+\item Zimmer: Die Aufschrift an Zimmer Nr.~1 ist falsch, in Zimmer Nr.~8 ist kein Tiger,
+      und die Aufschrift an Zimmer Nr.~9 ist wahr.
+\item Zimmer: Wenn die Aufschrift an Zimmer Nr.~2 oder an Zimmer Nr.~4 wahr ist,
+      dann ist kein Tiger im Zimmer Nr.~1.
+\item Zimmer: Die Aufschrift an Zimmer Nr.~3 ist falsch, die Prinzessin ist im Zimmer Nr.~2 
+      und im Zimmer Nr.~2 ist kein Tiger.
+\item Zimmer: Die Prinzessin ist im Zimmer Nr.~1 und die Aufschrift an Zimmer Nr.~5 ist wahr.
+
+\item Zimmer: In diesem Zimmer ist kein Tiger und Zimmer Nr.~9 ist leer.
+
+\item Zimmer: Weder in diesem Zimmer noch in Zimmer Nr.~1 ist ein Tiger und außerdem ist
+      die Aufschrift an Zimmer Nr.~6 wahr.
+\end{enumerate}
+Schreiben Sie ein Programm, das für den Prinzen ausrechnet, hinter welcher Tür die
+Prinzessin ist.  Verwenden Sie dazu die Vorlage, die Sie im Netz unter der Adresse
 \noindent
 \\[0.2cm]
 \hspace*{0.3cm}
-\href{https://github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-09/tunnel-frame.stlx}{\texttt{github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-09/tunnel-frame.stlx}} 
+\href{https://github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-07/prince-frame.stlx}{\texttt{github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-07/prince-frame.stlx}} 
 \\[0.2cm]
-finden.  Gehen Sie bei der Lösung des Problems in folgenden Schritten vor:
+finden.  Diese Vorlage bindet die Prozeduren
 \begin{enumerate}
-\item Implementieren Sie in Zeile 85 eine Funktion \texttt{timeSet}, die für eine gegebene 
-      Menge $s$ von Personen berechnet, wie lange es für die Gruppe $s$ dauern würde, den Tunnel zu
-      durchqueren.  Beachten Sie, dass die Menge $s$ auch das Element
-      \texttt{\symbol{34}Torch\symbol{34}} enthält.
-
-      \textbf{Hinweis}:  Die Funktion \texttt{timeSet} ist als \texttt{closure} deklariert, damit
-      Sie bei der Implementierung auf die funktionale Relation \texttt{timeNeeded} zurück greifen
-      können.  Diese Relation ist in Zeile 79 bereits definiert.
-\item Implementieren Sie in Zeile 95 eine Funktion
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\texttt{timeTransition}(\textsl{stateBefore}, \textsl{stateBefore})$.
-      \\[0.2cm]
-      Hier bezeichnet \textsl{stateBefore} den Zustand am Eingang des Tunnels bevor eine Gruppe den
-      Tunnel in eine der beiden Richtungen durchquert, während \textsl{stateAfter} den Zustand nach
-      der Durchquerung beschreibt.  Zustände werden dabei  durch Teilmengen der in Zeile 76
-      definierten Menge \texttt{all} kodiert.
-\item Implementieren Sie in Zeile 105 eine Funktion \texttt{timePath}, so dass der Aufruf
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\texttt{timePath}(l)$
-      \\[0.2cm]
-      für eine Liste $l$ von aufeinander folgenden Zuständen die Zeit berechnet, die insgesamt für alle
-      Transitionen benötigt wird.  
-
-      \textbf{Beispiel}: Falls die Liste $l$ die Form
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $l = [s_1, s_2, s_3, s_4]$
-      \\[0.2cm]
-      hätte, dann könnte $\texttt{timePath}(l)$ durch den Ausdruck
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\texttt{timeTransition}(s_1, s_2) + \texttt{timeTransition}(s_2, s_3) +\texttt{timeTransition}(s_3, s_4)$
-      \\[0.2cm]
-      berechnet werden.
-\item Definieren Sie in Zeile 115 die Menge aller Zustände.  Ein einzelner Zustand ist dabei eine
-      Teilmenge der in Zeile 76 definierten Menge \texttt{all}.
-\item Definierten Sie in Zeile 117 die Relation \texttt{r1}, mit der die Zustandsübergänge
-      beschrieben werden, bei denen eine Gruppe von Personen den Tunnel vom Eingang zum Ausgang
-      durchquert. 
-\item Definierten Sie in Zeile 119 die Relation \texttt{r2}, mit der die Zustandsübergänge
-      beschrieben werden, bei denen eine Gruppe von Personen im  Tunnel vom Ausgang zum Eingang
-      zurück läuft. 
-\item Definieren Sie den Startzustand in Zeile 122.
-\item Definieren Sie den Zustand, der am Ende erreicht werden soll, in Zeile 124.
-\item Die Lösung wird nun in Zeile 126 berechnet und in Zeile 129 ausgegeben.  Bei der optimalen
-      Lösung werden insgesamt 12 Minuten zur Durchquerung des Tunnels benötigt.
-
-      Auf meinem Rechner dauert die Berechnung der Lösung etwas weniger als 7 Sekunden.
+\item \texttt{normalize}(f),
+\item \texttt{davisPutnam}(\textsl{clauses}, \textsl{literals}) \quad und
+\item \texttt{atMostOne}(s)
 \end{enumerate}
+ein.  Wir haben diese Prozeduren in der Vorlesung besprochen.  Zusätzlich stellt die Vorlage die
+Prozedur 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{parseKNF}(s)$
+\\[0.2cm]
+zur Verfügung.  Diese Prozedur nimmt als Argument einen String, der eine aussagenlogische Formel
+darstellt und wandelt diesen String in eine Menge von Klauseln um.
+Ihre Aufgabe besteht darin, die obigen Aussagen als aussagenlogische Formel zu formalisieren und in
+einer Menge von Klauseln zusammen zu fassen, für die Sie dann alle  möglichen Lösungen berechnen.
+Aus der Tatsache, dass es nur genau ein Zimmer gibt, in dem die Prinzessin sein kann, können Sie
+dann folgern, dass die Aufgabe tatsächlich eindeutig lösbar ist.
+
+Der vorgegeben Rahmen enthält bereits eine Funktion \texttt{solve}, mit deren Hilfe Sie das
+Problem lösen können.  Ihre Aufgabe besteht lediglich darin, die Funktion \texttt{computeClauses} zu
+vervollständigen. 
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Hinweis}: Die Aufgabe wird einfach, wenn Sie die richtigen aussagenlogischen Variablen
+verwenden, um die Aussagen des Königs zu kodieren.  In meiner Lösung habe ich die Variablen als
+Terme dargestellt und folgende Variablen verwendet:
+\begin{enumerate}
+\item $P(i)$ ist genau dann wahr, wenn die Prinzessin im $i$-ten Zimmer ist.  Der Index $i$ ist dabei ein
+      Element der Menge $\{1,\cdots,9\}$.
+\item $T(i)$ ist genau dann wahr, wenn im $i$-ten Zimmer ein Tiger ist.
+\item $Z(i)$ ist genau dann wahr, wenn die Aufschrift im $i$-ten Zimmer wahr ist.
+\item $W()$ ist genau dann wahr, wenn die Aufschriften an allen leeren Zimmern wahr ist.
+\end{enumerate} 
 \end{document}
 
 %%% Local Variables: 

@@ -1,0 +1,39 @@
+// Die Prozedur eval(f, i) wertet die aussagen-logische Formel f unter
+// der aussagen-logischen Interpretation i aus.
+evaluate := procedure(f, i) {
+    match (f) {
+        case true:         return true;
+        case false:        return false;
+        case ^variable(p): return i[p];
+        case !g:           return !evaluate(g, i);
+        case g && h:       return  evaluate(g, i) && evaluate(h, i);
+        case g || h:       return  evaluate(g, i) || evaluate(h, i);
+        case g => h:       return  evaluate(g, i) => evaluate(h, i);
+        case g <==> h:     return  evaluate(g, i) == evaluate(h, i);
+        default:           abort("syntax error in evaluate($f$, $i$)");
+    }
+};
+
+// This procedure turns a subset m of the set of all variables 
+// into a propositional valuation i, such that i(x) is true 
+// iff x is an element of m.
+createValuation := procedure(m, v) {
+    return { [ x, x in m ] : x in v };
+};
+
+// Wenn Herr Meier kommt, bringt er auch Frau Meier mit.
+f1 := parse("???");
+// Mindestens eines der beiden Kinder Walter und Katrin wird kommen.
+f2 := parse("???");
+// Entweder kommt Frau Meier oder Franziska, aber nicht beide.
+f3 := parse("???");
+// Entweder kommen Fransizka und Katrin zusammen oder beide kommen nicht.
+f4 := parse("???");
+// Wenn Walter kommt, dann kommen auch Katrin und Herr Meier.
+f5 := parse("???");
+
+fs := {f1, f2, f3, f4, f5};
+
+
+
+

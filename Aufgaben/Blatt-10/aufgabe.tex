@@ -1,1 +1,110 @@
-\documentclass{article}\usepackage{german}\usepackage[latin1]{inputenc}\usepackage{a4wide}\usepackage{amssymb}\usepackage{fancyvrb}\usepackage{alltt}\usepackage{epsfig}\usepackage{hyperref}\usepackage{fancyhdr}\usepackage{lastpage} \usepackage{color}\hypersetup{	colorlinks = true, % comment this to make xdvi work	linkcolor  = blue,	citecolor  = red,        filecolor  = blue,        urlcolor   = [rgb]{0.5, 0.4, 0.0},	pdfborder  = {0 0 0} }\renewcommand*{\familydefault}{\sfdefault}\pagestyle{fancy}\fancyfoot[C]{--- \thepage/\pageref{LastPage}\ ---} \def\pair(#1,#2){\langle #1, #2 \rangle}%\renewcommand{\labelenumi}{(\alph{enumi})}\renewcommand{\labelenumi}{\arabic{enumi}.}\begin{document}\noindent\textbf{\large Aufgabe: \quad \emph{Wem gehört das Zebra?}}\vspace*{0.3cm}\noindentSchreiben Sie ein \textsc{SetlX}-Programm, welches das folgende Rätsel löst.\begin{enumerate}\item Es gibt 5 Häuser. Jedes der Häuser hat eine andere Farbe.\item In jedem Haus wohnt ein Bewohner einer anderen Nationalität.\item Jeder Hausbewohner bevorzugt ein anderes Getränk, raucht eine andere      Marke Zigaretten und hält genau ein Haustier.\item \underline{Keine} der Personen trinkt das Gleiche, raucht das Gleiche       oder hält die gleiche Art Haustier. \end{enumerate}Außerdem wissen wir folgendes:\begin{enumerate}\item Der Brite wohnt im roten Haus.\item Der Schwede hält einen Hund.\item Der Amerikaner trinkt Whiskey. \item Das grüne Haus steht links vom weißen Haus.\item Der Besitzer vom grünen Haus trinkt Kaffee.\item Die Person, die Camel raucht, hält einen Papagei.\item Der Mann, der im mittleren Haus wohnt, trinkt Milch.\item Der Besitzer vom gelben Haus raucht Dunhill.\item Der Norweger wohnt im ersten Haus.\item Der Marlboro-Raucher wohnt neben dem, der eine Katze hält.\item Der Mann, der ein Schwein hält, wohnt neben dem, der Dunhill raucht.\item Der Winfieldraucher trinkt gerne Bier.\item Der Norweger wohnt neben dem blauen Haus.\item Der Deutsche raucht Rothmanns.\item Der Marlboro-Raucher hat einen Nachbarn, der Wasser trinkt.\end{enumerate}Die Frage lautet nun: Wem gehört das Zebra?\vspace{0.5cm}\noindent Verwenden Sie zur Lösung des Problems die Vorlage, die Sie im Netz unter der Adresse\\[0.2cm]\hspace*{0.3cm}\href{https://github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-10/zebra-frame.stlx}{\texttt{github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-10/zebra-frame.stlx}} \\[0.2cm]finden.  Dieser Rahmen enthält bereits eine Implementierung der Funktion\\[0.2cm]\hspace*{1.3cm}$\texttt{parseKNF}(s)$,\\[0.2cm]die eine Formel, die als String $s$ gegeben ist, in eine Menge von Klauseln umwandelt.  Weiterenthält der Rahmen die Implementierung der Funktion$\texttt{davisPutnam}$,die für eine gegebene Menge von Klauseln eine Lösung berechnet.  Diese Funktion wird vonder bereits vorgegebenen Funktion \texttt{solve} verwendet.\pagebreak\noindentBei der Lösung dieser Aufgabe sollten Sie die folgenden Terme als aussagenlogische Variablenverwenden:\begin{enumerate}\item $\texttt{Briton}(i)$ mit $i \in \{1,\cdots,5\}$.  Diese Variable drückt aus, dass der Brite      im Haus mit der Nummer $i$ wohnt.  Die anderen Nationalitäten werden mit Hilfe der Variablen      $\texttt{German}(i)$, $\texttt{Swede}(i)$, $\texttt{American}(i)$ und $\texttt{Norwegian}(i)$ kodiert.\item $\mathtt{Red}(i)$ drückt aus, dass das Haus mit der Nummer $i$ rot ist.      Für die anderen Farben benutzen Sie die Variablen      $\texttt{Green}(i)$, $\texttt{White}(i)$, $\texttt{Blue}(i)$ und $\texttt{Yellow}(i)$.\item $\texttt{Dunhill}(i)$ drückt aus, dasss der Bewohner des $i$-ten Hauses Dunhill raucht.      Für die anderen Zigaretten-Marken benutzen Sie die Variablen $\texttt{Camel}(i)$,       $\texttt{Marlboro}(i)$, $\texttt{Winfield}(i)$ und $\texttt{Rothmanns}(i)$.\item $\texttt{Dog}(i)$ drückt aus, dass der Bewohner des $i$-ten Hauses einen Hund hat.      Für die anderen Haustiere benutzen Sie die Variablen      $\texttt{Parrot}(i)$, $\texttt{Cat}(i)$, $\texttt{Pig}(i)$ und $\texttt{Zebra}(i)$.\item $\texttt{Whiskey}(i)$ sagt aus, dass der Bewohner des $i$-ten Hauses Whiskey trinkt.      Für die anderen Getränke benutzen Sie die Variablen      $\texttt{Coffee}(i)$, $\texttt{Beer}(i)$, $\texttt{Milk}(i)$ und $\texttt{Water}(i)$.\end{enumerate}\noindentZur Lösung des Problems sind die folgenden Teilaufgaben zu bearbeiten:\begin{enumerate}\item Implementieren Sie eine Funktion \texttt{onePerHouse} die beispielsweise in der Form      \\[0.2cm]      \hspace*{1.3cm}      $\texttt{onePerHouse}(\{\symbol{34}\mathtt{German}\symbol{34},       \symbol{34}\mathtt{Briton}\symbol{34},        \symbol{34}\mathtt{Swede}\symbol{34}, \symbol{34}\mathtt{American}\symbol{34},        \symbol{34}\mathtt{Norwegian}\symbol{34}\})$      \\[0.2cm]      aufgerufen wird und die ausdrückt, dass es ein Haus gibt, in dem der Deutsche wohnt,      ein Haus, in dem der Britte wohnt, etc.   Außerdem soll diese Formel noch ausdrücken,       dass in jedem Haus nur eine Person wohnt.  Wenn also beispielsweise der Deutsche im Haus      Nummer 4 wohnt, dann kann dort sonst niemand mehr wohnen.      Es ist sinnvoll, wenn Sie sich geeignete Hilfsprozeduren definieren, mit denen Sie diese       Prozedur implementieren können.   In dem vorgegebenen Rahmen ist bereits die Prozedur \texttt{somewhere}      vordefiniert, die ausdrückt, dass jeder irgendwo wohnen muss.        Sie sollten noch die Prozeduren \texttt{someone}  und \texttt{atMostOneAt} definieren.      Die Prozedur \texttt{someone} drückt aus, dass in jedem Haus jemand wohnt, während \texttt{atMostOneAt}       ausdrückt, dass in jedem Haus höchstens einer wohnt.      Beachten Sie hier, dass die Prozeduren \texttt{atMostOne} und \texttt{propVar} in dem       vorgegebenen Rahmen bereits definiert sind.\item Die Prozedur \texttt{sameHouse}, mit der Sie ausdrücken können, dass beispielsweise der Brite       in dem roten Haus wohnt, ist bereits vorgegeben und zeigt, wie Sie mit Hilfe von String-Interpolation       Formeln berechnen können.\item \texttt{nextTo} kann beispielsweise in der Form \texttt{nextTo(\symbol{34}Marlboro\symbol{34}, \symbol{34}Cat\symbol{34})}      aufgerufen werden um auszudrücken, dass derjenige, der Marlboro raucht, neben dem Haus mit der Katze wohnt.      Die Prozedur \texttt{nextTo} muss von Ihnen implementiert werden.\item \texttt{allClauses} berechnet eine Menge von Klauseln, die zusammen genau der      Problem-Beschreibung entsprechen.  Wenn Sie diese Prozedur korrekt implementieren,      wird das Problem durch den Aufruf der Funktion \texttt{solve} gelöst.  Die      Berechnung der Lösung dauert auf meinem Rechner weniger als drei Sekunden.\end{enumerate}\end{document}%%% Local Variables: %%% mode: latex%%% TeX-master: t%%% End: 
+\documentclass{article}
+\usepackage{german}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{fancyvrb}
+\usepackage{alltt}
+\usepackage{epsfig}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{lastpage} 
+\usepackage{color}
+\hypersetup{
+	colorlinks = true, % comment this to make xdvi work
+	linkcolor  = blue,
+	citecolor  = red,
+        filecolor  = blue,
+        urlcolor   = [rgb]{0.5, 0.4, 0.0},
+	pdfborder  = {0 0 0} 
+}
+
+\renewcommand*{\familydefault}{\sfdefault}
+
+\pagestyle{fancy}
+
+\fancyfoot[C]{--- \thepage/\pageref{LastPage}\ ---}
+ 
+\def\pair(#1,#2){\langle #1, #2 \rangle}
+%\renewcommand{\labelenumi}{(\alph{enumi})}
+\renewcommand{\labelenumi}{\arabic{enumi}.}
+
+\begin{document}
+\noindent
+{\Large \textbf{Aufgaben-Blatt}: \quad Der Tunnel}
+\vspace{0.5cm}
+
+
+
+\noindent
+Vier Personen, Alice, Britney, Charly und Daniel, müssen eine Tunnel durchqueren.  Der Tunnel
+ist so eng, dass immer nur zwei Personen gleichzeitig hindurch können.  Außerdem braucht
+man zum Durchqueren des Tunnels eine Fackel.  Die vier haben aber zusammen nur eine einzige
+Fackel.  Die Zeiten, die Alice, Britney, Charly und Daniel zum Durchqueren benötigen,
+sind 1 Minute, 2 Minuten, 4 Minuten und 5 Minuten.  Berechnen Sie einen Plan zum
+Durchqueren des Tunnels, der die benötigte Zeit minimiert.
+Verwenden Sie zur Lösung des Problems die Vorlage, die Sie im Netz unter der Adresse
+\noindent
+\\[0.2cm]
+\hspace*{0.3cm}
+\href{https://github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-09/tunnel-frame.stlx}{\texttt{github.com/karlstroetmann/Logik/blob/master/Aufgaben/Blatt-09/tunnel-frame.stlx}} 
+\\[0.2cm]
+finden.  Gehen Sie bei der Lösung des Problems in folgenden Schritten vor:
+\begin{enumerate}
+\item Implementieren Sie in Zeile 85 eine Funktion \texttt{timeSet}, die für eine gegebene 
+      Menge $s$ von Personen berechnet, wie lange es für die Gruppe $s$ dauern würde, den Tunnel zu
+      durchqueren.  Beachten Sie, dass die Menge $s$ auch das Element
+      \texttt{\symbol{34}Torch\symbol{34}} enthält.
+
+      \textbf{Hinweis}:  Die Funktion \texttt{timeSet} ist als \texttt{closure} deklariert, damit
+      Sie bei der Implementierung auf die funktionale Relation \texttt{timeNeeded} zurück greifen
+      können.  Diese Relation ist in Zeile 79 bereits definiert.
+\item Implementieren Sie in Zeile 95 eine Funktion
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{timeTransition}(\textsl{stateBefore}, \textsl{stateBefore})$.
+      \\[0.2cm]
+      Hier bezeichnet \textsl{stateBefore} den Zustand am Eingang des Tunnels bevor eine Gruppe den
+      Tunnel in eine der beiden Richtungen durchquert, während \textsl{stateAfter} den Zustand nach
+      der Durchquerung beschreibt.  Zustände werden dabei  durch Teilmengen der in Zeile 76
+      definierten Menge \texttt{all} kodiert.
+\item Implementieren Sie in Zeile 105 eine Funktion \texttt{timePath}, so dass der Aufruf
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{timePath}(l)$
+      \\[0.2cm]
+      für eine Liste $l$ von aufeinander folgenden Zuständen die Zeit berechnet, die insgesamt für alle
+      Transitionen benötigt wird.  
+
+      \textbf{Beispiel}: Falls die Liste $l$ die Form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $l = [s_1, s_2, s_3, s_4]$
+      \\[0.2cm]
+      hätte, dann könnte $\texttt{timePath}(l)$ durch den Ausdruck
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{timeTransition}(s_1, s_2) + \texttt{timeTransition}(s_2, s_3) +\texttt{timeTransition}(s_3, s_4)$
+      \\[0.2cm]
+      berechnet werden.
+\item Definieren Sie in Zeile 115 die Menge aller Zustände.  Ein einzelner Zustand ist dabei eine
+      Teilmenge der in Zeile 76 definierten Menge \texttt{all}.
+\item Definierten Sie in Zeile 117 die Relation \texttt{r1}, mit der die Zustandsübergänge
+      beschrieben werden, bei denen eine Gruppe von Personen den Tunnel vom Eingang zum Ausgang
+      durchquert. 
+\item Definierten Sie in Zeile 119 die Relation \texttt{r2}, mit der die Zustandsübergänge
+      beschrieben werden, bei denen eine Gruppe von Personen im  Tunnel vom Ausgang zum Eingang
+      zurück läuft. 
+\item Definieren Sie den Startzustand in Zeile 122.
+\item Definieren Sie den Zustand, der am Ende erreicht werden soll, in Zeile 124.
+\item Die Lösung wird nun in Zeile 126 berechnet und in Zeile 129 ausgegeben.  Bei der optimalen
+      Lösung werden insgesamt 12 Minuten zur Durchquerung des Tunnels benötigt.
+
+      Auf meinem Rechner dauert die Berechnung der Lösung etwas weniger als 7 Sekunden.
+\end{enumerate}
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
