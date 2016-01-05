@@ -8,7 +8,7 @@ atMostOne := procedure(s) {
 // This procedure computes a set of clauses.  This set of clauses is true
 // iff there is at most one queen on the given row.
 atMostOneInRow := procedure(row, n) {
-    return atMostOne({ Var(row, j) : j in [1 .. n] });
+    return atMostOne({ Var(row, column) : column in [1 .. n] });
 };
 // This procedure computes a set of clauses.  This set of clauses is true
 // iff there is at least one queen on the given column.
@@ -58,7 +58,8 @@ allClauses := procedure(n) {
 };
 // Solve the n-queens puzzle.
 solve := procedure(n) {
-    clauses  := allClauses(n);  // print(clauses);
+    clauses  := allClauses(n);
+    print(clauses);
     solution := davisPutnam(clauses, {});
     if (solution != { {} }) {
         // print(solution);
@@ -100,7 +101,7 @@ printBoard := procedure(i, n) {
     }
 };
 start := now();
-solve(10);
+solve(12);
 stop  := now();
 print("time: $stop - start$ milliseconds");
 
