@@ -1,44 +1,44 @@
 \chapter{\textsl{Prolog}} 
 Im diesem Kapitel wollen wir uns mit dem logischen Programmieren und der
-Sprache \textsl{Prolog} beschäftigen.  Der Name \textsl{Prolog} steht für 
+Sprache \textsl{Prolog} besch\"{a}ftigen.  Der Name \textsl{Prolog} steht f\"{u}r 
 ``\emph{\underline{pro}gramming in \underline{log}ic}''.
 Die Grundidee des logischen Programmieren 
 kann wie folgt dargestellt werden:
 \begin{enumerate}
 \item Der Software-Entwickler erstellt eine \emph{Wissensbasis}.
-      Diese enthält Informationen in Form von \emph{Fakten} und \emph{Regeln}.
+      Diese enth\"{a}lt Informationen in Form von \emph{Fakten} und \emph{Regeln}.
 \item Ein automatischer Beweiser (eine sogenannte \emph{Inferenz-Maschine})
       erschließt aus diesen Fakten und Regeln
       Informationen und beantwortet so Anfragen.
 \end{enumerate}
-Das Besondere an dieser Art der Problemlösung besteht darin, dass es nicht mehr notwendig
-ist, einen Algorithmus zu entwickeln, der ein bestimmtes Problem löst.  Statt dessen
-wird das Problem durch logische Formeln beschrieben.  Zur Lösung des Problems
-wird dann ein automatischen Beweiser eingesetzt, der die gesuchte Lösung berechnet.
+Das Besondere an dieser Art der Probleml\"{o}sung besteht darin, dass es nicht mehr notwendig
+ist, einen Algorithmus zu entwickeln, der ein bestimmtes Problem l\"{o}st.  Statt dessen
+wird das Problem durch logische Formeln beschrieben.  Zur L\"{o}sung des Problems
+wird dann ein automatischen Beweiser eingesetzt, der die gesuchte L\"{o}sung berechnet.
 Diese Vorgehensweise folgt dem Paradigma des \emph{deklarativen Programmierens}.
 In der Praxis funktioniert der deklarative Ansatz nur bei einfachen Beispielen.  Um mit
-Hilfe von \textsl{Prolog} auch komplexere Aufgaben lösen zu können, ist es unumgänglich, die
+Hilfe von \textsl{Prolog} auch komplexere Aufgaben l\"{o}sen zu k\"{o}nnen, ist es unumg\"{a}nglich, die
 Funktionsweise des eingesetzten automatischen Beweisers zu verstehen.
 
 Wir geben ein einfaches Beispiel, an dem wir das Grundprinzip des deklarativen
-Programmierens mit \textsl{Prolog} erläutern können.  Abbildung \ref{fig:caesar} auf Seite
+Programmierens mit \textsl{Prolog} erl\"{a}utern k\"{o}nnen.  Abbildung \ref{fig:caesar} auf Seite
 \pageref{fig:caesar} zeigt ein \textsl{Prolog}-Programm, das aus einer Ansammlung von
 \textsl{Fakten} und \textsl{Regeln} besteht:
 \begin{enumerate}
 \item Ein \emph{Fakt} ist eine atomare Formel.  Die Syntax ist\\[0.2cm]
       \hspace*{1.3cm} $p(t_1,\cdots,t_n).$ \\[0.2cm]
-      Dabei ist $p$ ein Prädikats-Zeichen und $t_1, \cdots,t_n$ sind Terme.
+      Dabei ist $p$ ein Pr\"{a}dikats-Zeichen und $t_1, \cdots,t_n$ sind Terme.
       Ist die Menge der Variablen, die in den Termen $t_1,\cdots,t_n$ vorkommen,
       durch $\{x_1,\cdots,x_m\}$ gegeben, so wird der obige Fakt als die 
       logische Formel \\[0.2cm]
       \hspace*{1.3cm} $\forall x_1, \cdots, x_m \colon p(t_1,\cdots,t_n)$ \\[0.2cm]
-      interpretiert.  Das Programm in Abbildung \ref{fig:caesar} enthält in den Zeilen
-      1 bis 5 Fakten.  Umgangssprachlich können wir diese wie folgt lesen:
+      interpretiert.  Das Programm in Abbildung \ref{fig:caesar} enth\"{a}lt in den Zeilen
+      1 bis 5 Fakten.  Umgangssprachlich k\"{o}nnen wir diese wie folgt lesen:
       \begin{enumerate}
       \item Asterix ist ein Gallier.
       \item Obelix ist ein Gallier.
-      \item Cäsar ist ein Kaiser.
-      \item Cäsar ist ein Römer.
+      \item C\"{a}sar ist ein Kaiser.
+      \item C\"{a}sar ist ein R\"{o}mer.
       \end{enumerate}
 \item Eine \emph{Regel} ist eine bedingte Aussage.  Die Syntax ist \\[0.2cm]
       \hspace*{1.3cm} 
@@ -46,13 +46,13 @@ Programmierens mit \textsl{Prolog} erläutern können.  Abbildung \ref{fig:caesar}
       \\[0.2cm]
       Dabei sind $A$ und $B_1, \cdots, B_n$ atomare Formeln, haben also die Gestalt \\[0.2cm]
       \hspace*{1.3cm} $q(s_1,\cdots,s_k)$,\\[0.2cm]
-      wobei $q$ ein Prädikats-Zeichen ist und $s_1, \cdots, s_k$ Terme sind.
+      wobei $q$ ein Pr\"{a}dikats-Zeichen ist und $s_1, \cdots, s_k$ Terme sind.
       Ist die Menge der Variablen, die in den atomaren Formeln $A,B_1,\cdots,B_n$
       auftreten, durch $\{x_1, \cdots, x_m\}$ gegeben, so wird die obige Regel als die 
       logische Formel       
       \[ \forall x_1, \cdots, x_m : (B_1 \wedge \cdots \wedge B_m \rightarrow A) \]
-      interpretiert.  Das Programm aus Abbildung \ref{fig:caesar} enthält in den Zeilen
-      7 bis 12 Regeln.  Schreiben wir diese Regeln als prädikatenlogische Formeln,
+      interpretiert.  Das Programm aus Abbildung \ref{fig:caesar} enth\"{a}lt in den Zeilen
+      7 bis 12 Regeln.  Schreiben wir diese Regeln als pr\"{a}dikatenlogische Formeln,
       so erhalten wir:
       \begin{enumerate}
       \item $\forall x : \bigl(\texttt{gallier}(x) \rightarrow \texttt{stark}(x)\bigr)$
@@ -61,13 +61,13 @@ Programmierens mit \textsl{Prolog} erläutern können.  Abbildung \ref{fig:caesar}
             \textsl{Alle Gallier sind stark.}
       \item $\forall x : \bigl(\texttt{stark}(x) \rightarrow \texttt{maechtig}(x)\bigr)$
 
-            \textsl{Wer stark ist, ist mächtig.}
+            \textsl{Wer stark ist, ist m\"{a}chtig.}
       \item $\forall x : \bigl(\texttt{kaiser}(x) \wedge \texttt{roemer}(x) \rightarrow \texttt{maechtig}(x)\bigr)$
 
-            \textsl{Wer Kaiser und Römer ist, der ist mächtig.}
+            \textsl{Wer Kaiser und R\"{o}mer ist, der ist m\"{a}chtig.}
       \item $\forall x : \bigl(\texttt{roemer}(x) \rightarrow \texttt{spinnt}(x)\bigr)$
 
-            \textsl{Wer Römer ist, spinnt.}
+            \textsl{Wer R\"{o}mer ist, spinnt.}
       \end{enumerate}
 \end{enumerate}
 
@@ -104,11 +104,11 @@ Wir haben in dem Programm in Abbildung \ref{fig:caesar} die Zeile \\[0.2cm]
 \hspace*{1.3cm} \texttt{stark(X) :- gallier(X).} \\[0.2cm]
 als die Formel \\[0.2cm]
 \hspace*{1.3cm} $\forall x \colon \bigl(\texttt{gallier}(x) \rightarrow \texttt{stark}(x)\bigr)$ \\[0.2cm]
-interpretiert.  Damit eine solche Interpretation möglich ist, muss klar sein,
+interpretiert.  Damit eine solche Interpretation m\"{o}glich ist, muss klar sein,
 dass in der obigen Regel der String ``\texttt{X}'' eine Variable bezeichnet,
-während die Strings ``\texttt{stark}'' und ``\texttt{gallier}'' Prädikats-Zeichen sind. 
-Prolog hat sehr einfache syntaktische Regeln um Variablen von Prädikats- und Funktions-Zeichen
-unterscheiden zu können:
+w\"{a}hrend die Strings ``\texttt{stark}'' und ``\texttt{gallier}'' Pr\"{a}dikats-Zeichen sind. 
+Prolog hat sehr einfache syntaktische Regeln um Variablen von Pr\"{a}dikats- und Funktions-Zeichen
+unterscheiden zu k\"{o}nnen:
 \begin{enumerate}
 \item Wenn ein String mit einem großen Buchstaben oder aber mit dem Unterstrich
       ``\texttt{\_}'' beginnt und nur aus Buchstaben, Ziffern und dem Unterstrich
@@ -118,8 +118,8 @@ unterscheiden zu können:
       \hspace*{1.3cm} \texttt{X}, \texttt{ABC\_32}, \texttt{\_U}, \texttt{Hugo},
       \texttt{\_1}, \texttt{\_}.
 \item Strings, die mit einem kleinen Buchstaben beginnen und nur aus Buchstaben, Ziffern
-      und dem Unterstrich ``\texttt{\_}'' bestehen, bezeichnen Prädikats- und Funktions-Zeichen.
-      Die folgenden Strings können also als Funktions- oder Prädikats-Zeichen
+      und dem Unterstrich ``\texttt{\_}'' bestehen, bezeichnen Pr\"{a}dikats- und Funktions-Zeichen.
+      Die folgenden Strings k\"{o}nnen also als Funktions- oder Pr\"{a}dikats-Zeichen
       verwendet werden:
       \\[0.2cm]
       \hspace*{1.3cm}      
@@ -132,10 +132,10 @@ unterscheiden zu können:
       ``\texttt{/}'',
       ``\texttt{.}'' \\[0.2cm]
       bezeichnen Funktions-Zeichen.  Bis auf das Funktions-Zeichen ``\texttt{.}''
-      können diese Funktions-Zeichen auch, wie in der Mathematik üblich,
+      k\"{o}nnen diese Funktions-Zeichen auch, wie in der Mathematik \"{u}blich,
       als Infix-Operatoren geschrieben werden.  Das Funktions-Zeichen ``\texttt{.}''
       bezeichnen wir als \emph{Dot-Operator}.  Dieser Operator wird zur Konstruktion von
-      Listen benutzt.  Die Details werden wir später diskutieren.
+      Listen benutzt.  Die Details werden wir sp\"{a}ter diskutieren.
 \item Die Strings \\[0.2cm]
       \hspace*{1.3cm} 
       ``\texttt{<}'',
@@ -147,11 +147,11 @@ unterscheiden zu können:
       ``\texttt{==}'',
       ``\texttt{$\backslash$==}''.
       \\[0.2cm]
-      bezeichnen Prädikats-Zeichen. Auch für diese Prädikats-Zeichen ist eine
-      Infix-Schreibweise zulässig.
+      bezeichnen Pr\"{a}dikats-Zeichen. Auch f\"{u}r diese Pr\"{a}dikats-Zeichen ist eine
+      Infix-Schreibweise zul\"{a}ssig.
       
-      Gegenüber den Sprachen \texttt{C} und \textsc{SetlX}
-      gibt es hier die folgenden Unterschiede, die besonders Anfängern oft
+      Gegen\"{u}ber den Sprachen \texttt{C} und \textsc{SetlX}
+      gibt es hier die folgenden Unterschiede, die besonders Anf\"{a}ngern oft
       Probleme bereiten.
       \begin{enumerate}
       \item Bei dem Operator ``\texttt{=<}'' treten die Zeichen ``\texttt{=}''
@@ -159,7 +159,7 @@ unterscheiden zu können:
             Sprachen \texttt{C} oder \textsc{SetlX} der Fall ist, denn dort wird dieser
             Operator als  ``\texttt{<=}'' geschrieben. 
       \item Der Operator ``\texttt{==}'' testet, ob die beiden Argumente gleich sind,
-            während der Operator ``\texttt{$\backslash$==}'' testet, ob die beiden Werte
+            w\"{a}hrend der Operator ``\texttt{$\backslash$==}'' testet, ob die beiden Werte
             ungleich sind.  In \texttt{C} und \textsc{SetlX} hat der entsprechende Operator
             die Form ``\texttt{!=}''.
       \item Der Operator ``\texttt{=}'' ist der Unifikations-Operator.
@@ -169,25 +169,25 @@ unterscheiden zu können:
             $s = t$
             \\[0.2cm]
             versucht das \textsl{Prolog}-System die syntaktische Gleichung $s \doteq t$ zu
-            lösen.\footnote{
+            l\"{o}sen.\footnote{
               Leider wird dabei im Normalfall der \emph{Occur-Check} \underline{nicht}
-              durchgeführt. Durch Eingabe des Befehls
+              durchgef\"{u}hrt. Durch Eingabe des Befehls
               \\[0.1cm]
               \hspace*{1.3cm}
               \texttt{set\_prolog\_flag(occurs\_check, true).}
               \\[0.1cm]
-              können Sie aber erzwingen, dass bei jeder Unifikation ein Occur-Check
-              durchgeführt wird.
+              k\"{o}nnen Sie aber erzwingen, dass bei jeder Unifikation ein Occur-Check
+              durchgef\"{u}hrt wird.
             }
             Falls dies erfolgreich ist, werden die Variablen, die in den 
             Termen $s$ und $t$ vorkommen, \emph{instantiiert}.  Was dabei im Detail 
-            passiert, werden wir später sehen.
+            passiert, werden wir sp\"{a}ter sehen.
 
             Der Operator ``{$\backslash$=}'' bezeichnet die Negation des Unifikations-Operators.
      \end{enumerate}
       
-\item Zahlen bezeichnen 0-stellige Funktions-Zeichen. In \textsl{Prolog} können Sie sowohl
-      ganze Zahlen als auch Fließkomma-Zahlen benutzen.  Die Syntax für Zahlen ist ähnlich
+\item Zahlen bezeichnen 0-stellige Funktions-Zeichen. In \textsl{Prolog} k\"{o}nnen Sie sowohl
+      ganze Zahlen als auch Fließkomma-Zahlen benutzen.  Die Syntax f\"{u}r Zahlen ist \"{a}hnlich
       wie in \texttt{C}, die folgenden Strings stellen also Zahlen dar:
       \\[0.2cm]
       \hspace*{1.3cm}      
@@ -195,19 +195,19 @@ unterscheiden zu können:
 \end{enumerate}
 
 Nachdem wir jetzt Syntax und Semantik des Programms in Abbildung \ref{fig:caesar}
-erläutert haben, zeigen wir nun, wie \textsl{Prolog} sogenannte \emph{Anfragen}
+erl\"{a}utert haben, zeigen wir nun, wie \textsl{Prolog} sogenannte \emph{Anfragen}
 beantwortet. Wir nehmen an, dass das Programm in einer Datei mit dem Namen
 ``\texttt{gallier.pl}'' abgespeichert ist.  Wir wollen herausfinden, ob es jemanden gibt,
-der einerseits mächtig ist und der andererseits spinnt.  Logisch wird dies durch die
-folgende Formel ausgedrückt: \\[0.2cm]
+der einerseits m\"{a}chtig ist und der andererseits spinnt.  Logisch wird dies durch die
+folgende Formel ausgedr\"{u}ckt: \\[0.2cm]
 \hspace*{1.3cm} $\exists x \colon \bigl(\texttt{maechtig}(x) \wedge \texttt{spinnt}(x)\bigr)$. \\[0.2cm]
-Als \textsl{Prolog}-Anfrage können wir den Sachverhalt wie folgt formulieren: \\[0.2cm]
+Als \textsl{Prolog}-Anfrage k\"{o}nnen wir den Sachverhalt wie folgt formulieren: \\[0.2cm]
 \hspace*{1.3cm} \texttt{maechtig(X), spinnt(X).} \\[0.2cm]
-Um diese Anfrage auswerten zu können, starten wir das \textsl{SWI-Prolog}-System\footnote{
+Um diese Anfrage auswerten zu k\"{o}nnen, starten wir das \textsl{SWI-Prolog}-System\footnote{
 Sie finden dieses Prolog-System im Netz unter \href{http://www.swi-prolog.org}{\texttt{www.swi-prolog.org}}.}
 in einer Shell mit dem Kommando: \\[0.2cm]
 \hspace*{1.3cm} \texttt{swipl}\\[0.2cm]
-Wenn das \textsl{Prolog}-System installiert ist, begrüßt uns das System wie folgt:
+Wenn das \textsl{Prolog}-System installiert ist, begr\"{u}ßt uns das System wie folgt:
 \begin{verbatim}
     Welcome to SWI-Prolog (Multi-threaded, 64 bits, Version 6.6.1-DIRTY)
     Copyright (c) 1990-2013 University of Amsterdam, VU Amsterdam
@@ -221,7 +221,7 @@ Wenn das \textsl{Prolog}-System installiert ist, begrüßt uns das System wie folg
 \end{verbatim}
 Die Zeichenfolge ``\texttt{?-}'' ist der \textsl{Prolog}-Prompt.  Hier geben wir  \\[0.2cm]
 \hspace*{1.3cm} \texttt{consult(gallier).} \\[0.2cm]
-ein (und zwar mit dem Punkt) und drücken \textsl{Return}. Damit fordern wir das System auf, die
+ein (und zwar mit dem Punkt) und dr\"{u}cken \textsl{Return}. Damit fordern wir das System auf, die
 Fakten und Regeln aus der Datei ``\texttt{gallier.pl}'' zu laden.  Als Ergebnis erhalten
 wir die Meldung
 \begin{verbatim}
@@ -231,7 +231,7 @@ wir die Meldung
     Yes
     ?- 
 \end{verbatim}
-Das Programm wurde erfolgreich geladen und übersetzt.  Wir geben nun unsere Anfrage ein
+Das Programm wurde erfolgreich geladen und \"{u}bersetzt.  Wir geben nun unsere Anfrage ein
 
 \begin{verbatim}
     ?- maechtig(X), spinnt(X).
@@ -240,30 +240,30 @@ und erhalten als Antwort:
 \begin{verbatim}
     X = caesar.
 \end{verbatim}
-Da diese Antwort mit einem Punkt ``\texttt{.}'' beendet wird, können wir folgern, dass es keine
-weiteren möglichen Antworten gibt, die logisch aus den Fakten und Regeln folgen.  Würde es noch
-weitere Antworten geben, so hätte die Antwort nur die Form 
+Da diese Antwort mit einem Punkt ``\texttt{.}'' beendet wird, k\"{o}nnen wir folgern, dass es keine
+weiteren m\"{o}glichen Antworten gibt, die logisch aus den Fakten und Regeln folgen.  W\"{u}rde es noch
+weitere Antworten geben, so h\"{a}tte die Antwort nur die Form 
 \begin{verbatim}
     X = caesar
 \end{verbatim}
-gehabt.  In diesem Fall hätten wir zwei Möglichkeiten gehabt:
+gehabt.  In diesem Fall h\"{a}tten wir zwei M\"{o}glichkeiten gehabt:
 \begin{enumerate}
-\item Wenn wir mit dieser Antwort zufrieden sind, drücken wir \textsl{Return} und erhalten einen
+\item Wenn wir mit dieser Antwort zufrieden sind, dr\"{u}cken wir \textsl{Return} und erhalten einen
       neuen Prompt.
 \item Wenn wir statt dessen nach weiteren Personen suchen wollen, die einerseits
-      mächtig sind und andererseits spinnen, dann geben wir das Zeichen ``\texttt{;}'' ein.
-      In diesem Fall hätte das System versucht, weitere mögliche Antworten zu finden.
+      m\"{a}chtig sind und andererseits spinnen, dann geben wir das Zeichen ``\texttt{;}'' ein.
+      In diesem Fall h\"{a}tte das System versucht, weitere m\"{o}gliche Antworten zu finden.
 \end{enumerate} 
 Wenn wir das \textsl{Prolog}-System wieder verlassen wollen, dann geben wir den Befehl
 ``\texttt{halt}.'' ein.
 
 \section{Wie arbeitet \textsl{Prolog}?}
 Das Konzept des logischen Programmierens sieht vor, dass der Benutzer eine Datenbank mit
-Fakten und Regeln erstellt, die das Problem vollständig beschreiben.  Anschließend
-beantwortet dann das \textsl{Prolog}-System mögliche Anfragen mit Hilfe einer
-Inferenz-Maschine.  Um nicht-triviale \textsl{Prolog}-Programme erstellen zu können, ist es
+Fakten und Regeln erstellt, die das Problem vollst\"{a}ndig beschreiben.  Anschließend
+beantwortet dann das \textsl{Prolog}-System m\"{o}gliche Anfragen mit Hilfe einer
+Inferenz-Maschine.  Um nicht-triviale \textsl{Prolog}-Programme erstellen zu k\"{o}nnen, ist es
 notwendig zu verstehen, wie das \textsl{Prolog}-System Anfragen beantwortet.
-Um diesen Algorithmus leichter darstellen zu können, vereinbaren wir folgendes:
+Um diesen Algorithmus leichter darstellen zu k\"{o}nnen, vereinbaren wir folgendes:
 Ist ein Fakt der Form \\[0.2cm]
 \hspace*{1.3cm} $A$.
 \\[0.2cm]
@@ -288,7 +288,7 @@ beantwortet.
       \item \textsl{Prolog}-Programm: \quad $P$
             \vspace*{0.1cm}
         
-            Da die Reihenfolge der Klauseln für das Folgende relevant ist, fassen wir das
+            Da die Reihenfolge der Klauseln f\"{u}r das Folgende relevant ist, fassen wir das
             \textsl{Prolog}-Programm $P$ als Liste von Regeln auf.
       \end{enumerate}
 \item \textbf{Gesucht}: Eine Substitution $\sigma$, so dass die Instanz $G\sigma$ aus den
@@ -301,28 +301,28 @@ Der Algorithmus selbst arbeitet wie folgt:
 \begin{enumerate}
 \item Suche (der Reihe nach) in dem Programm $P$ alle Regeln        
       \[ A \;\texttt{:-}\; B_1,\cdots,B_m. \] 
-      für die der Unifikator $\mu = \texttt{mgu}(Q_1,A)$ existiert.
+      f\"{u}r die der Unifikator $\mu = \texttt{mgu}(Q_1,A)$ existiert.
 \item Gibt es mehrere solche Regeln, so
       \begin{enumerate}
-      \item wählen wir die erste Regel aus, wobei wir uns an der Reihenfolge orientieren,
+      \item w\"{a}hlen wir die erste Regel aus, wobei wir uns an der Reihenfolge orientieren,
             in der die Regeln in dem Programm $P$ auftreten.
       \item Außerdem setzen wir an dieser Stelle einen Auswahl-Punkt (\emph{Choice-Point}),
-            um später hier eine andere Regel wählen zu können, falls dies notwendig werden
+            um sp\"{a}ter hier eine andere Regel w\"{a}hlen zu k\"{o}nnen, falls dies notwendig werden
             sollte.
       \end{enumerate}
 \item Wir setzen $G := G\mu$, wobei $\mu$ der oben berechnete Unifikator ist.
 \item Nun   bilden wir die  Anfrage \\[0.2cm]
       \hspace*{1.3cm} $B_1\mu, \cdots, B_m\mu, Q_2\mu, \cdots, Q_n\mu$. \\[0.2cm]
-      Jetzt können zwei Fälle auftreten: 
+      Jetzt k\"{o}nnen zwei F\"{a}lle auftreten: 
       \begin{enumerate}
       \item $m + n = 0$: Dann ist die Beantwortung der Anfrage erfolgreich und wir geben
-            als Antwort $G\mu$ zurück.
+            als Antwort $G\mu$ zur\"{u}ck.
       \item Sonst beantworten wir rekursiv die Anfrage $B_1\mu, \cdots, B_m\mu, Q_2\mu, \cdots, Q_n\mu$            . 
         
             Falls die rekursive Beantwortung unter Punkt 4 erfolglos war,
-            gehen wir zum letzten Auswahl-Punkt  zurück.  Gleichzeitig werden alle Zuweisungen
-            $G := G\mu$, die wir seit diesem Auswahl-Punkt durchgeführt haben, wieder rückgängig
-            gemacht.  Anschließend versuchen wir, mit der nächsten möglichen Regel
+            gehen wir zum letzten Auswahl-Punkt  zur\"{u}ck.  Gleichzeitig werden alle Zuweisungen
+            $G := G\mu$, die wir seit diesem Auswahl-Punkt durchgef\"{u}hrt haben, wieder r\"{u}ckg\"{a}ngig
+            gemacht.  Anschließend versuchen wir, mit der n\"{a}chsten m\"{o}glichen Regel
             die Anfrage zu beantworten.
       \end{enumerate}
 \end{enumerate}
@@ -340,62 +340,62 @@ Wir erhalten die Antwort:
 Yes
 ?- 
 \end{verbatim}
-Jetzt starten wir die ursprüngliche Anfrage noch einmal, setzen aber das Kommando
+Jetzt starten wir die urspr\"{u}ngliche Anfrage noch einmal, setzen aber das Kommando
 \texttt{trace} vor unsere Anfrage:
 \begin{verbatim}
     ?- trace, maechtig(X), spinnt(X).
 \end{verbatim}
-Als Ergebnis wird ein Fenster geöffnet, das Sie in Abbildung \ref{fig:debugger} auf Seite
-\pageref{fig:debugger} sehen.  Unter dem Menü sehen Sie hier eine Werkzeugleiste.
+Als Ergebnis wird ein Fenster ge\"{o}ffnet, das Sie in Abbildung \ref{fig:debugger} auf Seite
+\pageref{fig:debugger} sehen.  Unter dem Men\"{u} sehen Sie hier eine Werkzeugleiste.
 Die einzelnen Symbole haben dabei die folgende Bedeutung:
 \begin{enumerate}
-\item Die Schaltfläche \raisebox{-0.2cm}{\epsfig{file=Figures/down.eps}}
-      dient dazu, einzelne Unifikationen anzuzeigen.  Mit dieser Schaltfläche
-      können wir die meisten Details der Abarbeitung beobachten.
+\item Die Schaltfl\"{a}che \raisebox{-0.2cm}{\epsfig{file=Figures/down.eps}}
+      dient dazu, einzelne Unifikationen anzuzeigen.  Mit dieser Schaltfl\"{a}che
+      k\"{o}nnen wir die meisten Details der Abarbeitung beobachten.
 
       Alternativ hat die Taste ``\texttt{i}'' dieselbe Funktion.
-\item Die Schaltfläche \raisebox{-0.2cm}{\epsfig{file=Figures/step.eps}}
+\item Die Schaltfl\"{a}che \raisebox{-0.2cm}{\epsfig{file=Figures/step.eps}}
       dient dazu, einen einzelnen Schritt bei der Abarbeitung einer Anfrage
-      durchzuführen.
+      durchzuf\"{u}hren.
 
       Alternativ hat die Leertaste dieselbe Funktion.
-\item Die Schaltfläche \raisebox{-0.2cm}{\epsfig{file=Figures/skip.eps}}
-      dient dazu, die nächste atomare Anfrage in einem Schritt durchzuführen.
-      Drücken wir diese Schaltfläche unmittelbar, nachdem wir das Ziel \\[0.2cm]
+\item Die Schaltfl\"{a}che \raisebox{-0.2cm}{\epsfig{file=Figures/skip.eps}}
+      dient dazu, die n\"{a}chste atomare Anfrage in einem Schritt durchzuf\"{u}hren.
+      Dr\"{u}cken wir diese Schaltfl\"{a}che unmittelbar, nachdem wir das Ziel \\[0.2cm]
       \hspace*{1.3cm} \texttt{maechtig(X), roemer(X).} \\[0.2cm]
-      eingegeben haben, so würde der Debugger die Anfrage
-      \texttt{maechtig(X)} in einem Schritt beantworten.  Dabei würde dann die Variable
+      eingegeben haben, so w\"{u}rde der Debugger die Anfrage
+      \texttt{maechtig(X)} in einem Schritt beantworten.  Dabei w\"{u}rde dann die Variable
       \texttt{X} an die Konstante \texttt{asterix} gebunden.
 
       Alternativ hat die Taste ``\texttt{s}'' (\emph{skip}) dieselbe Funktion.
-\item Die Schaltfläche \raisebox{-0.2cm}{\epsfig{file=Figures/finish.eps}} dient dazu,
+\item Die Schaltfl\"{a}che \raisebox{-0.2cm}{\epsfig{file=Figures/finish.eps}} dient dazu,
       die Prozedur, in deren Abarbeitung wir uns befinden, ohne Unterbrechung zu Ende
       abarbeiten zu lassen.  Versuchen wir beispielsweise die atomare Anfrage ``\texttt{maechtig(X)}''
       mit der Regel \\[0.2cm]
       \hspace*{1.3cm} \texttt{maechtig(X) :- kaiser(X), roemer(X).} \\[0.2cm]
-      abzuarbeiten und müssen nun die Anfrage ``\texttt{kaiser(X), roemer(X).}''
-      beantworten, so würden wir durch Betätigung dieser Schaltfläche sofort die Antwort
-      ``\texttt{X = caesar}'' für diese Anfrage erhalten.
+      abzuarbeiten und m\"{u}ssen nun die Anfrage ``\texttt{kaiser(X), roemer(X).}''
+      beantworten, so w\"{u}rden wir durch Bet\"{a}tigung dieser Schaltfl\"{a}che sofort die Antwort
+      ``\texttt{X = caesar}'' f\"{u}r diese Anfrage erhalten.
 
       Alternative hat die Taste ``\texttt{f}'' (\emph{finish}) dieselbe Funktion.
-\item Die Schaltfläche \raisebox{-0.2cm}{\epsfig{file=Figures/redo.eps}} 
+\item Die Schaltfl\"{a}che \raisebox{-0.2cm}{\epsfig{file=Figures/redo.eps}} 
       dient dazu, eine bereits beantwortete Anfrage noch einmal zu beantworten.
       Dies kann sinnvoll sein, wenn man beim Tracen einer Anfrage nicht aufgepasst hat
-      und noch einmal sehen möchte, wie das \textsl{Prolog}-System zu seiner Antwort
+      und noch einmal sehen m\"{o}chte, wie das \textsl{Prolog}-System zu seiner Antwort
       gekommen ist.
       
       Alternative hat die Taste ``\texttt{r}'' (\emph{retry}) dieselbe Funktion.
-\item Die Schaltfläche \raisebox{-0.2cm}{\epsfig{file=Figures/nodebug.eps}}
+\item Die Schaltfl\"{a}che \raisebox{-0.2cm}{\epsfig{file=Figures/nodebug.eps}}
       beantwortet die gestellte Anfrage ohne weitere Unterbrechung.
 
       Alternative hat die Taste ``\texttt{n}'' (\emph{nodebug}) dieselbe Funktion.
 
-      Von den weiteren Schaltflächen sind fürs erste nur noch zwei interessant.
-\item Die Schaltfläche \raisebox{-0.2cm}{\epsfig{file=Figures/continue.eps}}
-       lässt das Programm bis zum nächsten Haltepunkt laufen.
+      Von den weiteren Schaltfl\"{a}chen sind f\"{u}rs erste nur noch zwei interessant.
+\item Die Schaltfl\"{a}che \raisebox{-0.2cm}{\epsfig{file=Figures/continue.eps}}
+       l\"{a}sst das Programm bis zum n\"{a}chsten Haltepunkt laufen.
 
       Alternative hat die Taste ``\texttt{l}'' (\emph{continue}) dieselbe Funktion.
-\item Die Schaltfläche \raisebox{-0.2cm}{\epsfig{file=Figures/break.eps}} 
+\item Die Schaltfl\"{a}che \raisebox{-0.2cm}{\epsfig{file=Figures/break.eps}} 
       setzt einen Haltepunkt.  Dazu muss vorher der Cursor an die Stelle gebracht
       werden, an der ein Haltepunkt gesetzt werden soll.
 
@@ -412,35 +412,35 @@ Die einzelnen Symbole haben dabei die folgende Bedeutung:
 Wir zeigen, wie das Ziel \texttt{maechtig(X), spinnt(X)} 
 vom \textsl{Prolog}-System beantwortet wird.  
 \begin{enumerate}
-\item Zunächst wird versucht, die Anfrage ``\texttt{maechtig(X)}'' zu lösen.
-      Die erste Regel, die das Prädikat \texttt{maechtig/1} definiert,
+\item Zun\"{a}chst wird versucht, die Anfrage ``\texttt{maechtig(X)}'' zu l\"{o}sen.
+      Die erste Regel, die das Pr\"{a}dikat \texttt{maechtig/1} definiert,
       ist \\[0.2cm]
       \hspace*{1.3cm} \texttt{maechtig(X) :- stark(X).}\\[0.2cm]
       Daher wird die Anfrage ``\texttt{maechtig(X)}'' reduziert zu der Anfrage 
-      ``\texttt{stark(X)}''.  Die aktuelle vollständige Anfrage lautet nun \\[0.2cm]
+      ``\texttt{stark(X)}''.  Die aktuelle vollst\"{a}ndige Anfrage lautet nun \\[0.2cm]
       \hspace*{1.3cm} \texttt{stark(X), spinnt(X)}. \\[0.2cm]
-      Da es noch eine zweite Regel gibt, die das Prädikat \texttt{maechtig/1} definiert,
+      Da es noch eine zweite Regel gibt, die das Pr\"{a}dikat \texttt{maechtig/1} definiert,
       setzen wir an dieser Stelle einen Auswahl-Punkt (\emph{Choice-Point}).  Falls also die 
-      Beantwortung der Anfrage ``\texttt{stark(X), spinnt(X)}'' später scheitert,
-      können wir es mit der zweiten Regel noch einmal versuchen.
-\item Jetzt wird versucht, die Anfrage ``\texttt{stark(X)}'' zu lösen.
-      Die erste und einzige Regel, die das Prädikat \texttt{stark/1} definiert, ist 
+      Beantwortung der Anfrage ``\texttt{stark(X), spinnt(X)}'' sp\"{a}ter scheitert,
+      k\"{o}nnen wir es mit der zweiten Regel noch einmal versuchen.
+\item Jetzt wird versucht, die Anfrage ``\texttt{stark(X)}'' zu l\"{o}sen.
+      Die erste und einzige Regel, die das Pr\"{a}dikat \texttt{stark/1} definiert, ist 
       \\[0.2cm]
       \hspace*{1.3cm} \texttt{stark(X) :- gallier(X).} \\[0.2cm]
       Nach der Unifikation des Kopfes dieser Regel mit der Anfrage ``\texttt{stark(X)}''
       lautet die aktuelle Anfrage \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{gallier(X), spinnt(X).}
-\item Die erste Regel, die das Prädikat \texttt{gallier/1} definiert und deren Kopf
+\item Die erste Regel, die das Pr\"{a}dikat \texttt{gallier/1} definiert und deren Kopf
       mit der Anfrage ``\texttt{gallier(X)}'' unifiziert werden kann, ist der Fakt \\[0.2cm]
       \hspace*{1.3cm} \texttt{gallier(asterix).} \\[0.2cm]
       Bei der Unifikation mit diesem Fakt wird die Variable \texttt{X} an die Konstante
       \texttt{asterix} gebunden.  Damit lautet jetzt die aktuelle Anfrage \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{spinnt(asterix).} \\[0.2cm]
-      Da es noch eine zweite Regel gibt, die das Prädikat \texttt{gallier/1} definiert,
+      Da es noch eine zweite Regel gibt, die das Pr\"{a}dikat \texttt{gallier/1} definiert,
       setzen wir an dieser Stelle einen Auswahl-Punkt.   
-\item Die erste und einzige Regel, die das Prädikat \texttt{spinnt/1} definiert,
+\item Die erste und einzige Regel, die das Pr\"{a}dikat \texttt{spinnt/1} definiert,
       lautet \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{spinnt(X) :- roemer(X).} \\[0.2cm]
@@ -448,23 +448,23 @@ vom \textsl{Prolog}-System beantwortet wird.
       unifiziert und wir erhalten die Anfrage \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{roemer(asterix).}
-\item Die einzige Regel, die das Prädikat \texttt{roemer/1} definiert, ist \\[0.2cm]
+\item Die einzige Regel, die das Pr\"{a}dikat \texttt{roemer/1} definiert, ist \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{roemer(caesar).} \\[0.2cm]
-      Diese Regel lässt sich nicht mit der Anfrage ``\texttt{roemer(asterix)}'' unifizieren.
+      Diese Regel l\"{a}sst sich nicht mit der Anfrage ``\texttt{roemer(asterix)}'' unifizieren.
       Also scheitert diese Anfrage.
 \item Wir schauen nun, wann wir das letzte mal einen Auswahl-Punkt gesetzt haben.
       Wir stellen fest, dass wir unter Punkt 3 bei der Beantwortung der Anfrage
       \texttt{gallier(X)} das letzte Mal einen Auswahl-Punkt gesetzt haben.
-      Also gehen wir nun zu Punkt 3 zurück und versuchen wieder, die Anfrage
+      Also gehen wir nun zu Punkt 3 zur\"{u}ck und versuchen wieder, die Anfrage
       \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{gallier(X), spinnt(X)} \\[0.2cm]
-      zu lösen.  Diesmal wählen wir jedoch den Fakt \\[0.2cm]
+      zu l\"{o}sen.  Diesmal w\"{a}hlen wir jedoch den Fakt \\[0.2cm]
       \hspace*{1.3cm} \texttt{gallier(obelix).}  \\[0.2cm]
       Wir erhalten dann die neue Anfrage \\[0.2cm]
       \hspace*{1.3cm} \texttt{spinnt(obelix).}
-\item Die erste und einzige Regel, die das Prädikat \texttt{spinnt/1} definiert,
+\item Die erste und einzige Regel, die das Pr\"{a}dikat \texttt{spinnt/1} definiert,
       lautet \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{spinnt(X) :- roemer(X).} \\[0.2cm]
@@ -472,31 +472,31 @@ vom \textsl{Prolog}-System beantwortet wird.
       unifiziert und wir erhalten die Anfrage \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{roemer(obelix).}
-\item Die einzige Regel, die das Prädikat \texttt{roemer/1} definiert, ist \\[0.2cm]
+\item Die einzige Regel, die das Pr\"{a}dikat \texttt{roemer/1} definiert, ist \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{roemer(caesar).} \\[0.2cm]
-      Diese Regel lässt sich nicht mit der Anfrage ``\texttt{roemer(asterix)}'' unifizieren.
+      Diese Regel l\"{a}sst sich nicht mit der Anfrage ``\texttt{roemer(asterix)}'' unifizieren.
       Also scheitert diese Anfrage.
 \item Wir schauen wieder, wann das letzte Mal ein Auswahl-Punkt gesetzt wurde.
-      Der unter Punkt 3~gesetzte Auswahl-Punkt wurde vollständig abgearbeitet, dieser
+      Der unter Punkt 3~gesetzte Auswahl-Punkt wurde vollst\"{a}ndig abgearbeitet, dieser
       Auswahl-Punkt kann uns also nicht mehr helfen.
-      Aber unter Punkt 1 wurde ebenfalls ein Auswahl-Punkt gesetzt, denn für das Prädikat
+      Aber unter Punkt 1 wurde ebenfalls ein Auswahl-Punkt gesetzt, denn f\"{u}r das Pr\"{a}dikat
       \texttt{maechtig/1} gibt es die weitere Regel \\[0.2cm]
       \hspace*{1.3cm} \texttt{maechtig(X) :- kaiser(X), roemer(X)}. \\[0.2cm]
       Wenden wir diese Regel an, so erhalten wir die Anfrage \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{kaiser(X), roemer(X), spinnt(X).}
-\item Für das Prädikat \texttt{kaiser/1} enthält unsere Datenbank genau einen Fakt:\\[0.2cm]
+\item F\"{u}r das Pr\"{a}dikat \texttt{kaiser/1} enth\"{a}lt unsere Datenbank genau einen Fakt:\\[0.2cm]
       \hspace*{1.3cm} \texttt{kaiser(caesar).}  \\[0.2cm]
       Benutzen wir diesen Fakt zur Reduktion unserer Anfrage, so  lautet die neue Anfrage \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{roemer(caesar), spinnt(caesar).}
-\item Für das Prädikat \texttt{roemer/1} enthält unsere Datenbank genau einen Fakt:\\[0.2cm]
+\item F\"{u}r das Pr\"{a}dikat \texttt{roemer/1} enth\"{a}lt unsere Datenbank genau einen Fakt:\\[0.2cm]
       \hspace*{1.3cm} \texttt{roemer(caesar).}  \\[0.2cm]
       Benutzen wir diesen Fakt zur Reduktion unserer Anfrage, so  lautet die neue Anfrage \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{spinnt(caesar).}
-\item Die erste und einzige Regel, die das Prädikat \texttt{spinnt/1} definiert,
+\item Die erste und einzige Regel, die das Pr\"{a}dikat \texttt{spinnt/1} definiert,
       lautet \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{spinnt(X) :- roemer(X).} \\[0.2cm]
@@ -504,10 +504,10 @@ vom \textsl{Prolog}-System beantwortet wird.
       unifiziert und wir erhalten die Anfrage \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{roemer(caesar).}
-\item Für das Prädikat \texttt{roemer/1} enthält unsere Datenbank genau einen Fakt:\\[0.2cm]
+\item F\"{u}r das Pr\"{a}dikat \texttt{roemer/1} enth\"{a}lt unsere Datenbank genau einen Fakt:\\[0.2cm]
       \hspace*{1.3cm} \texttt{roemer(caesar).}  \\[0.2cm]
       Benutzen wir diesen Fakt zur Reduktion unserer Anfrage, so ist die verbleibende
-      Anfrage leer.  Damit ist die ursprüngliche Anfrage gelöst.  Die dabei berechnete
+      Anfrage leer.  Damit ist die urspr\"{u}ngliche Anfrage gel\"{o}st.  Die dabei berechnete
       Antwort erhalten wir, wenn wir untersuchen, wie die Variable \texttt{X} unifiziert
       worden ist.  Die Variable \texttt{X} war unter Punkt 10 mit der Konstanten
       \texttt{caesar} unifiziert worden.  Also ist \\[0.2cm]
@@ -517,29 +517,29 @@ vom \textsl{Prolog}-System beantwortet wird.
 \end{enumerate}
 Bei der Beantwortung der Anfrage ``\texttt{maechtig(X), spinnt(X)}'' sind wir einige Male
 in Sackgassen hineingelaufen und mussten Instantiierungen der Variable \texttt{X} wieder
-zurück nehmen.  Dieser Vorgang wird in der Literatur als \emph{backtracking} bezeichnet.
+zur\"{u}ck nehmen.  Dieser Vorgang wird in der Literatur als \emph{backtracking} bezeichnet.
 Er kann mit Hilfe des Debuggers am Bildschirm verfolgt werden.
 
 \subsection{Die Tiefensuche}
-Der von Prolog verwendete Such-Algorithmus wird auch als \emph{Tiefensuche} (angelsächsisch:
-\emph{depth first search}) bezeichnet.  Um diesen Ausdruck erläutern zu können, definieren wir
-zunächst den Begriff des \emph{Suchbaums}.  Die Knoten eines Suchbaums sind mit Anfrage beschriftet.
+Der von Prolog verwendete Such-Algorithmus wird auch als \emph{Tiefensuche} (angels\"{a}chsisch:
+\emph{depth first search}) bezeichnet.  Um diesen Ausdruck erl\"{a}utern zu k\"{o}nnen, definieren wir
+zun\"{a}chst den Begriff des \emph{Suchbaums}.  Die Knoten eines Suchbaums sind mit Anfrage beschriftet.
 Ist der Knoten $u$ des Suchbaums mit der Anfrage
 \[ Q_1, \cdots, Q_m \]
-beschriftet und gibt es für $i = 1,\cdots,k$ Regeln der Form
+beschriftet und gibt es f\"{u}r $i = 1,\cdots,k$ Regeln der Form
 \[ A^{(i)} \texttt{:-} B_1^{(i)}, \cdots, B_{n(i)}^{(i)} \]
-die auf die Anfrage passen, für die also $\mu_i = \textsl{mgu}(Q_1, A^{(i)})$ existiert, so hat der
+die auf die Anfrage passen, f\"{u}r die also $\mu_i = \textsl{mgu}(Q_1, A^{(i)})$ existiert, so hat der
 Knoten $u$ insgesamt $k$ verschiedene Kinder.  Dabei ist das $i$-te Kind mit der Anfrage
 \[  B_1^{(i)}\mu_i, \cdots, B_{n(i)}^{(i)}\mu_i, Q_2\mu_i, \cdots, Q_m\mu_i \]
 beschriftet.  Als einfaches Beispiel betrachten wir das in Abbildung \ref{fig:depth.pl} gezeigte
-Programm.  Der Suchbaum für die Anfrage
+Programm.  Der Suchbaum f\"{u}r die Anfrage
 \[ p(X) \]
-ist in Abbildung \ref{fig:depth-first.eps} gezeigt.  Den Knoten, der mit der ursprünglichen Anfrage
-beschriftet ist, bezeichnen wir als die \emph{Wurzel} des Suchbaums.  Die \emph{Lösungen} zu der
-ursprünglichen Anfrage finden wir an den \emph{Blättern} des Baumes: Wir bezeichnen hier die Knoten
-als Blätter, die am weitesten unten stehen.  Suchbäume stehen also gewissermaßen auf dem Kopf: Die
-Blätter sind unten und die Wurzeln sind oben\footnote{
-Daher werden diese Suchbäume auch als australische Bäume bezeichnet.}.
+ist in Abbildung \ref{fig:depth-first.eps} gezeigt.  Den Knoten, der mit der urspr\"{u}nglichen Anfrage
+beschriftet ist, bezeichnen wir als die \emph{Wurzel} des Suchbaums.  Die \emph{L\"{o}sungen} zu der
+urspr\"{u}nglichen Anfrage finden wir an den \emph{Bl\"{a}ttern} des Baumes: Wir bezeichnen hier die Knoten
+als Bl\"{a}tter, die am weitesten unten stehen.  Suchb\"{a}ume stehen also gewissermaßen auf dem Kopf: Die
+Bl\"{a}tter sind unten und die Wurzeln sind oben\footnote{
+Daher werden diese Suchb\"{a}ume auch als australische B\"{a}ume bezeichnet.}.
 
 \begin{figure}[!ht]
 \centering
@@ -575,21 +575,21 @@ Daher werden diese Suchbäume auch als australische Bäume bezeichnet.}.
 \epsfig{file=depth-first.eps,scale=0.6}
 
 \vspace*{-0.3cm}
-\caption{Der Suchbaum für das in Abbildung \ref{fig:depth.pl} gezeigte Programm.}
+\caption{Der Suchbaum f\"{u}r das in Abbildung \ref{fig:depth.pl} gezeigte Programm.}
 \label{fig:depth-first.eps}
 \end{figure}
 
-Anhand des in Abbildung \ref{fig:depth-first.eps} gezeigten Suchbaums lässt sich nun die Tiefensuche
-erklären:  Wenn der Prolog-Interpreter nach einer Lösung sucht, so wählt er immer den linkesten Ast
-und steigt dort so tief wie möglich ab.  Dadurch werden die Lösungen in dem Beispiel in der
+Anhand des in Abbildung \ref{fig:depth-first.eps} gezeigten Suchbaums l\"{a}sst sich nun die Tiefensuche
+erkl\"{a}ren:  Wenn der Prolog-Interpreter nach einer L\"{o}sung sucht, so w\"{a}hlt er immer den linkesten Ast
+und steigt dort so tief wie m\"{o}glich ab.  Dadurch werden die L\"{o}sungen in dem Beispiel in der
 Reihenfolge
 \[ X = a,\; X = b,\; X = c,\; X = d,\; \]
 gefunden.  Die Tiefensuche ist dann problematisch, wenn der linkeste Ast des Suchbaums unendlich
 tief ist.  Als Beispiel betrachten wir das  in Abbildung \ref{fig:infinite.pl} gezeigte Prolog-Programm.
-Zeichnen wir hier den Suchbaum für die Anfrage
+Zeichnen wir hier den Suchbaum f\"{u}r die Anfrage
 \[ p(X) \]
  so finden wir einen unendlichen Ast, in den der Prolog-Interpreter
-absteigt und aus dem er dann mit einem Stack-Overflow wieder zurück kommt.  Vertauschen wir hingegen
+absteigt und aus dem er dann mit einem Stack-Overflow wieder zur\"{u}ck kommt.  Vertauschen wir hingegen
 die Reihenfolge der Klauseln, so kann das Programm die obige Anfrage beantworten.
 
 \begin{figure}[!ht]
@@ -611,82 +611,82 @@ die Reihenfolge der Klauseln, so kann das Programm die obige Anfrage beantworten
 \end{figure}
 
 \section{Ein komplexeres Beispiel}
-Das obige Beispiel war bewusst einfach gehalten um die Sprache \textsl{Prolog} einzuführen.
-Um die Mächtigkeit des Backtrackings zu demonstrieren, präsentieren wir jetzt ein
-komplexeres Beispiel.  Es handelt sich um das folgende Rätsel:
+Das obige Beispiel war bewusst einfach gehalten um die Sprache \textsl{Prolog} einzuf\"{u}hren.
+Um die M\"{a}chtigkeit des Backtrackings zu demonstrieren, pr\"{a}sentieren wir jetzt ein
+komplexeres Beispiel.  Es handelt sich um das folgende R\"{a}tsel:
 \begin{enumerate}
 \item Drei Freunde belegen den ersten, zweiten und dritten Platz bei einem
       Programmier-Wettbewerb.
 \item Jeder der drei hat genau einen Vornamen, genau ein Auto und hat sein Programm
       in genau einer Programmier-Sprache geschrieben.
 \item Michael programmiert in \textsc{SetlX} und war besser als der Audi-Fahrer.
-\item Julia, die einen Ford Mustang fährt, war besser als der Java-Programmierer.
+\item Julia, die einen Ford Mustang f\"{a}hrt, war besser als der Java-Programmierer.
 \item Das Prolog-Programm war am besten.
-\item Wer fährt Toyota?
+\item Wer f\"{a}hrt Toyota?
 \item In welcher Sprache programmiert Thomas?
 \end{enumerate}
-Um dieses Rätsel zu lösen, überlegen wir uns zunächst, wie wir die einzelnen Daten
-repräsentieren können, die in dem Rätsel eine Rolle spielen.  Zunächst ist dort von
+Um dieses R\"{a}tsel zu l\"{o}sen, \"{u}berlegen wir uns zun\"{a}chst, wie wir die einzelnen Daten
+repr\"{a}sentieren k\"{o}nnen, die in dem R\"{a}tsel eine Rolle spielen.  Zun\"{a}chst ist dort von
 Personen die Rede. Jede dieser Personen hat genau einen Vornamen, ein Auto und eine
-Programmier-Sprache.   Wir repräsentieren Personen daher durch Terme der Form \\[0.2cm]
+Programmier-Sprache.   Wir repr\"{a}sentieren Personen daher durch Terme der Form \\[0.2cm]
 \hspace*{1.3cm} \texttt{person}(\textsl{Name}, \textsl{Car}, \textsl{Language}). \\[0.2cm]
 Dabei bezeichnen \textsl{Name}, \textsl{Car} und \textsl{Language} Konstanten, die aus den
-entsprechenden Mengen gewählt werden:
+entsprechenden Mengen gew\"{a}hlt werden:
 \\[0.2cm]
 \hspace*{1.3cm} 
 $\textsl{Name} \in \{ \texttt{julia}, \texttt{thomas}, \texttt{michael} \}$, \quad
 $\textsl{Car} \in \{ \texttt{ford}, \texttt{toyota}, \texttt{audi} \}$, \\[0.2cm]
 \hspace*{1.3cm} 
 $\textsl{Language} \in \{ \texttt{java}, \texttt{prolog}, \texttt{setlX} \}$. \\[0.2cm]
-Wenn wir Personen durch ein dreistelliges Funktions-Zeichen wie oben gezeigt repräsentieren, können
-wir sofort Prädikate angeben, 
+Wenn wir Personen durch ein dreistelliges Funktions-Zeichen wie oben gezeigt repr\"{a}sentieren, k\"{o}nnen
+wir sofort Pr\"{a}dikate angeben, 
 die den Vornamen, die Auto-Marke und die Programmier-Sprache aus einem solchen Term
 extrahieren.
 \begin{enumerate}
-\item Das Prädikat \texttt{first\_name/2} extrahiert den Vornamen: \\[0.2cm]
+\item Das Pr\"{a}dikat \texttt{first\_name/2} extrahiert den Vornamen: \\[0.2cm]
       \hspace*{1.3cm} \texttt{first\_name(person(Name, Car, Language), Name).}
-\item Das Prädikat \texttt{car/2} extrahiert die Auto-Marke: \\[0.2cm]
+\item Das Pr\"{a}dikat \texttt{car/2} extrahiert die Auto-Marke: \\[0.2cm]
       \hspace*{1.3cm} \texttt{car(person(Name, Car, Language), Car).}
-\item Das Prädikat \texttt{language/2} extrahiert die Programmier-Sprache: \\[0.2cm]
+\item Das Pr\"{a}dikat \texttt{language/2} extrahiert die Programmier-Sprache: \\[0.2cm]
       \hspace*{1.3cm} \texttt{language(person(Name, Car, Language), Language).}
 \end{enumerate}
-Um zu verstehen wie diese Prädikate arbeiten, zeigen wir, wie die Anfrage \\[0.2cm]
+Um zu verstehen wie diese Pr\"{a}dikate arbeiten, zeigen wir, wie die Anfrage \\[0.2cm]
 \hspace*{1.3cm} \texttt{car( person(hans, seat, setlX), X ).}\\[0.2cm]
 von dem \textsl{Prolog}-System beantwortet wird.  Die einzige Regel, die zur Beantwortung
 dieser Anfrage herangezogen werden kann, ist die Regel \\[0.2cm]
 \hspace*{1.3cm} \texttt{car(person(Name, Car, Language), Car) :- true.} \\[0.2cm]
-Um diese Regel anwenden zu können, ist die syntaktische Gleichung \\[0.2cm]
+Um diese Regel anwenden zu k\"{o}nnen, ist die syntaktische Gleichung \\[0.2cm]
 \hspace*{1.3cm} 
 $\texttt{car( person(hans, seat, setlX), X )} \doteq \texttt{car( person(Name, Car, Language), Car )}$
 \\[0.2cm]
-zu lösen.  Bei der Unifikation findet sich die Lösung \\[0.2cm]
+zu l\"{o}sen.  Bei der Unifikation findet sich die L\"{o}sung \\[0.2cm]
 \hspace*{1.3cm} 
 $\mu = [ \texttt{Name} \mapsto \texttt{hans},\; \texttt{Car} \mapsto \texttt{seat},\;\texttt{Language} \mapsto \texttt{setlX},\; \texttt{X} \mapsto \texttt{seat}]$.
 \\[0.2cm]
 Insbesondere wird also die Variable \texttt{X} bei dieser Anfrage an die Konstante
 \texttt{seat} gebunden.
 
-Wie können wir nun die Reihenfolge repräsentieren, in der die drei Personen bei dem 
-Wettbewerb abgeschnitten haben?  Wir wählen ein dreistelliges Funktions-Zeichen
-\texttt{sequence} und repräsentieren die Reihenfolge durch den Term
+Wie k\"{o}nnen wir nun die Reihenfolge repr\"{a}sentieren, in der die drei Personen bei dem 
+Wettbewerb abgeschnitten haben?  Wir w\"{a}hlen ein dreistelliges Funktions-Zeichen
+\texttt{sequence} und repr\"{a}sentieren die Reihenfolge durch den Term
 \\[0.2cm]
 \hspace*{1.3cm} \texttt{sequence}(\textsl{First}, \textsl{Second}, \textsl{Third}).\\[0.2cm]
-Dabei stehen \textsl{First}, \textsl{Second} und \textsl{Third} für Terme, die von dem
+Dabei stehen \textsl{First}, \textsl{Second} und \textsl{Third} f\"{u}r Terme, die von dem
 Funktions-Zeichen \texttt{person/3} erzeugt worden sind und die Personen bezeichnen.
-Die Reihenfolge kann dann durch das Prädikat \\[0.2cm]
+Die Reihenfolge kann dann durch das Pr\"{a}dikat \\[0.2cm]
 \hspace*{1.3cm} \texttt{did\_better}(\textsl{Better}, \textsl{Worse}, \textsl{Sequence})
 \\[0.2cm]
 berechnet werden, dessen Implementierung in den Zeilen 38 -- 40 der Abbildung
 \ref{fig:toyota} auf Seite \pageref{fig:toyota} gezeigt ist.
-Wir können nun daran gehen, das Rätsel zu lösen.  Abbildung
+Wir k\"{o}nnen nun daran gehen, das R\"{a}tsel zu l\"{o}sen.  Abbildung
 \ref{fig:toyota} zeigt die Implementierung.
-Zeile 1 -- 30 enthält die Implementierung einer Regel für das
-Prädikat \texttt{answer/2}, dass die Lösung des Rätsel berechnet.  
-In dieser Regel haben wir das Rätsel als prädikatenlogische Formel
-codiert.  Wir übersetzen diese  Regel jetzt zurück in die Umgangssprache
-und zeigen dadurch,  dass das Prädikat \texttt{answer/2} das Rätsel
-korrekt beschreibt.  Die Nummerierung in der folgenden Aufzählung
-stimmt jeweils mit der entsprechenden Zeilen-Nummer im Programm überein:
+Zeile 1 -- 30 enth\"{a}lt die Implementierung einer Regel f\"{u}r das
+Pr\"{a}dikat \texttt{answer/2}, dass die L\"{o}sung des R\"{a}tsel berechnet.  
+In dieser Regel haben wir das R\"{a}tsel als pr\"{a}dikatenlogische Formel
+codiert.  Wir \"{u}bersetzen diese  Regel jetzt zur\"{u}ck in die Umgangssprache
+und zeigen dadurch,  dass das Pr\"{a}dikat \texttt{answer/2} das R\"{a}tsel
+korrekt beschreibt.  Die Nummerierung in der folgenden Aufz\"{a}hlung
+stimmt jeweils mit der entsprechenden Zeilen-Nummer im Programm \"{u}berein:
 \begin{enumerate}
 \item[2.] Falls \texttt{Sequence} eine Reihenfolge von drei Personen beschreibt  und
 \item[4.] \texttt{Michael} eine Person aus dieser Reihenfolge ist und
@@ -695,12 +695,12 @@ stimmt jeweils mit der entsprechenden Zeilen-Nummer im Programm überein:
 \item[6.] \texttt{Michael} in \textsc{SetlX} programmiert und
 \item[8.] \texttt{Audi} eine Person aus der Reihenfolge \texttt{Sequence} ist und
 \item[9.] \texttt{Michael} beim Wettbewerb besser abgeschnitten hat als die durch \texttt{Audi} bezeichnete Person
-\item[10.] die durch \texttt{Audi} bezeichnete Person einen Audi fährt und 
+\item[10.] die durch \texttt{Audi} bezeichnete Person einen Audi f\"{a}hrt und 
 
            $\vdots$
 
 \item[24.] \texttt{Toyota} eine Person aus der Reihenfolge \texttt{Sequence} ist und
-\item[25.] die durch \texttt{Toyota} bezeichnete Person einen Toyota fährt und
+\item[25.] die durch \texttt{Toyota} bezeichnete Person einen Toyota f\"{a}hrt und
 \item[26.] \texttt{NameToyota} den Vornamen der durch \texttt{Toyota} bezeichneten Person angibt und
 \item[28.] \texttt{Thomas} eine Person aus der Reihenfolge \texttt{Sequence} ist und
 \item[25.] die durch \texttt{Thomas} bezeichnete Person den Vornamen Thomas hat und
@@ -734,7 +734,7 @@ stimmt jeweils mit der entsprechenden Zeilen-Nummer im Programm überein:
         one_of_them(Audi, Sequence),
         did_better(Michael, Audi, Sequence),         
         car(Audi, audi),
-        % Julia fährt einen Ford Mustang.
+        % Julia f\"{a}hrt einen Ford Mustang.
         one_of_them(Julia, Sequence),
         first_name(Julia, julia),
         car(Julia, ford), 
@@ -746,7 +746,7 @@ stimmt jeweils mit der entsprechenden Zeilen-Nummer im Programm überein:
         one_of_them(PrologProgrammer, Sequence),
         first(PrologProgrammer, Sequence),           
         language(PrologProgrammer, prolog),
-        % Wer fährt Toyota?
+        % Wer f\"{a}hrt Toyota?
         one_of_them(Toyota, Sequence),
         car(Toyota, toyota),
         first_name(Toyota, NameToyota),              
@@ -774,51 +774,51 @@ stimmt jeweils mit der entsprechenden Zeilen-Nummer im Programm überein:
     language(person(_Name, _Car, Language), Language).
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Wer fährt Toyota?}
+  \caption{Wer f\"{a}hrt Toyota?}
   \label{fig:toyota}
 \end{figure}
 
-Wenn wir die ursprüngliche Aufgabe mit der Implementierung in \textsl{Prolog} vergleichen,
-dann stellen wir fest, dass die in dem Rätsel gemachten Angaben eins-zu-eins in
-\textsl{Prolog} übersetzt werden konnten.  Diese Übersetzung beschreibt nur das Rätsel und
-gibt keinen Hinweis, wie dieses Rätsel zu lösen ist.  Für die Lösung ist dann die dem
-\textsl{Prolog}-System zu Grunde liegende \textsl{Inferenz-Maschine} zuständig.
+Wenn wir die urspr\"{u}ngliche Aufgabe mit der Implementierung in \textsl{Prolog} vergleichen,
+dann stellen wir fest, dass die in dem R\"{a}tsel gemachten Angaben eins-zu-eins in
+\textsl{Prolog} \"{u}bersetzt werden konnten.  Diese \"{u}bersetzung beschreibt nur das R\"{a}tsel und
+gibt keinen Hinweis, wie dieses R\"{a}tsel zu l\"{o}sen ist.  F\"{u}r die L\"{o}sung ist dann die dem
+\textsl{Prolog}-System zu Grunde liegende \textsl{Inferenz-Maschine} zust\"{a}ndig.
 
 \section{Listen}
 In Prolog wird viel mit Listen gearbeitet.  Listen werden in Prolog mit dem
 2-stelligen Funktions-Zeichen ``\texttt{.}'' konstruiert.  Ein Term der Form \\[0.2cm]
 \hspace*{1.3cm} \texttt{.($s$,$t$)} \\[0.2cm]
-steht also für eine Liste, die als erstes Element ``$s$'' enthält. ``$t$'' bezeichnet den
+steht also f\"{u}r eine Liste, die als erstes Element ``$s$'' enth\"{a}lt. ``$t$'' bezeichnet den
 Rest der Liste.
 Das Funktions-Zeichen ``\texttt{[]}'' steht
-für die leere Liste. Eine Liste, die aus  den drei Elementen 
+f\"{u}r die leere Liste. Eine Liste, die aus  den drei Elementen 
 ``\texttt{a}'', ``\texttt{b}'' und ``\texttt{c}'' besteht, kann also wie folgt dargestellt
 werden: \\[0.2cm]
 \hspace*{1.3cm} \texttt{.(a, .(b, .(c, [])))} \\[0.2cm]
 Da dies relativ schwer zu lesen ist, darf diese Liste auch als \\[0.2cm]
 \hspace*{1.3cm} \texttt{[a,b,c]} \\[0.2cm]
-geschrieben werden.  Zusätzlich kann der Term ``\texttt{.($s$,$t$)}'' in der Form \\[0.2cm]
+geschrieben werden.  Zus\"{a}tzlich kann der Term ``\texttt{.($s$,$t$)}'' in der Form \\[0.2cm]
 \hspace*{1.3cm} \texttt{[ $s$ | $t$ ]} \\[0.2cm]
-geschrieben werden.  Um diese Kurzschreibweise zu erläutern, geben wir ein kurzes
-Prolog-Programm an, das zwei Listen aneinander hängen kann.  
-Das Programm implementiert das dreistellige Prädikat \texttt{myAppend}\footnote{In dem
-  \textsl{SWI-Prolog}-System gibt es das vordefinierte Prädikat \texttt{append/3},
+geschrieben werden.  Um diese Kurzschreibweise zu erl\"{a}utern, geben wir ein kurzes
+Prolog-Programm an, das zwei Listen aneinander h\"{a}ngen kann.  
+Das Programm implementiert das dreistellige Pr\"{a}dikat \texttt{myAppend}\footnote{In dem
+  \textsl{SWI-Prolog}-System gibt es das vordefinierte Pr\"{a}dikat \texttt{append/3},
   das genau dasselbe leistet wie unsere Implementierung von \texttt{myAppend/3}.}.  
 Die Intention ist,
-dass $\texttt{myAppend}(l_1,l_2,l_3)$ für drei Listen $l_1$, $l_2$ und $l_3$ genau dann
+dass $\texttt{myAppend}(l_1,l_2,l_3)$ f\"{u}r drei Listen $l_1$, $l_2$ und $l_3$ genau dann
 wahr sein soll,
 wenn die Liste $l_3$ dadurch entsteht, dass die Liste $l_2$ hinten an die Liste $l_1$
-angehängt wird.  Das Programm besteht aus den folgenden beiden Klauseln:
+angeh\"{a}ngt wird.  Das Programm besteht aus den folgenden beiden Klauseln:
 \begin{verbatim}
   myAppend( [], L, L ).
   myAppend( [ X | L1 ], L2, [ X | L3 ] ) :- myAppend( L1, L2, L3 ).
 \end{verbatim}
-Wir können diese beiden Klauseln folgendermaßen in die Umgangssprache übersetzen:
+Wir k\"{o}nnen diese beiden Klauseln folgendermaßen in die Umgangssprache \"{u}bersetzen:
 \begin{enumerate}
-\item Hängen wir eine Liste \texttt{L} an die leere Liste an, so ist das Ergebnis die
+\item H\"{a}ngen wir eine Liste \texttt{L} an die leere Liste an, so ist das Ergebnis die
       Liste \texttt{L}.
 \item Um an eine Liste \texttt{[ X | L1 ]}, die aus dem Element \texttt{X} und dem Rest \texttt{L1} besteht,
-      eine Liste \texttt{L2} anzuhängen, hängen wir zunächst an die Liste \texttt{L1} die 
+      eine Liste \texttt{L2} anzuh\"{a}ngen, h\"{a}ngen wir zun\"{a}chst an die Liste \texttt{L1} die 
       Liste \texttt{L2} an und nennen das Ergebnis \texttt{L3}.  
       Das Endergebnis erhalten wir, wenn wir vor die Liste \texttt{L3} noch das Element \texttt{X}
       setzen.  Wir erhalten dann die Liste \texttt{[ X | L3 ]}.
@@ -832,11 +832,11 @@ Wir erhalten die Antwort:
     L = [1, 2, 3, a, b, c] 
 \end{verbatim}
 Die obige Interpretation des gegebenen Prolog-Programms ist \emph{funktional}, dass heißt 
-wir fassen die ersten beiden Argumente des Prädikats \texttt{myAppend} als \emph{Eingaben} auf und 
+wir fassen die ersten beiden Argumente des Pr\"{a}dikats \texttt{myAppend} als \emph{Eingaben} auf und 
 interpretieren das letzte Argument als \emph{Ausgabe}.  Diese Interpretation ist aber keineswegs die 
-einzig mögliche Interpretation.  Um das zu sehen, geben wir als Ziel \\[0.2cm]
+einzig m\"{o}gliche Interpretation.  Um das zu sehen, geben wir als Ziel \\[0.2cm]
 \hspace*{1.3cm} \texttt{myAppend(L1, L2, [1,2,3]).} \\[0.2cm]
-ein und drücken, nachdem das System uns die erste Antwort gegeben hat, nicht die Taste 
+ein und dr\"{u}cken, nachdem das System uns die erste Antwort gegeben hat, nicht die Taste 
 \textsl{Return} sondern die Taste ``\texttt{;}''.  Wir erhalten:
 \begin{verbatim}
     ?- myAppend(L1, L2, [1, 2, 3]).
@@ -855,33 +855,33 @@ ein und drücken, nachdem das System uns die erste Antwort gegeben hat, nicht die
 
     No
 \end{verbatim}
-In diesem Fall hat das Prolog-System durch Backtracking  alle Möglichkeiten bestimmt, die
+In diesem Fall hat das Prolog-System durch Backtracking  alle M\"{o}glichkeiten bestimmt, die
 es gibt, um die Liste ``\texttt{[1, 2, 3]}'' in zwei Teillisten zu zerlegen.
 
-\subsection{Sortieren durch Einfügen}
+\subsection{Sortieren durch Einf\"{u}gen}
 Wir entwickeln nun einen einfachen Algorithmus zum Sortieren von Listen von Zahlen.
-Die Idee ist Folgende:  Um eine Liste aus $n$ Zahlen zu sortieren, sortieren wir zunächst
-die letzten $n-1$ Zahlen und fügen dann das erste Element an der richtigen Stelle in die sortierte
-Liste ein.  Mit dieser Idee besteht das Programm aus zwei Prädikaten:
+Die Idee ist Folgende:  Um eine Liste aus $n$ Zahlen zu sortieren, sortieren wir zun\"{a}chst
+die letzten $n-1$ Zahlen und f\"{u}gen dann das erste Element an der richtigen Stelle in die sortierte
+Liste ein.  Mit dieser Idee besteht das Programm aus zwei Pr\"{a}dikaten:
 \begin{enumerate}
-\item Das Prädikat \texttt{insert/3} erwartet
+\item Das Pr\"{a}dikat \texttt{insert/3} erwartet
       als erstes Argument eine Zahl $x$ und als zweites Argument eine Liste von Zahlen $l$,
       die bereits in aufsteigender Reihenfolge sortiert ist.  
-      Das Prädikat fügt die Zahl $x$ so in die Liste $l$ ein, dass die resultierende Liste
+      Das Pr\"{a}dikat f\"{u}gt die Zahl $x$ so in die Liste $l$ ein, dass die resultierende Liste
       ebenfalls in aufsteigender Reihenfolge sortiert ist. Das so berechnete Ergebnis
-      wird als letztes Argument des Prädikats \texttt{insert/3} zurück gegeben.  
+      wird als letztes Argument des Pr\"{a}dikats \texttt{insert/3} zur\"{u}ck gegeben.  
 
-      Um die obigen Ausführungen
-      über die verwendeten Typen und die Bestimmung von Ein- und Ausgabe prägnanter
-      formulieren zu können, führen wir den Begriff einer \emph{Typ-Spezifikation} ein.
-      Für das Prädikat \texttt{insert/3} hat diese Typ-Spezifikation die Form \\[0.2cm]
+      Um die obigen Ausf\"{u}hrungen
+      \"{u}ber die verwendeten Typen und die Bestimmung von Ein- und Ausgabe pr\"{a}gnanter
+      formulieren zu k\"{o}nnen, f\"{u}hren wir den Begriff einer \emph{Typ-Spezifikation} ein.
+      F\"{u}r das Pr\"{a}dikat \texttt{insert/3} hat diese Typ-Spezifikation die Form \\[0.2cm]
       \hspace*{1.3cm} 
       \texttt{insert(+\textsl{Number}, +\textsl{List}(\textsl{Number}), -\textsl{List}(\textsl{Number}))}.
       \\[0.2cm]
       Das Zeichen ``\texttt{+}'' legt dabei fest, dass das entsprechende
-      Argument eine Eingabe ist, während ``\texttt{-}'' verwendet wird um ein
+      Argument eine Eingabe ist, w\"{a}hrend ``\texttt{-}'' verwendet wird um ein
       Ausgabe-Argument zu spezifizieren.
-\item Das Prädikat \texttt{insertion\_sort/2} hat die Typ-Spezifikation \\[0.2cm]
+\item Das Pr\"{a}dikat \texttt{insertion\_sort/2} hat die Typ-Spezifikation \\[0.2cm]
       \hspace*{1.3cm} \texttt{insertion\_sort(+\textsl{List}(\textsl{Number}), -\textsl{List}(\textsl{Number}))}.
       \\[0.2cm]
       Der Aufruf \texttt{insertion\_sort}(\textsl{List}, \textsl{Sorted}) sortiert die als Eingabe
@@ -919,49 +919,49 @@ Liste ein.  Mit dieser Idee besteht das Programm aus zwei Prädikaten:
         insert( Head, Sorted_Tail, Sorted ).
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Sortieren durch Einfügen.}
+  \caption{Sortieren durch Einf\"{u}gen.}
   \label{fig:insertion-sort}
 \end{figure}
 
 Abbildung \ref{fig:insertion-sort} auf Seite \pageref{fig:insertion-sort} zeigt das \textsl{Prolog}-Programm. 
-Nachfolgend diskutieren wir die einzelnen Klauseln der Implementierung des Prädikats \texttt{insert}.
+Nachfolgend diskutieren wir die einzelnen Klauseln der Implementierung des Pr\"{a}dikats \texttt{insert}.
 \begin{enumerate}
-\item Die erste Klausel des Prädikats \texttt{insert} greift, wenn die Liste, in welche die
-      Zahl \texttt{X} eingefügt werden soll, leer ist.
-      In diesem Fall wird als Ergebnis einfach die Liste zurück gegeben, die als einziges Element
-      die Zahl \texttt{X} enthält.
-\item Die zweite Klausel greift, wenn die Liste, in die die Zahl  \texttt{X} eingefügt
+\item Die erste Klausel des Pr\"{a}dikats \texttt{insert} greift, wenn die Liste, in welche die
+      Zahl \texttt{X} eingef\"{u}gt werden soll, leer ist.
+      In diesem Fall wird als Ergebnis einfach die Liste zur\"{u}ck gegeben, die als einziges Element
+      die Zahl \texttt{X} enth\"{a}lt.
+\item Die zweite Klausel greift, wenn die Liste, in die die Zahl  \texttt{X} eingef\"{u}gt
       werden soll, nicht leer ist und wenn außerdem
        \texttt{X} kleiner oder gleich dem ersten Element dieser Liste ist.  In diesem Fall kann \texttt{X} an den Anfang der 
       Liste gestellt werden. Dann erhalten wir die Liste \\[0.2cm]
       \hspace*{1.3cm} \texttt{[ X, Head | Tail ]}. \\[0.2cm]
       Diese Liste ist sortiert, weil einerseits schon die Liste \texttt{[ Head | Tail ]} sortiert ist
       und andererseits \texttt{X} kleiner als \texttt{Head} ist.
-\item Die dritte Klausel greift, wenn die Liste, in die die Zahl  \texttt{X} eingefügt
-      werden soll  nicht leer ist und wenn außerdem \texttt{X} größer als das erste
+\item Die dritte Klausel greift, wenn die Liste, in die die Zahl  \texttt{X} eingef\"{u}gt
+      werden soll  nicht leer ist und wenn außerdem \texttt{X} gr\"{o}ßer als das erste
       Element dieser Liste ist.  In diesem Fall muss \texttt{X} rekursiv
-      in die Liste \texttt{Tail} eingefügt werden.  Dabei bezeichnet \texttt{Tail} den
-      Rest der Liste, in die wir \texttt{X} einfügen wollen.
+      in die Liste \texttt{Tail} eingef\"{u}gt werden.  Dabei bezeichnet \texttt{Tail} den
+      Rest der Liste, in die wir \texttt{X} einf\"{u}gen wollen.
       Weiter bezeichnet \texttt{New\_Tail} die Liste, die wir erhalten, wenn wir die Zahl
-      \texttt{X} in die Liste \texttt{Tail} einfügen.
+      \texttt{X} in die Liste \texttt{Tail} einf\"{u}gen.
       An den Anfang der  Liste \texttt{New\_Tail} setzen wir nun noch den Kopf
       \texttt{Head} der als Eingabe gegebenen Liste.
 \end{enumerate}
-Damit können wir nun auch die Wirkungsweise des Prädikats \texttt{insertion\_sort} erklären.
+Damit k\"{o}nnen wir nun auch die Wirkungsweise des Pr\"{a}dikats \texttt{insertion\_sort} erkl\"{a}ren.
 \begin{enumerate}
 \item Ist die zu sortierende Liste leer, so ist das Ergebnis die leere Liste.
-\item Ist die zu sortierende Liste nicht leer und hat die Form \texttt{[Head | Tail]}, so sortieren wir zunächst die
-      Liste \texttt{Tail} und erhalten als Ergebnis die sortierte Liste \texttt{Sorted\_Tail}.  Fügen wir hier
+\item Ist die zu sortierende Liste nicht leer und hat die Form \texttt{[Head | Tail]}, so sortieren wir zun\"{a}chst die
+      Liste \texttt{Tail} und erhalten als Ergebnis die sortierte Liste \texttt{Sorted\_Tail}.  F\"{u}gen wir hier
       noch das Element \texttt{Head} mit Hilfe von \texttt{insert} ein, so erhalten wir als Endergebnis
       die sortierte Liste.
 \end{enumerate}
-Viele \textsl{Prolog}-Prädikate sind \emph{funktional}.  
-Wir nennen ein Prädikat funktional,
+Viele \textsl{Prolog}-Pr\"{a}dikate sind \emph{funktional}.  
+Wir nennen ein Pr\"{a}dikat funktional,
 wenn die einzelnen Argumente klar in Eingabe- und Ausgabe-Argumente unterschieden werden
-können und wenn außerdem zu jeder Eingabe höchstens eine Ausgabe berechnet wird.
-Zum Beispiel sind die oben angegebenen Prädikate zum Sortieren einer Liste von Zahlen funktional.
-Bei einem funktionalen Programm können wir die Semantik oft dadurch am besten verstehen,
-dass wir das Programm in \emph{bedingte Gleichungen} umformen.  Für das oben angegebene
+k\"{o}nnen und wenn außerdem zu jeder Eingabe h\"{o}chstens eine Ausgabe berechnet wird.
+Zum Beispiel sind die oben angegebenen Pr\"{a}dikate zum Sortieren einer Liste von Zahlen funktional.
+Bei einem funktionalen Programm k\"{o}nnen wir die Semantik oft dadurch am besten verstehen,
+dass wir das Programm in \emph{bedingte Gleichungen} umformen.  F\"{u}r das oben angegebene
 Programm erhalten wir dann die folgenden Gleichungen:
 \begin{enumerate}
 \item $\texttt{insert}( \textsl{X}, []) = [ \textsl{X} ]$. 
@@ -971,24 +971,24 @@ Programm erhalten wir dann die folgenden Gleichungen:
 \item $\texttt{insertion\_sort}([ \textsl{Head} | \textsl{Tail} ]) = \texttt{insert}(\textsl{Head}, \texttt{insertion\_sort}(\textsl{Tail}))$.
 \end{enumerate}
 Die Korrespondenz zwischen dem \textsl{Prolog}-Programm und den Gleichungen sollte
-augenfällig sein.  Außerdem ist offensichtlich, dass die obigen Gleichungen 
-den Sortier-Algorithmus in sehr prägnanter Form wiedergeben.  Wir werden diese Beobachtung
+augenf\"{a}llig sein.  Außerdem ist offensichtlich, dass die obigen Gleichungen 
+den Sortier-Algorithmus in sehr pr\"{a}gnanter Form wiedergeben.  Wir werden diese Beobachtung
 im zweiten Semester benutzen und die meisten dort vorgestellten Algorithmen durch bedingte
 Gleichungen spezifizieren. 
 
 \subsection{Sortieren durch Mischen}
 Der im letzten Abschnitt vorgestellte Sortier-Algorithmus hat einen Nachteil:  Die Rechenzeit,
-die dieser Algorithmus verbraucht, wächst im ungünstigsten Fall quadratisch mit der Länge der zu sortierenden 
-Liste.  Den Beweis dieser Behauptung werden wir im nächsten Semester liefern.
-Wir werden nun einen Algorithmus vorstellen der effizienter ist:  Ist $n$ die Länge der
-Liste, so wächst bei diesem Algorithmus der Verbrauch der 
+die dieser Algorithmus verbraucht, w\"{a}chst im ung\"{u}nstigsten Fall quadratisch mit der L\"{a}nge der zu sortierenden 
+Liste.  Den Beweis dieser Behauptung werden wir im n\"{a}chsten Semester liefern.
+Wir werden nun einen Algorithmus vorstellen der effizienter ist:  Ist $n$ die L\"{a}nge der
+Liste, so w\"{a}chst bei diesem Algorithmus der Verbrauch der 
 Rechenzeit nur mit dem Faktor $n \cdot \textsl{log}_2(n)$.  Den Nachweis dieser Behauptung
 erbringen wir im zweiten Semester.
 Wenn es sich bei der zu sortierenden Liste beispielsweise um ein Telefonbuch mit einer
-Millionen Einträgen handelt, dann ist der relative Unterschied zwischen $n^2$ und $n \log_2(n)$ bei
+Millionen Eintr\"{a}gen handelt, dann ist der relative Unterschied zwischen $n^2$ und $n \log_2(n)$ bei
 etwa $50\,000$. 
 
-Wir werden den effizienteren Algorithmus zunächst durch bedingte Gleichungen beschreiben und
+Wir werden den effizienteren Algorithmus zun\"{a}chst durch bedingte Gleichungen beschreiben und
 anschließend die Umsetzung dieser Gleichungen in \textsl{Prolog} angeben.
 Der Algorithmus wird in der Literatur als \emph{Sortieren durch Mischen} bezeichnet
 (engl. \emph{merge sort}) und besteht aus drei Phasen:
@@ -996,19 +996,19 @@ Der Algorithmus wird in der Literatur als \emph{Sortieren durch Mischen} bezeich
 \item In der ersten Phase wird die zu sortierende Liste in zwei etwa gleich große
       Teillisten aufgeteilt.
 \item In der zweiten Phase werden diese Teillisten rekursiv sortiert.
-\item In der dritten Phase werden die sortierten Teillisten so zusammen gefügt (gemischt),
+\item In der dritten Phase werden die sortierten Teillisten so zusammen gef\"{u}gt (gemischt),
       dass die resultierende Liste ebenfalls sortiert ist.
 \end{enumerate}
 
 Wir beginnen mit dem Aufteilen einer Liste in zwei Teile.  Bei der Aufteilung orientieren wir
-uns an den Indizes der Elemente.  Zur Illustration zunächst ein Beispiel: Wir teilen die Liste \\[0.2cm]
+uns an den Indizes der Elemente.  Zur Illustration zun\"{a}chst ein Beispiel: Wir teilen die Liste \\[0.2cm]
 \hspace*{1.3cm} 
 $[a_1, a_2, a_3, a_4, a_5, a_6, a_7, a_8]$ \quad auf in \quad
 $[a_1, a_3, a_5, a_7]$ \quad und \quad $[a_2, a_4, a_6, a_8]$.
 \\[0.2cm]
 Elemente, deren Index gerade ist, werden in der ersten
 Teilliste aufgesammelt und die Elemente mit ungeradem Index sammeln wir in der zweiten
-Teilliste.  Als Namen für die  Funktionen, die diese Teillisten berechnen, wählen 
+Teilliste.  Als Namen f\"{u}r die  Funktionen, die diese Teillisten berechnen, w\"{a}hlen 
 wir \texttt{even} und \texttt{odd}: \\[0.2cm]
 \hspace*{1.3cm} 
 $\texttt{odd}: \textsl{List}(\textsl{Number}) \rightarrow \textsl{List}(\textsl{Number})$,
@@ -1017,8 +1017,8 @@ $\texttt{odd}: \textsl{List}(\textsl{Number}) \rightarrow \textsl{List}(\textsl{
 $\texttt{even}: \textsl{List}(\textsl{Number}) \rightarrow \textsl{List}(\textsl{Number})$.
 \\[0.2cm]
 Die Funktion $\texttt{odd}(L)$ berechnet die Liste aller Elemente aus $L$ mit ungeradem Index, 
-während $\mathtt{even}(L)$ die Liste aller Elemente mit geradem Index berechnet.
-Die beiden Funktionen können durch die folgenden Gleichungen spezifiziert werden:
+w\"{a}hrend $\mathtt{even}(L)$ die Liste aller Elemente mit geradem Index berechnet.
+Die beiden Funktionen k\"{o}nnen durch die folgenden Gleichungen spezifiziert werden:
 \begin{enumerate}
 \item $\texttt{odd}([]) = []$.
 \item $\texttt{odd}([h|t]) = [h|\texttt{even}(t)]$,
@@ -1032,7 +1032,7 @@ Die beiden Funktionen können durch die folgenden Gleichungen spezifiziert werden
       denn alle Elemente, die in der Liste $t$ einen ungeraden Index haben, haben in der Liste
       $[h|t]$ einen geraden Index.
 \end{enumerate}
-Als nächstes entwickeln wir eine Funktion \\[0.2cm]
+Als n\"{a}chstes entwickeln wir eine Funktion \\[0.2cm]
 \hspace*{1.3cm} $\texttt{mix}: \textsl{List}(\textsl{Number}) \times \textsl{List}(\textsl{Number}) \rightarrow \textsl{List}(\textsl{Number})$
 \\[0.2cm]
 die zwei aufsteigend sortierte Listen so mischt,  dass die resultierende Liste ebenfalls
@@ -1049,7 +1049,7 @@ spezifiziert werden:
       dieser Liste.
 \item $x  >   y \rightarrow \texttt{mix}([x|s], [y|t]) = [y|\texttt{mix}([x|s], t)]$.
 \end{enumerate}
-Damit können wir jetzt die Funktion\\[0.2cm]
+Damit k\"{o}nnen wir jetzt die Funktion\\[0.2cm]
 \hspace*{1.3cm}  $\texttt{merge\_sort}: \textsl{List}(\textsl{Number}) \rightarrow \textsl{List}(\textsl{Number})$,
 \\[0.2cm]
 die eine Liste von Zahlen sortiert, durch bedingte Gleichungen spezifizieren.
@@ -1067,9 +1067,9 @@ die eine Liste von Zahlen sortiert, durch bedingte Gleichungen spezifizieren.
 Die oben angegebenen Gleichungen lassen sich nun unmittelbar in ein
 \textsl{Prolog}-Programm umsetzen.  Abbildung \ref{fig:merge-sort}
 auf Seite \pageref{fig:merge-sort} zeigt das resultierende \textsl{Prolog}-Programm.
-Da es in \textsl{SWI-Prolog} bereits vordefinierte Prädikate mit den Namen 
+Da es in \textsl{SWI-Prolog} bereits vordefinierte Pr\"{a}dikate mit den Namen 
 \texttt{merge/3} und \texttt{sort/2} gibt, habe ich statt dessen die Namen
-\texttt{mix/2} und \texttt{merge\_sort/3} gewählt.
+\texttt{mix/2} und \texttt{merge\_sort/3} gew\"{a}hlt.
 
 
 \begin{figure}[!h]
@@ -1119,15 +1119,15 @@ Da es in \textsl{SWI-Prolog} bereits vordefinierte Prädikate mit den Namen
 
 
 \subsection{Symbolisches Differenzieren}
-Die Sprache \textsl{Prolog} wird gerne für Anwendungen benutzt, bei denen symbolische
+Die Sprache \textsl{Prolog} wird gerne f\"{u}r Anwendungen benutzt, bei denen symbolische
 Rechnungen eine wesentliche Rolle spielen, denn 
 symbolische Rechnungen sind in \textsl{Prolog} dadurch, dass die zu
 manipulierenden Objekte in der Regel unmittelbar als Prolog-Terme dargestellt werden
-können, sehr einfach zu implementieren.  Zur Verdeutlichung zeigen wir ein Programm, mit
-dem es möglich ist, symbolisch zu differenzieren. 
-Im Rahmen einer Übung haben wir ein \textsc{SetlX}-Programm entwickelt, das arithmetische Ausdrücke
+k\"{o}nnen, sehr einfach zu implementieren.  Zur Verdeutlichung zeigen wir ein Programm, mit
+dem es m\"{o}glich ist, symbolisch zu differenzieren. 
+Im Rahmen einer \"{u}bung haben wir ein \textsc{SetlX}-Programm entwickelt, das arithmetische Ausdr\"{u}cke
 symbolisch differenziert.  Damals hatten wir davon profitiert, dass die Sprache \textsc{SetlX} Terme
-als Datenstruktur zur Verfügung stellt.  Da in der Sprache \textsl{Prolog} Terme ebenfalls fest
+als Datenstruktur zur Verf\"{u}gung stellt.  Da in der Sprache \textsl{Prolog} Terme ebenfalls fest
 eingebaut sind, ist es in
 \textsl{Prolog} genauso einfach, symbolisch zu differenzieren.
 
@@ -1135,49 +1135,49 @@ Die Methodik, mit der wir das \textsl{Prolog}-Programm entwickeln, besteht aus z
 Schritten:
 \begin{enumerate}
 \item Als erstes legen wir fest, was genau wir unter einem arithmetischen Ausdruck
-      verstehen wollen und wie ein solcher Ausdruck in \textsl{Prolog} repräsentiert werden soll.  
+      verstehen wollen und wie ein solcher Ausdruck in \textsl{Prolog} repr\"{a}sentiert werden soll.  
       Dazu definieren wir die Menge der \textsl{Prolog}-Terme \textsl{Expr}, 
       die einen arithmetischen Ausdruck darstellen.
 \item Dann stellen wir bedingte Gleichungen auf, die eine Funktion
       \[ \texttt{diff}: \textsl{Expr} \times \textsl{Var} \rightarrow \textsl{Expr} \]
       beschreiben.  Diese Gleichungen sind nichts anderes als die mathematischen Regeln,
-      die Sie in der Schule für das Differenzieren gelernt haben.
+      die Sie in der Schule f\"{u}r das Differenzieren gelernt haben.
 \item Im letzten Schritt implementieren wir diese Gleichungen in Prolog.
 \end{enumerate}
 
 \paragraph{Induktive Definition der Menge \textsl{Expr}.}
 \begin{enumerate}
-\item Variablen sind arithmetische Ausdrücke.
+\item Variablen sind arithmetische Ausdr\"{u}cke.
 
       Variablen stellen wir durch nullstellige Funktionszeichen dar.
       Nullstellige Funktionszeichen werden in Prolog auch als \emph{Atome} bezeichnet.
       Damit gilt
-      \[ c \in \textsl{Expr} \quad \mbox{für jedes \textsl{Prolog}-Atom $c$}. \]
-\item Zahlen sind arithmetische Ausdrücke.
+      \[ c \in \textsl{Expr} \quad \mbox{f\"{u}r jedes \textsl{Prolog}-Atom $c$}. \]
+\item Zahlen sind arithmetische Ausdr\"{u}cke.
 
       Sowohl die ganzen Zahlen als auch die Fließkomma-Zahlen sind Bestandteil der Sprache
-      \textsl{Prolog} und können damit durch sich selbst dargestelt werden:
-      \[ n \in \textsl{Expr} \quad \mbox{für alle $n \in \mathbb{Z}$}, \]
-      \[ r \in \textsl{Expr} \quad \mbox{für alle $r \in \mathbb{R}$}. \]
+      \textsl{Prolog} und k\"{o}nnen damit durch sich selbst dargestelt werden:
+      \[ n \in \textsl{Expr} \quad \mbox{f\"{u}r alle $n \in \mathbb{Z}$}, \]
+      \[ r \in \textsl{Expr} \quad \mbox{f\"{u}r alle $r \in \mathbb{R}$}. \]
 \item Das Negative eines arithmetischen Ausdrucks ist ein arithmetischer Ausdruck.
-      In \textsl{Prolog} kann das Negative durch den unären Operator ``\texttt{-}'' dargestellt
+      In \textsl{Prolog} kann das Negative durch den un\"{a}ren Operator ``\texttt{-}'' dargestellt
       werden, also haben wir
       \[ \texttt{-}\; t \in \textsl{Expr} \quad \mbox{falls $t \in \textsl{Expr}$}. \]
 \item Die Summe, die Differenz, das Produkt, und der Quotient zweier arithmetischen
-      Ausdrücke ist ein arithmetischer Ausdruck. 
-      In \textsl{Prolog} können Summe, Differenz, Produkt und Quotient respektive
-      durch die binären Operatoren ``\texttt{+}'', ``\texttt{-}'', ``\texttt{*}'' und ``\texttt{/}'' 
+      Ausdr\"{u}cke ist ein arithmetischer Ausdruck. 
+      In \textsl{Prolog} k\"{o}nnen Summe, Differenz, Produkt und Quotient respektive
+      durch die bin\"{a}ren Operatoren ``\texttt{+}'', ``\texttt{-}'', ``\texttt{*}'' und ``\texttt{/}'' 
       dargestellt werden, also setzen wir
       \[ s \;\texttt{+}\, t \in \textsl{Expr} \quad \mbox{falls $s,t \in \textsl{Expr}$}. \]
       \[ s \;\texttt{-}\; t \in \textsl{Expr} \quad \mbox{falls $s,t \in \textsl{Expr}$}. \]
       \[ s \;\texttt{*}\; t \in \textsl{Expr} \quad \mbox{falls $s,t \in \textsl{Expr}$}. \]
       \[ s \;\texttt{/}\; t \in \textsl{Expr} \quad \mbox{falls $s,t \in \textsl{Expr}$}. \]
-\item Die Potenz zweier arithmetischer Ausdrücke ist ein arithmetischer Ausdruck.
-      In \textsl{Prolog} kann die Potenz durch den binären Operator ``\texttt{**}'' dargestellt
+\item Die Potenz zweier arithmetischer Ausdr\"{u}cke ist ein arithmetischer Ausdruck.
+      In \textsl{Prolog} kann die Potenz durch den bin\"{a}ren Operator ``\texttt{**}'' dargestellt
       werden, also setzen wir
       \[ s \;\texttt{**}\; t \in \textsl{Expr} \quad \mbox{falls $s,t \in \textsl{Expr}$}. \]
-\item Bei der Behandlung spezieller Funktionen beschränken wir uns auf die
-      Exponential-Funktion und den natürlichen Logarithmus:
+\item Bei der Behandlung spezieller Funktionen beschr\"{a}nken wir uns auf die
+      Exponential-Funktion und den nat\"{u}rlichen Logarithmus:
       \[ \texttt{exp}(t) \in \textsl{Expr}  \quad \mbox{falls $t \in \textsl{Expr}$}, \]
       \[ \texttt{ln}(t)  \in \textsl{Expr}  \quad \mbox{falls $t \in \textsl{Expr}$}. \]
 \end{enumerate}
@@ -1186,7 +1186,7 @@ Schritten:
 Den Wert von $\texttt{diff}(t,x)$ definieren wir nun durch Induktion nach dem Aufbau des
 arithmetischen Ausdrucks $t$.
 \begin{enumerate}
-\item Bei der Ableitung einer Variablen müssen wir unterscheiden,
+\item Bei der Ableitung einer Variablen m\"{u}ssen wir unterscheiden,
       ob wir die Variable nach sich selbst oder nach einer anderen Variablen ableiten.
       \begin{enumerate}
       \item Die Ableitung einer Variablen nach sich selbst gibt den Wert 1:
@@ -1216,60 +1216,60 @@ arithmetischen Ausdrucks $t$.
       \[ \texttt{diff}(f - g, x) = \texttt{diff}(f,x) - \texttt{diff}(g,x). \]
 \item Die Ableitung eines Produktes wird durch die Produkt-Regel beschrieben: 
       \[ \bruch{d}{dx}(f*g) = \bruch{d\,f}{dx}*g + f*\bruch{d\,g}{dx}. \]
-      Dies führt auf die Gleichung 
+      Dies f\"{u}hrt auf die Gleichung 
       \[ \texttt{diff}(f*g,x) = \texttt{diff}(f,x) * g + f * \texttt{diff}(g,x). \]
 \item Die Ableitung eines Quotienten wird durch die Quotienten-Regel beschrieben: 
       \[ \bruch{d}{dx}(f/g) = \bruch{\;\displaystyle \rule[-10pt]{0pt}{12pt}
          \bruch{d\,f}{dx}*g - f*\bruch{d\,g}{dx}\;}{\displaystyle \rule{0pt}{10pt}g*g}. \]
-      Dies führt auf die Gleichung 
+      Dies f\"{u}hrt auf die Gleichung 
       \[ \texttt{diff}(f/g,x) = (\texttt{diff}(f,x) * g - f * \texttt{diff}(g,x)) / (g*g). \]
 \item Zur Ableitung eines Ausdrucks der Form $f \,\mathtt{**}\, g$ verwenden wir die folgende Gleichung:
       \\[0.2cm]
       \hspace*{1.3cm}      
       $f \,\mathtt{**}\, g = \texttt{exp}(g*\texttt{ln}(f))$.
       \\[0.2cm]
-      Das führt auf die Gleichung 
+      Das f\"{u}hrt auf die Gleichung 
       \[ 
          \texttt{diff}(f \;\texttt{**}\; g, x) = 
          \texttt{diff}(\mathtt{exp}(g * \mathtt{ln}(f)), x). 
       \]
-\item Bei der Ableitung der Exponential-Funktion benötigen wir die Ketten-Regel:
+\item Bei der Ableitung der Exponential-Funktion ben\"{o}tigen wir die Ketten-Regel:
       \[ \bruch{d}{dx}\textsl{exp}(f) = \bruch{d\,f}{dx}* \textsl{exp}(f). \]
-      Das führt auf die Gleichung 
+      Das f\"{u}hrt auf die Gleichung 
       \[ \texttt{diff}(\texttt{exp}(f), x) = \texttt{diff}(f,x) * \texttt{exp}(f). \]
-\item Für die Ableitung des natürlichen Logarithmus finden wir unter Berücksichtigung der Ketten-Regel
+\item F\"{u}r die Ableitung des nat\"{u}rlichen Logarithmus finden wir unter Ber\"{u}cksichtigung der Ketten-Regel
       \[ \bruch{d}{dx}\textsl{ln}(f) = \bruch{1}{f}*\bruch{d\,f}{dx}. \]
-      Das führt auf die Gleichung 
+      Das f\"{u}hrt auf die Gleichung 
       \[ \texttt{diff}(\texttt{exp}(f), x) = \texttt{diff}(f,x)/f. \]
 \end{enumerate}
 
 \paragraph{Implementierung in \textsl{Prolog}}
 Abbildung \ref{fig:symbolisch-diff} zeigt die Implementierung in \textsl{Prolog}.
-An Stelle der zweistelligen Funktion $\textsl{diff}()$ haben wir nun ein dreistelliges Prädikat 
+An Stelle der zweistelligen Funktion $\textsl{diff}()$ haben wir nun ein dreistelliges Pr\"{a}dikat 
 \texttt{diff/3}, dessen letztes Argument das Ergebnis berechnet.
 Wir diskutieren die einzelnen Klauseln.
 \begin{enumerate}
 \item Die beiden Klauseln in den Zeilen 3 -- 9 zeigen, wie eine Variable differenziert werden kann.
-      Das Prädikat $\texttt{atom}(X)$ prüft, ob $X$ ein nullstelliges Funktions-Zeichen ist.
+      Das Pr\"{a}dikat $\texttt{atom}(X)$ pr\"{u}ft, ob $X$ ein nullstelliges Funktions-Zeichen ist.
       Solche Funktions-Zeichen werden im \textsl{Prolog}-Jargon auch als \emph{Atome} bezeichnet.
-      Wir prüfen also in Zeile 4 und 8, ob es sich bei dem abzuleitenden Ausdruck um eine Variable
-      handelt.  Anschließend überprüfen wir in den Zeilen 5 bzw.~9, ob diese Variable mit der
-      Variablen, nach der differenziert werden soll, übereinstimmt oder nicht.
+      Wir pr\"{u}fen also in Zeile 4 und 8, ob es sich bei dem abzuleitenden Ausdruck um eine Variable
+      handelt.  Anschließend \"{u}berpr\"{u}fen wir in den Zeilen 5 bzw.~9, ob diese Variable mit der
+      Variablen, nach der differenziert werden soll, \"{u}bereinstimmt oder nicht.
 
       
 \item In der Klausel in den Zeilen 11 -- 12 behandeln wir den Fall, dass es sich bei dem zu
-      differenzierenden Ausdruck um eine Zahl handelt.  Um dies überprüfen zu können, verwenden wir
-      das Prädikat \texttt{number(X)}, das überprüft, ob das Argument \texttt{X}  eine Zahl ist.
+      differenzierenden Ausdruck um eine Zahl handelt.  Um dies \"{u}berpr\"{u}fen zu k\"{o}nnen, verwenden wir
+      das Pr\"{a}dikat \texttt{number(X)}, das \"{u}berpr\"{u}ft, ob das Argument \texttt{X}  eine Zahl ist.
       
       In dieser Klausel haben wir die Variable, nach der abgeleitet werden soll, mit
-      ``\texttt{\_X}'' bezeichnet.  Der Grund ist, dass das \textsl{Prolog}-System für Variablen, 
+      ``\texttt{\_X}'' bezeichnet.  Der Grund ist, dass das \textsl{Prolog}-System f\"{u}r Variablen, 
       die in einer Klausel nur einmal vorkommen, eine Warnung ausgibt.  Diese Warnung kann vermieden
-      werden, wenn vorne an den Variablennamen  ein Unterstrichs ``\texttt{\_}'' angefügt wird.
+      werden, wenn vorne an den Variablennamen  ein Unterstrichs ``\texttt{\_}'' angef\"{u}gt wird.
 \item Am Beispiel der Ableitung des Ausdrucks $-f$ zeigen wir, wie rekursive Gleichungen
-      in \textsl{Prolog} umgesetzt werden können. Die Gleichung, die in den Zeilen 14 --
+      in \textsl{Prolog} umgesetzt werden k\"{o}nnen. Die Gleichung, die in den Zeilen 14 --
       15 umgesetzt wird, lautet
       \[ \texttt{diff}(-f,x) = - \texttt{diff}(f,x). \]
-      Um den Ausdruck \texttt{-F} nach $x$ zu differenzieren, müssen wir zunächst den
+      Um den Ausdruck \texttt{-F} nach $x$ zu differenzieren, m\"{u}ssen wir zun\"{a}chst den
       Ausdruck \texttt{F} nach $x$ ableiten.  Das passiert in 
       Zeile 15 und liefert das Ergebnis \texttt{Fs}.  Das Endergebnis erhalten wir dadurch, dass
       wir vor \texttt{Fs} ein Minuszeichen setzen.

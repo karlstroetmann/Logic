@@ -1,32 +1,32 @@
 \chapter{Logisches Programmieren} 
-Im diesem Kapitel wollen wir uns mit dem logischen Programmieren beschäftigen.
-Wir setzen uns zunächst mit den theoretischen Grundlagen auseinander und stellen dann
+Im diesem Kapitel wollen wir uns mit dem logischen Programmieren besch\"{a}ftigen.
+Wir setzen uns zun\"{a}chst mit den theoretischen Grundlagen auseinander und stellen dann
 die Programmiersprache Prolog vor.
 
 \section{Theoretische Grundlagen}
 \begin{Definition}[Programm--Klausel]
 {\em
-    Eine prädikatenlogische Klausel $k$ ist eine \emph{Programm--Klausel} wenn sie
-    genau ein positives Literal enthält.
+    Eine pr\"{a}dikatenlogische Klausel $k$ ist eine \emph{Programm--Klausel} wenn sie
+    genau ein positives Literal enth\"{a}lt.
 } \hspace*{\fill} $\Box$
 \end{Definition}
 
 Nach der obigen Definition ist eine Klausel $k$ also eine Programm--Klausel wenn einer
-der folgenden Fälle vorliegt:
+der folgenden F\"{a}lle vorliegt:
 \begin{enumerate}
-\item $k$ enthält genau ein positives Literal und keine negativen Literale.  
+\item $k$ enth\"{a}lt genau ein positives Literal und keine negativen Literale.  
       $k$ hat dann die Form \\[0.1cm]
       \hspace*{1.0cm} $k = p(s_1, \cdots, s_m)$.
 
       In diesem Fall bezeichnen wir $k$ als \emph{Fakt}.
-\item $k$ enthält genau ein positives Literal und $n>0$ negative Literale. Dann hat $k$
+\item $k$ enth\"{a}lt genau ein positives Literal und $n>0$ negative Literale. Dann hat $k$
       die Form \\[0.1cm]
       \hspace*{1.0cm}
             $k = p\big(s_1, \cdots, s_m\big) \vee \neg p_1\big(s^{(1)}_1, \cdots, s^{(1)}_{m(1)}\big) \vee \cdots \vee \neg p_n(s^{(n)}_1, \cdots, s^{(n)}_{m(n)}\big)$.
 
       In diesem Fall bezeichnen wir $k$ als \emph{Regel}.
 \end{enumerate}
-Aufgrund der Äquivalenz $(\neg p \vee q) \leftrightarrow (p \rightarrow q)$ und 
+Aufgrund der \"{a}quivalenz $(\neg p \vee q) \leftrightarrow (p \rightarrow q)$ und 
 $\neg (p \wedge q) \leftrightarrow (\neg p \vee \neg q)$ kann eine
 Programm--Klausel der Form \\[0.1cm]
 \hspace*{1.3cm} 
@@ -56,10 +56,10 @@ bezeichnen wir als ein \emph{Ziel}.  Falls $n=0$ ist schreiben wir $G = \verum$.
 Beim logischen Programmieren ist ein Ziel $G$ und eine Menge
 $\mathcal{P}$ von Programm--Klauseln gegeben.  Die Frage ist dann, ob es eine Substitution $\sigma$ gibt, so dass \\[0.1cm]
 \hspace*{1.3cm} $\mathcal{P} \models G\sigma$ \\[0.1cm]
-gilt. Falls diese Frage mit ja beantwortet wird, soll zusätzlich eine Substitution $\sigma$ mit der obigen Eigenschaft
+gilt. Falls diese Frage mit ja beantwortet wird, soll zus\"{a}tzlich eine Substitution $\sigma$ mit der obigen Eigenschaft
 berechnet werden.
-Wir geben nun ein Verfahren an, mit dem die Frage, ob  $\mathcal{P} \models G\sigma$ gilt, untersucht werden kann und mit dem zusätzlich
-die Substitution $\sigma$, falls sie existiert, berechnet werden kann.  Dazu führen wir zunächst den folgenden Begriff
+Wir geben nun ein Verfahren an, mit dem die Frage, ob  $\mathcal{P} \models G\sigma$ gilt, untersucht werden kann und mit dem zus\"{a}tzlich
+die Substitution $\sigma$, falls sie existiert, berechnet werden kann.  Dazu f\"{u}hren wir zun\"{a}chst den folgenden Begriff
 ein.
 
 \begin{Definition}[Instantiiertes Ziel]
@@ -76,21 +76,21 @@ ein.
 Wie interpretieren ein instantiiertes Ziel $\langle A_1 \wedge \cdots \wedge A_m, \sigma \rangle$ als die Formel \\[0.1cm]
 \hspace*{1.3cm} $A_1\sigma \wedge \cdots \wedge A_n\sigma$. \\[0.1cm]
 Wir trennen hier die Formel von der Substitution, weil wir dadurch in der Lage sind,
-mit den Substitutionen zu rechnen.  Dazu führen wir 
-für ein gegebenes logisches Programm $\mathcal{P}$
+mit den Substitutionen zu rechnen.  Dazu f\"{u}hren wir 
+f\"{u}r ein gegebenes logisches Programm $\mathcal{P}$
 eine Reduktions--Relation $\leadsto_\mathcal{P}$ ein.
-Mit dieser Reduktions--Relation können wir später instantiierte Ziele vereinfachen.
+Mit dieser Reduktions--Relation k\"{o}nnen wir sp\"{a}ter instantiierte Ziele vereinfachen.
 
-Um diese Relation definieren zu können, führen wir noch den Begriff der Einschränkung einer
+Um diese Relation definieren zu k\"{o}nnen, f\"{u}hren wir noch den Begriff der Einschr\"{a}nkung einer
 Substitution $\sigma$ auf eine Menge von Variablen ein.
 
 \begin{Definition}[$\sigma \restriction V$]
 {\em
   Es sei $\sigma = [ x_1 \mapsto s_1, \cdots, x_n \mapsto s_n ]$ eine Substitution und $V$ sei eine Menge von Variablen.
-  Um die Einschränkung von $\sigma$ auf $V$ definieren zu können, erinnern wir uns, dass Substitutionen
+  Um die Einschr\"{a}nkung von $\sigma$ auf $V$ definieren zu k\"{o}nnen, erinnern wir uns, dass Substitutionen
   als Mengen von Paaren definiert sind.  Es gilt \\[0.1cm]
   \hspace*{1.3cm} $\sigma = \big\{ \langle x_1, s_1 \rangle, \cdots, \langle x_n, s_n \rangle \big\}$ \\[0.1cm]
-  Dann definieren wir die \emph{Einschränkung von $\sigma$ auf $V$} als  \\[0.1cm]
+  Dann definieren wir die \emph{Einschr\"{a}nkung von $\sigma$ auf $V$} als  \\[0.1cm]
   \hspace*{1.3cm} $\sigma \restriction V := \big\{ \langle x, s \rangle\in \sigma \; \big|\; x \in V \big\}$.
   \hspace*{\fill} $\Box$
 }
@@ -106,7 +106,7 @@ Dann haben wir \\[0.1cm]
 \vspace{0.1cm}
 
 Wir haben jetzt alles Material
-zusammen, um die Reduktions--Relation $\leadsto_\mathcal{P}$ definieren zu können.
+zusammen, um die Reduktions--Relation $\leadsto_\mathcal{P}$ definieren zu k\"{o}nnen.
 
 \begin{Definition}[$\leadsto_\mathcal{P}$]
 {\em 
@@ -117,21 +117,21 @@ zusammen, um die Reduktions--Relation $\leadsto_\mathcal{P}$ definieren zu könne
 \item $H \leftarrow B_1 \wedge \cdots \wedge B_n$ ist eine Programm--Klausel aus $\mathcal{P}$.
 
       Hier lassen wir den Fall $n=0$ zu.  Dann hat die Programm--Klausel einfach die Form $H$, wobei $H$ ein Fakt ist.
-\item $\pi$ ist eine Variablen--Umbenennung. $\pi$ ist so gewählt, dass \\[0.1cm]
+\item $\pi$ ist eine Variablen--Umbenennung. $\pi$ ist so gew\"{a}hlt, dass \\[0.1cm]
       \hspace*{1.3cm} $\FV\big(H\pi \leftarrow B_1\pi \wedge \cdots \wedge B_n\pi\big) \;\cap\; \FV\big(A_1\sigma \wedge \cdots \wedge A_m\sigma \big) = \emptyset$ \\[0.1cm]
       gilt. Also sind die Variablen, die in der Klausel
       $H\pi \leftarrow B_1\pi \wedge \cdots \wedge B_n\pi$ vorkommen, verschieden von den
       Variablen, die in dem Ziel \\
       $A_1\sigma \wedge \cdots \wedge A_m\sigma$ vorkommen.
 \end{enumerate}
-Ist dann die syntaktische Gleichung $A_1\sigma \doteq H\pi$ lösbar und ist $\mu = \textsl{mgu}(A_1\sigma, H\pi)$, so setzen wir $\tau := \mu \restriction \FV(A_1)$
+Ist dann die syntaktische Gleichung $A_1\sigma \doteq H\pi$ l\"{o}sbar und ist $\mu = \textsl{mgu}(A_1\sigma, H\pi)$, so setzen wir $\tau := \mu \restriction \FV(A_1)$
 und definieren \\[0.1cm]
 \hspace*{1.3cm} 
 $\big\langle A_1 \wedge \cdots \wedge A_m, \sigma \big\rangle \leadsto_\mathcal{P} \big\langle B_1\pi\mu \wedge \cdots \wedge B_n\pi\mu \wedge A_2 \wedge \cdots \wedge A_m, \sigma\tau \big\rangle$ 
 } \hspace*{\fill} $\Box$
 \end{Definition}
 
-Wir definieren den reflexiven und transitiven Abschluss $\leadsto_\mathcal{P}^*$ der Relation $\leadsto_\mathcal{P}$ in der üblichen Art und Weise:
+Wir definieren den reflexiven und transitiven Abschluss $\leadsto_\mathcal{P}^*$ der Relation $\leadsto_\mathcal{P}$ in der \"{u}blichen Art und Weise:
 \begin{enumerate}
 \item Es gilt $\langle A_1 \wedge \cdots \wedge A_m, \sigma \rangle \leadsto_\mathcal{P}^* \langle A_1 \wedge \cdots \wedge A_m, \sigma \rangle$.
 \item Aus \\[0.1cm]
@@ -150,7 +150,7 @@ gilt, haben wir das Folgende:
 \item Es gibt eine Substitution $\varrho$, so dass $\tau = \sigma\varrho$ ist.
 \item $\mathcal{P} \cup \big\{ B_1\tau \wedge \cdots \wedge B_n\tau \big\} \models A_1\tau \wedge \cdots \wedge A_m\tau$
 \end{enumerate}
-Diese Eigenschaft kann durch Induktion nach der Definition von $\leadsto_\mathcal{P}^*$ bewiesen werden.  Der für uns wichtigste Fall ist der, dass
+Diese Eigenschaft kann durch Induktion nach der Definition von $\leadsto_\mathcal{P}^*$ bewiesen werden.  Der f\"{u}r uns wichtigste Fall ist der, dass
 $\sigma = []$ und $n = 0$ ist, dass also
 \hspace*{1.3cm} $\langle A_1 \wedge \cdots \wedge A_m, [] \rangle \leadsto_\mathcal{P}^* \langle \verum, \tau \rangle$ \\[0.1cm]
 gilt.  Diesen Fall halten wir in dem folgenden Satz fest.
@@ -163,12 +163,12 @@ Falls   $\langle A_1 \wedge \cdots \wedge A_m, [] \rangle \leadsto_\mathcal{P}^*
 \hspace*{\fill} $\Box$
 \end{Satz}
 
-Dieser Satz liefert uns ein Verfahren, um für ein gegebenes Ziel der Form \\ $A_1 \wedge \cdots \wedge A_m$ 
+Dieser Satz liefert uns ein Verfahren, um f\"{u}r ein gegebenes Ziel der Form \\ $A_1 \wedge \cdots \wedge A_m$ 
 eine Substitution $\tau$ zu berechnen, so dass \\[0.1cm]
 \hspace*{1.3cm} $\mathcal{P} \models A_1\tau \wedge \cdots \wedge A_m\tau$ \\[0.1cm]
 gilt:  Wir starten mit dem instantiierten Ziel $\langle A_1 \wedge \cdots \wedge A_m, []\rangle$ und formen dies mit Hilfe
 der Reduktions--Relation $\leadsto_\mathcal{P}$ so lange um, bis wir bei einem Ziel der Form $\langle \verum, \tau\rangle$ angekommen
-sind.  Die so erhaltene Substitution $\tau$ leistet dann das gewünschte.
+sind.  Die so erhaltene Substitution $\tau$ leistet dann das gew\"{u}nschte.
 \vspace{0.3cm}
 
 \noindent
@@ -182,11 +182,11 @@ mit
 \item $\textsl{Pz} := \{ <, \textsl{plus} \}$ mit $<: \mathbb{N} \times \mathbb{N} \rightarrow \mathbb{B}$ und $\textsl{plus}: \mathbb{N} \times \mathbb{N} \times \mathbb{N} \rightarrow \mathbb{B}$.
 \end{enumerate}
 Wir wollen den Term $s(x)$ als $x+1$ interpretieren und
-unsere Intention bei dem Prädikats--Zeichen ``$\textsl{plus}$'' ist, 
+unsere Intention bei dem Pr\"{a}dikats--Zeichen ``$\textsl{plus}$'' ist, 
 dass $\textsl{plus}(x,y,z)$ genau dann wahr ist, wenn $z$ die Summe von $x$ und $y$ ist.
 Wir definieren ein logisches Programm $\mathcal{P}$ wie folgt: \\[0.1cm]
 \hspace*{1.3cm} $\mathcal{P} := \big\{ \textsl{plus}(x,0,x),\; \textsl{plus}(x,s(y),s(z)) \leftarrow \textsl{plus}(x,y,z) \big\}$. \\[0.1cm]
-Wir stellen die Frage, für welches $u$ \\[0.1cm]
+Wir stellen die Frage, f\"{u}r welches $u$ \\[0.1cm]
 \hspace*{1.3cm} $\mathcal{P} \models \textsl{plus}(s(0), s(s(0)), u)$ \\[0.1cm]
 gilt.  Wir versuchen also als erstes, das instantiierte Ziel \\[0.1cm]
 \hspace*{1.3cm} $Z_1 := \big\langle \textsl{plus}(s(0), s(s(0)), u), [] \big\rangle$ \\[0.1cm]
@@ -194,54 +194,54 @@ zu reduzieren.  Die einzige Klausel, deren Kopf mit $\textsl{plus}(s(0), s(s(0))
 \hspace*{1.3cm} $\textsl{plus}(x,s(y),s(z)) \leftarrow \textsl{plus}(x,y,z)$ \\[0.1cm]
 Wir betrachten also die syntaktische Gleichung \\[0.1cm]
 \hspace*{1.3cm} $\textsl{plus}(s(0), s(s(0)), u) \doteq \textsl{plus}(x,s(y),s(z))$ \\[0.1cm]
-Diese syntaktische Gleichung hat die allgemeinste Lösung \\[0.1cm]
+Diese syntaktische Gleichung hat die allgemeinste L\"{o}sung \\[0.1cm]
 \hspace*{1.3cm}  $\mu_1 := [ x \mapsto s(0), y \mapsto s(0), u \mapsto s(z) ]$ \\[0.1cm]
 Da außerdem $\mu_1 \restriction \{u\} = [ u \mapsto s(z)]$ ist haben wir also \\[0.1cm]
 \hspace*{1.3cm} $Z_1 \leadsto_\mathcal{P} Z_2 := \langle \textsl{plus}(s(0),s(0),z), [ u \mapsto s(z) ] \rangle$. \\[0.1cm]
 Die einzige Klausel, deren Kopf mit $\textsl{plus}(s(0),s(0),z)$ unifizierbar ist, ist die zweite Klausel.
-Da diese Klausel ebenfalls die Variable $z$ enthält, müssen wir diese noch umbenennen, bevor wir die Unifikation durchzuführen.
-Ersetzen wir $z$ durch $v$, so  führt uns das auf  die syntaktische Gleichung \\[0.1cm]
+Da diese Klausel ebenfalls die Variable $z$ enth\"{a}lt, m\"{u}ssen wir diese noch umbenennen, bevor wir die Unifikation durchzuf\"{u}hren.
+Ersetzen wir $z$ durch $v$, so  f\"{u}hrt uns das auf  die syntaktische Gleichung \\[0.1cm]
 \hspace*{1.3cm} $\textsl{plus}(s(0),s(0),z) \doteq \textsl{plus}(x,s(y),s(v))$ \\[0.1cm]
-Die allgemeinste Lösung dieser Gleichung lautet \\[0.1cm]
+Die allgemeinste L\"{o}sung dieser Gleichung lautet \\[0.1cm]
 \hspace*{1.3cm} $\mu_2 = [ x \mapsto s(0), y \mapsto 0, z \mapsto s(v)]$ \\[0.1cm]
 Da $\mu_2 \restriction \{z\} = [ z \mapsto s(v) ]$ ist, haben wir \\[0.1cm]
 \hspace*{1.3cm} $Z_2 \leadsto_\mathcal{P} Z_3 := \langle \textsl{plus}(s(0), 0, v), [u \mapsto s(s(v)), z \mapsto s(v)]\rangle$. \\[0.1cm]
-Mit der atomaren Formel $\textsl{plus}(s(0), 0, v)$ lässt sich jetzt nur der Kopf der
+Mit der atomaren Formel $\textsl{plus}(s(0), 0, v)$ l\"{a}sst sich jetzt nur der Kopf der
 ersten Klausel aus $\mathcal{P}$ unifizieren.  Das liefert die syntaktische Gleichung \\[0.1cm]
 \hspace*{1.3cm} $\textsl{plus}(s(0), 0, v) \doteq \textsl{plus}(x,0,x)$. \\[0.1cm]
-Die allgemeinste Lösung dieser Gleichung lautet \\[0.1cm]
+Die allgemeinste L\"{o}sung dieser Gleichung lautet \\[0.1cm]
 \hspace*{1.3cm} $\mu_3 = [ x \mapsto s(0), v \mapsto s(0)]$. \\[0.1cm]
 Wir haben $\mu_3 \restriction \{v\} = [ v \mapsto s(0) ]$.  Damit gilt \\[0.1cm]
 \hspace*{1.3cm} $Z_3 \leadsto_\mathcal{P} Z_4 := \big\langle \verum, [u \mapsto s(s(s(0))), z \mapsto s(s(0)), v \mapsto s(0)] \big\rangle$. \\[0.1cm]
-Die durchgeführte  Rechnung zeigt also, dass \\[0.1cm]
+Die durchgef\"{u}hrte  Rechnung zeigt also, dass \\[0.1cm]
 \hspace*{1.3cm} $\mathcal{P} \models \textsl{plus}\big(s(0), s(s(0)), u\big)$ \\[0.1cm]
-für $u = s(s(s(0)))$ gilt.   Dies zeigt, dass die Relation $\leadsto_\mathcal{P}$ benutzt
-werden kann, um Rechnungen durchzuführen: Wir haben oben nämlich die Summe von $1$ und $2$ berechnet.
-Ok, dieses Beispiel ist nicht besonders gigantisch und vielleicht hätte der eine oder andere von Ihnen das 
+f\"{u}r $u = s(s(s(0)))$ gilt.   Dies zeigt, dass die Relation $\leadsto_\mathcal{P}$ benutzt
+werden kann, um Rechnungen durchzuf\"{u}hren: Wir haben oben n\"{a}mlich die Summe von $1$ und $2$ berechnet.
+Ok, dieses Beispiel ist nicht besonders gigantisch und vielleicht h\"{a}tte der eine oder andere von Ihnen das 
 (mit Hilfe eines Taschenrechners) auch herausbekommen.
  Eindrucksvoll werden die Beispiele erst, wenn die Programme und 
-die Reduktionen komplexer werden.  Dann macht es zwar keine Freude mehr, die Reduktionen von Hand durchzuführen,
-aber das ist auch gar nicht nötig, denn mit der Programmiersprache Prolog gibt es ein mächtiges Werkzeug,
-was diese Rechnungen für uns übernehmen kann.  Wir werden diese Programmiersprache in den
-nächsten Abschnitten vorstellen.
+die Reduktionen komplexer werden.  Dann macht es zwar keine Freude mehr, die Reduktionen von Hand durchzuf\"{u}hren,
+aber das ist auch gar nicht n\"{o}tig, denn mit der Programmiersprache Prolog gibt es ein m\"{a}chtiges Werkzeug,
+was diese Rechnungen f\"{u}r uns \"{u}bernehmen kann.  Wir werden diese Programmiersprache in den
+n\"{a}chsten Abschnitten vorstellen.
 
 \section{Prolog --- Die Syntax}
-Wir betrachten zunächst die Syntax von Prolog.
+Wir betrachten zun\"{a}chst die Syntax von Prolog.
 Prolog ist (leider) eine ungetypte Sprache, das heißt dass es neben dem Typ--Bezeichner
 $\mathbb{B}$ nur noch einen weiteren Typ--Bezeichner gibt.  Um Variablen, und
-Funktions--Zeichen und Prädikats--Zeichen
-von einander unterscheiden zu können, wird in Prolog folgende Vereinbarung getroffen. 
-Variablen sind alle Wörter, die aus Buchstaben, Ziffern und dem Zeichen ``\texttt{\_}''
-bestehen und die zusätzlich mit einem Großbuchstaben oder mit dem Zeichen ``\texttt{\_}''
-beginnen.  Die folgenden Wörter sind also Beispiele für Prolog Variablen: 
+Funktions--Zeichen und Pr\"{a}dikats--Zeichen
+von einander unterscheiden zu k\"{o}nnen, wird in Prolog folgende Vereinbarung getroffen. 
+Variablen sind alle W\"{o}rter, die aus Buchstaben, Ziffern und dem Zeichen ``\texttt{\_}''
+bestehen und die zus\"{a}tzlich mit einem Großbuchstaben oder mit dem Zeichen ``\texttt{\_}''
+beginnen.  Die folgenden W\"{o}rter sind also Beispiele f\"{u}r Prolog Variablen: 
 \\[0.1cm]
 \hspace*{1.3cm} ``\texttt{X}'', ``\texttt{\_}'', ``\texttt{A\_Long\_Variable\_Name}'',
                 ``\texttt{ABC}'', ``\texttt{Y1}'', ``\texttt{Head}'', \\[0.1cm]
 \hspace*{1.3cm} ``\texttt{Tail}'', ``\texttt{\_Y}'', ``\texttt{\_another\_Var}''. \\[0.1cm]
-In Prolog werden Funktions--Zeichen und Prädikats--Zeichen nicht unterschieden.
-Funktions--Zeichen sind alle Wörter, die aus Buchstaben, Ziffern und dem Zeichen ``\texttt{\_}''
-bestehen und die mit einem kleinen Buchstaben anfangen.  Außerdem sind Wörter, die in
-einfachen Hochkommas eingeschlossen sind, Funktions--Zeichen.  Zusätzlich gibt es einige
+In Prolog werden Funktions--Zeichen und Pr\"{a}dikats--Zeichen nicht unterschieden.
+Funktions--Zeichen sind alle W\"{o}rter, die aus Buchstaben, Ziffern und dem Zeichen ``\texttt{\_}''
+bestehen und die mit einem kleinen Buchstaben anfangen.  Außerdem sind W\"{o}rter, die in
+einfachen Hochkommas eingeschlossen sind, Funktions--Zeichen.  Zus\"{a}tzlich gibt es einige
 vordefinierte Funktions--Zeichen, die aus \emph{Operator--Symbolen} aufgebaut sind.
 Hier handelt es sich um die Funktions--Zeichen \\[0.1cm]
 \hspace*{1.3cm} 
@@ -250,16 +250,16 @@ Hier handelt es sich um die Funktions--Zeichen \\[0.1cm]
 ``\texttt{*}'',
 ``\texttt{/}'',
 ``\texttt{.}''. \\[0.1cm]
-Zusätzlich werden \\[0.1cm]
+Zus\"{a}tzlich werden \\[0.1cm]
 \hspace*{1.3cm} 
 ``\texttt{<}'',
 ``\texttt{>}'',
 ``\texttt{=}'',
 ``\texttt{=<}'',
 ``\texttt{>=}'' \\[0.1cm]
-als Prädikats--Zeichen benutzt.  Schließlich können als 0--stellige Funktions--Zeichen auch
+als Pr\"{a}dikats--Zeichen benutzt.  Schließlich k\"{o}nnen als 0--stellige Funktions--Zeichen auch
 Zahlen verwendet werden.
-Beispiele für Funktions--Zeichen sind also folgende: \\[0.1cm]
+Beispiele f\"{u}r Funktions--Zeichen sind also folgende: \\[0.1cm]
 \hspace*{1.3cm}  ``\texttt{abc2}'', ``\texttt{a\_XY}'', ``\texttt{etc}'', ``\texttt{x}'', ``\texttt{q}'', 
                  ``\texttt{q2}'', ``\texttt{+}'', ``\texttt{=<}'', ``\texttt{'ab +-'}''. \\[0.1cm]
 Eine Programm--Klausel der Form \\[0.1cm]
@@ -268,7 +268,7 @@ $p\big(s_1, \cdots, s_m\big) \leftarrow p_1\big(s^{(1)}_1, \cdots, s^{(1)}_{m(1)
 wird in Prolog wie folgt geschrieben: \\[0.1cm]
 \hspace*{1.3cm} 
 $p\big(s_1, \cdots, s_m\big)$ \texttt{:-} $p_1\big(s^{(1)}_1, \cdots, s^{(1)}_{m(1)}\big)$\texttt{,} $\cdots$\texttt{,} $p_n(s^{(n)}_1, \cdots, s^{(n)}_{m(n)}\big)$.  \\[0.1cm]
-Der Pfeil ``$\leftarrow$'' wird also durch ``\texttt{:-}'' ersetzt und für das
+Der Pfeil ``$\leftarrow$'' wird also durch ``\texttt{:-}'' ersetzt und f\"{u}r das
 Symbol ``$\wedge$'' wird einfach ein Komma geschrieben.  Außerdem ist noch wichtig, dass
 jede Klausel durch einen Punkt abgeschlossen wird.
 
@@ -279,7 +279,7 @@ wird in Prolog als \\[0.1cm]
 geschrieben.  Auch hier wird  also das Symbol ``$\wedge$'' durch ein Komma ersetzt und das
 Ziel wird durch einen Punkt abgeschlossen.
 
-Ein Beispiel für ein Prolog--Programm finden Sie hier:
+Ein Beispiel f\"{u}r ein Prolog--Programm finden Sie hier:
 \begin{verbatim}
     gallier(asterix).
     gallier(obelix).
@@ -294,38 +294,38 @@ Ein Beispiel für ein Prolog--Programm finden Sie hier:
 
     spinnt(X) :- roemer(X).
 \end{verbatim}
-Ein Ziel für dieses Prolog--Programm wäre z.B.\\[0.1cm]
+Ein Ziel f\"{u}r dieses Prolog--Programm w\"{a}re z.B.\\[0.1cm]
 \hspace*{1.3cm} \texttt{maechtig(X), spinnt(X).} \\[0.1cm]
-In diesem Beispiel sind die Wörter ``\texttt{gallier}'', ``\texttt{stark}'',
+In diesem Beispiel sind die W\"{o}rter ``\texttt{gallier}'', ``\texttt{stark}'',
 ``\texttt{maechtig}'', ``\texttt{kaiser}'', ``\texttt{roemer}'' und ``\texttt{spinnt}''
-Prädikats--Zeichen.
+Pr\"{a}dikats--Zeichen.
 Als einzige Variable taucht in dem obigen Beispiel ``\texttt{X}'' auf.  Die
 Funktions--Zeichen sind 
 ``\texttt{asterix}'', ``\texttt{obelix}'' und ``\texttt{caesar}''.
 Alle diese Funktions--Zeichen sind 0--stellig.
-Wenn wir die obigen Prolog--Klauseln in die Umgangssprache übersetzen, erhalten wir:
+Wenn wir die obigen Prolog--Klauseln in die Umgangssprache \"{u}bersetzen, erhalten wir:
 \begin{enumerate}
 \item Asterix ist ein Gallier.
 \item Obelix ist ein Gallier.
 \item Gallier sind stark.
-\item Wer stark ist, ist mächtig.
-\item Wer Kaiser ist, ist mächtig.
-\item Cäsar ist ein Kaiser.
-\item Cäsar ist ein Römer.
-\item Die Römer spinnen. 
+\item Wer stark ist, ist m\"{a}chtig.
+\item Wer Kaiser ist, ist m\"{a}chtig.
+\item C\"{a}sar ist ein Kaiser.
+\item C\"{a}sar ist ein R\"{o}mer.
+\item Die R\"{o}mer spinnen. 
 \end{enumerate}
-Das Ziel könnten wir in dem Fall als die Frage interpretieren, ob es jemanden gibt, der
-mächtig ist und spinnt.
+Das Ziel k\"{o}nnten wir in dem Fall als die Frage interpretieren, ob es jemanden gibt, der
+m\"{a}chtig ist und spinnt.
 
 Die Grundidee beim logischen Programmieren ist es, dass ein Problem durch logische Formeln
-beschrieben wird.  Die Lösung des Problems ist dann die Aufgabe einer geeigneten
+beschrieben wird.  Die L\"{o}sung des Problems ist dann die Aufgabe einer geeigneten
 \emph{Inferenz--Maschine}.  Das Ziel ist es also, dass der Programmierer nicht mehr
-beschreiben muss, wie das Problem im Detail zu lösen ist, sondern nur noch eine präzise
+beschreiben muss, wie das Problem im Detail zu l\"{o}sen ist, sondern nur noch eine pr\"{a}zise
 Beschreibung des Problems abliefert.  Der Rest wird dann von der Maschine erledigt.
 Die Sprache Prolog realisiert diese Grundidee teilweise.  Um das zu demonstrieren, geben
 wir die oben angegebenen Programm--Klauseln in eine Datei ein, die wir
 ``\texttt{gallier.pl}'' nennen.  Dann starten wir den Prolog Interpreter mit dem Befehl
-``\texttt{pl}''.  Wir werden mit einem Prompt der folgenden Form begrüßt:
+``\texttt{pl}''.  Wir werden mit einem Prompt der folgenden Form begr\"{u}ßt:
 \begin{verbatim}
     stroetma@stroetmannpc:~/Kurse/Informatik-I/Prolog> pl
     Welcome to SWI-Prolog (Version 5.0.8)
@@ -340,7 +340,7 @@ wir die oben angegebenen Programm--Klauseln in eine Datei ein, die wir
 \end{verbatim}
 Die Zeichenfolge ``\texttt{?-}'' ist der Prolog--Prompt.  Hier geben wir  \\[0.1cm]
 \hspace*{1.3cm} \texttt{consult(gallier).} \\[0.1cm]
-ein (und zwar mit dem Punkt) und drücken \fbox{\textsl{Return}}. Damit fordern wir das Prolog--System auf, die
+ein (und zwar mit dem Punkt) und dr\"{u}cken \fbox{\textsl{Return}}. Damit fordern wir das Prolog--System auf, die
 Programm--Klauseln aus der Datei ``\texttt{gallier.pl}'' zu laden.  Als Ergebnis erhalten
 wir die Meldung
 \begin{verbatim}
@@ -351,7 +351,7 @@ wir die Meldung
     2 ?- 
 \end{verbatim}
 Dies sagt aus, dass die Programm--Klauseln aus der Datei ``\texttt{gallier}'' erfolgreich
-geladen wurden. Wir können nun unser Ziel eingeben und die \fbox{\textsl{Return}} Taste drücken.
+geladen wurden. Wir k\"{o}nnen nun unser Ziel eingeben und die \fbox{\textsl{Return}} Taste dr\"{u}cken.
 Der Bildschirm sieht dann so aus:
 \begin{verbatim}
     2 ?- maechtig(X), spinnt(X).
@@ -360,43 +360,43 @@ Der Bildschirm sieht dann so aus:
 
     Yes
 \end{verbatim}
-Das Prolog--System hat also  für die Variable
+Das Prolog--System hat also  f\"{u}r die Variable
 ``\texttt{X}'' die Instantiierung $[ \mathtt{X} \mapsto \mathtt{caesar} ]$
-gefunden, und  für diese Instantiierung folgt die Formel \\[0.1cm]
+gefunden, und  f\"{u}r diese Instantiierung folgt die Formel \\[0.1cm]
 \hspace*{1.3cm} \texttt{maechtig(X) $\wedge$ spinnt(X)} \\[0.1cm]
 aus den gegebenen Programm--Klauseln.
-Um nun einen neuen Prompt zu erhalten, müssen  wir die \fbox{\textsl{Return}} Taste erneut  drücken.
+Um nun einen neuen Prompt zu erhalten, m\"{u}ssen  wir die \fbox{\textsl{Return}} Taste erneut  dr\"{u}cken.
 
 In Prolog wird viel mit Listen gearbeitet.  Listen werden in Prolog mit dem
 2--stelligen Funktions--Zeichen ``\texttt{.}'' konstruiert.  Ein Term der Form \\[0.1cm]
 \hspace*{1.3cm} \texttt{.($s$,$t$)} \\[0.1cm]
-steht also für eine Liste, die als erstes Element ``$s$'' enthält. ``$t$'' bezeichnet den
+steht also f\"{u}r eine Liste, die als erstes Element ``$s$'' enth\"{a}lt. ``$t$'' bezeichnet den
 Rest der Liste.
 Das Funktions--Zeichen ``\texttt{[]}'' steht
-für die leere Liste. Eine Liste, die aus  den drei Elementen 
+f\"{u}r die leere Liste. Eine Liste, die aus  den drei Elementen 
 ``\texttt{a}'', ``\texttt{b}'' und ``\texttt{c}'' besteht, kann also wie folgt dargestellt
 werden: \\[0.1cm]
 \hspace*{1.3cm} \texttt{.(a, .(b, .(c, [])))} \\[0.1cm]
 Da dies relativ schwer zu lesen ist, darf diese Liste auch als \\[0.1cm]
 \hspace*{1.3cm} \texttt{[a,b,c]} \\[0.1cm]
-geschrieben werden.  Zusätzlich kann der Term ``\texttt{.($s$,$t$)}'' in der Form \\[0.1cm]
+geschrieben werden.  Zus\"{a}tzlich kann der Term ``\texttt{.($s$,$t$)}'' in der Form \\[0.1cm]
 \hspace*{1.3cm} \texttt{[ $s$ | $t$ ]} \\[0.1cm]
-geschrieben werden.  Um diese Kurzschreibweise zu erläutern, geben wir ein kurzes
-Prolog--Programm an, dass zwei Listen aneinander hängen kann.  
-Das Programm implementiert eine dreistelliges Prädikats \texttt{concat}.  Die Intention ist,
-dass $\mathtt{concat}(l_1,l_2,l_3)$ für drei Listen $l_1$, $l_2$ und $l_3$ genau dann
+geschrieben werden.  Um diese Kurzschreibweise zu erl\"{a}utern, geben wir ein kurzes
+Prolog--Programm an, dass zwei Listen aneinander h\"{a}ngen kann.  
+Das Programm implementiert eine dreistelliges Pr\"{a}dikats \texttt{concat}.  Die Intention ist,
+dass $\mathtt{concat}(l_1,l_2,l_3)$ f\"{u}r drei Listen $l_1$, $l_2$ und $l_3$ genau dann
 wahr sein soll,
 wenn die Liste $l_3$ dadurch entsteht, dass die Liste $l_2$ hinten an die Liste $l_1$
-angehängt wird.  Das Programm besteht aus den folgenden beiden Klauseln:
+angeh\"{a}ngt wird.  Das Programm besteht aus den folgenden beiden Klauseln:
 \begin{verbatim}
   concat( [], L, L ).
   concat( [ X | L1 ], L2, [ X | L3 ] ) :- concat( L1, L2, L3 ).
 \end{verbatim}
-Wir können diese beiden Klauseln folgendermaßen in die Umgangssprache übersetzen:
+Wir k\"{o}nnen diese beiden Klauseln folgendermaßen in die Umgangssprache \"{u}bersetzen:
 \begin{enumerate}
-\item Hängen wir eine Liste \texttt{L} an die leere Liste an, so ist das Ergebnis \texttt{L}.
+\item H\"{a}ngen wir eine Liste \texttt{L} an die leere Liste an, so ist das Ergebnis \texttt{L}.
 \item Um an eine Liste \texttt{[ X | L1 ]}, die aus dem Element \texttt{X} und dem Rest \texttt{L1} besteht,
-      eine Liste \texttt{L2} anzuhängen, hängen wir zunächst an die Liste \texttt{L1} die 
+      eine Liste \texttt{L2} anzuh\"{a}ngen, h\"{a}ngen wir zun\"{a}chst an die Liste \texttt{L1} die 
       Liste \texttt{L2} an und nennen das Ergebnis \texttt{L3}.  
       Das gesuchte Ergebnis ist dann die Liste \texttt{[ X | L3 ]}.
 \end{enumerate}
@@ -411,11 +411,11 @@ Geben wir dieses Ziel als Anfrage an das Prolog--System, so erhalten wir die Ant
     L = [1, 2, 3, a, b, c] 
 \end{verbatim}
 Die obige Interpretation des gegebenen Prolog--Programms ist \emph{funktional}, dass heißt 
-wir fassen die ersten beiden Argumente des Prädikats \texttt{concat} als Eingaben auf und 
+wir fassen die ersten beiden Argumente des Pr\"{a}dikats \texttt{concat} als Eingaben auf und 
 interpretieren das letzte Argument als Ausgabe.  Diese Interpretation ist ist aber keineswegs die 
-einzig mögliche Interpretation.  Um das zu sehen, geben wir als Ziel \\[0.1cm]
+einzig m\"{o}gliche Interpretation.  Um das zu sehen, geben wir als Ziel \\[0.1cm]
 \hspace*{1.3cm} \texttt{concat(L1, L2, [1,2,3]).} \\[0.1cm]
-ein und drücken, nachdem das System uns die erste Antwort gegeben hat, nicht die Taste 
+ein und dr\"{u}cken, nachdem das System uns die erste Antwort gegeben hat, nicht die Taste 
 \fbox{\textsl{Return}} sondern die Taste \fbox{\texttt{;}}.  Wir erhalten:
 \begin{verbatim}
     6 ?- concat(L1, L2, [1, 2, 3]).
@@ -434,13 +434,13 @@ ein und drücken, nachdem das System uns die erste Antwort gegeben hat, nicht die
 
     No
 \end{verbatim}
-In diesem Fall hat das Prolog--System nacheinander alle Möglichkeiten berechnet, die 
+In diesem Fall hat das Prolog--System nacheinander alle M\"{o}glichkeiten berechnet, die 
 Liste ``\texttt{[1, 2, 3]}'' in zwei Listen zu zerlegen!
 
 \section{Prolog --- Wie funktioniert es}
 Prolog kann aufgefasst werden als eine Implementierung der Relation
 $\leadsto_\mathcal{P}^*$, die wir am Anfang dieses Abschnittes vorgestellt haben.  Bei der
-Implementierung dieser Relation ist allerdings noch ein Problem zu lösen.
+Implementierung dieser Relation ist allerdings noch ein Problem zu l\"{o}sen.
 Betrachten wir die folgende Situation:
 \begin{enumerate}
 \item $\langle A_1 \wedge \cdots \wedge A_m, \sigma \rangle$ ist ein instantiiertes Ziel.
@@ -449,8 +449,8 @@ Betrachten wir die folgende Situation:
       $H_2 \leftarrow B^{(2)}_1 \wedge \cdots \wedge B^{(2)}_{n(2)}$ 
       sind zwei   Programm--Klauseln aus $\mathcal{P}$.
 \item Die syntaktischen Gleichungen $A_1 \doteq H_1$ und
-      Gleichung $A_1 \doteq H_2$ sind beide lösbar und für $i=1,2$ sei $\mu_i = \textsl{mgu}(A_1, H_i)$.
-\item Weiter sei $\tau_i = \mu_i \restriction \FV(A_1)$ für $i=1,2$.
+      Gleichung $A_1 \doteq H_2$ sind beide l\"{o}sbar und f\"{u}r $i=1,2$ sei $\mu_i = \textsl{mgu}(A_1, H_i)$.
+\item Weiter sei $\tau_i = \mu_i \restriction \FV(A_1)$ f\"{u}r $i=1,2$.
 \end{enumerate}
 In diesem Fall kann das Ziel  $\langle A_1 \wedge \cdots \wedge A_m, \sigma \rangle$ auf
 zwei verschiedene Arten reduziert werden, es gilt dann sowohl
@@ -460,24 +460,24 @@ zwei verschiedene Arten reduziert werden, es gilt dann sowohl
       als auch
 \item $\big\langle A_1 \wedge \cdots \wedge A_m, \sigma \big\rangle \leadsto_\mathcal{P} \big\langle B^{(2)}_1\mu \wedge \cdots \wedge B^{(2)}_{n(2)}\mu \wedge A_2 \wedge \cdots \wedge A_m, \sigma\tau_2 \big\rangle$ .
 \end{enumerate}
-An dieser Stelle muss der Prolog--Interpreter sich für eine der beiden Möglichkeiten
-entscheiden.  In Ermangelung tieferer Einsichten welche Möglichkeit zum Ziel führt
+An dieser Stelle muss der Prolog--Interpreter sich f\"{u}r eine der beiden M\"{o}glichkeiten
+entscheiden.  In Ermangelung tieferer Einsichten welche M\"{o}glichkeit zum Ziel f\"{u}hrt
 orientiert sich der Prolog--Interpreter daher an der Reihenfolge, in der die
 Programm--Klauseln in dem Programm $\mathcal{P}$ auftreten: Ist 
 $H_1 \leftarrow B^{(1)}_1 \wedge \cdots \wedge B^{(1)}_{n(1)}$ die erste Klausel, so wird
- zunächst die erste der beiden oben angegebenen Reduktionen versucht.
+ zun\"{a}chst die erste der beiden oben angegebenen Reduktionen versucht.
  Falls allerdings im Anschluss daran die Reduktion des Zieles
 $\big\langle B^{(1)}_1\mu \wedge \cdots \wedge B^{(1)}_{n(1)}\mu \wedge A_2 \wedge \cdots  \wedge A_m, \sigma\tau_1 \big\rangle$
  nach endlich vielen Schritten \emph{scheitert}, so werden systematisch alle
-verbleibenden Möglichkeiten durchpropiert.
+verbleibenden M\"{o}glichkeiten durchpropiert.
 
-An dieser Stelle müssen wir noch festlegen, was wir unter dem Scheitern eines Zieles
+An dieser Stelle m\"{u}ssen wir noch festlegen, was wir unter dem Scheitern eines Zieles
 verstehen wollen.  Dazu dient die folgende Definition.
 
 \begin{Definition}[Unmittelbares Scheitern]
 {\em
     Ein Ziel $G_1$ \emph{scheitert unmittelbar} \\
-    (bezüglich eines Programmes $\mathcal{P}$) wenn es kein Ziel
+    (bez\"{u}glich eines Programmes $\mathcal{P}$) wenn es kein Ziel
     $G_2$ gibt, so dass gilt: \\[0.1cm]
     \hspace*{1.3cm} $G_1 \leadsto_\mathcal{P} G_2$ 
 }  \hspace*{\fill} $\Box$
@@ -487,34 +487,34 @@ dass ein Ziel $G = \langle A_1 \wedge \cdots \wedge A_n, \sigma \rangle$ genau d
 unmittelbar scheitert, wenn es keine Programm--Klausel \\[0.1cm]
 \hspace*{1.3cm} $H \leftarrow B_1 \wedge \cdots \wedge B_m$ \\[0.1cm]
 gibt, so dass die syntaktische Gleichung $A_1\sigma \doteq H$ (nach eventueller
-Umbenennung der Variablen in $H$) lösbar ist.
+Umbenennung der Variablen in $H$) l\"{o}sbar ist.
 
-Wir können jetzt die Frage beantworten, wie die Reduktions--Relation
+Wir k\"{o}nnen jetzt die Frage beantworten, wie die Reduktions--Relation
 $\leadsto_\mathcal{P}$ in Prolog realisiert wird:  Intern verwaltet Prolog eine Liste
-$G\!L$ von Zielen.  Wird der Interpreter mit einem Ziel $G$ gestartet, so wird zunächst \\[0.1cm]
+$G\!L$ von Zielen.  Wird der Interpreter mit einem Ziel $G$ gestartet, so wird zun\"{a}chst \\[0.1cm]
 \hspace*{1.3cm} $G\!L = \big[ \langle G, [] \rangle \big]$ \\[0.1cm]
-gesetzt, dass heißt die Ziel--Liste enthält am Anfang genau das instantiierte Ziel $\langle G, [] \rangle$.  Dann läuft der
+gesetzt, dass heißt die Ziel--Liste enth\"{a}lt am Anfang genau das instantiierte Ziel $\langle G, [] \rangle$.  Dann l\"{a}uft der
 folgende Algorithmus ab:
 \begin{enumerate}
-\item Überprüfe, ob die Ziel--Liste $G\!L$ leer ist. 
-      Falls ja, dann ist die Reduktion des Ziels $G$ endgültig gescheitert.
+\item \"{u}berpr\"{u}fe, ob die Ziel--Liste $G\!L$ leer ist. 
+      Falls ja, dann ist die Reduktion des Ziels $G$ endg\"{u}ltig gescheitert.
       Sonst gehe zum  Schritt 2.
 \item Die Ziel--Liste kann jetzt nicht leer sein, sie hat also die Form \\[0.1cm]
       \hspace*{1.3cm} $G\!L = [ Z | Zs ]$ \\[0.1cm]
-      Wir führen dann die folgende Fallunterscheidung durch:
+      Wir f\"{u}hren dann die folgende Fallunterscheidung durch:
       \begin{enumerate}
       \item $Z$ hat die Form $Z = \langle \verum, \tau \rangle$.
 
-            In diesem Fall hat der Prolog--Interpreter die ihm gestellte Aufgabe gelöst und
+            In diesem Fall hat der Prolog--Interpreter die ihm gestellte Aufgabe gel\"{o}st und
             gibt die Substitution $\tau$ als Ergebnis aus.
-      \item Andernfalls werden alle mögliche Reduktionen des Ziels $Z$ durchgeführt.  Falls \\[0.1cm]
-            \hspace*{1.3cm} $Z \leadsto_\mathcal{P} Z_i$  für $i=1,\cdots,n$ \\[0.1cm]
-            gilt,  ändern wir $G\!L$ wie folgt ab: \\[0.1cm]
+      \item Andernfalls werden alle m\"{o}gliche Reduktionen des Ziels $Z$ durchgef\"{u}hrt.  Falls \\[0.1cm]
+            \hspace*{1.3cm} $Z \leadsto_\mathcal{P} Z_i$  f\"{u}r $i=1,\cdots,n$ \\[0.1cm]
+            gilt,  \"{a}ndern wir $G\!L$ wie folgt ab: \\[0.1cm]
             \hspace*{1.3cm} $G\!L := [ Z_1, \cdots, Z_n | Zs ]$. \\[0.1cm]
-            Die Ziele $Z_i$ werden hier in der  Reihenfolge in die Ziel--Liste $G\!L$ eingefügt, die der
+            Die Ziele $Z_i$ werden hier in der  Reihenfolge in die Ziel--Liste $G\!L$ eingef\"{u}gt, die der
             Reihenfolge der Programm--Klauseln entspricht, mit der die Reduktionen 
             $Z \leadsto_\mathcal{P} Z_i$
-            durchgeführt worden sind.
+            durchgef\"{u}hrt worden sind.
 
             Im Anschluss daran gehen wir wieder zu Schritt 1.
       \end{enumerate}
@@ -533,10 +533,10 @@ Ziele ersetzt, auf die es reduziert werden kann.  Wir definieren nun:
 \end{Definition}
 
 Im Kontext von Prolog wird ein Ziel $G$  oft auch als \emph{Anfrage} bezeichnet. 
-Das ist der Grund für die folgende Sprechweise:
+Das ist der Grund f\"{u}r die folgende Sprechweise:
 \begin{Definition}[Berechnete Antwort]
 {\em
-  Falls der oben dargestellte Algorithmus im Schritt 2.(a) beendet wird, dann gilt für das gegebene Ziel
+  Falls der oben dargestellte Algorithmus im Schritt 2.(a) beendet wird, dann gilt f\"{u}r das gegebene Ziel
   $G$ \\[0.1cm]
   \hspace*{1.3cm} $\langle G, [] \rangle \leadsto_\mathcal{P}^* \langle \verum, \tau \rangle$. \\[0.1cm]
   In diesem Fall nennen wir $\tau$ die \emph{berechnete Antwort}. 
@@ -544,19 +544,19 @@ Das ist der Grund für die folgende Sprechweise:
 \end{Definition}
 
 Der oben dargestellte Algorithmus erweckt den Anschein, als ob er systematisch alle
-Möglichkeiten ein Ziel zu reduzieren durchprobiert.  Wenn es also überhaupt eine
-Möglichkeit gibt, ein Ziel zu \emph{lösen}, dass heißt auf ein Ziel der Form 
- $\langle \verum, \tau \rangle$ zu reduzieren, dann sollte diese Möglichkeit auch gefunden
+M\"{o}glichkeiten ein Ziel zu reduzieren durchprobiert.  Wenn es also \"{u}berhaupt eine
+M\"{o}glichkeit gibt, ein Ziel zu \emph{l\"{o}sen}, dass heißt auf ein Ziel der Form 
+ $\langle \verum, \tau \rangle$ zu reduzieren, dann sollte diese M\"{o}glichkeit auch gefunden
  werden.  Leider ist dies ein Trugschluss.  Der Grund ist, dass die Reduktions--Relation
-$\leadsto_\mathcal{P}$ nicht terminieren muss, es kann durchaus sein, dass es für ein
+$\leadsto_\mathcal{P}$ nicht terminieren muss, es kann durchaus sein, dass es f\"{u}r ein
 gegebenes instantiiertes Ziel $Z$ eine unendliche Folge $(Z_n)_{n\in \mathbb{N}}$ von instantiierten Zielen gibt, so
 dass gilt:
 \begin{enumerate}
 \item $Z \leadsto_\mathcal{P} Z_0$
-\item $Z_n \leadsto_\mathcal{P} Z_{n+1}$ \quad für alle $n\in\mathbb{N}$.
+\item $Z_n \leadsto_\mathcal{P} Z_{n+1}$ \quad f\"{u}r alle $n\in\mathbb{N}$.
 \end{enumerate}
 Falls nun auch $Z \leadsto_\mathcal{P} H \leadsto_\mathcal{P}^* \langle \verum, \tau \rangle$ gilt, 
-das Ziel $Z$ also grundsätzlich lösbar wäre, so wird der obige Algorithmus diese Lösung
+das Ziel $Z$ also grunds\"{a}tzlich l\"{o}sbar w\"{a}re, so wird der obige Algorithmus diese L\"{o}sung
 dann nicht finden, wenn er zuerst die Reduktion $Z \leadsto_\mathcal{P} Z_0$ versucht, denn
 dann wird er in einer Endlos--Schleife stecken bleiben.  Das folgende Programm illustriert
 diesen Effekt:
@@ -565,73 +565,73 @@ diesen Effekt:
   loop.
 \end{verbatim}
 Wird dieses Programm geladen und wird anschließend versucht, das Ziel \texttt{loop} zu
-lösen, so liefert der Prolog--Interpreter die Meldung
+l\"{o}sen, so liefert der Prolog--Interpreter die Meldung
 \begin{verbatim}
   ERROR: Out of local stack
 \end{verbatim}
-Der Stack, der da übergelaufen ist, ist übrigens genau die Liste der Ziele $G\!L$, die als Stack
+Der Stack, der da \"{u}bergelaufen ist, ist \"{u}brigens genau die Liste der Ziele $G\!L$, die als Stack
 implementiert ist.
 
-In manchen Fällen kann  das Problem der Nicht--Terminierung der Relation
+In manchen F\"{a}llen kann  das Problem der Nicht--Terminierung der Relation
 $\leadsto_\mathcal{P}$ durch eine Umordnung der Programm--Klauseln umgangen werden.
-Hätten wir das obige Programm in  der Form
+H\"{a}tten wir das obige Programm in  der Form
 \begin{verbatim}
   loop.
   loop :- loop.
 \end{verbatim}
-eingegeben, so wäre das Problem der Endlos--Schleife nicht aufgetreten.  Leider gibt es bei
+eingegeben, so w\"{a}re das Problem der Endlos--Schleife nicht aufgetreten.  Leider gibt es bei
 komplexeren Programmen oft keine Anordnung der Klauseln, die das Problem der
-Endlos--Schleifen löst.  
+Endlos--Schleifen l\"{o}st.  
 
-Die handelsüblichen Prolog--Interpreter haben noch ein weiteres Problem: Die Unifikation,
-das heißt der Algorithmus zum Lösen syntaktischer Gleichungen, ist (aus Effizienzgründen)
+Die handels\"{u}blichen Prolog--Interpreter haben noch ein weiteres Problem: Die Unifikation,
+das heißt der Algorithmus zum L\"{o}sen syntaktischer Gleichungen, ist (aus Effizienzgr\"{u}nden)
 nicht korrekt implementiert.  Wir erinnern noch einmal an die Regeln zur Reduktion
 syntaktischer Gleichungen.  Die erste dieser Regeln lautete:
 \begin{enumerate}
 \item Falls $y\in\mathcal{V}$ eine Variable ist, \fbox{die nicht in dem Term $t$ auftritt}, so
-      können wir die folgende Reduktion durchführen: \\[0.1cm]
+      k\"{o}nnen wir die folgende Reduktion durchf\"{u}hren: \\[0.1cm]
       \hspace*{2.1cm} $\Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \quad\leadsto\quad \Big\langle E[y \mapsto t], \sigma\big[ y \mapsto t \big] \Big\rangle$.
 \end{enumerate}
-In den handelsüblichen Prolog--Interpretern ist statt dieser Regel die folgende Regel
+In den handels\"{u}blichen Prolog--Interpretern ist statt dieser Regel die folgende Regel
 implementiert:
 \begin{enumerate}
 \item[$1'$.] Falls $y\in\mathcal{V}$ eine Variable ist, so
-      können wir die folgende Reduktion durchführen: \\[0.1cm]
+      k\"{o}nnen wir die folgende Reduktion durchf\"{u}hren: \\[0.1cm]
       \hspace*{2.1cm} $\Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \quad\leadsto\quad \Big\langle E[y \mapsto t], \sigma\big[ y \mapsto t \big] \Big\rangle$.
 \end{enumerate}
 Was hier fehlt ist der Test \fbox{\em die nicht in dem Term $t$ auftritt}.  Dieser Test
-wird als \emph{Occur--Check} bezeichnet.  Mit der modifizierten Regel können wir eine
+wird als \emph{Occur--Check} bezeichnet.  Mit der modifizierten Regel k\"{o}nnen wir eine
 Reduktion der Form
 \\[0.1cm]
 \hspace*{1.3cm} $\langle \{ x = f(x) \}, [] \rangle \;\leadsto\; \langle \emptyset, [ x \mapsto f(x) ] \rangle$ \\[0.1cm]
-durchführen.  Dies liefert aber ein falsches Ergebnis, denn offensichtlich ist die Substitution 
-$[x \mapsto f(x)]$ keine Lösung der syntaktischen Gleichung $x \doteq f(x)$.  
-Bei Prolog bleibt es dem Programmierer überlassen sicherzustellen, dass dergleichen nicht 
+durchf\"{u}hren.  Dies liefert aber ein falsches Ergebnis, denn offensichtlich ist die Substitution 
+$[x \mapsto f(x)]$ keine L\"{o}sung der syntaktischen Gleichung $x \doteq f(x)$.  
+Bei Prolog bleibt es dem Programmierer \"{u}berlassen sicherzustellen, dass dergleichen nicht 
 passiert.
 
 \section{Funktionales Programmieren in Prolog}
 Im letzten Abschnitt haben wir gesehen, dass die Unifikation in Prolog nicht korrekt implementiert ist,
-denn der Occur--Check wird bei der Unifikation nicht durchgeführt.  Dadurch ist aber der Satz \ref{satz:prolog-korrekt}
-nicht länger gültig, es kann passieren, dass für ein Ziel $G$ folgendes gilt: \\[0.1cm]
+denn der Occur--Check wird bei der Unifikation nicht durchgef\"{u}hrt.  Dadurch ist aber der Satz \ref{satz:prolog-korrekt}
+nicht l\"{a}nger g\"{u}ltig, es kann passieren, dass f\"{u}r ein Ziel $G$ folgendes gilt: \\[0.1cm]
 \hspace*{1.3cm} $\langle G, [] \rangle \leadsto_\mathcal{P}^* \langle \verum, \tau \rangle \; \not\Rightarrow \; \mathcal{P} \models G\tau$ \\[0.1cm]
-Ein  Programm $\mathcal{P}$, wo dieser Fall tatsächlich auftritt, ist durch die beiden folgenden Klausel gegeben: 
+Ein  Programm $\mathcal{P}$, wo dieser Fall tats\"{a}chlich auftritt, ist durch die beiden folgenden Klausel gegeben: 
 \begin{verbatim}
       bug :- equal(X, s(X)).
       equal(X,X).
 \end{verbatim}
 Betrachten wir das Ziel \texttt{bug}, so liefert Prolog hier die Antwort ``\texttt{yes}'', obwohl \\[0.1cm]
 \hspace*{1.3cm} $\mathcal{P} \not\models \mathtt{bug}$ \\[0.1cm]
-gilt.  Wie können wir verhindern,  dass Prolog falsche Antworten liefert?
-Eine Möglichkeit besteht darin, den Gebrauch der Unifikation einschzuschränken.  
+gilt.  Wie k\"{o}nnen wir verhindern,  dass Prolog falsche Antworten liefert?
+Eine M\"{o}glichkeit besteht darin, den Gebrauch der Unifikation einschzuschr\"{a}nken.  
 Die Gundidee ist die folgende:  Ist eine syntaktische Gleichung \\[0.1cm]
 \hspace*{1.3cm} $s \doteq t$ \\[0.1cm]
 gegeben, so wird der Occur--Check sicher nicht gebraucht, wenn eine der beiden Seiten dieser Gleichung
-gar keine Variablen enthält!  Die Forderung ist also, dass bei allen syntaktischen Gleichungen $s \doteq t$
+gar keine Variablen enth\"{a}lt!  Die Forderung ist also, dass bei allen syntaktischen Gleichungen $s \doteq t$
 die wir im Verlaufe einer Rechnung erhalten, immer \\[-0.2cm]
 \hspace*{1.3cm} $\textsl{var}(s) = \emptyset$ oder $\textsl{var}(t) = \emptyset$ \\[0.1cm]
-gilt.  Um diese Forderung sicherzustellen, wollen wir die Argumente von Prädikaten in \emph{Eingabe--Argumente} und 
-\emph{Ausgabe--Argumente} unterteilen.  Die Idee ist, dass Eingabe--Argumente beim Aufruf eines Prädikats keine
-Variablen enthalten dürfen.  Ist dann die Abarbeitung des Prädikats durch Prolog erfolgreich, so sind danach auch
+gilt.  Um diese Forderung sicherzustellen, wollen wir die Argumente von Pr\"{a}dikaten in \emph{Eingabe--Argumente} und 
+\emph{Ausgabe--Argumente} unterteilen.  Die Idee ist, dass Eingabe--Argumente beim Aufruf eines Pr\"{a}dikats keine
+Variablen enthalten d\"{u}rfen.  Ist dann die Abarbeitung des Pr\"{a}dikats durch Prolog erfolgreich, so sind danach auch
 die Variablen der Ausgabe--Argumente durch die berechnete Antwort so instantiiert, dass sie keine Variablen
 mehr enthalten.
 
@@ -639,150 +639,150 @@ Diese Methode, Prolog--Programme zu erstellen, ist eng verwandt mit dem Paradigm
 und die so erstellten Programme wollen wir, in Ermangelung eines besseren Namens, daher als \emph{funktionale} Programme
 bezeichnen.  
 
-Um, wie oben angekündigt, die Argumente eines Prädikats in Eingabe--Argumente und Ausgabe--Argumente
-unterteilen zu können, werden wir versuchen, Prädikate als
+Um, wie oben angek\"{u}ndigt, die Argumente eines Pr\"{a}dikats in Eingabe--Argumente und Ausgabe--Argumente
+unterteilen zu k\"{o}nnen, werden wir versuchen, Pr\"{a}dikate als
 Funktionen zu interpretieren.  Was damit gemeint ist, sehen wir am besten anhand von
 Beispielen.  Wir hatten im vorletzten Abschnitt Klauseln zur Implementierung des dreistelligen
-Prädikats \texttt{concat}
+Pr\"{a}dikats \texttt{concat}
 angegeben.  Wir wiederholen diese Klauseln hier.
 \begin{verbatim}
   concat( [], L, L ).
   concat( [ X | L1 ], L2, [ X | L3 ] ) :- 
       concat( L1, L2, L3 ).
 \end{verbatim}
-Das Prädikat \texttt{concat} besitzt die folgende Eigenschaft:  Hat ein Ziel $G$ die Form\\[0.1cm]
+Das Pr\"{a}dikat \texttt{concat} besitzt die folgende Eigenschaft:  Hat ein Ziel $G$ die Form\\[0.1cm]
 \hspace*{1.3cm} $\texttt{concat}(l_1,l_2, \texttt{X})$ \\[0.1cm]
 und sind die Terme $l_1$ und $l_2$ Listen, die keine Variablen enthalten, so ist der
 Aufruf von $G$ immer erfolgreich und die berechnete Antwort substituiert die Variable
 \texttt{X} durch $l_1 * l_2$.  Hier bezeichnen wir mit $l_1 * l_2$ die Konkatenation der
-Listen $l_1$ und $l_2$.  Wir können also sagen, dass das Prädikat \texttt{concat} die
+Listen $l_1$ und $l_2$.  Wir k\"{o}nnen also sagen, dass das Pr\"{a}dikat \texttt{concat} die
 Funktion \\[0.1cm]
 \hspace*{1.3cm} $*: \textsl{List} \times \textsl{List} \rightarrow \textsl{List}$ \\[0.1cm]
-implementiert.  Um allgemein festlegen zu können, was wir unter einem funktionalen
+implementiert.  Um allgemein festlegen zu k\"{o}nnen, was wir unter einem funktionalen
 Prolog--Programm verstehen wollen, werden wir den Begriff der
-\emph{Eingabe/Ausgabe--Spezifikation} einführen.  Zuvor brauchen wir aber noch die folgende Definition.
+\emph{Eingabe/Ausgabe--Spezifikation} einf\"{u}hren.  Zuvor brauchen wir aber noch die folgende Definition.
 
 \begin{Definition}[Geschlossener Term]
 {\em
-   Wir bezeichnen einen Term $t$ als \emph{geschlossen}, wenn er keine Variablen enthält, wenn also 
+   Wir bezeichnen einen Term $t$ als \emph{geschlossen}, wenn er keine Variablen enth\"{a}lt, wenn also 
    $\textsl{var}(t) = \emptyset$ gilt.   Analog nennen wir ein Ziel $G$
     \emph{geschlossen}, wenn $\FV(G) = \emptyset$ gilt.
    \hspace*{\fill} $\Box$
 }
 \end{Definition}
-Beispielsweise ist der Term $[1,2,3]$ eine geschlossener Term, während  der Term $[1,\mathtt{X},7]$ nicht geschlossen ist, denn er
-enthält die Variable $\mathtt{X}$.
+Beispielsweise ist der Term $[1,2,3]$ eine geschlossener Term, w\"{a}hrend  der Term $[1,\mathtt{X},7]$ nicht geschlossen ist, denn er
+enth\"{a}lt die Variable $\mathtt{X}$.
 
 Bei den kommenden Definitionen ist es bequem, die folgende Sprechweise zu benutzen:
 Falls $G$ ein Ziel ist, so dass $\langle G, [] \rangle \leadsto_\mathcal{P}^* \langle \verum, \tau \rangle$ gilt, 
 so sagen wir, dass eine \emph{Berechnung} des Ziels $G$ die in $G$ auftretenden Variablen  mit der Substitution 
-$\tau$ \emph{instantiiert}.  Außerdem bezeichnen wir die Instantiierung $G\tau$ als \emph{Lösung} des Ziels $G$.
+$\tau$ \emph{instantiiert}.  Außerdem bezeichnen wir die Instantiierung $G\tau$ als \emph{L\"{o}sung} des Ziels $G$.
 
 \begin{Definition}[E/A--Spezifikation] \hspace*{\fill} \\
 {\em
-    Es sei $p$ ein $n$--stelliges Prädikats--Zeichen.  Eine
-    \emph{Eingabe/Ausgabe--Spezifikation} (oder kürzer E/A--Spezifikation)
-     für $p$ ist ein $n$--Tupel der Form \\[0.1cm]
+    Es sei $p$ ein $n$--stelliges Pr\"{a}dikats--Zeichen.  Eine
+    \emph{Eingabe/Ausgabe--Spezifikation} (oder k\"{u}rzer E/A--Spezifikation)
+     f\"{u}r $p$ ist ein $n$--Tupel der Form \\[0.1cm]
     \hspace*{1.3cm} $\langle E\!A_1, \cdots, E\!A_n \rangle$ \quad     mit $E\!A_i \in \{ \mathquote{+}, \mathquote{-} \}$.  \\[0.1cm]
-    Ist $\langle E\!A_1, \cdots, E\!A_n \rangle$ eine E/A--Spezifikation für
-    das Prädikats--Zeichen $p$, so schreiben wir auch \\[0.1cm]
+    Ist $\langle E\!A_1, \cdots, E\!A_n \rangle$ eine E/A--Spezifikation f\"{u}r
+    das Pr\"{a}dikats--Zeichen $p$, so schreiben wir auch \\[0.1cm]
     \hspace*{1.3cm} $p( E\!A_1, \cdots, E\!A_n )$. \\[0.1cm]
     Ist $E\!A_i = \mathquote{+}$, so sagen wir, dass das $i$--te Argument von $p$ ein
     \emph{Eingabe--Argument} ist, und ansonsten, wenn also  $E\!A_i = \mathquote{-}$ gilt,
     bezeichnen wir das $i$--te Argument als \emph{Ausgabe--Argument}. 
 
-    Ein Ziel $p(s_1, \cdots, s_m)$ \emph{genügt} einer E/A--Spezifikation
-    für $p$ falls jedes Eingabe--Ar\-gu\-ment ein geschlossener Term ist.
+    Ein Ziel $p(s_1, \cdots, s_m)$ \emph{gen\"{u}gt} einer E/A--Spezifikation
+    f\"{u}r $p$ falls jedes Eingabe--Ar\-gu\-ment ein geschlossener Term ist.
  \hspace*{\fill} $\Box$
 }   
 \end{Definition}
 
 
-Eine E/A--Spezifikation für \texttt{concat} ist beispielsweise \\[0.1cm]
+Eine E/A--Spezifikation f\"{u}r \texttt{concat} ist beispielsweise \\[0.1cm]
 \hspace*{1.3cm} $\mathtt{concat}(+,+,-)$. \\[0.1cm]
-Das Ziel $p([1,2],[3],X)$ genügt dieser E/A--Spezifikation, während das Ziel
-$p(X,[],Y)$ dieser E/A--Spezifikation nicht genügt, denn das erste Argument
-ist ein Eingabe--Argument, enthält aber die Variable \texttt{X}.
-Eine andere E/A--Spezifikation für \texttt{concat} ist \\
+Das Ziel $p([1,2],[3],X)$ gen\"{u}gt dieser E/A--Spezifikation, w\"{a}hrend das Ziel
+$p(X,[],Y)$ dieser E/A--Spezifikation nicht gen\"{u}gt, denn das erste Argument
+ist ein Eingabe--Argument, enth\"{a}lt aber die Variable \texttt{X}.
+Eine andere E/A--Spezifikation f\"{u}r \texttt{concat} ist \\
 \hspace*{1.3cm} $\mathtt{concat}(-,+,-)$. \\[0.1cm]
-Das Ziel $p(X,[],Y)$ genügt dieser E/A--Spezifikation.
-Allerdings ist diese E/A--Spezifikation für  $\mathtt{concat}$ in einem
-intuitiven Sinne falsch, während die zuerst gegebene E/A--Spezifikation
+Das Ziel $p(X,[],Y)$ gen\"{u}gt dieser E/A--Spezifikation.
+Allerdings ist diese E/A--Spezifikation f\"{u}r  $\mathtt{concat}$ in einem
+intuitiven Sinne falsch, w\"{a}hrend die zuerst gegebene E/A--Spezifikation
 $\mathtt{concat}(+,+,-)$ richtig ist.  Was wir hier unter richtig und falsch verstehen,
-präzisieren wir in der nächsten Definition.
+pr\"{a}zisieren wir in der n\"{a}chsten Definition.
 
 \begin{Definition}[Korrektheit einer E/A--Spezifikation] 
 {\em
     Es sei
     \begin{enumerate}
     \item  $\mathcal{P}$ ein Prolog--Programm,
-    \item  $p$  ein $n$--stelliges Prädikats--Zeichen und
-    \item  $\sigma$ eine  E/A--Spezifikation für $p$.
+    \item  $p$  ein $n$--stelliges Pr\"{a}dikats--Zeichen und
+    \item  $\sigma$ eine  E/A--Spezifikation f\"{u}r $p$.
     \end{enumerate}
-    Dann nennen wir $\sigma$ \emph{korrekt bezüglich} $\mathcal{P}$ falls gilt: 
+    Dann nennen wir $\sigma$ \emph{korrekt bez\"{u}glich} $\mathcal{P}$ falls gilt: 
     \begin{enumerate}
-    \item Ist $G$ ein Ziel, das $\sigma$ genügt, und
-    \item ist $G\tau$ eine Lösung von $G$,
+    \item Ist $G$ ein Ziel, das $\sigma$ gen\"{u}gt, und
+    \item ist $G\tau$ eine L\"{o}sung von $G$,
     \end{enumerate}
     dann ist $G\tau$ geschlossen.
      \hspace*{\fill} $\Box$
 } 
 \end{Definition}
 
-Die E/A--Spezifikation $\mathtt{concat}(+,+,-)$ ist korrekt bezüglich des oben
+Die E/A--Spezifikation $\mathtt{concat}(+,+,-)$ ist korrekt bez\"{u}glich des oben
 angegeben Prolog--Programms, denn 
- für ein Ziel der Form $G = \texttt{concat}(l_1,l_2,L)$ mit geschlossenen
-Termen $l_1$ und $l_2$ instantiiert eine Lösung die Variable \texttt{L} mit dem Term 
+ f\"{u}r ein Ziel der Form $G = \texttt{concat}(l_1,l_2,L)$ mit geschlossenen
+Termen $l_1$ und $l_2$ instantiiert eine L\"{o}sung die Variable \texttt{L} mit dem Term 
 $l_1 * l_2$ und dieser Term ist geschlossen.
  Umgekehrt ist die E/A--Spezifikation
 $\mathtt{concat}(-,+,-)$
-bezüglich des oben angegeben Prolog--Programms nicht korrekt,  denn das Ziel
-$G = p(\mathtt{L1},[],\mathtt{L3})$ genügt dieser Spezifikation, aber es hat die Lösung  \\[0.1cm]
+bez\"{u}glich des oben angegeben Prolog--Programms nicht korrekt,  denn das Ziel
+$G = p(\mathtt{L1},[],\mathtt{L3})$ gen\"{u}gt dieser Spezifikation, aber es hat die L\"{o}sung  \\[0.1cm]
 \hspace*{1.3cm} $\mathtt{concat}(\mathtt{[X]},[],\mathtt{[X]})$, \\[0.1cm]
 die offenbar nicht geschlossen ist.
 
 Um nachzuweisen, dass eine E/A--Spezifikation nicht korrekt ist, reicht es aus
-ein Ziel $G$ anzugeben, dass der Spezifikation genügt und dann zu zeigen,
-dass es für $G$ eine Lösung gibt, die nicht geschlossen ist.
+ein Ziel $G$ anzugeben, dass der Spezifikation gen\"{u}gt und dann zu zeigen,
+dass es f\"{u}r $G$ eine L\"{o}sung gibt, die nicht geschlossen ist.
 Aber wie weisen wir nach dass eine E/A--Spezifikation korrekt ist?
 Warum ist beispielsweise die E/A--Spezifikation $\mathtt{concat}(+,+,-)$
 korrekt?  Um dies zu sehen, betrachten wir die beiden Klauseln des \texttt{concat}
 implementierenden Prolog--Programms.  Die erste Klausel ist \\[0.1cm]
 \hspace*{1.3cm} $\mathtt{concat}(\mathtt{[]}, \mathtt{L}, \mathtt{L})$. \\[0.1cm]
 Wir betrachten was passiert, wenn ein Ziel $\mathtt{concat}(l_1,l_2,t)$, das der obigen
-E/A--Spezifikation genügt, mit dieser Klausel reduziert wird.  Dann wird zunächst die
+E/A--Spezifikation gen\"{u}gt, mit dieser Klausel reduziert wird.  Dann wird zun\"{a}chst die
 syntaktische Gleichung \\[0.1cm]
 \hspace*{1.3cm} $\mathtt{concat}(l_1,l_2,t) \doteq \mathtt{concat}(\mathtt{[]}, \mathtt{L}, \mathtt{L})$. \\[0.1cm]
-gelöst.  Dabei wird  die Variable \texttt{L} mit $l_2$ instantiiert. Da $l_2$ geschlossen
+gel\"{o}st.  Dabei wird  die Variable \texttt{L} mit $l_2$ instantiiert. Da $l_2$ geschlossen
 ist, und \texttt{L} die einzige Variable ist, die in dem Ziel vorkommt, kann nichts mehr
 schiefgehen: alle Variablen des Ziels sind an geschlossene Terme gebunden.
 
 Betrachten wir nun die zweite Klausel \\[0.1cm]
 \hspace*{1.3cm} {\tt concat( [ X | L1 ], L2, [ X | L3 ] ) :- concat( L1, L2, L3 ).} \\[0.1cm]
 Wird ein Ziel  $\mathtt{concat}(l_1,l_2,t)$, das der obigen
-E/A--Spezifikation genügt, mit dieser Klausel reduziert, so wird zunächst die syntaktische
+E/A--Spezifikation gen\"{u}gt, mit dieser Klausel reduziert, so wird zun\"{a}chst die syntaktische
 Gleichung \\[0.1cm]
 \hspace*{1.3cm} $\mathtt{concat}(l_1,l_2,t) \doteq \mathtt{concat( [ X | L1 ], L2, [ X | L3 ] )}$ \\[0.1cm]
-gelöst.  Da die Terme $l_1$ und $l_2$ geschlossen sind, werden dabei die Variablen 
+gel\"{o}st.  Da die Terme $l_1$ und $l_2$ geschlossen sind, werden dabei die Variablen 
 \texttt{X}, \texttt{L1} und \texttt{L2} mit geschlossen Termen instantiiert.  Das Ziel \\[0.1cm]
 \hspace*{1.3cm} $\langle \mathtt{concat}(l_1,l_2,t), [] \rangle$ \\[0.1cm]
 wird dann reduziert zu \\[0.1cm]
 \hspace*{1.3cm} $\langle \mathtt{concat( L1\mu, L2\mu, L3\mu )}, \tau \rangle$, \\[0.1cm]
 wobei $\mu = \textsl{mgu}\big(\mathtt{concat}(l_1,l_2,t),\,\mathtt{concat( [ X | L1 ], L2, [ X | L3 ] )}\big)$ 
 gilt.  Folglich sind die Terme $\mathtt{X}\mu$, $\mathtt{L1}\mu$ und $\texttt{L2}\mu$ geschlossen.  Daher 
-genügt das neue Ziel $\mathtt{concat( L1\mu, L2\mu, L3\mu )}$ der E/A--Spezifikation für \texttt{concat}.
-Falls nun dieses Ziel gelöst wird, so wissen wir, dass 
+gen\"{u}gt das neue Ziel $\mathtt{concat( L1\mu, L2\mu, L3\mu )}$ der E/A--Spezifikation f\"{u}r \texttt{concat}.
+Falls nun dieses Ziel gel\"{o}st wird, so wissen wir, dass 
 dabei der Term $\texttt{L3}\mu$ so instantiiert wird, dass er danach geschlossen ist.  
 Dann ist aber auch der Term $\texttt{[X|L3]}\mu$ geschlossen
 und das war zu zeigen.
 
-Wir versuchen nun, die Überlegungen, die wir gerade am Beispiel des Prädikats \texttt{concat} vorgeführt haben,
-zu verallgemeinern.  Zu diesem Zwecke definieren wir für ein gegebenes Ziel $G$ zunächst die Menge der Eingabe--Variable
+Wir versuchen nun, die \"{u}berlegungen, die wir gerade am Beispiel des Pr\"{a}dikats \texttt{concat} vorgef\"{u}hrt haben,
+zu verallgemeinern.  Zu diesem Zwecke definieren wir f\"{u}r ein gegebenes Ziel $G$ zun\"{a}chst die Menge der Eingabe--Variable
 $\FV^+(G)$ und die Menge der Ausgabe--Variablen $\FV^-(G)$.
 
 \begin{Definition}[$\FV^+(G)$, $\FV^-(G)$]
 {\em
-    Es sei $G = p(s_1,\cdots,s_n)$ ein Ziel und für das Prädikats--Zeichen $p$ sei $p(E\!A_1,\cdots,E\!A_n)$ mit $E\!A_i \in \{ \mathquote{+}, \mathquote{-} \}$ 
+    Es sei $G = p(s_1,\cdots,s_n)$ ein Ziel und f\"{u}r das Pr\"{a}dikats--Zeichen $p$ sei $p(E\!A_1,\cdots,E\!A_n)$ mit $E\!A_i \in \{ \mathquote{+}, \mathquote{-} \}$ 
     eine E/A--Spezifikation . Dann definieren wir die Menge der \emph{Eingabe--Variablen}
     $\FV^+(G)$ als die Vereinigung der Variablen--Mengen, die in den Eingabe--Argumenten von $G$ auftreten: \\[0.1cm]
     \hspace*{1.3cm} $\FV^+(G) = \bigcup \big\{ \textsl{var}(s_i) \;|\; E\!A_i = \mathquote{+} \}$. \\[0.1cm]
@@ -795,80 +795,80 @@ $\FV^+(G)$ und die Menge der Ausgabe--Variablen $\FV^-(G)$.
 
 \noindent
 \textbf{Bemerkung}: Die obige Definition benutzt eine Notation aus der Mengenlehre, die 
-Ihnen vielleicht noch nicht geläufig ist.  Ist $M$ eine Menge, die als Elemente wieder Mengen enthält, 
-so  $\bigcup M$ als die Menge definiert, die alle Objekte enthält, die Element einer Menge $m\in M$ sind: \\[0.1cm]
+Ihnen vielleicht noch nicht gel\"{a}ufig ist.  Ist $M$ eine Menge, die als Elemente wieder Mengen enth\"{a}lt, 
+so  $\bigcup M$ als die Menge definiert, die alle Objekte enth\"{a}lt, die Element einer Menge $m\in M$ sind: \\[0.1cm]
 \hspace*{1.3cm} $\bigcup M := \{ x \,|\; \exists m \!\in\! M : x \!\in\! m \}$ \\[0.1cm]
 \textbf{Beispiel}:  Es gilt \\[0.1cm]
 \hspace*{1.3cm} $\bigcup \big\{ \{1,2,3\}, \{3,4,5\}, \{7\} \big\} = \{ 1,2,3,4,5,7\}$. \\[0.1cm]
-Allgemein gilt für eine endliche Menge $M = \{ m_1 , \cdots, m_n \}$ \\[0.1cm]
+Allgemein gilt f\"{u}r eine endliche Menge $M = \{ m_1 , \cdots, m_n \}$ \\[0.1cm]
 \hspace*{1.3cm} $\bigcup \{ m_1 , \cdots, m_n \} = m_1 \cup \cdots \cup m_n$
 \vspace{0.3cm}
 
 \noindent
-\textbf{Beispiel}:  Wir geben nun ein Beispiel für die Berechnung von Eingabe--Variablen und Ausgabe--Variablen.
-Wir betrachten wieder das Prädikats--Zeichen $\mathtt{concat}$ mit der E/A--Spezifikation 
-$\mathtt{concat}(+,+,-)$.  Für das Ziel $G = \mathtt{concat}( [ \mathtt{X} | \mathtt{Xs} ], [1], [ \mathtt{Y} | \mathtt{Ys} ] )$ gilt dann \\[0.1cm]
+\textbf{Beispiel}:  Wir geben nun ein Beispiel f\"{u}r die Berechnung von Eingabe--Variablen und Ausgabe--Variablen.
+Wir betrachten wieder das Pr\"{a}dikats--Zeichen $\mathtt{concat}$ mit der E/A--Spezifikation 
+$\mathtt{concat}(+,+,-)$.  F\"{u}r das Ziel $G = \mathtt{concat}( [ \mathtt{X} | \mathtt{Xs} ], [1], [ \mathtt{Y} | \mathtt{Ys} ] )$ gilt dann \\[0.1cm]
 \hspace*{1.3cm} $\FV^+(G) = \textsl{var}([ \mathtt{X} | \mathtt{Xs} ]) \cup \textsl{var}([1]) = \{ \mathtt{X}, \mathtt{Xs} \} \cup \{\} = \{ \mathtt{X}, \mathtt{Xs} \}$ \quad und \\[0.1cm]
 \hspace*{1.3cm} $\FV^-(G) = \textsl{var}([ \mathtt{Y} | \mathtt{Ys} ]) = \{ \mathtt{Y}, \mathtt{Ys} \}$. \\[0.1cm]
-Damit haben wir nun alles Material zusammen, um definieren zu können, wann eine Programm--Klausel
-mit gegebenen E/A--Spezifikationen verträglich ist.  Wir gehen im Rest dieses Abschnittes davon aus, dass
-für jedes Prädikats--Zeichen eine E/A--Spezifikation gegeben ist.
+Damit haben wir nun alles Material zusammen, um definieren zu k\"{o}nnen, wann eine Programm--Klausel
+mit gegebenen E/A--Spezifikationen vertr\"{a}glich ist.  Wir gehen im Rest dieses Abschnittes davon aus, dass
+f\"{u}r jedes Pr\"{a}dikats--Zeichen eine E/A--Spezifikation gegeben ist.
 
-\begin{Definition}[Verträglichkeit]
+\begin{Definition}[Vertr\"{a}glichkeit]
 {\em
     Eine Programm--Klausel \\[0.1cm]
     \hspace*{1.3cm} $H \;\mathtt{:-}\; B_1\mathtt{,}\, \cdots\mathtt{,}\, B_n\mathtt{.}$ \\[0.1cm]
-    ist mit den gegeben E/A--Spezifikationen \emph{verträglich}, wenn die folgenden Bedingungen erfüllt sind.
+    ist mit den gegeben E/A--Spezifikationen \emph{vertr\"{a}glich}, wenn die folgenden Bedingungen erf\"{u}llt sind.
     \begin{enumerate}
-    \item Für alle $i=1,\cdots,n$ gilt \\[0.1cm]
+    \item F\"{u}r alle $i=1,\cdots,n$ gilt \\[0.1cm]
           \hspace*{1.3cm} $\FV^+(B_i) \subseteq \FV^+(H) \cup \FV^-(B_1) \cup \cdots \cup \FV^-(B_{i-1})$.
-    \item Für den Kopf der Klausel gilt \\[0.1cm]
+    \item F\"{u}r den Kopf der Klausel gilt \\[0.1cm]
           \hspace*{1.3cm}  $\FV^-(H) \subseteq \FV^+(H) \cup \FV^-(B_1) \cup \cdots \cup \FV^-(B_{n})$. \hspace*{\fill} $\Box$
     \end{enumerate}
 }
 \end{Definition}
 
-Es ist nicht schwer, die Definition der Verträglichkeit zu motivieren.  Wenn die obige Klausel
-benutzt wird, um eine Antwort für ein Ziel $G$ zu berechnen, so wird $H$ mit $G$ unifiziert.
-Falls das Ziel der E/A--Spezifikation genügt, ist die Menge der Eingabe--Variablen von $G$ leer.
+Es ist nicht schwer, die Definition der Vertr\"{a}glichkeit zu motivieren.  Wenn die obige Klausel
+benutzt wird, um eine Antwort f\"{u}r ein Ziel $G$ zu berechnen, so wird $H$ mit $G$ unifiziert.
+Falls das Ziel der E/A--Spezifikation gen\"{u}gt, ist die Menge der Eingabe--Variablen von $G$ leer.
 Nach der Unifikation ist daher auch die Menge der Eingabe--Variablen von $H$ leer.  Das Ziel $G$ wird dann
 durch das Ziel $B_1\mathtt{,}\, \cdots\mathtt{,}\, B_n$ ersetzt, wobei aber jetzt schon die Eingabe--Variablen
 von $H$ mit geschlossenen Termen instantiiert worden sind.  Da \\[0.1cm]
 \hspace*{1.3cm} $\FV^+(B_1) \subseteq \FV^+(H)$ \\[0.1cm]
 gilt, sind dann auch die Eingabe--Variablen von $B_1$ mit geschlossenen Termen instantiiert.  
-Ist irgendwann das Ziel $B_1$ gelöst, so sind danach auch die Ausgabe--Variablen von $B_1$ 
+Ist irgendwann das Ziel $B_1$ gel\"{o}st, so sind danach auch die Ausgabe--Variablen von $B_1$ 
 mit geschlossenen Termen instantiiert.  Da \\[0.1cm]
 \hspace*{1.3cm} $\FV^+(B_2) \subseteq \FV^+(H) \cup \FV^-(B_1)$ \\[0.1cm]
-ist bedingt dies, das nun das Ziel $B_2$ seiner E/A--Spezifikation genügt.  Fahren wir so fort,  so  können wir 
+ist bedingt dies, das nun das Ziel $B_2$ seiner E/A--Spezifikation gen\"{u}gt.  Fahren wir so fort,  so  k\"{o}nnen wir 
 erkennen, dass alle  $B_i$ in dem Moment mit geschlossenen Termen instantiiert sind, in dem sie bei der Abarbeitung
 an die Reihe kommen.  Sind schließlich alle $B_i$ abgearbeitet, so sind zum Schluss auch die Ausgabe--Variablen von
-$H$ vollständig instantiiert, denn es gilt ja \\[0.1cm]
+$H$ vollst\"{a}ndig instantiiert, denn es gilt ja \\[0.1cm]
 \hspace*{1.3cm}  $\FV^-(H) \subseteq \FV^+(H) \cup \FV^-(B_1) \cup \cdots \cup \FV^-(B_{n})$. \\[0.1cm]
 Diese Argumentation legt den folgenden Satz nahe.
 
 \begin{Satz} \label{vertraelich}
 {\em
     Es sei $\mathcal{P}$ ein Prolog--Programm und alle Programm--Klauseln aus $\mathcal{P}$ seien mit 
-    der gegeben E/A--Spezifikation verträglich.  Ist dann $G$ ein Ziel, das der gegebenen E/A--Spezifikation
-    genügt und gilt \\[0.1cm]
+    der gegeben E/A--Spezifikation vertr\"{a}glich.  Ist dann $G$ ein Ziel, das der gegebenen E/A--Spezifikation
+    gen\"{u}gt und gilt \\[0.1cm]
     \hspace*{1.3cm} $\langle G, [] \rangle \leadsto_\mathcal{P}^* \langle \verum, \tau\rangle$, \\[0.1cm]
-    so gilt $\FV(G\tau) = \emptyset$.  Außerdem genügen dann auch alle Ziele $G_i$, die bei dieser Rechnung abgearbeitet werden,
+    so gilt $\FV(G\tau) = \emptyset$.  Außerdem gen\"{u}gen dann auch alle Ziele $G_i$, die bei dieser Rechnung abgearbeitet werden,
     ihrer E/A--Spezifikation.
     \hspace*{\fill} $\Box$
 }
 \end{Satz}
 
 \noindent
-\textbf{Beispiel}: Wir weisen nach, dass die oben für \texttt{concat} angegeben Klauseln der E/A--Spezifikation
-$\texttt{concat}(+,+,-)$ genügen. Für die Klausel \\[0.1cm]
+\textbf{Beispiel}: Wir weisen nach, dass die oben f\"{u}r \texttt{concat} angegeben Klauseln der E/A--Spezifikation
+$\texttt{concat}(+,+,-)$ gen\"{u}gen. F\"{u}r die Klausel \\[0.1cm]
 \hspace*{1.3cm} \texttt{concat([], L, L).} \\[0.1cm]
 ist zu zeigen, dass \\[0.1cm]
 \hspace*{1.3cm} $\FV^-\big(\mathtt{concat}(\mathtt{[]}, \mathtt{L}, \mathtt{L})\big) \subseteq \FV^+\big(\mathtt{concat}(\mathtt{[]}, \mathtt{L}, \mathtt{L})\big)$ \\[0.1cm]
 gilt.  Das folgt sofort aus \\[0.1cm]
 \hspace*{1.3cm}  $\FV^-\big(\mathtt{concat}(\mathtt{[]}, \mathtt{L}, \mathtt{L})\big) = \{ \mathtt{L} \}$ und $\FV^+\big(\mathtt{concat}(\mathtt{[]}, \mathtt{L}, \mathtt{L})\big)  = \{ \mathtt{L} \}$. \\[0.1cm]
-Für die zweite Klausel \\[0.1cm]
+F\"{u}r die zweite Klausel \\[0.1cm]
 \hspace*{1.3cm} \texttt{concat( [ X | L1 ], L2, [ X | L3 ] ) :- concat( L1, L2, L3 ).} \\[0.1cm]
-müssen wir zwei Bedingungen nachweisen:
+m\"{u}ssen wir zwei Bedingungen nachweisen:
 \begin{enumerate}
 \item $\FV^+\big(\mathtt{concat(L1,L2,L3)}\big) \subseteq \FV^+\big(\mathtt{concat([X|L1],L2,[X|L3])}\big)$
 \item $\FV^-\big(\mathtt{concat([X|L1],L2,[X|L3])}\big) \subseteq$ \\
@@ -886,36 +886,36 @@ Wir schließen diesen Abschnitt mit einer Definition ab.
 
 \begin{Definition}[Funktionales Programm] \hspace*{\fill} \\
 {\em
-    Es sei $\mathcal{P}$ ein Prolog--Programm und für alle Prädikats--Zeichen aus $\mathcal{P}$ sei eine E/A--Spezifikation gegeben.
-    Sind alle Programm--Klausel aus $\mathcal{P}$ mit den gegebenen E/A--Spezifikationen verträglich, so nennen wir $\mathcal{P}$
+    Es sei $\mathcal{P}$ ein Prolog--Programm und f\"{u}r alle Pr\"{a}dikats--Zeichen aus $\mathcal{P}$ sei eine E/A--Spezifikation gegeben.
+    Sind alle Programm--Klausel aus $\mathcal{P}$ mit den gegebenen E/A--Spezifikationen vertr\"{a}glich, so nennen wir $\mathcal{P}$
     \emph{funktional}.
 }     \hspace*{\fill} $\Box$  
 \end{Definition}
 
-Die Erfahrung zeigt, dass die Einschränkung von Prolog auf funktionale Programme zu einem für die Praxis 
-tragfähigen Programmier--Konzept führt.  Im nächsten Abschnitt werden wir einige Beispiele betrachten.
-Wir haben dann nämlich ein Konzept, was zwar das ursprüngliche Paradigma des logischen Programmierens deutlich abschwächt, 
+Die Erfahrung zeigt, dass die Einschr\"{a}nkung von Prolog auf funktionale Programme zu einem f\"{u}r die Praxis 
+tragf\"{a}higen Programmier--Konzept f\"{u}hrt.  Im n\"{a}chsten Abschnitt werden wir einige Beispiele betrachten.
+Wir haben dann n\"{a}mlich ein Konzept, was zwar das urspr\"{u}ngliche Paradigma des logischen Programmierens deutlich abschw\"{a}cht, 
 aber, wie Satz \ref{vertraelich} zeigt, gerade dadurch handhabbar macht.
-Trotz der Abschwächung ist dieses Konzept immer noch wesentlich mächtiger als das Paradigma des 
+Trotz der Abschw\"{a}chung ist dieses Konzept immer noch wesentlich m\"{a}chtiger als das Paradigma des 
  funktionale Programmieren, das in Sprachen wir \textsl{Lisp} realisiert ist.
 Das liegt daran, dass wir in Prolog auch in den Programmen, die wir als funktional deklariert haben, 
-Gebrauch von der systematischen Suche machen können, die in dem Prolog zugrunde liegenden Algorithmus
+Gebrauch von der systematischen Suche machen k\"{o}nnen, die in dem Prolog zugrunde liegenden Algorithmus
 implementiert ist.
 
 \section{Funktionale Programme: Beispiele}
-Wir geben in diesem Abschnitt einige Beispiele für funktionale Programme an.  
-Das Ziel ist es dabei, dem Leser ein Gefühl für die Leistungsfähigkeit des im letzten 
+Wir geben in diesem Abschnitt einige Beispiele f\"{u}r funktionale Programme an.  
+Das Ziel ist es dabei, dem Leser ein Gef\"{u}hl f\"{u}r die Leistungsf\"{a}higkeit des im letzten 
 Abschnitt vorgestellten Konzeptes zu vermitteln.
 
 \subsection{Ein einfacher Sortier--Algorithmus}
 Wir beginnen mit einem einfachen Algorithmus zum Sortieren von Listen von Zahlen.
-Das Programm besteht aus zwei Prädikaten:
+Das Programm besteht aus zwei Pr\"{a}dikaten:
 \begin{enumerate}
 \item \texttt{insert} hat die E/A--Spezifikationen \texttt{insert(+,+,-)}.  Es erwartet
       als erstes Argument eine Zahl $x$ und als zweites Argument eine Liste von Zahlen $l$,
-      die zusätzlich noch in aufsteigender Reihenfolge sortiert sein muss.
+      die zus\"{a}tzlich noch in aufsteigender Reihenfolge sortiert sein muss.
 
-      Das Prädikat fügt die Zahl $x$ so in die Liste $l$ ein, dass die resultierende Liste
+      Das Pr\"{a}dikat f\"{u}gt die Zahl $x$ so in die Liste $l$ ein, dass die resultierende Liste
       wiederum in aufsteigender Reihenfolge sortiert ist.
 \item \texttt{insertion\_sort} hat die E/A--Spezifikationen \texttt{insertion\_sort(+,-)}.
       Es erwartet als Eingabe eine Liste von Zahlen $l$.  Diese Liste wird in aufsteigender Reihenfolge sortiert.
@@ -942,11 +942,11 @@ Das komplette Programm ist unten angegeben.
         insertion_sort( Tail, Sorted_Tail ),
         insert( Head, Sorted_Tail, Sorted ).
 \end{verbatim}
-Nachfolgend diskutieren wir die einzelnen Klauseln der Implementierung des Prädikats \texttt{insert}.
+Nachfolgend diskutieren wir die einzelnen Klauseln der Implementierung des Pr\"{a}dikats \texttt{insert}.
 \begin{enumerate}
-\item Die erste Klausel des Prädikats \texttt{insert} greift, wenn die eingegebene Liste leer ist.
-      In diesem Fall wird als Ergebnis einfach die Liste zurück gegeben, die als einziges Element
-      das Element \texttt{X} enthält, das als erstes Eingabe--Argument eingegeben worden ist.
+\item Die erste Klausel des Pr\"{a}dikats \texttt{insert} greift, wenn die eingegebene Liste leer ist.
+      In diesem Fall wird als Ergebnis einfach die Liste zur\"{u}ck gegeben, die als einziges Element
+      das Element \texttt{X} enth\"{a}lt, das als erstes Eingabe--Argument eingegeben worden ist.
 \item Die zweite Klausel greift, wenn die eingegebene Liste nicht leer ist und wenn außerdem
       das als erstes Argument eingegebene Element \texttt{X} kleiner als das  erste Element \texttt{Head}
       der Liste \texttt{[ Head | Tail |} ist. In diesem Fall kann \texttt{X} an den Anfang der 
@@ -954,32 +954,32 @@ Nachfolgend diskutieren wir die einzelnen Klauseln der Implementierung des Prädi
       Diese Liste ist sortiert, weil einerseits schon die Liste \texttt{[ Head | Tail ]} sortiert ist
       und andererseits \texttt{X} kleiner als \texttt{Head} ist.
 \item Die dritte Klausel greift, wenn die eingegebene Liste nicht leer ist und wenn außerdem
-      das als erstes Argument eingegebene Element \texttt{X} größer oder gleich dem ersten Element \texttt{Head}
+      das als erstes Argument eingegebene Element \texttt{X} gr\"{o}ßer oder gleich dem ersten Element \texttt{Head}
       der Liste  \texttt{[ Head | Tail ]} ist.  In diesem Fall muss \texttt{X} 
-      in die Liste \texttt{Tail} eingefügt werden.  Das passiert durch den rekursiven Aufruf von \texttt{insert}.
+      in die Liste \texttt{Tail} eingef\"{u}gt werden.  Das passiert durch den rekursiven Aufruf von \texttt{insert}.
       Dabei entsteht die Liste \texttt{New\_Tail}.  Um das Endergebnis zu erhalten, wird vorne an diese Liste noch das Element
-      \texttt{Head} eingefügt.
+      \texttt{Head} eingef\"{u}gt.
 \end{enumerate}
-Damit können wir nun auch die Wirkungsweise des Prädikats \texttt{insertion\_sort} erkären.
+Damit k\"{o}nnen wir nun auch die Wirkungsweise des Pr\"{a}dikats \texttt{insertion\_sort} erk\"{a}ren.
 \begin{enumerate}
 \item Ist die zu sortierende Liste leer, so ist das Ergebnis die leere Liste.
-\item Ist die zu sortierende Liste nicht leer und hat die Form \texttt{[Head | Tail]}, so sortieren wir zunächst die
-      Liste \texttt{Tail} und erhalten als Ergebnis die sortierte Liste \texttt{Sorted\_Tail}.  Fügen wir hier
+\item Ist die zu sortierende Liste nicht leer und hat die Form \texttt{[Head | Tail]}, so sortieren wir zun\"{a}chst die
+      Liste \texttt{Tail} und erhalten als Ergebnis die sortierte Liste \texttt{Sorted\_Tail}.  F\"{u}gen wir hier
       noch das Element \texttt{Head} mit Hilfe von \texttt{insert} ein, so erhalten wir als Endergebnis
       die sortierte Liste.
 \end{enumerate}
 
 \subsection{Ein effizienter Sortier--Algorithmus}
 Der im letzten Abschnitt vorgestellte Sortier--Algorithmus hat einen Nachteil:  Die Rechenzeit,
-die dieser Algorithmus verbraucht, wächst im ungünstigsten Fall quadratisch mit der Länge der zu sortierenden 
-Liste.  Wir werden nun einen Algorithmus vorstellen der effizienter ist:  Ist $n$ die Länge der Liste, so wächst bei diesem Algorithmus
+die dieser Algorithmus verbraucht, w\"{a}chst im ung\"{u}nstigsten Fall quadratisch mit der L\"{a}nge der zu sortierenden 
+Liste.  Wir werden nun einen Algorithmus vorstellen der effizienter ist:  Ist $n$ die L\"{a}nge der Liste, so w\"{a}chst bei diesem Algorithmus
 der Verbrauch der 
 Rechenzeitzeit nur mit dem Faktor $n * \textsl{log}_2(n)$.
-Wenn es sich bei der zu sortierenden Liste beispielsweise um ein Telefonbuch mit 1 Millionen Einträgen handelt,
+Wenn es sich bei der zu sortierenden Liste beispielsweise um ein Telefonbuch mit 1 Millionen Eintr\"{a}gen handelt,
 dann ist der relative Unterschied des Rechenzeitzeit--Verbrauchs durch den Faktor $\approx 50\,000$ gegeben.
 
 Der Algorithmus, der  als \emph{Sortieren durch Mischen} bezeichnet wird,
-wird durch drei Prädikate implementiert, die wir jetzt der Reihe nach vorstellen.  Das erste Prädikat ist
+wird durch drei Pr\"{a}dikate implementiert, die wir jetzt der Reihe nach vorstellen.  Das erste Pr\"{a}dikat ist
 \texttt{split}:
 \begin{verbatim}
     % split( +, -, - ).
@@ -991,15 +991,15 @@ wird durch drei Prädikate implementiert, die wir jetzt der Reihe nach vorstellen
     split( [ X, Y | Ys ], [ X | First ], [ Y | Second ] ) :-
         split( Ys, First, Second ).
 \end{verbatim}
-Ein Aufruf dieses Prädikats hat die Form $\mathtt{split}(l,\mathtt{L1},\mathtt{L2})$, wobei $l$ eine 
+Ein Aufruf dieses Pr\"{a}dikats hat die Form $\mathtt{split}(l,\mathtt{L1},\mathtt{L2})$, wobei $l$ eine 
 beliebige Liste ist.  Die Aufgabe von $\texttt{split}$ ist es, diese Liste in zwei etwa gleich große 
 Listen aufzuspalten.  Die Korrektheit der ersten beiden Klauseln von \texttt{split} ist offensichtlich.
 Die letzte Klausel ist rekursiv: Um eine Liste der Form \texttt{[ X, Y | Ys ]} in etwa gleich große 
-Listen aufzuspalten, wird zunächst die Liste \texttt{Ys} in zwei etwa gleich große Teile aufgespalten.
-An den ersten dieser Teile wird \texttt{X} gehängt, an den zweiten \texttt{Y}.
+Listen aufzuspalten, wird zun\"{a}chst die Liste \texttt{Ys} in zwei etwa gleich große Teile aufgespalten.
+An den ersten dieser Teile wird \texttt{X} geh\"{a}ngt, an den zweiten \texttt{Y}.
 
-Das nächste Prädikat kann in gewissem Sinne als die Umkehrung von \texttt{split} verstanden werden.
-Es bekommt als Eingabe zwei Listen, die zusätzlich sortiert sind.  Die Aufgabe von \textsl{mix} ist es,
+Das n\"{a}chste Pr\"{a}dikat kann in gewissem Sinne als die Umkehrung von \texttt{split} verstanden werden.
+Es bekommt als Eingabe zwei Listen, die zus\"{a}tzlich sortiert sind.  Die Aufgabe von \textsl{mix} ist es,
 diese beiden Listen wieder zu einer Liste zusammenzufassen, die ebenfalls sortiert ist.  Das bezeichnen
 wir auch als \emph{mischen} der beiden Listen.
 \begin{verbatim}
@@ -1018,18 +1018,18 @@ wir auch als \emph{mischen} der beiden Listen.
 \end{verbatim}
 Die ersten beiden Klauseln sind trivial.  Die dritte Klausel betrachtet den Fall, dass beide eingegebenen 
 Listen
-nicht leer sind und zusätzlich das erste Element \texttt{X} der ersten Liste \texttt{[ X | Xs ]} kleiner 
+nicht leer sind und zus\"{a}tzlich das erste Element \texttt{X} der ersten Liste \texttt{[ X | Xs ]} kleiner 
 oder gleich dem zweiten Element \texttt{Y} der zweiten Liste \texttt{[ Y | Ys ]} ist.  
-Dann wird zunächst der Rest \texttt{Xs} der ersten Liste mit der zweiten Liste gemischt und
-an dieses Ergebnis wird dann vorne das Element \texttt{X} eingefügt.   
+Dann wird zun\"{a}chst der Rest \texttt{Xs} der ersten Liste mit der zweiten Liste gemischt und
+an dieses Ergebnis wird dann vorne das Element \texttt{X} eingef\"{u}gt.   
 
 Die vierte Klausel ist anlog zur dritten Klausel und betrachtet den Fall, dass
-das erste Element \texttt{X} der ersten Liste \texttt{[ X | Xs ]} größer als das zweite  Element \texttt{Y} 
+das erste Element \texttt{X} der ersten Liste \texttt{[ X | Xs ]} gr\"{o}ßer als das zweite  Element \texttt{Y} 
 der zweiten Liste \texttt{[ Y | Ys ]} ist.
-In diesem Fall mischen zuächst die erste Liste mit dem  Rest \texttt{Ys} der zweiten Liste und 
-hängen dann \texttt{Y} an dieses Ergebnis vorne an. 
+In diesem Fall mischen zu\"{a}chst die erste Liste mit dem  Rest \texttt{Ys} der zweiten Liste und 
+h\"{a}ngen dann \texttt{Y} an dieses Ergebnis vorne an. 
 
-Als letztes betrachten wir die Implementierung des Prädikats \texttt{merge\_sort}, das als Eingabe eine Liste von Zahlen
+Als letztes betrachten wir die Implementierung des Pr\"{a}dikats \texttt{merge\_sort}, das als Eingabe eine Liste von Zahlen
 erwartet und diese sortiert.
 \begin{verbatim}
     % merge_sort( +, - ).
@@ -1045,24 +1045,24 @@ erwartet und diese sortiert.
 \end{verbatim}
 Die ersten beiden Klauseln von \texttt{merge\_sort} sind trivial.
 Die dritte Klausel arbeitet nach dem Prinzip \emph{divide--and--conquer}, zu Deutsch: \emph{teile und herrsche}.
-Zunächst wird die zu sortierende Liste mit Hilfe von \texttt{split} in zwei etwa gleich große Listen aufgeteilt.
+Zun\"{a}chst wird die zu sortierende Liste mit Hilfe von \texttt{split} in zwei etwa gleich große Listen aufgeteilt.
 Diese werden beide einzeln sortiert und die resultierenden Listen werden gemischt.  
 
 \subsection{Symbolisches Differenzieren}
-Zum Abschluss geben wir noch ein Programm an, mit dem es möglich ist, symbolisch zu differenzieren.
+Zum Abschluss geben wir noch ein Programm an, mit dem es m\"{o}glich ist, symbolisch zu differenzieren.
 Das Programm ist in Figur \ref{fig:symbolisch-diff} auf Seite \pageref{fig:symbolisch-diff} angegeben.
 Um mit diesem Programm zum Beispiel die Ableitung der Funktion \\[0.1cm]
 \hspace*{1.3cm} $f(x) = 3 * x^4 + \textsl{sin}(x^2) + 5$ \\[0.1cm]
-zu berechnen, könnten wir die folgende Anfrage an ein Prolog--System stellen: \\[0.1cm]
+zu berechnen, k\"{o}nnten wir die folgende Anfrage an ein Prolog--System stellen: \\[0.1cm]
 \hspace*{1.3cm} \texttt{diff(3 * x ** 4 + sin(x ** 2) + 5, x, Fs). } \\[0.1cm]
-Bei Prolog wird für die Exponentiation der Operator ``\texttt{**}'' verwendet.
+Bei Prolog wird f\"{u}r die Exponentiation der Operator ``\texttt{**}'' verwendet.
 Die Antwort, die dann von dem Prolog--System ausgegeben wird, ist \\[0.1cm]
 \hspace*{1.3cm} \texttt{FS = 0*x**4+3* (4*1*x**3)+2*1*x**1*cos(x**2)+0} \\[0.1cm]
-Schreiben wir dies, ohne ihnhaltlich etwas zu verändern, in der gewohnten mathematischen Notation,
+Schreiben wir dies, ohne ihnhaltlich etwas zu ver\"{a}ndern, in der gewohnten mathematischen Notation,
 so erhalten wir \\[0.1cm]
 \hspace*{1.3cm} $\frac{d\,f}{dx} = 0*x^4+3* (4*1*x^3)+2*1*x^1*\textsl{cos}(x^2)+0$ \\[0.1cm]
-Hier fällt natürlich auf, dass dieser Ausdruck noch vereinfacht werden kann.  Es ist ein leichtes,
-ein Prolog--Programm zu schreiben, was die benötigten Vereinfachungen durchführt.  Als Endergebnis erhalten wir dann \\[0.1cm]
+Hier f\"{a}llt nat\"{u}rlich auf, dass dieser Ausdruck noch vereinfacht werden kann.  Es ist ein leichtes,
+ein Prolog--Programm zu schreiben, was die ben\"{o}tigten Vereinfachungen durchf\"{u}hrt.  Als Endergebnis erhalten wir dann \\[0.1cm]
 \hspace*{1.3cm} \hspace*{1.3cm} $\frac{d\,f}{dx} = 12*x^3 +2*x*\textsl{cos}(x^2)$. 
 
 \begin{figure}[!h]
@@ -1139,13 +1139,13 @@ Regel zum symbolischen Differenzieren aufgefasst werden kann.
       \vspace*{-0.7cm}
 
       implementieren die Regel \\[0.1cm]
-      \hspace*{1.3cm} $\frac{d\,c}{dx} = 0$ \quad für jede Konstante $c$. \\[0.1cm]
-      Die obigen Regeln machen Gebrauch von den eingebauten einstelligen Prädikaten \texttt{atom}
+      \hspace*{1.3cm} $\frac{d\,c}{dx} = 0$ \quad f\"{u}r jede Konstante $c$. \\[0.1cm]
+      Die obigen Regeln machen Gebrauch von den eingebauten einstelligen Pr\"{a}dikaten \texttt{atom}
       und \texttt{number}.  Diese haben die E/A--Spezifikationen \\[0.1cm]
       \hspace*{1.3cm} \texttt{atom(+)} und \texttt{number(+).} \\[0.1cm]
       \texttt{atom(Y)} ist wahr, wenn \texttt{Y} ein Prolog Funktions--Zeichen ist, also ein String,
-      der aus Buchstaben und dem Zeichen ``\texttt{\_}'' besteht un der zusätzlich mit einem 
-      Kleinbuchstaben anfängt.  Das Prädikat \texttt{number(C)} ist wahr, wenn \texttt{C} eine Zahl ist.
+      der aus Buchstaben und dem Zeichen ``\texttt{\_}'' besteht un der zus\"{a}tzlich mit einem 
+      Kleinbuchstaben anf\"{a}ngt.  Das Pr\"{a}dikat \texttt{number(C)} ist wahr, wenn \texttt{C} eine Zahl ist.
 \item Die Klausel
       \vspace*{-0.3cm}
 
@@ -1218,12 +1218,12 @@ Regel zum symbolischen Differenzieren aufgefasst werden kann.
 
       implementiert die Regel \\[0.1cm]
       \hspace*{1.3cm} $\frac{d}{dx} f^n = n * \frac{d\, f}{dx} * f^{n-1}$ \\[0.1cm]
-      Bei dieser Regel machen wir Gebrauch von dem zweistelligen Prädikat ``\texttt{is}'',
-      das in Prolog eingebaut ist.  Dieses Prädikat darf in Prolog in Infix--Notation angegeben werden.
+      Bei dieser Regel machen wir Gebrauch von dem zweistelligen Pr\"{a}dikat ``\texttt{is}'',
+      das in Prolog eingebaut ist.  Dieses Pr\"{a}dikat darf in Prolog in Infix--Notation angegeben werden.
       Es hat die E/A--Spezifikationen \\[0.1cm]
       \hspace*{1.3cm} {\tt is(-, +)}. \\[0.1cm]
       Es erwartet als zweites Argument einen arithmetischen Ausdruck.  Es wertet diesen Ausdruck aus und gibt
-      das Ergebnis im ersten Argument zurück.
+      das Ergebnis im ersten Argument zur\"{u}ck.
 \item Die Klausel
       \vspace*{-0.3cm}
 
@@ -1269,11 +1269,11 @@ Regel zum symbolischen Differenzieren aufgefasst werden kann.
       implementiert die Regel \\[0.1cm]
       \hspace*{1.3cm} $\frac{d}{dx}\textsl{cos}(f) = - \frac{d\,f}{dx}* \textsl{sin}(f)$
 \end{enumerate}
-Wir könnten das obige Programm noch dahingehen erweitern, dass wir auch die Umkehrfunktionen der trigonometrischen Funktionen
-behandeln.  Würden wir dann noch einige Regeln zur Vereinfachung hinzufügen, würde das Programm etwa auf das doppelte anwachsen.
-Es würde dann etwa zwei Seiten in Anspruch nehmen.  Würden sie versuchen, ein solches Programm in einer Sprache wie \texttt{C} zu erstellen,
-so würde das entstehende Programm sicherlich wesentlich größer.
-Dies zeigt, das Prolog--Programme für bestimmte Anwendungen wesentlich einfacher zu erstellen sind als vergleichbare
+Wir k\"{o}nnten das obige Programm noch dahingehen erweitern, dass wir auch die Umkehrfunktionen der trigonometrischen Funktionen
+behandeln.  W\"{u}rden wir dann noch einige Regeln zur Vereinfachung hinzuf\"{u}gen, w\"{u}rde das Programm etwa auf das doppelte anwachsen.
+Es w\"{u}rde dann etwa zwei Seiten in Anspruch nehmen.  W\"{u}rden sie versuchen, ein solches Programm in einer Sprache wie \texttt{C} zu erstellen,
+so w\"{u}rde das entstehende Programm sicherlich wesentlich gr\"{o}ßer.
+Dies zeigt, das Prolog--Programme f\"{u}r bestimmte Anwendungen wesentlich einfacher zu erstellen sind als vergleichbare
 Programme in  imperativen Sprachen.  Ein weiterer Vorteil des Prolog--Programms ist, dass es \emph{deklarativ} ist:
 die Programm--Klauseln lassen sich unmittelbar als mathematische Formeln interpretieren.  Damit sind (gut geschriebene)
 Prolog--Programme wesentlich leichter zu lesen als Programme, die beispielsweise in \texttt{C} erstellt werden.
