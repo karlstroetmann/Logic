@@ -1,12 +1,12 @@
 \section{Negation in \textsl{Prolog}}
 In diesem Abschnitt besprechen wir die Implementierung des Negations-Operators in
-\textsl{Prolog}.  Wir zeigen zunächst anhand eines einfachen Beispiels die Verwendung
+\textsl{Prolog}.  Wir zeigen zun\"{a}chst anhand eines einfachen Beispiels die Verwendung
 dieses Operators, besprechen dann seine Semantik und zeigen abschließend, in welchen
-Fällen die Verwendung des Negations-Operators problematisch ist.
+F\"{a}llen die Verwendung des Negations-Operators problematisch ist.
 
 \subsection{Berechnung der Differenz zweier Listen}
 In \textsl{Prolog} wird der Negations-Operator als ``\texttt{\symbol{92}+}'' geschrieben.
-Wir erläutern die Verwendung dieses 
+Wir erl\"{a}utern die Verwendung dieses 
 Operators am Beispiel einer Funktion, die die Differenz zweier Mengen berechnen soll,
 wobei die Mengen durch Listen dargestellt werden.  Wir werden  die Funktion \\[0.1cm]
 \hspace*{1.3cm} 
@@ -15,7 +15,7 @@ $\texttt{difference}: \textsl{List}(\textsl{Number}) \times \textsl{List}(\texts
 durch bedingte Gleichungen spezifizieren.  Der Ausdruck \\[0.1cm]
 \hspace*{1.3cm} $\mathtt{difference}(l_1,l_2)$ \\[0.1cm]
 berechnet die Liste aller der Elemente aus $l_1$, die nicht Elemente der Liste $l_2$ sind.
-In \textsc{SetlX} könnten wir diese Funktion wie in Abbildung \ref{fig:difference.stl}
+In \textsc{SetlX} k\"{o}nnten wir diese Funktion wie in Abbildung \ref{fig:difference.stl}
 gezeigt implementieren.
 \begin{figure}[!ht]
 \centering
@@ -38,7 +38,7 @@ gezeigt implementieren.
 
 \noindent
 In \textsl{Prolog} erfolgt die Implementierung dieser Funktion durch Rekursion im ersten Argument.
-Dazu stellen wir zunächst bedingte Gleichungen auf:
+Dazu stellen wir zun\"{a}chst bedingte Gleichungen auf:
 \begin{enumerate}
 \item $\textsl{difference}([], l) = []$.
 \item $\neg \textsl{member}(h, l) \rightarrow \textsl{difference}([h|t], l) = [h |\textsl{difference}(t,l)]$,
@@ -75,12 +75,12 @@ Dazu stellen wir zunächst bedingte Gleichungen auf:
 \end{figure}
 
 \subsection{Semantik des Negations-Operators in \textsc{Prolog}}
-Es bleibt zu klären, wie das \textsl{Prolog}-System eine Anfrage der Form
+Es bleibt zu kl\"{a}ren, wie das \textsl{Prolog}-System eine Anfrage der Form
 \\[0.1cm]
 \hspace*{1.3cm} \texttt{\symbol{92}+} $A$ \\[0.1cm]
 beantwortet, wie also der \texttt{not}-Operator implementiert ist.
 \begin{enumerate}
-\item Zunächst versucht das System, die Anfrage ``$A$'' zu beantworten.
+\item Zun\"{a}chst versucht das System, die Anfrage ``$A$'' zu beantworten.
 \item Falls die Beantwortung der Anfrage ``$A$'' scheitert, ist die Beantwortung
       der Anfrage ``\texttt{\symbol{92}+} $A$'' erfolgreich.  In diesem Fall werden keine
       Variablen instanziiert.
@@ -93,7 +93,7 @@ Variablen instanziiert werden.  Eine negierte Anfrage
 \\[0.1cm]
 \hspace*{1.3cm} \texttt{\symbol{92}+} $A$ \\[0.1cm]
 funktioniert daher nur dann wie erwartet, wenn die Anfrage $A$ keine Variablen mehr
-enthält.  Zur Illustration betrachten wir das Programm in Abbildung \ref{fig:not-problem}.
+enth\"{a}lt.  Zur Illustration betrachten wir das Programm in Abbildung \ref{fig:not-problem}.
 Versuchen wir mit diesem Programm die Anfrage \\[0.1cm]
 \hspace*{1.3cm} \texttt{smart1(X)} \\[0.1cm]
 zu beantworten, so wird diese Anfrage reduziert zu der Anfrage \\[0.1cm]
@@ -104,7 +104,7 @@ zu beantworten.  Dies gelingt und die Variable \texttt{X} wird dabei an den Wert
 ``\texttt{caesar}'' gebunden.  Da die Beantwortung der Anfrage ``\texttt{roemer(X)}''
 gelingt, scheitert die Anfrage \\[0.1cm]
 \hspace*{1.3cm} \texttt{\symbol{92}+ roemer(X)} \\[0.1cm]
-und damit gibt es auch auf die ursprüngliche Anfrage ``\texttt{smart1(X)}'' keine Antwort.
+und damit gibt es auch auf die urspr\"{u}ngliche Anfrage ``\texttt{smart1(X)}'' keine Antwort.
 
 \begin{figure}[!ht]
   \centering
@@ -129,34 +129,34 @@ und damit gibt es auch auf die ursprüngliche Anfrage ``\texttt{smart1(X)}'' kei
   \label{fig:not-problem}
 \end{figure}
 
-Wenn wir voraussetzen, dass das Programm das Prädikate \texttt{roemer/1}
-\underline{vollständi}g beschreibt, dann ist dieses Verhalten rein logisch betrachtet nicht korrekt,
+Wenn wir voraussetzen, dass das Programm das Pr\"{a}dikate \texttt{roemer/1}
+\underline{vollst\"{a}ndi}g beschreibt, dann ist dieses Verhalten rein logisch betrachtet nicht korrekt,
 denn die Konjunktion \\[0.1cm]
 \hspace*{1.3cm} 
 $\neg \mathtt{roemer}(\mathtt{miraculix}) \wedge \mathtt{gallier}(\mathtt{miraculix})$
  \\[0.1cm]
 folgt aus den im Programm gegebenen Fakten.  Wenn der dem \textsl{Prolog}-System zu Grunde liegende
-automatische Beweiser anders implementiert wäre, dann könnte er dies auch erkennen.
-Wir können uns in diesem Beispiel damit behelfen, dass wir die Reihenfolge der
+automatische Beweiser anders implementiert w\"{a}re, dann k\"{o}nnte er dies auch erkennen.
+Wir k\"{o}nnen uns in diesem Beispiel damit behelfen, dass wir die Reihenfolge der
 Formeln im Rumpf umdrehen, so wie dies bei der Klausel in Zeile 7 der Abbildung
 \ref{fig:not-problem} geschehen ist.  Die Anfrage \\[0.1cm]
 \hspace*{1.3cm} \texttt{smart2(X)} \\[0.1cm]
-liefert für \texttt{X} den Wert ``\texttt{miraculix}''.
+liefert f\"{u}r \texttt{X} den Wert ``\texttt{miraculix}''.
 Die zweite Anfrage funktioniert, weil zu dem Zeitpunkt, an dem die negierte Anfrage
 ``\texttt{\symbol{92}+ roemer(X)}'' aufgerufen wird, ist die Variable \texttt{X} bereits
 an den Wert \texttt{miraculix} gebunden und die Anfrage ``\texttt{roemer}(\texttt{miraculix})''
 scheitert.  Generell sollte in \textsl{Prolog}-Programmen der Negations-Operator
-``\texttt{\symbol{92}+}'' nur auf solche Prädikate angewendet werden, die zum Zeitpunkt
+``\texttt{\symbol{92}+}'' nur auf solche Pr\"{a}dikate angewendet werden, die zum Zeitpunkt
 des Aufrufs keine freien Variablen mehr enthalten.
 
-\subsection{Extralogische Prädikate}
-Es gibt bestimmte Prädikate, die nicht nach dem an früherer Stelle beschriebenen Algorithmus
+\subsection{Extralogische Pr\"{a}dikate}
+Es gibt bestimmte Pr\"{a}dikate, die nicht nach dem an fr\"{u}herer Stelle beschriebenen Algorithmus
 ausgewertet werden, weil sie nicht als Fakten und Regeln gespeichert sind.  Hier handelt es sich um
-die sogenannten \emph{vordefinierten} Prädikate.  Ein einfaches Beispiel ist das Prädikat
+die sogenannten \emph{vordefinierten} Pr\"{a}dikate.  Ein einfaches Beispiel ist das Pr\"{a}dikat
 \texttt{writeln/1}, das sein Argument gefolgt von einem Zeilenumbruch ausgibt.  Ein interessanteres
-Beispiel ist das Prädikat \texttt{is/2}: Dieses Prädikat dient der Auswertung arithmetischer
-Ausdrücke.  Dabei ist das \underline{zweite} Argument ein arithmetischer Ausdruck, der ausgewertet
-werden soll.  Dieses Ergebnis wird dann an die Variable, die als erstes Argument übergeben wird,
+Beispiel ist das Pr\"{a}dikat \texttt{is/2}: Dieses Pr\"{a}dikat dient der Auswertung arithmetischer
+Ausdr\"{u}cke.  Dabei ist das \underline{zweite} Argument ein arithmetischer Ausdruck, der ausgewertet
+werden soll.  Dieses Ergebnis wird dann an die Variable, die als erstes Argument \"{u}bergeben wird,
 gebunden.  Beispielsweise liefert die Anfrage
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -167,14 +167,14 @@ das Ergebnis
 \hspace*{1.3cm}
 \texttt{X = 5.}
 \\[0.2cm]
-Das Prädikat \texttt{is/2} kann auch als Infix-Operator verwendet werden.  Beispielsweise hätten wir
+Das Pr\"{a}dikat \texttt{is/2} kann auch als Infix-Operator verwendet werden.  Beispielsweise h\"{a}tten wir
 die obige Anfrage auch als
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{X is 2 + 3.}
 \\[0.2cm]
-schreiben können.  Es ist wichtig zu wissen, dass der arithmetische Ausdruck, der dem Prädikat
-\texttt{is/2} zur Auswertung übergeben wird, keine ungebundenen Variablen mehr enthalten darf.
+schreiben k\"{o}nnen.  Es ist wichtig zu wissen, dass der arithmetische Ausdruck, der dem Pr\"{a}dikat
+\texttt{is/2} zur Auswertung \"{u}bergeben wird, keine ungebundenen Variablen mehr enthalten darf.
 Beispielsweise liefert die Anfrage
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -185,22 +185,22 @@ nicht etwa das Ergebnis \texttt{X = 1} sondern statt dessen die Fehlermeldung
 \hspace*{1.3cm}
 \texttt{ERROR: is/2: Arguments are not sufficiently instantiated}.
 \\[0.2cm]
-Es wäre schön, wenn \textsl{Prolog} auch einfach Anfragen wie die obere korrekt beantworten könnte
-und die obige Gleichung nach $X$ auflösen könnte.  Es gibt tatsächlich Erweiterungen von
+Es w\"{a}re sch\"{o}n, wenn \textsl{Prolog} auch einfach Anfragen wie die obere korrekt beantworten k\"{o}nnte
+und die obige Gleichung nach $X$ aufl\"{o}sen k\"{o}nnte.  Es gibt tats\"{a}chlich Erweiterungen von
 \textsl{Prolog}, die dazu in der Lage sind.  Diese Disziplin wird als
 \href{http://en.wikipedia.org/wiki/Constraint_logic_programming}{\emph{Constrained-Logic-Programming}} bezeichnet.
-Neben dem Prädikat \texttt{is/2} haben auch die Prädikate zum Größenvergleich zweier Werte, also die
-Prädikate ``\texttt{>/2}'', ``\texttt{</2}'', ``\texttt{>=/2}'', ``\texttt{=</2}'' die
-Einschränkung, dass die beteiligten Argumente vollständig instanziiert sein müssen.
+Neben dem Pr\"{a}dikat \texttt{is/2} haben auch die Pr\"{a}dikate zum Gr\"{o}ßenvergleich zweier Werte, also die
+Pr\"{a}dikate ``\texttt{>/2}'', ``\texttt{</2}'', ``\texttt{>=/2}'', ``\texttt{=</2}'' die
+Einschr\"{a}nkung, dass die beteiligten Argumente vollst\"{a}ndig instanziiert sein m\"{u}ssen.
 
 \section{Die Tiefen-Suche in \textsl{Prolog}}
 Wenn das \textsl{Prolog}-System eine Anfrage beantwortet, wird dabei als Such-Strategie
 die sogenannte Tiefen-Suche (engl. \emph{depth first search}) angewendet.  Wir wollen
 diese Strategie nun an einem weiteren Beispiel verdeutlichen.  Wir implementieren dazu ein
 \textsl{Prolog}-Programm  
-mit dessen Hilfe es möglich ist, in einem Graphen eine Verbindung von einem gegebenen
+mit dessen Hilfe es m\"{o}glich ist, in einem Graphen eine Verbindung von einem gegebenen
 Start-Knoten zu einem Ziel-Knoten zu finden.  Als Beispiel betrachten wir den Graphen in
-Abbildung \ref{fig:graph}.  Die Kanten können durch ein \textsl{Prolog}-Prädikat \texttt{edge/2}
+Abbildung \ref{fig:graph}.  Die Kanten k\"{o}nnen durch ein \textsl{Prolog}-Pr\"{a}dikat \texttt{edge/2}
 wie folgt dargestellt werden:
 
 \begin{Verbatim}[ frame         = lines, 
@@ -225,13 +225,13 @@ wie folgt dargestellt werden:
   \label{fig:graph}
 \end{figure}
 
-Wir wollen nun ein \textsl{Prolog}-Programm entwickeln, mit dem es möglich ist, für zwei
+Wir wollen nun ein \textsl{Prolog}-Programm entwickeln, mit dem es m\"{o}glich ist, f\"{u}r zwei
 vorgegebene Knoten $x$ und $y$ zu entscheiden, ob es einen Weg von $x$ nach $y$ gibt.
 Außerdem soll dieser Weg dann als Liste von Knoten berechnet werden.
 Unser erster Ansatz besteht aus dem Programm, das in Abbildung \ref{fig:connect} gezeigt
 ist.  Die Idee ist, dass der Aufruf \\[0.1cm]
 \hspace*{1.3cm} \texttt{find\_path(\textsl{Start}, \textsl{Goal}, \textsl{Path})} \\[0.1cm]
-einen Pfad \textsl{Path} berechnet, der von \textsl{Start} nach \textsl{Goal} führt.  Wir diskutieren
+einen Pfad \textsl{Path} berechnet, der von \textsl{Start} nach \textsl{Goal} f\"{u}hrt.  Wir diskutieren
 die Implementierung.
 
 \begin{figure}[!h]
@@ -258,13 +258,13 @@ die Implementierung.
 
 \begin{enumerate}
 \item Die erste Klausel sagt aus, dass es trivialerweise einen Pfad von \texttt{X} nach
-      \texttt{X} gibt.  Dieser Pfad enthält genau den Knoten \texttt{X}.
+      \texttt{X} gibt.  Dieser Pfad enth\"{a}lt genau den Knoten \texttt{X}.
 \item Die zweite Klausel sagt aus, dass es einen Weg von \texttt{X} nach \texttt{Z}
-      gibt, wenn es zunächst eine direkte Verbindung von \texttt{X} zu einem Knoten
+      gibt, wenn es zun\"{a}chst eine direkte Verbindung von \texttt{X} zu einem Knoten
       \texttt{Y} gibt und wenn es dann von diesem Knoten \texttt{Y} eine Verbindung
       zu dem Knoten \texttt{Z} gibt.  Wir erhalten den Pfad, der von \texttt{X} nach
-      \texttt{Z} führt, dadurch, dass wir vorne an den Pfad, der von \texttt{Y} nach \texttt{Z}
-      führt, den Knoten \texttt{X} anfügen.
+      \texttt{Z} f\"{u}hrt, dadurch, dass wir vorne an den Pfad, der von \texttt{Y} nach \texttt{Z}
+      f\"{u}hrt, den Knoten \texttt{X} anf\"{u}gen.
 \end{enumerate}
 Stellen wir an das \textsl{Prolog}-System die Anfrage \texttt{find\_path(a,f,P)}, so
 erhalten wir die Antwort
@@ -282,8 +282,8 @@ erhalten wir die Antwort
     P = [a, c, f] ;
     No
 \end{Verbatim}
-Durch Backtracking werden also alle möglichen Wege von \texttt{a} nach \texttt{b} gefunden.
-Als nächstes testen wir das Programm mit dem in Abbildung \ref{fig:graph2} gezeigten
+Durch Backtracking werden also alle m\"{o}glichen Wege von \texttt{a} nach \texttt{b} gefunden.
+Als n\"{a}chstes testen wir das Programm mit dem in Abbildung \ref{fig:graph2} gezeigten
 Graphen.  Diesen Graphen stellen wir wie folgt in \textsl{Prolog} dar:
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
@@ -343,23 +343,23 @@ Die Ursache ist schnell gefunden.
       \hspace*{1.3cm} 
       \texttt{find\_path( a, f, P3 )}.
 \end{enumerate}
-Die Anfrage ``\texttt{find\_path(a, f, P3)}'' unterscheidet sich von der ursprünglichen
+Die Anfrage ``\texttt{find\_path(a, f, P3)}'' unterscheidet sich von der urspr\"{u}nglichen
 Anfrage ``\texttt{find\_path(a,f,P)}'' nur durch den Namen der Variablen.  Wenn wir jetzt
-weiterrechnen würden, würde sich die Rechnung nur wiederholen, ohne dass wir vorwärts kommen.
+weiterrechnen w\"{u}rden, w\"{u}rde sich die Rechnung nur wiederholen, ohne dass wir vorw\"{a}rts kommen.
 Das Problem ist, das \textsl{Prolog} immer die erste
-Klausel nimmt, die passt.  Wenn später die Reduktion der Anfrage scheitert, wird zwar nach
-Backtracking die nächste Klausel ausprobiert, aber wenn das Programm in eine
-Endlos-Schleife läuft, dann gibt es eben kein Backtracking, denn das Programm weiß ja
+Klausel nimmt, die passt.  Wenn sp\"{a}ter die Reduktion der Anfrage scheitert, wird zwar nach
+Backtracking die n\"{a}chste Klausel ausprobiert, aber wenn das Programm in eine
+Endlos-Schleife l\"{a}uft, dann gibt es eben kein Backtracking, denn das Programm weiß ja
 nicht, dass es in einer Endlos-Schleife ist.
 
 Es ist leicht das Programm so umzuschreiben, dass keine Endlos-Schleife mehr
 auftreten kann.  Die Idee ist, dass wir uns merken, welche Knoten wir bereits besucht
-haben und diese nicht mehr auswählen.  In diesem Sinne implementieren wir nun ein Prädikat \texttt{find\_path/4}.
+haben und diese nicht mehr ausw\"{a}hlen.  In diesem Sinne implementieren wir nun ein Pr\"{a}dikat \texttt{find\_path/4}.
 Die Idee ist, dass der Aufruf \\[0.1cm]
 \hspace*{1.3cm} \texttt{find\_path(\textsl{Start}, \textsl{Goal}, \textsl{Visited}, \textsl{Path})} \\[0.1cm]
-einen Pfad berechnet, der von \textsl{Start} nach \textsl{Goal} führt und der zusätzlich
-keine Knoten benutzt, die bereits in der Liste \textsl{Visited} aufgeführt sind.  Diese Liste
-füllen wir bei den rekursiven Aufrufen nach und nach mit den Knoten an, die wir bereits
+einen Pfad berechnet, der von \textsl{Start} nach \textsl{Goal} f\"{u}hrt und der zus\"{a}tzlich
+keine Knoten benutzt, die bereits in der Liste \textsl{Visited} aufgef\"{u}hrt sind.  Diese Liste
+f\"{u}llen wir bei den rekursiven Aufrufen nach und nach mit den Knoten an, die wir bereits
 besucht haben.  Mit Hilfe dieser Liste vermeiden wir es, einen Knoten zweimal zu besuchen.
 Abbildung \ref{fig:connect2} zeigt die Implementierung.
 \begin{figure}[!h]
@@ -386,17 +386,17 @@ Abbildung \ref{fig:connect2} zeigt die Implementierung.
   \label{fig:connect2}
 \end{figure}
 \begin{enumerate}
-\item In der ersten Klausel spielt das zusätzliche Argument noch keine Rolle,
+\item In der ersten Klausel spielt das zus\"{a}tzliche Argument noch keine Rolle,
       denn wenn wir das Ziel erreicht haben, ist es uns egal, welche Knoten wir schon
       besucht haben.
-\item In der zweiten Klausel überprüfen wir in Zeile 7, ob der Knoten \texttt{Y}
-      in der Liste \textsl{Visited}, die die Knoten enthält, die bereits besucht wurden,
+\item In der zweiten Klausel \"{u}berpr\"{u}fen wir in Zeile 7, ob der Knoten \texttt{Y}
+      in der Liste \textsl{Visited}, die die Knoten enth\"{a}lt, die bereits besucht wurden,
       auftritt.  Nur wenn dies nicht der Fall ist, versuchen wir rekursiv von \texttt{Y}
       einen Pfad nach \texttt{Z} zu finden.  Bei dem rekursiven Aufruf erweitern wir die Liste
       \texttt{Visited} um den Knoten \texttt{Y}, denn diesen Knoten wollen wir in Zukunft
       ebenfalls vermeiden.
 \end{enumerate}
-Mit dieser Implementierung ist es jetzt möglich, auch in dem zweiten Graphen einen Weg von
+Mit dieser Implementierung ist es jetzt m\"{o}glich, auch in dem zweiten Graphen einen Weg von
 \texttt{a} nach \texttt{f} zu finden, wir erhalten folgendes Ergebnis:
 \pagebreak
 
@@ -415,17 +415,17 @@ Mit dieser Implementierung ist es jetzt möglich, auch in dem zweiten Graphen ei
 \end{Verbatim}
 
 
-\subsection{Die Bekehrung der Ungläubigen}
-Als spielerische Anwendung zeigen wir nun, wie sich mit Hilfe des oben definierten Prädikats 
-\texttt{find\_path/4} ein theologisches Problem lösen lässt.
+\subsection{Die Bekehrung der Ungl\"{a}ubigen}
+Als spielerische Anwendung zeigen wir nun, wie sich mit Hilfe des oben definierten Pr\"{a}dikats 
+\texttt{find\_path/4} ein theologisches Problem l\"{o}sen l\"{a}sst.
 \vspace*{0.3cm}
 
 \begin{minipage}[c]{14cm}
-{\sl Drei Missionare und drei Ungläubige wollen zusammen einen Fluss 
-überqueren. Sie haben nur ein Boot, indem maximal zwei Passagiere fahren können.  
-Sowohl die Ungläubigen als auch die Missionare können rudern.
-Weder die Gläubigen, noch die Ungläubigen können über das Wasser laufen.
-Die Ungläubigen sind hungrig, wenn die Missionare an einem der Ufer in der Unterzahl sind, 
+{\sl Drei Missionare und drei Ungl\"{a}ubige wollen zusammen einen Fluss 
+\"{u}berqueren. Sie haben nur ein Boot, indem maximal zwei Passagiere fahren k\"{o}nnen.  
+Sowohl die Ungl\"{a}ubigen als auch die Missionare k\"{o}nnen rudern.
+Weder die Gl\"{a}ubigen, noch die Ungl\"{a}ubigen k\"{o}nnen \"{u}ber das Wasser laufen.
+Die Ungl\"{a}ubigen sind hungrig, wenn die Missionare an einem der Ufer in der Unterzahl sind, 
 haben sie ein Problem.  Die Aufgabe besteht darin, einen Fahrplan zu 
 erstellen, so dass hinterher alle das andere  Ufer erreichen und die
 Missionare zwischendurch kein Problem haben.}
@@ -433,24 +433,24 @@ Missionare zwischendurch kein Problem haben.}
 \vspace*{0.4cm}
 
 \noindent
-Die Idee ist, das Rätsel, durch einen Graphen zu modellieren.  Die Knoten dieses 
-Graphen sind dann die Situationen, die während des Übersetzens auftreten.  Wir
-repräsentieren diese Situationen durch Terme der Form \\[0.1cm]
+Die Idee ist, das R\"{a}tsel, durch einen Graphen zu modellieren.  Die Knoten dieses 
+Graphen sind dann die Situationen, die w\"{a}hrend des \"{u}bersetzens auftreten.  Wir
+repr\"{a}sentieren diese Situationen durch Terme der Form \\[0.1cm]
 \hspace*{1.3cm} $\texttt{side}(M,\;K,\;B)$.
 \\[0.1cm]
-Ein solcher Term repräsentiert eine Situation, bei der auf der linken Seite des Ufers $M$ Missionare, $K$
-Ungläubige und $B$ Boote sind.  Unsere Aufgabe besteht nun darin, das Prädikat
+Ein solcher Term repr\"{a}sentiert eine Situation, bei der auf der linken Seite des Ufers $M$ Missionare, $K$
+Ungl\"{a}ubige und $B$ Boote sind.  Unsere Aufgabe besteht nun darin, das Pr\"{a}dikat
 \texttt{edge/2} so zu implementieren, dass \\[0.1cm]
 \hspace*{1.3cm} $\texttt{edge}(\;\texttt{side}(M_1,\;K_1,\;B_1),\;\texttt{side}(M_2,\;K_2,\;B_2)\;)$
 \\[0.1cm]
 genau dann wahr ist, wenn die Situation $\texttt{side}(M_1,\;K_1,\;B_1)$
-durch eine Boots-Überfahrt in die Situation $\texttt{side}(M_2,\;K_2,\;B_2)$ überführt
-werden kann und wenn zusätzlich die Missionare in der neuen Situation kein Problem bekommen.
+durch eine Boots-\"{u}berfahrt in die Situation $\texttt{side}(M_2,\;K_2,\;B_2)$ \"{u}berf\"{u}hrt
+werden kann und wenn zus\"{a}tzlich die Missionare in der neuen Situation kein Problem bekommen.
 Abbildung \ref{fig:missionare.pl} auf Seite \pageref{fig:missionare.pl}
-zeigt ein \textsl{Prolog}-Programm, was das Rätsel löst.  Den von diesem Programm
+zeigt ein \textsl{Prolog}-Programm, was das R\"{a}tsel l\"{o}st.  Den von diesem Programm
 berechneten Fahrplan finden Sie in Abbildung \ref{fig:missionare-solution} 
 auf Seite \pageref{fig:missionare-solution}.
-Wir diskutieren dieses Programm nun Zeile für Zeile.
+Wir diskutieren dieses Programm nun Zeile f\"{u}r Zeile.
 
 \begin{figure}[!h]
   \centering
@@ -487,7 +487,7 @@ Wir diskutieren dieses Programm nun Zeile für Zeile.
                        |~~~~~|      B   KKK   MMM
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Fahrplan für Missionare und Ungläubige}
+  \caption{Fahrplan f\"{u}r Missionare und Ungl\"{a}ubige}
   \label{fig:missionare-solution}
 \end{figure}      
 
@@ -503,7 +503,7 @@ Wir diskutieren dieses Programm nun Zeile für Zeile.
                 ]
     solve :-
         find_path( side(3,3,1), side(0,0,0), [ side(3,3,1) ], Path ),
-        nl, write('Lösung:' ), nl, nl,
+        nl, write('L\"{o}sung:' ), nl, nl,
         print_path(Path).
     
     % edge( +Point, -Point ).    
@@ -550,33 +550,33 @@ Wir diskutieren dieses Programm nun Zeile für Zeile.
             find_path( Y, Z, [ Y | Visited ], Path ).
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Bekehrung der Ungläubigen}
+  \caption{Die Bekehrung der Ungl\"{a}ubigen}
   \label{fig:missionare.pl}
 \end{figure}      
 
 \begin{enumerate}
-\item Wir beginnen mit dem  Hilfs-Prädikat \texttt{otherSide/4}, das in den
-      Zeilen 24 -- 26 implementiert ist.  Für eine vorgegebene Situation
+\item Wir beginnen mit dem  Hilfs-Pr\"{a}dikat \texttt{otherSide/4}, das in den
+      Zeilen 24 -- 26 implementiert ist.  F\"{u}r eine vorgegebene Situation
       $\texttt{side}(M,K,B)$ berechnet der Aufruf \\[0.1cm]
       \hspace*{1.3cm} $\texttt{otherSide}(\; \texttt{side}(M, K, B),\; \textsl{OtherSide} \;)$
       \\[0.1cm] 
-      einen Term, der die Situation am gegenüberliegenden Ufer beschreibt.
+      einen Term, der die Situation am gegen\"{u}berliegenden Ufer beschreibt.
       Wenn an einen Ufer $M$ Missionare sind, so sind am anderen Ufer die restlichen
       Missionare und da es insgesamt $3$ Missionare gibt, sind das $3 - M$.
-      Die Anzahl der Ungläubige am gegenüberliegenden Ufer wird analog berechnet. 
-\item Das Prädikat \texttt{problem/2} in den Zeilen 29 -- 34 überprüft, ob es bei einer vorgegeben
-      Anzahl von Missionaren und Ungläubige zu einem Problem kommt.
+      Die Anzahl der Ungl\"{a}ubige am gegen\"{u}berliegenden Ufer wird analog berechnet. 
+\item Das Pr\"{a}dikat \texttt{problem/2} in den Zeilen 29 -- 34 \"{u}berpr\"{u}ft, ob es bei einer vorgegeben
+      Anzahl von Missionaren und Ungl\"{a}ubige zu einem Problem kommt.
       Da das Problem entweder am linken oder am rechten Ufer auftreten kann,
-      besteht die Implementierung aus zwei Klauseln.  Die erste Klausel prüft,
-      ob es auf der Seite, an der $M$ Missionare und $K$ Ungläubige sind, zum Problem
-      kommt.  Die zweite Klausel überprüft, ob es auf dem gegenüberliegenden
-      Ufer zu einem Problem kommt.  Als Hilfs-Prädikat verwenden wir hier das Prädikat
-      \texttt{problemSide/2}.  Dieses Prädikat ist in Zeile 37 implementiert
-      und überprüft die Situation an einer Seite:  Falls sich auf einer Seite $M$ Missionare
-      und $K$ Ungläubige befinden, so gibt es dann ein Problem, wenn die Zahl $M$ von 0
-      verschieden ist und wenn zusätzlich $M < K$ ist.
-\item Bei der Implementierung des Prädikats \texttt{edge/2} verwenden wir in den Zeilen 9
-      und 10 das Prädikat \texttt{between/3}, das in dem \textsl{SWI-Prolog}-System 
+      besteht die Implementierung aus zwei Klauseln.  Die erste Klausel pr\"{u}ft,
+      ob es auf der Seite, an der $M$ Missionare und $K$ Ungl\"{a}ubige sind, zum Problem
+      kommt.  Die zweite Klausel \"{u}berpr\"{u}ft, ob es auf dem gegen\"{u}berliegenden
+      Ufer zu einem Problem kommt.  Als Hilfs-Pr\"{a}dikat verwenden wir hier das Pr\"{a}dikat
+      \texttt{problemSide/2}.  Dieses Pr\"{a}dikat ist in Zeile 37 implementiert
+      und \"{u}berpr\"{u}ft die Situation an einer Seite:  Falls sich auf einer Seite $M$ Missionare
+      und $K$ Ungl\"{a}ubige befinden, so gibt es dann ein Problem, wenn die Zahl $M$ von 0
+      verschieden ist und wenn zus\"{a}tzlich $M < K$ ist.
+\item Bei der Implementierung des Pr\"{a}dikats \texttt{edge/2} verwenden wir in den Zeilen 9
+      und 10 das Pr\"{a}dikat \texttt{between/3}, das in dem \textsl{SWI-Prolog}-System 
       vordefiniert ist.  Beim Aufruf \\[0.1cm]
       \hspace*{1.3cm} $\texttt{between}(\textsl{Low}, \textsl{High}, N)$ \\[0.1cm]
       sind \textsl{Low} und \textsl{High} ganze Zahlen mit $\textsl{Low} \leq \textsl{High}$.
@@ -585,36 +585,36 @@ Wir diskutieren dieses Programm nun Zeile für Zeile.
       Beispielsweise gibt die Anfrage \\[0.1cm]
       \hspace*{1.3cm} \texttt{between(1,3,N), write(N), nl, fail.}  \\[0.1cm]
       nacheinander die Zahlen 1, 2 und 3 am Bildschirm aus.
-    \item Die Implementierung des Prädikats \texttt{edge/2} besteht aus zwei Klauseln.  In
+    \item Die Implementierung des Pr\"{a}dikats \texttt{edge/2} besteht aus zwei Klauseln.  In
       der ersten Klausel betrachten wir den Fall, dass das Boot am linken Ufer ist.  In
-      der Zeilen 9 generieren wir die Zahl der Missionare $\texttt{MB}$, die im Boot übersetzen
-      sollen.  Diese Zahl $\texttt{MB}$ ist durch $\texttt{M}$ beschränkt, denn es können nur die Missionare
-      übersetzen, die sich am linken Ufer befinden.  Daher benutzen wir das Prädikat
+      der Zeilen 9 generieren wir die Zahl der Missionare $\texttt{MB}$, die im Boot \"{u}bersetzen
+      sollen.  Diese Zahl $\texttt{MB}$ ist durch $\texttt{M}$ beschr\"{a}nkt, denn es k\"{o}nnen nur die Missionare
+      \"{u}bersetzen, die sich am linken Ufer befinden.  Daher benutzen wir das Pr\"{a}dikat
       \texttt{between/3} um eine Zahl zwischen 0 und $\texttt{M}$ zu erzeugen.  Analog generieren
-      wir in Zeile 10 die Zahl $\texttt{KB}$ der Ungläubige, die im Boot übersetzen.  In Zeile 11
-      testen wir, dass es mindestens einen Passagier gibt, der mit dem Boot übersetzt und
-      in Zeile 12 testen wir, dass es höchstens zwei Passagiere sind.  In Zeile 13 und 14
-      berechnen wir die Zahl $\texttt{MN}$ der Missionare und die Zahl $\texttt{KN}$ der Ungläubige, die
-      nach der Überfahrt auf dem linken Ufer verbleiben und testen dann in Zeile 15, dass es
-      für diese Zahlen kein Problem gibt.
+      wir in Zeile 10 die Zahl $\texttt{KB}$ der Ungl\"{a}ubige, die im Boot \"{u}bersetzen.  In Zeile 11
+      testen wir, dass es mindestens einen Passagier gibt, der mit dem Boot \"{u}bersetzt und
+      in Zeile 12 testen wir, dass es h\"{o}chstens zwei Passagiere sind.  In Zeile 13 und 14
+      berechnen wir die Zahl $\texttt{MN}$ der Missionare und die Zahl $\texttt{KN}$ der Ungl\"{a}ubige, die
+      nach der \"{u}berfahrt auf dem linken Ufer verbleiben und testen dann in Zeile 15, dass es
+      f\"{u}r diese Zahlen kein Problem gibt.
       
       Die zweite Klausel befasst sich mit dem Fall, dass das Boot am rechten Ufer liegt.
-      Wir hätten diese Klausel mit \textsl{Copy \& Paste} aus der vorhergehenden Klausel
-      erzeugen können, aber es ist eleganter, diesen Fall auf den vorhergehenden Fall
-      zurück zu führen.  Da da Boot nun auf der rechten Seite liegt, berechnen wir daher
+      Wir h\"{a}tten diese Klausel mit \textsl{Copy \& Paste} aus der vorhergehenden Klausel
+      erzeugen k\"{o}nnen, aber es ist eleganter, diesen Fall auf den vorhergehenden Fall
+      zur\"{u}ck zu f\"{u}hren.  Da da Boot nun auf der rechten Seite liegt, berechnen wir daher
       in Zeile 19 die Zahl $\texttt{MR}$ der Missionare auf der rechten Seite und die Zahl
-      $\texttt{KR}$ der Ungläubige auf der rechten Seite.  Dann untersuchen wir die
+      $\texttt{KR}$ der Ungl\"{a}ubige auf der rechten Seite.  Dann untersuchen wir die
       Situation $\mathtt{side}(\mathtt{MR}, \mathtt{KR}, 1)$, bei der $\texttt{MR}$
-      Missionare und $\texttt{KR}$ Ungläubige am linken Ufer stehen.  Wenn diese so
-      übersetzen können, dass nachher $\texttt{MRN}$ Missionare und $\texttt{KRN}$
-      Ungläubige am linken Ufer stehen, dann können wir in Zeile 21 berechnen, wieviele
-      Missionare und Ungläubige sich dann am gegenüberliegenden Ufer befinden.
-\item In den Zeilen 1 -- 4 definieren wir nun das Prädikat \texttt{solve/0}, dessen Aufruf
-      das Problem löst.  Dazu wird zunächst das Prädikat \texttt{find\_path/4} 
+      Missionare und $\texttt{KR}$ Ungl\"{a}ubige am linken Ufer stehen.  Wenn diese so
+      \"{u}bersetzen k\"{o}nnen, dass nachher $\texttt{MRN}$ Missionare und $\texttt{KRN}$
+      Ungl\"{a}ubige am linken Ufer stehen, dann k\"{o}nnen wir in Zeile 21 berechnen, wieviele
+      Missionare und Ungl\"{a}ubige sich dann am gegen\"{u}berliegenden Ufer befinden.
+\item In den Zeilen 1 -- 4 definieren wir nun das Pr\"{a}dikat \texttt{solve/0}, dessen Aufruf
+      das Problem l\"{o}st.  Dazu wird zun\"{a}chst das Pr\"{a}dikat \texttt{find\_path/4} 
       mit dem Start-Knoten \texttt{side(3,3,1)} und dem Ziel-Knoten \texttt{side(0,0,0)}
-      aufgerufen.   Der berechnete Pfad wird dann ausgegeben mit dem Prädikat
+      aufgerufen.   Der berechnete Pfad wird dann ausgegeben mit dem Pr\"{a}dikat
       \texttt{print\_path/1},
-      dessen Implementierung hier aus Platzgründen nicht angegeben wird.
+      dessen Implementierung hier aus Platzgr\"{u}nden nicht angegeben wird.
 \end{enumerate}
 
 

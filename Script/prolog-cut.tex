@@ -1,10 +1,10 @@
 \section{Der Cut-Operator}
-Wir haben ein Prädikat als \emph{funktional} definiert,
+Wir haben ein Pr\"{a}dikat als \emph{funktional} definiert,
 wenn wir die einzelnen Argumente klar in Eingabe- und Ausgabe-Argumente
-aufteilen können.  Wir nennen ein Prädikat \emph{deterministisch} wenn es funktional ist
-und wenn außerdem zu jeder Eingabe höchstens eine Ausgabe berechnet
-wird.  Diese zweite Forderung ist durchaus nicht immer erfüllt.  Betrachten wir die ersten
-beiden Fakten zur Definition des Prädikats \texttt{mix/3}:
+aufteilen k\"{o}nnen.  Wir nennen ein Pr\"{a}dikat \emph{deterministisch} wenn es funktional ist
+und wenn außerdem zu jeder Eingabe h\"{o}chstens eine Ausgabe berechnet
+wird.  Diese zweite Forderung ist durchaus nicht immer erf\"{u}llt.  Betrachten wir die ersten
+beiden Fakten zur Definition des Pr\"{a}dikats \texttt{mix/3}:
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
                   labelposition = bottomline,
@@ -16,8 +16,8 @@ beiden Fakten zur Definition des Prädikats \texttt{mix/3}:
     mix( [], Xs, Xs ).    
     mix( Xs, [], Xs ).
 \end{Verbatim}
-Für die Anfrage ``\texttt{mix([], [], L)}'' können beide Fakten verwendet werden.
-Das Ergebnis ist zwar immer dasselbe, nämlich \texttt{L = []}, es wird aber zweimal ausgegeben:
+F\"{u}r die Anfrage ``\texttt{mix([], [], L)}'' k\"{o}nnen beide Fakten verwendet werden.
+Das Ergebnis ist zwar immer dasselbe, n\"{a}mlich \texttt{L = []}, es wird aber zweimal ausgegeben:
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
                   labelposition = bottomline,
@@ -32,8 +32,8 @@ Das Ergebnis ist zwar immer dasselbe, nämlich \texttt{L = []}, es wird aber zwe
     
     L = [] 
 \end{Verbatim}
-Dies kann zu Ineffizienz führen.  Aus diesem Grunde gibt es in \textsl{Prolog} den
-Cut-Operator ``\texttt{!}''.  Mit diesem Operator ist es möglich, redundante Lösungen aus
+Dies kann zu Ineffizienz f\"{u}hren.  Aus diesem Grunde gibt es in \textsl{Prolog} den
+Cut-Operator ``\texttt{!}''.  Mit diesem Operator ist es m\"{o}glich, redundante L\"{o}sungen aus
 dem Suchraum heraus zu schneiden.  Schreiben wir die ersten beiden Klauseln der
 Implementierung von \texttt{mix/3} in der Form 
 \begin{Verbatim}[ frame         = lines, 
@@ -47,20 +47,20 @@ Implementierung von \texttt{mix/3} in der Form
     mix( [], Xs, Xs ) :- !.
     mix( Xs, [], Xs ) :- !.
 \end{Verbatim}
-so wird auf die Anfrage  ``\texttt{mix([], [], L)}'' die Lösung \texttt{L = []} nur noch
+so wird auf die Anfrage  ``\texttt{mix([], [], L)}'' die L\"{o}sung \texttt{L = []} nur noch
 einmal generiert.  Ist allgemein eine Regel der Form \\[0.1cm]
 \hspace*{1.3cm} $P \;\texttt{:-}\; Q_1, \cdots, Q_m, \texttt{!}, R_1, \cdots, R_k$ \\[0.1cm]
 gegeben, und gibt es weiter eine Anfrage $A$, so dass $A$ und $P$  unifizierbar sind, so
-wird die Anfrage $A$ zunächst zu der Anfrage \\[0.1cm]
+wird die Anfrage $A$ zun\"{a}chst zu der Anfrage \\[0.1cm]
 \hspace*{1.3cm} $Q_1\mu, \cdots, Q_m\mu, \texttt{!}, R_1\mu, \cdots, R_k\mu$ \\[0.1cm]
 reduziert.  Außerdem wird ein Auswahl-Punkt gesetzt, wenn es noch weitere Klauseln gibt,
-deren Kopf mit $A$ unifiziert werden könnt.
+deren Kopf mit $A$ unifiziert werden k\"{o}nnt.
 Bei der weiteren Abarbeitung dieser Anfrage gilt folgendes:
 \begin{enumerate}
 \item Falls bereits die Abarbeitung einer Anfrage der Form \\[0.1cm]
       \hspace*{1.3cm} 
       $Q_i\sigma, \cdots, Q_m\sigma, \texttt{!}, R_1\sigma, \cdots, R_k\sigma$ \\[0.1cm]
-      für ein $i\in\{1,\cdots,m\}$ scheitert, so wird der Cut nicht erreicht und hat keine
+      f\"{u}r ein $i\in\{1,\cdots,m\}$ scheitert, so wird der Cut nicht erreicht und hat keine
       Wirkung.
 \item Eine Anfrage der Form \\[0.1cm]
       \hspace*{1.3cm} 
@@ -69,12 +69,12 @@ Bei der weiteren Abarbeitung dieser Anfrage gilt folgendes:
       \hspace*{1.3cm} 
       $R_1\sigma, \cdots, R_k\sigma$. \\[0.1cm]
       Dabei werden alle Auswahl-Punkte, die bei der Beantwortung der Teilanfragen
-      $Q_1, \cdots, Q_m$ gesetzt worden sind, gelöscht.  Außerdem wird ein eventuell bei
+      $Q_1, \cdots, Q_m$ gesetzt worden sind, gel\"{o}scht.  Außerdem wird ein eventuell bei
       der Reduktion der Anfrage $A$ auf die Anfrage \\[0.1cm]
       \hspace*{1.3cm} $Q_1\mu, \cdots, Q_m\mu, \texttt{!}, R_1\mu, \cdots, R_k\mu$
       \\[0.1cm]
-      gesetzter Auswahl-Punkte gelöscht.
-\item Sollte später die Beantwortung der Anfrage \\[0.1cm]
+      gesetzter Auswahl-Punkte gel\"{o}scht.
+\item Sollte sp\"{a}ter die Beantwortung der Anfrage \\[0.1cm]
       \hspace*{1.3cm} $R_1\sigma, \cdots, R_k\sigma$. \\[0.1cm]
       scheitern, so scheitert auch die Beantwortung der Anfrage $A$.
 \end{enumerate}
@@ -103,54 +103,54 @@ Zur Veranschaulichung betrachten wir ein Beispiel.
 \end{Verbatim}
 Wir verfolgen die Beantwortung der Anfrage \ \texttt{q(U)}. 
 \begin{enumerate}
-\item Zunächst wird versucht \texttt{q(U)} mit dem Kopf der ersten Klausel 
-      des Prädikats \texttt{q/1}  zu unifizieren.  Dabei wird \texttt{Z} mit
+\item Zun\"{a}chst wird versucht \texttt{q(U)} mit dem Kopf der ersten Klausel 
+      des Pr\"{a}dikats \texttt{q/1}  zu unifizieren.  Dabei wird \texttt{Z} mit
       \texttt{U} instantiert und die Anfrage wird reduziert zu \\[0.1cm]
       \hspace*{1.3cm} \texttt{p(U)}. \\[0.1cm]
-      Da es noch eine weiter Klausel für das Prädikat \texttt{q/1} gibt, die zur
+      Da es noch eine weiter Klausel f\"{u}r das Pr\"{a}dikat \texttt{q/1} gibt, die zur
       Beantwortung der Anfrage q(U) in Frage kommt, setzen wir Auswahl-Punkt Nr.~1.
 \item Jetzt wird versucht \texttt{p(U)} mit \texttt{p(X)} zu unifizieren.  Dabei
-      wird die Variable \texttt{X} an \texttt{U} gebunden und die ursprüngliche Anfrage
+      wird die Variable \texttt{X} an \texttt{U} gebunden und die urspr\"{u}ngliche Anfrage
       wird reduziert zu der Anfrage \\[0.1cm]
       \hspace*{1.3cm}  
       \texttt{a(U), b(U), !, c(U,Y), d(Y)}. \\[0.1cm]
       Außerdem wird an dieser Stelle Auswahl-Punkt Nr.~2 gesetzt, denn die zweite Klausel
-      des Prädikats \texttt{p/1} kann ja ebenfalls mit der ursprünglichen Anfrage unifiziert
+      des Pr\"{a}dikats \texttt{p/1} kann ja ebenfalls mit der urspr\"{u}nglichen Anfrage unifiziert
       werden. 
 \item Um die Teilanfrage \texttt{a(U)} zu beantworten, wird \texttt{a(U)} mit
       \texttt{a(1)} unifiziert.  Dabei wird \texttt{U} mit 1 instantiiert und die Anfrage wird reduziert zu \\[0.1cm]
       \hspace*{1.3cm} 
       \texttt{b(1), !, c(1,Y), d(Y)}. \\[0.1cm]
-      Da es für das Prädikat \texttt{a/1} noch weitere Klauseln gibt, wird Auswahl-Punkt Nr.~3
+      Da es f\"{u}r das Pr\"{a}dikat \texttt{a/1} noch weitere Klauseln gibt, wird Auswahl-Punkt Nr.~3
       gesetzt.
 \item Jetzt wird versucht, die Anfrage \\[0.1cm]
       \hspace*{1.3cm}    \texttt{b(1), !, c(1,Y), d(Y)}. \\[0.1cm]
-      zu lösen.  Dieser Versuch scheitert jedoch, da sich die für das Prädikat \texttt{b/1}
+      zu l\"{o}sen.  Dieser Versuch scheitert jedoch, da sich die f\"{u}r das Pr\"{a}dikat \texttt{b/1}
       vorliegenden Fakten nicht mit \texttt{b(1)} unifizieren lassen.
-\item Also springen wir zurück zum letzten Auswahl-Punkt (das ist Auswahl-Punkt Nr.~3)
+\item Also springen wir zur\"{u}ck zum letzten Auswahl-Punkt (das ist Auswahl-Punkt Nr.~3)
       und machen die Instantiierung 
-      $\texttt{U} \mapsto 1$ rückgängig.  Wir haben jetzt also wieder das Ziel \\[0.1cm]
+      $\texttt{U} \mapsto 1$ r\"{u}ckg\"{a}ngig.  Wir haben jetzt also wieder das Ziel \\[0.1cm]
       \hspace*{1.3cm} \texttt{a(U), b(U), !, c(U,Y), d(Y)}. 
-\item Diesmal wählen wir das Fakt \texttt{a(2)} um es mit \texttt{a(U)} zu unifizieren.  Dabei wird \texttt{U} mit
+\item Diesmal w\"{a}hlen wir das Fakt \texttt{a(2)} um es mit \texttt{a(U)} zu unifizieren.  Dabei wird \texttt{U} mit
       2 instantiiert und wir haben die  Anfrage \\[0.1cm]
       \hspace*{1.3cm} \texttt{b(2), !, c(2,Y), d(Y)}. \\[0.1cm]
-      Da es noch eine weiter Klausel für das Prädikat \texttt{a/1} gibt, setzen wir 
+      Da es noch eine weiter Klausel f\"{u}r das Pr\"{a}dikat \texttt{a/1} gibt, setzen wir 
       Auswahl-Punkt Nr.~4 an dieser Stelle.
-\item Jetzt unifizieren wir  die Teilanfrage \texttt{b(2)} mit der ersten Klausel für das Prädikat
+\item Jetzt unifizieren wir  die Teilanfrage \texttt{b(2)} mit der ersten Klausel f\"{u}r das Pr\"{a}dikat
       \texttt{b/1}.  Die verbleibende Anfrage ist \\[0.1cm]
       \hspace*{1.3cm} \texttt{!, c(2,Y), d(Y)}. 
 \item Diese Anfrage wird reduziert zu \\[0.1cm]
       \hspace*{1.3cm}  \texttt{c(2,Y), d(Y)}. \\[0.1cm]
-      Außerdem werden bei diesem Schritt die Auswahl-Punkte Nr.~2 und Nr.~4 gelöscht.
+      Außerdem werden bei diesem Schritt die Auswahl-Punkte Nr.~2 und Nr.~4 gel\"{o}scht.
 \item Um diese Anfrage zu beantworten, unifizieren wir \texttt{c(2,Y)} mit dem Kopf der
-      ersten Klausel für das Prädikat \texttt{c/2}, also mit \texttt{c(2,2)}.
+      ersten Klausel f\"{u}r das Pr\"{a}dikat \texttt{c/2}, also mit \texttt{c(2,2)}.
       Dabei erhalten wir die Instantiierung
       $\mathtt{Y} \mapsto 2$.  Die Anfrage ist damit reduziert zu \\[0.1cm]
       \hspace*{1.3cm}  \texttt{d(2)}. \\[0.1cm]
-      Außerdem setzen wir an dieser Stelle Auswahl-Punkt Nr.~5, denn das Prädikat
+      Außerdem setzen wir an dieser Stelle Auswahl-Punkt Nr.~5, denn das Pr\"{a}dikat
       \texttt{c/2} hat ja noch eine weitere Klausel, die in Frage kommt.
-\item Die Anfrage ``\texttt{d(2)}'' scheitert.  Also springen wir zurück zum Auswahl-Punkt
-      Nr.~5 und machen die Instantiierung $\mathtt{Y} \mapsto 2$ rückgängig.  Wir haben
+\item Die Anfrage ``\texttt{d(2)}'' scheitert.  Also springen wir zur\"{u}ck zum Auswahl-Punkt
+      Nr.~5 und machen die Instantiierung $\mathtt{Y} \mapsto 2$ r\"{u}ckg\"{a}ngig.  Wir haben
       also wieder die Anfrage \\[0.1cm]
       \hspace*{1.3cm}  \texttt{c(2,Y), d(Y)}. 
 \item Zur Beantwortung dieser Anfrage nehmen wir nun die zweite Klausel der
@@ -158,35 +158,35 @@ Wir verfolgen die Beantwortung der Anfrage \ \texttt{q(U)}.
       $\mathtt{Y} \mapsto 4$.  Die verbleibende Anfrage lautet dann \\[0.1cm]
       \hspace*{1.3cm} \texttt{d(4)}.
 \item Da sich \texttt{d(4)} und \texttt{d(3)} nicht unifizieren lassen,
-      scheitert diese Anfrage.  Wir springen jetzt zurück zum Auswahl-Punkt Nr.~1 und
-      machen die Instantiierung $\mathtt{U} \mapsto \mathtt{Z}$ rückgängig.  Die Anfrage
+      scheitert diese Anfrage.  Wir springen jetzt zur\"{u}ck zum Auswahl-Punkt Nr.~1 und
+      machen die Instantiierung $\mathtt{U} \mapsto \mathtt{Z}$ r\"{u}ckg\"{a}ngig.  Die Anfrage
       lautet also wieder \\[0.1cm]
       \hspace*{1.3cm} \texttt{p(U)}.
-\item Wählen wir nun die zweite Klausel der Implementierung von \texttt{q/1},
-      so müssen wir \texttt{q(U)} und \texttt{q(1)} unifizieren.  Diese Unifikation ist
+\item W\"{a}hlen wir nun die zweite Klausel der Implementierung von \texttt{q/1},
+      so m\"{u}ssen wir \texttt{q(U)} und \texttt{q(1)} unifizieren.  Diese Unifikation ist
       erfolgreich und wir erhalten die Instantiierung $\mathtt{U} \mapsto 1$, die die Anfrage beantwortet.
 \end{enumerate}
 
 \subsection{Verbesserung der Effizienz von \textsl{Prolog}-Programmen durch den Cut-Operator}
-In der Praxis wird der Cut-Operator eingesetzt, um überflüssige Auswahl-Punkte zu
+In der Praxis wird der Cut-Operator eingesetzt, um \"{u}berfl\"{u}ssige Auswahl-Punkte zu
 entfernen und dadurch die Effizienz eines Programms zu steigern.  Als Beispiel
 betrachten wir eine Implementierung des Algorithmus 
 ``\emph{Sortieren durch Vertauschen}'' (engl.~\emph{bubble sort}).
-Wir spezifizieren diesen Algorithmus zunächst durch bedingte Gleichungen.  Dabei 
+Wir spezifizieren diesen Algorithmus zun\"{a}chst durch bedingte Gleichungen.  Dabei 
 benutzen wir die Funktion \\[0.1cm]
 \hspace*{1.3cm} 
 $\texttt{append}: \textsl{List}(\textsl{Number}) \times \textsl{List}(\textsl{Number}) \rightarrow \textsl{List}(\textsl{Number})$
 \\[0.1cm]
 Der Aufruf $\texttt{append}(l_1, l_2)$ liefert eine Liste, die aus allen Elementen von
 $l_1$ gefolgt von den Elementen aus $l_2$ besteht.  In dem \textsl{SWI-Prolog}-System ist
-ein entsprechendes Prädikat \texttt{append/3} implementiert.  Die Implementierung dieses
-Prädikats deckt sich mit der Implementierung des Prädikats \texttt{concat/3}, die wir in
-einem früheren Abschnitt vorgestellt hatten.  
+ein entsprechendes Pr\"{a}dikat \texttt{append/3} implementiert.  Die Implementierung dieses
+Pr\"{a}dikats deckt sich mit der Implementierung des Pr\"{a}dikats \texttt{concat/3}, die wir in
+einem fr\"{u}heren Abschnitt vorgestellt hatten.  
 
-Außerdem benutzen wir noch das Prädikat \\[0.1cm]
+Außerdem benutzen wir noch das Pr\"{a}dikat \\[0.1cm]
 \hspace*{1.3cm} 
 $\texttt{ordered}: \textsl{List}(\textsl{Number}) \rightarrow \mathbb{B}$, \\[0.1cm]
-das überprüft, ob eine Liste geordnet ist.
+das \"{u}berpr\"{u}ft, ob eine Liste geordnet ist.
 Die bedingten Gleichungen
 zur Spezifikation der Funktion \\[0.1cm]
 \hspace*{1.3cm} 
@@ -202,9 +202,9 @@ lauten nun:
 \item $\mathtt{ordered}(l) \rightarrow \mathtt{bubble\_sort}(l) = l$
 
       Wenn die Liste $l$ bereits sortiert ist, dann kann die Funktion
-      $\mathtt{bubble\_sort}$ diese Liste unverändert als Ergebnis zurück geben.
+      $\mathtt{bubble\_sort}$ diese Liste unver\"{a}ndert als Ergebnis zur\"{u}ck geben.
 \end{enumerate}
-Die Gleichungen um das Prädikat \texttt{ordered} zu spezifizieren lauten:
+Die Gleichungen um das Pr\"{a}dikat \texttt{ordered} zu spezifizieren lauten:
 \begin{enumerate}
 \item $\mathtt{ordered}([]) = \mathtt{true}$
 
@@ -254,38 +254,38 @@ Die Gleichungen um das Prädikat \texttt{ordered} zu spezifizieren lauten:
 Abbildung \ref{fig:bubble_sort} zeigt die Implementierung des Bubble-Sort Algorithmus in
 \textsl{Prolog}.  In Zeile 2 wird die als Eingabe gegebene Liste \texttt{L} in die beiden
 Liste \texttt{L1} und \texttt{[X, Y | L2]} zerlegt.  Da es im Allgemeinen mehrere
-Möglichkeiten gibt,  eine Liste in zwei Teillisten zu zerlegen, wird hierbei ein
-Auswahl-Punkt gesetzt.  Anschließend wird geprüft, ob \texttt{Y} kleiner als \texttt{X}
+M\"{o}glichkeiten gibt,  eine Liste in zwei Teillisten zu zerlegen, wird hierbei ein
+Auswahl-Punkt gesetzt.  Anschließend wird gepr\"{u}ft, ob \texttt{Y} kleiner als \texttt{X}
 ist.  Wenn dies der Fall ist, wird mit \texttt{append/3} die neue Liste 
 \\[0.1cm]
 \hspace*{1.3cm} $\mathtt{append(L_1, [Y,X|L_2])}$ \\[0.1cm]
-gebildet und diese Liste wird rekuriv sortiert.  Wenn es nicht möglich ist,
+gebildet und diese Liste wird rekuriv sortiert.  Wenn es nicht m\"{o}glich ist,
 die Liste \texttt{L} so in zwei Listen \texttt{L1} und \texttt{[X, Y | L2]} zu zerlegen,
 dass \texttt{Y} kleiner als \texttt{X} ist, dann muss die Liste \texttt{L} schon sortiert
-sein.  In diesem Fall greift die zweite Klausel, die allerdings noch überprüfen muss, ob
-\texttt{L} tatsächlich sortiert ist, denn sonst könnte beim Backtracking eine falsche
-Lösung berechnet werden.
+sein.  In diesem Fall greift die zweite Klausel, die allerdings noch \"{u}berpr\"{u}fen muss, ob
+\texttt{L} tats\"{a}chlich sortiert ist, denn sonst k\"{o}nnte beim Backtracking eine falsche
+L\"{o}sung berechnet werden.
 
-Das Problem bei dem obigen Programm ist die Effizienz.  Aufgrund der vielen Möglichkeiten
-eine Liste zu zerlegen, wird beim Backtracking immer wieder dieselbe Lösung generiert. 
+Das Problem bei dem obigen Programm ist die Effizienz.  Aufgrund der vielen M\"{o}glichkeiten
+eine Liste zu zerlegen, wird beim Backtracking immer wieder dieselbe L\"{o}sung generiert. 
 Beispielsweise liefert die Anfrage \\[0.1cm]
 \hspace*{1.3cm} \texttt{bubble\_sort( [ 4, 3, 2, 1 ], L ), write(L), nl, fail.} \\[0.1cm]
-16 mal dieselbe Lösung.  Abbildung \ref{fig:bubble_sort_cut} zeigt eine Implementierung,
-bei der nur eine Lösung berechnet wird.  Dies wird durch den Cut-Operator in Zeile 4
+16 mal dieselbe L\"{o}sung.  Abbildung \ref{fig:bubble_sort_cut} zeigt eine Implementierung,
+bei der nur eine L\"{o}sung berechnet wird.  Dies wird durch den Cut-Operator in Zeile 4
 erreicht.   Ist einmal eine Zerlegung der Liste \texttt{L} der Form
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathtt{L} = \texttt{L}_1 +[ \texttt{X}, \mathtt{Y} | \mathtt{L}_2]$
 \\[0.2cm] 
 gefunden, bei der \texttt{Y} kleiner als \texttt{X} ist, so bringt es
-nichts mehr, nach anderen Zerlegungen zu suchen, denn die ursprünglich gegebene Liste
-\texttt{L} lässt sich ja auf jeden Fall dadurch sortieren, dass rekursiv die Liste 
+nichts mehr, nach anderen Zerlegungen zu suchen, denn die urspr\"{u}nglich gegebene Liste
+\texttt{L} l\"{a}sst sich ja auf jeden Fall dadurch sortieren, dass rekursiv die Liste 
 \\[0.2cm]
 \hspace*{1.3cm}
  $\mathtt{L}_1 + [\mathtt{Y},\mathtt{X}|\mathtt{L}_2]$ 
 \\[0.1cm]
-sortiert wird.  Dann kann auch der Aufruf der Prädikats \texttt{ordered/1} im Rumpf der zweiten
-Klausel des Prädikats \texttt/2{bubble\_sort} entfallen, denn diese wird beim Backtracking
+sortiert wird.  Dann kann auch der Aufruf der Pr\"{a}dikats \texttt{ordered/1} im Rumpf der zweiten
+Klausel des Pr\"{a}dikats \texttt/2{bubble\_sort} entfallen, denn diese wird beim Backtracking
 ja nur dann erreicht, wenn es keine Zerlegung der Liste \texttt{L} in  \texttt{L1} und 
 \texttt{[X, Y | L2]} gibt, bei der \texttt{Y} kleiner als \texttt{X} ist.  Dann muss aber
 die Liste \texttt{L} schon sortiert sein.
@@ -316,9 +316,9 @@ die Liste \texttt{L} schon sortiert sein.
 
 Wenn wir bei der Entwicklung eines \textsl{Prolog}-Programms von bedingten Gleichungen
 ausgehen, dann gibt es ein einfaches Verfahren, um das entstandene
-\textsl{Prolog}-Programm durch die Einführung von Cut-Operator effizienter zu machen:
+\textsl{Prolog}-Programm durch die Einf\"{u}hrung von Cut-Operator effizienter zu machen:
 Der Cut-Operator sollte nach den Tests, die vor dem Junktor ``$\rightarrow$'' stehen,
-gesetzt werden.  Wir erläutern dies durch ein Beispiel:  Unten sind noch einmal die
+gesetzt werden.  Wir erl\"{a}utern dies durch ein Beispiel:  Unten sind noch einmal die
 Gleichungen zur Spezifikation des Algorithmus ``\emph{Sortieren durch Mischen}'' wiedergegeben.
 \begin{enumerate}
 \item $\mathtt{odd}([]) = []$.
@@ -390,30 +390,30 @@ wird der Cut-Operator dann am Anfang des Rumpfes gesetzt.
 \end{figure}
 
 Analysieren wir das obige Programm genauer, so stellen wir fest, dass viele der
-Cut-Operatoren im Grunde überflüssig sind.  Beispielsweise kann immer nur eine der beiden
-Klauseln, die das Prädikat \texttt{odd/2} implementieren, greifen, denn entweder ist die
+Cut-Operatoren im Grunde \"{u}berfl\"{u}ssig sind.  Beispielsweise kann immer nur eine der beiden
+Klauseln, die das Pr\"{a}dikat \texttt{odd/2} implementieren, greifen, denn entweder ist die
 eingegebene Liste leer oder nicht.  Also sind die Cut-Operatoren in den Zeilen 2 und 4
-redundant.  Andererseits stören sie auch nicht, so dass es für die Praxis das einfachste
-sein dürfte Cut-Operatoren stur nach dem oben angegebenen Rezept zu setzen.
+redundant.  Andererseits st\"{o}ren sie auch nicht, so dass es f\"{u}r die Praxis das einfachste
+sein d\"{u}rfte Cut-Operatoren stur nach dem oben angegebenen Rezept zu setzen.
 \pagebreak
 
 \vspace*{\fill}
 
 \section{Literaturhinweise}
-Für eine umfangreiche und dem Thema angemessene Darstellung der Sprache \textsl{Prolog} 
-fehlt in der einführenden Vorlesung leider die Zeit.  Daher wird dieses Thema in einer
-späteren Vorlesung auch wieder aufgegriffen.  Den Lesern, die ihre Kenntnisse jetzt schon
-vertiefen wollen, möchte ich die folgende Hinweise auf die Literatur geben:
+F\"{u}r eine umfangreiche und dem Thema angemessene Darstellung der Sprache \textsl{Prolog} 
+fehlt in der einf\"{u}hrenden Vorlesung leider die Zeit.  Daher wird dieses Thema in einer
+sp\"{a}teren Vorlesung auch wieder aufgegriffen.  Den Lesern, die ihre Kenntnisse jetzt schon
+vertiefen wollen, m\"{o}chte ich die folgende Hinweise auf die Literatur geben:
 \begin{enumerate}
 \item \emph{The Art of Prolog} von Leon Sterling und Ehud Shapiro \cite{sterling:94}.
-      Dieses Werk ist ein ausgezeichnete Lehrbuch, das auch für den Anfänger gut lesbar ist.
+      Dieses Werk ist ein ausgezeichnete Lehrbuch, das auch f\"{u}r den Anf\"{a}nger gut lesbar ist.
 \item \emph{Prolog Programming for Artificial Intelligence} von Ivan Bratko
-      \cite{bratko:90}.  Neben der Sprache \textsl{Prolog} führt dieses Buch auch in die
-      künstliche Intelligenz ein.
+      \cite{bratko:90}.  Neben der Sprache \textsl{Prolog} f\"{u}hrt dieses Buch auch in die
+      k\"{u}nstliche Intelligenz ein.
 \item \emph{Foundations of Logic Programnming}   von J.~W.~Lloyd \cite{lloyd:87}
       beschreibt die theoretischen Grundlagen der Sprache \textsl{Prolog}.
 \item \emph{Prolog: The Standard} von Pierre Deransart, Abdel Ali Ed-Dbali und Laurent
-      Cervoni \cite{deransart:96} gibt den ISO-Standard für die Sprache
+      Cervoni \cite{deransart:96} gibt den ISO-Standard f\"{u}r die Sprache
       \textsl{Prolog} wieder.
 \item \emph{SWI-Prolog 6.2.6 Reference Manual} von Jan Wielemaker \cite{wielemaker:2013}
       beschreibt das SWI-Prolog-System.  Dieses Dokument ist im Internet unter der Adresse 
@@ -421,7 +421,7 @@ vertiefen wollen, möchte ich die folgende Hinweise auf die Literatur geben:
       \hspace*{1.3cm}      
       \href{http://www.swi-prolog.org/download/stable/doc/SWI-Prolog-6.2.6.pdf}{\texttt{http://www.swi-prolog.org/download/stable/doc/SWI-Prolog-6.2.6.pdf}}
       \\[0.1cm]
-      verfügbar.
+      verf\"{u}gbar.
 \end{enumerate}
 
 %%% Local Variables: 
