@@ -1,2 +1,0 @@
-loop :- loop, a.
-loop.
