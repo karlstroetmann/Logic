@@ -20,11 +20,11 @@ davisPutnam := procedure(clauses, literals) {
     }
     l := selectLiteral(clauses, literals);
     notL := negateLiteral(l);    
-    r := davisPutnam(clauses + { {l} }, literals + { l, notL });
+    r := davisPutnam(clauses + { {l} }, literals + { l });
     if (r != { {} }) {
         return r;
     }     
-    return davisPutnam(clauses + { {notL} }, literals + { l, notL });
+    return davisPutnam(clauses + { {notL} }, literals + { notL });
 };
 // Gegeben ist eine Menge S von Klauseln.  Der Aufruf saturate(S) berechnet alle
 // Klauseln, die mit Unit Schnitten aus S ableitbar sind.  Zusätzlich werden alle
@@ -55,9 +55,9 @@ selectLiteral := procedure(s, forbidden) {
     allLiterals := +/ s - forbidden;
     posLiterals := { l : l in allLiterals | isPositive(l) };
     if (posLiterals != {}) {
-        return rnd(posLiterals);
+        return rnd(posLiterals);  // use rnd instead of arb for efficiency
     }
-    return rnd(all);
+    return rnd(all);              // use rnd instead of arb for efficiency
 };
 isPositive := procedure(l) {
     match (l) {
