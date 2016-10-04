@@ -1,22 +1,32 @@
-\chapter{Die Programmier-Sprache \textsc{SetlX}}
-Die in der Mathematik-Vorlesung vorgestellten Begriffs-Bildungen aus der Mengenlehre bereiten
-erfahrungsgem\"{a}\ss{} dem Anf\"{a}nger aufgrund ihrer Abstraktheit gewisse Schwierigkeiten.  Um
-diese Begriffe vertrauter werden zu lassen, stelle ich daher nun eine Programmier-Sprache
-vor, die mit diesen Begriffen arbeitet.  Dies ist die Sprache \textsc{SetlX}.
-Diese Sprache basiert auf der Ende der sechziger Jahre von Jacob T.~Schwartz eingef\"{u}hrten
-Sprache \href{http://en.wikipedia.org/wiki/SETL}{\textsc{Setl}} \cite{setl86}.  
-Die Sprache \textsc{SetlX} lehnt sich in ihrer Syntax stark an die Programmiersprache \texttt{C} an,
-ist vom Konzept her aber als Derivat von \textsc{Setl} zu sehen. Sie finden auf der Webseite 
+\chapter{The programming Language \textsc{SetlX}}
+The introductory lecture on mathematics starts with set theory.  In my experience, the notions of
+set theory are difficult to master for many students because the concepts introduced in set theory
+are quite abstract.  Fortunately, there is a programming language that is directly based on set
+theory and logic.  This is the language \href{http://www.randoom.org/Software/SetlX}{\setl}.
+By programming in \setl, students can get acquainted with set theory in a playful manner.
+Furthermore, as many interesting problems have a straightforward solution as \setl-programs,
+my experience has shown that students can appreciate the usefulness of abstract notions from set
+theory better by programming in \setl.
+
+\setl\ is based on the language \textsc{Setl} \cite{setl86}, which was introduced in the late
+sixties by Jacob T.~Schwartz.  However, while the syntax of \textsc{Setl} is similar to
+\href{https://en.wikipedia.org/wiki/ALGOL}{\textsl{Algol}}, \setl\ has been designed to be
+syntactically similar to the programming language
+\href{https://en.wikipedia.org/wiki/C_(programming_language)}{\texttt{C}}. 
+The language \setl\ can be downloaded from the website
 \\[0.2cm]
 \hspace*{1.3cm}
-\href{http://www.randoom.org/Software/SetlX}{\texttt{http://www.randoom.org/Software/SetlX}}
+\href{http://www.randoom.org/Software/SetlX}{\texttt{http://www.randoom.org/Software/SetlX}}.
 \\[0.2cm]
-eine Anleitung zur Installation von \textsc{SetlX}.
+I would like to mention that \setl\ runs on android based smart phones.  The version of \setl\ for
+\href{https://en.wikipedia.org/wiki/Android_(operating_system)}{Android} is available at
+\href{https://play.google.com/store/apps/details?id=org.randoom.setlxUI.android&hl=en}{Google Play}.
 
-\section{Einf\"{u}hrende Beispiele}
-Wir wollen in diesem Abschnitt die Sprache \textsc{SetlX} anhand einiger einfacher
-Beispiele vorstellen, bevor wir dann in den folgenden Abschnitten auf die Details
-eingehen.  
+\section{Introductory Examples}
+My goal is to first introduce \setl\ via a number of rather simple examples.  I will present more
+advanced features of \setl\ in later sections, but this sections  is intended to provide a first
+impression of the language.
+
 
 \begin{figure}[!ht]
 \centering
@@ -29,12 +39,12 @@ eingehen.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-    -====================================setlX=============================v2.3.2=-
+    -====================================setlX=============================v2.5.0=-
     
     Welcome to the setlX interpreter!
     
     Open Source Software from http://setlX.randoom.org/
-    (c) 2011-2014 by Herrmann, Tom
+    (c) 2011-2016 by Herrmann, Tom
     
     You can display some helpful information by using '--help' as parameter when
     launching this program.
@@ -47,51 +57,53 @@ eingehen.
     => 
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{\textsc{SetlX}-Interpreter nach dem Start.}
+\caption{The \textsc{SetlX}-Welcome message.}
 \label{fig:setlx}
 \end{figure}
 
-Die Sprache \textsc{SetlX} ist eine interaktive Sprache, Sie k\"{o}nnen diese
-Sprache also unmittelbar \"{u}ber einen Interpreter aufrufen.  Falls Sie \textsc{SetlX} auf
-Ihrem Rechner installiert haben, k\"{o}nnen Sie den Befehl
+The language \textsc{SetlX} is an interpreted language.  Hence, there is no need to compile a
+program.  Instead, \setl-programs can be executed via the interpreter.  The interpreter is started
+with the command:\footnote{
+  While I am usually in the habit of terminating every sentence with either a full stop, a question
+  mark or an exclamation mark, I refrain from doing so when the sentence ends in a \setl-command
+  that is shown on a separate line.  The reason is that I want to avoid confusion as it can
+  otherwise be hard to understand which part of the line is the command that has to be typed
+  verbatim.
+}
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{setlx}
 \\[0.2cm]
-in einer Kommando-Zeile eingeben.  Anschlie\ss{}end meldet sich der Interpreter dann wie wie
-in Abbildung \ref{fig:setlx} auf Seite \pageref{fig:setlx} gezeigt.  Die Zeichenfolge
-``\texttt{=>}'' ist der Prompt, der Ihnen signalisiert, dass der Interpreter auf eine Eingabe
-wartet.  Geben Sie dort den  Text
+After the interpreter is started, the user sees the output that is shown in 
+\ref{fig:setlx} on page \pageref{fig:setlx}.  The string
+``\texttt{=>}'' is the prompt.  it signals that the interpreter is waiting for input.
+If we input the string
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{1 + 2;}
 \\[0.2cm]
-ein und dr\"{u}cken anschlie\ss{}end auf die Eingabe-Taste, so erhalten Sie
-die folgende Ausgabe:
-
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  firstnumber   = 1,
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
-                ]
+and press enter, we get the following output:
+\begin{verbatim}
     ~< Result: 3 >~
     
     => 
-\end{Verbatim}
-Hier hat der Interpreter die Summe $1+2$ berechnet und das Ergebnis ausgegeben.  Es gibt auch eine
-Funktion, mit deren Hilfe Sie Werte ausdrucken k\"{o}nnen.  Diese Funktion hei\ss{}t \texttt{print}.  Wenn
-Sie im Interpreter
+\end{verbatim}
+The interpreter has computed the sum $1+2$, returned the result, and prints another prompt waiting
+for more input.  The command ``\texttt{1 + 2;}''
+is a script.  Of course, this is a very small script as it consists only of a single command.
+By default, just the last result computed by a script is output to the screen.  Hence, if we feed
+the commands
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{print(\symbol{34}Hallo\symbol{34});}
+\texttt{1+2; 3*4;}
 \\[0.2cm]
-eingeben und anschlie\ss{}end auf die Eingabe-Taste dr\"{u}cken, so erhalten Sie
-die folgende Ausgabe:
-
+to the interpreter, only the number 12 is printed.  In order to print arbitrary results to
+the screen, we can use the function \texttt{print}.  If we issue the command
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{print(\symbol{34}Hello, World!\symbol{34});}
+\\[0.2cm]
+then the following output is produced:
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
                   firstnumber   = 1,
@@ -101,45 +113,46 @@ die folgende Ausgabe:
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    Hallo
+    Hello, World!
     ~< Result: om >~
     
     => 
 \end{Verbatim}
-Hier hat der Interpreter zun\"{a}chst den Befehl \texttt{print(\symbol{34}Hallo\symbol{34})} ausgef\"{u}hrt und dabei
-den Text ``\texttt{Hallo}'' ausgegeben.  In der Zeile darunter wird der Wert des zuletzt
-ausgegebenen Ausdrucks angezeigt.  Da die Funktion $\texttt{print}()$ kein Ergebnis
-berechnet, ist der R\"{u}ckgabe-Wert undefiniert.  Ein undefinierter Wert wird in
-\textsc{SetlX} mit dem griechischen Buchstaben
-\href{http://en.wikipedia.org/wiki/Greek_alphabet}{$\Omega$} bezeichnet, was in der Ausgabe durch
-den String ``\texttt{om}'' dargestellt wird.
+Here, the interpreter has first printed the string ``\texttt{Hello, World!}''.  After that, the
+result of the function \texttt{print} is shown.  However, the function \texttt{print} does not
+return any value and therefore its return value is undefined.  An undefined value is denoted using
+the \href{http://en.wikipedia.org/wiki/Greek_alphabet}{greek} letter
+\href{https://en.wikipedia.org/wiki/Omega}{$\Omega$.}  This letter is then
+abbreviated as the string ``\texttt{om}''.
 
-Die Funktion $\mathtt{print}()$ akzeptiert beliebig viele Argumente.  Wenn Sie
-beispielsweise das Ergebnis der Rechnung $36 \cdot 37 / 2$ ausgeben wollen, so k\"{o}nnen Sie dies \"{u}ber den Befehl
+The function $\mathtt{print}()$ accepts any number of arguments.  For example, printing
+the value of $36 \cdot 37 / 2$, can be achieved vie the following commmand:
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{print(\symbol{34}36 * 37 / 2 = \symbol{34}, 36 * 37 / 2);}
 \\[0.2cm]
-erreichen.  Wenn Sie nur an der Auswertung dieses Ausdrucks interessiert sind, so k\"{o}nnen Sie diesen 
-Ausdruck auch unmittelbar hinter dem Prompt eingeben und mit einem Semikolon ``\texttt{;}'' abschlie\ss{}en.
-Wenn Sie nun die Eingabe-Taste bet\"{a}tigen, wird der Ausdruck ausgewertet und das Ergebnis angezeigt.
-
-Der \textsc{SetlX}-Interpreter l\"{a}sst sich nicht nur interaktiv betreiben, sondern er kann auch vollst\"{a}ndige
-Programme ausf\"{u}hren.  Speichern wir das in Abbildung \ref{fig:sum.stlx} gezeigte 
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/sum.stlx}{Programm} in einer Datei mit
-dem Namen ``\texttt{sum.stlx}'' ab, so k\"{o}nnen wir in der Kommando-Zeile den Befehl
+The  \textsc{SetlX} interpreter can be executed offline to execute programs.
+If the program shown in Figure  \ref{fig:sum.stlx} on page \pageref{fig:sum.stlx} is stored in a
+file with the file name  
+``\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/sum.stlx}{\texttt{sum.stlx}}'',
+then we can execute this program via the following command:
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{setlx sum.stlx}
 \\[0.2cm] 
-eingeben.  Dann wird zun\"{a}chst der Text ``\texttt{Type a natural number} $\cdots$'' gefolgt von einem
-Doppelpunkt als Prompt ausgegeben.  Geben wir nun eine Zahl $n$ ein und bet\"{a}tigen die Eingabe-Taste, so wird
-als Ergebnis die Summe der ersten $n$ nat\"{u}rlichen Zahlen, also
+Executing this command will first print the text
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{Type a natural number:} 
+\\[0.2cm]
+to the screen.  After entering a natural number $n$ and hitting the \texttt{enter} key, the program will
+compute the set $\{1,\cdots,n\}$ of all positive natural number less or equal $n$, sum the elements
+of this set, i.e.~compute the sum
 \\[0.2cm]
 \hspace*{1.3cm}
 $\sum\limits_{i=1}^n i$ 
 \\[0.2cm]
-ausgegeben.
+and print the resulting number.
 
 \begin{figure}[!ht]
 \centering
@@ -163,66 +176,65 @@ ausgegeben.
 \end{figure}
 
 
-Wir diskutieren nun das in Abbildung \ref{fig:sum.stlx} auf Seite \pageref{fig:sum.stlx} gezeigte Programm
-Zeile f\"{u}r Zeile.  Die Zeilen-Nummern in dieser und den folgenden Abbildungen von \textsc{SetlX}-Programmen
-sind nicht Bestandteil der Programme sondern wurden hinzugef\"{u}gt um in den Diskussionen
-dieser Programme besser auf einzelne Zeilen Bezug nehmen zu k\"{o}nnen. 
+Let us discuss the program shown in Figure \ref{fig:sum.stlx} on page \pageref{fig:sum.stlx} line by line.
+Note that the line numbers shown in this Figure are not part of the program and have only been added
+so that I am able to refer to the different lines of the program more easily.
 \begin{enumerate}
-\item Die erste Zeile enth\"{a}lt einen Kommentar.  In \textsc{SetlX} werden Kommentare
-      durch den String ``\texttt{//}'' eingeleitet.  Aller Text zwischen diesem String und
-      dem Ende der Zeile wird von dem \textsc{SetlX}-Compiler ignoriert.  Neben
-      einzeiligen Kommentaren unterst\"{u}tzt \textsc{SetlX} auch mehrzeilige Kommentare, die
-      wie in der Sprache \texttt{C} durch die Strings ``\texttt{/*}'' und ``\texttt{*/}''
-      begrenzt werden.
-\item Die zweite Zeile enth\"{a}lt eine Zuweisung.  Die Funktion $\textsl{read}()$ gibt
-      zun\"{a}chst den Text aus, der den Benutzer zur Eingabe einer Zahl auffordert und liest dann
-      den vom Benutzer eingegebenen String.  Falls der Benutzer eine Zahl eingibt, wird
-      dies erkannt und die eingegebene Zahl wird mit Hilfe des
-      Zuweisungs-Operators ``\texttt{:=}'' der Variablen \texttt{n} zugewiesen.
-      An dieser Stelle gibt es zwei wichtige Unterschiede zur Syntax der Sprache
-      \texttt{C}:
-      \begin{enumerate}
-      \item \texttt{SetlX} verwendet den Zuweisungs-Operator ``\texttt{:=}'', w\"{a}hrend
-            die Programmiersprache \texttt{C} den String ``\texttt{=}'' als
-            Zuweisungs-Operator benutzt.
-      \item Die Namen von Variablen oder Funktion m\"{u}ssen in der Sprache \textsc{SetlX} mit einem
-            kleinen Buchstaben beginnen.  Daneben k\"{o}nnen die Namen von  Variablen und Funktionen
-            noch beliebig viele Buchstaben, Ziffern und den Unterstrich ``\texttt{\_}'' enthalten.
-            In Gegensatz dazu d\"{u}rfen diese Namen in \texttt{C} auch mit einem gro\ss{}en
-            Buchstaben oder mit dem Unterstrich ``\texttt{\_}'' beginnen.  
-      \end{enumerate}
-      Im Gegensatz zu der Sprache \texttt{C} ist die Sprache \textsc{SetlX} nicht statisch
-      \emph{getypt}. Daher ist es weder notwendig noch m\"{o}glich, die Variable \texttt{n} zu
-      deklarieren.  W\"{u}rde der Benutzer an Stelle einer Zahl einen String eingeben, so w\"{u}rde das
-      Programm sp\"{a}ter mit einer Fehlermeldung abbrechen.
-\item Die dritte Zeile zeigt zun\"{a}chst, wie sich Mengen als Aufz\"{a}hlungen definieren lassen.  Sind
-      $a$ und $b$ ganze Zahlen mit $a < b$, so berechnet der Ausdruck
+\item The first line is a comment.  In \textsc{SetlX}, the string  ``\texttt{//}'' starts a comments
+      that extends to the end of the line.  In order to have multi-line comments, we can use the 
+      strings ``\texttt{/*}'' and ``\texttt{*/}''.  Every text starting with the string ``\texttt{/*}''
+      and ending with the string ``\texttt{*/}'' is ignored.
+
+      Note that multi-line comments can not be nested.
+\item The second line is an assignment.  The function  $\textsl{read}(s)$ 
+      first prints the string $s$ and then reads and returns the number that is input by the user.
+      This number is then assigned to the variable \texttt{n}.  This is done using the assignment operator
+      ``\texttt{:=}''.  It is important to understand that the syntax of \setl\ differs from the
+      syntax of the programming language \texttt{C} in one very important way:
+
+      \begin{center}
+      \colorbox{red}{\framebox{\colorbox{yellow}{\framebox{
+      \begin{minipage}{0.65\linewidth}
+        \texttt{SetlX} uses the operator ``\texttt{:=}'' to assign a value to a variable, while
+        the programming language \texttt{C} uses the operator ``\texttt{=}'' instead.
+      \end{minipage}}}}}
+      \end{center}      
+
+      In contrast to the language \texttt{C}, the language \textsc{SetlX} is not
+      \href{https://en.wikipedia.org/wiki/Type_system#STATIC}{statically typed} but rather is 
+      \href{https://en.wikipedia.org/wiki/Type_system#DYNAMIC}{dynamically typed}.
+      Hence, it is neither necessary nor possible to declare the variable \texttt{n}.
+      Of course, in the given program, we expect the function \texttt{read} to return a number.
+      If, instead of a number, the user inputs a string, the program would abort with an error
+      message once the third line is executed.
+\item The third line shows how a set can be defined as an enumeration.  In general, if 
+      $a$ and $b$ are integers such that  $a < b$, the expression
       \\[0.2cm]
       \hspace*{1.3cm}
       \texttt{\{ $a$ .. $b$ \}}
       \\[0.2cm]
-      die Menge
+      evaluates to the set 
       \\[0.2cm]
       \hspace*{1.3cm}
       $\{ x \in \mathbb{Z} \mid a \leq x \wedge x \leq b \}$.
       \\[0.2cm]
-      Der Operator ``\texttt{+/}'' berechnet dann die Summe aller Elemente der Menge
+      The operator ``\texttt{+/}'' computes the sum of all elements of the set
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\{ i \in \mathbb{N} \mid 1 \leq i  \wedge i \leq n \}$
+      $\{ i \in \mathbb{N} \mid 1 \leq i  \wedge i \leq n \}$.
       \\[0.2cm]
-      Das ist nat\"{u}rlich genau die Summe
+      Of course, this is exactly the sum
       \\[0.2cm]
       \hspace*{1.3cm}
-      $1 + 2 + \cdots + n = \sum\limits_{i=1}^n i$.
+      $\ds 1 + 2 + \cdots + n = \sum\limits_{i=1}^n i$.
       \\[0.2cm]
-      Diese Summe wird der Variablen $s$ zugewiesen.
-\item In der letzten Zeile wird diese Summe ausgegeben.
+      This sum is then assigned to the variable \texttt{s}.
+\item The last line prints this variable together with some text.
 \end{enumerate}
-Als n\"{a}chstes betrachten wir das in Abbildung \ref{fig:sum-recursive.stlx} auf Seite
-\pageref{fig:sum-recursive.stlx} gezeigte Programm 
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/sum-recursive.stlx}{\texttt{sum-recursive.stlx}}, 
-das die Summe $\sum\limits_{i=0}^n i$ mit Hilfe einer Rekursion berechnet.
+The program
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/sum-recursive.stlx}{\texttt{sum-recursive.stlx}},
+which is shown in Figure \ref{fig:sum-recursive.stlx} on page \pageref{fig:sum-recursive.stlx}
+computes the sum $\sum\limits_{i=0}^n i$ recursively.
 
 \begin{figure}[!ht]
   \centering
@@ -242,7 +254,7 @@ das die Summe $\sum\limits_{i=0}^n i$ mit Hilfe einer Rekursion berechnet.
         }
     };
     
-    n     := read(("Zahl eingeben: "); 
+    n     := read("Zahl eingeben: "); 
     total := sum(n);
     print("Sum 0 + 1 + 2 + ... + ", n, " = ", total);
 \end{Verbatim} 
@@ -252,18 +264,14 @@ das die Summe $\sum\limits_{i=0}^n i$ mit Hilfe einer Rekursion berechnet.
 \end{figure} 
 
 \begin{enumerate}
-\item Zeile 1 bis Zeile 7 enthalten die Definition der Prozedur \texttt{sum}.  Die 
-      Definition einer Prozedur wird in \textsc{SetlX} durch das Schl\"{u}sselwort
-      ``\texttt{procedure}'' eingeleitet.  Hinter diesem Schl\"{u}sselwort 
-      folgt zun\"{a}chst eine \"{o}ffnende Klammer ``\texttt{(}'', dann
-      eine Liste von Parametern, welche durch ``\texttt{,}'' voneinander getrennt sind, 
-      und danach  eine schlie\ss{}enden Klammer ``\texttt{)}''.
-      Darauf folgt der Rumpf der Prozedur, der, genau wie in der Sprache \texttt{C},
-      durch die Klammern ``\texttt{\{}'' und
-      ``\texttt{\}}'' begrenzt wird.  Im Allgemeinen besteht der Rumpf aus einer
-      Liste von Kommandos.  In unserem Fall haben wir hier nur ein einziges Kommando.
-      Dieses Kommando ist allerdings ein zusammengesetztes Kommando und zwar eine
-      Fallunterscheidung.  Die allgemeine Form einer Fallunterscheidung ist wie folgt:
+\item The first seven lines define the procedure \texttt{sum}.  In \textsc{SetlX}, the definition of
+      a procedure is started with the key word ``\texttt{procedure}''.  The keyword is followed by
+      the list of arguments.  These arguments are separated by the character  ``\texttt{,}'' and
+      are enclosed in parenthesis.
+      As in the programming language \texttt{C}, the body of the procedure is enclosed with the curly braces
+      ``\texttt{\{}'' and ``\texttt{\}}''.  In general, the body of a procedure consists of a list
+      of commands.  In Figure \ref{fig:sum-recursive.stlx} there is only a single command.  This
+      command is a case distinction.  The general form of a case distinction is as follows:
 
       \begin{Verbatim}[ codes         = {\catcode`_=8\catcode`^=7},
                         frame         = lines, 
@@ -275,72 +283,70 @@ das die Summe $\sum\limits_{i=0}^n i$ mit Hilfe einer Rekursion berechnet.
                         xrightmargin  = 0.8cm,
                         commandchars  = \\\{\}
                       ]
-        \textbf{if (} \textsl{test} \textbf{) \{}
+        if (\textsl{test}) \{
             \textsl{body}\(_1\)
-        \textbf{\} else \{}
+        \} else \{
             \textsl{body}\(_2\)
-        \textbf{\}}
+        \}
       \end{Verbatim}
       \vspace*{-0.1cm}
-      Eine solche  Fallunterscheidung wird dann wie folgt ausgewertet:
+      A case distinction of this form is evaluated as follows:
       \begin{enumerate}
-      \item Zun\"{a}chst wird der Ausdruck \textsl{test} evaluiert.  Dabei
-            muss sich entweder der Wert ``\texttt{true}'' oder ``\texttt{false}'' ergeben.
-      \item Falls sich ``\texttt{true}'' ergibt, werden anschlie\ss{}end die Kommandos
-            in  \textsl{body}$_1$ ausgef\"{u}hrt.  Dabei ist \textsl{body}$_1$ 
-            eine Liste von Kommandos.
-      \item Andernfalls werden die Kommandos in der Liste \textsl{body}$_2$ ausgef\"{u}hrt.
+      \item First, the expression \textsl{test} is evaluated.  The evaluation of \textsl{test} must
+            either return the value ``\texttt{true}'' or ``\texttt{false}''.
+      \item If \textsl{test} evaluates as  ``\texttt{true}'' then the statements in
+            \textsl{body}$_1$ are executed.  Here,  \textsl{body}$_1$ is a list of statements.
+      \item Otherwise, the statements in \textsl{body}$_2$ are executed.
       \end{enumerate}
-      \textbf{Beachten Sie} hier die folgenden beiden \underline{Unterschiede} zur Sprache \texttt{C}:
+      \textbf{Note} the following \underline{differences} with respect to the programming language \texttt{C}:
       \begin{enumerate}
-      \item Bei dem \texttt{if}-Befehl m\"{u}ssen Sie auch dann geschweifte Klammern
-            verwenden, wenn $\textsl{body}_1$ und $\textsl{body}_2$ nur aus einem einzigen
-            Befehl bestehen.  
-      \item Die Definition der Prozedur muss durch ein Semikolon abgeschlossen werden.
-      \end{enumerate}
-      
-\item Nach der Definition der Prozedur \texttt{sum}  wird in Zeile 9 ein Wert 
-      in die Variable \texttt{n} eingelesen.
-\item Dann wird in Zeile 10 f\"{u}r den eben eingelesenen Wert von \texttt{n} die oben definierte Prozedur
-      \texttt{sum} aufgerufen.  
-
-      Zus\"{a}tzlich enth\"{a}lt Zeile 10 eine Zuweisung: Der Wert, den der Prozedur-Aufruf
-      \texttt{sum(n)} zur\"{u}ck liefert, wird in die Variable \texttt{total}, die auf der
-      linken Seite des \emph{Zuweisungs-Operators} ``\texttt{:=}'' steht, geschrieben.
-\item Anschlie\ss{}end wird das berechnete Ergebnis durch einen \texttt{print}-Befehl ausgegeben.
+      \item In \textsc{SetlX}, we have to enclose  $\textsl{body}_1$ and $\textsl{body}_2$ in curly
+            braces even if they contain only a single statement.
+      \item The definition of the procedure has to be terminated with the character ``\texttt{;}''.
+            The reason is that syntactically the definition of the procedure is part of an
+            assignment and every assignment ends with a semicolon.  In case that we do not intend to
+            assign the procedure to a name, for example if a procedure is used as an argument to
+            another procedure, then the procedure is not terminated with a ``\texttt{;}''.
+      \end{enumerate}  
+\item After defining the procedure \texttt{sum}, line 9 reads a number that is assigned to the variable \texttt{n}.
+\item Next, line 10 calls the procedure \texttt{sum} for the given value of \texttt{n}. 
+      This value is then assigned to the  variable \texttt{total}.
+\item Finally, the result is printed.
 \end{enumerate}
-Die Prozedur \texttt{sum} in dem obigen Beispiel ist \emph{rekursiv}, d.h.~sie ruft sich
-selber auf.  Die Logik, die hinter der Implementierung steht, l\"{a}sst sich am einfachsten
-durch die beiden folgenden bedingten Gleichungen erfassen:
+The procedure \texttt{sum} is an example of a
+\href{https://en.wikipedia.org/wiki/Recursion_(computer_science)}{\emph{recursive function}},
+i.e.~the function \texttt{sum} calls itself.  The logic of this recursion is captured by the
+following equations:
 \begin{enumerate}
-\item $\textsl{sum}(0) = 0$,
-\item $n > 0 \rightarrow \textsl{sum}(n) = sum(n-1) + n$.
+\item $\texttt{sum}(0) = 0$,
+\item $n > 0 \rightarrow \texttt{sum}(n) = \texttt{sum}(n-1) + n$.
 \end{enumerate}
-Die Korrektheit dieser Gleichungen wird unmittelbar klar, wenn wir f\"{u}r $\textsl{sum}(n)$
-die Definition
+These equations become evident if we substitute the definition
 \\[0.2cm]
 \hspace*{1.3cm}
-$\textsl{sum}(n)= \sum\limits_{i=0}^n i$ 
+$\ds \texttt{sum}(n)= \sum\limits_{i=0}^n i$ 
 \\[0.2cm]
-einsetzen, denn offenbar gilt:
+in these equations, since we have:
 \begin{enumerate}
-\item $\textsl{sum}(0)= \sum\limits_{i=0}^0 i = 0$,
-\item $\textsl{sum}(n)= \sum\limits_{i=0}^n i = \left(\sum\limits_{i=0}^{n-1} i\right) + n = \textsl{sum}(n-1) + n$. 
+\item $\ds \texttt{sum}(0)= \sum\limits_{i=0}^0 i = 0$,
+\item $\ds \texttt{sum}(n)= \sum\limits_{i=0}^n i = \left(\sum\limits_{i=0}^{n-1} i\right) + n = \texttt{sum}(n-1) + n$. 
 
 \end{enumerate}
-Die erste Gleichung behandelt den Fall, dass die Prozedur sich nicht selbst
-aufruft.  Einen solchen Fall muss es in jeder rekursiv definierten Prozedur geben, denn
-sonst w\"{u}rde die Prozedur in einer Endlos-Schleife stecken bleiben. 
+The first equation deals with the case that the procedure \texttt{sum} does not call itself.  This
+case is called the \emph{base case}.  Every recursive function must have a base case, for otherwise
+the recursion would never stop.
 
-\section{Darstellung von Mengen}
-Der wichtigste Unterschied zwischen der Sprache \textsc{SetlX} und der Sprache \texttt{C}
-besteht darin, dass \textsc{SetlX} die Verwendung von Mengen und Listen unmittelbar unterst\"{u}tzt.
-Um zu zeigen, wie wir in \textsc{SetlX} mit Mengen umgehen k\"{o}nnen, zeigen wir ein
- einfaches Programm, das Vereinigung, Schnitt und
-Differenz zweier Mengen berechnet.   Abbildung \ref{fig:simple.stlx} zeigt die Datei
+
+\section{Sets in \setl}
+The most prominent difference between the programming language \setl\ and the programming language
+\texttt{C} is the fact that  \textsc{SetlX} has language support for both sets and lists.
+In order to demonstrate how sets are supported in \textsc{SetlX} we present a simple program that
+shows how to compute the union, the intersection, and the difference of two sets.  Furthermore, the
+program shows how to compute the \href{https://en.wikipedia.org/wiki/Power_set}{power set} of a
+given set and it shows how to compare sets.  Figure \ref{fig:simple.stlx} on page
+\pageref{fig:simple.stlx} shows the file
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/simple.stlx}{\texttt{simple.stlx}}.  
-Das in dieser Abbildung gezeigte Programm zeigt die Verwendung der
-elementaren Mengen-Operatoren in \textsc{SetlX}.
+We discuss it line by line.
 
 \begin{figure}[!ht]
   \centering
@@ -356,41 +362,47 @@ elementaren Mengen-Operatoren in \textsc{SetlX}.
                 ]
     a := \{ 1, 2, 3 \};
     b := \{ 2, 3, 4 \};
-    // \emph{Berechnung der Vereinigungs-Menge} a $\cup$ b 
+    // compute the union             a $\cup$ b 
     c := a + b;
     print(a, " + ", b, " = ", c);
-    // \emph{Berechnung der Schnitt-Menge}      a $\cap$ b
+    // compute the intersection      a $\cap$ b
     c := a * b;
     print(a, " * ", b, " = ", c);
-    // \emph{Berechnung der Mengen-Differenz}   a $\backslash$ b
+    // compute the set difference    a $\backslash$ b
     c := a - b;
     print(a, " - ", b, " = ", c);
-    // \emph{Berechnung der Potenz-Menge}      $\displaystyle 2^a$
+    // compute the power set        $\displaystyle 2^\texttt{a}$
     c := 2 ** a;
     print("2 ** ", a, " = ", c);
-    // \emph{\"{U}berpr\"{u}fung einer Teilmengen-Beziehung}  a $\subseteq$ b
+    // test the subset relation      a $\subseteq$ b
     print("(", a, " <= ", b, ") = ", (a <= b)); 
-    // \emph{Testen, ob} 1 $\in$ a gilt
+    // test, whether 1 $\in$ a
     print("1 in ", a, " = ", 1 in a);
+    // compute the cartesian product
+    c := a >< b;
+    print(a, " >< ", b, " = ", c);
 \end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{Berechnung von $\cup$, $\cap$, $\backslash$ und Potenz-Menge}
   \label{fig:simple.stlx}
 \end{figure} %$
 
-\noindent
-In Zeile 1 und 2 sehen wir, dass wir Mengen ganz einfach durch explizite Aufz\"{a}hlung ihrer
-Argumente angeben k\"{o}nnen.  In den Zeilen 4, 7 und 10 berechnen wir dann nacheinander 
-Vereinigung, Schnitt und Differenz dieser Mengen.  Hier ist zu beachten, dass daf\"{u}r
-in \textsc{SetlX} die Operatoren ``\texttt{+}'', ``\texttt{*}'', ``\texttt{-}''
-verwendet werden.  
-In Zeile 13 berechnen wir die Potenz-Menge mit Hilfe des Operators ``\texttt{**}''.
-Weiter \"{u}berpr\"{u}fen wir in Zeile 17 mit dem Operator ``\texttt{<=}'', 
-ob \texttt{a} eine Teilmenge von \texttt{b} ist.  Schlie\ss{}lich testen wir in Zeile 18 mit Hilfe des
-Operators ``\texttt{in}'', ob die Zahl 1 ein Element der oben definierten Menge \texttt{a} ist.
+\begin{enumerate}
+\item The first two lines show that sets can be defined as explicit enumerations of their elements.
+\item Line 4, 7, and 10 compute the union, the intersection, and the set difference of the sets
+      \texttt{a} and \texttt{b} respectively.
 
-F\"{u}hren wir dieses Programm aus, so
-erhalten wir die folgende Ausgabe:
+      Hence, the mathematical operator ``$\cup$'' corresponds to ``\texttt{+}'', ``$\cap$''
+      corresponds to ``\texttt{*}'', while ``$\backslash$'' corresponds to ``\texttt{-}''.
+\item LIne 13 computes the \href{https://en.wikipedia.org/wiki/Power_set}{power set} of the set
+      \texttt{a}.
+\item Line 16 checks whether \texttt{a} is a subset of \texttt{b}.
+\item Line 18 checks whether the number \texttt{1} is an element of the set \texttt{a}.
+\item Line 20 computes the \href{https://en.wikipedia.org/wiki/Cartesian_product}{cartesian product}
+      of \texttt{a} and \texttt{b}.  The set operator ``$\times$'' is translated into the operator
+      ``\texttt{><}'' in \setl.
+\end{enumerate}
+If we execute this program, the following results are obtained:
 \begin{verbatim}
     {1, 2, 3} + {2, 3, 4} = {1, 2, 3, 4}
     {1, 2, 3} * {2, 3, 4} = {2, 3}
@@ -398,62 +410,71 @@ erhalten wir die folgende Ausgabe:
     2 ** {1, 2, 3} = {{}, {1}, {1, 2}, {1, 2, 3}, {1, 3}, {2}, {2, 3}, {3}}
     ({1, 2, 3} <= {2, 3, 4}) = false
     1 in {1, 2, 3} = true
-\end{verbatim}
-Um interessantere Programme zeigen zu k\"{o}nnen, stellen wir jetzt weitere
-M\"{o}glichkeiten vor, mit denen wir in \textsc{SetlX} Mengen definieren k\"{o}nnen.
+    {1, 2, 3} >< {2, 3, 4} = 
+        {[1, 2], [1, 3], [1, 4], [2, 2], [2, 3], [2, 4], [3, 2], [3, 3], [3, 4]}
 
-\subsubsection{Definition von Mengen durch arithmetische Aufz\"{a}hlung}
-In dem letzten Beispiel hatten wir Mengen durch explizite Aufz\"{a}hlung definiert.  Das ist
-bei gro\ss{}en Mengen viel zu m\"{u}hsam.  Eine Alternative ist daher die Definition einer Menge
-durch eine \emph{arithmetische Aufz\"{a}hlung}.  Wir betrachten zun\"{a}chst ein Beispiel: 
+\end{verbatim}
+In order to be able to present more interesting programs, we present a number of ways to define
+complex sets in  \textsc{SetlX}.
+
+\subsubsection{Defining Sets as Arithmetic Progressions}
+In the previous example we have defined sets as explicit enumerations of their elements.  Of course,
+this approach is much to tedious when working with sets containing large numbers of elements.  An
+alternative way is to define a set as an arithmetic progression.  Let us consider an example.  The assignment
 \begin{verbatim}
         a := { 1 .. 100 };
 \end{verbatim}
-Die Menge, die hier der Variablen \texttt{a} zugewiesen wird, ist die Menge aller
-nat\"{u}rlichen Zahlen von 1 bis 100.  Die allgemeine Form einer solchen Definition ist \\[0.2cm]
-\hspace*{1.3cm} \texttt{a := \{ \textsl{start} .. \textsl{stop} \};} \\[0.2cm]
-Mit dieser Definition w\"{u}rde \texttt{a} die Menge aller ganzen Zahlen von
-\textsl{start} bis \textsl{stop} zugewiesen, formal gilt \\[0.2cm]
-\hspace*{1.3cm} $\texttt{a} = \{ n \in \mathbb{Z} \mid \textsl{start} \leq n \wedge n \leq\textsl{stop} \}$. \\[0.2cm]
-Es gibt noch eine Variante der arithmetischen Aufz\"{a}hlung, die wir ebenfalls durch ein
-Beispiel einf\"{u}hren. 
+defines \texttt{a} as the set of all positive natural numbers that are less or equal $100$.
+The general form of an arithmetic progression is
+\\[0.2cm]
+\hspace*{1.3cm} 
+\texttt{a := \{ \textsl{start} .. \textsl{stop} \};} 
+\\[0.2cm]
+This definition assigns the set of all integer numbers from \textsl{start} up to and including
+\textsl{stop} to the variable \texttt{a}, i.e.~we have
+ \\[0.2cm]
+\hspace*{1.3cm} 
+$\texttt{a} = \{ n \in \mathbb{Z} \mid \textsl{start} \leq n \wedge n \leq\textsl{stop} \}$. 
+\\[0.2cm]
+We can define arithmetic progressions with a step size different from $1$.  For example,
+the assignment
 \begin{verbatim}
         a := { 1, 3 .. 100 };
 \end{verbatim}
-Die Menge, die hier der Variablen \texttt{a} zugewiesen wird, ist die Menge aller
-ungeraden nat\"{u}rlichen Zahlen von 1 bis 100.  Die Zahl 100 liegt nat\"{u}rlich nicht
-in dieser Menge, denn sie ist ja gerade.
-Die allgemeine Form einer solchen Definition ist \\[0.2cm]
-\hspace*{1.3cm} 
-\texttt{a := \{ \textsl{start}, \textsl{second} .. \textsl{stop} \}} \\[0.2cm]
-Definieren wir $\textsl{step} = \textsl{second} - \textsl{start}$ und ist \textsl{step} positiv, so l\"{a}sst sich
-diese Menge formal wie folgt definieren: 
+assigns the set of all odd natural numbers less than or equal to $100$ to \texttt{a}.
+Of course, the number $100$ is not part of this set as $100$ is an even number.
+The general form of this kind of progression is
 \\[0.2cm]
 \hspace*{1.3cm} 
-$\texttt{a} = \{ \textsl{start} + n \cdot \textsl{step} \mid n \in \mathbb{N}_0 \wedge \textsl{start} + n \cdot \textsl{step} \leq\textsl{stop} \}$. 
-\\[0.2cm]
-Beachten Sie, dass $\textsl{stop}$ nicht unbedingt ein Element der Menge 
-\\[0.2cm]
-\hspace*{1.3cm}
 \texttt{a := \{ \textsl{start}, \textsl{second} .. \textsl{stop} \}} 
 \\[0.2cm]
-ist.  Beispielsweise gilt
+If we define $\textsl{step} = \textsl{second} - \textsl{start}$ and if, furthermore,  \textsl{step}
+is positive, then this set can be written as follows:
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\texttt{a} = \{ \textsl{start} + n \cdot \textsl{step} \mid n \in \mathbb{Z} \wedge \textsl{start} + n \cdot \textsl{step} \leq\textsl{stop} \}$. 
+\\[0.2cm]
+\textbf{Note} that  $\textsl{stop}$ does not have to be an element of the set
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\{} \textsl{start}\texttt{,} \textsl{second} \texttt{..} \textsl{stop} \texttt{\}}.
+\\[0.2cm]
+For example, we have
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{\{ 1, 3 .. 6 \} = \{ 1, 3, 5 \}}.
 
 
-\subsubsection{Definition von Mengen durch Iteratoren}
-Eine weitere M\"{o}glichkeit, Mengen zu definieren, ist durch die Verwendung von
-\emph{Iteratoren} gegeben.  Wir geben zun\"{a}chst ein einfaches Beispiel: 
+\subsubsection{Defining Sets via Iterators}
+We can also define sets via \emph{iterators}.  Consider the following example:
 \\[0.2cm]
 \hspace*{1.3cm} 
 \texttt{p := \{ n * m : n in \{2..10\}, m in \{2..10\} \};} 
 \\[0.2cm]
-Nach dieser Zuweisung enth\"{a}lt \texttt{p} die Menge aller \emph{nicht-trivialen} Produkte, deren
-Faktoren $\leq$ 10 sind.  (Ein Produkt der Form $a \cdot b$ hei\ss{}t dabei \emph{trivial} genau
-dann, wenn einer der Faktoren $a$ oder $b$ den Wert $1$ hat.)
-In der Schreibweise der Mathematik  gilt f\"{u}r die oben definierte Menge \texttt{p}: 
+After this assignment,  \texttt{p} is the set of all \emph{non-trivial} products that have both factors
+less than or equal to 10.  (A product of the form $a \cdot b$ is called \emph{trivial} if and only if
+either of the factors  $a$ or $b$ is equal to $1$.)
+A mathematical notation for the set  \texttt{p} is as follows:
 \\[0.2cm]
 \hspace*{1.3cm} 
 $\mathtt{p} = \bigl\{ n \cdot m \mid n \in \mathbb{N} \wedge m \in \mathbb{N} \wedge 
@@ -461,17 +482,17 @@ $\mathtt{p} = \bigl\{ n \cdot m \mid n \in \mathbb{N} \wedge m \in \mathbb{N} \w
               \bigl\}
 $. 
 \\[0.2cm]
-Wie ausdruckstark Iteratoren sind, l\"{a}sst sich an dem Programm 
+Iterators can be quite useful.  For example, consider the program 
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-difference.stlx}{\texttt{primes-difference.stlx}}
-erkennen, das in Abbildung \ref{fig:primes-sieve.stlx} auf Seite \pageref{fig:primes-sieve.stlx}
-gezeigt ist.  Das Programm berechnet die Menge der Primzahlen bis zu einer
-vorgegebenen Gr\"{o}\ss{}e $n$ und ist so kurz wie eindrucksvoll.  Die zugrunde liegende
-Idee ist, dass eine Zahl genau dann eine Primzahl ist, wenn Sie von 1
-verschieden ist und sich nicht als Produkt zweier von 1 verschiedener Zahlen
-schreiben l\"{a}sst.  Um also die Menge der Primzahlen kleiner gleich $n$ zu
-berechnen, ziehen wir einfach von der Menge  $\{ 2, \cdots, n \}$ die Menge aller Produkte
-ab, denn dann bleiben genau die Primzahlen \"{u}brig.   Diese Rechnung wird in Zeile 2 des Programms
-durchgef\"{u}hrt.  
+that is shown in Figure \ref{fig:primes-sieve.stlx} on page \pageref{fig:primes-sieve.stlx}.
+This program computes the set of all \href{https://en.wikipedia.org/wiki/Prime_number}{prime
+  numbers} less than \texttt{n}.  The underlying idea is that 
+a number is prime iff\footnote{
+  Henceforth, the word ``iff'' is used as an abbreviation for ``if and only if''.
+}  
+it can not be written as a non-trivial product.  Hence, if we take the set of all numbers less than
+or equal to \texttt{n} and subtract the set of all non-trivial products from this set, then the
+remaining numbers must be prime.
 
 
 \begin{figure}[!ht]
@@ -493,61 +514,60 @@ durchgef\"{u}hrt.
   \label{fig:primes-sieve.stlx}
 \end{figure} %$
 
-Die allgemeine Form der Definition eine Menge mit Iteratoren ist durch den Ausdruck
+The general form of the definition of set via iterators is given as
 \\[0.2cm]
 \hspace*{1.3cm} 
-$\{ \textsl{expr} : x_1 \;\mathtt{in}\; S_1,\; \cdots,\; x_n \;\mathtt{in}\; S_n \}$ 
+$\{ \textsl{expr} : x_1 \;\mathtt{in}\; S_1,\; \cdots,\; x_n \;\mathtt{in}\; S_n \}$ .
 \\[0.2cm]
-gegeben.
-Hierbei ist $\textsl{expr}$ ein Term, in dem die Variablen $x_1$ bis $x_n$
-auftreten.  Weiterhin sind
-$S_1$ bis $S_n$ Ausdr\"{u}cke, die bei ihrer Auswertung Mengen ergeben.  Die
-Ausdr\"{u}cke ``\texttt{$x_i$ in $S_i$}'' werden dabei als \emph{Iteratoren} bezeichnet,
-weil die Variablen $x_i$ \"{u}ber alle Werte der entsprechenden Menge $S_i$ laufen
-(wir  sagen auch: \emph{iterieren}).
-Die mathematische Interpretation der obigen Menge ist dann durch \\[0.2cm]
+Here,  $\textsl{expr}$ is a term that makes use of the variables $x_1$, $\cdots$, $x_n$.  Furthermore,
+$S_1$, $\cdots$, $S_n$ are expressions that return sets (or lists) when they are evaluated.
+Here, an expression of the form ``\texttt{$x_i$ in $S_i$}'' is called an  \emph{iterator} since
+the variables $x_i$ \emph{iterate} over the different elements of the sets $S_i$.
+The mathematical interpretation of the expression given above is then given as
+\\[0.2cm]
 \hspace*{1.3cm} 
-$\bigl\{ \textsl{expr} \mid x_1 \in S_1 \wedge \cdots \wedge x_n \in S_n \bigr\}$ 
+$\bigl\{ \textsl{expr} \mid x_1 \in S_1 \wedge \cdots \wedge x_n \in S_n \bigr\}$.
 \\[0.2cm]
-gegeben.  Die Definition einer Menge \"{u}ber Iteratoren entspricht  der
-Definition einer Menge als Bild-Menge.
+Hence, the definition of a set via iterators is the same as the definition of a set as an image set
+in set theory.  
 
-Es ist in \textsc{SetlX} auch m\"{o}glich, das \emph{Auswahl-Prinzip} zu verwenden.  Dazu
-k\"{o}nnen wir Iteratoren mit einer Bedingung verkn\"{u}pfen.   Die allgemeine Syntax
-daf\"{u}r ist: \\[0.2cm]
+In addition to image sets we can use \emph{selection} to define sets.
+The syntax is: 
+\\[0.2cm]
 \hspace*{1.3cm}  
-$\{ \textsl{expr} : x_1 \;\mathtt{in}\; S_1,\; \cdots,\; x_n \;\mathtt{in}\; S_n \mid \textsl{cond}\, \}$. 
+$M := \{ \textsl{expr} : x_1 \;\mathtt{in}\; S_1,\; \cdots,\; x_n \;\mathtt{in}\; S_n \mid \textsl{cond}\, \}$. 
 \\[0.2cm]
-Hierbei haben die Ausdr\"{u}cke  $\textsl{expr}$ und $S_i$ dieselbe
-Bedeutung wie oben und 
- $\textsl{cond}$ ist ein Ausdruck, der von den Variablen $x_1$, $\cdots$, $x_n$ abh\"{a}ngt und dessen Auswertung
-entweder \texttt{true} oder \texttt{false} ergibt.  Die mathematische
-Interpretation der obigen Menge ist dann \\[0.2cm]
+Here,   $\textsl{expr}$ and $S_i$ are interpreted as above and  
+ $\textsl{cond}$ is an expression possibly containing the variables  $x_1$, $\cdots$, $x_n$.  The
+ evaluation of \textsl{cond} has to return either  \texttt{true} or \texttt{false}.  The
+ mathematical interpretation of the expression above is then given as \\[0.2cm]
 \hspace*{1.3cm} 
-$\bigl\{ \textsl{expr} \mid x_1 \in S_1 \wedge \cdots \wedge x_n \in S_n \wedge \textsl{cond} \,\bigr\}$. 
+$M = \bigl\{ \textsl{expr} \mid x_1 \in S_1 \wedge \cdots \wedge x_n \in S_n \wedge \textsl{cond}
+\,\bigr\}$, 
 \\[0.2cm]
-Wir geben ein konkretes Beispiel: Nach der Zuweisung
+i.e.~$M$ is defined as the set of all those values that we get when we substitute those values $x_i$
+form the sets $S_i$ into \textsl{expr} that satisfy \textsl{cond}.  An example will clarify this.
+After the assignment
 \begin{alltt}
   \texttt{primes := \{ p : p in  \{2..100\} | \{ x : x in \{1..p\} | p \% x == 0 \} == \{1, p\} \};}
 \end{alltt}
- enth\"{a}lt \texttt{primes} die Menge aller Primzahlen, die
-kleiner oder gleich 100 sind.  Die der obigen Berechnung zugrunde liegende Idee
-besteht darin, dass eine Zahl genau dann eine Primzahl ist, wenn Sie nur durch 1
-und sich selbst teilbar ist.  Um festzustellen, ob eine Zahl $p$ durch eine
-andere Zahl $x$ teilbar ist, k\"{o}nnen wir in \textsc{SetlX} den Operator
-\texttt{\%} verwenden: Der Ausdruck $p \;\texttt{\%}\; x$ berechnet den Rest,
-der \"{u}brig bleibt, wenn Sie die Zahl $p$ durch $x$ teilen.  
-Eine Zahl $p$ ist also genau dann durch eine andere Zahl $x$ teilbar, wenn der
-Rest $0$ ist, wenn also  $p \;\texttt{\%}\; x = 0$
-gilt.  Damit liefert \\[0.2cm]
-\hspace*{1.3cm} \texttt{\{ x : x in \{1..p\} | p \% x == 0 \}}
+the variable \texttt{primes} contains the set of all prime numbers that are less than 100.
+The idea is the number \texttt{p} is prime iff 1 and \texttt{p} are the only numbers that divide
+\texttt{p} evenly.  In order to check whether \texttt{p} is evenly dividable by some number
+\texttt{x} we can use the operator \texttt{\%}
+in \setl: The expression \texttt{p \% x}
+computes the rest that is left over after \texttt{p} is divided by \texttt{x}.
+Hence,
 \\[0.2cm]
-genau die Menge aller Teiler von $p$ und $p$ ist eine Primzahl, wenn diese Menge
-nur aus den beiden Zahlen $1$ und $p$ besteht.  Das Programm aus der Datei 
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-slim.stlx}{\texttt{primes-slim.stlx}}, 
-das in Abbildung
-\ref{fig:primes-slim.stlx} auf Seite \pageref{fig:primes-slim.stlx} gezeigt wird, benutzt diese Methode
-zur Berechnung der Primzahlen.
+\hspace*{1.3cm} 
+\texttt{\{ x : x in \{1..p\} | p \% x == 0 \}}
+\\[0.2cm]
+is the set of all those numbers that divide \texttt{p} evenly and \texttt{p} is prime if this set
+only contains the numbers  $1$ and \texttt{p}.  The program
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-slim.stlx}{\texttt{primes-slim.stlx}}
+shown in Figure
+\ref{fig:primes-slim.stlx} on page \pageref{fig:primes-slim.stlx} uses this method to compute prime numbers.
+
 
 \begin{figure}[!ht]
   \centering
@@ -559,23 +579,24 @@ zur Berechnung der Primzahlen.
                   xleftmargin   = 0.4cm,
                   xrightmargin  = 0.4cm
                 ]
-    teiler := procedure(p) {
+    dividers := procedure(p) {
         return { t : t in {1..p} | p % t == 0 };
     };
     n      := 100;
-    primes := { p : p in {2..n} | teiler(p) == {1, p} };
+    primes := { p : p in {2..n} | dividers(p) == {1, p} };
     print(primes);
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Alternatives Programm zur Berechnung der Primzahlen.  \label{fig:primes-slim.stlx}}
-\end{figure} %$
+\caption{Another  program to compute prime numbers.  \label{fig:primes-slim.stlx}}
+\end{figure} 
 
-Zun\"{a}chst haben wir in den Zeilen 1 bis 3 die Funktion $\texttt{teiler}(p)$ definiert, die
-als Ergebnis die Menge der Teiler der Zahl $p$ berechnet.  Die Menge der Primzahlen ist dann die
-Menge der Zahlen $p$, die nur den Teiler $1$ oder $p$ haben.
+In this program we have first defined the procedure \texttt{dividers} that takes a natural number
+\texttt{p} and computes the set of all those natural numbers that divide \texttt{p} evenly.
+Then, the set of prime numbers less than or equal to \texttt{n} is the set of those natural numbers
+\texttt{p} bigger than 1 that are only divided by 1 and themselves.
 
 
-\section{Paare, Relationen und Funktionen}
+\section{Pairs, Relations, and Functions}
 Das geordnete Paar $\langle x, y \rangle$ wird in \textsc{SetlX} in der Form $[x,y]$
 dargestellt, die spitzen Klammern werden also durch eckige Klammern ersetzt.
 Wir hatten im letzten Kapitel gesehen, dass wir eine Menge von Paaren, die
@@ -618,11 +639,6 @@ Das Programm berechnet in Zeile 1 die bin\"{a}re Relation $q$ so, dass $q$ die
 Funktion $x \mapsto x^2$ auf der Menge $\{n\in \mathbb{N} \mid 1 \leq n \wedge n \leq 10 \}$
 repr\"{a}sentiert.  
 
-An dieser Stelle eine Warnung: In \textsc{SetlX} m\"{u}ssen alle Variablen mit einem kleinen
-Buchstaben beginnen!  Normalerweise h\"{a}tte ich die Relation \texttt{q} mit einem gro\ss{}en
-\texttt{Q} bezeichnen wollen, aber das geht nicht, denn alle Namen, die mit einem gro\ss{}en
-Buchstaben beginnen, sind zur Darstellung von \emph{Termen} reserviert.  (Was genau \emph{Terme} in
-\textsc{SetlX} sind, werden wir sp\"{a}ter erkl\"{a}ren.)
 
 In Zeile 2 wird die Relation $q$ an der Stelle $x=5$ so abge\"{a}ndert, dass nun $q(5)$ den Wert
 $7$ hat.   Anschlie\ss{}end werden noch $\textsl{dom}(Q)$ und $\textsl{rng}(Q)$ berechnet.
@@ -1718,7 +1734,7 @@ program line by line.
 \item The remaining cards are defined as the variable  \texttt{rest} in line 5.
 \item Line 6 computes the set of all possible flops.  Since the order of the cards in the flop does
       not matter, we use sets to represent these flops.  However, we have to take care that the flop
-      does contain three \colorbox{red}{different} cards.  Hence, we have to ensure that the three
+      does contain three \colorbox{amethyst}{different} cards.  Hence, we have to ensure that the three
       cards \texttt{k1}, \texttt{k2}, and \texttt{k3} that make up the flop satisfy the inequalities 
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -2428,7 +2444,7 @@ worden ist.
 \end{enumerate}
 
 An dieser Stelle fragen Sie sich vielleicht, wie Terme ausgewertet werden.  Die Antwort ist:
-\colorbox{red}{Gar nicht!}  Terme werden nur dazu benutzt, Daten darzustellen.  Terme sind also bereits 
+\colorbox{amethyst}{Gar nicht!}  Terme werden nur dazu benutzt, Daten darzustellen.  Terme sind also bereits 
 Werte  genauso wie auch Zahlen, Strings, Mengen oder Listen als Werte aufgefasst werden.
 Genausowenig wie Sie die Zahl \texttt{42} auswerten m\"{u}ssen, m\"{u}ssen Sie einen Term auswerten.
 
