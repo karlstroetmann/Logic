@@ -1,4 +1,4 @@
-\chapter{The programming Language \textsc{SetlX}}
+`\chapter{The Programming Language \textsc{SetlX}}
 The introductory lecture on mathematics starts with set theory.  In my experience, the notions of
 set theory are difficult to master for many students because the concepts introduced in set theory
 are quite abstract.  Fortunately, there is a programming language that is directly based on set
@@ -512,7 +512,7 @@ remaining numbers must be prime.
 \vspace*{-0.3cm}
 \caption{Programm zur Berechnung der Primzahlen bis $n$.}
   \label{fig:primes-sieve.stlx}
-\end{figure} %$
+\end{figure} 
 
 The general form of the definition of set via iterators is given as
 \\[0.2cm]
@@ -597,20 +597,22 @@ Then, the set of prime numbers less than or equal to \texttt{n} is the set of th
 
 
 \section{Pairs, Relations, and Functions}
-Das geordnete Paar $\langle x, y \rangle$ wird in \textsc{SetlX} in der Form $[x,y]$
-dargestellt, die spitzen Klammern werden also durch eckige Klammern ersetzt.
-Wir hatten im letzten Kapitel gesehen, dass wir eine Menge von Paaren, die
-sowohl links-total als auch rechts-eindeutig ist, auch als Funktion auffassen
-k\"{o}nnen.  Ist $R$ eine solche Menge und $x \in \textsl{dom}(R)$, so bezeichnet in
-\textsc{SetlX} der Ausdruck $R(x)$  das eindeutig bestimmte Element $y$, f\"{u}r das
-$\langle x, y \rangle \in R$ gilt.  Das Programm 
+In \setlx\ the ordered pair $\langle x, y \rangle$ is represented as a list with two elements,
+i.e.~it is written as $[x,y]$, so in order to represent an ordered pair in \setlx\ we just have to
+exchange the angle brackets ``$\langle$'' and ``$\rangle$'' with the square brackets ``\texttt{[}''
+and ``\texttt{]}''.  In the
+\href{https://github.com/karlstroetmann/Lineare-Algebra/blob/master/Script/lineare-algebra.pdf}{lecture
+  notes on mathematics}  it is shown that a relation that is both left-total and 
+right-unique can be regarded as a function and hence is called a \emph{functional relation}.  If $R$
+is a functional relation and $x \in \textsl{dom}(R)$, then in \textsc{SetlX} the expression  $R[x]$
+denotes the unique element $y$ such that $\langle x, y \rangle \in R$ holds. The program  
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/function.stlx}{\texttt{function.stlx}}
-in Abbildung
-\ref{fig:function.stlx} auf Seite \pageref{fig:function.stlx} zeigt dies konkret.
-Zus\"{a}tzlich zeigt das Programm noch, dass in \textsc{SetlX} bei einer bin\"{a}ren
-Relation $\textsl{dom}(R)$ als $\texttt{domain}(R)$ und $\textsl{rng}(R)$ als $\mathtt{range}(R)$ geschrieben wird.
-Au\ss{}erdem sehen wir in Zeile 2, dass wir den Wert einer funktionalen Relation durch eine
-Zuweisung \"{a}ndern k\"{o}nnen.
+in Figure \ref{fig:function.stlx} on page \pageref{fig:function.stlx} shows this more concretely.
+Furthermore, the program shows that for a binary relation $R$, in \setlx\ we write
+$\textsl{dom}(R)$ as $\texttt{domain}(R)$ and $\textsl{rng}(R)$ as $\mathtt{range}(R)$.
+Furthermore, line 2 shows that we can even change the y-value that is associated with a given
+x-value in a relation.
+
 
 \begin{figure}[!ht]
   \centering
@@ -622,44 +624,43 @@ Zuweisung \"{a}ndern k\"{o}nnen.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    q := { [n, n**2] : n in {1..10} };
-    q[5] := 7;
-    print( "q[3]   = ", q[3]      );
-    print( "q[5]   = ", q[5]      );
-    print( "dom(q) = ", domain(q) );
-    print( "rng(q) = ", range(q)  );
-    print( "q = ", q );
+    Q := { [n, n**2] : n in {1..10} };
+    Q[5] := 7;
+    print( "Q[3]   = $Q[3]$"      );
+    print( "Q[5]   = $Q[5]$"      );
+    print( "dom(Q) = $domain(Q)$" );
+    print( "rng(Q) = $range(Q)$"  );
+    print( "Q      = $Q$"         );
+
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Rechnen mit bin\"{a}ren Relationen.}  \label{fig:function.stlx}
-\end{figure} %$
+\caption{Exercising a functional binary relation.}  \label{fig:function.stlx}
+\end{figure} 
+As a side note, Figure \ref{fig:function.stlx} shows that \setlx\ supports \emph{string interpolation}: 
+Inside a string that is enclosed by double quotes, any substring that is enclosed by dollar symbols is
+evaluated as an expression and the substring is then replaced by the result of its evaluation.
 
-\noindent
-Das Programm berechnet in Zeile 1 die bin\"{a}re Relation $q$ so, dass $q$ die
-Funktion $x \mapsto x^2$ auf der Menge $\{n\in \mathbb{N} \mid 1 \leq n \wedge n \leq 10 \}$
-repr\"{a}sentiert.  
-
-
-In Zeile 2 wird die Relation $q$ an der Stelle $x=5$ so abge\"{a}ndert, dass nun $q(5)$ den Wert
-$7$ hat.   Anschlie\ss{}end werden noch $\textsl{dom}(Q)$ und $\textsl{rng}(Q)$ berechnet.
-Das Programm liefert die folgende Ausgabe:
+The relation \texttt{Q} that is computed in line 1 of Figure \ref{fig:function.stlx} represents the
+function $x \mapsto x^2$ on the set $\{ 1, \cdots, 10 \}$.  
+Line 2 changes the relation \texttt{Q} for the argument $x=5$ so that  $\mathtt{Q}[5]$ is
+$7$.   After that, both the domain and the range of \texttt{Q} are computed.
+The program produces the following output:
 \begin{verbatim}
-    q[3]   = 9
-    q[5]   = 7
-    dom(q) = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-    rng(q) = {1, 4, 7, 9, 16, 36, 49, 64, 81, 100}
-    q = {[1, 1], [2, 4], [3, 9], [4, 16], [5, 7], [6, 36], [7, 49], [8, 64], 
-         [9, 81], [10, 100]}
+    Q[3]   = 9
+    Q[5]   = 7
+    dom(Q) = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+    rng(Q) = {1, 4, 7, 9, 16, 36, 49, 64, 81, 100}
+    Q      = {[1, 1], [2, 4], [3, 9], [4, 16], [5, 7], [6, 36], 
+              [7, 49], [8, 64], [9, 81], [10, 100]
+             }
 \end{verbatim}
-
-Es ist naheliegend zu fragen, was bei der Auswertung eines Ausdrucks der Form
-$R(x)$ passiert, wenn die Menge $\{ y \mid \langle x, y \rangle \in R \}$
-entweder leer ist oder aber aus mehr als einem Element besteht. 
-Das Programm 
+It is an  interesting question to ask what happens if we evaluate $R[x]$ but the set 
+ $\{ y \mid \langle x, y \rangle \in R \}$ is either empty or has more than one element.
+The program 
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/buggy-function.stlx}{\texttt{buggy-function.stlx}}
-in Abbildung
-\ref{fig:buggy-function.stlx} auf Seite \pageref{fig:buggy-function.stlx} beantwortet
-diese Frage auf experimentellem Wege.
+shown in Figure
+\ref{fig:buggy-function.stlx} on page \pageref{fig:buggy-function.stlx} provides us with an answer.
+
 
 \begin{figure}[!ht]
   \centering
@@ -671,56 +672,47 @@ diese Frage auf experimentellem Wege.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    r := { [1, 1], [1, 4], [3, 3] };
-    print( "r[1] = ", r[1] );
-    print( "r[2] = ", r[2] );
-    print( "{ r[1], r[2] } = ", { r[1], r[2] } );
-    print( "r{1} = ", r{1} );
-    print( "r{2} = ", r{2} );
+    R := { [1, 1], [1, 4], [3, 3] };
+    print( "R[1] = $R[1]$" );
+    print( "R[2] = $R[2]$" );
+    print( "{ R[1], R[2] } = ${ R[1], R[2] }$" );
+    print( "R{1} = $R{1}$" );
+    print( "R{2} = $R{2}$" );
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Rechnen mit nicht-funktionalen bin\"{a}ren Relationen.}  \label{fig:buggy-function.stlx}
-\end{figure} %$
+\caption{Exercising a non-functional binary relation.}  \label{fig:buggy-function.stlx}
+\end{figure} 
 
-Falls die Menge  $r = \{ y \mid \langle x, y \rangle \in r \}$  entweder leer ist
-oder mehr als eine Element enth\"{a}lt, so ist der Ausdruck $r(x)$ undefiniert.
-Ein solcher Ausdruck wird in \textsc{SetlX} durch den String ``\texttt{om}'' dargestellt.
-Der Versuch, einen undefinierten Wert in eine Menge $M$ einzuf\"{u}gen, \"{a}ndert diese
-Menge nicht, es gibt aber auch keine Fehlermeldung.  Deswegen wird in Zeile 4 f\"{u}r 
-die Menge \texttt{\{ r(1), r(2) \}} einfach die leere Menge ausgegeben.
-
-Will man das Auftreten von undefinierten Werten beim Auswerten einer bin\"{a}ren
-Relation $r$ vermeiden, so gibt es in \textsc{SetlX} die M\"{o}glichkeit, $r\{x\}$ statt
-$r(x)$ zu schreiben, die runden Klammern werden also durch geschweifte Klammern ersetzt.  
-Der Ausdruck $r\{x\}$  ist f\"{u}r eine bin\"{a}re Relation $r$ wie folgt definiert: 
+If the set  $\{ y \mid \langle x, y \rangle \in R \}$ is either empty or contains more than one
+element, the expression $R[x]$ is undefined in \setlx.  Trying to insert an undefined expression
+into a set fails.  Hence, line 4 in Figure \ref{fig:buggy-function.stlx} returns the empty set.
+There is a way to avoid undefined values when working with non-functional binary relations.
+This is done by replacing the square brackets in the expression $R[x]$ with curly brackets, i.e.~we
+have to write $R\{x\}$ instead of $R[x]$.
+For a binary relation $R$, the expression  $R\{x\}$  is defined as follows:
 \\[0.2cm]
 \hspace*{1.3cm}
- $r\{x\} := \{ y \mid \langle x, y \rangle \in r \}$ 
+ $R\{x\} := \{ y \mid \langle x, y \rangle \in R \}$,
 \\[0.2cm]
-Daher liefert das Programm aus Abbildung \ref{fig:buggy-function.stlx} die folgende Ausgabe:
+i.e.~$R\{X\}$ is the set of all values $y$ such that the pair $\langle x, y \rangle$ is in $R$.
+Hence, the program shown in Figure  \ref{fig:buggy-function.stlx} yields the following results:
 \begin{verbatim}
-    r[1] = om
-    r[2] = om
-    { r[1], r[2] } = {}
-    r{1} = {1, 4}
-    r{2} = {}
-
+    R[1] = om
+    R[2] = om
+    { R[1], R[2] } = {}
+    R{1} = {1, 4}
+    R{2} = {}
 \end{verbatim}
 
-\section{Allgemeine Tupel}
-Auch beliebige $n$-Tupel lassen sich in \textsc{SetlX} darstellen.  Diese k\"{o}nnen
-ganz analog zu Mengen definiert werden.  Das geht denkbar einfach: Es m\"{u}ssen nur
-alle geschweiften Klammern der Form ``\texttt{\{}'' und ``\texttt{\}}'' durch
-die entsprechenden eckigen Klammern ``\texttt{[}'' und ``\texttt{]}'' ersetzt
-werden.  Dann k\"{o}nnen Tupel durch explizite Aufz\"{a}hlung, arithmetische Aufz\"{a}hlung, Iteration und das
-Auswahlprinzip in derselben Weise wie Mengen gebildet werden.  In \textsc{SetlX} werden Tupel in
-der Regel als \emph{Listen} bezeichnet.  Das Programm 
+\section{Lists}
+\setlx\ supports the data type of a list.  Lists can be defined similar to sets by replacing the curly brackets
+with square brackets.  Then, we are able to define sets as arithmetic progressions, iterations, or via selection.
+The program 
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-tuple.stlx}{\texttt{primes-tuple.stlx}}
-in Abbildung \ref{fig:primes-tuple.stlx} zeigt, wie wir in \textsc{SetlX} mit Listen arbeiten
-k\"{o}nnen.  Dieses Programm berechnet die Primzahlen nach dem selben 
-Verfahren wir das Programm in Abbildung \ref{fig:primes-slim.stlx} auf Seite
-\pageref{fig:primes-slim.stlx}, benutzt aber Listen sowohl zur Darstellung der Menge der Primzahlen als auch
-zur Darstellung der Menge der Teiler.
+in Figure \ref{fig:primes-tuple.stlx} on page \pageref{fig:primes-tuple.stlx} demonstrates how lists can be
+used instead of sets.  This program computes the prime numbers similar to the program shown in Figure
+\ref{fig:primes-slim.stlx} on page \pageref{fig:primes-slim.stlx} but uses lists instead of sets.
+
 
 \begin{figure}[!ht]
   \centering
@@ -732,20 +724,20 @@ zur Darstellung der Menge der Teiler.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    teiler := procedure(p) {
+    dividers := procedure(p) {
         return [ t : t in [1..p] | p % t == 0 ];
     };
     
     n := 100;
-    primes := [ p : p in [2 .. n] | teiler(p) == [1, p] ];
+    primes := [ p : p in [2 .. n] | dividers(p) == [1, p] ];
     print(primes);
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Berechnung der Primzahlen mit Tupeln.}  
+\caption{Computing prime numbers with lists.}  
 \label{fig:primes-tuple.stlx}
-\end{figure} %$
+\end{figure} 
 
-\section{Spezielle Funktionen und Operatoren auf Mengen}
+\section{Special Functions and Operators on Sets}
 Das Programm 
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/sort.stlx}{\texttt{sort.stlx}}
 in Abbildung \ref{fig:sort.stlx} auf Seite
@@ -1365,7 +1357,7 @@ denn das sind genau die Primzahlen.
 \end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{Berechnung der Primzahlen nach Eratosthenes.}  \label{fig:primes-for.stlx}
-\end{figure} %$
+\end{figure} 
 
 Der Algorithmus aus Abbildung \ref{fig:primes-for.stlx} kann durch die folgende Beobachtungen
 noch verbessert werden: 
