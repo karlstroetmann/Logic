@@ -1,29 +1,28 @@
-reachable := procedure(x, y, r) {
-    p := { [x] };
+reachable := procedure(x, y, R) {
+    P := { [x] };
     while (true) {
-        oldP  := p;
-        p     := p + pathProduct(p, r);
-        found := { l : l in p | l[-1] == y };
-        if (found != {}) {
-            return arb(found);
+        oldP  := P;
+        P     := P + pathProduct(P, R);
+        Found := { l : l in P | l[-1] == y };
+        if (Found != {}) {
+            return arb(Found);
         }
-        if (p == oldP) {
+        if (P == oldP) {
             return;
         }
     }
 };
-pathProduct := procedure(p, q) {
-    return { add(x, y) : x in p, y in q | x[-1] == y[1] && noCycle(x, y) };
+pathProduct := procedure(P, Q) {
+    return { add(x, y) : x in P, y in Q | x[-1] == y[1] && noCycle(x, y) };
 };
-noCycle := procedure(l1, l2) {
-    return #({ x : x in l1 } * { x : x in l2 }) == 1;
+noCycle := procedure(L1, L2) {
+    return #({ x : x in L1 } * { x : x in L2 }) == 1;
 };
 add := procedure(p, q) {
     return p + q[2..];
 };    
-
-r := { [1,2], [2,3], [1,3], [2,4], [5, 1], [4,5] };
-print( "r = ", r );
-p := reachable(1, 5, r);
-print( "p = ", p );
+R := { [1,2], [2,3], [1,3], [2,4], [5, 1], [4,5] };
+print( "R = ", R );
+P := reachable(1, 5, R);
+print( "P = ", P );
 

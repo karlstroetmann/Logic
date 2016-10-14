@@ -1,22 +1,21 @@
 // The procedure call closure(r) computes the transitive closure
 // of the binary relation r.
-transClosure := procedure(r) {
-    t := r;
+transClosure := procedure(R) {
+    T := R;
     while (true) {
-        oldT := t;
-        t    := r + product(r, t);
-        if (t == oldT) {
-            return t;
+        oldT := T;
+        T    := R + product(R, T);
+        if (T == oldT) {
+            return T;
         }
     }
 };
-product := procedure(r1, r2) {
-    return { [x,z] : [x,y] in r1, [y,z] in r2 };
+product := procedure(R1, R2) {
+    return { [x,z] : [x,y] in R1, [y,z] in R2 };
 };
-
-r := { [1,2], [2,3], [1,3], [2,4], [4,5] };
-print( "r = ", r );
-print( "computing transitive closure of r" );
-t := transClosure(r);
-print( "r+ = ", t );
+R := { [1,2], [2,3], [1,3], [2,4], [4,5] };
+print( "R = ", R );
+print( "Computing the transitive closure of R:" );
+T := transClosure(R);
+print( "R+ = ", T );
 

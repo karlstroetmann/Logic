@@ -171,7 +171,7 @@ and print the resulting number.
     print("The sum 1 + 2 + ... + ", n, " is equal to ", s, ".");
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Ein einfaches Programm zur Berechnung der Summe $\sum\limits_{i=1}^n i$.}
+\caption{A simple program to compute $\sum\limits_{i=1}^n i$.}
 \label{fig:sum.stlx}
 \end{figure}
 
@@ -259,7 +259,7 @@ computes the sum $\sum\limits_{i=0}^n i$ recursively.
     print("Sum 0 + 1 + 2 + ... + ", n, " = ", total);
 \end{Verbatim} 
 \vspace*{-0.3cm}
-  \caption{Ein rekursives Programm zur Berechnung der Summe $\sum\limits_{i=0}^ni$.}
+  \caption{A recursive program to compute $\sum\limits_{i=0}^ni$.}
   \label{fig:sum-recursive.stlx}
 \end{figure} 
 
@@ -383,7 +383,7 @@ We discuss it line by line.
     print(a, " >< ", b, " = ", c);
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Berechnung von $\cup$, $\cap$, $\backslash$ und Potenz-Menge}
+\caption{Computation of union, intersection, set differrence, and power set.}
   \label{fig:simple.stlx}
 \end{figure} %$
 
@@ -510,7 +510,7 @@ remaining numbers must be prime.
     print(primes);
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Programm zur Berechnung der Primzahlen bis $n$.}
+\caption{A program to compute prime numbers.}
   \label{fig:primes-sieve.stlx}
 \end{figure} 
 
@@ -587,7 +587,7 @@ shown in Figure
     print(primes);
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Another  program to compute prime numbers.  \label{fig:primes-slim.stlx}}
+\caption{Another program to compute prime numbers.  \label{fig:primes-slim.stlx}}
 \end{figure} 
 
 In this program we have first defined the procedure \texttt{dividers} that takes a natural number
@@ -738,35 +738,31 @@ used instead of sets.  This program computes the prime numbers similar to the pr
 \end{figure} 
 
 \section{Special Functions and Operators on Sets}
-Das Programm 
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/sort.stlx}{\texttt{sort.stlx}}
-in Abbildung \ref{fig:sort.stlx} auf Seite
-\pageref{fig:sort.stlx} zeigt ein einfaches Verfahren
- um eine Liste von nat\"{u}rlichen Zahlen zu sortieren.  
-Der Ausdruck \\[0.2cm]
-\hspace*{1.3cm}
-\texttt{max(s)}
-\\[0.2cm]
-berechnet das gr\"{o}\ss{}te Element der Liste $s$.  
-Damit l\"{a}uft die Variable $n$ in dem Iterator
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{n in [1 .. max(s)]}
-\\[0.2cm]
-dann von 1 bis zur gr\"{o}\ss{}ten in $s$ auftretenden Zahl.  
-Aufgrund der Bedingung ``\texttt{n in s}''
-wird die Zahl $n$ genau dann in die resultierende Liste eingef\"{u}gt, wenn $n$ ein
-Element der Liste $s$ ist.  Da der Iterator 
-\\[0.2cm]
-\hspace*{1.3cm}
-``\texttt{n in [1 .. max(s)]}'' 
-\\[0.2cm]
-die Zahlen der Reihe nach aufz\"{a}hlt, ist das
-Ergebnis eine sortierte Liste, die genau die Zahlen enth\"{a}lt, die Elemente von $s$
-sind.
+This section discusses various functions and operators that can be applied to both sets and lists.
 
-Offensichtlich ist der in der Prozedur $\texttt{sort}()$ implementierte Algorithmus nicht sehr effizient.
-Wir werden sp\"{a}ter noch effizientere Algorithmen diskutieren.
+\subsection{\texttt{max} and \texttt{min}}
+The program
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/sort.stlx}{\texttt{sort.stlx}}
+that is shown in Figure \ref{fig:sort.stlx} on page \pageref{fig:sort.stlx} demonstrates a simple algorithm 
+to sort a list of natural numbers.  The expression \\[0.2cm]
+\hspace*{1.3cm}
+\texttt{max(L)}
+\\[0.2cm]
+computes the biggest element of the list \texttt{L}.  Therefore, the variable \texttt{n} in the iterator
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{n in [0 .. max(L)]}
+\\[0.2cm]
+runs from 0 up to the biggest number occurring in \texttt{L}.  The condition ``\texttt{n in L}''
+ensures that the number \texttt{n} is only inserted into the resulting list if \texttt{n} is an
+element of the list \texttt{L} that is to be sorted.  Since the iterator
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{n in [0 .. max(L)]}
+\\[0.2cm]
+generates the numbers starting from 0 and increasing, the function \texttt{sort} returns a sorted
+list that contains exactly those elements, that are elements of \texttt{L}.  Of course, the
+resulting list will contain every element exactly once, even if it occurs multiple times in \texttt{L}.
 
 \begin{figure}[!ht]
   \centering
@@ -778,51 +774,113 @@ Wir werden sp\"{a}ter noch effizientere Algorithmen diskutieren.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    sort := procedure(s) {
-        return [ n : n in [1 .. max(s)] | n in s ];
+    sort := procedure(L) {
+        return [n : n in [0 .. max(L)] | n in L];
     };
-    s := [ 13, 5, 7, 2, 4 ];
-    print( "sort( ", s, " ) = ", sort(s) );
+    L := [13, 5, 7, 2, 4];
+    print("sort($L$) = ", sort(L));
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Sortieren einer Menge.}  \label{fig:sort.stlx}
+\caption{A simple program to sort a given list.}  \label{fig:sort.stlx}
 \end{figure} %\$
 
-Analog zu der Funktion $\mathtt{max}()$ gibt es noch die Funktion $\texttt{min}()$ die das
-Minimum einer Menge oder Liste berechnet.  
+It should be noted that, in general, the algorithm that is implemented in the procedure \texttt{sort} is not very
+efficient.  We will discuss several more efficient algorithms later.  However, efficiency was not
+the point of this example.  Rather, the point was to introduce the function \texttt{max} via a
+useful application.  Besides \texttt{max}, \setlx\ provides the function \texttt{min} that computes
+the minimum of a list.  Both \texttt{max} and \texttt{min} can also be applied to sets.
 
-Weiterhin k\"{o}nnen die Operatoren ``\texttt{+/}''
-und ``\texttt{*/}'' auf Mengen angewendet werden.  Der Operator  ``\texttt{+/}'' berechnet
-die Summe aller Elemente einer Menge, w\"{a}hrend der Operator ``\texttt{*/}'' das Produkt der
-Elemente berechnet.  Ist die zu Grunde liegende Menge oder Liste leer, so geben diese
-Operatoren ``\texttt{+/}'' als Ergebnis ``\texttt{om}'' zur\"{u}ck.
-Die Operatoren ``\texttt{+/}'' und ``\texttt{*/}'' k\"{o}nnen auch als bin\"{a}re Operatoren
-verwendet werden.  Ein Ausdruck der Form
+\subsection{\texttt{+/} and \texttt{*/}}
+The operators ``\texttt{+/}'' and ``\texttt{*/}'' are unary prefix operators that can be applied to
+either a list or a set.  The expression
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{x +/ s}
+ \texttt{+/ S}
 \\[0.2cm]
-gibt als Ergebnis den Wert $x$ zur\"{u}ck, wenn die Menge $s$ leer ist.  Falls \texttt{s}
-nicht leer ist, liefert der obige Ausdruck die Summe der Elemente der Menge \texttt{s}.
-Ein Ausdruck der Form ``\texttt{x */ s}'' funktioniert analog:  Falls \texttt{s} leer ist,
-wird \texttt{x} zur\"{u}ck gegeben, sonst ist das Ergebnis das Produkt der Elemente aus \texttt{s}.
+computes the sum of all elements of \texttt{S} and, likewise, the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+ \texttt{*/ S}
+\\[0.2cm]
+computes the product of the elements of \texttt{S}.  Hence, we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{+/ \{1, 2, 3, 4\}} = 1 + 2 + 3 + 4$ \quad and \quad $\texttt{*/ \{1, 2, 3, 4\}} = 1 \cdot 2 \cdot 3 \cdot 4$.
+\\[0.2cm]
+If either ``\texttt{+/}'' or ``\texttt{*/}'' is applied to an empty set or an empty list, the result
+is the undefined value ``\texttt{om}''.  To prevent these operators from returning the undefined
+value, the operators can also be used as binary infix operators. For a number \texttt{x} and a set
+or list \texttt{S}, the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{x +/ S}
+\\[0.2cm]
+returns the result \texttt{x} if \texttt{S} is empty.  If \texttt{S} is not empty, the value
+of \texttt{x} is ignored and, instead, the sum of all elements of \texttt{S} is returned.
+An expression of the form 
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{x */ S}
+\\[0.2cm]
+works in a similar way:  If \texttt{S} is empty, \texttt{x} is returned.  Otherwise, the expression
+returns the product of all elements of \texttt{S}.
 
-Als n\"{a}chstes besprechen wir die Funktion
-``\texttt{from}'', mit dem wir ein (nicht n\"{a}her spezifiziertes) Element aus einer
-Menge ausw\"{a}hlen k\"{o}nnen.  Die Syntax ist: 
+\subsection{\texttt{first}, \texttt{last}, \texttt{from}, and \texttt{arb}}
+In \setlx, all sets are ordered.  This is a notable difference from most other programming languages
+that support sets.  Since sets are ordered, it makes sense to have functions that return the first
+or the last element of a set.  This is achieved via the functions \texttt{first} and \texttt{last}.
+Note that \texttt{first} and \texttt{last} are different from \texttt{min} and \texttt{max}.  The
+reason is, that the functions \texttt{min} and \texttt{max} can only be applied to sets that contain
+numbers.  However, the functions \texttt{first} and \texttt{last} can be applied to any set.
+For example, if we define
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{S := \{ "a", "b", "c" \};}
+\\[0.2cm]
+then we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{first(S)} = \texttt{"a"}$ \quad and \quad $\texttt{last(S)} = \texttt{"c"}$.
+\\[0.2cm]
+However, evaluating the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{min(S)}
+\\[0.2cm]
+yields the following error message:
+\begin{verbatim}
+    Error in "min(S)":
+    The set {"a", "b", "c"} is not a set of numbers.
+    
+    Replay: 
+    1.3: min(S) FAILED 
+    1.2: S <~> {"a", "b", "c"}
+    1.1: min <~> procedure(collectionValue) { /* predefined procedure `min' */ }
+\end{verbatim}
+This error message tells us that the function \texttt{min} is only defined for sets of numbers.
+The same holds for the function \texttt{max}.
+
+Another function that can be used to extract elements from a set is the function \texttt{from}.
+This function is called as follows:
 \\[0.2cm]
 \hspace*{1.3cm} 
-$x$ \texttt{:= from(}$s$\texttt{);}
+\texttt{x := from(S);}
 \\[0.2cm]
-Hierbei ist $s$ eine Menge und $x$  eine Variable.  Wird diese Anweisung
-ausgef\"{u}hrt, so wird ein nicht n\"{a}her spezifiziertes Element aus der Menge $s$
-entfernt.  Dieses Element wird dar\"{u}ber hinaus der Variablen $x$ zugewiesen.
-Falls $s$ leer ist, so erh\"{a}lt $x$ den undefinierten Wert ``\texttt{om}'' und
-$s$ bleibt unver\"{a}ndert.  Das Programm 
+Here, \texttt{S} is supposed to be a set, while \texttt{x} is a variable.  If the assignment above
+is executed, the function \texttt{from} takes some element from the set \texttt{S} and assigns it to
+\texttt{x}.   Furthermore, this element is \colorbox{amethyst}{removed} from the set \texttt{S}.
+If \texttt{S} is empty, then the undefined value \texttt{om} is assigned to the variable \texttt{x}
+and \texttt{S} remains empty.  
+
+At this point you might ask: When we call \texttt{form(S)}, how do we
+know which element is taken from \texttt{S}?  The answer is that we don't know which element is
+taken by \texttt{from} and hence our program should work regardless of which element is removed from
+\texttt{S}. The program 
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/from.stlx}{\texttt{from.stlx}}
-in Abbildung \ref{fig:from.stlx} auf Seite
-\pageref{fig:from.stlx} nutzt diese Anweisung um eine Menge elementweise
-auszugeben.  Jedes Element wird dabei in einer eigenen Zeile ausgedruckt.
+in Figure \ref{fig:from.stlx} on page
+\pageref{fig:from.stlx} shows how \texttt{from} can be used to print the elements of a set one by
+one.  Here, every element of \texttt{S} is printed in a separate row.
+
 
 \begin{figure}[!ht]
   \centering
@@ -834,124 +892,138 @@ auszugeben.  Jedes Element wird dabei in einer eigenen Zeile ausgedruckt.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    printSet := procedure(s) {
-        if (s == {}) {
+    printSet := procedure(S) {
+        if (S == {}) {
             return;
         }
-        x := from(s);
+        x := from(S);
         print(x);
-        printSet(s);
+        printSet(S);
     };
-    s := { 13, 5, 7, 2, 4 };
-    printSet(s);
+    S := { 13, 5, 7, 2, 4 };
+    printSet(S);
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Menge elementweise ausdrucken.}  \label{fig:from.stlx}
+\caption{Printing the elements of a set one by one.}  \label{fig:from.stlx}
 \end{figure} 
 
-Neben der Funktion ``\texttt{from}'' gibt es noch die Funktion
-``\texttt{arb}'',  die ein beliebiges Element aus einer Menge ausw\"{a}hlt, die Menge selbst
-aber unver\"{a}ndert l\"{a}sst.  Nach den Befehlen
+In addition to the function \texttt{from}, \setlx\ provides the function \texttt{arb} that takes an
+arbitrary element from a given set.  However, in contrast to \texttt{from}, a call to \texttt{arb}
+does not change the set.  For example, when executing the statements 
 \begin{verbatim}
-    s := { 1, 2 };
-    x := arb(s);
-    print("x = ", x);
-    print("s = ", s);
+    S := {2, 3, 5, 7, 13};
+    x := arb(S);
+    print("x = $x$");
+    print("S = $S$");
 \end{verbatim}
-erhalten wir die folgende Ausgabe:
+we get the following output:
 \begin{verbatim}
     x = 13
-    s = {2, 3, 5, 7, 13}
+    S = {2, 3, 5, 7, 13}
 \end{verbatim}
 
-
-Weiterhin steht f\"{u}r Listen der Operator ``\texttt{+}''
-zur Verf\"{u}gung, mit dem zwei Listen aneinander geh\"{a}ngt werden k\"{o}nnen.
-Au\ss{}erdem  gibt es noch den un\"{a}ren Operator ``\texttt{\#}'',
-der f\"{u}r Mengen und Listen die Anzahl der Elemente berechnet.
-Schlie\ss{}lich kann man Elemente von Listen mit der Schreibweise \\[0.2cm]
-\hspace*{1.3cm} \texttt{$x$ := $t$[$n$];} \\[0.2cm]
-indizieren.  In diesem Fall muss $t$ eine Liste sein, die mindestens die L\"{a}nge
-$n$ hat.  Die obige Anweisung weist der Variablen $x$ dann den Wert des $n$-ten
-Elementes der Liste $t$ zu.  Die obige Zuweisung l\"{a}sst sich auch umdrehen: Mit \\[0.2cm]
-\hspace*{1.3cm} \texttt{$t$[$n$] := $x$;} \\[0.2cm]
-wird die Liste $t$ so abge\"{a}ndert, dass das $n$-te Element danach den Wert $x$ hat.
-Im Gegensatz zu der Sprache \texttt{C} werden in \textsc{SetlX} Listen mit 1 beginnend
-indiziert, falls wir die beiden Befehle
-\\[0.2cm]
-\hspace*{1.3cm} \texttt{l := [ 1, 2, 3 ];} \\
-\hspace*{1.3cm} \texttt{x := l[1];}
-\\[0.2cm]
-ausf\"{u}hren, hat \texttt{x} also anschlie\ss{}end den Wert 1.  Wollen wir auf das letzte Element einer
-Liste \texttt{l} zugreifen, so k\"{o}nnen wir daf\"{u}r den Ausdruck
+\subsection{Concatenation of Lists}
+For sets, the operator ``\texttt{+}'' computes the union.  However, this operator can also be
+applied to lists.  If \texttt{L1} and \texttt{L2} are both lists, the expression
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{l[\#l]}
+\texttt{L1 + L2}
 \\[0.2cm]
-benutzen, denn \texttt{\#l} gibt die Anzahl der Elemente der Liste \texttt{l} an.  Alternativ k\"{o}nnen
-wir aber auch den Ausdruck
+concatenates the lists \texttt{L1} and \texttt{L2}.  For example, the assignment
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{l[-1]}
+\texttt{L := [1, 2, 3] + [4, 5, 6];}
 \\[0.2cm]
-benutzen um auf das letzte Element von \texttt{l} zuzugreifen.  Analog greift der Ausdruck
-\texttt{l[-2]} auf das vorletzte Element der Liste \texttt{l} zu.
+creates the list \texttt{[1, 2, 3, 4, 5, 6]} and stores it into \texttt{L}.
 
-\begin{figure}[!ht]
-  \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
-                ]
-    a := [ 1, 2, 3 ];
-    b := [ 2, 3, 4, 5, 6 ];
-    c := { 5, 6, 7 };
-    // Aneinanderh\"{a}ngen von Tupeln mit +
-    print(a, " + ", b, " = ", a + b);
-    // Berechnung der Anzahl der Elemente einer Menge
-    print("# ", c, " = ", # c);
-    // Berechnung der L\"{a}nge eines Tupels
-    print("# ", a, " = ", # a);
-    // Auswahl des dritten Elements von b
-    print(b, "[3] = ", b[3] );
-    // \"{U}berschreiben des 10. Elements von b
-    b[10] := 42;
-    print("b = ", b);
-    // Auswahl einer Teilliste
-    d := b[2..4];
-    print( "d = ", d);
-    x := 1;  y := 2;
-    [ x, y ] := [ y, x ];
-    print("x = ", x, ", y = ", y);
-    print("b[-1] = ", b[-1]);
-\end{Verbatim} 
-\vspace*{-0.3cm}
-\caption{Weitere Operatoren auf Tupeln und Mengen.}  \label{fig:simple-tuple.stlx}
-\end{figure} %\$
+\subsection{The Length Operator ``\texttt{\#}''}
+The unary prefix operator  ``\texttt{\#}'' computes the length of a list when it is applied to a
+list.  When applied to a set it returns the number of elements of this set.  For example, we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{\# [2, 3, 5, 7]} = \texttt{4}$ \quad and \quad 
+$\texttt{\# \{2, 3, 5, 3 \}} = 3$.
 
-Das Programm 
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/simple-tuple.stlx}{\texttt{simple-tuple.stlx}}
-in Abbildung \ref{fig:simple-tuple.stlx} auf Seite
-\pageref{fig:simple-tuple.stlx} demonstriert die eben vorgestellten Operatoren.  
-Zus\"{a}tzlich sehen wir in Zeile 19, dass \textsc{SetlX} simultane Zuweisungen unterst\"{u}tzt.
-Das Programm produziert die folgende Ausgabe:
-\begin{verbatim}
-    [1, 2, 3] + [2, 3, 4, 5, 6] = [1, 2, 3, 2, 3, 4, 5, 6]
-    # {5, 6, 7} = 3
-    # [1, 2, 3] = 3
-    [2, 3, 4, 5, 6][3] = 4
-    b = [2, 3, 4, 5, 6, om, om, om, om, 42]
-    d = [3, 4, 5]
-    x = 2, y = 1
-    b[-1] = 42
-\end{verbatim}
+\subsection{List Indexing}
+We can access the \texttt{i}-th elements of a list \texttt{L} using the notation \texttt{L[i]}, provided that \texttt{i} is
+a positive natural number that is less than or equal to the length of the list \texttt{L}.
+The list \texttt{L} can
+also be changed using this notation, so for example the assignment
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{L[3] := 42;}
+\\[0.2cm]
+sets the third element of \texttt{L} to the number \texttt{42}.  Basically, the syntax is the same
+as the syntax of array access in the programming language \texttt{C}.  However, there is one very
+important difference with respect to \texttt{C}:
+
+      \begin{center}
+      \colorbox{red}{\framebox{\colorbox{yellow}{\framebox{
+      \begin{minipage}{0.45\linewidth}
+        In \textsc{SetlX}, list indexing starts with the number \texttt{1}!
+      \end{minipage}}}}}
+      \end{center}      
+
+\noindent
+Therefore, after executing the statements
+\\[0.2cm]
+\hspace*{1.3cm} \texttt{L := [1, 2, 3];} \\
+\hspace*{1.3cm} \texttt{x := L[1];}
+\\[0.2cm]
+the variable  \texttt{x} is set to 1.  
+
+In order to retrieve the last element of a list \texttt{L} we can use the expression ``\texttt{L[\#L]}'',
+because \texttt{\#L} returns the number of elements of the list  \texttt{L}.  Alternatively, we can
+use the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{L[-1]}
+\\[0.2cm]
+to retrieve the last element of the list  \texttt{L}.  Similarly, the expression
+\texttt{L[-2]} returns the penultimate element of the list \texttt{L},  while \texttt{L[-3]} returns
+the ante-penultimate element of \texttt{L}. 
+
+\subsection{List Slicing}
+Often, we have to return a sublist of a given list.  This can be done using \emph{slicing}.  If
+\texttt{L} is a list and \texttt{i} and \texttt{j} are positive natural numbers that are not greater
+than the length of \texttt{L}, then
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{L[i..j]}
+\\[0.2cm]
+is the sublist of \texttt{L} that starts at the \texttt{i}-th element of \texttt{L} and extends to
+the \texttt{j}-th element of \texttt{L}.  If \texttt{j} is less than \texttt{i}, the expression
+\texttt{L[i..j]} returns the empty list instead.  For example, after defining
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{L := [5, 4, 3, 2, 1];}
+\\[0.2cm]
+we have 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{L[2..4]} = \texttt{[4, 3, 2]}$ \quad and \quad $\texttt{L[4..2]} = \texttt{[]}$.
 
 
-\subsection{Anwendung: \emph{Sortieren durch Auswahl}}
+\subsection{Selection Sort}
+In order to see a practical application of the concepts discussed so far, we present a sorting
+algorithm that is known as \href{https://en.wikipedia.org/wiki/Selection_sort}{\emph{selection sort}}.
+This algorithm sorts a given list \texttt{L} and works as follows:
+\begin{enumerate}
+\item If \texttt{L} is empty, \texttt{sort(L)} is also empty:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{sort([])} = \texttt{[]}$.
+\item Otherwise, we first compute the minimum of \texttt{L}.  Clearly, the minimum needs to be the
+      first element of the sorted list.  We remove this minimum from \texttt{L}, sort the remaining
+      elements recursively, and finally attach the minimum at the front of this list:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{sort(L)} = \texttt{[min(L)] + sort([}x \in \texttt{L} \texttt{|} x \not= \texttt{min}(L)\texttt{])}$.
+\end{enumerate}
+Figure \ref{fig:min-sort.stlx} on page \pageref{fig:min-sort.stlx} shows the program
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/min-sort.stlx}{\texttt{min-sort.stlx}}
+that implements selection sort  in \textsc{SetlX}. 
+
 \begin{figure}[!ht]
 \centering
 \begin{Verbatim}[ frame         = lines, 
@@ -962,51 +1034,26 @@ Das Programm produziert die folgende Ausgabe:
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    minSort := procedure(l) {
-        if (l == []) {
-           return [];
+    minSort := procedure(L) {
+        if (L == []) {
+            return [];
         }
-        m := min(l);
-        return [x : x in l | x == m] + minSort([ x : x in l | x != m ]);
-    };
-
-    l := [ 13, 5, 13, 7, 2, 4 ];
-    print( "sort( ", l, " ) = ", minSort(l) );
+        m := min(L);
+        return [m] + minSort([x : x in L | x != m]);
+    };   
+    L := [ 13, 5, 13, 7, 2, 4 ];
+    print("sort($L$) = $minSort(L)$");
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Implementierung des Algorithmus \emph{Sortieren durch Auswahl}.}
+\caption{Implementing selection sort in \setlx.}
 \label{fig:min-sort.stlx}
 \end{figure}
 
-\noindent
-Als praktische Anwendung zeigen wir eine Implementierung des Algorithmus 
-\emph{Sortieren durch Auswahl}.  Dieser Algorithmus, dessen Aufgabe es ist, eine gegebene
-Liste $L$ zu sortieren, kann wie folgt beschrieben werden:
-\begin{enumerate}
-\item Falls $L$ leer ist, so ist auch $\textsl{sort}(L)$ leer:
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\textsl{sort}([]) = []$.
-\item Sonst berechnen wir das Minimum $m$ von $L$: 
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $m = \min(L)$.
-      \\[0.2cm]
-      Dann entfernen wir $m$ aus der Liste $L$ und sortieren die Restliste rekursiv:
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\textsl{sort}(L) = [ \min(L) ] + \textsl{sort}([ x \in L \mid x \not= \min(L) ])$.
-\end{enumerate}
-Abbildung \ref{fig:min-sort.stlx} auf Seite \pageref{fig:min-sort.stlx} zeigt das Programm
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/min-sort.stlx}{\texttt{min-sort.stlx}},
-das diese Idee in \textsc{SetlX} umsetzt. 
-
-
-\section{Kontroll-Strukturen}
-Die Sprache \textsc{SetlX} stellt alle Kontroll-Strukturen zur Verf\"{u}gung, die
- in modernen Sprachen \"{u}blich sind.  Wir haben  ``\texttt{if}''-Abfragen bereits mehrfach gesehen.
-In der  allgemeinsten Form hat eine Fallunterscheidung die in Abbildung \ref{fig:if} auf Seite
-\pageref{fig:if} gezeigte Struktur.
+\section{Control Flow and Boolean Operators}
+The language \textsc{SetlX} provides all those control flow statements that are in use in
+contemporary programming languages like \texttt{C} or \textsl{Java}.  We have already seen if-then-else
+statements on several occasions.  The most general form of this kind of branching statement is shown
+in Figure \ref{fig:if} on page \pageref{fig:if}.
 \begin{figure}[!ht]
 \begin{Verbatim}[ codes         = {\catcode`$=3\catcode`_=8\catcode`^=7},
                   frame         = lines, 
@@ -1030,77 +1077,147 @@ In der  allgemeinsten Form hat eine Fallunterscheidung die in Abbildung \ref{fig
       \texttt{\}}
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Struktur der allgemeinen Fallunterscheidung.}  
+\caption{The general form of a case disticntion in \setlx.}  
 \label{fig:if}
-\end{figure} %\$
+\end{figure}%$
 
 
-Hierbei steht $\textsl{test}_i$ f\"{u}r einen Test, der ``\texttt{true}'' oder
-``\texttt{false}'' liefert.  Liefert der Test ``\texttt{true}'', so wird der zugeh\"{o}rigen
-Anweisungen in $\textsl{body}_i$ ausgef\"{u}hrt, andernfalls wird der n\"{a}chste
-Test  $\textsl{test}_{i+1}$ versucht.  Schlagen alle Tests fehl, so wird
-$\textsl{body}_{n+1}$ ausgef\"{u}hrt.
+Here,  $\texttt{test}_i$ denotes a \href{https://en.wikipedia.org/wiki/Boolean_expression}{Boolean expression}, 
+i.e.~an expression that returns either ``\texttt{true}'' or ``\texttt{false}'' when evaluated, while
+$\texttt{body}_i$ is a list of statements.  If the
+evaluation of $\texttt{test}_i$ returns ``\texttt{true}'', then the statements in $\texttt{body}_i$ are
+executed.  Otherwise, the next test $\texttt{test}_{i+1}$ is evaluated.  If all the tests $\texttt{test}_1$, $\cdots$, $\texttt{test}_n$ 
+fail, then the statements in $\texttt{body}_{n+1}$ are executed.
  
-Die Tests selber k\"{o}nnen dabei die bin\"{a}ren Operatoren 
+The tests $\texttt{test}_i$ can make use of the following relational infix operators:
 \\[0.2cm]
 \hspace*{1.3cm}
-``\texttt{==}'',
-``\texttt{!=}'',
-``\texttt{>}'',
-``\texttt{<}'',
-``\texttt{>=}'',
-``\texttt{<=}'',
-``\texttt{in}'',
+\texttt{==}, \quad
+\texttt{!=}, \quad
+\texttt{>},  \quad
+\texttt{<},  \quad
+\texttt{>=}, \quad
+\texttt{<=}, \quad
+\texttt{in}. \quad
 \\[0.2cm]
-verwenden. Dabei  steht ``\texttt{==}'' f\"{u}r den Vergleich auf Gleichheit,
-``\texttt{!=}'' f\"{u}r den Vergleich auf Ungleichheit.
-F\"{u}r Zahlen f\"{u}hren die Operatoren ``\texttt{>}'',
-``\texttt{<}'',
-``\texttt{>=}'' und 
-``\texttt{<=}''
-dieselben Gr\"{o}\ss{}envergleiche durch wie in der Sprache \texttt{C}.  F\"{u}r Mengen
-\"{u}berpr\"{u}fen diese Operatoren analog, ob die entsprechenden Teilmengen-Beziehung
-erf\"{u}llt ist.  Der Operator ``\texttt{in}'' \"{u}berpr\"{u}ft, ob das erste Argument ein
-Element der als zweites Argument gegeben Menge ist: Der Test \\[0.2cm]
-\hspace*{1.3cm} \texttt{$x$ in $S$} \\[0.2cm]
-hat genau dann den Wert \texttt{true}, wenn $x \in S$ gilt.
-Aus den einfachen Tests, die mit Hilfe der oben vorgestellten Operatoren
-definiert werden k\"{o}nnen, k\"{o}nnen mit Hilfe der Junktoren ``\texttt{\&\&}'' (logisches \emph{und}),
-``\texttt{||}'' (logisches \emph{oder}) und ``\texttt{!}'' (logisches \emph{nicht})
-komplexere Tests aufgebaut werden.  
-Dabei bindet der Operator ``\texttt{||}'' am schw\"{a}chsten und der Operator ``\texttt{!}''
-bindet am st\"{a}rksten.  Ein Ausdruck der Form
+These operators are all infix operators, and with the exception of the operator ``\texttt{in}'' they work the
+same way as they work in the programming language \texttt{C}.  Hence,
+the operator ``\texttt{==}'' compares two objects for equality and ``\texttt{!=}'' tests whether two objects
+differ.  For example, the Boolean expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\{1, 2, 2\} == \{2, 1, 1\}}
+\\[0.2cm]
+returns ``\texttt{true}'', while the Boolean expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{[1, 2] == [2, 1]}
+\\[0.2cm]
+returns ``\texttt{false}''.  If \texttt{x} and \texttt{y} are numbers, the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{x < y}
+\\[0.2cm]
+tests, whether \texttt{x} is less than \texttt{y}.  Similarly, the expressions
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{x > y}, \quad \texttt{x <= y}, \quad and \quad \texttt{x >= y}
+\\[0.2cm]
+test whether \texttt{x} is bigger than, less than or equal to, or bigger than or equal to \texttt{y}, respectively.
+If \texttt{x} and \texttt{y} are sets instead, 
+\begin{enumerate}
+\item the expression ``\texttt{x < y}'' is true if \texttt{x} is a proper subset of \texttt{y}, 
+      i.e.~if $\texttt{x} \subset \texttt{y}$ holds,
+\item the expression ``\texttt{x > y}'' is true if \texttt{y} is a proper subset of \texttt{x},
+      i.e.~if $\texttt{x} \supset \texttt{y}$ holds,
+\item the expression ``\texttt{x <= y}'' is true if \texttt{x} is a subset of \texttt{y},
+      i.e.~if $\texttt{x} \subseteq \texttt{y}$ holds, \quad and
+\item the expression ``\texttt{x >= y}'' is true if \texttt{y} is a subset of \texttt{x},
+      i.e.~if $\texttt{x} \supseteq \texttt{y}$ holds.
+\end{enumerate}
+If \texttt{x} is an object and \texttt{S} is a set or a list, then
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{x in S}
+\\[0.2cm]
+returns ``\texttt{true}'' if \texttt{x} is an element of \texttt{S},
+
+The comparison tests that can be performed using the relational operators previously discussed can be combined into more
+complex tests via the following logical operators:
+\begin{enumerate}
+\item ``\texttt{!}''  represents the logical \emph{negation}.
+
+      A Boolean expression of the form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{!b}
+      \\[0.2cm]
+      is \texttt{true} iff the evaluation of the Boolean expression \texttt{b} returns \texttt{false}.
+\item ``\texttt{\&\&}'' represents the logical \emph{conjunction}.
+
+      A Boolean expression of the form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{a \&\& b}
+      \\[0.2cm]
+      is \texttt{true} iff the Boolean expressions \texttt{a} and \texttt{b} both evaluate to \texttt{true}.
+\item ``\texttt{||}''  represents the logical \emph{disjunction}.
+
+      A Boolean expression of the form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{a || b}
+      \\[0.2cm]
+      is \texttt{true} iff at least one of the Boolean expressions \texttt{a} or \texttt{b} evaluates to \texttt{true}.
+\end{enumerate}
+Syntactically, the operator ``\texttt{||}'' has the lowest precedence, while the precedence of the operator ``\texttt{!}''
+is higher than the precedence of ``\texttt{\&\&}'' and ``\texttt{||}''.  Hence, the expression 
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{!a == b \&\& b < c || x >= y}
 \\[0.2cm]
-wird also als
+is read as if it had been parenthesized as follows:
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{((!(a == b)) \&\& b < c) || x >= y}
+\texttt{((!(a == b)) \&\& b < c) || x >= y}.
 \\[0.2cm]
-geklammert.  Damit haben die logischen Operatoren dieselbe Pr\"{a}zedenz wie in der Sprache \texttt{C}.
+Note that the precedence of these operators is the same as it is in the programming language \texttt{C}.
 
-\textsc{SetlX} unterst\"{u}tzt  die Verwendung von Quantoren.  Die Syntax f\"{u}r die Verwendung
-des Allquantors ist
+In addition to these operators, \textsc{SetlX} support quantifiers.  The universal quantifier is written as
+follows:
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{forall (} $x$ \texttt{in} $s$ \texttt{|} \textsl{cond} \texttt{)}
+\texttt{forall (x in S | b)}
 \\[0.2cm]
-Hier ist $s$ eine Menge und \textsl{cond} ist ein Ausdruck, der von der Variablen $x$ abh\"{a}ngt und einen
-Wahrheitswert als Ergebnis zur\"{u}ck liefert.  Die Auswertung des oben angegebenen Allquantors liefert genau
-dann \texttt{true} wenn die Auswertung von \textsl{cond} f\"{u}r alle Elemente der Menge $s$ den Wert
-\texttt{true} ergibt.  Abbildung \ref{fig:primes-forall.stlx} auf Seite
-\pageref{fig:primes-forall.stlx} zeigt das Programm
+Here, \texttt{x} is a variable, \texttt{S} is a set or list and \texttt{b} is a Boolean expression such
+that the variable \texttt{x} occurs in \texttt{b}.  The expression above is to be interpreted as the formula
+\\[0.2cm]
+\hspace*{1.3cm}
+$\forall \mathtt{x} \in \mathtt{S}: \mathtt{b}$.
+\\[0.2cm]
+The evaluation of ``\texttt{forall (x in S | b)}'' yields
+\texttt{true} if evaluating the expression \texttt{b} yields \texttt{true} for every element \texttt{x} from
+\texttt{S}.  For example, the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{forall (x in \{1, 2, 3\} | x*x < 10)}
+\\[0.2cm]
+yields true, because we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$1 \cdot 1 < 10$, \quad $2 \cdot 2 < 10$, \quad and \quad $3 \cdot 3 < 10$.
+\\[0.2cm]
+A more interesting example is shown in Figure \ref{fig:primes-forall.stlx} on page
+\pageref{fig:primes-forall.stlx}.  The program
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-forall.stlx}{\texttt{primes-forall.stlx}},
-welches die  Primzahlen mit Hilfe eines Allquantors berechnet.
-Die Bedingung
+computes the set of prime numbers less than 100 by making use of a universal quantifier.
+For a given natural number \texttt{p}, the Boolean expression
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{forall (x in divisors(p) | x in \{1, p\})}
 \\[0.2cm]
-trifft auf genau die Zahlen $p$ zu, f\"{u}r die gilt, dass alle Teiler Elemente der Menge $\{1,p\}$ sind.
-Dies sind genau die Primzahlen.
+evaluates to \texttt{true} iff every number \texttt{x} that divides \texttt{p} evenly is either the number
+\texttt{1} or the number \texttt{p}.
 
 
 \begin{figure}[!ht]
@@ -1123,45 +1240,60 @@ Dies sind genau die Primzahlen.
     print([ p : p in [2..n] | isPrime(p) ]);
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Berechnung der Primzahlen mit Hilfe eines Allquantors}
+\caption{Computing the prime numbers via a universal quantifier.}
 \label{fig:primes-forall.stlx}
 \end{figure}
 
-Neben dem Allquantor gibt es noch den Existenzquantor. Die Syntax ist:
+Besides the universal quantifier, \setlx\ supports the existential quantifier.  The syntax of this operator is
+given as follows: 
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{exists (}$x$ \texttt{in} $s$ \texttt{|} \textsl{cond}\texttt{)}
+\texttt{exists (x in s | b)}
 \\[0.2cm]
-Hierbei ist wieder eine $s$ eine Menge und \textsl{cond} ist ein Ausdruck, der zu \texttt{true} oder
-\texttt{false} ausgewertet werden kann.  Falls es wenigstens ein $x$ gibt, so dass die Auswertung von
-\textsl{cond} true ergibt, liefert die Auswertung des Existenzquantor ebenfalls den Wert \texttt{true}.
-
-\remark
-Liefert die Auswertung eines Ausdrucks der Form
+Here, \texttt{x} is a variable, \texttt{S} is a set or a list and \texttt{b} is a Boolean expression such
+that the variable \texttt{x} occurs in \texttt{b}.  Mathematically, this expression is interpreted
+as the formula
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{exists (}$x$ \texttt{in} $s$ \texttt{|} \textsl{cond}\texttt{)}
+$\exists \mathtt{x} \in \mathtt{S} : \mathtt{b}$.
 \\[0.2cm]
-den Wert \texttt{true}, so wird 
-\textbf{zus\"{a}tzlich} der Variablen $x$ ein Wert zugewiesen, f\"{u}r den die Bedingung \textsl{cond}
-erf\"{u}llt ist.   Falls die Auswertung des Existenzquantors den Wert \texttt{false} ergibt,
-\"{a}ndert sich der Wert von  $x$ nicht.
+If there is at least one value for \texttt{x} in \texttt{S} such that \texttt{b} yields \texttt{true}, 
+then the expression 
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{exists (x in s | b)}
+\\[0.2cm]
+is evaluated as \texttt{true}. 
 
+\remarkEng
+If the evaluation of
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{exists (x in s | b)}
+\\[0.2cm]
+yields \texttt{true}, then the variable \texttt{x} is bound to a value from \texttt{S} such that the
+evaluation of \texttt{b} returns \texttt{true}.  Otherwise, \texttt{x} is set to the undefined value
+\texttt{om}.  For example, evaluating the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{exists (x in [1..10] | 2**x < x**2)}
+\\[0.2cm]
+returns \texttt{true} and, furthermore, assigns the value \texttt{3} to the variable \texttt{x}.
 
-\subsubsection{\texttt{Switch}-Bl\"{o}cke}
-Als Alternative zur Fallunterscheidung mit Hilfe von \texttt{if}-\texttt{then}-\texttt{else}-Konstrukten
-gibt es noch den \texttt{switch}-Block.  Ein solcher Block hat die  in Abbildung \ref{fig:case} auf Seite
-\pageref{fig:case} gezeigte Struktur.  Bei der Abarbeitung werden der Reihe nach
-die Tests \textsl{test}$_1$, $\cdots$, \textsl{test}$_n$
-ausgewertet. F\"{u}r den ersten Test \textsl{test}$_i$, dessen
-Auswertung den Wert \texttt{true} ergibt, wird der zugeh\"{o}rige Block
-\textsl{body}$_i$ ausgef\"{u}hrt.  Nur dann, wenn alle Tests 
-\textsl{test}$_1$, $\cdots$, \textsl{test}$_n$
-scheitern, wird der Block \textsl{body}$_{n+1}$ hinter dem Schl\"{u}sselwort
-\texttt{default} ausgef\"{u}hrt.  Den selben Effekt k\"{o}nnte man nat\"{u}rlich auch mit
-einer \texttt{if}-\texttt{else if}-$\cdots$-\texttt{else if}-\texttt{else}-Konstruktion erreichen,
-nur ist die Verwendung eines \texttt{switch}-Blocks oft 
-\"{u}bersichtlicher.
+\subsection{\texttt{Switch}-Statements}
+Instead of using \texttt{if}-\texttt{else}-statements, it is sometimes more convenient to use a
+\texttt{switch}-statement. The syntax of a \texttt{switch}-statement is shown in Figure
+\ref{fig:case} on page \pageref{fig:case}.  Here, 
+\texttt{test}$_1$, $\cdots$, \texttt{test}$_n$ are Boolean expressions, while
+\texttt{body}$_1$, $\cdots$, \texttt{body}$_n$, \texttt{body}$_{n+1}$ are lists of statements.
+When this \texttt{switch}-statement is executed, the Boolean expressions
+\texttt{test}$_1$, $\cdots$, \texttt{test}$_n$ are evaluated one by one until we find an expression 
+\texttt{test}$_i$ that is \texttt{true}.  Then the corresponding statements \texttt{body}$_i$ are executed and
+the \texttt{switch}-statement ends.   The block \texttt{body}$_{n+1}$ following the keyword \texttt{default} is
+only executed if all of the tests \texttt{test}$_1$, $\cdots$, \texttt{test}$_n$ fail.
+A \texttt{switch}-statement can be rewritten as a long chain of \texttt{if}-\texttt{else-if} $\cdots$
+\texttt{else-if} statements, but often a \texttt{switch}-statement is easier to understand.
+
 
 \begin{figure}[!ht]
   \centering
@@ -1175,22 +1307,25 @@ nur ist die Verwendung eines \texttt{switch}-Blocks oft
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-      \texttt{\underline{switch} \{}
-          \texttt{\underline{case}} \textsl{test}\(_1\) : \textsl{body}\(_1\) 
+      \underline{switch} \{
+          \underline{case} test\(_1\) : body\(_1\) 
           \vdots
-          \texttt{\underline{case}} \textsl{test}\(_n\) : \textsl{body}\(_n\)
-          \texttt{\underline{default}:} \textsl{body}\(_{n+1}\)
+          \underline{case} test\(_n\) : body\(_n\)
+          \underline{default}    : body\(_{n+1}\)
       \texttt{\}}
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Struktur eines \texttt{switch}-Blocks}  \label{fig:case}
+\caption{The general form of a \texttt{switch}-statement.}  \label{fig:case}
 \end{figure} 
 
-Abbildung \ref{fig:switch.stlx} zeigt das Programm
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/switch.stlx}{\texttt{switch.stlx}},
-bei dem es darum  geht, in Abh\"{a}ngigkeit von der letzten Ziffer einer Zahl eine Meldung auszugeben.  Bei
-der Behandlung der Aussagenlogik werden wir noch realistischere Anwendungs-Beispiele f\"{u}r den
-\texttt{switch}-Block kennenlernen.
+Figure \ref{fig:switch.stlx} shows the program 
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/switch.stlx}{\texttt{switch.stlx}}.
+The purpose of this program is to print a message that depends on the last digit of a number that is input by
+the user.  In this program, the \texttt{switch}-statement  results in code that is much clearer than
+it would be if we had
+used \texttt{if}-statements instead.  Later, the chapter on propositional logic will present examples of the
+\texttt{switch}-statement that are even more convincing.
+
 
 \begin{figure}[!ht]
 \centering
@@ -1202,73 +1337,63 @@ der Behandlung der Aussagenlogik werden wir noch realistischere Anwendungs-Beisp
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    print("Zahl eingeben:");
+    print("Input a natural number:");
     n := read();
     m := n % 10;
     switch {
-        case m == 0 : print("letzte Ziffer ist 0");
-        case m == 1 : print("letzte Ziffer ist 1");
-        case m == 2 : print("letzte Ziffer ist 2");
-        case m == 3 : print("letzte Ziffer ist 3");
-        case m == 4 : print("letzte Ziffer ist 4");
-        case m == 5 : print("letzte Ziffer ist 5");
-        case m == 6 : print("letzte Ziffer ist 6");
-        case m == 7 : print("letzte Ziffer ist 7");
-        case m == 8 : print("letzte Ziffer ist 8");
-        case m == 9 : print("letzte Ziffer ist 9");
-        default     : print("impossible");
+        case m == 0 : print("The last digit is 0.");
+        case m == 1 : print("The last digit is 1.");
+        case m == 2 : print("The last digit is 2.");
+        case m == 3 : print("The last digit is 3.");
+        case m == 4 : print("The last digit is 4.");
+        case m == 5 : print("The last digit is 5.");
+        case m == 6 : print("The last digit is 6.");
+        case m == 7 : print("The last digit is 7.");
+        case m == 8 : print("The last digit is 8.");
+        case m == 9 : print("The last digit is 9.");
+        default     : print("The impossible happened!");
     }
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Anwendung eines \texttt{switch}-Blocks}
+\caption{A simple example of a \texttt{switch}-statement.}
 \label{fig:switch.stlx}
 \end{figure}
+\remarkEng
+The programming language \texttt{C} has a \texttt{switch}-statement that is syntactically similar to the
+\texttt{switch}-statement in \setlx.  However, the \texttt{switch}-statement is executed
+\colorbox{amethyst}{differently} in \texttt{C}.  In \texttt{C}, if $\texttt{body}_i$ is executed and $\texttt{body}_i$ does not contain a
+\texttt{break}-statement, then the following block $\texttt{body}_{i+1}$ is also executed.  In contrast,
+\setlx\ will \colorbox{amethyst}{never} execute more than one of the blocks $\texttt{body}_i$.
 
-In der Sprache \texttt{C} gibt es eine  analoge Konstruktion.
- In \texttt{C} ist es so, dass nach einem
-Block, der nicht durch einen \texttt{break}-Befehl abgeschlossen wird, auch alle folgenden Blocks
-ausgef\"{u}hrt werden.  Dies ist in \textsc{SetlX} anders: Dort wird immer genau ein Block
-ausgef\"{u}hrt.
 
-Neben dem \texttt{switch}-Block gibt es noch dem \texttt{match}-Block, den wir allerdings
-erst sp\"{a}ter diskutieren werden.
-
-\subsection{Schleifen}
-Es gibt in \textsc{SetlX} Kopf-gesteuerte Schleifen (\texttt{while}-Schleifen)
-und Schleifen, die \"{u}ber die Elemente einer Menge oder einer Liste  iterieren (\texttt{for}-Schleifen).
-Wir diskutieren diese  Schleifenformen jetzt im Detail.
-
-\subsubsection{\texttt{while}-Schleifen}
-Die allgemeine Syntax der \texttt{while}-Schleife ist in Abbildung \ref{fig:while} auf Seite
-\pageref{fig:while} gezeigt.  Hierbei ist \textsl{test} ein Ausdruck, der zu
-Beginn ausgewertet wird und der ``\texttt{true}'' oder ``\texttt{false}'' ergeben muss.
-Ergibt die Auswertung ``\texttt{false}'', so ist die Auswertung der
-\texttt{while}-Schleife bereits beendet. Ergibt die Auswertung allerdings
-``\texttt{true}'', so wird anschlie\ss{}end \textsl{body} ausgewertet.  Danach beginnt
-die Auswertung der Schleife dann wieder von vorne, d.h.~es wird wieder
-\textsl{test} ausgewertet und danach wird abh\"{a}ngig von dem Ergebnis dieser
-wieder \textsl{body} ausgewertet.  Das ganze passiert so lange, bis irgendwann
-einmal die Auswertung von \textsl{test} den Wert ``\texttt{false}'' ergibt.
-Die von \textsc{SetlX} unterst\"{u}tzten \texttt{while}-Schleifen funktionieren genauso wie in
-der Sprache \texttt{C}.
+\subsection{\texttt{while}-Loops}
+The syntax of  \texttt{while}-loops is shown in Figure \ref{fig:while} on page
+\pageref{fig:while}.  Here,  \texttt{test} is a Boolean expression and \texttt{body} is a list of statements.  
+The evaluation of \texttt{test} must
+return either  ``\texttt{true}'' or ``\texttt{false}''.
+If the evaluation of \texttt{test} yields  ``\texttt{false}'', then the loop is terminated.
+Otherwise, the statements in \texttt{body} are executed.  After that, the \texttt{while}-loop starts over
+again, i.e.~the Boolean expression \texttt{test} is evaluated and depending on the result of this evaluation
+the statements in  \texttt{body} are executed again.  This is repeated until the evaluation of  \texttt{test}
+finally yields  ``\texttt{false}''.  It should be noted that in \setlx\ \texttt{while}-loops work in exactly
+the same way as they work in the programming language \texttt{C}.
 
 \begin{figure}[!ht]
   \centering
 \begin{alltt}
-      \texttt{while (}\textsl{test}\texttt{) \{}
-          \textsl{body}
-      \texttt{\}}
+      while (test) \{
+          body
+      \}
 \end{alltt}
 \vspace*{-0.3cm}
-\caption{Struktur der \texttt{while}-Schleife}  \label{fig:while}
+\caption{The general form of a \texttt{while}-loop.  \label{fig:while}}
 \end{figure} 
 
-Abbildung \ref{fig:primes-while.stlx} auf Seite
-\pageref{fig:primes-while.stlx} zeigt das Programm
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-while.stlx}{\texttt{primes-while.stlx}},
-das die Primzahlen mit Hilfe einer \texttt{while}-Schleife berechnet.
-Hier ist die Idee, dass eine Zahl genau dann Primzahl ist, wenn es keine
-kleinere Primzahl gibt, die diese Zahl teilt.
+Figure \ref{fig:primes-while.stlx} on page \pageref{fig:primes-while.stlx} shows the program
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-while.stlx}{\texttt{primes-while.stlx}}.
+This program computes prime numbers using a  \texttt{while}-loop.  The main idea is that a number \texttt{p} is
+prime if there is no prime number \texttt{t} less than \texttt{p} that divides \texttt{p} evenly.
+
 
 \begin{figure}[!ht]
   \centering
@@ -1292,47 +1417,52 @@ kleinere Primzahl gibt, die diese Zahl teilt.
     }
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Iterative Berechnung der Primzahlen.}  \label{fig:primes-while.stlx}
+\caption{Iterative computation of prime numbers.}  \label{fig:primes-while.stlx}
 \end{figure} %\$
 
 
-\subsubsection{\texttt{for}-Schleifen}
-Die allgemeine Syntax der \texttt{for}-Schleife ist in Abbildung \ref{fig:for} auf Seite
-\pageref{fig:for} gezeigt.  Hierbei ist $s$ eine Menge, eine Liste, oder ein String und $x$ ist  der
-Name einer 
-Variablen. Diese Variable wird nacheinander mit allen Werten aus der Menge (oder Liste) $s$
-belegt und anschlie\ss{}end wird mit dem jeweiligen Wert von $x$ der
-Schleifenrumpf \textsl{body} ausgef\"{u}hrt.  Falls $s$ ein String ist, dann iteriert die Schleife \"{u}ber
-die Buchstaben aus $s$.
+\subsection{\texttt{for}-Loops}
+The syntax of  \texttt{for}-loops is shown in Figure \ref{fig:for} on page \pageref{fig:for}.  
+Here \texttt{S} is either a set or a list, while \texttt{x} is the name of a variable.  Finally, \texttt{body}
+is a list of statements.
+If \texttt{S} contains $n$ elements, then the \texttt{for}-loop is executed $n$ times.  Every time the loop is
+executed, a different value from \texttt{S} is assigned to the variable \texttt{x} and the statements in
+\texttt{body} are executed using the current value of \texttt{x}.
+
+A \texttt{for}-loop also works if \texttt{S} is a string.  In this case, the loop iterates over the different characters
+of the string \texttt{S}.
 
 \begin{figure}[!ht]
   \centering
 \begin{alltt}
-      \texttt{for (}\textsl{x} \texttt{in} \textsl{s}\texttt{) \{}
-          \textsl{body}
-      \texttt{\}}
+      for (x in S) \{
+          body
+      \}
 \end{alltt}
 \vspace*{-0.3cm}
-\caption{Struktur der \texttt{for}-Schleife.}  \label{fig:for}
+\caption{General form of \texttt{for}-loops.}  \label{fig:for}
 \end{figure} 
 
-Abbildung \ref{fig:primes-for.stlx} auf Seite
-\pageref{fig:primes-for.stlx} zeigt das Programm
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-for.stlx}{\texttt{primes-for.stlx}},
-das die Primzahlen mit Hilfe einer \texttt{for}-Schleife berechnet.
-Der dabei verwendete Algorithmus ist als das \emph{Sieb des Eratosthenes}
-bekannt.  Das funktioniert wie folgt: Sollen alle Primzahlen kleiner oder gleich
-$n$ berechnet werden, so wird zun\"{a}chst ein Tupel der L\"{a}nge $n$ gebildet, dessen
-$i$-tes Element den Wert $i$ hat.  Das passiert in Zeile 2.  Anschlie\ss{}end werden 
- alle Zahlen, die Vielfache von 2, 3, 4, $\cdots$ sind, aus der Menge der
-Primzahlen entfernt, indem die Zahl, die an dem entsprechenden Index in der Liste
-\texttt{primes} steht, auf 0 gesetzt wird.
-Dazu sind zwei Schleifen erforderlich: Die \"{a}u\ss{}ere \texttt{for}-Schleife iteriert
-$i$ \"{u}ber alle Werte von 2 bis $n$.  Die innere \texttt{while}-Schleife iteriert dann f\"{u}r
-gegebenes $i$ \"{u}ber alle Werte $i \cdot j$, f\"{u}r die das Produkt $i \cdot j \leq n$ ist.
-Schlie\ss{}lich werden in der letzten  Zeile alle die
-Indizes $i$ ausgedruckt, f\"{u}r die $\mathtt{primes}[i]$  nicht auf 0 gesetzt worden ist,
-denn das sind genau die Primzahlen.
+Figure  \ref{fig:primes-for.stlx} on page \pageref{fig:primes-for.stlx} shows the program
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-for.stlx}{\texttt{primes-for.stlx}}.
+This program computes the prime numbers using a  \texttt{for}-loop.  The algorithm implemented here is known as
+the \href{https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes}{\emph{sieve of Eratosthenes}}.
+This algorithm works as follows:  If \texttt{n} is a natural and we intend to compute all primes less than or
+equal to \texttt{n}, then we first compute a list of length \texttt{n} such that the \texttt{i}-th entry of
+this list is the number \texttt{i}.  This list is called \texttt{primes} and is computed in line 2.  The basic
+idea is now that for every index $\texttt{k} \leq  \texttt{n}$ that is not prime we set \texttt{primes[k]} to
+\texttt{0}.  We know that \texttt{k} is not prime if it can be written as a product of the form \texttt{i*j}
+where both \texttt{i} and \texttt{j} are natural numbers bigger than \texttt{1}.
+In order to set \texttt{primes[k]} to \texttt{0} for non-prime numbers \texttt{k} we need two loops,
+where the outer loop iterates over all possible values of \texttt{i}, while the inner loop iterates
+over \texttt{j}. The smallest value that a proper factor of any number lass or equal than \texttt{n}
+can take is \texttt{2}, while the largest value is \texttt{n/2}.  Hence,
+the outer \texttt{for}-loop iterates over all values of \texttt{i} from \texttt{2} to \texttt{n/2}.
+The inner \texttt{while}-loop takes a given \texttt{i} and iterates over all \texttt{j}
+such that $\texttt{2} \leq \texttt{j}$ and $\texttt{i} \cdot \texttt{j} \leq \mathtt{n}$ is
+satisfied.  Finally, the last line prints all \texttt{i} such that  $\texttt{primes[i]} \not= \mathtt{0}$, as these are
+the prime numbers.
+
 
 \begin{figure}[!ht]
   \centering
@@ -1356,32 +1486,28 @@ denn das sind genau die Primzahlen.
     print({ i : i in [2 .. n] | primes[i] > 0 });
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Berechnung der Primzahlen nach Eratosthenes.}  \label{fig:primes-for.stlx}
+\caption{The algorithm of Eratosthenes.}  \label{fig:primes-for.stlx}
 \end{figure} 
 
-Der Algorithmus aus Abbildung \ref{fig:primes-for.stlx} kann durch die folgende Beobachtungen
-noch verbessert werden: 
+The algorithm shown in Figure \ref{fig:primes-for.stlx} can be refined if we make use of the following observations:
 \begin{enumerate}
-\item Es reicht aus, wenn $j$ mit $i$ initialisiert wird, denn alle kleineren Vielfachen von $i$
-      wurden bereits vorher auf 0 gesetzt.
-\item Falls in der \"{a}u\ss{}eren Schleife die Zahl $i$ keine Primzahl ist, so bringt es nichts mehr, die
-      innere \texttt{while}-Schleife in den Zeilen 9 bis 11 zu durchlaufen, denn alle
-      Indizes, f\"{u}r die dort \texttt{primes[i*j]} auf 0 gesetzt wird, sind schon bei dem
-      vorherigen Durchlauf der \"{a}u\ss{}eren Schleife, bei der \texttt{primes[i]}
-      auf 0 gesetzt wurde, zu 0 gesetzt worden. 
-
-      Abbildung \ref{fig:primes-eratosthenes.stlx} auf Seite
-      \pageref{fig:primes-eratosthenes.stlx} zeigt das Programm
-      \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-eratosthenes.stlx}{\texttt{primes-eratosthenes.stlx}},
-      das diese Ideen umsetzt.
-      Um den Durchlauf der inneren while Schleife in dem Fall, dass
-      \texttt{primes[i] = 0} ist, zu \"{u}berspringen, haben wir den Befehl ``\texttt{continue}''
-      benutzt.  Der Aufruf von ``\texttt{continue}'' bricht die Abarbeitung des
-      Schleifen-Rumpfs f\"{u}r den aktuellen Wert von \texttt{i} ab, weist der Variablen
-      \texttt{i} den n\"{a}chsten Wert aus \texttt{[1..n]} zu und f\"{a}hrt dann mit der
-      Abarbeitung der Schleife in Zeile 4 fort.  Der Befehl ``\texttt{continue}'' verh\"{a}lt sich
-      also genauso, wie der Befehl ``\texttt{continue}'' in der Sprache \textsl{C}.
+\item It is sufficient if \texttt{j} is initialized with \texttt{i} because once we start eliminating the
+      multiples of \texttt{i}, all multiples of \texttt{i} of the form $\texttt{i}\cdot\texttt{j}$ where
+      $\texttt{j} < \texttt{i}$ have already been eliminated from the list \texttt{primes}. 
+\item If \texttt{i} is not a prime, then it can be written as $\texttt{i} = \texttt{i}' \cdot\texttt{j}$ where
+      $\texttt{i}' < \texttt{i}$.  Hence, any multiples of \texttt{i} are also multiples of $\texttt{i}'$.
+      Therefore, if \texttt{i} is not prime, then there is no need to eliminate the multiples of
+      \texttt{i} as these multiples have already been eliminated at the time when the multiples of
+      $\texttt{i}'$ were eliminated.  For example, there is no point in eliminating the multiples of
+      \texttt{6} as these are also multiples of \texttt{2} and hence have already been eliminated
+      once \texttt{i} is set to \texttt{6}.
 \end{enumerate}
+Figure \ref{fig:primes-eratosthenes.stlx} on page \pageref{fig:primes-eratosthenes.stlx} shows the program
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-eratosthenes.stlx}{\texttt{primes-eratosthenes.stlx}}, 
+that makes use of these ideas.  In order to skip the inner \texttt{while}-loop if \texttt{i} is not
+a prime number we have used the statement ``\texttt{continue}''.  This statement terminates the
+current iteration of the loop and proceeds to the next iteration.  This is the same behaviour as in
+the programming language \texttt{C}. 
 
 
 \begin{figure}[!ht]
@@ -1409,21 +1535,163 @@ noch verbessert werden:
     print({ i : i in [2 .. n] | primes[i] > 0 });
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Effizientere Berechnung der Primzahlen nach Eratosthenes.}  \label{fig:primes-eratosthenes.stlx}
-\end{figure} %\$
+\caption{A more efficient version of the algorithm of Eratosthenes.}  \label{fig:primes-eratosthenes.stlx}
+\end{figure}
 
 
-\subsection{Fixpunkt-Algorithmen}
-Angenommen, wir wollen in der Menge $\mathbb{R}$ der reellen Zahlen die
-Gleichung \\[0.2cm]
-\hspace*{1.3cm} $x = \cos(x)$ \\[0.2cm]
-l\"{o}sen.  Ein naives Verfahren, das hier zum Ziel f\"{u}hrt, basiert auf der
-Beobachtung, dass die Folge $(x_n)_n$, die durch \\[0.2cm]
-\hspace*{1.3cm} $x_0 := 0$ und $x_{n+1} := \mathtt{cos}(x_n)$ f\"{u}r alle $n \in \mathbb{N}$ \\[0.2cm]
-definiert ist, gegen eine L\"{o}sung der obigen Gleichung konvergiert.  Damit f\"{u}hrt das in
-Abbildung \ref{fig:solve.stlx} auf Seite \pageref{fig:solve.stlx} angegebene Programm
+\section{Loading a Program}
+The \setlx\ interpreter can load programs interactively into a running session.
+If \textsl{file} is the name of a file, then the command
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{load("}\textsl{file}\texttt{");}
+\\[0.2cm]
+loads the program from  \textsl{file} and executes the statements given in this program.
+For example, the command
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{load(\symbol{34}primes-forall.stlx\symbol{34});}
+\\[0.2cm]
+executes the program shown in Figure
+\ref{fig:primes-forall.stlx} on page \pageref{fig:primes-forall.stlx}.
+After loading the program, the command
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{print(isPrime);}
+\\[0.2cm]
+shows the following output:
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{procedure (p) \{ return forall (x in divisors(p) | x in \{1, p\}); \}}.
+\\[0.2cm]
+This shows that the definitions of user defined procedures are available at runtime.
+
+\section{Strings}
+\setlx\ support \emph{strings}.  In  \textsc{SetlX} these have to be enclosed either in double quotes or in
+single quotes.  The operator ``\texttt{+}'' can be used to concatenate strings.  For example, the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\squote{abc} + \texttt{'uvw'};}
+\\[0.2cm]
+returns the result
+\\[0.2cm]
+\hspace*{1.3cm}
+\squote{abcuvw}.
+\\[0.2cm]
+Furthermore, a natural number \texttt{n} can be multiplied with a string \texttt{s}.  The expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{n * s;}
+\\[0.2cm]
+returns a string consisting of \texttt{n} concatenations of \texttt{s}.  For example,
+the result of
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{3 * \squote{abc};}
+\\[0.2cm]
+is the string \squote{abcabcabc}.  When multiplying a string with a number, the order of the
+arguments does not matter. Hence, the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\squote{abc} * 3}
+\\[0.2cm]
+also yields the result \squote{abcabcabc}.
+
+\section{Numerical Functions}
+In order to support numerical analysis, \setlx\ provides floating point numbers.  These are internally stored
+as 64 bit numbers.  In order to work with floating point numbers,  \textsc{SetlX} provides the following functions:
+\begin{enumerate}
+\item $\texttt{sin}(x)$ computes the \href{https://en.wikipedia.org/wiki/Sine}{sine} of $x$.
+      Furthermore, the trigonometrical functions $\texttt{cos}(x)$ and $\texttt{tan}(x)$ are supported.  The
+      inverse trigonometrical functions are written as 
+      $\texttt{asin}(x)$, $\texttt{acos}(x)$ and $\texttt{atan}(x)$.    
+\item $\texttt{sinh}(x)$ computes the \href{https://en.wikipedia.org/wiki/Hyperbolic_function}{hyperbolic sine} of $x$.
+      Similarly,  $\mathtt{cosh}(x)$ returns the hyperbolic cosine of $x$, while
+      $\mathtt{tanh}(x)$ returns the hyperbolic tangent of $x$.
+\item $\texttt{exp}(x)$ computes the \href{https://en.wikipedia.org/wiki/Exponential_function}{exponential
+      function}, i.e.~we have 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{exp}(x) = \mathrm{e}^x$.
+      \\[0.2cm]
+      Here, $\mathrm{e}$ denotes \href{https://en.wikipedia.org/wiki/E_(mathematical_constant)}{Euler's number}.
+\item $\texttt{log}(x)$ computes the \href{https://en.wikipedia.org/wiki/Natural_logarithm}{natural logarithm} of  $x$.
+      The logarithm base 10 of $x$ is computed as $\mathtt{log10}(x)$.
+\item $\texttt{abs}(x)$ computes the \href{https://en.wikipedia.org/wiki/Absolute_value}{absolute value} of $x$.
+\item $\mathtt{signum}(x)$ computes the \href{https://en.wikipedia.org/wiki/Sign_function}{sign function} of $x$.
+\item $\texttt{sqrt}(x)$ computes the \href{https://en.wikipedia.org/wiki/Square_root}{square root} of $x$, we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\ds\texttt{sqrt}(x) = \sqrt{x}$ \quad and \quad $\ds \texttt{sqrt}(x)^2 = x$.
+\item $\texttt{cbrt}(x)$ computes the \href{https://en.wikipedia.org/wiki/Cube_root}{cube root} of $x$, we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\ds\texttt{cbrt}(x) = \sqrt[\mbox{\scriptsize$3$}]{x}$ \quad and \quad $\ds\texttt{cbrt}(x)^3 = x$
+\item $\texttt{ceil}(x)$ computes the \href{https://en.wikipedia.org/wiki/Floor_and_ceiling_functions}{ceiling
+      function} of $x$, i.e.~ $\mathtt{ceil}(x)$ is the smallest integer that is at least as big as $x$.  We have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{ceil}(x) = \min(\{ z \in \mathbb{Z} \mid z \geq x \})$.
+      \\[0.2cm]
+      Hence the function \texttt{ceil} rounds up.
+\item $\texttt{floor}(x)$ is the biggest integer not exceeding $x$, we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{floor}(x) = \max(\{ z \in \mathbb{Z} \mid z \leq x \})$.
+      \\[0.2cm]
+      Hence, the function \texttt{floor} rounds down.
+\item $\texttt{round}(x)$ returns the nearest integer.  Floating point numbers of the form $x.5$ are rounded up.
+      For example, $\texttt{round(1.5)}=2$ and $\texttt{round(-1.5)}=-1$.
+\end{enumerate}
+\textsc{SetlX} supports infinite precision via rational numbers.  For example, the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{1/2 + 1/3;}
+\\[0.2cm]
+returns the result \texttt{5/6}.  There is no over- or underflow when working with rational numbers, nor are
+there any rounding errors.  For example, to compute
+\href{https://en.wikipedia.org/wiki/E_(mathematical_constant)}{Euler's number} $\mathrm{e}$ we can use the formula
+\\[0.2cm]
+\hspace*{1.3cm}
+$\displaystyle \mathrm{e} = \sum\limits_{n=0}^\infty \frac{1}{n!}$.
+\\[0.2cm]
+In \textsc{SetlX} the command
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{nDecimalPlaces(+/ \{ 1/n! : n in \{0..50\} \}, 50);}
+\\[0.2cm]
+computes $\mathrm{e}$ to a precision of more than 50 decimal digits.  The value returned is
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{1.71828182845904523536028747135266249775724709369995}.
+
+
+
+\section{An Application: Fixpunkt Algorithms}
+Suppose we want to solve the equation \\[0.2cm]
+\hspace*{1.3cm} $x = \cos(x)$. \\[0.2cm]
+Here, $x$ is a real number that we seek to compute.  A simple approach that works in this case is to use a
+\href{https://en.wikipedia.org/wiki/Fixed-point_iteration}{fixed-point iteration}.  To this end, we
+define the sequence $\bigl(x_n\bigr)_{n\in\mathbb{N}}$ inductively as follows:
+\\[0.2cm]
+\hspace*{1.3cm} 
+$x_0 := 0$ \quad and \quad $x_{n+1} := \mathtt{cos}(x_n)$ for all $n \in \mathbb{N}$. 
+\\[0.2cm]
+With the help of the \href{https://en.wikipedia.org/wiki/Banach_fixed-point_theorem}{Banach fixed-point theorem}
+it can be shown that this sequence converges to a solution of the equation $x = \cos(x)$, i.e.~if we define
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bar{x} := \lim\limits_{n\rightarrow\infty} x_n$,
+\\[0.2cm]
+then we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\cos\bigl(\bar{x}\bigr) = \bar{x}$.
+\\[0.2cm]
+Figure \ref{fig:solve.stlx} on page \pageref{fig:solve.stlx} shows the program
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/solve.stlx}{\texttt{solve.stlx}}
-zum Ziel.
+that uses this approach to solve the equation $x = \cos(x)$.
+
 
 \begin{figure}[!ht]
   \centering
@@ -1447,17 +1715,15 @@ zum Ziel.
     }
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{L\"{o}sung der Gleichung $x = cos(x)$ durch Iteration.}  \label{fig:solve.stlx}
+\caption{Solving the equation $x = cos(x)$ via fixed-point iteration.}  \label{fig:solve.stlx}
 \end{figure} %\$
 
-Bei dieser Implementierung wird die Schleife in dem Moment abgebrochen, wenn die
-Werte von \texttt{x} und \texttt{old\_x} nahe genug beieinander liegen.  Dieser
-Test kann aber am Anfang der Schleife noch gar nicht durchgef\"{u}hrt werden, weil
-da die Variable \texttt{old\_x} noch gar keinen Wert hat.  Daher k\"{o}nnen wir diesen Test 
-erst ausf\"{u}hren, wenn der n\"{a}chste Wert von \texttt{x} berechnet worden ist, denn erst dann 
-haben wir zwei Werte, die wir vergleichen k\"{o}nnen.  Ist der Test erfolgreich, so brechen wir die
-Schleife mit Hilfe des  Kommandos ``\texttt{break}'' ab.  
-In der Sprache \textsl{C} hat das Kommando ``\texttt{break}'' dieselbe Funktion.  
+In this program, the iteration stops as soon as the difference between the variables \texttt{x} and 
+\texttt{x\_old} is less that $10^{-13}$.  Here, \texttt{x} corresponds to $x_{n+1}$, while \texttt{x\_old}
+corresponds to $x_n$.  In $x_{n+1}$ and $x_n$ are sufficiently close, the execution of the \texttt{while} loop
+is stopped using the \texttt{break} statement.  This statement works the same way as in the programming language
+\texttt{C}. 
+
 
 
 \begin{figure}[!ht]
@@ -1476,7 +1742,7 @@ In der Sprache \textsl{C} hat das Kommando ``\texttt{break}'' dieselbe Funktion.
         for (n in [1 .. 10000]) {
             oldX := x;
             x := f(x);
-            if (abs(x - oldX) < 1.0e-15) {
+            if (abs(x - oldX) < 1.0e-12) {
                 return x;
             }
         }
@@ -1485,179 +1751,65 @@ In der Sprache \textsl{C} hat das Kommando ``\texttt{break}'' dieselbe Funktion.
     print("solution to x = 1/(1+x): ", solve(x |-> 1.0/(1+x), 0));
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Eine generische Implementierung des Fixpunkt-Algorithmus}.
+\caption{A generic implementation of fixed-point iteration.}
 \label{fig:fixpoint.stlx}
 \end{figure}
 
-Abbildung \ref{fig:fixpoint.stlx} zeigt das Programm
+Figure \ref{fig:fixpoint.stlx} on page \pageref{fig:fixpoint.stlx} shows the program
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/fixpoint.stlx}{\texttt{fixpoint.stlx}}.
-Hier ist eine generische Funktion \texttt{solve} implementiert, die zwei Argumente verarbeitet: 
-
-
+In this program we have implemented a generic function \texttt{solve} that takes two arguments.
 \begin{enumerate}
-\item Das Argument \texttt{f} ist die Funktion, f\"{u}r die ein Fixpunkt berechnet werden soll.
-\item Das Argument \texttt{x0} gibt den Startwert der Fixpunkt-Iteration an.
+\item \texttt{f} is a unary function.  The purpose of the \texttt{solve} is to compute the solution of the equation
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $f(x) = x$.
+      \\[0.2cm]
+      This equation is solved via a fixed-point iteration.
+\item \texttt{x0} is used as the initial value for the fixed-point iteration.
 \end{enumerate}
-In Zeile 11 haben wir die Funktion \texttt{solve} aufgerufen, um die Gleichung $x = \cos(x)$ zu
-l\"{o}sen.  In Zeile 12 l\"{o}sen wir die Gleichung 
+Line 11 calls \texttt{solve} to compute the solution of the equation $x = \cos(x)$.
+Line 12 solves the equation 
 \\[0.2cm]
 \hspace*{1.3cm}
-$x = \bruch{1}{1+x}$ 
+$x = \bruch{1}{1+x}$. 
 \\[0.2cm]
-die zu der quadratischen Gleichung $x^2 + x = 1$ \"{a}quivalent ist.  Beachten Sie, dass wir die
-Funktion $x \mapsto \frac{1}{1+x}$ in \textsc{SetlX} durch den Ausdruck
+This equation is equivalent to the quadratic equation $x^2 + x = 1$.  Note that we have defined the function
+ $x \mapsto \frac{1}{1+x}$ via the expression
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{x |-> 1.0/(1+x)}
+\texttt{x |-> 1.0/(1+x)}.
 \\[0.2cm]
-definieren k\"{o}nnen.  Hier habe ich die Flie\ss{}komma-Zahl $1.0$ verwendet, da \textsc{SetlX} sonst mit
-rationalen Zahlen rechnen w\"{u}rde, was wesentlich aufwendiger ist.
+This expression is called an \emph{anonymous function} since we haven't given a name to the function.  It is
+also important to note that we have used the floating point number  $1.0$ instead of the integer \texttt{1}.
+The reason is that otherwise \setlx\ would use rational numbers when doing the iteration.  Although this would
+work, arithmetic using rational numbers is considerable less efficient than arithmetic that uses floating point
+numbers. 
 
-
-
-Ganz nebenbei zeigt das obige Beispiel auch, dass Sie in \textsc{SetlX} nicht
-nur mit rationalen Zahlen, sondern auch mit reellen Zahlen rechnen k\"{o}nnen.  Eine Zahlen-Konstante,
-die den Punkt ``\texttt{.}'' enth\"{a}lt, wird automatisch als reelle Zahl erkannt
-und auch so abgespeichert.  In \textsc{SetlX} stehen unter anderem die folgenden reellen
-Funktionen zur Verf\"{u}gung: 
-\begin{enumerate}
-\item Der Ausdruck $\texttt{sin}(x)$ berechnet den Sinus von $x$.
-      Au\ss{}erdem stehen die trigonometrischen Funktionen $\texttt{cos}(x)$ und 
-      $\texttt{tan}(x)$ zur Verf\"{u}gung. Die Umkehr-Funktionen der trigonometrischen Funktionen sind
-      $\texttt{asin}(x)$, $\texttt{acos}(x)$ und $\texttt{atan}(x)$.    
-
-      Der Sinus Hyperbolicus von $x$ wird durch $\mathtt{sinh}(x)$ berechnet. 
-      Entsprechend berechnet $\mathtt{cosh}(x)$ den Kosinus Hyperbolicus und
-      $\mathtt{tanh}(x)$ den Tangens Hyperbolicus.
-\item Der Ausdruck $\texttt{exp}(x)$ berechnet die Potenz zur Basis $e$, es gilt
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\texttt{exp}(x) = e^x$.
-\item Der Ausdruck $\texttt{log}(x)$ berechnet den nat\"{u}rlichen Logarithmus von $x$.
-       Der Logarithmus zur Basis 10 von $x$ wird durch $\mathtt{log10}(x)$ berechnet.
-\item Der Ausdruck $\texttt{abs}(x)$ berechnet den Absolut-Betrag von $x$, w\"{a}hrend
-      $\mathtt{signum}(x)$ das Vorzeichen von $x$ berechnet.
-\item Der Ausdruck $\texttt{sqrt}(x)$ berechnet die Quadrat-Wurzel von $x$, es gilt
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\texttt{sqrt}(x) = \sqrt{x}$.
-\item Der Ausdruck $\texttt{cbrt}(x)$ berechnet die dritte Wurzel von $x$, es gilt
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\texttt{cbrt}(x) = \sqrt[3]{x}$.
-\item Der Ausdruck $\texttt{ceil}(x)$ berechnet die kleinste ganze Zahl, die gr\"{o}\ss{}er oder
-      gleich $x$ ist, es gilt
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\texttt{ceil}(x) = \min(\{ z \in \mathbb{Z} \mid z \geq x \})$.
-      \\[0.2cm]
-      Die Funktion \texttt{ceil} rundet ihr Argument also immer auf.
-\item Der Ausdruck $\texttt{floor}(x)$ berechnet die gr\"{o}\ss{}te ganze Zahl, die kleiner oder
-      gleich $x$ ist, es gilt
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\texttt{floor}(x) = \max(\{ z \in \mathbb{Z} \mid z \leq x \})$.
-      \\[0.2cm]
-      Die Funktion \texttt{floor} rundet ihr Argument also immer ab.
-\item Der Ausdruck $\texttt{round}(x)$ rundet $x$ zu einer ganzen Zahl.
-\end{enumerate}
-Dar\"{u}ber hinaus unterst\"{u}tzt \textsc{SetlX} die Verwendung von rationalen Zahlen.  Die
-Eingabe von
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{1/2 + 1/3;}
-\\[0.2cm]
-liefert das Ergebnis \texttt{5/6}.  Im Unterschied zu der Sprache \texttt{C} kann es bei rationalen
-Zahlen keinen \"{U}berlauf geben.  Damit k\"{o}nnen wir die rationalen Zahlen benutzen, um mit beliebig
-hoher Genauigkeit zu rechnen.  Beispielsweise kann die Euler'sche Zahl \texttt{e} mit Hilfe der Formel
-\\[0.2cm]
-\hspace*{1.3cm}
-$\displaystyle e = \sum\limits_{n=0}^\infty \frac{1}{n!}$
-\\[0.2cm]
-berechnet werden.  In \textsc{SetlX} k\"{o}nnen wir \texttt{e} mit Hilfe des Kommandos
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{nDecimalPlaces(+/ \{ 1/n! : n in \{0..50\} \}, 50);}
-\\[0.2cm]
-auf 50 Stellen Genauigkeit berechnen.  Wir erhalten den Wert
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{1.71828182845904523536028747135266249775724709369995}.
-
-
-\subsection{Verschiedenes}
-Der Interpreter bietet die M\"{o}glichkeit, komplexe Programme zu laden.  Der Befehl
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{load(\textsl{file});}
-\\[0.2cm]
-l\"{a}dt das Programm, dass sich in der Datei \textsl{file} befindet und f\"{u}hrt die in dem
-Programm vorhandenen Befehle aus.  F\"{u}hren wir beispielsweise den Befehl
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{load(\symbol{34}primes-forall.stlx\symbol{34});}
-\\[0.2cm]
-im Interpreter aus und enth\"{a}lt die Datei ``\texttt{primes-forall.stlx}'' das in Abbildung
-\ref{fig:primes-forall.stlx} auf Seite \pageref{fig:primes-forall.stlx} gezeigte Programm,
-so k\"{o}nnen wir anschlie\ss{}end mit den in dieser Datei definierten Variablen arbeiten.
-Beispielsweise liefert der Befehl
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{print(isPrime);}
-\\[0.2cm]
-die Ausgabe:
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{procedure (p) \{ return forall (x in divisors(p) | x in \{1, p\}); \}}
-\\[0.2cm]
-Zeichenketten, auch bekannt als \emph{Strings}, werden in \textsc{SetlX} in doppelte
-Hochkommata gesetzt.  Der Operator ``\texttt{+}'' kann dazu benutzt werden, zwei Strings
-aneinander zu h\"{a}ngen, der Ausdruck 
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{\squote{abc} + \squote{uvw};}
-\\[0.2cm]
-liefert also das Ergebnis
-\\[0.2cm]
-\hspace*{1.3cm}
-\squote{abcuvw}.
-\\[0.2cm]
-Zus\"{a}tzlich kann eine nat\"{u}rliche Zahl $n$ mit einem String $s$ \"{u}ber den
-Multiplikations-Operator ``\texttt{*}'' verkn\"{u}pft werden.  Der Ausdruck 
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{n * s;}
-\\[0.2cm]
-liefert als Ergebnis die $n$-malige Verkettung von $s$.  Beispielsweise ist das Ergebnis von
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{3 * \squote{abc};}
-\\[0.2cm]
-der String \squote{abcabcabc}.
 
 \section{Case Study: Computation of Poker Probabilities}
 In this short section we are going to show how to compute probabilities for the
 \href{https://en.wikipedia.org/wiki/Texas_hold_%27em}{\textsl{Texas Hold'em}} variation of 
 \href{https://en.wikipedia.org/wiki/Poker}{poker}.   Texas Hold'em poker is played with a deck of 52
-cards.  Every card has a \emph{value}.  The value is an element of the set
+cards.  Every card has a \emph{value}.  This value is an element of the set
 \\[0.2cm]
 \hspace*{1.3cm} 
 $\textsl{values} = \{ 2, 3, 4, 5, 6, 7, 8, 9, 10, \textsl{Jack}, \textsl{Queen}, \textsl{King}, \textsl{Ace} \}$.
 \\[0.2cm]
-Furthermore, every card has a \emph{suit}.  The suit is an element of the set
+Furthermore, every card has a \emph{suit}.  This suit is an element of the set
 \\[0.2cm]
 \hspace*{1.3cm} 
 $\textsl{suits} = \{ \club, \heart, \diamondsuit, \spade \}$.
 \\[0.2cm]
-Hence, a card can be represented as a pair $\pair(v,s)$, where $v$ denotes the value while $s$ is
-the suit of the card.  Hence, the set of all cards can be represented as the set
+These suits are pronounced \emph{club}, \emph{heart}, \emph{diamond}, and \emph{spade}.
+As a card is determined by its value and its suit, a card can be represented as a pair $\pair(v,s)$, where $v$
+denotes the value while $s$ is the suit of the card.  Hence, the set of all cards can be represented as the set
 \\[0.2cm]
 \hspace*{1.3cm} 
 $\textsl{deck} = \{ \pair(v,s) \mid v \in \textsl{values} \wedge \textsl{s} \in \textsl{suits} \}$.
 \\[0.2cm]
 At the start of a game of Texas Hold'em, every player receives two cards.  These two cards are known
-as \emph{preflop} or \emph{hole}.  Next, there is a bidding phase where players can bet on their
-cards.   After this bidding phase, the dealer puts three cards on the table.  These three cards are
+as the \emph{preflop} or the \emph{hole}.  Next, there is a bidding phase where players can bet on their
+cards.   After this bidding phase, the dealer puts three cards open on the table.  These three cards are
 known as \emph{flop}.  Let us assume that a player has been dealt the set of cards
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1666,7 +1818,7 @@ $\{ \pair(3, \club), \pair(3, \spade) \}$.
 This set of cards is known as a pocket pair.  Then the player would like to know the probability
 that the flop will contain another card with value $3$, as this would greatly increase her chance of
 winning the game.  In order to compute this probability we have to compute the number of possible
-flops that contain a card with value $3$ and we have to divide this number by the number of all
+flops that contain a card with the value $3$ and we have to divide this number by the number of all
 possible flops:
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1693,12 +1845,14 @@ program line by line.
     deck   := { [ v, s ] : v in values, s in suits };
     hole   := { [ "3", "c" ], [ "3", "s" ] };
     rest   := deck - hole;
-    flops  := { { k1, k2, k3 } : k1 in rest, k2 in rest, k3 in rest | #{ k1, k2, k3 } == 3 };
+    flops  := { { k1, k2, k3 } : k1 in rest, k2 in rest, k3 in rest 
+                               | #{ k1, k2, k3 } == 3 
+              };
     trips  := { f : f in flops | [ "3", "d" ] in f || [ "3", "h" ] in f };
     print(1.0 * #trips / #flops);
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Berechnung von Wahrscheinlichkeiten im Poker}
+\caption{Computing a probability in poker.}
 \label{fig:poker-triple.stlx}
 \end{figure}
 
@@ -1721,8 +1875,8 @@ program line by line.
       \item ``\texttt{s}'' is short for $\spade$, which is pronounced as \emph{spade}. 
       \end{enumerate} 
 \item Line 3 defines the set of all cards.  This set is stored as the variable \texttt{deck}.  Every
-      card is represented as a pair $[v,s]$. Here, $v$ is the value of the card, while $s$ is its suit.
-\item Line 4 defines the set \texttt{hole}.  This set represents the two cards dealt to the player.
+      card is represented as a pair of the form $[v,s]$. Here, $v$ is the value of the card, while $s$ is its suit.
+\item Line 4 defines the set \texttt{hole}.  This set represents the two cards that have been given to our player.
 \item The remaining cards are defined as the variable  \texttt{rest} in line 5.
 \item Line 6 computes the set of all possible flops.  Since the order of the cards in the flop does
       not matter, we use sets to represent these flops.  However, we have to take care that the flop
@@ -1732,19 +1886,20 @@ program line by line.
       \hspace*{1.3cm}
       $\mathtt{k1} \not= \mathtt{k2}$, \quad $\mathtt{k1} \not= \mathtt{k3}$,  \quad and \quad $\mathtt{k2} \not= \mathtt{k3}$.
       \\[0.2cm]
-      However, these inequalities are satisfied if and only if the set 
+      These inequalities are satisfied if and only if the set 
       $\{ \mathtt{k1}, \mathtt{k2}, \mathtt{k3} \}$ contains exactly three elements.  Hence, when
       choosing \texttt{k1}, \texttt{k2}, and \texttt{k3} we have to make sure that the condition
       \\[0.2cm]
       \hspace*{1.3cm}
-      \texttt{\# \{ k1, k2, k3 \} == 3 }
+      \texttt{\#\{ k1, k2, k3 \} == 3 }
       \\[0.2cm]
       holds.
-\item Line 7 computes the subset of flops that contain at least one more card with the value 3.
-      As the 3 of clubs and the 3 of spades have already been dealt to the player, the only cards
-      with value 3 that are left are the 3 of diamonds and the 3 of hearts.
-\item Finally, the probability for obtaining another card with value 3 in the flop is computed as
-      the ratio of the number of flops containing a card with value 3 to the number of all possible flops.
+\item Line 9 computes the subset of flops that contain at least one card with a value of 3.
+      As the 3 of clubs and the 3 of spades have already been dealt to our player, the only cards
+      with value 3 that are left are the 3 of diamonds and the 3 of hearts.  Therefore, we are looking for
+      those flops that contain one of these two cards.
+\item Finally, the probability for obtaining another card with a value of 3 in the flop is computed as
+      the ratio of the number of flops containing a card with a value of 3 to the number of all possible flops.
 
       However, we have to be careful here:  The evaluation of the expressions
       \texttt{\#trips} and \texttt{\#flops} produces integer numbers.  Therefore, the division
@@ -1752,7 +1907,7 @@ program line by line.
       number we have to convert the result into a floating point number by multiplying the result
       with the floating point number $1.0$.
 \end{enumerate}
-When we run the program we see that the probability of improving a pocket pair on the flop to trips
+When we run the program we see that the probability of improving a pocket pair on the flop to trips or better
 is about  $11.8\%$.
 
 \remarkEng
@@ -1763,174 +1918,233 @@ to compute the probabilities instead.  This method will be discussed in the lect
 and their complexities. 
 
 
-\section{Fallstudie: Berechnung von Pfaden}
-Wir wollen  dieses Kapitel mit einer praktisch relevanten Anwendung der Sprache
-\textsc{SetlX} abschlie\ss{}en.  Dazu betrachten wir das Problem, Pfade in
-einem \emph{Graphen} zu bestimmen.  Abstrakt gesehen beinhaltet ein Graph die Information,
-zwischen welchen Punkten es direkte Verbindungen gibt.
-Zur Vereinfachung wollen wir zun\"{a}chst annehmen, dass die einzelnen Punkte durch Zahlen
-identifiziert werden.  Dann k\"{o}nnen wir eine direkte Verbindung zwischen zwei Punkten durch
-ein Paar von Zahlen
-darstellen.  Den Graphen selber stellen wir als eine Menge solcher Paaren dar.
-Wir betrachten ein Beispiel. Sei \texttt{R} wie folgt definiert: \\[0.2cm]
-\hspace*{0.5cm} 
-$R \mathtt{:=} \bigl\{ \pair(1,2), \pair(2,3), \pair(1,3), \pair(2,4), \pair(4,5) \bigr\}$.
+\section{Case Study: Finding a Path in a Graph}
+We want to close this chapter with an application that is practically relevant.  In order to prepare for this,
+we discuss the problem of finding a path in a \href{https://en.wikipedia.org/wiki/Directed_graph}{directed graph}.
+Abstractly, a graph consists of vertices and edges that connect these vertices.  In an application, the
+vertices could be towns and villages, while the edges would be interpreted as streets connecting these
+villages.  To simplify matters, let us assume for now that the vertices are given as natural numbers, while the
+edges are represented as pairs of natural numbers.  Then, the graph can be represented as the set of its edges,
+as the set of vertices is implicitly given once the edges are known.  To make things concrete, let us consider
+an example.  In this case, the set of edges is called \texttt{R} and is defined as follows: 
 \\[0.2cm]
-In diesem Graphen haben wir die Punkte \texttt{1},
-\texttt{2}, \texttt{3}, \texttt{4} und \texttt{5}.  Ein Darstellung dieses Graphen finden
-Sie in Abbildung \ref{fig:graph0}.
-Beachten Sie, dass die Verbindungen in diesem Graphen
-\emph{Einbahn-Stra\ss{}en} sind:  Wir haben zwar eine Verbindung von \texttt{1} nach
-\texttt{2}, aber keine Verbindung von \texttt{2} nach \texttt{1}.
+\hspace*{1.3cm}
+$\texttt{R}\; \mathtt{:=}\; \bigl\{ \pair(1,2), \pair(2,3), \pair(1,3), \pair(2,4), \pair(4,5) \bigr\}$.
+\\[0.2cm]
+In this graph, the set of vertices is given as
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{ 1, 2, 3, 4, 5 \}$.
+\\[0.2cm]
+This graph is shown in Figure \ref{fig:graph0} on page \pageref{fig:graph0}.  You should note that the
+connections between vertices that are given in this graph are unidirectional:  While there is a connection from
+vertex $1$ to vertex $2$, there is no connection form vertex $2$ to vertex $1$.
+
  
 \begin{figure}[!ht]
   \centering
   \epsfig{file=Figures/graph0,scale=0.6}
 
-  \caption{Ein einfacher Graph.}
+  \caption{A simple graph.}
   \label{fig:graph0}
 \end{figure}
 
 
 
 \noindent
-In dem Graphen sind nur die unmittelbaren Verbindungen
-zwischen zwei Punkten verzeichnet.  Es gibt aber unter Umst\"{a}nden auch noch
-andere Verbindungen.  Beispielsweise gibt es eine unmittelbare Verbindung von
-\texttt{1} nach \texttt{3}.  Es gibt dar\"{u}ber hinaus noch einen
-Pfad von \texttt{1} nach \texttt{3}, der \"{u}ber den Punkt \texttt{2} geht.  
-Unser Ziel in diesem Abschnitt ist es einen Algorithmus zu entwickeln, der \"{u}berpr\"{u}ft, ob
-zwischen zwei Punkten eine Verbindung existiert und gegebenenfalls berechnet.
-Dazu entwickeln wir zun\"{a}chst einen Algorithmus, der nur \"{u}berpr\"{u}ft, ob es eine
-Verbindung zwischen zwei Punkten gibt und erweitern diesen Algorithmus dann sp\"{a}ter so, dass diese
-Verbindung auch berechnet wird.
-
-\subsection{Berechnung des transitiven Abschlusses einer Relation}
-Als erstes bemerken wir, dass ein Graph $R$ nichts anderes ist als eine bin\"{a}re Relation.
-Um feststellen zu k\"{o}nnen, ob es zwischen zwei Punkten eine Verbindung gibt,
-m\"{u}ssen wir den transitiven Abschluss $R^+$ der Relation $R$ bilden.  Wir haben bereits
-in der Mathematik-Vorlesung gezeigt, dass $R^+$ wie folgt
-berechnet werden kann: \\[0.2cm]
-\hspace*{1.3cm} $R^+ = \bigcup\limits_{i=1}^{\infty} R^i = R^1 \cup R^2 \cup R^3 \cup \cdots$  \\[0.2cm]
-Auf den ersten Blick betrachtet sieht diese Formel so aus, als ob wir unendlich
-lange rechnen m\"{u}ssten.  Aber versuchen wir einmal, diese Formel anschaulich zu
-verstehen.  Zun\"{a}chst steht da $R$.  Das sind die Verbindungen, die unmittelbar  gegeben
-sind.  Als n\"{a}chstes steht dort $R^2$ und das ist $R \circ R$.  Es gilt aber \\[0.2cm]
-\hspace*{1.3cm} $R \circ R = \{ \pair(x,z) \mid \exists y \colon \pair(x,y) \in R \wedge \pair(y,z) \in R \}$
+The graph given by the relation \texttt{R} contains only the direct connections of vertices.  For example, in
+the graph shown in Figure \ref{fig:graph0}, there is a direct connection from vertex $1$ to vertex $2$ and
+another direct connection from vertex $2$ to vertex $4$.  Intuitively, vertex $4$ is reachable from vertex $1$,
+since from vertex $1$ we can first reach vertex $2$ and from vertex $2$ we can then reach vertex $4$.  However,
+there is is no direct connection between the vertices $1$ and $4$.  To make this more formal, define a \emph{path}
+of a graph $R$ as a list of vertices
 \\[0.2cm]
-In $R^2$ sind also alle die Pfade enthalten, die aus zwei direkten Verbindungen
-zusammengesetzt sind.  Allgemein l\"{a}sst sich durch Induktion sehen, dass $R^n$
-alle die Pfade enth\"{a}lt, die aus $n$ direkten Verbindungen zusammengesetzt sind.  Nun
-ist die Zahl der Punkte, die wir haben, endlich.  Sagen wir mal, dass es
-$k$ Punkte sind.  Dann macht es  keinen Sinn solche Pfade zu betrachten, die
-aus mehr als $k-1$ direkten Verbindungen zusammengesetzt sind, denn wir wollen ja
-nicht im Kreis herum laufen.  Damit kann dann aber die Formel zur Berechnung des
-transitiven Abschlusses vereinfacht werden:\\[0.2cm]
+\hspace*{1.3cm}
+$[x_1, x_2, \cdots, x_n]$ \quad such that \quad $\pair(x_i,x_{i+1}) \in R$ \quad for all $i=1,\cdots,n-1$.
+\\[0.2cm]
+In this case, the path $[x_1, x_2, \cdots, x_n]$ is written as
+\\[0.2cm]
+\hspace*{1.3cm}
+$x_1 \mapsto x_2 \mapsto \cdots \mapsto x_n$
+\\[0.2cm]
+and has the \emph{length} $n-1$.  It is important to note that the length of a path
+$[x_1,x_2,\cdots,x_n]$ is defined as the number of edges connecting the vertices and not as the
+number of vertices appearing in the path.
+
+Furthermore,  two vertices $a$ and $b$ are said to be \emph{connected} iff there exists a path
+\\[0.2cm]
+\hspace*{1.3cm}
+$[x_1,\cdots,x_n]$ \quad such that \quad $a = x_1$ \quad and \quad $b = x_n$.
+\\[0.2cm]
+The goal of this section is to develop an algorithm that checks whether two vertices $a$ and $b$ are connected.
+Furthermore, we want to be able to compute the corresponding path connecting the vertices $a$ and $b$.
+
+
+\subsection{Computing the Transitive Closure of a Relation}
+We have already noted that a graph can be represented as the set of its edges and hence as a relation.
+In order to decide whether there is a path connecting two vertices we have to compute the transitive closure
+$R^+$ of a relation $R$.  
+In the \href{https://github.com/karlstroetmann/Lineare-Algebra/blob/master/Script/lineare-algebra.pdf}{math lecture}
+we have seen that the transitive closure $R^+$ can be computed as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$R^+ = \bigcup\limits_{i=1}^{\infty} R^i = R^1 \cup R^2 \cup R^3 \cup \cdots$  
+\\[0.2cm]
+This formula might look intimidating as it suggests an infinite computation.  Fortunately, it turns out that we
+do not have to compute all powers of the form $R^i$.  Let me explain the reason that allows us to cut the
+computation short.  
+\begin{enumerate}
+\item $R$ is the set of direct connections between two vertices.
+\item $R^2$ is the same as $R \circ R$ and the relational product satisfies
+      \\[0.2cm]
+      \hspace*{1.3cm}
+       $R \circ R = \{ \pair(x,z) \mid \exists y \colon \pair(x,y) \in R \wedge \pair(y,z) \in R \}$.
+      \\[0.2cm]
+      Hence, $R \circ R$ contains those pairs $\pair(x,z)$ that are connected via one intermediate vertex $y$,
+      i.e.~there is a path of the form $[x,y,z]$ that connects $x$ and $y$.
+
+      In general, we can show by induction that $R^n$ connect those pairs that are connected by a path of
+      length $n+1$.  The induction step of this proof runs as follows:
+\item $R^{n+1}$ is defined as $R \circ R^{n}$ and therefore we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $R \circ R^n = \{ \pair(x,z) \mid \exists y \colon \pair(x,y) \in R \wedge \pair(y,z) \in R^n \}$.
+      \\[0.2cm]
+      As $\pair(y,z) \in R^n$, the induction hypothesis guarantees that the vertices $y$ and $z$ are
+      connected by a path of length $n+1$.  Hence, this 
+      path has the form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\underbrace{[y, \cdots, z]}_{\mbox{\scriptsize List of length $n+1$.}}$
+      \\[0.2cm]
+      Adding $x$ at the front of this list will produce the list
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $[x,y, \cdots, z]$.
+      \\[0.2cm]
+      This list has a length of $1 + (n+1) = n + 2$ and, furthermore, connects $x$ and $z$.  Hence $R^{n+1}$
+      contains those pairs $\pair(x, z)$ that are connected by a path of length $n+2$.
+\end{enumerate}
+Now the important observation is the following. The set of all vertices is finite.  For the arguments sake, let
+us assume there are $k$ vertices.  But then every path that has a length greater than $k$ must contain one
+vertex that is visited at least twice and hence this path is redundant, i.e.~there is a shorter path that
+connects the same vertices.  Therefore, for a finite graph with $k$ vertices, the formula to compute the
+transitive closure can be simplified as follows:
+\\[0.2cm]
 \hspace*{1.3cm} 
 $R^+ = \bigcup\limits_{i=1}^{k-1} R^i$.
 \\[0.2cm]
-Diese Formel k\"{o}nnten wir tats\"{a}chlich so benutzen.  Es ist aber noch effizienter,
-einen Fixpunkt-Algorithmus zu verwenden.  Dazu zeigen wir zun\"{a}chst, dass der transitive
-Abschluss $R^+$ die folgende Fixpunkt-Gleichung erf\"{u}llt:
+While we could use this formula as its stands, it is more efficient to use a fixed-point iteration instead.
+To this end, we prove that the transitive closure $R^+$ satisfies the following equation:
 \begin{equation}
   \label{fixpunkt}
   R^+ = R \cup R \circ R^+. 
 \end{equation}
-Wir erinnern hier daran, dass wir vereinbart haben, dass der Operator $\circ$ st\"{a}rker
-bindet als der Operator $\cup$, so dass der Ausdruck $R \cup R \circ R^+$ als
-$R \cup (R \circ R^+)$ zu lesen ist.
-Die Fixpunkt-Gleichung \ref{fixpunkt} l\"{a}sst sich algebraisch beweisen.  Es gilt
-\[
+Let me remind you that the precedence of the operator $\circ$ 
+is higher than the precedence of the operator $\cup$.  Therefore, the expression $R \cup R \circ R^+$ is parenthesized
+as $R \cup (R \circ R^+)$.  The equation \ref{fixpunkt} can be proven algebraically.  We have:
+\\[0.2cm]
+\hspace*{1.3cm}
+$
 \begin{array}{cll}
     & R \cup R \circ R^+ \\[0.2cm]
   = & R \cup R \circ \bigcup\limits_{i=1}^{\infty} R^i \\[0.4cm]
   = & R \cup R \circ \bigl(R^1 \cup R^2 \cup R^3 \cup \cdots \bigr) \\[0.2cm]
-  = & R \cup \bigl(R \circ R^1 \cup R \circ R^2 \cup R \circ R^3 \cup \cdots \bigr) &
-      \mbox{Distributiv-Gesetz} \\[0.2cm]
-  = & R \cup \bigl(R^2 \cup R^3 \cup  R^4 \cup \cdots \bigr) & \mbox{Potenz-Gesetz} \\[0.2cm]
+  = & R \cup \bigl(R \circ R^1 \cup R \circ R^2 \cup R \circ R^3 \cup \cdots \bigr) \\[0.2cm]
+  = & R \cup \bigl(R^2 \cup R^3 \cup  R^4 \cup \cdots \bigr)  \\[0.2cm]
   = & R^1 \cup \bigl(R^2 \cup R^3 \cup  R^4 \cup \cdots \bigr) \\[0.2cm]
   = & \bigcup\limits_{i=1}^{\infty} R^i \\[0.4cm]
-  = & R^+
+  = & R^+.
 \end{array}
-\]
-Die Gleichung \ref{fixpunkt} kann benutzt werden um den transitiven Abschluss iterativ zu
-berechnen.  Wir definieren eine Folge $(T_n)_{n \in \mathbb{N}}$ durch Induktion folgt:
+$
+\\[0.2cm]
+Equation  \ref{fixpunkt} can now be used to compute $R^+$ via a fixed-point iteration.
+To this end, the sequence $(T_n)_{n \in \mathbb{N}}$ is defined inductively:
 \begin{enumerate}
-\item[I.A.] $n = 1$:         \hspace*{2.3cm} $T_1 := R$
-\item[I.S.] $n \mapsto n+1$: \hspace*{1.6cm} $T_{n+1} := R \cup R \circ T_n$. 
+\item[I.A.] $n = 0$: 
+
+            $T_0 := R$
+\item[I.S.] $n \mapsto n+1$:
+
+            $T_{n+1} := R \cup R \circ T_n$. 
 \end{enumerate}
-Die Relationen $T_n$ lassen sich auf die Relation $R$ zur\"{u}ckf\"{u}hren:
+The relation  $T_n$ can be expressed via the relation $R$, we have
 \begin{enumerate}
-\item $T_1 = R$.
-\item $T_2 = R \cup R \circ T_1 = R \cup R \circ R = R^1 \cup R^2$.
-\item $\begin{array}[t]{lcl}
-       T_3  & = & R \cup R \circ T_2 \\
+\item $T_0 = R$.
+\item $T_1 = R \cup R \circ T_0 = R \cup R \circ R = R^1 \cup R^2$.
+\item$\begin{array}[t]{lcl}
+       T_2  & = & R \cup R \circ T_1 \\
             & = & R \cup R \circ (R^1 \cup R^2) \\
             & = & R^1 \cup R^2 \cup R^3. \\
        \end{array}
       $
 \end{enumerate}
-Allgemein k\"{o}nnen wir durch vollst\"{a}ndige Induktion \"{u}ber $n \in \mathbb{N}$ beweisen, dass
-\[ T_n = \bigcup\limits_{i=1}^{n} R^i \]
-gilt.  Der Induktions-Anfang folgt unmittelbar aus der Definition von $T_1$.  Um den 
-Induktions-Schritt durchzuf\"{u}hren, betrachten wir
-\[ \begin{array}{lcll}
-   T_{n+1} & = & R \cup R \circ T_n & \mbox{gilt nach Definition} \\[0.2cm]
-           & = & R \cup R \circ \left(\bigcup\limits_{i=1}^{n} R^i\right) &
-                 \mbox{gilt nach Induktions-Voraussetzung} \\[0.4cm]
-           & = & R \cup R^2 \cup \cdots \cup R^{n+1}  &
-                 \mbox{Distributiv-Gesetz} \\[0.2cm]
-           & = & R^1 \cup \cdots \cup R^{n+1} \\
-           & = & \bigcup\limits_{i=1}^{n+1} R^i & \Box 
-   \end{array}
-\]
-Die Folge $(T_n)_{n\in\mathbb{N}}$ hat eine weitere n\"{u}tzliche Eigenschaft: Sie ist 
-\emph{monoton steigend}.  Allgemein nennen wir eine Folge von Mengen $(X_n)_{n\in\mathbb{N}}$
-\emph{monoton steigend}, wenn 
+In general, we can show by induction that
 \\[0.2cm]
 \hspace*{1.3cm}
-$\forall n \in \mathbb{N}: X_n \subseteq X_{n+1}$
+$T_n = \bigcup\limits_{i=1}^{n+1} R^i$
 \\[0.2cm]
-gilt, wenn also die Mengen $X_n$ mit wachsendem Index $n$ immer gr\"{o}\ss{}er werden.
-Die Monotonie der Folge $(T_n)_{n \in \mathbb{N}}$ folgt aus der gerade bewiesenen Eigenschaft
-$T_n = \bigcup_{i=1}^{n} R^i$, denn es gilt
+holds for all $n \in \mathbb{N}$.  The base case of this proof is immediate form the definition of $T_0$.
+In the induction step we observe the following:
+\\[0.2cm]
+\hspace*{1.3cm}
+$
+ \begin{array}{lcll}
+   T_{n+1} & = & R \cup R \circ T_n & \mbox{by definition} \\[0.2cm]
+           & = & R \cup R \circ \left(\bigcup\limits_{i=1}^{n+1} R^i\right) &
+                 \mbox{by induction hypothesis} \\[0.4cm]
+           & = & R \cup R \circ \left(R \cup \cdots \cup R^{n+1}\right) \\[0.2cm] 
+           & = & R \cup R^2 \cup \cdots \cup R^{n+2}  &
+                 \mbox{distributivity} \\[0.2cm]
+           & = & \bigcup\limits_{i=1}^{n+2} R^i & \Box 
+   \end{array}
+$
+\\[0.2cm]
+The sequence $(T_n)_{n\in\mathbb{N}}$ has another useful property:  It is 
+\emph{monotonically increasing}.  In general, a sequence of sets $(X_n)_{n\in\mathbb{N}}$ is called
+\emph{monotonically increasing} iff we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\forall n \in \mathbb{N}: X_n \subseteq X_{n+1}$,
+\\[0.2cm]
+i.e.~the sets $X_n$ get bigger with growing index $n$.
+The monotonicity of the sequence Folge $(T_n)_{n \in \mathbb{N}}$ is an immediate consequence of the equation
+$T_n = \bigcup_{i=1}^{n+1} R^i$ because we have:
 \\[0.2cm]
 \hspace*{1.3cm}
 $
 \begin{array}[t]{llcl}
                 & T_n \subseteq T_{n+1} \\[0.2cm]
-\Leftrightarrow & \bigcup\limits_{i=1}^{n} R^i \subseteq \bigcup\limits_{i=1}^{n+1} R^i \\[0.5cm]
-\Leftrightarrow & \bigcup\limits_{i=1}^{n} R^i \subseteq \bigcup\limits_{i=1}^{n} R^i \cup R^{n+1} \\
+\Leftrightarrow & \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{n+2} R^i \\[0.5cm]
+\Leftrightarrow & \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{n+1} R^i \cup R^{n+2} \\
 \end{array}
 $
 \\[0.2cm]
-und die letzte Formel ist offenbar wahr.  Ist nun die Relation $R$ endlich, so ist nat\"{u}rlich 
-auch $R^+$ eine endliche Menge.  Da die 
-Folge $T_n$ aber in dieser Menge liegt, denn es gilt ja 
+If the relation  $R$ is finite, then the transitive closure $R^+$ is finite, too.  The sets $T_n$ 
+are all subsets of $R^+$ because we have
 \\[0.2cm]
 \hspace*{1.3cm}
-$T_n = \bigcup\limits_{i=1}^{n} R^i \subseteq \bigcup\limits_{i=1}^{\infty} R^i = R^+$ \quad f\"{u}r alle $n \in \mathbb{N}$,
+$T_n = \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{\infty} R^i = R^+$ \quad for all $n \in \mathbb{N}$.
 \\[0.2cm]
-k\"{o}nnen die Mengen $T_n$ nicht beliebig gro\ss{} werden.  Aufgrund der Monotonie der Folge
-$(T_n)_{n\in\mathbb{N}}$ muss es daher einen Index $k$ geben, ab dem die Mengen $T_n$ alle gleich sind:
+Hence the sets $T_n$ can not grow indefinitely.  Because of the monotonicity of the sequence 
+$(T_n)_{n\in\mathbb{N}}$ it follows that there exists an index  $k \in \mathbb{N}$ such that the sets $T_n$ do
+not grow any further once $n$ has reached $k$, i.e.~we have
 \\[0.2cm]
 \hspace*{1.3cm}
 $\forall n \in \mathbb{N}:( n \geq k \rightarrow T_n = T_k)$.
 \\[0.2cm]
-Ber\"{u}cksichtigen wir die Gleichung $T_n = \bigcup_{i=1}^{n} R^i$, so haben wir 
+But this implies that
 \\[0.2cm]
 \hspace*{1.3cm}
-$T_n = \bigcup\limits_{i=1}^{n} R^i = \bigcup\limits_{i=1}^{k} R^i = T_k$ \quad f\"{u}r alle $n \geq k$.
+$T_n = \bigcup\limits_{i=1}^{n+1} R^i = \bigcup\limits_{i=1}^{\infty} R^i = R^+$ 
+\quad holds for all $n \geq k$.
 \\[0.2cm]
-Daraus folgt dann aber, dass
+Therefore, the algorithm for computing  $R^+$ iterates the equation 
 \\[0.2cm]
 \hspace*{1.3cm}
-$T_n = \bigcup\limits_{i=1}^{n} R^i = \bigcup\limits_{i=1}^{\infty} R^i = R^+$ 
-\quad f\"{u}r alle $n \geq k$  
+$T_{n+1} := R \cup R \circ T_n$
 \\[0.2cm]
-gilt.  Der Algorithmus zur Berechnung von $R^+$ sieht nun so aus, dass wir die Iteration
-\[ T_{n+1} := R \cup R \circ T_n \]
-solange durchf\"{u}hren bis $T_{n+1} = T_n$ gilt, denn dann gilt auch $T_n = R^+$.
+until the equation  $T_{n+1} = T_n$ is satisfied, since this implies that $T_n = R^+$.
 
 
 \begin{figure}[!ht]
@@ -1943,109 +2157,110 @@ solange durchf\"{u}hren bis $T_{n+1} = T_n$ gilt, denn dann gilt auch $T_n = R^+
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    transClosure := procedure(r) {
-        t := r;
+    transClosure := procedure(R) {
+        T := R;
         while (true) {
-            oldT := t;
-            t    := r + product(r, t);
-            if (t == oldT) {
-                return t;
+            oldT := T;
+            T    := R + product(R, T);
+            if (T == oldT) {
+                return T;
             }
         }
     };
-    product := procedure(r1, r2) {
-        return { [x,z] : [x,y] in r1, [y,z] in r2 };
+    product := procedure(R1, R2) {
+        return { [x,z] : [x,y] in R1, [y,z] in R2 };
     };
-    r := { [1,2], [2,3], [1,3], [2,4], [4,5] };
-    print( "r = ", r );
-    print( "computing transitive closure of r" );
-    t := transClosure(r);
-    print( "r+ = ", t );
+    R := { [1,2], [2,3], [1,3], [2,4], [4,5] };
+    print( "R = ", R );
+    print( "Computing the transitive closure of R:" );
+    T := transClosure(R);
+    print( "R+ = ", T );
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Berechnung des transitiven Abschlusses.}  
+\caption{Computing the transitive closure.}  
 \label{fig:transitive-closure.stlx}
 \end{figure} %\$
 
 \noindent
-Das Programm 
+The program 
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/transitive-closure.stlx}{\texttt{transitive-closure.stlx}}
-in Abbildung
-\ref{fig:transitive-closure.stlx} auf Seite \pageref{fig:transitive-closure.stlx}  zeigt
-eine Implementierung dieses Gedankens.
-Lassen wir dieses Programm laufen, so erhalten wir als Ausgabe:
+that is shown in Figure
+\ref{fig:transitive-closure.stlx} on page \pageref{fig:transitive-closure.stlx} shows an implementation of this idea.
+The program produces the following output:
 \begin{verbatim}
-    R = {[2, 3], [4, 5], [1, 3], [2, 4], [1, 2]}
-    R+ = {[1, 5], [2, 3], [4, 5], [1, 4], [1, 3], [2, 4], [1, 2], [2, 5]}
+    R = {[1, 2], [2, 3], [1, 3], [2, 4], [4, 5]}
+    Computing the transitive closure of R:
+    R+ = {[1, 2], [1, 3], [1, 4], [1, 5], [2, 3], [2, 4], [2, 5], [4, 5]}
 \end{verbatim}
-Der transitive Abschluss $R^+$ der Relation $R$ l\"{a}sst sich jetzt anschaulich
-interpretieren:  Er enth\"{a}lt alle Paare $\pair(x,y)$, f\"{u}r die es einen \emph{Pfad} von
-$x$ nach $y$ gibt.  Ein Pfad von $x$ nach $y$ ist dabei eine Liste der
-Form \\[0.2cm]
-\hspace*{1.3cm} $\bigl[ x_1, x_2, \cdots, x_n \bigr]$,
+The transitive closure $R^+$ of a relation $R$ has a very intuitive interpretation:
+$R^+$:  It contains all pairs $\pair(x,y)$ such that there is a path leading from 
+$x$ to $y$.  A \emph{path} leading from  $x$ to $y$ is defined as a list of the form \\[0.2cm]
+\hspace*{1.3cm}
+$\bigl[ x_1, x_2, \cdots, x_n \bigr]$,
 \\[0.2cm]
-f\"{u}r die $x = x_1$ und $y = x_n$ gilt und f\"{u}r die au\ss{}erdem 
+such that $x = x_1$ and $y = x_n$ and, furthermore, 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\pair(x_i, x_{i+1}) \in R$ \quad f\"{u}r alle $i = 1, \cdots, n-1$ gilt.
+$\pair(x_i, x_{i+1}) \in R$ \quad for all $i = 1, \cdots, n-1$.
 \\[0.2cm]
-Die Funktion $\textsl{product}(r_1, r_2)$ berechnet das relationale Produkt $r_1 \circ
-r_2$ nach der Formel
+The function $\texttt{product}(R_1, R_2)$ computes the relational product $R_1\circ R_2$ 
+according to the formula
 \\[0.2cm]
 \hspace*{1.3cm}
-$r_1 \circ r_2 = \{ \langle x, z \rangle \mid \exists y: \pair(x,y) \in r_1 \wedge \pair(y,z) \in r_2 \}$.
+$R_1 \circ R_2 = \{ \langle x, z \rangle \mid \exists y: \pair(x,y) \in R_1 \wedge \pair(y,z) \in R_2 \}$.
 \\[0.2cm]
-Die Implementierung dieser Prozedur  zeigt die allgemeine
-Form der Mengen-Defi\-nition durch Iteratoren in \textsc{SetlX}.  Allgemein k\"{o}nnen wir eine Menge
-durch den Ausdruck
+The implementation of the procedure \texttt{product} shows the most general way to define a set in
+\textsc{SetlX}.  In general, a set can be defined via an expression of the form
 \\[0.2cm]
 \hspace*{1.3cm}
 $\{\; \textsl{expr} \;\texttt{:}\; [x^{(1)}_1, \cdots, x^{(1)}_{n(1)}] \;\texttt{in}\; s_1,
      \cdots, [x^{(k)}_1, \cdots, x^{(k)}_{n(k)}] \;\texttt{in}\; s_k \;\texttt{|}\;
      \textsl{cond} \;\}
-$
+$.
 \\[0.2cm]
-definieren.  Dabei muss $s_i$ f\"{u}r alle $i=1, \cdots, k$ eine Menge von Listen  der L\"{a}nge
-$n(i)$ sein.  Bei der Auswertung dieses Ausdrucks werden f\"{u}r die Variablen 
-$x^{(i)}_1, \cdots, x^{(i)}_{n(i)}$ die Werte eingesetzt, die die entsprechenden
-Komponenten der Listen haben, die in der Menge $s_i$ auftreten.  Beispielsweise w\"{u}rde die
-Auswertung von 
+Here, for all $i=1, \cdots, k$ the variable $s_i$ denotes a set of lists of length $n(i)$.  When the
+expression given above is evaluated, the variables $x^{(i)}_1, \cdots, x^{(i)}_{n(i)}$ are replaced
+by the corresponding values in the lists from the sets  $s_i$.  For example, if we define
 \begin{verbatim}
     s1 := { [ 1, 2, 3 ], [ 5, 6, 7 ] };
     s2 := { [ "a", "b" ], [ "c", "d" ] };
     m := { [ x1, x2, x3, y1, y2 ] : [ x1, x2, x3 ] in s1, [ y1, y2 ] in s2 };
 \end{verbatim}
-f\"{u}r \texttt{m} die Menge
+then the set  \texttt{m} has the following value:
 \begin{verbatim}
     { [1, 2, 3, "a", "b"], [5, 6, 7, "c", "d"],  
       [1, 2, 3, "c", "d"], [5, 6, 7, "a", "b"] }
 \end{verbatim}
-berechnen. 
 
 
-\subsection{Berechnung der Pfade}
-Als n\"{a}chstes wollen wir das Programm zur Berechnung des transitiven Abschlusses so
-erweitern, dass wir nicht nur feststellen k\"{o}nnen, dass es einen Pfad zwischen zwei Punkten
-gibt, sondern dass wir diesen auch berechnen k\"{o}nnen.  Die Idee ist, dass wir statt des
-relationalen Produkts, das f\"{u}r zwei Relationen definiert ist, ein sogenanntes
-\emph{Pfad-Produkt}, das auf Mengen von Pfaden definiert ist, berechnen.  Vorab f\"{u}hren wir
-f\"{u}r Pfade, die wir ja durch Listen repr\"{a}sentieren,
-drei Begriffe ein.
+\subsection{Computing the Paths}
+So far, given a graph represented by a relation $R$ and two vertices $x$ and $y$, we can only check
+whether there is a path leading from $x$ to $y$, but we cannot compute this path.  In this
+subsection we will extend the procedure \texttt{transClosure} so that it will also compute the
+corresponding path.  The main idea is to extend the notion of a relational product to the notion of
+a \emph{path product}, where a \emph{path product} is defined on sets of paths.  In order to do so,
+we introduce three functions for lists.
 \begin{enumerate}
-\item Die Funktion $\textsl{first}(p)$ liefert den ersten Punkt der Liste $p$: \\[0.2cm]
-      \hspace*{1.3cm} $\textsl{first}\bigl([x_1,\cdots,x_m]\bigr) = x_1$.
-\item Die Funktion $\textsl{last}(p)$ liefert den letzten Punkt der Liste $p$: \\[0.2cm]
-      \hspace*{1.3cm} $\textsl{last}\bigl([x_1,\cdots,x_m]\bigl) = x_m$.
-\item Sind $p = [ x_1, \cdots, x_m ]$ und $q =[ y_1, \cdots, y_n ]$ 
-      zwei Pfade mit $\textsl{first}(q) = \textsl{last}(p)$, dann definieren wir 
-      die Summe von $p$ und $q$       als \\[0.2cm]
+\item Given a list $p$, the function $\texttt{first}(p)$ returns the first element of $p$: 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{first}\bigl([x_1,\cdots,x_m]\bigr) = x_1$.
+\item Given a list $p$, the function $\texttt{last}(p)$ returns the last element of $p$: 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{last}\bigl([x_1,\cdots,x_m]\bigl) = x_m$.
+\item If $p = [ x_1, \cdots, x_m ]$ and $q =[ y_1, \cdots, y_n ]$ are two path such that
+      $\texttt{first}(q) = \texttt{last}(p)$, we define the \emph{join} of $p$ and $q$ as \\[0.2cm]
       \hspace*{1.3cm}
       $p \oplus q := [x_1, \cdots, x_m, y_2, \cdots, y_n ]$.
 \end{enumerate}
-Sind nun $P_1$ und $P_2$ Mengen von Pfaden, so definieren wir das  \emph{Pfad-Produkt} von
-$P_1$ und $P_2$ als \\[0.2cm]
+If $P_1$ and $P_2$ are sets of paths, we define the  \emph{path product} of
+$P_1$ and $P_2$ as follows: \\[0.2cm]
 \hspace*{1.3cm} 
-$P_1 \bullet P_2 := \bigl\{\; p_1 \oplus p_2 \mid p_1 \in P_1 \wedge p_2 \in P_2 \wedge \textsl{last}(p_1) = \textsl{first}(p_2) \;\bigr\}$.
+$P_1 \bullet P_2 := 
+\bigl\{\; p_1 \oplus p_2 \mid p_1 \in P_1 \wedge p_2 \in P_2 \wedge \texttt{last}(p_1) =
+\texttt{first}(p_2) \;\bigr\}
+$.
 
 \begin{figure}[!ht]
   \centering
@@ -2057,30 +2272,31 @@ $P_1 \bullet P_2 := \bigl\{\; p_1 \oplus p_2 \mid p_1 \in P_1 \wedge p_2 \in P_2
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    transClosure := procedure(r) {
-        p := r;
+    transClosure := procedure(R) {
+        P := R;
         while (true) {
-            oldP := p;
-            p    := r + pathProduct(r, p);
-            if (p == oldP) {
-                return p;
+            oldP := P;
+            P    := R + pathProduct(R, P);
+            print(P);
+            if (P == oldP) {
+                return P;
             }
         }
     };
-    pathProduct := procedure(p, q) {
-        return { add(x, y) : x in p, y in q | x[-1] == y[1] };
+    pathProduct := procedure(P, Q) {
+        return { add(x, y) : x in P, y in Q | x[-1] == y[1] };
     };    
     add := procedure(p, q) {
         return p + q[2..];
-    };    
-    r := { [1,2], [2,3], [1,3], [2,4], [4,5] };
-    print( "r = ", r );
+    };
+    R := { [1,2], [2,3], [1,3], [2,4], [4,5] };
+    print( "R = ", R );
     print( "computing all paths" );
-    p := transClosure(r);
-    print( "p = ", p );
+    P := transClosure(R);
+    print( "P = ", P );
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Berechnung aller Verbindungen.}  \label{path.stlx}
+\caption{Computing all connections.}  \label{fig:path.stlx}
 \end{figure} %\$
 
 \begin{figure}[!ht]
@@ -2090,26 +2306,35 @@ $P_1 \bullet P_2 := \bigl\{\; p_1 \oplus p_2 \mid p_1 \in P_1 \wedge p_2 \in P_2
   \epsfig{file=Figures/graph-zykl,scale=0.5}
   \vspace*{-1cm}
 
-  \caption{Ein zyklischer Graph.}
+  \caption{A graph with a cycle.}
   \label{fig:graph-zykl}
 \end{figure}
 
-Damit k\"{o}nnen wir das Programm in Abbildung
-\ref{fig:transitive-closure.stlx} so ab\"{a}ndern, dass alle m\"{o}glichen Verbindungen zwischen zwei
-Punkten berechnet werden.  Abbildung
-\ref{path.stlx} zeigt das resultierende Programm
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/path.stlx}{\texttt{path.stlx}}. 
-Leider funktioniert das Programm dann nicht mehr, wenn der Graph Zyklen enth\"{a}lt.
-Abbildung
-\ref{fig:graph-zykl} zeigt einen Graphen, der einen Zyklus enth\"{a}lt.  In diesem Graphen
-gibt es unendlich viele Pfade, die von dem Punkt 1 zu dem Punkt 2 f\"{u}hren: \\[0.2cm]
-\hspace*{1.3cm} $[ 1, 2 ]$, $[ 1, 2, 4, 1, 2 ]$, 
+Using the notion of a \emph{path product} we are able to extend the program shown in Figure
+\ref{fig:transitive-closure.stlx} such that it computes all paths between two vertices.
+The resulting program
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/path.stlx}{\texttt{path.stlx}}
+is shown in Figure \ref{fig:path.stlx} on page \pageref{fig:path.stlx}.
+Unfortunately, the program does not work any more if the graph is \emph{cyclic}.  A graph is defined
+to be \emph{cyclic} if there is a path of length greater than $1$ that starts and ends at the same
+vertex.  This path is then called a \emph{cycle}.
+Figure \ref{fig:graph-zykl} on page \pageref{fig:graph-zykl} shows a cyclic graph.  This graph is
+cyclic because it contains the path
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{[1, 2, 4, 1]}
+\\[0.2cm]
+and this path is a cycle.
+The problem with this graph is that it contains an infinite number of paths that connect the vertex
+1 with the vertex 2: \\[0.2cm]
+\hspace*{1.3cm}
+$[ 1, 2 ]$, $[ 1, 2, 4, 1, 2 ]$, 
 $[ 1, 2, 4, 1, 2, 4, 1, 2 ]$, 
 $[ 1, 2, 4, 1, 2, 4, 1, 2, 4, 1, 4 ]$, $\cdots$
 \\[0.2cm]
-Offenbar  sind die Pfade unwichtig, die einen Punkt mehrfach enthalten und die daher
-zyklisch sind.  Solche Pfade sollten wir bei der Berechnung des Pfad-Produktes
-eliminieren.
+Of course, there is no point in computing a path that visits a vertex more than once as these paths
+contain cycles.  Our goal is to eliminate all those paths that contain cycles.
+
 
 \begin{figure}[!ht]
   \centering
@@ -2121,56 +2346,74 @@ eliminieren.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-    pathProduct := procedure(p, q) {
-        return { add(x,y) : x in p, y in q | x[-1] == y[1] && noCycle(x,y) };
+    pathProduct := procedure(P, Q) {
+        return { add(x,y) : x in P, y in Q | x[-1] == y[1] && noCycle(x, y) };
     };
-    noCycle := procedure(l1, l2) {
-        return #({ x : x in l1 } * { x : x in l2 }) == 1;
+    noCycle := procedure(L1, L2) {
+        return #({ x : x in L1 } * { x : x in L2 }) == 1;
     };
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Berechnung aller Verbindungen in zyklischen Graphen}  
+\caption{Computing the connections in a cyclic graph.}  
 \label{fig:path-cyclic.stlx}
 \end{figure} %\$
 
-Abbildung \ref{fig:path-cyclic.stlx} zeigt einen Ausschnitt des ge\"{a}nderten Programms
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/path-cyclic.stlx}{\texttt{path-cyclic.stlx}},
-das auch f\"{u}r zyklische Graphen funktioniert. 
+Figure \ref{fig:path-cyclic.stlx} on page shows how the implementation of the function
+\texttt{pathProduct} has to be changed so that the resulting program
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/path-cyclic.stlx}{\texttt{path-cyclic.stlx}}
+works also for cyclic graphs. 
 \begin{enumerate}
-\item In Zeile 2 ber\"{u}cksichtigen wir nur die Pfade $x \oplus y$, die nicht zyklisch sind.
-\item In Zeile 5 \"{u}berpr\"{u}fen wir, ob die Konkatenation  $l_1 \oplus l_2$ zyklisch ist.  Die
-      Kombination von $l_1$ und $l_2$  ist genau dann 
-      zyklisch, wenn die Listen $l_1$ und $l_2$ mehr als ein gemeinsames Element
-      enthalten.  Die Listen $l_1$ und $l_2$ enthalten mindestens ein gemeinsames Element,
-      denn wir verkn\"{u}pfen diese beiden Listen ja nur dann, wenn das letzte Element
-      der Liste $l_1$ mit dem ersten Element der Liste $l_2$ \"{u}bereinstimmt.
-      Wenn es nun noch einen weiteren Punkt geben w\"{u}rde, der sowohl in $l_1$ als auch in
-      $l_2$ auftreten w\"{u}rde, dann w\"{a}re der Pfad $l_1 \oplus l_2$ zyklisch.
+\item In line 2, we compute only those paths that are not cyclic.
+\item Line 5 tests, whether the join  $l_1 \oplus l_2$ is cyclic.  The concatenation
+      of  $l_1$ and $l_2$ is cyclic iff the lists $l_1$ and $l_2$ have more than one common element.
+      The lists $l_1$ and $l_2$ will always have at least one common element, as we join
+      these lists only if the last element of $l_1$ is equal to the first element of  $l_2$.
+      If there would be an another vertex common to $l_1$ and $l_2$, then the path  $l_1 \oplus l_2$
+      would be cyclic.
 \end{enumerate}
 
-In den meisten F\"{a}llen sind wird gar nicht daran interessiert, alle m\"{o}glichen Verbindungen
-zwischen allen Punkten zu berechnen, das w\"{a}re n\"{a}mlich viel zu aufwendig, sondern wir
-wollen nur zwischen zwei gegebenen Punkten 
-eine Verbindung finden.  Abbildung \ref{fig:find-path} zeigt die Implementierung einer
-Prozedur $\texttt{findPath}(x, y, r)$, die \"{u}berpr\"{u}ft, ob es in dem Graphen $r$ eine
-Verbindung von $x$ nach $y$ gibt und die diese Verbindung berechnet.  Das vollst\"{a}ndige
-Programm finden Sie in der Datei
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/find-path.stlx}{\texttt{find-path.stlx}}.
-Wir diskutieren nun die Implementierung der Prozedur \texttt{findPath}.
+In general, we are not really interested to compute all possible paths between two given vertices
+$x$ and $y$.  Instead, we just want to compute the shortest path leading from $x$ to $y$.
+Figure \ref{fig:find-path.stlx} on page \pageref{fig:find-path.stlx} shows the procedure $\texttt{findPath}(x, y, R)$. 
+This procedure takes three arguments:
 \begin{enumerate}
-\item In Zeile 2 initialisieren wir $p$ so, dass zun\"{a}chst nur der Pfad der L\"{a}nge 0,
-      der mit dem Punkt $x$  startet, in $p$ liegt.
-\item In Zeile 5 versuchen wir, die Pfade, die wir bereits berechnet haben, mit Hilfe der Relation
-      $r$ zu verl\"{a}ngern.  Dabei erhalten wir gegebenenfalls neue Pfade.
-\item In Zeile 6 selektieren wir aus allen diesen Pfaden die Pfade aus, die zum Ziel $y$ f\"{u}hren.
-\item Wenn wir dann in Zeile 7 feststellen, dass wir einen solchen Pfad berechnet haben,
-      geben wir einen dieser Pfade in Zeile 8 zur\"{u}ck.
-\item Falls es nicht gelingt einen solchen Pfad zu berechnen und wir keine neuen
-      Pfade mehr finden k\"{o}nnen, verlassen wir die Prozedur in Zeile 11
-      mit dem Befehl \texttt{return}.  Da wir bei diesem \texttt{return}-Befehl
-      keinen Wert zur\"{u}ckgeben, ist der R\"{u}ckgabewert der Prozedur in diesem Fall
-      automatisch $\Omega$.
+\item $x$ and $y$ are vertices of a graph.
+\item $R$ is a binary relation representing a directed graph.
 \end{enumerate}
+The call  $\texttt{findPath}(x, y, R)$ checks whether $x$ and $y$ are connected and, furthermore,
+computes the shortest path from $x$ to $y$, provided such a path exists.
+The complete program can be found in the file
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/find-path.stlx}{\texttt{find-path.stlx}}.
+Next, we discuss the implementation of the procedure  \texttt{findPath}.
+\begin{enumerate}
+\item Line 2 initializes the set \texttt{P}.  After $n$ iterations, this set will contain all paths
+      that start in the vertex \texttt{x} and that have a length of at most $n$.
+
+      Initially, there is just the trivial path \texttt{[x]} that starts in \texttt{x} and has
+      length $0$.
+\item Line 5 tries to extend all those paths that have already been computed by one step.
+      If we are lucky, the set \texttt{P} is increased in this step.
+\item Line 6 selects all those paths from the set \texttt{P} that lead to the vertex \texttt{y}.
+\item Line 7 checks whether we have indeed found a path ending at \texttt{y}.
+      In this case, we return any of these paths.
+\item If we have not yet found the vertex \texttt{y} and, furthermore, we have not been able to find
+      any new paths during this iteration,  the procedure returns in line 11.
+      As the \texttt{return} statement in line 11 does not return a value, the procedure will
+      instead return the undefined value $\Omega$.
+\end{enumerate}
+The procedure call \texttt{reachable(x,y R} will compute the \textbf{shortest} path connecting
+\texttt{x} and \texttt{y} because it computes path with increasing length.  The first iteration
+computes all paths starting in \texttt{x} that have a length of at most 1, the second iteration
+computes all paths starting in \texttt{x} that have a length of at most 2, and in general the $n$-th
+iteration computes all paths starting in \texttt{x} that have a length of at most $n$.  Hence, if
+there is a path of length $n$ it will be found in the $n$-iteration unless a shorter path has
+already been found in a previous iteration.  
+
+\remarkEng
+The algorithm described above is known as 
+\href{https://en.wikipedia.org/wiki/Breadth-first_search}{breadth first search}. \eox 
+
+
 
 \begin{figure}[!ht]
   \centering
@@ -2182,29 +2425,29 @@ Wir diskutieren nun die Implementierung der Prozedur \texttt{findPath}.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    findPath := procedure(x, y, r) {
-        p := { [x] };
+    reachable := procedure(x, y, R) {
+        P := { [x] };
         while (true) {
-            oldP  := p;
-            p     := p + pathProduct(p, r);
-            found := { l : l in p | l[-1] == y };
-            if (found != {}) {
-                return arb(found);
+            oldP  := P;
+            P     := P + pathProduct(P, R);
+            Found := { l : l in P | l[-1] == y };
+            if (Found != {}) {
+                return arb(Found);
             }
-            if (p == oldP) {
+            if (P == oldP) {
                 return;
             }
         }
     };
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Berechnung aller Verbindungen zwischen zwei Punkten}  
-\label{fig:find-path}
+\caption{Finding the shortest path between two vertices.}  
+\label{fig:find-path.stlx}
 \end{figure}
 
 \subsection{The Wolf, the Goat, and the Cabbage}
-Next, we present an application of the theory developed so far.  We show how to solve a problem from
-agricultural economy.  The puzzle we want to solve is known as the 
+Next, we present an application of the theory developed so far.  We solve a problem from that has puzzled
+agricultural economists for centuries.  The puzzle we want to solve is known as the 
 \href{http://jeux.lulu.pagesperso-orange.fr/html/anglais/loupChe/loupChe1.htm}{wolf-goat-cabbage puzzle}:  
 \vspace*{0.3cm}
 
@@ -2247,6 +2490,8 @@ are satisfied:
 \item either \texttt{s} contains both the goat and the cabbage or \texttt{s} contains both the wolf and the goat.
 \end{enumerate}
 Therefore, we can implement the function \texttt{problem} as follows:
+\pagebreak
+
 \begin{verbatim}
         problem := procedure(s) {
             return !("farmer" in s) &&
