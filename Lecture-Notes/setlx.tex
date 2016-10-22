@@ -1,4 +1,4 @@
-`\chapter{The Programming Language \textsc{SetlX}}
+\chapter{The Programming Language \textsc{SetlX}}
 The introductory lecture on mathematics starts with set theory.  In my experience, the notions of
 set theory are difficult to master for many students because the concepts introduced in set theory
 are quite abstract.  Fortunately, there is a programming language that is directly based on set
@@ -1667,7 +1667,7 @@ computes $\mathrm{e}$ to a precision of more than 50 decimal digits.  The value 
 
 
 
-\section{An Application: Fixpunkt Algorithms}
+\section{An Application: Fixed-Point Algorithms}
 Suppose we want to solve the equation \\[0.2cm]
 \hspace*{1.3cm} $x = \cos(x)$. \\[0.2cm]
 Here, $x$ is a real number that we seek to compute.  A simple approach that works in this case is to use a
@@ -1675,9 +1675,14 @@ Here, $x$ is a real number that we seek to compute.  A simple approach that work
 define the sequence $\bigl(x_n\bigr)_{n\in\mathbb{N}}$ inductively as follows:
 \\[0.2cm]
 \hspace*{1.3cm} 
-$x_0 := 0$ \quad and \quad $x_{n+1} := \mathtt{cos}(x_n)$ for all $n \in \mathbb{N}$. 
+$x_0 := 0$ \quad and \quad $x_{n+1} := \mathtt{cos}(x_n)$ \quad for all $n \in \mathbb{N}$. 
 \\[0.2cm]
-With the help of the \href{https://en.wikipedia.org/wiki/Banach_fixed-point_theorem}{Banach fixed-point theorem}
+With the help of the 
+\href{https://en.wikipedia.org/wiki/Banach_fixed-point_theorem}{Banach fixed-point theorem}\footnote{
+  The Banach fixed-point theorem is discussed in the lecture on
+  \href{https://en.wikipedia.org/wiki/Differential_calculus}{differential calculus}.  This lecture is part of your
+  second semester.
+}
 it can be shown that this sequence converges to a solution of the equation $x = \cos(x)$, i.e.~if we define
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1715,12 +1720,12 @@ that uses this approach to solve the equation $x = \cos(x)$.
     }
 \end{Verbatim} 
 \vspace*{-0.3cm}
-\caption{Solving the equation $x = cos(x)$ via fixed-point iteration.}  \label{fig:solve.stlx}
+\caption{Solving the equation $x = \cos(x)$ via fixed-point iteration.}  \label{fig:solve.stlx}
 \end{figure} %\$
 
 In this program, the iteration stops as soon as the difference between the variables \texttt{x} and 
-\texttt{x\_old} is less that $10^{-13}$.  Here, \texttt{x} corresponds to $x_{n+1}$, while \texttt{x\_old}
-corresponds to $x_n$.  In $x_{n+1}$ and $x_n$ are sufficiently close, the execution of the \texttt{while} loop
+\texttt{old\_x} is less that $10^{-13}$.  Here, \texttt{x} corresponds to $x_{n+1}$, while \texttt{old\_x}
+corresponds to $x_n$.  Once the values of $x_{n+1}$ and $x_n$ are sufficiently close, the execution of the \texttt{while} loop
 is stopped using the \texttt{break} statement.  This statement works the same way as in the programming language
 \texttt{C}. 
 
@@ -1751,20 +1756,20 @@ is stopped using the \texttt{break} statement.  This statement works the same wa
     print("solution to x = 1/(1+x): ", solve(x |-> 1.0/(1+x), 0));
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{A generic implementation of fixed-point iteration.}
+\caption{A generic implementation of the fixed-point algorithm.}
 \label{fig:fixpoint.stlx}
 \end{figure}
 
 Figure \ref{fig:fixpoint.stlx} on page \pageref{fig:fixpoint.stlx} shows the program
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/fixpoint.stlx}{\texttt{fixpoint.stlx}}.
-In this program we have implemented a generic function \texttt{solve} that takes two arguments.
+In this program we have implemented a function \texttt{solve} that takes two arguments.
 \begin{enumerate}
 \item \texttt{f} is a unary function.  The purpose of the \texttt{solve} is to compute the solution of the equation
       \\[0.2cm]
       \hspace*{1.3cm}
       $f(x) = x$.
       \\[0.2cm]
-      This equation is solved via a fixed-point iteration.
+      This equation is solved with the help of the fixed-point algorithm.
 \item \texttt{x0} is used as the initial value for the fixed-point iteration.
 \end{enumerate}
 Line 11 calls \texttt{solve} to compute the solution of the equation $x = \cos(x)$.
@@ -1781,10 +1786,22 @@ This equation is equivalent to the quadratic equation $x^2 + x = 1$.  Note that 
 \\[0.2cm]
 This expression is called an \emph{anonymous function} since we haven't given a name to the function.  It is
 also important to note that we have used the floating point number  $1.0$ instead of the integer \texttt{1}.
-The reason is that otherwise \setlx\ would use rational numbers when doing the iteration.  Although this would
-work, arithmetic using rational numbers is considerable less efficient than arithmetic that uses floating point
+The reason is that otherwise \setlx\ would use rational numbers when doing the fixed-point iteration.  Although this would
+work, arithmetic using rational numbers is considerable less efficient than arithmetic using floating point
 numbers. 
 
+\remarkEng
+The function \texttt{solve} is only able to solve the equation $f(x) = x$ if the function $f$ is a 
+\href{https://en.wikipedia.org/wiki/Contraction_mapping}{contraction mapping}.  A function 
+$f:\mathbb{R} \rightarrow \mathbb{R}$
+is called a \emph{contraction mapping} iff 
+\\[0.2cm]
+\hspace*{1.3cm}
+$|f(x) - f(y)| < |x - y|$ \quad for all $x,y \in \mathbb{R}$.
+\\[0.2cm]
+This notion will be discussed in more detail in the lecture on 
+\href{https://github.com/karlstroetmann/Analysis/blob/master/Script/analysis.pdf}{differential
+  calculus} in the second semester. \eox 
 
 \section{Case Study: Computation of Poker Probabilities}
 In this short section we are going to show how to compute probabilities for the
@@ -1798,7 +1815,7 @@ $\textsl{values} = \{ 2, 3, 4, 5, 6, 7, 8, 9, 10, \textsl{Jack}, \textsl{Queen},
 Furthermore, every card has a \emph{suit}.  This suit is an element of the set
 \\[0.2cm]
 \hspace*{1.3cm} 
-$\textsl{suits} = \{ \club, \heart, \diamondsuit, \spade \}$.
+$\textsl{suits} = \{ \club, \mbox{$\color{red}{\heart}$}, \mbox{$\color{red}{\diamondsuit}$}, \spade \}$.
 \\[0.2cm]
 These suits are pronounced \emph{club}, \emph{heart}, \emph{diamond}, and \emph{spade}.
 As a card is determined by its value and its suit, a card can be represented as a pair $\pair(v,s)$, where $v$
@@ -1870,8 +1887,8 @@ program line by line.
       the following abbreviations:
       \begin{enumerate}
       \item ``\texttt{c}'' is short for $\club$, which is pronounced as \emph{club},
-      \item ``\texttt{h}'' is short for $\heart$, which is pronounced as \emph{heart}, 
-      \item ``\texttt{d}'' is short for $\diamondsuit$, which is pronounced as \emph{diamond}, and 
+      \item ``\texttt{h}'' is short for \mbox{\color{red}{$\heart$}}, which is pronounced as \emph{heart}, 
+      \item ``\texttt{d}'' is short for \mbox{\color{red}{$\diamondsuit$}}, which is pronounced as \emph{diamond}, and 
       \item ``\texttt{s}'' is short for $\spade$, which is pronounced as \emph{spade}. 
       \end{enumerate} 
 \item Line 3 defines the set of all cards.  This set is stored as the variable \texttt{deck}.  Every
@@ -1896,7 +1913,7 @@ program line by line.
       holds.
 \item Line 9 computes the subset of flops that contain at least one card with a value of 3.
       As the 3 of clubs and the 3 of spades have already been dealt to our player, the only cards
-      with value 3 that are left are the 3 of diamonds and the 3 of hearts.  Therefore, we are looking for
+      with value 3 that are left in the deck are the 3 of diamonds and the 3 of hearts.  Therefore, we are looking for
       those flops that contain one of these two cards.
 \item Finally, the probability for obtaining another card with a value of 3 in the flop is computed as
       the ratio of the number of flops containing a card with a value of 3 to the number of all possible flops.
@@ -1914,14 +1931,15 @@ is about  $11.8\%$.
 The method to compute probabilities that has been sketched above only works if the sets that have to
 be computed are small enough to be retained in memory.  If this condition is
 not satisfied we can use the \href{https://en.wikipedia.org/wiki/Monte_Carlo_method}{\emph{Monte Carlo method}} 
-to compute the probabilities instead.  This method will be discussed in the lecture on algorithms
-and their complexities. 
+to compute the probabilities instead.  This method will be discussed in the lecture on 
+\href{https://github.com/karlstroetmann/Algorithms/blob/master/Lecture-Notes/algorithms.pdf}{algorithms}.
 
 
 \section{Case Study: Finding a Path in a Graph}
-We want to close this chapter with an application that is practically relevant.  In order to prepare for this,
-we discuss the problem of finding a path in a \href{https://en.wikipedia.org/wiki/Directed_graph}{directed graph}.
-Abstractly, a graph consists of vertices and edges that connect these vertices.  In an application, the
+In the following section, I wil present an application that is practically relevant.  In order to prepare for this,
+this Section discusses the problem of finding a path in a
+\href{https://en.wikipedia.org/wiki/Directed_graph}{directed graph}. 
+Abstractly, a graph consists of \emph{vertices} and \emph{edges} that connect these vertices.  In an application, the
 vertices could be towns and villages, while the edges would be interpreted as streets connecting these
 villages.  To simplify matters, let us assume for now that the vertices are given as natural numbers, while the
 edges are represented as pairs of natural numbers.  Then, the graph can be represented as the set of its edges,
@@ -1938,7 +1956,7 @@ $\{ 1, 2, 3, 4, 5 \}$.
 \\[0.2cm]
 This graph is shown in Figure \ref{fig:graph0} on page \pageref{fig:graph0}.  You should note that the
 connections between vertices that are given in this graph are unidirectional:  While there is a connection from
-vertex $1$ to vertex $2$, there is no connection form vertex $2$ to vertex $1$.
+vertex $1$ to vertex $2$, there is no connection from vertex $2$ to vertex $1$.
 
  
 \begin{figure}[!ht]
@@ -1956,7 +1974,8 @@ The graph given by the relation \texttt{R} contains only the direct connections 
 the graph shown in Figure \ref{fig:graph0}, there is a direct connection from vertex $1$ to vertex $2$ and
 another direct connection from vertex $2$ to vertex $4$.  Intuitively, vertex $4$ is reachable from vertex $1$,
 since from vertex $1$ we can first reach vertex $2$ and from vertex $2$ we can then reach vertex $4$.  However,
-there is is no direct connection between the vertices $1$ and $4$.  To make this more formal, define a \emph{path}
+there is is no direct connection between the vertices $1$ and $4$.  To make this more formal, define
+a \colorbox{amethyst}{\emph{path}} 
 of a graph $R$ as a list of vertices
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1971,7 +1990,7 @@ and has the \emph{length} $n-1$.  It is important to note that the length of a p
 $[x_1,x_2,\cdots,x_n]$ is defined as the number of edges connecting the vertices and not as the
 number of vertices appearing in the path.
 
-Furthermore,  two vertices $a$ and $b$ are said to be \emph{connected} iff there exists a path
+Furthermore,  two vertices $a$ and $b$ are said to be \colorbox{amethyst}{\emph{connected}} iff there exists a path
 \\[0.2cm]
 \hspace*{1.3cm}
 $[x_1,\cdots,x_n]$ \quad such that \quad $a = x_1$ \quad and \quad $b = x_n$.
@@ -1982,51 +2001,50 @@ Furthermore, we want to be able to compute the corresponding path connecting the
 
 \subsection{Computing the Transitive Closure of a Relation}
 We have already noted that a graph can be represented as the set of its edges and hence as a relation.
-In order to decide whether there is a path connecting two vertices we have to compute the transitive closure
-$R^+$ of a relation $R$.  
+In order to decide whether there is a path connecting two vertices we have to compute the 
+\href{https://en.wikipedia.org/wiki/Transitive_closure}{transitive closure} $R^+$ of a relation $R$.  
 In the \href{https://github.com/karlstroetmann/Lineare-Algebra/blob/master/Script/lineare-algebra.pdf}{math lecture}
 we have seen that the transitive closure $R^+$ can be computed as follows:
 \\[0.2cm]
 \hspace*{1.3cm}
 $R^+ = \bigcup\limits_{i=1}^{\infty} R^i = R^1 \cup R^2 \cup R^3 \cup \cdots$  
 \\[0.2cm]
-This formula might look intimidating as it suggests an infinite computation.  Fortunately, it turns out that we
-do not have to compute all powers of the form $R^i$.  Let me explain the reason that allows us to cut the
-computation short.  
+Whne first encountered, this formula might look intimidating as it suggests an infinite computation.
+Fortunately, it turns out that we do not have to compute all powers of the form $R^i$.  Let me
+explain the reason that allows us to cut the computation short.  
 \begin{enumerate}
 \item $R$ is the set of direct connections between two vertices.
-\item $R^2$ is the same as $R \circ R$ and the relational product satisfies
+\item $R^2$ is the same as $R \circ R$ and this relational product is defined as
       \\[0.2cm]
       \hspace*{1.3cm}
        $R \circ R = \{ \pair(x,z) \mid \exists y \colon \pair(x,y) \in R \wedge \pair(y,z) \in R \}$.
       \\[0.2cm]
       Hence, $R \circ R$ contains those pairs $\pair(x,z)$ that are connected via one intermediate vertex $y$,
-      i.e.~there is a path of the form $[x,y,z]$ that connects $x$ and $y$.
-
-      In general, we can show by induction that $R^n$ connect those pairs that are connected by a path of
-      length $n+1$.  The induction step of this proof runs as follows:
+      i.e.~there is a path of the form $x \mapsto y \mapsto z$ that connects $x$ and $y$.  This path
+      has length 2.  In general, we can show by induction that $R^n$ connect those pairs that are
+      connected by a path of length $n$.  The induction step of this proof runs as follows:
 \item $R^{n+1}$ is defined as $R \circ R^{n}$ and therefore we have
       \\[0.2cm]
       \hspace*{1.3cm}
       $R \circ R^n = \{ \pair(x,z) \mid \exists y \colon \pair(x,y) \in R \wedge \pair(y,z) \in R^n \}$.
       \\[0.2cm]
       As $\pair(y,z) \in R^n$, the induction hypothesis guarantees that the vertices $y$ and $z$ are
-      connected by a path of length $n+1$.  Hence, this 
+      connected by a path of length $n$.  Hence, this 
       path has the form
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\underbrace{[y, \cdots, z]}_{\mbox{\scriptsize List of length $n+1$.}}$
+      $\underbrace{y \mapsto \cdots \mapsto z]}_{\mbox{\scriptsize path of length $n$.}}$
       \\[0.2cm]
-      Adding $x$ at the front of this list will produce the list
+      Adding $x$ at the front of this path will produce the path
       \\[0.2cm]
       \hspace*{1.3cm}
-      $[x,y, \cdots, z]$.
+      $x \mapsto y \mapsto \cdots \mapsto z$.
       \\[0.2cm]
-      This list has a length of $1 + (n+1) = n + 2$ and, furthermore, connects $x$ and $z$.  Hence $R^{n+1}$
-      contains those pairs $\pair(x, z)$ that are connected by a path of length $n+2$.
+      This path has a length of $1 + n = n + 1$ and, furthermore, connects $x$ and $z$.  Hence $R^{n+1}$
+      contains those pairs $\pair(x, z)$ that are connected by a path of length $n+1$.
 \end{enumerate}
 Now the important observation is the following. The set of all vertices is finite.  For the arguments sake, let
-us assume there are $k$ vertices.  But then every path that has a length greater than $k$ must contain one
+us assume there are $k$ vertices.  But then every path that has a length of  $k$ or greater must contain one
 vertex that is visited at least twice and hence this path is redundant, i.e.~there is a shorter path that
 connects the same vertices.  Therefore, for a finite graph with $k$ vertices, the formula to compute the
 transitive closure can be simplified as follows:
@@ -2194,15 +2212,7 @@ The program produces the following output:
 \end{verbatim}
 The transitive closure $R^+$ of a relation $R$ has a very intuitive interpretation:
 $R^+$:  It contains all pairs $\pair(x,y)$ such that there is a path leading from 
-$x$ to $y$.  A \emph{path} leading from  $x$ to $y$ is defined as a list of the form \\[0.2cm]
-\hspace*{1.3cm}
-$\bigl[ x_1, x_2, \cdots, x_n \bigr]$,
-\\[0.2cm]
-such that $x = x_1$ and $y = x_n$ and, furthermore, 
-\\[0.2cm]
-\hspace*{1.3cm}
-$\pair(x_i, x_{i+1}) \in R$ \quad for all $i = 1, \cdots, n-1$.
-\\[0.2cm]
+$x$ to $y$.  
 The function $\texttt{product}(R_1, R_2)$ computes the relational product $R_1\circ R_2$ 
 according to the formula
 \\[0.2cm]
@@ -2317,7 +2327,7 @@ The resulting program
 is shown in Figure \ref{fig:path.stlx} on page \pageref{fig:path.stlx}.
 Unfortunately, the program does not work any more if the graph is \emph{cyclic}.  A graph is defined
 to be \emph{cyclic} if there is a path of length greater than $1$ that starts and ends at the same
-vertex.  This path is then called a \emph{cycle}.
+vertex.  This path is then called a \colorbox{amethyst}{\emph{cycle}}.
 Figure \ref{fig:graph-zykl} on page \pageref{fig:graph-zykl} shows a cyclic graph.  This graph is
 cyclic because it contains the path
 \\[0.2cm]
@@ -2364,24 +2374,25 @@ Figure \ref{fig:path-cyclic.stlx} on page shows how the implementation of the fu
 works also for cyclic graphs. 
 \begin{enumerate}
 \item In line 2, we compute only those paths that are not cyclic.
-\item Line 5 tests, whether the join  $l_1 \oplus l_2$ is cyclic.  The concatenation
-      of  $l_1$ and $l_2$ is cyclic iff the lists $l_1$ and $l_2$ have more than one common element.
-      The lists $l_1$ and $l_2$ will always have at least one common element, as we join
-      these lists only if the last element of $l_1$ is equal to the first element of  $l_2$.
-      If there would be an another vertex common to $l_1$ and $l_2$, then the path  $l_1 \oplus l_2$
-      would be cyclic.
+\item Line 5 tests, whether the join  $\texttt{L1} \oplus \texttt{L2}$ is cyclic.  The join
+      of \texttt{L1} and \texttt{L2} is cyclic iff the lists \texttt{L1} and \texttt{L2} have more
+      than one common element. 
+      The lists \texttt{L1} and \texttt{L2} will always have at least one common element, as we join
+      these lists only if the last element of \texttt{L1} is equal to the first element of  \texttt{L2}.
+      If there would be an another vertex common to \texttt{L1} and \texttt{L2}, then the path
+      $\texttt{L1} \oplus \texttt{L2}$ would be cyclic.
 \end{enumerate}
 
 In general, we are not really interested to compute all possible paths between two given vertices
-$x$ and $y$.  Instead, we just want to compute the shortest path leading from $x$ to $y$.
-Figure \ref{fig:find-path.stlx} on page \pageref{fig:find-path.stlx} shows the procedure $\texttt{findPath}(x, y, R)$. 
+\texttt{x} and \texttt{y}.  Instead, we just want to compute the shortest path leading from \texttt{x} to \texttt{y}.
+Figure \ref{fig:find-path.stlx} on page \pageref{fig:find-path.stlx} shows the procedure \texttt{findPath(x, y, R)}. 
 This procedure takes three arguments:
 \begin{enumerate}
-\item $x$ and $y$ are vertices of a graph.
-\item $R$ is a binary relation representing a directed graph.
+\item \texttt{x} and \texttt{y} are vertices of a graph.
+\item \texttt{R} is a binary relation representing a directed graph.
 \end{enumerate}
-The call  $\texttt{findPath}(x, y, R)$ checks whether $x$ and $y$ are connected and, furthermore,
-computes the shortest path from $x$ to $y$, provided such a path exists.
+The call  \texttt{findPath(x, y, R)} checks whether \texttt{x} and \texttt{y} are connected and, furthermore,
+computes the shortest path from \texttt{x} to \texttt{y}, provided such a path exists.
 The complete program can be found in the file
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/find-path.stlx}{\texttt{find-path.stlx}}.
 Next, we discuss the implementation of the procedure  \texttt{findPath}.
@@ -2391,7 +2402,7 @@ Next, we discuss the implementation of the procedure  \texttt{findPath}.
 
       Initially, there is just the trivial path \texttt{[x]} that starts in \texttt{x} and has
       length $0$.
-\item Line 5 tries to extend all those paths that have already been computed by one step.
+\item Line 5 tries to extend all previously computed paths by one step.
       If we are lucky, the set \texttt{P} is increased in this step.
 \item Line 6 selects all those paths from the set \texttt{P} that lead to the vertex \texttt{y}.
 \item Line 7 checks whether we have indeed found a path ending at \texttt{y}.
@@ -2401,7 +2412,7 @@ Next, we discuss the implementation of the procedure  \texttt{findPath}.
       As the \texttt{return} statement in line 11 does not return a value, the procedure will
       instead return the undefined value $\Omega$.
 \end{enumerate}
-The procedure call \texttt{reachable(x,y R} will compute the \textbf{shortest} path connecting
+The procedure call \texttt{reachable(x,y R)} will compute the \textbf{shortest} path connecting
 \texttt{x} and \texttt{y} because it computes path with increasing length.  The first iteration
 computes all paths starting in \texttt{x} that have a length of at most 1, the second iteration
 computes all paths starting in \texttt{x} that have a length of at most 2, and in general the $n$-th
@@ -2447,7 +2458,7 @@ The algorithm described above is known as
 
 \subsection{The Wolf, the Goat, and the Cabbage}
 Next, we present an application of the theory developed so far.  We solve a problem from that has puzzled
-agricultural economists for centuries.  The puzzle we want to solve is known as the 
+the greatest agricultural economists for centuries.  The puzzle we want to solve is known as the 
 \href{http://jeux.lulu.pagesperso-orange.fr/html/anglais/loupChe/loupChe1.htm}{wolf-goat-cabbage puzzle}:  
 \vspace*{0.3cm}
 
@@ -2623,144 +2634,141 @@ that combines the statements shown so far.  The solution computed by this progra
 \end{figure}
 
 
-\section{Terme und Matching}
-Neben den bisher vorgestellten Datenstrukturen gibt es noch eine weitere wichtige
-Datenstruktur, die sogenannten \emph{Terme}, die insbesondere n\"{u}tzlich ist, wenn wir
-Programme schreiben wollen, die Formeln manipulieren.  
-Wollen wir beispielsweise ein Programm schreiben, dass als Eingabe einen String wie
+\section{Terms and Matching}
+So far we have seen the basic data structures of \setlx\ like numbers, string, sets, and lists.
+There is one more data structure that is supported by \setlx.  This is the data structure of
+\colorbox{amethyst}{\emph{terms}}.  
+This data structure is especially useful when we develop programs that deal with mathematical formulas.
+For example, in this section we will1 develop a program that reads a string like 
 \\[0.2cm]
 \hspace*{1.3cm}
-``\texttt{x * sin(x)}''
+``\texttt{x * exp(x)}'',
 \\[0.2cm]
-einliest, diesen String als eine Funktion in der Variablen ``\texttt{x}'' interpretiert
-und dann die Ableitung dieser Funktion nach der Variablen ``\texttt{x}'' berechnet, so
-sprechen wir von \emph{symbolischer Programmierung}.   Wollen wir einen Ausdruck wie 
-``\texttt{x * sin(x)}'' darstellen, so eignen sich \emph{Terme} am besten dazu.
-Im n\"{a}chsten Unterabschnitt werden wir zun\"{a}chst \emph{Terme} zusammen mit den in \setl\
-vordefinierten Funktionen vorstellen, die zur Verarbeitung von Termen benutzt werden k\"{o}nnen.
-Anschlie\ss{}end stellen wir das sogenannte \emph{Matching} vor, mit dessen Hilfe sich Terme
-besonders leicht manipulieren lassen.
-
-
-\subsection{Konstruktion und Manipulation von Termen}
-Terme werden mit Hilfe sogenannter \emph{Funktions-Zeichen} gebildet.  Es ist wichtig,
-dass Sie Funktions-Zeichen nicht mit Funktionen oder Variablen verwechseln.  In \setl\
-beginnen Funktionen-Zeichen im Gegensatz zu einem Variablen-Namen daher mit einem gro\ss{}en
-Buchstaben.  Auf den Gro\ss{}buchstaben k\"{o}nnen  dann beliebig viele Buchstaben, Ziffern und
-der Unterstrich ``\texttt{\_}'' folgen.
-Zus\"{a}tzlich gibt es noch Funktionszeichen, die mit dem Zeichen
-``\texttt{\symbol{94}}''
-beginnen.  Solche Funktions-Zeichen werden intern von \setl\ verwendet um Operator-Symbole
-wie ``\texttt{+}'' oder ``\texttt{*}'' darzustellen.
-Die folgenden Strings k\"{o}nnen beispielsweise  als Funktions-Zeichen vewendet werden:
+interprets this string as describing the real valued function 
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{F}, \quad \texttt{FabcXYZ}, \quad \texttt{\symbol{94}sum}, \quad \texttt{Hugo\_}.
+$x \mapsto x \cdot \exp(x)$, 
 \\[0.2cm]
-Damit sind wir nun in der Lage, Terme zu definieren.  Ist $F$ ein Funktions-Zeichen und sind
-$t_1$, $t_2$, $\cdots$, beliebige \setl-Werte, so ist der Ausdruck
+and then takes the derivative of this function with respect to the variable $x$.  This program is
+easy to implement if real valued functions are represented as terms.  The reason is that \setlx\ provides 
+\colorbox{amethyst}{\emph{matching}} for terms.  We will define this notion later.  Matching
+is one of the main ingredients of the programming language \href{https://en.wikipedia.org/wiki/Prolog}{Prolog}.
+This programming language was quite popular in artificial intelligence during the eighties.
+
+
+\subsection{Constructing and Manipulating Terms}
+In order to build terms, we first need \emph{functors}.  It is important not to confuse functors with
+function symbols.  Therefore, functors have to be preceded by the character  
+``\texttt{\symbol{64}}''.
+For example, the following strings can be used as functors:
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\symbol{64}f}, \quad \texttt{\symbol{64}FabcXYZ}, \quad \texttt{\symbol{64}sum}, \quad \texttt{\symbol{64}Hugo\_}.
+\\[0.2cm]
+However, in the expression ``\texttt{@f}'', the string ``\texttt{f}'' is the functor.  The
+character ``\texttt{@}'' is only used as an escape character that tells us that ``\texttt{f}'' is
+not a function symbol but rather a functor.  Next, we define terms.  If $F$ is a functor and 
+$t_1$, $t_2$, $\cdots$, are any values, i.e.~they could be number, strings, lists, sets, or terms
+themselves, then
 \\[0.2cm]
 \hspace*{1.3cm}
 $F(t_1, t_2, \cdots, t_n)$
 \\[0.2cm]
-ein Term.  Beachten Sie, dass Terme ganz \"{a}hnlich aussehen wie die Aufrufe von Funktionen.
-Terme und Aufrufe von Funktionen unterscheiden sich nur dadurch, dass bei einem Term links
-vor der ersten \"{o}ffnenden Klammer ein Funktions-Zeichen steht, w\"{a}hrend bei einem
-Funktions-Aufruf dort statt dessen eine Variable steht, der eine Funktions-Definition zugewiesen
-worden ist.
-
-\examples
+is a term.  Syntactically, terms look very similar to function calls.  The only difference between a function call
+and a term is the following: 
 \begin{enumerate}
-\item \texttt{Adresse(\symbol{34}Roteb\"{u}hlplatz 41\symbol{34}, 70178, \symbol{34}Stuttgart\symbol{34})}
-
-      ist ein Term, der eine Adresse repr\"{a}sentiert.
-\item \texttt{Product(Variable(\symbol{34}x\symbol{34}), Sin(Variable(\symbol{34}x\symbol{34})))}
-
-      ist ein Term, der einen arithmetischen Ausdruck repr\"{a}sentiert, den Sie mathematisch
-      als $x \cdot \sin(x)$ schreiben w\"{u}rden.  \eox
+\item A function call starts with a function symbol. 
+\item A term starts with a functor. 
 \end{enumerate}
 
-An dieser Stelle fragen Sie sich vielleicht, wie Terme ausgewertet werden.  Die Antwort ist:
-\colorbox{amethyst}{Gar nicht!}  Terme werden nur dazu benutzt, Daten darzustellen.  Terme sind also bereits 
-Werte  genauso wie auch Zahlen, Strings, Mengen oder Listen als Werte aufgefasst werden.
-Genausowenig wie Sie die Zahl \texttt{42} auswerten m\"{u}ssen, m\"{u}ssen Sie einen Term auswerten.
 
-Nehmen wir einmal an,
-dass es in \setl\ keine Listen geben w\"{u}rde.  Dann k\"{o}nnten wir Listen als Terme darstellen.  Zun\"{a}chst
-w\"{u}rden wir ein Funktions-Zeichen ben\"{o}tigen, mit dem wir die leere Liste darstellen k\"{o}nnten.  Wir
-w\"{a}hlen dazu das Funktions-Zeichen \texttt{Nil}.  Damit haben wir dann also die Entsprechung
-\\[0.2cm]
-\hspace*{1.3cm}
-$\texttt{Nil}() \;\widehat{=}\; \texttt{[]}$.
-\\[0.2cm]
-\textbf{Beachten} Sie hier, dass die Klammern hinter dem Funktions-Zeichen \texttt{Nil} nicht
-weggelassen werden d\"{u}rfen!  Um nun eine Liste darzustellen, deren erstes Element $x$ ist und deren
-restliche Elemente durch die Restliste $r$ gegeben sind, verwenden wir das Funktions-Zeichen
-\texttt{Cons}.  Dann haben wir die Entsprechung
-\\[0.2cm]
-\hspace*{1.3cm}
-$\texttt{Cons(x, r)} \;\widehat{=}\; \texttt{[}x\texttt{]}+r$. 
-\\[0.2cm]
-Konkret k\"{o}nnen wir nun die Liste \texttt{[1,2,3]} durch den Term
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{Cons(1, Cons(2, Cons(3, Nil())))}
-\\[0.2cm]
-darstellen.  In der Sprache \textsl{Prolog}, werden Listen intern in \"{a}hnlicher Form als Terme dargestellt.
-
-Es gibt zwei vordefinierte Funktionen in \setl, mit denen wir auf die Komponenten eines Terms
-zugreifen k\"{o}nnen und es gibt eine weitere Funktion, mit deren Hilfe wir Terme konstruieren k\"{o}nnen.
+\examplesEng
 \begin{enumerate}
-\item Die Funktion \texttt{fct} berechnet das Funktions-Zeichen eines Terms.
-      Falls $t$ ein Term der Form $F(s_1,\cdots,s_n)$ ist, so ist das Ergebnis des Funktions-Aufrufs
+\item \texttt{\symbol{64}Address(\symbol{34}Coblitzallee 1-9 \symbol{34}, 68163, \symbol{34}Mannheim\symbol{34})}
+
+      is a term that represents an address.
+\item \texttt{\symbol{64}product(\symbol{64}variable(\symbol{34}x\symbol{34}), \symbol{64}exp(\symbol{64}Variable(\symbol{34}x\symbol{34})))}
+
+      is a term that represents the  function $x \mapsto x \cdot \exp(x)$.  
+      \eox
+\end{enumerate}
+At this point you might ask how terms are evaluated.  The answer is that terms
+\colorbox{amethyst}{are not evaluated!}  
+Terms are used to represent data in a way that is both concise and readable.  Hence, terms are values like
+numbers, sets or strings.  As terms are values, they don't need to be evaluated.
+
+Let us demonstrate a very simple application of terms.  Imagine that \setlx\ wouldn't provide lists as a native data
+type.  Then, we could implement lists via terms.  First, we would use a functor to represent the empty list.
+Let us choose the functor \texttt{nil} for this purpose.  Hence, we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{\symbol{64}nil}() \;\widehat{=}\; \texttt{[]}$,
+\\[0.2cm]
+where we read the symbol ``$\widehat{=}$'' as ``corresponds to''.
+Note that the parentheses after the functor  \texttt{nil} are \colorbox{amethyst}{necessary!}  Next, in order to represent
+a list with first element $x$ and a list $r$ of remaining elements we use the functor \texttt{cons}.
+Then we have the correspondence
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{\symbol{64}cons}(x, r) \;\widehat{=}\; \texttt{[}x\texttt{]} + r$. 
+\\[0.2cm]
+Concretely, the list \texttt{[1,2,3]} is represented as the term
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\symbol{64}cons(1, \symbol{64}cons(2, \symbol{64}cons(3, \symbol{64}nil())))}.
+\\[0.2cm]
+The programming language \textsl{Prolog} represents lists internally in a similar form.
+
+\setlx\ provides two functions that allow us to extract the components of a term.  Furthermore, there is a
+function for constructing terms.  These functions are described next.
+\begin{enumerate}
+\item The function \texttt{fct} returns the functor of a given term.
+      If  $t$ is a term of the form $\at F(s_1,\cdots,s_n)$, then the result returned by the expression
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{fct}(F(s_1,\cdots,s_n))$
+      $\texttt{fct}(\at F(s_1,\cdots,s_n))$
       \\[0.2cm]
-      das Funktions-Zeichen $F$ dieses Terms.  Beispielsweise liefert der Ausdruck
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{fct(Cons(1, Cons(2, Cons(3, Nil()))))}
-      \\[0.2cm]
-      als Ergebnis das Funktions-Zeichen \texttt{\symbol{34}Cons\symbol{34}}.
-\item Die Funktion \texttt{args} berechnet die Argumente eines Terms.
-      Falls $t$ ein Term der Form $F(s_1,\cdots,s_n)$ ist, dann liefert der Ausdruck
+      is the functor $F$ of this term.  For example the expression
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{args}(F(s_1,\cdots,s_n))$
+      \texttt{fct(\symbol{64}cons(1, \symbol{64}cons(2, \symbol{64}cons(3, \symbol{64}nil()))))}
       \\[0.2cm]
-      als Ergebnis die Liste $[s_1, \cdots, s_n]$ der Argumente des Terms $t$  .  Beispielsweise
-      liefert der Ausdruck
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{args(Cons(1, Cons(2, Cons(3, Nil()))))}
-      \\[0.2cm]
-      das Ergebnis
+      returns the string  \texttt{\symbol{34}cons\symbol{34}} as its result.
+\item The function \texttt{args} returns the arguments of a term.
+      If  $t$ is a term of the form $\at F(s_1,\cdots,s_n)$, then
       \\[0.2cm]
       \hspace*{1.3cm}
-      \texttt{[1, Cons(2, Cons(3, Nil()))]}.
-\item Ist ein Funktions-Zeichen $f$ und eine Liste $l$ von Argumenten gegeben, so erzeugt die
-      Funktion \texttt{makeTerm} durch den Aufruf
+      $\mathtt{args}(\at F(s_1,\cdots,s_n))$
+      \\[0.2cm]
+      returns the list $[s_1, \cdots, s_n]$. For example, the expression
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{makeTerm}(f,l)$
+      \texttt{args(\at cons(1, \at cons(2, \at cons(3, \at nil()))))}
       \\[0.2cm]
-      einen Term $t$ mit dem Funktions-Zeichen $f$ und der Argument-Liste $l$, f\"{u}r $t$ gilt also
+      is evaluated as
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{[1, \at cons(2, \at cons(3, \at nil()))]}.
+\item If $f$ is the name of a functor and  $l$ is a list, then the function \texttt{makeTerm} can be invoked as
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $t \;\mathtt{:=}\; \texttt{makeTerm}(f,l)$.
+      \\[0.2cm]
+      This expression generates a term $t$ such that $f$ is the functor and $l$ is the list of its
+      arguments.  Therefore we have
       \\[0.2cm]
       \hspace*{1.3cm}
       $\mathtt{fct}(t) = f$  \quad und \quad $\mathtt{args}(t) = l$.
       \\[0.2cm]
-      Beispielsweise liefert der Aufruf
+      For example, the expression
       \\[0.2cm]
       \hspace*{1.3cm}
-      \texttt{makeTerm(\symbol{34}Cons\symbol{34}, [ 1, Nil() ])}
+      \texttt{makeTerm(\symbol{34}cons\symbol{34}, [ 1, \at nil() ])}
       \\[0.2cm]
-      als Ergebnis den Term
+      returns the result
       \\[0.2cm]
       \hspace*{1.3cm}
-      \texttt{Cons(1,Nil())}.
-      \\[0.2cm]
-      Diesen Term h\"{a}tten wir nat\"{u}rlich auch unmittelbar hinschreiben k\"{o}nnen.
+      \texttt{\at cons(1, \at nil())}.
 \end{enumerate}
 
 \begin{figure}[!ht]
@@ -2775,72 +2783,68 @@ zugreifen k\"{o}nnen und es gibt eine weitere Funktion, mit deren Hilfe wir Term
                   xrightmargin  = 0.8cm,
                 ]
     append := procedure(l, x) {
-        if (fct(l) == "Nil") {
-            return Cons(x, Nil());
+        if (fct(l) == "nil") {
+            return @cons(x, @nil());  
         }
         [head, tail] := args(l);
-        return Cons(head, append(tail, x));
+        return @cons(head, append(tail, x));
     };
+    l := @cons(1, @cons(2, @cons(3, @nil()))); // corresponds to [1,2,3]
+    print(append(l, 4));
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Einf\"{u}gen eines Elements am Ende einer Liste.}
+\caption{Appending an element at the end of a list.}
 \label{fig:append.stlx}
 \end{figure}
 
-In Abbildung  \ref{fig:append.stlx} auf Seite \pageref{fig:append.stlx} sehen Sie die
-Implementierung  einer Funktion
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/append.stlx}{\texttt{append}},
-deren Aufgabe es ist, ein Element $x$ am Ende einer Liste $l$ einzuf\"{u}gen, wobei vorausgesetzt ist,
-dass die Liste $l$ als Term mit Hilfe der Funktions-Zeichen ``\texttt{Cons}'' und ``\texttt{Nil}''
-dargestellt wird.
+Figure \ref{fig:append.stlx} on page \pageref{fig:append.stlx} shows the
+program \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/append.stlx}{\texttt{append.stlx}}.
+This program implements the function \texttt{append}.  As its first arguments, this function takes a list \texttt{l}
+that is represented as a term.  As its second argument,  it takes an object \texttt{x}.  The purpose of the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{append}(\texttt{l}, \texttt{x})$
+\\[0.2cm]
+is to append the object \texttt{x} at the end of the list \texttt{l}.  The implementation of the function \texttt{append}
+assumes that the list \texttt{l} is represented as a term using the functors ``\texttt{cons}'' and ``\texttt{nil}''.
 \begin{enumerate}
-\item Zun\"{a}chst wird in Zeile 2 \"{u}berpr\"{u}ft, ob die Liste $l$ leer ist.  Die Liste $l$ ist genau dann
-      leer, wenn $l = \texttt{Nil()}$ gilt.  Daher k\"{o}nnen wir einfach das Funktions-Zeichen des
-      Terms $l$ testen um herauszufinden, ob $l$ die leere Liste repr\"{a}sentiert.
-\item Falls $l$ nicht leer ist, muss $l$ die Form
+\item Line 2 checks whether the list  \texttt{l} is empty. The list \texttt{l} is empty iff we have
+      $\texttt{l} = \texttt{\at Nil()}$.  In the program we merely check the functor of the term \texttt{l}.  If the name of this functor is
+      \texttt{\symbol{34}nil\symbol{34}}, then \texttt{l} is the empty list.
+\item If \texttt{l} is not empty, then it must be a term of the form
       \\[0.2cm]
       \hspace*{1.3cm}
-      $l = \texttt{Cons(\textsl{head}, \textsl{tail})}$
+      $\texttt{l} = \texttt{\at cons(\textsl{head}, \textsl{tail})}$.
       \\[0.2cm]     
-      haben.  Dann ist \textsl{head} das erste Element der Liste $l$ und \textsl{tail} bezeichnet
-      die Liste der restlichen Elemente.  In diesem Fall m\"{u}ssen wir $x$ rekursiv in die Liste
-      \textsl{tail} einf\"{u}gen.  Als Ergebnis wird in Zeile 6 dann eine neue Liste erzeugt, deren
-      erstes Element \textsl{head} ist, w\"{a}hrend die Liste der restlichen Elemente durch den
-      rekursiven Aufruf von \textsl{append} berechnet wird.
+      Then, conceptually \texttt{head} is the first element of the list \texttt{l} and \texttt{tail} is the list of
+      the remaining elements.  In this case, we need to recursively append \texttt{t} at the end of the list \texttt{tail}.
+      Finally, the first element of the list \texttt{l}, which is called \texttt{head} in line 5, needs
+      to be prepended to the list that is returned from the recursive invocation of \texttt{append}.
+      This is done in line 6 by constructing the term 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{@cons(head, append(tail, x))}.
 \end{enumerate}
-In manchen F\"{a}llen ist es sehr unbequem, dass Funktions-Zeichen immer mit einem gro\ss{}en Buchstaben
-beginnen m\"{u}ssen.  Deswegen gibt es in \setl\ einen Escape-Mechanismus, der es erlaubt, auch
-Funktionszeichen zu verwenden, die mit einem kleinen Buchstaben beginnen:  Falls wir einem
-Funktionszeichen den Operator ``\texttt{\symbol{64}}'' voranstellen, dann darf das Funktionszeichen
-auch mit einem kleinen Buchstaben beginnen.  Wollen wir beispielsweise Terme benutzen um
-algebraische Ausdr\"{u}cke darzustellen, die trigonometrische Funktionen enthalten, 
-so k\"{o}nnen wir einen Ausdruck der Form $\sin(x)$ durch den Term
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{\symbol{64}sin(\symbol{34}x\symbol{34})}  
-\\[0.2cm]
-darstellen.
 
 \subsection{Matching}
-Der Umgang mit Termen w\"{a}re sehr m\"{u}hsam, wenn wir die Terme jedesmal mit Hilfe der Funktionen
-\texttt{fct} und \texttt{args} auseinander nehmen m\"{u}ssten.  Abbildung \ref{fig:append-match.stlx} 
-zeigt eine weitere Implementierung der Funktion
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/append-match.stlx}{\texttt{append}}, 
-bei der wir die Kontroll-Struktur \texttt{match} an Stelle der Funktionen ``\texttt{fct}''
-and ``\texttt{args}'' verwendet haben.  In Zeile 3 wird  \"{u}berpr\"{u}ft, ob die Liste $l$ leer ist.
-Die wahre St\"{a}rke des Matchings sehen wir allerdings ist in Zeile 4, denn dort wird nicht nur
-\"{u}berpr\"{u}ft, ob die Liste $l$ die Form
+It would be quite tedious if the functions \texttt{fct} and \texttt{args} were the only means to extract the
+components of a term.  Figure \ref{fig:append-match.stlx} on page \pageref{fig:append-match.stlx}
+shows the program
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/append-match.stlx}{\texttt{append-match.stlx}}, 
+that uses \emph{matching} to implement the function \texttt{append}.  
+Line 3 checks, whether the list  \texttt{l} is empty, i.e.~whether \texttt{l} is identical to the term 
+\texttt{@nil()}.  Line 4 is more interesting, as it combines two actions.
+\begin{enumerate}
+\item It checks, whether the list \texttt{l} is a term that starts with the functor \texttt{cons}.
+\item If \texttt{l} does indeed starts with the functor \texttt{cons}, the arguments of this functor are
+      extracted and assigned to the variables \texttt{head} and \texttt{tail}.
+\end{enumerate}
+Hence, if the \texttt{match} statement in line 4 is successful, the equation
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{Cons(\textsl{head},\textsl{tail})}
+$\texttt{l} = \texttt{@cons(head, tail)}$
 \\[0.2cm]
-hat, sondern gleichzeitig werden die Variablen \textsl{head} and \textsl{tail} so gesetzt, dass
-anschlie\ss{}end die Gleichung
-\\[0.2cm]
-\hspace*{1.3cm}
-$l = \texttt{Cons(\textsl{head},\textsl{tail})}$
-\\[0.2cm]
-erf\"{u}llt ist.
+holds afterwards.
 
 
 \begin{figure}[!ht]
@@ -2856,27 +2860,26 @@ erf\"{u}llt ist.
                 ]
     append := procedure(l, x) {
         match (l) {
-            case Nil():            return Cons(x, Nil());
-            case Cons(head, tail): return Cons(head, append(tail, x));
+            case @nil():            return @cons(x, @nil());
+            case @cons(head, tail): return @cons(head, append(tail, x));
         }
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Implementierung von \texttt{append} mit Hilfe von \emph{Matching}.}
+\caption{Implementing \texttt{append} using a \texttt{match} statement.}
 \label{fig:append-match.stlx}
 \end{figure}
+In general, a \texttt{match} statement has the structure that is shown in Figure \ref{fig:match}.
+Here, $e$ is any expression that yields a term when evaluated.  The expressions 
+$t_1$, $\cdots$, $t_n$ are so called \emph{patterns} that contain variables.  When the \texttt{match} statement
+is executed, \textsc{SetlX} tries to bind the variables occurring in the pattern $t_1$ such that the resulting
+expression is equal to $e$.  If this succeeds, the statements in  $\textsl{body}_1$ are executed and the
+execution of the \texttt{match} statement ends.
+Otherwise, the patterns $t_2$, $\cdots$, $t_n$ are tried one by one.  If the pattern $t_i$ is successfully
+matched to $e$, the statements in $\textsl{body}_i$ are executed and the execution of the \texttt{match}
+statement end.  If none of the patterns $t_1$, $\cdots$, $t_n$ can be matched with $e$, the statements in
+$\textsl{body}_{n+1}$ are executed.
 
-Im Allgemeinen ist  ein \texttt{match}-Block so \"{a}hnlich aufgebaut wie ein
-\texttt{switch}-Block und hat die in Abbildung \ref{fig:match} gezeigte Struktur.
-Hier bezeichnet $e$ einen Ausdruck, dessen Auswertung einen Term ergibt.  
-Die Ausdr\"{u}cke $t_1$, $\cdots$, $t_n$ sind sogenannte \emph{Muster}, die freie
-Variablen enthalten.  Bei der Auswertung eines \texttt{Match}-Blocks versucht
-\textsc{SetlX} die in dem Muster $t_i$ auftretenden Variablen so zu setzen, dass das Muster
-zu dem Ergebnis der Auswertung von $e$ gleich ist.  Gelingt dies, so wird die
-mit $\textsl{body}_i$ bezeichnete Gruppe von Befehlen ausgef\"{u}hrt.  Andernfalls
-versucht \textsc{SetlX} das n\"{a}chste Muster $t_{i+1}$ mit $e$ zur Deckung zu bringen.
-Falls keines der Muster $t_1$, $\cdots$, $t_n$ mit $e$ zur Deckung zu bringen ist, wird
-ersatzweise $\textsl{body}_{n+1}$ ausgef\"{u}hrt.  
 
 \begin{figure}[!ht]
   \centering
@@ -2913,30 +2916,39 @@ ersatzweise $\textsl{body}_{n+1}$ ausgef\"{u}hrt.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
+    loadLibrary("termUtilities");  
+
     diff := procedure(t, x) {
         match (t) {
-            case t1 + t2 :
-                return diff(t1, x) + diff(t2, x);
-            case t1 - t2 :
-                return diff(t1, x) - diff(t2, x);
-            case t1 * t2 :
-                return diff(t1, x) * t2 + t1 * diff(t2, x);
-            case t1 / t2 :
-                return ( diff(t1, x) * t2 - t1 * diff(t2, x) ) / t2 * t2;
-            case f ** g :
-                return diff( @exp(g * @ln(f)), x);
-            case ln(a) :
+            case a + b :
+                return diff(a, x) + diff(b, x);
+            case a - b :
+                return diff(a, x) - diff(b, x);
+            case a * b :
+                return diff(a, x) * b + a * diff(b, x);
+            case a / b :
+                return ( diff(a, x) * b - a * diff(b, x) ) / b * b;
+            case a ** b :
+                return diff( @exp(b * @ln(a)), x);
+            case @ln(a) :
                 return diff(a, x) / a;
-            case exp(a) :
+            case @exp(a) :
                 return diff(a, x) * @exp(a);
-            case ^variable(x) : // x is defined above as second argument
+            case v | v == x :
                 return 1;
-            case ^variable(y) : // y not yet defined, matches any other variable
+            case y | isVariable(y) :  // must be different from x
                 return 0;
             case n | isNumber(n):   
                 return 0;  
-        }
+         }
     };
+    test := procedure(s) {
+        t := parseTerm(s);
+        v := parseTerm("x");
+        d := diff(t, v);
+        print("d/dx($s$) = $d$\n");
+    };
+    test("x ** x");
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{A function to perform symbolic differentiation.}
@@ -2944,136 +2956,184 @@ ersatzweise $\textsl{body}_{n+1}$ ausgef\"{u}hrt.
 \end{figure}
 
 \noindent
-Wir zeigen zum Abschluss dieses Abschnitts ein komplexeres Beispiel.  Die in Abbildung
-\ref{fig:diff.stlx} auf Seite \pageref{fig:diff.stlx} gezeigte Funktion
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/diff.stlx}{\texttt{diff}}
-wird mit zwei Argumenten aufgerufen:
+We close this section by showing an example that demonstrates the power of matching.
+The function \texttt{diff} that is shown in Figure \ref{fig:diff.stlx} on page \pageref{fig:diff.stlx} is part
+of the program
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/diff.stlx}{\texttt{diff}}.
+This function is called with two arguments.
 \begin{enumerate}
-\item Das erste  Argument $t$ ist ein Term, der einen arithmetischen Ausdruck repr\"{a}sentiert.
-\item Das zweite Argument $x$ ist ein String, der als Variable interpretiert wird.
+\item The first argument \texttt{t} is a term that represents an arithmetical expression.
+\item The second argument \texttt{x} is a term that represents a variable.
 \end{enumerate}
-Die Aufgabe der Funktion \texttt{diff} besteht darin, den durch $t$ gegebenen Ausdruck nach der
-in $x$ angegebenen Variablen zu differenzieren.  Wollen wir beispielsweise die Funktion
+The function \texttt{diff} interprets its argument \texttt{t} as a function of the variable \texttt{x}.  This
+function is then differentiated with respect to \texttt{x}.  For example, in order to compute the derivative of
+the function
 \\[0.2cm]
 \hspace*{1.3cm}
-$x \mapsto x^x$
+$x \mapsto x^x$,
 \\[0.2cm]
-nach $x$ ableiten, so k\"{o}nnen wir die Funktion \texttt{diff} wie folgt aufrufen.
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{diff(parse(\symbol{34}x ** x\symbol{34}), \symbol{34}x\symbol{34});}
-\\[0.2cm]
-Hier wandelt die Funktion \texttt{parse} den String ``\texttt{x ** x}'' in einen Term um.  Die
-genaue Struktur dieses Terms diskutieren wir weiter unten.  Wir betrachten
-zun\"{a}chst den \texttt{match}-Befehl in  Abbildung \ref{fig:diff.stlx}.  
-In Zeile  3 hat der zu differenzierende Ausdruck die Form
-\texttt{t1 + t2}.  Um einen solchen Ausdruck nach einer Variablen $x$ zu differenzieren, m\"{u}ssen wir
-sowohl  \texttt{t1} als auch \texttt{t2} nach $x$ differenzieren.  Die dabei erhaltenen Ergebnisse
-sind dann zu addieren.  Etwas interessanter ist Zeile 8, welche die Produkt-Regel der
-Differenzial-Rechnung umsetzt.  Die Produkt-Regel lautet:
+we can call the function  \texttt{diff} as follows:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\displaystyle \frac{d\;}{dx} \bigl(t_1 \cdot t_2\bigr) = \frac{d\, t_1}{dx} \cdot t_2 + t_1 \cdot \frac{d\,t_2}{dx}$.
+\texttt{diff(parseTerm(\symbol{34}x ** x\symbol{34}), parseTerm(\symbol{34}x\symbol{34}));}
 \\[0.2cm]
-Bemerken Sie, dass in Zeile 7 das Muster
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{t1 * t2}
-\\[0.2cm]
-zum einen dazu dient, zu erkennen, dass der zu differenzierende Ausdruck ein Produkt ist, zum
-anderen aber auch die beiden Faktoren des Produkts extrahiert und an die Variablen $t_1$ und $t_2$ bindet.
-In den Zeilen  12 und 16 haben wir den Funktions-Zeichen ``\texttt{exp}'' und ``\texttt{ln}'' den
- Operator ``\texttt{\symbol{64}}'' vorangestellen m\"{u}ssen, denn sonst w\"{u}rden die Strings
- ``\texttt{exp}'' und ``\texttt{ln}'' nicht als Funktions-Zeichen sondern als Variablen
- aufgefasst werden. 
+Here, the function \texttt{parseTerm} is a function that is defined in the library \texttt{termUtilities}.
+This function takes a string as input and converts this string into a term.  In order to use the function
+\texttt{parseTerm}, we have to load the library that defines it.  This happens in line 1 of Figure
+\ref{fig:diff.stlx}. 
 
-Die Regel zur Berechnung der  Ableitung eines Ausdrucks der Form $f^g$ beruht auf der
-Gleichung
-\\[0.2cm]
-\hspace*{1.3cm}
-$f^g = \exp\bigl(\ln\bigl(f^g\bigr)\bigr) = \exp\bigl(g \cdot \ln(f)\bigr)$,
-\\[0.2cm]
-die in Zeile 12 umgesetzt wird.  
+Let us now discuss the implementation of the function \texttt{diff} in more detail.  
+\begin{enumerate}
+\item Line 5 makes use of the fact that the operator ``\texttt{+}'' can be applied to terms.
+      The result is a term that has the functor ``\texttt{@@@sum}''.  However, this functor is hidden from the
+      user and becomes only visible when we use the function \texttt{fct} to expose it.  For example, we can
+      define a term \texttt{t} as follows:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{t := @f(1) + @g(2);}
+      \\[0.2cm]
+      Then \texttt{t} is a term that is displayed as ``\texttt{@f(1) + @g(2)}'', but the expression
+      \texttt{fct(t)} returns the string
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{"@@@sum"}.
+      \\[0.2cm]
+      There is no need to remember that the internal representation of the operator ``\texttt{+}'' as a functor
+      is given as the string ``\texttt{@@@sum}'''.  The only thing that you have to keep in mind is
+      the fact, that the operator ``\texttt{+}'' can be applied to terms.  The same is true for the
+      other arithmetical operators ``\texttt{+}'', ``\texttt{-}'', ``\texttt{*}'', ``\texttt{/}'',
+      ``\texttt{\symbol{37}}'', and ``\texttt{**}''.  Similarly, the logical operators
+      ``\texttt{\&\&}'', ``\texttt{||}'', ``\texttt{!}'', ``\texttt{=>}'', and ``\texttt{<==>}'' can
+      be used as functors.  Note, however, that the relational operators ``\texttt{<}'',
+      ``\texttt{>}'', ``\texttt{<=}'', ``\texttt{>=}'' \colorbox{amethyst}{can not be used} to
+      combine terms.  Finally, the operators ``\texttt{==}'' and ``\texttt{!=}'' can be used to
+      check whether two terms are identical or different, respectively.  Hence, while these
+      operators can be applied to terms, they return a Boolean value, not a term!
+      
+      As the operator ``\texttt{+}'' can be used as a functor, it can also be used in a pattern.  The
+      pattern 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{a + b}
+      \\[0.2cm]
+      matches any term that can be written as a sum.  The derivative of a sum is computed by summing the
+      derivatives of the components of the sum, i.e.~we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\ds \diff\bigl(f(x) + g(x)\bigr) = \diff f(x) + \diff g(x)$.
+      \\[0.2cm]
+      Therefore, the case where the term \texttt{t} has the form \texttt{a + b} can be dealt with by
+      recursively computing the derivatives of \texttt{a} and \texttt{b} and adding them.  This
+      happens in line 6.
+\item Line 7 deals with the case where \texttt{t} is a difference.  Mathematically, the rule to take the
+      derivative of a difference is
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\ds \diff\bigl(f(x) - g(x)\bigr) = \diff f(x) - \diff g(x)$.
+      \\[0.2cm]
+      This rule is implemented in line 8.
+\item Line 9 deals with the case where \texttt{t} is a product.  The 
+      \href{https://en.wikipedia.org/wiki/Product_rule}{product rule} is
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\ds \diff\bigl(f(x) \cdot g(x)\bigr) = \left(\diff f(x)\right)\cdot g(x) + f(x) \cdot \left(\diff g(x)\right)$.
+      \\[0.2cm]
+      This rule is implemented in line 10.
+\item Line 11 deals with the case where \texttt{t} is a quotient.  The
+      \href{https://en.wikipedia.org/wiki/Quotient_rule}{quotient rule} is 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\ds \diff\left(\frac{f(x)}{g(x)}\right) = \frac{\left(\diff f(x)\right)\cdot g(x) - f(x)
+        \cdot \left(\diff g(x)\right)}{g(x) \cdot g(x)}$.
+      \\[0.2cm]
+      This rule is implemented in line 12.
+\item Line 13 deals with the case where \texttt{t} is a power.  Now in order to take the derivative of an
+      expression of the form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\ds f(x)^{g(x)}$
+      \\[0.2cm]
+      we first need to rewrite it using the following trick:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\ds f(x)^{g(x)} = \exp\bigl(\ln\bigl(f(x)^{g(x)}\bigr)\bigr) = \exp\bigl(g(x) \cdot \ln(f(x))\bigr)$,
+      \\[0.2cm]
+      Then, we can recursively call \texttt{diff} for this expression.  This works, because the function
+      \texttt{diff} can deal with both the exponential function $x \mapsto \exp(x)$ and with the natural
+      logarithm $x \mapsto \ln(x)$.  This rewriting is done in line 14.
+\item Line 15 deals with the case where \texttt{t} has the form $\ln\bigl(f(x)\bigr)$.  
+      In order to take the derivative of this expression, we first need to know the derivative of the natural
+      logarithm.  This derivative is given as 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\ds \diff \ln(x) = \frac{1}{x}$.
+      \\[0.2cm]
+      Then, using the \href{https://en.wikipedia.org/wiki/Chain_rule}{chain rule} we have that
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\ds \diff \ln\bigl(f(x)\bigr) = \frac{\diff f(x)}{f(x)}$.
+      \\[0.2cm]
+      This rule is used in line 16.
+\item Line 17 deals with the case where \texttt{t} has the form $\exp\bigl(f(x)\bigr)$.  
+      In order to take the derivative of this expression, we first need to know the derivative of the 
+      \href{https://en.wikipedia.org/wiki/Exponential_function}{exponential function}.  This derivative is given as 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\ds \diff \exp(x) = \exp(x)$.
+      \\[0.2cm]
+      Then, using the \href{https://en.wikipedia.org/wiki/Chain_rule}{chain rule} we have that
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\ds \diff \exp\bigl(f(x)\bigr) = \left(\diff f(x)\right) \cdot \exp\bigl(f(x)\bigr)$.
+      \\[0.2cm]
+      This rule is used in line 18.
+\item Line 19 deals with the case where \texttt{t} is a variable and happens to be the same variable as
+      \texttt{x}.  As we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\ds \frac{\mathrm{d}x}{\mathrm{d}x} = 1$,
+      \\[0.2cm]
+      the function \texttt{diff} returns \texttt{1} in this case.
+\item Line 21 deals with the case where \texttt{t} is a variable.  As line 19 has already covered the case that
+      \texttt{t} and \texttt{x} are the same variable, in this case the variable \texttt{x} must be different
+      from \texttt{t}.  Therefore, with respect to \texttt{x} the term \texttt{t} can be seen as a constant and
+      the derivative is \texttt{0}.
+\item Line 23 covers the case where \texttt{t} is a number.  Note how we call \texttt{isNumber}
+      after the condition operator ``\texttt{|}''.  As a number is a constant, the derivative is \texttt{0}.
+\item Line 27 defines the procedure \texttt{test}.  This procedure takes a string \texttt{s} and transforms it
+      into the term \texttt{t} via the function \texttt{parseTerm} defined in the library
+      \texttt{termUtilities}.  Similarly, the string \texttt{"x"} is transformed into the term \texttt{v} that
+      represents this variable.\footnote{Internally, this variable is represented as the term
+      ``\texttt{@@@variable("x")}''.}
+      Line 30 call the function \texttt{diff} using the term \texttt{t} and the variable \texttt{v}
+      as arguments.  The resulting term is printed in line 31.
+\item Line 33 shows how the function \texttt{test} can be called to compute the derivative $\diff x^x$.
+\end{enumerate}
 
-Um einen Ausdruck der Form $\ln(f)$ abzuleiten, m\"{u}ssen
-wir die Kettenregel anwenden.  Da $\frac{d\;}{dx} \ln(x) = \frac{1}{x}$ ist, haben wir insgesamt
-\\[0.2cm]
-\hspace*{1.3cm}
-$\displaystyle \frac{d\;}{dx} \ln(f) = \frac{1}{f} \cdot \frac{d\,f}{dx}$.
-\\[0.2cm]
-Diese Gleichung wurde in Zeile 14 verwendet.  In analoger Weise wird dann in Zeile 16 mit Hilfe der
-Kettenregel ein Ausdruck der Form $\mathtt{exp}(f)$ abgeleitet.
 
-Um das Beispiel in Abbildung \ref{fig:diff.stlx} besser zu verstehen m\"{u}ssen wir wissen, 
-wie die Funktion \texttt{parse} einen String in einen Term umwandelt.  Die Funktion 
- \texttt{parse} muss sowohl Operator-Symbole als auch Variablen verarbeiten.
-Eine Variable der Form  \texttt{\symbol{34}x\symbol{34}} wird in den Term
+\section{Outlook}
+This introductory chapter covers only a small part of the programming language  \textsc{SetlX}.  There are some
+additional features of \setlx\ that will be discussed in the following chapters as we need them.
+Furthermore,  \textsc{SetlX} is discussed in depth in the tutorial that can be found at the following address:
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{\symbol{94}variable(\symbol{34}x\symbol{34})}
-\\[0.2cm]
-umgewandelt.  Dies erkl\"{a}rt die Zeilen 19 und 21 von Abbildung \ref{fig:diff.stlx}.
-
-Wir k\"{o}nnen die interne Darstellung eines Terms mit Hilfe der Funktion
-``\texttt{canonical}'' ausgeben.  Beispielsweise liefert der Ausdruck
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{canonical(parse(\symbol{34}x ** x\symbol{34}))}
-\\[0.2cm]
-das Ergebnis
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{\symbol{94}power(\symbol{94}variable(\symbol{34}x\symbol{34}), \symbol{94}variable(\symbol{34}x\symbol{34}))}.
-\\[0.2cm]
-Dies zeigt, dass der Exponentiations-Operator ``\texttt{**}'' in \setl\ intern durch das Funktions-Zeichen
-``\texttt{\symbol{94}power}'' dargestellt wird.  Die interne Darstellung des Operators
-``\texttt{+}'' ist ``\texttt{\symbol{94}sum}'',
-``\texttt{-}'' wird durch das Funktions-Zeichen ``\texttt{\symbol{94}difference}'' dargestellt,
-``\texttt{*}'' wird durch das Funktions-Zeichen ``\texttt{\symbol{94}product}'' dargestellt und der Operator
-``\texttt{/}'' wird durch das Funktions-Zeichen ``\texttt{\symbol{94}quotient}'' dargestellt.
-
-Terme sind in dem folgenden Sinne \emph{viral}:  Falls ein Argument eines der Operatoren
-``\texttt{+}'', ``\texttt{-}'', ``\texttt{*}'', ``\texttt{/}'', ``\texttt{\symbol{92}}'' und
-``\texttt{\%}''
-ein Term ist, so erzeugt der Operator als Ergebnis automatisch einen Term.
-Beispielsweise liefert der Ausdruck
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{parse(\symbol{34}x\symbol{34}) + 2}
-\\[0.2cm]
-den Term
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{\symbol{94}sum(\symbol{94}variable(\symbol{34}x\symbol{34}), 2)}.
-\\[0.2cm]
-Zeile 21 zeigt, dass an ein Muster in einem \texttt{case} eine Bedingung angeschlossen werden kann:
-Das Muster
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{case n:}
-\\[0.2cm]
-passt zun\"{a}chst auf jeden Term.  Allerdings wollen wir in Zeile 21 nur Zahlen matchen.  Daher haben
-wir an dieses Muster mit Hilfe des Operators ``\texttt{|}'' noch die Bedingung \texttt{isNumber(n)}
-angeh\"{a}ngt, mit der wir sicherstellen, dass $n$ tats\"{a}chlich eine Zahl ist.
+\href{http://download.randoom.org/setlX//tutorial.pdf}{\texttt{http://download.randoom.org/setlX//tutorial.pdf}}
 
 
-\subsection{Ausblick}
-Wir konnten in diesem einf\"{u}hrenden Kapitel nur einen Teil der Sprache \textsc{SetlX}
-behandeln.  Einige weitere Features
-der Sprache \textsc{SetlX} werden wir noch in den folgenden Kapiteln diskutieren.
-Zus\"{a}tzlich finden Sie
-weitere Informationen  in dem Tutorial, das im Netz unter der Adresse
-\\[0.2cm]
-\hspace*{1.3cm}
-\href{https://github.com/karlstroetmann/setlX/blob/master/tutorial.pdf}{\texttt{https://github.com/karlstroetmann/setlX/blob/master/tutorial.pdf}}
-\\[0.2cm]
-abgelegt ist.  
+\remarkEng
+Most of the algorithm that were presented in this chapter are not very efficient.  The main purpose of these
+algorithms is to serve as examples that were presented for two reasons:
+\begin{enumerate}
+\item My first intention was to make the abstract notions introduced in set theory more accessible.  For
+      example, the program to compute the transitive closure serves to illustrate both the notion of the
+      relational product and the transitive closure.  Furthermore, it shows how these notions are useful in
+      solving real world problems.
+\item Second, these programs serve to introduce the programming language \setlx.
+\end{enumerate}
+Later, the lecture on
+\href{https://github.com/karlstroetmann/Algorithms/blob/master/Lecture-Notes/algorithms.pdf}{algorithms}
+will show how to develop efficient algorithms that are more efficient.
 
-\remark
-Die meisten der in diesem Abschnitt vorgestellten Algorithmen sind 
-nicht effizient.  Sie dienen nur dazu, die Begriffsbildungen aus der Mengenlehre konkret
-werden zu lassen.  Die Entwicklung effizienter Algorithmen ist Gegenstand des zweiten
-Semesters. 
 
 
 %%% Local Variables: 

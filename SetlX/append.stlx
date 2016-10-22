@@ -1,14 +1,14 @@
 // Append the item x at the end of the list l.  The list l is
-// represented using the function symbols "Cons" and "Nil".
+// represented using the function symbols "cons" and "nil".
 // This program is ugly, the same function can be coded much 
 // better using the match construct.
 append := procedure(l, x) {
-    if (fct(l) == "Nil") {
-        return Cons(x, Nil());  // [x]
+    if (fct(l) == "nil") {
+        return @cons(x, @nil());  
     }
     [head, tail] := args(l);
-    return Cons(head, append(tail, x));
+    return @cons(head, append(tail, x));
 };
-l := Cons(1, Cons(2, Cons(3, Nil()))); // corresponds to [1,2,3]
+l := @cons(1, @cons(2, @cons(3, @nil()))); // corresponds to [1,2,3]
 print(append(l, 4));
 

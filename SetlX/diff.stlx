@@ -1,3 +1,7 @@
+// In order to make the function parseTerm available, we need to load
+// the term utilities form the library below. 
+loadLibrary("termUtilities");  
+
 // differentiate the term t with respect to the variable x
 diff := procedure(t, x) {
     match (t) {
@@ -11,28 +15,24 @@ diff := procedure(t, x) {
             return ( diff(a, x) * b - a * diff(b, x) ) / b * b;
         case a ** b :
             return diff( @exp(b * @ln(a)), x);
-        case ln(a) :
+        case @ln(a) :
             return diff(a, x) / a;
-        case exp(a) :
+        case @exp(a) :
             return diff(a, x) * @exp(a);
-        case ^variable(x) :
-            // x is defined above, therefore must be equal to match
+        case v | v == x :
             return 1;
-        case ^variable(y) :
-            // y is undefined, therefore matches any other variable
+        case y | isVariable(y) :  // must be different from x
             return 0;
         case n | isNumber(n):   
             return 0;  
-        default:
-            abort("error");
-    }
+     }
 };
 
 test := procedure(s) {
-    t := parse(s);
-    print("differentiating $t$:");
-    d := diff(t, "x");
-    print(d, "\n");
+    t := parseTerm(s);
+    v := parseTerm("x");
+    d := diff(t, v);
+    print("d/dx($s$) = $d$\n");
 };
 
 test("x");

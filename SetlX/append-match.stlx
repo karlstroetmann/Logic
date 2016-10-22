@@ -1,13 +1,12 @@
 // Append the item x at the end of the list l.  The list l is
-// represented using the function symbols "Cons" and "Nil".
+// represented using the function symbols "cons" and "nil".
 append := procedure(l, x) {
     match (l) {
-        case Nil():            return Cons(x, Nil());
-        case Cons(head, tail): return Cons(head, append(tail, x));
-        default:               abort("append($l$, $x$)"); 
+        case @nil():            return @cons(x, @nil());
+        case @cons(head, tail): return @cons(head, append(tail, x));
+        default:                abort("append($l$, $x$)"); 
     }
 };
-
-l := Cons(1, Cons(2, Cons(3, Nil())));
+l := @cons(1, @cons(2, @cons(3, @nil())));
 print(append(l, 4));
 
