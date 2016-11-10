@@ -1,12 +1,14 @@
+startTime := now();
 n := 10000;
 Primes := [1 .. n];
 for (i in [2 .. n/2]) {
     j := 2;
     while (i * j <= n) {
-        Primes[i * j] := "not prime";
+        Primes[i * j] := 0;
         j := j + 1;
     }
 }
+stopTime := now();
 print({ i : i in [2 .. n] | Primes[i] == i });
-
+print("computation took $stopTime - startTime$ milliseconds");
 

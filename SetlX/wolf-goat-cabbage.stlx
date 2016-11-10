@@ -40,23 +40,23 @@ add := procedure(p, q) {
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-problem := procedure(s) {
-    return !("farmer" in s) &&
-           ("goat" in s && "cabbage" in s || "wolf" in s && "goat" in s);
+problem := procedure(S) {
+    return !("farmer" in S)                                     && 
+           ({"goat", "cabbage"} <= S || {"wolf", "goat"} <= S);
 };
 
-all := { "farmer", "wolf", "goat", "cabbage" };
-p   := { s : s in 2 ** all | !problem(s) && !problem(all - s) };
-r1  := { [s, s - b]: s in p, b in 2 ** s
-                   | s - b in p && "farmer" in b && #b <= 2
+All := { "farmer", "wolf", "goat", "cabbage" };
+P   := { S : S in 2 ** All | !problem(S) && !problem(All - S) };
+R1  := { [S, S - B]: S in P, B in 2 ** S
+                   | S - B in P && "farmer" in B && #B <= 2
        };
-r2  := { [y, x] : [x, y] in r1 };
-r   := r1 + r2;
+R2  := { [y, x] : [x, y] in R1 };
+R   := R1 + R2;
 
-start := all;
+start := All;
 goal  := {};
 
-path  := findPath(start, goal, r);
+path  := findPath(start, goal, R);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -64,8 +64,8 @@ path  := findPath(start, goal, r);
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-mkPair := s |=> [s, all - s];
-graph  := { [mkPair(s1), mkPair(s2)] : [s1, s2] in r1 };
+mkPair := S |=> [S, All - S];
+graph  := { [mkPair(s1), mkPair(s2)] : [s1, s2] in R1 };
 graph2Dot(graph, mkPair(start), mkPair(goal), "wolf-goat-cabbage");
 
 // Print the path.
