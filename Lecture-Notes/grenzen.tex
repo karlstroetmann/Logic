@@ -73,13 +73,13 @@ der Implementierung dieser Funktion ist einfach:  Zun\"{a}chst \"{u}berpr\"{u}fe
 $\texttt{legendre}(n)$, ob zwischen $n^2$ und $(n+1)^2$
 eine Primzahl ist.  Falls dies der Fall ist, untersuchen wir anschlie\ss{}end das Intervall von
 $(n+1)^2$ bis $(n+2)^2$, dann das Intervall von 
-$(n+2)^2$ bis $(n+3)^2$ und so weiter, bis wir schlie\ss{}lich eine Zahl $k$ finden, so dass zwischen
-$k^2$ und $(k+1)^2$ keine Primzahl liegt.  Falls Legendre Recht hatte, werden wir nie ein solches
+$(n+2)^2$ bis $(n+3)^2$ und so weiter, bis wir schlie\ss{}lich eine Zahl $m$ finden, so dass zwischen
+$m^2$ und $(m+1)^2$ keine Primzahl liegt.  Falls Legendre Recht hatte, werden wir nie ein solches
 $k$ finden und in diesem Fall wird der Aufruf $\texttt{findCounterExample}(1)$ nicht terminieren. 
 
 Nehmen wir nun an, wir h\"{a}tten ein schlaues Programm, nennen wir es \texttt{stops}, das als Eingabe
 eine \textsc{SetlX} Funktion $f$ und ein Argument $a$ verarbeitet und dass uns die Frage, ob die Berechnung von $f(a)$
-terminiert, beantworten kann.  Die Idee w\"{a}re im wesentlichen, dass gilt:
+terminiert, beantworten kann.  Die Idee w\"{a}re, dass für die Funktion \texttt{stops} Folgendes gilt:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{stops}(f, a) = 1$ \quad g.d.w. \quad der Aufruf $f(a)$ terminiert.
@@ -97,16 +97,20 @@ $\texttt{stops(findCounterExample, 1)} = 1$
  \\[0.2cm]
 ist, dann w\"{u}rde das hei\ss{}en,
 dass der Funktions-Aufruf $\texttt{findCounterExample}(1)$ terminiert.  Das passiert aber nur dann,
-wenn ein Gegenbeispiel gefunden wird.  W\"{u}rde der Aufruf \texttt{stops(findCounterExample, 1)}
+wenn ein Gegenbeispiel gefunden wird.  W\"{u}rde der Aufruf 
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{stops(findCounterExample, 1)}
+\\[0.2cm]
 statt dessen eine $0$ zur\"{u}ck liefern, so k\"{o}nnten wir schlie\ss{}en, dass der Aufruf \texttt{findCounterExample(1)}
 nicht terminiert. Mithin w\"{u}rde die Funktion \texttt{findCounterExample} kein Gegenbeispiel finden und
-das w\"{u}rde hei\ss{}en, dass die Vermutung von Legendre stimmt.
+das w\"{u}rde hei\ss{}en, dass die Vermutung von Legendre wahr ist.
 
 Es gibt eine Reihe weiterer offener  mathematischer Probleme, die alle auf die Frage abgebildet
 werden k\"{o}nnen, ob eine gegebene Funktion terminiert.  Daher zeigen die vorhergehenden \"{U}berlegungen,
 dass es sehr n\"{u}tzlich w\"{a}re, eine Funktion wie \texttt{stops} zur Verf\"{u}gung zu haben.  Andererseits
 k\"{o}nnen wir an dieser Stelle schon ahnen, dass die Implementierung der Funktion \texttt{stops}
-zumindest sehr schwierig wird.  
+nicht ganz einfach sein kann.  
 
  
 \subsection{Formale Analyse des Halte-Problems}
@@ -118,7 +122,7 @@ wir den Begriff einer Test-Funktion ein.
  die Form \\[0.3cm]
 \hspace*{1.3cm} {\tt procedure(x) \{ $\cdots$ \}} \\[0.3cm]
 hat und sich als \textsc{SetlX}-Funktion parsen l\"{a}sst.  Die Menge der
-Test-Funktionen bezeichnen wir mit $T\!F$.}  \hspace*{\fill} $\Box$
+Test-Funktionen bezeichnen wir mit $T\!F$.}  \eox
 \end{Definition}
 
 \noindent
@@ -152,10 +156,10 @@ wenn der Aufruf $t(a_1, \cdots, a_k)$ das Ergebnis $r$ liefert.  Sind wir an dem
 selbst nicht interessiert, sondern wollen nur angeben, dass ein Ergebnis existiert, so
 schreiben wir \\[0.3cm]
 \hspace*{1.3cm} $t(a_1, \cdots, a_k) \,\downarrow$ \\[0.3cm]
-und sagen, dass der Aufruf $t(a_1, \cdots, a_k)$ \emph{terminiert}.
+und sagen, dass der Aufruf $t(a_1, \cdots, a_k)$ \colorbox{yellow}{\emph{terminiert}}.
 Terminiert der Aufruf $t(a_1, \cdots, a_k)$ nicht, so schreiben wir \\[0.3cm]
 \hspace*{1.3cm} $t(a_1, \cdots, a_k) \,\uparrow$ \\[0.3cm]
-und sagen, dass der Aufruf $t(a_1, \cdots, a_k)$ \emph{divergiert}.
+und sagen, dass der Aufruf $t(a_1, \cdots, a_k)$ \colorbox{yellow}{\emph{divergiert}}.
 \hspace*{\fill} $\Box$
 }
 \end{Notation}
