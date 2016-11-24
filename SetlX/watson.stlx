@@ -1,9 +1,9 @@
 load("evaluate.stlx");
-// This procedure turns a subset m of the set of all variables 
-// v into a propositional valuation i, such that i[x] is true 
-// iff x is an element of the set m.
-createValuation := procedure(m, v) {
-    return { [ x, x in m ] : x in v };
+// This procedure turns a subset M of the set of all variables 
+// V into a propositional valuation I, such that I[x] is true 
+// iff x is an element of the set M.
+createValuation := procedure(M, V) {
+    return { [ x, x in M ] : x in V };
 };
 // Austin, Brian, or Colin is guilty.
 f1 := parse("a || b || c");
@@ -18,14 +18,14 @@ f5 := parse("!(a && b && !c)");
 f6 := parse("!c => a");
 fs := { f1, f2, f3, f4, f5, f6 };
 v  := { "a", "b", "c" };
-all := 2 ** v;
-print("all = ", all);
+All := 2 ** v;
+print("All = ", All);
 // b is the set of all propositional valuations.
-b  := { createValuation(m, v) : m in all };
-s  := { i : i in b | forall (f in fs | evaluate(f, i)) };
+B  := { createValuation(m, v) : m in All };
+s  := { I : I in B | forall (f in fs | evaluate(f, I)) };
 print("Set of all valuations satisfying all facts: ", s);
 if (#s == 1) {
-    i := arb(s);
-    offenders := { x : x in v | i[x] };
+    I := arb(s);
+    offenders := { x : x in v | I[x] };
     print("Set of offenders: ", offenders);
 }
