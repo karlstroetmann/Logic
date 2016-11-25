@@ -7,7 +7,7 @@ tautology := procedure(f) {
     // A is the set of all propositional valuations.
     A := { { [x, x in M] : x in P } : M in 2 ** P };
     if (forall (I in A | evaluate(f, I))) {
-        return {};
+        return true;
     } else {
         return arb({ I : I in A | !evaluate(f, I) });
     }
@@ -56,7 +56,7 @@ run := procedure() {
 test := procedure(s) {
     f := parseTerm(s);
     counterExample := tautology(f);
-    if (counterExample == {}) {
+    if (counterExample == true) {
         print("The formula $f$ is a tautology.");
     } else {
         print("The formula $f$ isn't a tautology.");
