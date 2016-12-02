@@ -1,3 +1,4 @@
+loadLibrary("termUtilities");
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
 // Überführung in konjunktive Normal-Form                             //
@@ -10,7 +11,7 @@ normalize := procedure(f) {
     n2 := elimFolgt(n1);
     n3 := nnf(n2);
     n4 := knf(n3);
-    return simplify(n4);
+    return n4;
 };
 // Eliminiert den Operator "<==>" aus der eingegebenen Formel f.
 elimGdw := procedure(f) {
@@ -20,7 +21,7 @@ elimGdw := procedure(f) {
         case g || h   : return elimGdw(g) || elimGdw(h);
         case g => h   : return elimGdw(g) => elimGdw(h);
         case g <==> h : return elimGdw((g => h) && (h => g));
-        default       : return f; 
+        default       : return f;  // f must be atomic!
     }
 };
 // Eliminiert den Operator "=>" aus der eingegebenen Formel f.
@@ -60,15 +61,28 @@ knf := procedure(f) {
         default     : return { { f } }; // f is a variable
     }
 };
-// Die Prozedur simplify(k) eliminiert triviale Klauseln aus der KNF k.
-simplify := procedure(k) {
-    return { c : c in k | !isTrivial(c) };
+
+run := procedure() {
+    while (true) {
+        s := read("Enter formula: ");
+        if (s == false) {
+            break;
+        }
+        test(s);
+    }
 };
 
-// Die Prozedur isTrivial(c) testet ob die Klausel c trivial ist.
-isTrivial := procedure(c) {
-    return { p : p in c | fct(p) == "^variable" } * 
-           { args(l)[1] : l in c | fct(l) == "^not" } != {};
+test := procedure(s) {
+    f := parseTerm(s);
+    n := normalize(f);
+    print("The CNF of $f$ is $n$.");
 };
+
+test("!(p || q) <==> !p && !q");
+test("(p => q) => (!p => q) => q");
+test("(p => q) * (q => r) => (p => r)");
+test("(p => q) => (!p => !q)");
+
+run();
 
  
