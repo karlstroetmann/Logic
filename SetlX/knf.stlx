@@ -11,7 +11,7 @@ normalize := procedure(f) {
     n2 := elimFolgt(n1);
     n3 := nnf(n2);
     n4 := knf(n3);
-    return n4;
+    return simplify(n4);
 };
 // Eliminiert den Operator "<==>" aus der eingegebenen Formel f.
 elimGdw := procedure(f) {
@@ -62,10 +62,20 @@ knf := procedure(f) {
     }
 };
 
+// Is the clause C trivial?
+isTrivial := procedure(C) {
+    return { p : p in C | !p in C } != {};
+};
+
+// Eliminate all trivil clauses from F
+simplify := procedure(F) {
+    return { C : C in F | !isTrivial(C) };
+};
+
 run := procedure() {
     while (true) {
         s := read("Enter formula: ");
-        if (s == false) {
+        if (s == "false") {
             break;
         }
         test(s);
