@@ -17,8 +17,8 @@ extractVar := procedure(l) {
 collectVars := procedure(m) {
     return { extractVar(l) : c in m, l in c };
 };
-// This procedure takes to clauses c1 and c2 and computes the set of all
-// clauses that result from an application of the cut rule to these clauses.
+// This procedure takes two clauses c1 and c2 and computes the set of all
+// clauses that result from an application of the cut rule using c1 and c2.
 cutRule := procedure(c1, c2) {
     return { (c1 - {l}) + (c2 - {complement(l)})
            : l in c1
@@ -35,7 +35,7 @@ saturate := procedure(clauses) {
             return { {} };  // clauses are inconsistent
         }
         derived -= clauses;
-        print("number of new clauses: $#derived$");
+        print("number of new clauses derived: $#derived$");
         if (derived == {}) {
             return clauses;  // no new clauses found
         }

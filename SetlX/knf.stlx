@@ -67,7 +67,7 @@ isTrivial := procedure(C) {
     return { p : p in C | !p in C } != {};
 };
 
-// Eliminate all trivil clauses from F
+// Eliminate all trivial clauses from F
 simplify := procedure(F) {
     return { C : C in F | !isTrivial(C) };
 };
@@ -82,17 +82,5 @@ run := procedure() {
     }
 };
 
-test := procedure(s) {
-    f := parseTerm(s);
-    n := normalize(f);
-    print("The CNF of $f$ is $n$.");
-};
-
-test("!(p || q) <==> !p && !q");
-test("(p => q) => (!p => q) => q");
-test("(p => q) * (q => r) => (p => r)");
-test("(p => q) => (!p => !q)");
-
-run();
 
  

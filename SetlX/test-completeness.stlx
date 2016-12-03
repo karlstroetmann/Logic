@@ -1,3 +1,4 @@
+loadLibrary("termUtilities");
 load("knf.stlx");
 load("completeness.stlx");
 createValuation := procedure(v) {
@@ -12,7 +13,7 @@ createValuation := procedure(v) {
 };
 checkTautology := procedure(s) {
     print("\nChecking whether \"$s$\" is a tautology ...");
-    f := normalize(parse("!(" + s + ")"));
+    f := normalize(parseTerm("!(" + s + ")"));
     v := findValuation(f);
     if (v != false) {
         print("The formula $s$ is not a tautology. Counter example:");

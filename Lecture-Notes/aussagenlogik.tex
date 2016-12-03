@@ -1642,9 +1642,12 @@ wie die einzelnen Funktionen zusammenspielen.  Die Funktion \texttt{normalize} e
 zun\"{a}chst die Junktoren ``$\leftrightarrow$'' und ``$\rightarrow$'' und bringt die Formel
 in Negations-Normalform.  Die Negations-Normalform wird nun mit Hilfe der Funktion
 \texttt{knf} in konjunktive Normalform gebracht, wobei gleichzeitig die Formel in
-Mengen-Schreibweise \"{u}berf\"{u}hrt wird.  Diese Formel wird dann zur\"uck gegeben.
+Mengen-Schreibweise \"{u}berf\"{u}hrt wird.  Schlie{\ss}lich entfernt die Funktion \texttt{simplify}
+alle Klauseln aus der Menge \texttt{n4}, die trivial sind.  Die Funktion \texttt{isTrivial}
+\"uberpr\"uft, ob eine Klausel $C$, die in Mengen-Schreibweise vorliegt, sowohl eine Variable $p$
+als auch die Negation $\neg p$ dieser Variablen enth\"alt, denn dann ist diese Klausel trivial.  
 Das vollst\"{a}ndige Programm zur Berechnung der konjunktiven Normalform finden Sie als die Datei
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{knf.stlx}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{knf.stlx}} 
 unter GitHub.
 
 \begin{figure}[!ht]
@@ -1662,7 +1665,13 @@ unter GitHub.
         n2 := elimFolgt(n1);
         n3 := nnf(n2);
         n4 := knf(n3);
-        return n4;
+        return simplify(n4);
+    };
+    simplify := procedure(F) {
+        return { C : C in F | !isTrivial(C) };
+    };
+    isTrivial := procedure(C) {
+        return { p : p in C | !p in C } != {};
     };
 \end{Verbatim} 
 \vspace*{-0.3cm}
@@ -1797,25 +1806,25 @@ gilt.  Dazu \"{u}berf\"{u}hren wir die obige Formel in konjunktive Normalform:
 $$
 \begin{array}{ll}
   & (k_1 \vee p) \wedge (\neg p \vee k_2) \rightarrow k_1 \vee k_2  \\[0.2cm]
-\leftrightarrow  & 
+\Leftrightarrow  & 
     \neg \bigl( (k_1 \vee p) \wedge (\neg p \vee k_2) \bigr) \vee k_1 \vee k_2 \\[0.2cm]
-\leftrightarrow  & 
+\Leftrightarrow  & 
     \neg (k_1 \vee p) \vee \neg (\neg p \vee k_2) \vee k_1 \vee k_2 \\[0.2cm]
-\leftrightarrow  & 
+\Leftrightarrow  & 
      (\neg k_1 \wedge \neg p) \vee  (p \wedge \neg k_2) \vee k_1 \vee k_2 \\[0.2cm]
-\leftrightarrow  & 
+\Leftrightarrow  & 
      (\neg k_1 \vee p \vee k_1 \vee k_2)  \wedge 
      (\neg k_1 \vee \neg k_2 \vee k_1 \vee k_2)  \wedge 
      (\neg p \vee p \vee k_1 \vee k_2)  \wedge 
      (\neg p \vee \neg k_2 \vee k_1 \vee k_2) 
       \\[0.2cm]
-\leftrightarrow  & 
+\Leftrightarrow  & 
      \verum  \wedge 
      \verum  \wedge 
      \verum  \wedge 
      \verum 
       \\[0.2cm]
-\leftrightarrow  & 
+\Leftrightarrow  & 
      \verum    \hspace*{13.5cm} _\Box
       \\
 \end{array}
@@ -1823,12 +1832,14 @@ $$
 
 
 
-\begin{Definition}[$\vdash$]
+\begin{Definition}[Herleitungs-Begriff, $\vdash$]
     Es sei $M$ eine Menge von Klauseln  und $f$ sei eine einzelne Klausel.  
-    Die Formeln aus $M$ bezeichnen wir als unsere Annahmen.  Unser Ziel ist es, mit diesen
-    Annahmen die Formel $f$ zu beweisen.  Dazu definieren wir induktiv die Relation \\[0.2cm]
-    \hspace*{1.3cm} $M \vdash f$. \\[0.2cm]
-    Wir lesen ``$M \vdash f$'' als ``$M$ leitet $f$ her''.  Die induktive Definition ist
+    Die Formeln aus $M$ bezeichnen wir als unsere \emph{\color{blue}Annahmen}, die Formel
+    $f$ hei{\ss}t \emph{\color{blue}Konklusion}.  Unser Ziel ist es, mit den Annahmen aus $M$
+    die Konklusion $f$ zu beweisen.  Dazu definieren wir induktiv die Relation \\[0.2cm]
+    \hspace*{1.3cm}
+    ${\color{blue}M \vdash f}$. \\[0.2cm]
+    Wir lesen ``$M \vdash f$'' als ``{\color{blue}$M$ leitet $f$ her}''.  Die induktive Definition ist
     wie folgt:
     \begin{enumerate}
     \item Aus einer Menge $M$ von Annahmen kann jede der Annahmen hergeleitet werden: \\[0.2cm]
@@ -1879,24 +1890,24 @@ folgt.  Der Beweis besteht aus einer einzigen Anwendung der Schnitt-Regel:
 \subsection{Eigenschaften des Herleitungs-Begriffs}
 Die Relation $\vdash$ hat zwei wichtige Eigenschaften:
 
-\begin{Satz}[Korrektheit]
+\begin{Satz}[{\color{blue}Korrektheit}]
   Ist $\{k_1, \cdots, k_n \}$ eine Menge von Klauseln und $k$ eine einzelne Klausel,
   so haben wir: \\[0.2cm]
-  \hspace*{3.3cm} Wenn $\{k_1, \cdots, k_n \} \vdash k$ gilt, \quad dann gilt auch $\models k_1 \wedge \cdots \wedge k_n \rightarrow k$.  
+  \hspace*{3.3cm} Wenn $\{k_1, \cdots, k_n \} \vdash k$ gilt, dann gilt auch $\models k_1 \wedge \cdots \wedge k_n \rightarrow k$.  
 \end{Satz}
 
 \noindent
 \textbf{Beweis}:  Der Beweis verl\"{a}uft durch eine Induktion nach der Definition der Relation $\vdash$. 
 \begin{enumerate}
-\item Fall: Es gilt $\{ k_1, \cdots, k_n \} \vdash k$ weil $k \in \{ k_1, \cdots, k_n \}$ ist.  
+\item Fall: Es gilt $\{ k_1, \cdots, k_n \} \vdash k$, weil $k \in \{ k_1, \cdots, k_n \}$ ist.  
       Dann gibt es also ein $i \in \{1,\cdots,n\}$, so dass $k = k_i$ ist.  In diesem Fall
       m\"{u}ssen wir
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\models k_1 \wedge \cdots \wedge k_n \rightarrow k_i$
+      $\models k_1 \wedge \cdots \wedge k_i \wedge \cdots \wedge k_n \rightarrow k_i$
       \\[0.2cm]
       zeigen, was offensichtlich ist.
-\item Fall: Es gilt $\{ k_1, \cdots, k_n \} \vdash k$ weil es eine aussagenlogische
+\item Fall: Es gilt $\{ k_1, \cdots, k_n \} \vdash k$, weil es eine aussagenlogische
       Variable $p$ und Klauseln $g$ und $h$ gibt, so dass 
       \[ \{ k_1, \cdots, k_n \} \vdash g \cup \{ p \} \quad \mathrm{und} \quad
          \{ k_1, \cdots, k_n \} \vdash h \cup \{ \neg p \}
@@ -1918,7 +1929,7 @@ Die Relation $\vdash$ hat zwei wichtige Eigenschaften:
 \noindent
 Die Umkehrung dieses Satzes gilt leider nur in abgeschw\"{a}chter Form und zwar dann, wenn $k$
 die leere Klausel ist, also im Fall $k = \falsum$.
-\begin{Satz}[Widerlegungs-Vollst\"{a}ndigkeit] \label{widerlegungs-vollstaendig}
+\begin{Satz}[{\color{blue}Widerlegungs-Vollst\"{a}ndigkeit}] \label{widerlegungs-vollstaendig}
   Ist  $M = \{k_1, \cdots, k_n \}$ eine Menge von Klauseln,
   so haben wir: \\[0.1cm]
   \hspace*{1.3cm} 
