@@ -61,26 +61,15 @@ knf := procedure(f) {
         default     : return { { f } }; // f is a variable
     }
 };
-
 // Is the clause C trivial?
 isTrivial := procedure(C) {
-    return { p : p in C | !p in C } != {};
+    return exists(p in C | !p in C);
 };
-
 // Eliminate all trivial clauses from F
 simplify := procedure(F) {
     return { C : C in F | !isTrivial(C) };
 };
 
-run := procedure() {
-    while (true) {
-        s := read("Enter formula: ");
-        if (s == "false") {
-            break;
-        }
-        test(s);
-    }
-};
 
 
  
