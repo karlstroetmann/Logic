@@ -2,7 +2,7 @@
 #             davis_putnam(clauses, literals)
 # tries to compute a solution to the set clauses.  If this is successful
 # a set of unit clauses is returned.  This set of unit clauses does not contain
-# any complementary literals and therefore corresponds to a valuation satifying
+# any complementary literals and therefore corresponds to a valuation satisfying
 # all clauses.  If clauses is unsatisfiable, instead the set containing the
 # empty clause is returned.
 #
