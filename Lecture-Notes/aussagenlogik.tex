@@ -1909,21 +1909,71 @@ Die Relation $\vdash$ hat zwei wichtige Eigenschaften:
       zeigen, was offensichtlich ist.
 \item Fall: Es gilt $\{ k_1, \cdots, k_n \} \vdash k$, weil es eine aussagenlogische
       Variable $p$ und Klauseln $g$ und $h$ gibt, so dass 
-      \[ \{ k_1, \cdots, k_n \} \vdash g \cup \{ p \} \quad \mathrm{und} \quad
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\{ k_1, \cdots, k_n \} \vdash g \cup \{ p \} \quad \mathrm{und} \quad
          \{ k_1, \cdots, k_n \} \vdash h \cup \{ \neg p \}
-      \]
+      $
+      \\[0.2cm]
       gilt und daraus haben wir mit der Schnitt-Regel auf
-      \[ \{ k_1, \cdots, k_n \} \vdash g \cup h \]
-      geschlossen, wobei $k = g \cup h$ gilt. 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\{ k_1, \cdots, k_n \} \vdash g \cup h$
+      \\[0.2cm]
+      geschlossen, wobei $k = g \cup h$ gilt.  Wir m\"ussen nun zeigen, dass 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\models k_1 \wedge \cdots \wedge k_n \rightarrow g \vee h$
+      \\[0.2cm]
+      gilt.  Es sei also $\mathcal{I}$ eine aussagenlogische Interpretation, so dass
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathcal{I}(k_1 \wedge \cdots \wedge k_n) = \mathtt{true}$  
+      \\[0.2cm]
+      ist. Dann m\"ussen wir zeigen, dass 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathcal{I}(g) = \mathtt{true}$ \quad oder \quad $\mathcal{I}(h) = \mathtt{true}$
+      \\[0.2cm]
+      ist.  Nach Induktions-Voraussetzung wissen wir
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\models k_1 \wedge \cdots \wedge k_n \rightarrow g \vee p \quad \mathrm{und} \quad 
+         \models k_1 \wedge \cdots \wedge k_n \rightarrow h \vee \neg p
+      $.
+      \\[0.2cm]
+      Wegen $\mathcal{I}(k_1 \wedge \cdots \wedge k_n) = \mathtt{true}$ folgt dann
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathcal{I}(g \vee p) = \mathtt{true}$ \quad und \quad $\mathcal{I}(h \vee \neg p) = \mathtt{true}$.
+      \\[0.2cm]
+      Nun gibt es zwei F\"alle:
+      \begin{enumerate}[(a)]
+      \item Fall: $\mathcal{I}(p) = \mathtt{true}$.
 
-      Nach Induktions-Voraussetzung haben wir dann
-      \[ \models k_1 \wedge \cdots \wedge k_n \rightarrow g \vee p \quad \mathrm{und} \quad 
-         \models k_1 \wedge \cdots \wedge k_n \rightarrow h \vee \neg p. \]
-      Wegen 
-      \[ \models (g \vee p) \wedge (h \vee \neg p) \rightarrow g \vee h \quad \mathrm{und} \quad
-         k = g \cup h \]
-      folgt daraus die Behauptung.
-      \qed
+            Dann ist $\mathcal{I}(\neg p) = \mathtt{false}$ und daher folgt aus der Tatsache, dass 
+            $\mathcal{I}(h \vee \neg p) = \mathtt{true}$ ist, dass
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $\mathcal{I}(h) = \mathtt{true}$
+            \\[0.2cm]
+            sein muss.  Daraus folgt aber sofort
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $\mathcal{I}(g \vee h) = \mathtt{true}$.  $\color{green}\surd$
+      \item Fall: $\mathcal{I}(p) = \mathtt{false}$.
+
+            Nun folgt aus $\mathcal{I}(g \vee p) = \mathtt{true}$, dass
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $\mathcal{I}(g) = \mathtt{true}$
+            \\[0.2cm]
+            gelten muss.  Also gilt auch in diesem Fall
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $\mathcal{I}(g \vee h) = \mathtt{true}$.  $\color{green}\surd$ 
+            \qed
+      \end{enumerate}
 \end{enumerate}
 
 \noindent
