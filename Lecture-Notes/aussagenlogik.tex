@@ -1960,7 +1960,7 @@ Die Relation $\vdash$ hat zwei wichtige Eigenschaften:
             sein muss.  Daraus folgt aber sofort
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(g \vee h) = \mathtt{true}$.  $\color{green}\surd$
+            $\mathcal{I}(g \vee h) = \mathtt{true}$.  ${\color{green}\surd}$
       \item Fall: $\mathcal{I}(p) = \mathtt{false}$.
 
             Nun folgt aus $\mathcal{I}(g \vee p) = \mathtt{true}$, dass
@@ -1971,7 +1971,7 @@ Die Relation $\vdash$ hat zwei wichtige Eigenschaften:
             gelten muss.  Also gilt auch in diesem Fall
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(g \vee h) = \mathtt{true}$.  $\color{green}\surd$ 
+            $\mathcal{I}(g \vee h) = \mathtt{true}$.  ${\color{green}\surd}$ 
             \qed
       \end{enumerate}
 \end{enumerate}
@@ -2001,14 +2001,15 @@ Der Beweis der Widerlegungs-Vollst\"{a}ndigkeit der Aussagenlogik ben\"{o}tigt d
   Wir sagen, dass $M$ \emph{\color{blue}unerf\"{u}llbar} ist und schreiben 
   \\[0.2cm]
   \hspace*{1.3cm}
-  $M \models \falsum$
+  ${\color{blue}M \models \falsum}$
   \\[0.2cm]
   wenn es keine aussagenlogische Interpretation $\I$ gibt, die alle Formel aus $M$ erf\"{u}llt.
   Bezeichnen wir die Menge der aussagenlogischen Interpretationen mit
-  \textsc{Ali}, so schreibt sich das formal als
+  \textsc{\color{blue}Ali}, so schreibt sich das formal als
   \\[0.2cm]
   \hspace*{1.3cm}
-  $M \models \falsum \quad \mbox{g.d.w.} \quad \forall \I \in \textsc{Ali}: \exists g \in M: \I(g) = \texttt{false}$.   
+  ${\color{blue}M \models \falsum}$ \quad g.d.w. \quad 
+  $\forall \I \in \textsc{Ali}: \exists g \in M: \I(g) = \texttt{false}$.   
   \eox
 \end{Definition}
 
@@ -2042,15 +2043,15 @@ sind.
       Die Implementierung verl\"{a}uft analog zur Implementierung der Funktion \texttt{complement} \"{u}ber eine
       Fallunterscheidung, bei der wir ber\"{u}cksichtigen, dass $l$ entweder die Form $\neg p$ oder die
       Form $p$ hat, wobei $p$ eine aussagenlogische Variable ist.
-\item Die Funktion \texttt{collectVars} erh\"{a}lt als Argument eine Menge $m$ von Klauseln, wobei die
-      einzelnen Klauseln $c \in m$ als Mengen von Literalen dargestellt werden.  Aufgabe der
+\item Die Funktion \texttt{collectVars} erh\"{a}lt als Argument eine Menge $M$ von Klauseln, wobei die
+      einzelnen Klauseln  \mbox{$C \!\in\! M$} als Mengen von Literalen dargestellt werden.  Aufgabe der
       Funktion \texttt{collectVars} ist es, die Menge aller aussagenlogischen Variablen zu
-      berechnen, die in einer der Klauseln $c$ aus $m$ vorkommen.  Bei der Implementierung iterieren
-      wir zun\"{a}chst \"{u}ber die Klauseln $c$ der Menge $m$ und dann f\"{u}r jede Klausel $c$ \"{u}ber die in $c$
+      berechnen, die in einer der Klauseln $C$ aus $M$ vorkommen.  Bei der Implementierung iterieren
+      wir zun\"{a}chst \"{u}ber die Klauseln $C$ der Menge $M$ und dann f\"{u}r jede Klausel $C$ \"{u}ber die in $C$
       vorkommenden Literale $l$, wobei die Literale mit Hilfe der Funktion \texttt{extractVar} in
       aussagenlogische Variablen umgewandelt werden.
-\item Die Funktion \texttt{cutRule} erh\"{a}lt als Argumente zwei Klauseln $c_1$ und $c_2$ und berechnet
-      alle die Klauseln, die mit Hilfe der Schnittregel aus $c_1$ und $c_2$ gefolgert werden
+\item Die Funktion \texttt{cutRule} erh\"{a}lt als Argumente zwei Klauseln $C_1$ und $C_2$ und berechnet
+      \underline{\color{red}alle} die Klauseln, die mit Hilfe der Schnittregel aus $C_1$ und $C_2$ gefolgert werden
       k\"{o}nnen.  Beispielsweise k\"{o}nnen wir aus den beiden Klauseln
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -2087,13 +2088,13 @@ sind.
             case  p : return p;
         }
     };
-    collectVars := procedure(m) {
-        return { extractVar(l) : c in m, l in c };
+    collectVars := procedure(M) {
+        return { extractVar(l) : C in M, l in C };
     };
-    cutRule := procedure(c1, c2) {
-        return { (c1 - {l}) + (c2 - {complement(l)}) 
-               : l in c1
-               | complement(l) in c2
+    cutRule := procedure(C1, C2) {
+        return { (C1 - {l}) + (C2 - {complement(l)}) 
+               : l in C1
+               | complement(l) in C2
                };
     };
 \end{Verbatim}
@@ -2110,20 +2111,20 @@ sind.
                   labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
                 ]
-    saturate := procedure(clauses) {
+    saturate := procedure(Clauses) {
         while (true) {
-            derived := {} +/ { cutRule(c1, c2) : c1 in clauses, c2 in clauses };
-            if ({} in derived) {
+            Derived := {} +/ { cutRule(C1, C2) : C1 in Clauses, C2 in Clauses };
+            if ({} in Derived) {
                 return { {} };  // clauses are inconsistent
             }
-            derived -= clauses;
-            if (derived == {}) {
-                return clauses;
+            Derived -= Clauses;
+            if (Derived == {}) {
+                return Clauses;  // no new clauses found
             }
-            clauses += derived;
+            Clauses += Derived;
         }
     };
 \end{Verbatim}
@@ -2133,55 +2134,59 @@ sind.
 \end{figure}
 
 Abbildung \ref{fig:completeness.stlx-2} zeigt die Funktion \texttt{saturate}.  Diese Funktion erh\"{a}lt
-als Eingabe eine Menge \texttt{clauses} von aus\-sagenlogischen Klauseln, die als Mengen von Literalen
+als Eingabe eine Menge \texttt{Clauses} von aus\-sagenlogischen Klauseln, die als Mengen von Literalen
 dargestellt werden.  Aufgabe der Funktion ist es, alle Klauseln herzuleiten, die mit Hilfe der
-Schnittregel auf direktem oder indirekten Wege aus der Menge \texttt{clauses} hergeleitet werden
+Schnittregel auf direktem oder indirekten Wege aus der Menge \texttt{Clauses} hergeleitet werden
 k\"{o}nnen.  Genauer sagen wir, dass die Menge $S$ der Klauseln, die von der Funktion \texttt{saturate}
 zur\"{u}ck gegeben wird, unter Anwendung der Schnitt-Regel \emph{\color{blue}saturiert} ist, was formal wie folgt
 definiert ist:
 \begin{enumerate}
 \item Falls $S$ die leere Klausel $\{\}$ enth\"{a}lt, dann ist $S$ saturiert.
-\item Andernfalls muss \texttt{clauses} eine Teilmenge von $S$ sein und es muss zus\"{a}tzlich Folgendes
-      gelten: Falls $c_1 \cup \{ l \}$ und  $c_2 \cup \bigl\{ \komplement{\,l\,} \bigr\}$ Klauseln aus $S$
-      sind, dann ist auch die Klausel $c_1 \cup c_2$ ein Element der Klauselmenge $S$.
+\item Andernfalls muss \texttt{Clauses} eine Teilmenge von $S$ sein und es muss zus\"{a}tzlich Folgendes
+      gelten: Falls $C_1 \cup \{ l \}$ und  $C_2 \cup \bigl\{ \komplement{\,l\,} \bigr\}$ Klauseln aus $S$
+      sind, dann ist auch die Klausel $C_1 \cup C_2$ ein Element der Klauselmenge $S$:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $C_1 \cup \{ l \} \in S \;\wedge\; C_2 \cup \bigl\{ \komplement{\,l\,} \bigr\} \in S \;\Rightarrow\; C_1 \cup C_2 \in S$ 
 \end{enumerate}
 Wir erl\"{a}utern nun die Implementierung der Funktion \texttt{saturate}.
 \begin{enumerate}
 \item Die \texttt{while}-Schleife, die in Zeile 23 beginnt, hat die Aufgabe, die Schnitt-Regel
       solange wie m\"{o}glich anzuwenden um mit Hilfe der Schnitt-Regel neue Klauseln aus den gegebenen
       Klauseln herzuleiten.  Da die Bedingung dieser Schleife den Wert \texttt{true} hat, kann diese
-      Schleife nur durch die Ausf\"{u}hrung eines \texttt{return}-Befehls abgebrochen werden.
-\item In Zeile 24 wird die Menge \texttt{derived} dadurch berechnet, dass alle Klauseln berechnet
-      werden, die mit Hilfe der Schnitt-Regel aus zwei der Klauseln in der Menge \texttt{clauses} 
+      Schleife nur durch die Ausf\"{u}hrung des \texttt{return}-Befehls in Zeile 31 abgebrochen werden.
+\item In Zeile 24 wird die Menge \texttt{Derived} dadurch berechnet, dass alle Klauseln berechnet
+      werden, die mit Hilfe der Schnitt-Regel aus zwei der Klauseln in der Menge \texttt{Clauses} 
       gefolgert werden k\"{o}nnen.
-\item Falls die Menge \texttt{derived} die leere Klausel enth\"{a}lt, dann ist die Menge
-      \texttt{clauses} widerspr\"{u}chlich und die Funktion \texttt{saturate} gibt als Ergebnis die
+\item Falls die Menge \texttt{Derived} die leere Klausel enth\"{a}lt, dann ist die Menge
+      \texttt{Clauses} widerspr\"{u}chlich und die Funktion \texttt{saturate} gibt als Ergebnis die
       Menge $\bigl\{ \{\} \bigr\}$ zur\"{u}ck.
-\item Andernfalls ziehen wir in Zeile 28 von der Menge \texttt{derived} zun\"{a}chst die Klauseln ab, die wir schon
-      vorher hatten, denn es geht uns darum festzustellen, ob wir im letzten Schritt tats\"{a}chlich
-      neue Klauseln gefunden haben, oder ob alle Klauseln, die wir im letzten Schritt in Zeile 23
-      hergeleitet haben, eigentlich schon vorher  bekannt  waren.
+\item Andernfalls ziehen wir in Zeile 28 von der Menge \texttt{Derived} zun\"{a}chst die Klauseln
+      ab, die wir schon in der Menge \texttt{Clauses} vorhanden waren, denn es geht uns darum
+      festzustellen, ob wir im letzten Schritt tats\"{a}chlich 
+      \underline{neue} Klauseln gefunden haben, oder ob alle Klauseln, die wir im letzten Schritt in Zeile 24
+      hergeleitet haben, eigentlich schon vorher bekannt waren.
 \item Falls wir nun in Zeile 29 feststellen, dass wir keine neuen Klauseln hergeleitet haben,
-      dann ist die Menge \texttt{clauses} saturiert und wir geben diese Menge in Zeile 30 zur\"{u}ck.
+      dann ist die Menge \texttt{Clauses} saturiert und wir geben diese Menge in Zeile 30 zur\"{u}ck.
 \item Andernfalls f\"{u}gen wir in Zeile 32 die Klauseln, die wir neu gefunden haben, zu der Menge
-      \texttt{clauses} hinzu und setzen die \texttt{while}-Schleife fort.
+      \texttt{Clauses} hinzu und setzen die \texttt{while}-Schleife fort.
 \end{enumerate}
 An dieser Stelle m\"{u}ssen wir uns \"{u}berlegen, dass die \texttt{while}-Schleife tats\"{a}chlich irgendwann
 abbricht.  Das hat zwei Gr\"{u}nde:  
 \begin{enumerate}
-\item In jeder Iteration der Schleife wird die Anzahl der Elemente der Menge \texttt{clauses}
-      mindestens um Eins erh\"{o}ht, denn wir wissen ja, dass die Menge \texttt{derived}, die wir zu
-      \texttt{clauses} hinzuf\"{u}gen, einerseits nicht leer ist und andererseits auch nur solche
-      Klauseln enth\"{a}lt, die nicht bereits in \texttt{clauses} auftreten.
-\item Die Menge \texttt{clauses}, mit der wir urspr\"{u}nglich starten, enth\"{a}lt eine bestimmte Anzahl $n$
+\item In jeder Iteration der Schleife wird die Anzahl der Elemente der Menge \texttt{Clauses}
+      mindestens um Eins erh\"{o}ht, denn wir wissen ja, dass die Menge \texttt{Derived}, die wir zu
+      \texttt{Clauses} hinzuf\"{u}gen, einerseits nicht leer ist und andererseits auch nur solche
+      Klauseln enth\"{a}lt, die nicht bereits in \texttt{Clauses} auftreten.
+\item Die Menge \texttt{Clauses}, mit der wir urspr\"{u}nglich starten, enth\"{a}lt eine bestimmte Anzahl $n$
       von aussagenlogischen Variablen.  Bei der Anwendung der Schnitt-Regel werden aber keine neue
       Variablen erzeugt.  Daher bleibt die Anzahl der aussagenlogischen Variablen, die in
-      \texttt{clauses} auftreten, immer gleich.  Damit ist nat\"{u}rlich auch die Anzahl der Literale,
-      die in \texttt{clauses} auftreten, beschr\"{a}nkt: Wenn es nur $n$ aussagenlogische Variablen gibt,
-      dann kann es auch h\"{o}chstens $2 \cdot n$ Literale geben.  Jede Klausel aus \texttt{clauses} ist
+      \texttt{Clauses} auftreten, immer gleich.  Damit ist nat\"{u}rlich auch die Anzahl der Literale,
+      die in \texttt{Clauses} auftreten, beschr\"{a}nkt: Wenn es nur $n$ aussagenlogische Variablen gibt,
+      dann kann es auch h\"{o}chstens $2 \cdot n$ Literale geben.  Jede Klausel aus \texttt{Clauses} ist
       aber eine Teilmenge der Menge aller Literale.  Da eine Menge mit $k$ Elementen insgesamt $2^k$
       Teilmengen hat, gibt es h\"{o}chstens $2^{2 \cdot n}$ verschiedene Klauseln, die in
-      \texttt{clauses} auftreten k\"{o}nnen.  
+      \texttt{Clauses} auftreten k\"{o}nnen.  
 \end{enumerate}
 Aus den beiden oben angegebenen Gr\"{u}nden k\"{o}nnen wir schlie\ss{}en, dass die \texttt{while}-Schleife in
 Zeile 23 nach sp\"{a}testens $2^{2 \cdot n}$ Iterationen abgebrochen wird. 
@@ -2194,25 +2199,24 @@ Zeile 23 nach sp\"{a}testens $2^{2 \cdot n}$ Iterationen abgebrochen wird.
                   labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
                 ]
-    findValuation := procedure(clauses) {
-        vars    := collectVars(clauses);
-        clauses := saturate(clauses);
-        if ({} in clauses) {
+    findValuation := procedure(Clauses) {
+        Variables := collectVars(Clauses);
+        Clauses   := saturate(Clauses);
+        if ({} in Clauses) {
             return false;
         }
-        literals := {};  // refuted literal
-        for (p in vars) {
-            if (exists(c in clauses | p in c && c <= literals + {p})) {
-                literals += { !p };
+        Literals  := {};  // refuted literals
+        for (p in Variables) {
+            if (exists(C in Clauses | p in C && C <= Literals + {p})) {
+                Literals += { !p };
             } else {
-                literals += { p };
+                Literals += { p };
             }
         }
-        result := { complement(l) : l in literals };
-        return result;
+        return { complement(l) : l in Literals };
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -2222,15 +2226,15 @@ Zeile 23 nach sp\"{a}testens $2^{2 \cdot n}$ Iterationen abgebrochen wird.
 
 Als n\"{a}chstes diskutieren wir die Implementierung der Funktion \texttt{findValuation}, die in
 Abbildung \ref{fig:completeness.stlx-3} gezeigt ist.  Diese Funktion erh\"{a}lt als Eingabe eine Menge
-\texttt{clauses} von Klauseln.  Falls diese Menge widerspr\"{u}chlich ist, soll die Funktion
+\texttt{Clauses} von Klauseln.  Falls diese Menge widerspr\"{u}chlich ist, soll die Funktion
 das Ergebnis \texttt{false} zur\"{u}ck geben.  Andernfalls soll eine aussagenlogische Belegung $\I$ berechnet werden,
-unter der alle Klauseln aus der Menge \texttt{clauses} erf\"{u}llt sind.  Im Detail arbeitet die
+unter der alle Klauseln aus der Menge \texttt{Clauses} erf\"{u}llt sind.  Im Detail arbeitet die
 Funktion \texttt{findValuation} wie folgt.
 \begin{enumerate}
 \item Zun\"{a}chst berechnen wir in Zeile 36 die Menge aller aussagenlogischen Variablen, die in
-      der Menge \texttt{clauses} auftreten.  Wir ben\"{o}tigen diese Menge, denn wir m\"{u}ssen diese
+      der Menge \texttt{Clauses} auftreten.  Wir ben\"{o}tigen diese Menge, denn wir m\"{u}ssen diese
       Variablen ja auf die Menge $\{ \texttt{true}, \texttt{false} \}$ abbilden.
-\item In Zeile 37 saturieren wir die Menge \texttt{clauses} und berechnen alle Klauseln, die aus der
+\item In Zeile 37 saturieren wir die Menge \texttt{Clauses} und berechnen alle Klauseln, die aus der
       urspr\"{u}nglich gegebenen Menge von Klauseln mit Hilfe der Schnitt-Regel hergeleitet werden
       k\"{o}nnen.  Hier k\"{o}nnen zwei F\"{a}lle auftreten:
       \begin{enumerate}
@@ -2239,83 +2243,81 @@ Funktion \texttt{findValuation} wie folgt.
             Wert \texttt{false} zur\"{u}ck, denn eine widerspr\"{u}chliche Menge von Klauseln ist sicher
             nicht erf\"{u}llbar.
       \item Andernfalls berechnen wir nun eine aussagenlogische Belegung, unter der alle Klauseln aus
-            \texttt{clauses} wahr werden.  Zu diesem Zweck berechnen wir zun\"{a}chst eine Menge von
-            Literalen \texttt{literals}.  Die Idee ist dabei, dass wir die Variable $p$ genau
-            dann in die Menge \texttt{literals} aufnehmen, wenn die gesuchte Belegung $\I$ die
-            Variable $p$ zu \texttt{false} auswertet.  Andernfalls nehmen wir an Stelle von $p$ das
-            Literal $\neg p$ in der Menge \texttt{literals} auf.  Als Ergebnis geben wir daher in
-            Zeile 50 die Menge \texttt{result} zur\"{u}ck, bei der wir jedes Literal $l$ aus der 
-            Menge \texttt{literals} durch sein Komplement $\komplement{\,l\,}$ ersetzen.  
+            \texttt{Clauses} wahr werden.  Zu diesem Zweck berechnen wir zun\"{a}chst eine Menge von
+            Literalen \texttt{Literals}.  Die Idee ist dabei, dass wir die Variable \texttt{p} genau
+            dann in die Menge \texttt{Literals} aufnehmen, wenn die gesuchte Belegung $\I$ die
+            Variable \texttt{p} zu \texttt{false} auswertet.  Andernfalls nehmen wir an Stelle von \texttt{p} das
+            Literal $\neg \texttt{p}$ in der Menge \texttt{Literals} auf.  Als Ergebnis geben wir daher in
+            Zeile 50 die Menge $M$ zur\"{u}ck, bei der wir jedes Literal $l$ aus der 
+            Menge \texttt{Literals} durch sein Komplement $\komplement{\,l\,}$ ersetzen.  
 
-            Im engeren Sinne ist die Menge \texttt{result} keine aussagenlogische Belegung, aber wir
+            Im engeren Sinne ist diese Menge $M$ keine aussagenlogische Belegung, aber wir
             k\"{o}nnen aus dieser Menge leicht eine aussagenlogische Belegung $\I$ erzeugen, indem
             wir $\I$ wie folgt definieren: 
             \\[0.2cm]
             \hspace*{1.3cm}
             $\I(p) := \left\{
             \begin{array}{ll}
-              \texttt{true} & \mbox{falls $p \in \texttt{result}$;}  \\
-              \texttt{false} & \mbox{sonst.}
+              \texttt{true}  & \mbox{falls $p \in M$;}  \\
+              \texttt{false} & \mbox{falls $\neg p \in M$.}
             \end{array}
             \right.
             $
       \end{enumerate}
-\item Die Berechnung der Menge \texttt{literals} erfolgt nun \"{u}ber eine \texttt{for}-Schleife.
-      Dabei ist die Idee, dass wir f\"{u}r eine aussagenlogische Variable $p$ genau dann das Literal
-      $\neg p$ zu der Menge \texttt{literals} hinzuf\"{u}gen, wenn die Belegung $\I$ die Variable $p$
-      auf \texttt{true} abbilden muss um die Klauseln zu erf\"{u}llen.  
+\item Die Berechnung der Menge \texttt{Literals} erfolgt nun \"{u}ber eine \texttt{for}-Schleife.
+      Dabei ist die Idee, dass wir f\"{u}r eine aussagenlogische Variable \texttt{p} genau dann das Literal
+      $\neg \texttt{p}$ zu der Menge \texttt{Literals} hinzuf\"{u}gen, wenn die Belegung $\I$ die Variable \texttt{p}
+      auf \texttt{true} abbilden muss um die Klauseln zu erf\"{u}llen.  Andernfalls f\"ugen wir statt dessen das Literal 
+      \texttt{p} zu dieser Menge hinzu.
 
       Die Bedingung daf\"{u}r ist wie folgt: Angenommen, wir haben bereits Werte f\"{u}r die Variablen
-      $p_1$, $\cdots$, $p_n$ in der Menge \texttt{literals}  gefunden.
-      Die Werte dieser Variablen seien durch die Literale $l_1$, $\cdots$, $l_n$ in der Menge \texttt{literals}
+      $p_1$, $\cdots$, $p_n$ in der Menge \texttt{Literals}  gefunden.
+      Die Werte dieser Variablen seien durch die Literale $l_1$, $\cdots$, $l_n$ in der Menge \texttt{Literals}
       wie folgt festgelegt: Wenn $l_i = \neg p_i$ ist, dann gilt $\I(p_i) = \texttt{true}$ 
       und falls $l_i = p_i$ gilt, so haben wir $\I(p_i) = \texttt{false}$.
-      Nehmen wir nun weiter an, dass eine Klausel $c$ in der Menge \texttt{clauses} existiert, so dass
+      Nehmen wir nun weiter an, dass eine Klausel $C$ in der Menge \texttt{Clauses} existiert, so dass
       \\[0.2cm]
       \hspace*{1.3cm}
-      $c \subseteq \{ l_1, \cdots, l_n, p \}$ \quad und \quad $p \in c$
+      $C \subseteq \{ l_1, \cdots, l_n, \texttt{p} \}$ \quad und \quad $\texttt{p} \in C$
       \\[0.2cm]
-      gilt.  Wenn $\I(c) = \texttt{true}$ gelten soll, dann muss $\I(p) = \texttt{true}$ gelten, denn
+      gilt.  Wenn $\I(C) = \texttt{true}$ gelten soll, dann muss $\I(\texttt{p}) = \texttt{true}$ gelten, denn
       nach Konstruktion von $\I$ gilt 
       \\[0.2cm]
       \hspace*{1.3cm}
       $\I(l_i) = \texttt{false}$ \quad f\"{u}r alle $i \in \{1,\cdots,n\}$
       \\[0.2cm]
-      und damit ist $p$ das einzige Literal in der Klausel $c$, das wir mit Hilfe der Belegung $\I$
+      und damit ist \texttt{p} das einzige Literal in der Klausel $c$, das wir mit Hilfe der Belegung $\I$
       \"{u}berhaupt noch wahr machen k\"{o}nnen.  In diesem Fall f\"{u}gen wir also das Literal
-      $\neg p$ in die Menge \texttt{literals} ein. 
-
-      Falls wir keine solche Klausel $c$ finden, dann setzen wir $\texttt{I}(p) := \texttt{false}$
-      und f\"{u}gen das Literal $p$ in die Menge \texttt{literals} ein.
+      $\neg \texttt{p}$ in die Menge \texttt{Literals} ein. 
 \end{enumerate}
 Der entscheidende Punkt ist nun der Nachweis, dass die Funktion \texttt{findValuation} in dem Falle,
 dass in Zeile 39 nicht der Wert \texttt{false} zur\"{u}ck gegeben wird, eine aussagenlogische Belegung $\I$ berechnet, bei der
-alle Klauseln aus der Menge \texttt{clauses} den Wert \texttt{true} erhalten.  Um diesen Nachweis zu
-erbringen, nummerieren wie die aussagenlogischen Variablen, die in der Menge \texttt{clauses}
+alle Klauseln aus der Menge \texttt{Clauses} den Wert \texttt{true} erhalten.  Um diesen Nachweis zu
+erbringen, nummerieren wie die aussagenlogischen Variablen, die in der Menge \texttt{Clauses}
 auftreten, in der selben Reihenfolge durch, in der diese Variablen in der \texttt{for}-Schleife in Zeile
 42 betrachtet werden.  Wir bezeichnen diese Variablen als
 \\[0.2cm]
 \hspace*{1.3cm}
  $p_1, p_2, p_3, \cdots, p_k$
 \\[0.2cm]
-und zeigen durch Induktion nach $n$, dass nach $n$ Durchl\"{a}ufen der Schleife f\"{u}r jede Klausel $d \in \texttt{clauses}$, in der nur
-die Variablen $p_1$, $\cdots$, $p_n$ vorkommen, 
+und zeigen durch Induktion nach $n$, dass nach $n$ Durchl\"{a}ufen der Schleife f\"{u}r jede Klausel $D \in \texttt{Clauses}$, 
+in der nur die Variablen $p_1$, $\cdots$, $p_n$ vorkommen, 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\I(d) = \texttt{true}$
+$\I(D) = \texttt{true}$
 \\[0.2cm]
 gilt.
 \begin{enumerate}
 \item[I.A.:] $n = 0$.
 
              Die einzige Klausel, in der \"{u}berhaupt keine Variablen vorkommen, ist die leere Klausel.
-             Da wir aber vorausgesetzt haben, dass \texttt{clauses} die leere Klausel nicht enth\"{a}lt,
+             Da wir aber vorausgesetzt haben, dass \texttt{Clauses} die leere Klausel nicht enth\"{a}lt,
              ist die zu zeigende Behauptung trivialerweise wahr.
 \item[I.S.:] $n \mapsto n+1$.
 
              Wir setzen nun voraus, dass die Behauptung vor dem $(n\!+\!1)$-ten Durchlauf der
              \texttt{for}-Schleife gilt und haben zu zeigen, dass die Behauptung dann auch nach
-             diesem Durchlauf erf\"{u}llt ist.  Sei dazu $d$ eine Klausel, in der nur die Variablen
+             diesem Durchlauf erf\"{u}llt ist.  Sei dazu $D$ eine Klausel, in der nur die Variablen
              $p_1$, $\cdots$, $p_n$, $p_{n+1}$ vorkommen.  Die Klausel ist dann eine Teilmenge einer
              Menge der Form
              \\[0.2cm]
@@ -2325,102 +2327,102 @@ gilt.
              \\[0.2cm]
              Nun gibt es mehrere M\"{o}glichkeiten, die wir getrennt untersuchen.
              \begin{enumerate}
-             \item Es gibt ein $i \in \{1,\cdots,n\}$, so dass $l_i \in d$ und  $\I(l_i) =
+             \item Es gibt ein $i \in \{1,\cdots,n\}$, so dass $l_i \in D$ und  $\I(l_i) =
                \texttt{true}$ ist.  
 
                    Da eine Klausel als Disjunktion ihrer Literale aufgefasst wird, gilt dann auch
-                   $\I(d) = \texttt{true}$ unabh\"{a}ngig davon, ob $\I(p_{n+1})$ den Wert \texttt{true} oder
+                   $\I(D) = \texttt{true}$ unabh\"{a}ngig davon, ob $\I(p_{n+1})$ den Wert \texttt{true} oder
                    \texttt{false} hat.
-             \item F\"{u}r alle $i \in \{1,\cdots,n\}$ mit $l_i \in d$ gilt $\I(l_i) = \texttt{false}$ und es gilt $l_{n+1} = p_{n+1}$.
+             \item F\"{u}r alle $i \in \{1,\cdots,n\}$ mit $l_i \in D$ gilt $\I(l_i) = \texttt{false}$ und es gilt $l_{n+1} = p_{n+1}$.
                    
-                   Dann gilt f\"{u}r die Klausel $d$ gerade die Bedingung
+                   Dann gilt f\"{u}r die Klausel $D$ gerade die Bedingung
                    \\[0.2cm]
                    \hspace*{1.3cm}
-                   $d \subseteq \texttt{literals} \cup \{ p_{n+1} \}$
+                   $D \subseteq \texttt{Literals} \cup \{ p_{n+1} \}$
                    \\[0.2cm]
                    und daher wird in Zeile 44 der Funktion \texttt{findValuation} das Literal $\neg p_{n+1}$ 
-                   zu der Menge \texttt{literals} hinzugef\"{u}gt.  Nach Definition der Belegung $\I$, 
+                   zu der Menge \texttt{Literals} hinzugef\"{u}gt.  Nach Definition der Belegung $\I$, 
                    die von der Funktion \texttt{findValuation} zur\"{u}ck gegeben wird, hei\ss{}t dies
                    gerade, dass 
                    \\[0.2cm]
                    \hspace*{1.3cm}
                    $\I(p_{n+1}) = \texttt{true}$
                    \\[0.2cm]
-                   ist und dann gilt nat\"{u}rlich auch $\I(d) = \texttt{true}$.
+                   ist und dann gilt nat\"{u}rlich auch $\I(D) = \texttt{true}$.
              \item F\"{u}r alle $i \in \{1,\cdots,n\}$ mit $l_i \in d$ gilt $\I(l_i) = \texttt{false}$ und es gilt $l_{n+1} = \neg p_{n+1}$.
 
                    An dieser Stelle ist eine weitere Fall-Unterscheidung notwendig.
                    \begin{enumerate}
-                   \item Es gibt eine Klausel $c$ in der Menge \texttt{clauses}, so dass
+                   \item Es gibt eine weitere Klausel $C$ in der Menge \texttt{Clauses}, so dass
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $c \subseteq \texttt{literals} \cup \{p_{n+1}\}$
+                         $C \subseteq \texttt{Literals} \cup \{p_{n+1}\}$
                          \\[0.2cm]
                          gilt.  Hier sieht es zun\"{a}chst so aus, als ob wir ein Problem h\"{a}tten, denn
-                         in diesem Fall w\"{u}rde um die Klausel $c$ wahr zu machen das Literal $\neg p_{n+1}$ zur Menge
-                         \texttt{literals} hinzugef\"{u}gt und damit w\"{a}re zun\"{a}chst $\I(p_{n+1}) = \texttt{true}$ 
+                         in diesem Fall w\"{u}rde um die Klausel $C$ wahr zu machen das Literal $\neg p_{n+1}$ zur Menge
+                         \texttt{Literals} hinzugef\"{u}gt und damit w\"{a}re zun\"{a}chst $\I(p_{n+1}) = \texttt{true}$ 
                          und damit $\I(\neg p_{n+1}) = \texttt{false}$, woraus insgesamt 
-                         $\I(d) = \texttt{false}$ folgern w\"{u}rde.  In diesem Fall w\"{u}rden sich
-                         die Klauseln $c$ und $d$  in der Form
+                         $\I(D) = \texttt{false}$ folgern w\"{u}rde.  In diesem Fall w\"{u}rden sich
+                         die Klauseln $C$ und $D$  in der Form
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $c = c' \cup \{p_{n+1}\}$, \quad $d = d' \cup \{ \neg p_{n+1} \}$
+                         $C = C' \cup \{p_{n+1}\}$, \quad $D = D' \cup \{ \neg p_{n+1} \}$
                          \\[0.2cm]
                          schreiben lassen, wobei 
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $c' \subseteq \texttt{literals}$  \quad und \quad $d' \subseteq \texttt{literals}$
+                         $C' \subseteq \texttt{Literals}$  \quad und \quad $D' \subseteq \texttt{Literals}$
                          \\[0.2cm]
                          gelten w\"{u}rde.  Daraus w\"{u}rde sowohl
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $\I(c') = \texttt{false}$ \quad als auch \quad $\I(d') = \texttt{false}$
+                         $\I(C') = \texttt{false}$ \quad als auch \quad $\I(D') = \texttt{false}$
                          \\[0.2cm]
                          folgen und das w\"{u}rde auch
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $\I(c' \cup d') = \texttt{false}$ \hspace*{\fill} $(*)$
+                         $\I(C' \cup D') = \texttt{false}$ \hspace*{\fill} $(*)$
                          \\[0.2cm]
                          implizieren.
-                         Die entscheidende Beobachtung ist nun, dass die Klausel $c' \cup d'$ mit
+                         Die entscheidende Beobachtung ist nun, dass die Klausel $C' \cup D'$ mit
                          Hilfe der Schnitt-Regel aus den beiden Klauseln
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $c = c' \cup \{p_{n+1}\}$, \quad $d = d' \cup \{ \neg p_{n+1} \}$, 
+                         $C = C' \cup \{p_{n+1}\}$, \quad $D = D' \cup \{ \neg p_{n+1} \}$, 
                          \\[0.2cm]
-                         gefolgert werden kann.  Das hei\ss{}t dann aber, dass die Klausel $c' \cup d'$ ein
-                         Element der Menge \texttt{clauses} sein muss, denn die Menge
-                         \texttt{clauses} ist ja saturiert!  Da die Klausel $c' \cup d'$ au\ss{}erdem
+                         gefolgert werden kann.  Das hei\ss{}t dann aber, dass die Klausel $C' \cup D'$ ein
+                         Element der Menge \texttt{Clauses} sein muss, denn die Menge
+                         \texttt{Clauses} ist ja saturiert!  Da die Klausel $C' \cup D'$ au\ss{}erdem
                          nur die aussagenlogischen Variablen $p_1, \cdots, p_n$ enth\"{a}lt, gilt nach
                          Induktions-Voraussetzung 
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $\I(c' \cup d') = \texttt{true}$.
+                         $\I(C' \cup D') = \texttt{true}$.
                          \\[0.2cm]
                          Dies steht aber im Widerspruch zu $(*)$.  Dieser Widerspruch zeigt, dass 
-                         es keine Klausel $c \in \texttt{clauses}$ mit 
+                         es keine Klausel $C \in \texttt{Clauses}$ mit 
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $c \subseteq \texttt{literals} \cup \{p_{n+1}\}$ \quad und \quad $p_{n+1} \in c$
+                         $C \subseteq \texttt{Literals} \cup \{p_{n+1}\}$ \quad und \quad $p_{n+1} \in C$
                          \\[0.2cm]
                          geben kann und damit tritt der hier untersuchte Fall gar nicht auf. 
-                   \item Es gibt \underline{keine} Klausel $c$ in der Menge \texttt{clauses}, so dass
+                   \item Es gibt \underline{keine} Klausel $C$ in der Menge \texttt{Clauses}, so dass
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $c \subseteq \texttt{literals} \cup \{p_{n+1}\}$ \quad und \quad $p_{n+1} \in c$
+                         $C \subseteq \texttt{Literals} \cup \{p_{n+1}\}$ \quad und \quad $p_{n+1} \in C$
                          \\[0.2cm]
-                         gilt.  In diesem Fall wird das Literal $p_{n+1}$ zur Menge \texttt{literals}
+                         gilt.  In diesem Fall wird das Literal $p_{n+1}$ zur Menge \texttt{Literals}
                          hinzugef\"{u}gt und damit gilt zun\"{a}chst $\I(p_{n+1}) = \texttt{false}$ und folglich
-                         $\I(\neg p_{n+1}) = \texttt{true}$, woraus schlie\ss{}lich $\I(d) = \texttt{true}$ folgt.
+                         $\I(\neg p_{n+1}) = \texttt{true}$, woraus schlie\ss{}lich $\I(D) = \texttt{true}$ folgt.
                    \end{enumerate}
                    Wir sehen, dass der erste Fall der vorherigen Fall-Unterscheidung nicht
-                   auftritt und dass im zweiten Fall $\I(d) = \texttt{true}$ gilt, womit wir insgesamt 
-                   $\I(d) = \texttt{true}$ gezeigt haben.  Damit ist der Induktions-Schritt
+                   auftritt und dass im zweiten Fall $\I(D) = \texttt{true}$ gilt, womit wir insgesamt 
+                   $\I(D) = \texttt{true}$ gezeigt haben.  Damit ist der Induktions-Schritt
                    abgeschlossen.
              \end{enumerate}
-             Da jede Klausel $c \in \texttt{clauses}$ nur eine endliche Anzahl von Variablen
+             Da jede Klausel $C \in \texttt{Clauses}$ nur eine endliche Anzahl von Variablen
              enth\"{a}lt, haben wir insgesamt gezeigt, dass f\"{u}r alle diese Klauseln 
-             $\I(c) = \texttt{true}$ gilt. \qed
+             $\I(C) = \texttt{true}$ gilt. \qed
 \end{enumerate}
 
 \noindent
@@ -2446,12 +2448,12 @@ Jetzt gibt es zwei M\"{o}glichkeiten:
       was zu zeigen war.
 \item Fall: Die Funktion \texttt{findValuation} liefert als Ergebnis eine aussagenlogische Belegung
       $\I$.  Bei der Diskussion der Funktion \texttt{findValuation} haben wir gezeigt, dass f\"{u}r
-      alle Klauseln $d \in \texttt{clauses}$
+      alle Klauseln $D \in \texttt{Clauses}$
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\I(d) = \texttt{true}$
+      $\I(D) = \texttt{true}$
       \\[0.2cm]
-      gilt.  Die Menge $M$ ist aber eine Teilmenge der Menge \texttt{clauses} und damit sehen wir, dass die
+      gilt.  Die Menge $M$ ist aber eine Teilmenge der Menge \texttt{Clauses} und damit sehen wir, dass die
       Menge $M$ erf\"{u}llbar ist.  Dies steht im Widerspruch zu $M \models \falsum$ und folglich kann der
       zweite Fall gar nicht auftreten. 
 \end{enumerate}
@@ -2506,7 +2508,7 @@ Diese Klausel-Menge kodiert die Formel
 \hspace*{1.3cm}
 $p \wedge \neg q \wedge \neg p $
 \\[0.2cm]
-Offenbar ist $K_3$ ebenfalls unl\"{o}sbar, denn eine L\"{o}sung $\I$ m\"{u}sste $p$ gleichzeitig
+Offenbar ist $K_3$ ebenfalls unl\"{o}sbar, denn eine L\"{o}sung $\I$ m\"{u}sste \texttt{p} gleichzeitig
 wahr und falsch machen.
 Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass f\"{u}r zwei Definitionen.
 
@@ -2517,7 +2519,7 @@ Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass
   \hspace*{1.3cm}
   $k = \{p\}$ \quad oder \quad $k = \{\neg p\}$ 
   \\[0.2cm]
-  f\"{u}r eine geeignete Aussage-Variable $p$. \eox
+  f\"{u}r eine geeignete Aussage-Variable \texttt{p}. \eox
 \end{Definition}
 
 \begin{Definition}[Triviale Klausel-Mengen]

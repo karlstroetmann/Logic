@@ -14,51 +14,50 @@ extractVar := procedure(l) {
 };
 // Given a set of clauses m, this procedure returns a list containing all
 // propositional variables occurring in m.
-collectVars := procedure(m) {
-    return { extractVar(l) : c in m, l in c };
+collectVars := procedure(M) {
+    return { extractVar(l) : C in M, l in C };
 };
 // This procedure takes two clauses c1 and c2 and computes the set of all
 // clauses that result from an application of the cut rule using c1 and c2.
-cutRule := procedure(c1, c2) {
-    return { (c1 - {l}) + (c2 - {complement(l)})
-           : l in c1
-           | complement(l) in c2
+cutRule := procedure(C1, C2) {
+    return { (C1 - {l}) + (C2 - {complement(l)})
+           : l in C1
+           | complement(l) in C2
            };
 };
 // This procedure takes a set of clauses and performs all applications
 // of the cut rule that are possible.  The resulting set of clauses is
 // returned.
-saturate := procedure(clauses) {
+saturate := procedure(Clauses) {
     while (true) {
-        derived := {} +/ { cutRule(c1, c2) : c1 in clauses, c2 in clauses };
-        if ({} in derived) {
+        Derived := {} +/ { cutRule(C1, C2) : C1 in Clauses, C2 in Clauses };
+        if ({} in Derived) {
             return { {} };  // clauses are inconsistent
         }
-        derived -= clauses;
-        print("number of new clauses derived: $#derived$");
-        if (derived == {}) {
-            return clauses;  // no new clauses found
+        Derived -= Clauses;
+        print("number of new clauses derived: $#Derived$");
+        if (Derived == {}) {
+            return Clauses;  // no new clauses found
         }
-        clauses += derived;
+        Clauses += Derived;
     }
 };
 // Given a set of clauses, the procedure findValuation tries to find a
 // propositional valuation satisfying the clauses in m.  If there is no
 // such valuation, { {} } is returned instead.
-findValuation := procedure(clauses) {
-    variables := collectVars(clauses);
-    clauses   := saturate(clauses);
-    if ({} in clauses) {
+findValuation := procedure(Clauses) {
+    Variables := collectVars(Clauses);
+    Clauses   := saturate(Clauses);
+    if ({} in Clauses) {
         return false;
     }
-    literals  := {};  // refuted literals
-    for (p in variables) {
-        if (exists(c in clauses | p in c && c <= literals + {p})) {
-            literals += { !p };
+    Literals  := {};  // refuted literals
+    for (p in Variables) {
+        if (exists(C in Clauses | p in C && C <= Literals + {p})) {
+            Literals += { !p };
         } else {
-            literals += { p };
+            Literals += { p };
         }
     }
-    result := { complement(l) : l in literals };
-    return result; 
+    return { complement(l) : l in Literals };
 };
