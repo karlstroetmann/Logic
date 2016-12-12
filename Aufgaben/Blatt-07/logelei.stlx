@@ -1,16 +1,18 @@
-// Die Prozedur evaluate(f, i) wertet die aussagen-logische Formel f unter
-// der aussagen-logischen Interpretation i aus.
-evaluate := procedure(f, i) {
+loadLibrary("termUtilities");
+
+// Die Prozedur eval(f, I) wertet die aussagen-logische Formel f unter
+// der aussagen-logischen Interpretation I aus.
+evaluate := procedure(f, I) {
     match (f) {
-        case true:         return true;
-        case false:        return false;
-        case ^variable(p): return i[p];
-        case !g:           return !evaluate(g, i);
-        case g && h:       return  evaluate(g, i) && evaluate(h, i);
-        case g || h:       return  evaluate(g, i) || evaluate(h, i);
-        case g => h:       return  evaluate(g, i) => evaluate(h, i);
-        case g <==> h:     return  evaluate(g, i) == evaluate(h, i);
-        default:           abort("syntax error in evaluate($f$, $i$)");
+        case true:              return true;
+        case false:             return false;
+        case p | isVariable(p): return I[varName(p)];
+        case !g:                return !evaluate(g, I);
+        case g && h:            return  evaluate(g, I) && evaluate(h, I);
+        case g || h:            return  evaluate(g, I) || evaluate(h, I);
+        case g => h:            return  evaluate(g, I) => evaluate(h, I);
+        case g <==> h:          return  evaluate(g, I) == evaluate(h, I);
+        default:                abort("syntax error in evaluate($f$, $I$)");
     }
 };
 
