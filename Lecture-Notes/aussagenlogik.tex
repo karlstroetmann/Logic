@@ -2472,7 +2472,7 @@ Bedauerlicherweise ist diese Prozedur f\"{u}r eine praktische Anwendung nicht ef
 Wir werden daher in diesem Abschnitt ein Verfahren vorstellen, mit dem die Berechnung einer L\"{o}sung
 einer aussagenlogischen Klausel-Menge auch in der Praxis m\"{o}glich ist.
 Dieses Verfahren geht auf Davis und Putnam
-\cite{davis62} zur\"{u}ck.  Verfeinerungen dieses Verfahrens werden beispielsweise
+\cite{davis:1960, davis:1962} zur\"{u}ck.  Verfeinerungen dieses Verfahrens werden beispielsweise
 eingesetzt, um die Korrektheit digitaler elektronischer Schaltungen nachzuweisen.  
 
 Um das Verfahren zu motivieren \"{u}berlegen wir zun\"{a}chst, bei welcher Form der Klausel-Menge $K$
@@ -2659,8 +2659,9 @@ und untersuchen rekursiv ob $K_1$ erf\"{u}llbar ist.  Falls wir eine L\"{o}sung 
 ist dies auch eine L\"{o}sung f\"{u}r die urspr\"{u}ngliche Klausel-Menge $K$ und wir haben unser Ziel
 erreicht.
 Andernfalls untersuchen wir rekursiv ob $K_2$ erf\"{u}llbar ist.
-Falls wir nun eine L\"{o}sung finden, ist dies auch eine L\"{o}sung von $K$ und wenn wir f\"{u}r $K_2$
-keine L\"{o}sung finden, dann hat auch $K$ keine L\"{o}sung.
+Falls wir nun eine L\"{o}sung finden, ist dies auch eine L\"{o}sung von $K$ und wenn wir weder
+f\"{u}r $K_1$ noch f\"ur $K_2$ eine L\"{o}sung finden, dann kann auch $K$ keine L\"{o}sung haben,
+denn jede L\"osung $\mathcal{I}$ von $K$ muss die Variable $P$ entweder wahr oder falsch machen.
 Die rekursive Untersuchung von $K_1$ bzw.~$K_2$ ist leichter als die Untersuchung von $K$,
 weil wir ja in $K_1$ und $K_2$ mit den Unit-Klausel $\{p\}$ bzw.~$\{\neg p\}$
 zun\"{a}chst Unit-Subsumptionen und anschlie\ss{}end Unit-Schnitte durchf\"{u}hren k\"{o}nnen.
@@ -2713,8 +2714,12 @@ interpretieren.
 \subsection{Ein Beispiel}
 Zur Veranschaulichung demonstrieren wir das Verfahren von Davis und Putnam an einem Beispiel.
 Die Menge $K$ sei wie folgt definiert: \\[0.2cm]
-\hspace*{1.3cm} $K := \Big\{ \{p, q, s\},\; \{\neg p, r, \neg t\},\;  \{r, s\},\; \{\neg r, q, \neg p\},$ \\
-\hspace*{2.5cm} $\{\neg s, p\},\; \{\neg p, \neg q, s, \neg r\},\; \{p, \neg q, s\},\; \{\neg r, \neg s\},\; \{\neg p, \neg s\} \Big\}  $. \\[0.2cm]
+\hspace*{0.3cm}
+ $K := \Big\{ \{p, q, s\},\; \{\neg p, r, \neg t\},\;  \{r, s\},\; \{\neg r, q, \neg p\}, 
+               \{\neg s, p\},\; \{\neg p, \neg q, s, \neg r\},\; \{p, \neg q, s\},\; \{\neg r, \neg s\},\;
+             \{\neg p, \neg s\} 
+        \Big\}$. 
+\\[0.2cm]
 Wir zeigen nun mit dem Verfahren von Davis und Putnam, dass $K$ nicht l\"{o}sbar ist.  Da die
 Menge $K$ keine Unit-Klauseln enth\"{a}lt, ist im ersten Schritt nichts zu tun.  Da $K$ nicht
 trivial ist, sind wir noch nicht fertig.  Also gehen wir jetzt zu Schritt 3 und w\"{a}hlen
@@ -2732,18 +2737,18 @@ daher die aussagenlogische Variable $p$.
       Die Klausel-Menge $K_1$ enth\"{a}lt die Unit-Klausel $\{\neg s\}$,
       so dass wir als n\"{a}chstes mit dieser Klausel reduzieren k\"{o}nnen: \\[0.2cm]
       \hspace*{1.3cm} 
-      $K_2 := \textsl{reduce}\bigl(K_1,\;\neg s\bigr) = 
+      $K_2 := \textsl{reduce}\bigl(K_1,\neg s\bigr) = 
               \Big\{ \{r, \neg t\},\; \{r\},\; \{\neg r, q\},\; \{\neg q, \neg r\},\; \{ \neg s\},\; \{p\} \Big\}$.
       \\[0.2cm]
       Hier haben wir nun die neue Unit-Klausel $\{r\}$, mit der wir als n\"{a}chstes reduzieren:
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $K_3 := \textsl{reduce}\bigl(K_2,\; r\bigr) = 
+      $K_3 := \textsl{reduce}\bigl(K_2, r\bigr) = 
               \Big\{ \{r\},\; \{q\},\; \{\neg q\},\; \{ \neg s\},\; \{p\} \Big\}$
       \\[0.2cm]
       Da $K_3$ die Unit-Klausel $\{q\}$ enth\"{a}lt, reduzieren wir jetzt mit $q$: \\[0.2cm]
       \hspace*{1.3cm} 
-      $K_4 := \textsl{reduce}\bigl(K_2,\;q\bigr) = 
+      $K_4 := \textsl{reduce}\bigl(K_2, q\bigr) = 
               \Big\{ \{r\},\; \{q\},\; \{\},\; \{ \neg s\},\; \{p\} \Big\}$.
       \\[0.2cm]
       Die Klausel-Menge $K_4$ enth\"{a}lt die leere Klausel und ist damit unl\"{o}sbar.
@@ -2753,15 +2758,15 @@ daher die aussagenlogische Variable $p$.
       und versuchen, diese Menge zu l\"{o}sen.  Dazu bilden wir
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $K_6 = \textsl{reduce}\bigl(K_5,\; \neg p\bigr) =\Big\{ \{q, s\},\; \{r, s\},\;\{\neg s\},\; \{\neg q, s\},\; \{\neg r, \neg s\},\;\{\neg p\}\, \Big\}$.
+      $K_6 = \textsl{reduce}\bigl(K_5, \neg p\bigr) =\Big\{ \{q, s\},\; \{r, s\},\;\{\neg s\},\; \{\neg q, s\},\; \{\neg r, \neg s\},\;\{\neg p\}\, \Big\}$.
       \\[0.2cm]
       Die Menge $K_6$ enth\"{a}lt die  Unit-Klausel $\{\neg s\}$.  Wir bilden daher \\[0.2cm]
       \hspace*{1.3cm} 
-      $K_7 = \textsl{reduce}\bigl(K_6,\; \neg s\bigr) =\Big\{ \{q\},\; \{r\},\;\{\neg s\},\; \{\neg q\},\;\{\neg p\}\, \Big\}$.
+      $K_7 = \textsl{reduce}\bigl(K_6, \neg s\bigr) =\Big\{ \{q\},\; \{r\},\;\{\neg s\},\; \{\neg q\},\;\{\neg p\}\, \Big\}$.
       \\[0.2cm]
       Die Menge $K_7$ enth\"{a}lt die neue Unit-Klausel $\{q\}$, mit der wir als n\"{a}chstes reduzieren:\\[0.2cm]
       \hspace*{1.3cm} 
-      $K_8 = \textsl{reduce}\bigl(K_7,\; q \bigr) =\Big\{ \{q\},\; \{r\},\;\{\neg s\},\; \{\},\;\{\neg p\}\, \Big\}$.
+      $K_8 = \textsl{reduce}\bigl(K_7, q \bigr) =\Big\{ \{q\},\; \{r\},\;\{\neg s\},\; \{\},\;\{\neg p\}\, \Big\}$.
       \\[0.2cm]
       Da $K_8$ die leere Klausel enth\"{a}lt, ist $K_8$ und damit auch die urspr\"{u}nglich
       gegebene Menge $K$ unl\"{o}sbar.
@@ -2774,46 +2779,45 @@ durchf\"{u}hren m\"{u}ssen.
 Wir zeigen jetzt die Implementierung der Prozedur \texttt{davisPutnam}, 
 mit der die Frage, ob eine Menge von Klauseln erf\"{u}llbar ist, beantwortet werden kann. Die
 Implementierung ist in Abbildung \ref{fig:davisPutnam} auf Seite \pageref{fig:davisPutnam}
-gezeigt.  Die Prozedur erh\"{a}lt zwei Argumente: Die Mengen \texttt{clauses} und \texttt{literals}.
-Hier ist \texttt{clauses} eine Menge von Klauseln und \texttt{literals} ist eine Menge von
+gezeigt.  Die Prozedur erh\"{a}lt zwei Argumente: Die Mengen \texttt{Clauses} und \texttt{Literals}.
+Hier ist \texttt{Clauses} eine Menge von Klauseln und \texttt{Literals} ist eine Menge von
 Literalen.  Falls  die Vereinigung dieser beiden Mengen erf\"{u}llbar ist, so liefert
 der Aufruf 
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{davisPutnam(clauses, literals)} 
+\texttt{davisPutnam(Clauses, Literals)} 
 \\[0.2cm]
-eine Menge von Unit-Klauseln \texttt{r}, so
-dass jede Belegung $\I$, die alle Unit-Klauseln aus \texttt{r} erf\"{u}llt, auch alle Klauseln aus
+eine Menge von Unit-Klauseln \texttt{R}, so
+dass jede Belegung $\I$, die alle Unit-Klauseln aus \texttt{R} erf\"{u}llt, auch alle Klauseln aus
 der Menge  $\texttt{clauses}$ erf\"{u}llt.  Falls die Menge $\texttt{clauses}$ nicht erf\"{u}llbar ist, liefert der Aufruf
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{davisPutnam(clauses, literals)} 
+\texttt{davisPutnam(Clauses, Literals)} 
 \\[0.2cm]
-als Ergebnis die Menge $\bigl\{ \{\} \bigr\}$ zur\"{u}ck,
-denn die leere Klausel repr\"{a}sentiert die unerf\"{u}llbare Formel $\falsum$.
+als Ergebnis die Menge $\bigl\{ \{\} \bigr\}$ zur\"{u}ck, denn die leere Klausel repr\"{a}sentiert die unerf\"{u}llbare Formel $\falsum$.
 
 Sie fragen sich vielleicht, wozu wir in der Prozedur \texttt{davisPutnam} die Menge
-\texttt{literals} brauchen.  Der Grund ist, dass wir uns bei den rekursiven Aufrufen
+\texttt{Literals} brauchen.  Der Grund ist, dass wir uns bei den rekursiven Aufrufen
 merken m\"{u}ssen, welche Literale wir schon benutzt haben.  Diese Literale sammeln wir in der
 Menge \texttt{literals}.
 
 Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie folgt:
 \begin{enumerate}
 \item In Zeile 2 reduzieren wir mit Hilfe der Methode \texttt{saturate} 
-      solange wie m\"{o}glich die gegebene Klausel-Menge \texttt{clauses} mit Hilfe
+      solange wie m\"{o}glich die gegebene Klausel-Menge \texttt{Clauses} mit Hilfe
       von Unit-Schnitten und entfernen alle Klauseln, die durch Unit-Klauseln
       subsumiert werden.
 \item Anschlie\ss{}end testen wir in Zeile 3, ob die so vereinfachte Klausel-Menge
       die leere Klausel enth\"{a}lt und geben in diesem Fall als Ergebnis die Menge 
       $\bigl\{\{\}\bigr\}$ zur\"{u}ck.
-\item Dann testen wir in Zeile 6, ob bereits alle Klauseln $c$ aus der Menge
-      \texttt{clauses} Unit-Klauseln sind.  Wenn dies so ist,
-      dann ist die Menge \texttt{clauses} trivial und wir geben diese Menge als Ergebnis zur\"{u}ck.
-\item Andernfalls w\"{a}hlen wir in Zeile 9 ein Literal $l$ aus der Menge \texttt{clauses}, 
+\item Dann testen wir in Zeile 6, ob bereits alle Klauseln $C$ aus der Menge
+      \texttt{Clauses} Unit-Klauseln sind.  Wenn dies so ist,
+      dann ist die Menge \texttt{Clauses} trivial und wir geben diese Menge als Ergebnis zur\"{u}ck.
+\item Andernfalls w\"{a}hlen wir in Zeile 9 ein Literal $l$ aus der Menge \texttt{Clauses}, 
       dass wir noch nicht benutzt haben.
       Wir untersuchen dann in Zeile 10 rekursiv, ob die Menge \\[0.2cm]
       \hspace*{1.3cm} 
-      $\texttt{clauses} \cup \bigl\{\{\texttt{l}\}\bigr\}$ 
+      $\texttt{Clauses} \cup \bigl\{\{\texttt{l}\}\bigr\}$ 
       \\[0.2cm]
       l\"{o}sbar ist.  Dabei gibt es zwei F\"{a}lle:
       \begin{enumerate}
@@ -2822,11 +2826,11 @@ Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie
       \item Sonst  pr\"{u}fen wir rekursiv, ob die Menge 
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\texttt{clauses} \cup \bigl\{ \{ \neg \texttt{l}\} \bigr\}$ 
+            $\texttt{Clauses} \cup \Bigl\{ \bigl\{ \komplement{\texttt{l}} \bigr\} \Bigr\}$ 
             \\[0.2cm]
             l\"{o}sbar ist.  Ist diese Menge l\"{o}sbar, so ist diese L\"{o}sung auch eine
-            L\"{o}sung der Menge $\texttt{clauses}$ und wir geben diese L\"{o}sung zur\"{u}ck.  Ist die
-            Menge unl\"{o}sbar, dann muss auch die Menge $\texttt{clauses}$ unl\"{o}sbar sein.
+            L\"{o}sung der Menge $\texttt{Clauses}$ und wir geben diese L\"{o}sung zur\"{u}ck.  Ist die
+            Menge unl\"{o}sbar, dann muss auch die Menge $\texttt{Clauses}$ unl\"{o}sbar sein.
       \end{enumerate}
 \end{enumerate}
 \begin{figure}[!ht]
@@ -2839,21 +2843,21 @@ Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie
                   xleftmargin   = 0.2cm,
                   xrightmargin  = 0.2cm
                 ]
-    davisPutnam := procedure(clauses, literals) {
-        clauses := saturate(clauses);
-        if ({} in clauses) {
+    davisPutnam := procedure(Clauses, Literals) {
+        Clauses := saturate(Clauses);
+        if ({} in Clauses) {
             return { {} };
         }
-        if (forall (c in clauses | #c == 1)) {
-            return clauses;
+        if (forall (C in Clauses | #C == 1)) {
+            return Clauses;
         }
-        l := selectLiteral(clauses, literals);
+        l := selectLiteral(Clauses, Literals);
         notL := negateLiteral(l);    
-        r := davisPutnam(clauses + { {l} }, literals + { l, notL });
-        if (r != { {} }) {
-            return r;
+        S := davisPutnam(Clauses + { {l} }, Literals + { l });
+        if (S != { {} }) {
+            return S;  // solution found
         }     
-        return davisPutnam(clauses + { {notL} }, literals + { l, notL });
+        return davisPutnam(Clauses + { {notL} }, Literals + { notL });
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -2864,7 +2868,7 @@ Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie
 Wir diskutieren nun die Hilfsprozeduren, die bei der Implementierung der Prozedur
 \texttt{davisPutnam} verwendet wurden.
 Als erstes besprechen wir die Funktion \texttt{saturate}.  Diese Prozedur erh\"{a}lt eine
-Menge $s$ von Klauseln als Eingabe und f\"{u}hrt alle m\"{o}glichen Unit-Schnitte und
+Menge $S$ von Klauseln als Eingabe und f\"{u}hrt alle m\"{o}glichen Unit-Schnitte und
 Unit-Subsumptionen durch.  
 Die Prozedur \texttt{saturate} ist in Abbildung \ref{fig:saturate} auf Seite \pageref{fig:saturate}
 gezeigt.
@@ -2879,17 +2883,17 @@ gezeigt.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    saturate := procedure(s) {
-        units := { k in s | #k == 1 };
-        used := {};
-        while (units != {}) {
-            unit  := arb(units);
-            used  := used + { unit };
-            l     := arb(unit);
-            s     := reduce(s, l);
-            units := { k in s | #k == 1 } - used;        
+    saturate := procedure(S) {
+        Units := { C : C in S | #C == 1 };
+        Used  := {};
+        while (Units != {}) {
+            Unit  := arb(Units);
+            Used  += { Unit };
+            l     := arb(Unit);
+            S     := reduce(S, l);
+            Units := { C : C in S | #C == 1 && !(C in Used) };        
         }
-        return s;
+        return S;
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -2898,18 +2902,18 @@ gezeigt.
 \end{figure} 
 Die Implementierung von \texttt{saturate} funktioniert wie folgt: 
 \begin{enumerate}
-\item Zun\"{a}chst berechnen wir in Zeile 2 die Menge \texttt{units} aller Unit-Klauseln.  
-\item Dann initialisieren wir in Zeile 3 die Menge \texttt{used} als die leere Menge.
+\item Zun\"{a}chst berechnen wir in Zeile 2 die Menge \texttt{Units} aller Unit-Klauseln.  
+\item Dann initialisieren wir in Zeile 3 die Menge \texttt{Used} als die leere Menge.
       In dieser Menge merken wir uns, welche Unit-Klauseln wir schon f\"{u}r Unit-Schnitte und
       Subsumptionen benutzt haben.
-\item Solange die Menge \texttt{units} der Unit-Klauseln nicht leer ist, w\"{a}hlen wir in Zeile 5
-      mit Hilfe der Funktion $\texttt{arb}$ eine beliebige Unit-Klausel \texttt{unit} aus der Menge
-      \texttt{units} aus. 
-\item In Zeile 6 f\"{u}gen wir die Klausel \texttt{unit} zu der Menge
-      \texttt{used} der benutzten Klausel hinzu.  
+\item Solange die Menge \texttt{Units} der Unit-Klauseln nicht leer ist, w\"{a}hlen wir in Zeile 5
+      mit Hilfe der Funktion $\texttt{arb}$ eine beliebige Unit-Klausel \texttt{Unit} aus der Menge
+      \texttt{Units} aus. 
+\item In Zeile 6 f\"{u}gen wir die Klausel \texttt{Unit} zu der Menge
+      \texttt{Used} der benutzten Klausel hinzu.  
 \item In Zeile 7 extrahieren mit der Funktion \texttt{arb} das Literal \texttt{l} der Klausel
-      \texttt{unit}.  Die Funktion $\texttt{arb}$ liefert ein beliebiges Element der Menge zur\"{u}ck,
-      die dieser Funktion als Argument \"{u}bergeben wird.  Enth\"{a}lt diese Menge nur ein Element, so
+      \texttt{Unit}.  Die Funktion $\texttt{arb}$ liefert ein beliebiges Element der Menge zur\"{u}ck,
+      das dieser Funktion als Argument \"{u}bergeben wird.  Enth\"{a}lt diese Menge nur ein Element, so
       wird also dieses Element zur\"{u}ck gegeben.
 \item In Zeile 8 wird  die eigentliche Arbeit durch einen Aufruf der Prozedur
       \texttt{reduce} geleistet.  Diese Funktion berechnet alle Unit-Schnitte, die mit der
@@ -2923,13 +2927,13 @@ Die Implementierung von \texttt{saturate} funktioniert wie folgt:
 \item Am Ende geben wir die verbliebende Klauselmenge als Ergebnis zur\"{u}ck.
 \end{enumerate}
 Die dabei verwendete Prozedur $\texttt{reduce}()$ ist in Abbildung \ref{fig:reduce} gezeigt.
-Im vorigen Abschnitt hatten wir die Funktion $\textsl{reduce}(K,l)$, die eine
-Klausel-Menge $K$ mit Hilfe des Literals $l$ reduziert, als
+Im vorigen Abschnitt hatten wir die Funktion $\textsl{reduce}(S, l)$, die eine
+Klausel-Menge $S$ mit Hilfe des Literals $l$ reduziert, als
 \\[0.2cm]
 \hspace*{1.3cm}
-$\textsl{reduce}(K,l)  = 
- \bigl\{\, k \backslash \{\komplement{l}\} \;|\; k \in K \wedge \komplement{l} \in k \,\bigr\} 
-       \,\cup\, \bigl\{\, k \in K \mid \komplement{l} \not\in k \wedge l \not\in k \} \cup \bigl\{\{l\}\bigr\}
+$\textsl{reduce}(S,l)  = 
+ \Bigl\{\, C \backslash \bigl\{\komplement{l}\bigr\} \;|\; C \in S \wedge \komplement{l} \in C \,\Bigr\} 
+       \,\cup\, \Bigl\{\, C \in S \mid \komplement{l} \not\in C \wedge l \not\in C \Bigr\} \cup \Bigl\{\{l\}\Bigr\}
 $
 \\[0.2cm]
 definiert.
@@ -2946,10 +2950,10 @@ Die Implementierung setzt diese Definition unmittelbar um.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    reduce := procedure(s, l) {
+    reduce := procedure(S, l) {
         notL := negateLiteral(l);
-        return   { k - { notL } : k in s | notL in k } 
-               + { k in s | !(notL in k) && !(l in k) } 
+        return   { C - { notL } : C in S | notL in C } 
+               + { C : C in S | !(notL in C) && !(l in C) } 
                + { {l} };
     };
 \end{Verbatim}
@@ -2967,8 +2971,12 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
       \texttt{forbidden} von Literalen vorkommen darf, die bereits benutzt worden sind.
       Dazu werden alle Klauseln, die ja Mengen von Literalen sind, vereinigt.  Von dieser
       Menge wird dann die Menge der bereits benutzten Literalen abgezogen und aus der
-      resultierenden Menge wird mit Hilfe der Funktion $\texttt{arb}()$ ein Literal ausgew\"{a}hlt.
-\item Die Prozedur \texttt{negateLiteral} bildet die Negation $\komplement{l}$ 
+      resultierenden Menge wird mit Hilfe der Funktion $\texttt{rnd}()$ zuf\"allig ein Literal
+      ausgew\"{a}hlt.  An Stelle der Funktion $\texttt{rnd}()$ h\"atten wir hier auch die Funktion 
+      $\texttt{arb}()$ benutzen k\"onnen.   Allerdings habe ich experimentell herausgefunden, dass
+      der Davis-Putnam Algorithmus im Allgemeinen deutlich effizienter wird,  wenn wir das Literal
+      mit Hilfe der Funktion $\texttt{rnd}()$ ausw\"ahlen.
+\item Die Prozedur \texttt{negateLiteral} bildet das Komplement $\komplement{l}$ 
       eines gegebenen Literals $l$.  
 \end{enumerate}
 \begin{figure}[!ht]
@@ -2981,8 +2989,8 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    selectLiteral := procedure(s, forbidden) {
-        return arb(+/ s - forbidden);
+    selectLiteral := procedure(S, Used) {
+        return rnd({} +/ S - Used);  // used rnd instead of arb for efficiency
     };
     negateLiteral := procedure(l) {
         match (l) {
@@ -3015,7 +3023,7 @@ Beim Schach-Spiel kann eine Dame dann eine andere Figur schlagen, wenn diese Fig
 entweder 
 \begin{itemize}
 \item in derselben Zeile,
-\item in derselben Spalte, oder
+\item in derselben Spalte  oder
 \item in derselben Diagonale
 \end{itemize}
 wie die Dame steht.  Abbildung \ref{fig:queens-problem} auf Seite \pageref{fig:queens-problem}
@@ -3059,11 +3067,15 @@ positionierten Damen aussagenlogisch repr\"{a}sentieren k\"{o}nnen.  Eine M\"{o}
 f\"{u}r jedes Feld eine aussagenlogische Variable einzuf\"{u}hren.  Diese Variable dr\"{u}ckt
 aus, dass auf dem entsprechenden Feld eine Dame steht.  Wir ordnen diesen Variablen wie
 folgt Namen zu:  Die Variable, die das $j$-te Feld in der $i$-ten
-Zeile bezeichnet, stellen wir durch den Term \\[0.2cm]
-\hspace*{1.3cm} $\texttt{Var}(i,j)$ \quad mit $i,j \in \{1, \cdots, 8\}$ \\[0.2cm]
+Zeile bezeichnet, stellen wir durch den Term 
+\\[0.2cm]
+\hspace*{1.3cm}
+ $\texttt{@Var}(i,j)$ \quad mit $i,j \in \{1, \cdots, 8\}$ 
+\\[0.2cm]
 dar. Wir nummerieren die Zeilen dabei von oben beginnend von 1 bis 8 durch, w\"{a}hrend die
 Spalten von links nach rechts numeriert werden.  Abbildung \ref{fig:queens-assign} auf
-Seite \pageref{fig:queens-assign} zeigt die Zuordnung der Variablen zu den Feldern.
+Seite \pageref{fig:queens-assign} zeigt die Zuordnung der Variablen zu den Feldern.  Zur
+Vereinfachung habe ich dort statt $\texttt{@Var}(i,j)$ nur $\texttt{Var}(i,j)$ geschrieben.
 
 \begin{figure}[!ht]
   \centering
@@ -3170,7 +3182,7 @@ Formeln kodieren k\"{o}nnen.  Letztlich lassen sich alle Aussagen der Form
 auf dasselbe Grundmuster zur\"{u}ckf\"{u}hren:
 Ist eine Menge von aussagenlogischen Variablen \\[0.2cm]
 \hspace*{1.3cm} $V = \{ x_1, \cdots, x_n \}$ \\[0.2cm]
-gegeben, so brauchen wir eine Formel die aussagt, dass \textbf{\emph{\color{blue}h\"{o}chstens}} eine der Variablen aus
+gegeben, so brauchen wir eine Formel die aussagt, dass {\color{blue}h\"{o}chstens} eine der Variablen aus
 $V$ den Wert \texttt{true} hat.  Das ist aber gleichbedeutend damit, dass f\"{u}r jedes Paar
 $x_i, x_j \in V$ mit $x_i \not= x_j$ die folgende Formel gilt: \\[0.2cm]
 \hspace*{1.3cm} $\neg (x_i \wedge x_j)$. \\[0.2cm]
@@ -3191,9 +3203,9 @@ Variablen gleichzeitig gesetzt sind, kann daher als Klausel-Menge in der Form
 \\[0.2cm]
 geschrieben werden.
 Wir setzen diese \"{U}berlegungen in eine \textsc{SetlX}-Prozedur um.  Die in Abbildung \ref{fig:atMostOne}
-gezeigte Prozedur \texttt{atMostOne}() bekommt als Eingabe eine Menge $V$ von
-aussagenlogischen Variablen.  Der Aufruf $\texttt{atMostOne}(V)$ berechnet eine Menge von
-Klauseln.  Diese Klauseln sind genau dann wahr, wenn h\"{o}chstens eine der Variablen aus $V$
+gezeigte Prozedur \texttt{atMostOne}() bekommt als Eingabe eine Menge $S$ von
+aussagenlogischen Variablen.  Der Aufruf $\texttt{atMostOne}(S)$ berechnet eine Menge von
+Klauseln.  Diese Klauseln sind genau dann wahr, wenn h\"{o}chstens eine der Variablen aus $S$
 den Wert \texttt{true} hat.
 
 \begin{figure}[!ht]
@@ -3206,8 +3218,8 @@ den Wert \texttt{true} hat.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    atMostOne := procedure(v) {
-        return { { !p, !q } : p in v, q in v | p != q };
+    atMostOne := procedure(S) {
+        return { { !p, !q } : p in S, q in S | p != q };
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -3228,7 +3240,7 @@ in der Menge
 \hspace*{1.3cm}
 $\bigl\{ \texttt{Var}(\texttt{row},j) \mid j \in \{1, \cdots, n \} \bigr\}$
 \\[0.2cm]
- auf und rufen mit dieser Menge die Hilfs-Prozedur $\texttt{atMostOne}()$ auf, die das Ergebnis
+ auf und rufen mit dieser Menge die Funktion $\texttt{atMostOne}()$ auf, die das Ergebnis
 als Menge von Klauseln liefert.
 
 \begin{figure}[!ht]
@@ -3242,7 +3254,7 @@ als Menge von Klauseln liefert.
                   xrightmargin  = 0.8cm
                 ]
     atMostOneInRow := procedure(row, n) {
-        return atMostOne({ Var(row, j) : j in [1 .. n] });
+        return atMostOne({ @Var(row, j) : j in [1 .. n] });
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -3250,7 +3262,7 @@ als Menge von Klauseln liefert.
   \label{fig:atMostOneInRow}
 \end{figure}
 
-Als n\"{a}chstes berechnen wir eine Formel die aussagt, dass mindestens eine Dame in einer gegebenen
+Als n\"{a}chstes berechnen wir eine Formel die aussagt, dass {\color{blue}mindestens} eine Dame in einer gegebenen
 Spalte steht.  F\"{u}r die erste Spalte h\"{a}tte diese Formel im Falle eine $8 \times 8$-Bretts die Form 
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -3286,7 +3298,7 @@ Davis und Putnam ja mit einer Menge von Klauseln arbeitet.
                   xrightmargin  = 0.8cm
                 ]
     oneInColumn := procedure(column, n) {
-        return { { Var(row, column) : row in { 1 .. n } } };
+        return { { @Var(row, column) : row in { 1 .. n } } };
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -3296,13 +3308,14 @@ Davis und Putnam ja mit einer Menge von Klauseln arbeitet.
 
 An dieser Stelle erwarten Sie vielleicht, dass wir noch Formeln angeben die
 ausdr\"{u}cken, dass in einer gegebenen Spalte h\"{o}chstens eine Dame steht und dass in jeder
-Reihe mindestens eine Dame steht.
+Zeile mindestens eine Dame steht.
 Solche Formeln sind aber unn\"{o}tig, denn wenn wir wissen, dass in jeder Spalte mindestens
 eine Dame steht, so wissen wir bereits, dass auf dem Brett mindestens 8 Damen stehen.
 Wenn wir nun zus\"{a}tzlich wissen, dass in jeder Zeile h\"{o}chstens eine Dame steht, so ist
-automatisch klar, dass in jeder Zeile genau eine Dame stehen muss, denn sonst kommen wir insgesamt
-nicht auf 8 Damen.  Weiter folgt aus der Tatsache, dass in jeder Spalte eine Dame steht und daraus,
-dass es insgesamt nicht mehr als 8 Damen sind, dass in jeder Spalte h\"{o}chstens eine Dame stehen kann.
+automatisch klar, dass h\"ochstens 8 Damen auf dem Brett stehen.  Damit stehen also insgesamt genau
+8 Damen auf dem Brett.  Dann kann aber in jeder Spalte nur h\"ochstens eine Dame stehen und genauso muss
+in jeder Zeile mindestens eine Dame stehen, denn sonst w\"urden wir nicht auf 8 Damen kommen.
+
 
 Als n\"{a}chstes \"{u}berlegen wir uns, wie wir die Variablen, die auf derselben Diagonale
 stehen, charakterisieren k\"{o}nnen.  Es gibt grunds\"{a}tzlich zwei verschiedene Arten von
@@ -3334,7 +3347,7 @@ Prozedur ist in Abbildung \ref{fig:atMostOneInUpperDiagonal} gezeigt.
                   xrightmargin  = 0.8cm
                 ]
     atMostOneInUpperDiagonal := procedure(k, n) {
-        s := { Var(r, c) : c in [1..n], r in [1..n] | r + c == k };
+        s := { @Var(r, c) : c in [1..n], r in [1..n] | r + c == k };
         return atMostOne(s);
     };
 \end{Verbatim}
@@ -3370,7 +3383,7 @@ Diese Prozedur ist in Abbildung \ref{fig:atMostOneInLowerDiagonal} gezeigt.
                   xrightmargin  = 0.8cm
                 ]
     atMostOneInLowerDiagonal := procedure(k, n) {
-        s := { Var(r, c) : c in [1..n], r in [1..n] | r - c == k };
+        s := { @Var(r, c) : c in [1..n], r in [1..n] | r - c == k };
         return atMostOne(s);
     };
 \end{Verbatim}
@@ -3441,12 +3454,13 @@ Das vollst\"{a}ndige Programm finden Sie auf meiner Webseite unter dem Namen
                   xrightmargin  = 0.8cm,
                 ]
     solve := procedure(n) {
-        clauses  := allClauses(n);
-        solution := davisPutnam(clauses, {});
-        if (solution != { {} }) {
-            printBoard(solution, n);
+        Clauses  := allClauses(n);
+        Solution := davisPutnam(Clauses, {});
+        if (Solution != { {} }) {
+            // print(solution);
+            printBoard(Solution, n);
         } else {
-            print("The problem is not solvable for " + n + " queens!");
+            print("The problem is not solvable for $n$ queens!");
             print("Try to increase the number of queens.");
         }
     };
@@ -3480,7 +3494,7 @@ Das vollst\"{a}ndige Programm finden Sie auf meiner Webseite unter dem Namen
             print(line);
             line := "        |";
             for (col in [1..n]) {
-                if ({ Var(row, col) } in i) {
+                if ({ @Var(row, col) } in i) {
                     line += "   Q   |";
                 } else {
                     line += "       |";
@@ -3503,10 +3517,10 @@ Das vollst\"{a}ndige Programm finden Sie auf meiner Webseite unter dem Namen
 
 
 
- Die durch den Aufruf $\texttt{davisPutnam}(\textsl{clauses}, \{\})$ 
+Die durch den Aufruf $\texttt{davisPutnam}(\textsl{Clauses}, \{\})$ 
 berechnete Menge \texttt{solution} enth\"{a}lt f\"{u}r jede der Variablen $\texttt{Var}(i,j)$
-entweder die Unit-Klausel $\{\texttt{Var}(i,j)\}$  (falls auf diesem Feld eine Dame steht) oder
-aber die Unit-Klausel  $\{ \texttt{!Var}(i,j)\}$ (falls das Feld leer bleibt).
+entweder die Unit-Klausel $\{\texttt{@Var}(i,j)\}$  (falls auf diesem Feld eine Dame steht) oder
+aber die Unit-Klausel  $\{ \texttt{!@Var}(i,j)\}$ (falls das Feld leer bleibt).
 Eine graphische Darstellung des durch die berechnete Belegung dargestellten Schach-Bretts
 sehen Sie in Abbildung \ref{fig:queens-solution}. 
 

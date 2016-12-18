@@ -1,33 +1,33 @@
 load("davis-putnam.stlx");
-// s is a set of propositional variables. The call atMostOne(s) creates
+// S is a set of propositional variables. The call atMostOne(S) Creates
 // a set of clauses.  This set expresses the fact that at most one of
-// the variables in s is true.
-atMostOne := procedure(s) {
-    return { { !p, !q } : p in s, q in s | p != q };
+// the variables in S is true.
+atMostOne := procedure(S) {
+    return { { !p, !q } : p in S, q in S | p != q };
 };
 // This procedure computes a set of clauses.  This set of clauses is true
 // iff there is at most one queen on the given row.
 atMostOneInRow := procedure(row, n) {
-    return atMostOne({ Var(row, column) : column in [1 .. n] });
+    return atMostOne({ @Var(row, column) : column in [1 .. n] });
 };
 // This procedure computes a set of clauses.  This set of clauses is true
 // iff there is at least one queen on the given column.
 oneInColumn := procedure(column, n) {
-    return { { Var(row, column) : row in { 1 .. n } } };
+    return { { @Var(row, column) : row in { 1 .. n } } };
 };
 // This procedure computes a set of clauses.  This set of clauses is true
 // iff there is at most one queen on the diagonal satisfying the equation 
 //    row + column = k.
 atMostOneInUpperDiagonal := procedure(k, n) {
-    s := { Var(r, c) : c in [1..n], r in [1..n] | r + c == k };
-    return atMostOne(s);
+    S := { @Var(r, c) : c in [1..n], r in [1..n] | r + c == k };
+    return atMostOne(S);
 };
 // This procedure computes a set of clauses.  This set of clauses is true
 // iff there is at most one queen on the diagonal satisfying the equation 
 //    row - column = k.
 atMostOneInLowerDiagonal := procedure(k, n) {
-    s := { Var(r, c) : c in [1..n], r in [1..n] | r - c == k };
-    return atMostOne(s);
+    S := { @Var(r, c) : c in [1..n], r in [1..n] | r - c == k };
+    return atMostOne(S);
 };
 // The procedure allClauses takes as input a matrix (i.e. a list of lists)
 // of propositional variables.  Each of these variables represents a field
@@ -58,12 +58,12 @@ allClauses := procedure(n) {
 };
 // Solve the n-queens puzzle.
 solve := procedure(n) {
-    clauses  := allClauses(n);
+    Clauses  := allClauses(n);
     // print(clauses);
-    solution := davisPutnam(clauses, {});
-    if (solution != { {} }) {
+    Solution := davisPutnam(Clauses, {});
+    if (Solution != { {} }) {
         // print(solution);
-        printBoard(solution, n);
+        printBoard(Solution, n);
     } else {
         print("The problem is not solvable for $n$ queens!");
         print("Try to increase the number of queens.");
@@ -85,7 +85,7 @@ printBoard := procedure(i, n) {
         print(line);
         line := "        |";
         for (col in [1..n]) {
-            if ({ Var(row, col) } in i) {
+            if ({ @Var(row, col) } in i) {
                 line += "   Q   |";
             } else {
                 line += "       |";

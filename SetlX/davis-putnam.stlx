@@ -10,60 +10,50 @@
 // Das Argument literals dient der Buchhaltung bei den rekursiven Aufrufen.
 // Hier werden alle die Literale aufgesammelt, mit denen die Menge clauses
 // schon reduziert wurde.  Beim ersten Aufruf ist diese Menge leer.
-davisPutnam := procedure(clauses, literals) {
-    clauses := saturate(clauses);
-    if ({} in clauses) {
+davisPutnam := procedure(Clauses, Literals) {
+    Clauses := saturate(Clauses);
+    if ({} in Clauses) {
         return { {} };
     }
-    if (forall (c in clauses | #c == 1)) {
-        return clauses;
+    if (forall (C in Clauses | #C == 1)) {
+        return Clauses;
     }
-    l := selectLiteral(clauses, literals);
+    l := selectLiteral(Clauses, Literals);
     notL := negateLiteral(l);    
-    r := davisPutnam(clauses + { {l} }, literals + { l });
-    if (r != { {} }) {
-        return r;
+    S := davisPutnam(Clauses + { {l} }, Literals + { l });
+    if (S != { {} }) {
+        return S;  // solution found
     }     
-    return davisPutnam(clauses + { {notL} }, literals + { notL });
+    return davisPutnam(Clauses + { {notL} }, Literals + { notL });
 };
 // Gegeben ist eine Menge S von Klauseln.  Der Aufruf saturate(S) berechnet alle
 // Klauseln, die mit Unit Schnitten aus S ableitbar sind.  Zusätzlich werden alle
 // Klauseln, die von Unit-Klauseln subsumiert werden, aus der Menge S entfernt.
-saturate := procedure(s) {
-    units := { k : k in s | #k == 1 };
-    used  := {};
-    while (units != {}) {
-        unit  := arb(units);
-        used  += { unit };
-        l     := arb(unit);
-        s     := reduce(s, l);
-        units := { k : k in s | #k == 1 } - used;        
+saturate := procedure(S) {
+    Units := { C : C in S | #C == 1 };
+    Used  := {};
+    while (Units != {}) {
+        Unit  := arb(Units);
+        Used  += { Unit };
+        l     := arb(Unit);
+        S     := reduce(S, l);
+        Units := { C : C in S | #C == 1 && !(C in Used) };        
     }
-    return s;
+    return S;
 };
 // Die Prozedur reduce(s,l) führt alle Unit-Schnitte und alle Unit-Subsumptionen,
-// die mit der Unit-Klausel {l} möglich sind, durch.
-reduce := procedure(s, l) {
+// die mit der Unit-Klausel {l} möglich sind, durch.  S ist eine Menge von Klauseln,
+// l ist ein Literal.
+reduce := procedure(S, l) {
     notL := negateLiteral(l);
-    return   { k - { notL } : k in s | notL in k } 
-           + { k : k in s | !(notL in k) && !(l in k) } 
+    return   { C - { notL } : C in S | notL in C } 
+           + { C : C in S | !(notL in C) && !(l in C) } 
            + { {l} };
 };
 // Wir wählen ein beliebiges Literal aus einer beliebigen Klausel,
 // so dass weder dieses Literal noch die Negation benutzt wurden.
-selectLiteral := procedure(s, forbidden) {
-    allLiterals := +/ s - forbidden;
-    posLiterals := { l : l in allLiterals | isPositive(l) };
-    if (posLiterals != {}) {
-        return rnd(posLiterals);  // use rnd instead of arb for efficiency
-    }
-    return rnd(all);              // use rnd instead of arb for efficiency
-};
-isPositive := procedure(l) {
-    match (l) {
-        case !p : return false;
-        case  p : return true;
-    }
+selectLiteral := procedure(S, Used) {
+    return rnd({} +/ S - Used);  // used rnd instead of arb for efficiency
 };
 // Diese Prozedur berechnet das Komplement des Literals l.
 negateLiteral := procedure(l) {
