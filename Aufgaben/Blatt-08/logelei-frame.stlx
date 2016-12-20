@@ -1,158 +1,23 @@
-////////////////////////////////////////////////////////////////////////
-//                                                                    //
-// Überführung in konjunktive Normal-Form                             //
-//                                                                    //
-////////////////////////////////////////////////////////////////////////
+loadLibrary("termUtilities");
+load("knf.stlx");
+load("davis-putnam.stlx");
 
 // Parse a propositional formula and transform the result into a conjunctive
 // normal form in set notation.
 parseKNF := procedure(f) {
-    return normalize(parse(f));
-};
-
-// Diese Prozedur überführt die Formel f in konjunktive Normalform.
-normalize := procedure(f) {
-    n1 := elimGdw(f);
-    n2 := elimFolgt(n1);
-    n3 := nnf(n2);
-    n4 := knf(n3);
-    return simplify(n4);
-};
-// Eliminiert den Operator "<==>" aus der eingegebenen Formel f.
-elimGdw := procedure(f) {
-    match (f) {
-        case !g       : return !elimGdw(g);
-        case g && h   : return elimGdw(g) && elimGdw(h);
-        case g || h   : return elimGdw(g) || elimGdw(h);
-        case g => h   : return elimGdw(g) => elimGdw(h);
-        case g <==> h : return elimGdw((g => h) && (h => g));
-        default       : return f; 
-    }
-};
-// Eliminiert den Operator "=>" aus der eingegebenen Formel f.
-elimFolgt := procedure(f) {
-    match (f) {
-        case !g     : return !elimFolgt(g);
-        case g && h : return  elimFolgt(g) && elimFolgt(h);
-        case g || h : return  elimFolgt(g) || elimFolgt(h);
-        case g => h : return  elimFolgt(!g || h);
-        default     : return f; 
-    }
-};
-// Berechnet die Negations-Normalform der Formel f.
-nnf := procedure(f) {
-    match (f) {
-        case !g     : return neg(g);
-        case g && h : return nnf(g) && nnf(h);
-        case g || h : return nnf(g) || nnf(h);
-        default     : return f; 
-    }
-};
-// Diese Funktion berechnet die Negations-Normalform von (-f) und schiebt dabei
-// das Negationszeichen soweit wie möglich nach innen.
-neg := procedure(f) {
-    match (f) {
-        case !g     : return nnf(g);
-        case g && h : return neg(g) || neg(h);
-        case g || h : return neg(g) && neg(h);
-        default     : return !f; 
-    }
-};
-knf := procedure(f) {
-    match (f) {
-        case !g     : return { { !g } };
-        case g && h : return knf(g) + knf(h);
-        case g || h : return { k1 + k2 : k1 in knf(g), k2 in knf(h) };
-        default     : return { { f } }; // f is a variable
-    }
-};
-// Die Prozedur simplify(k) eliminiert triviale Klauseln aus der KNF k.
-simplify := procedure(k) {
-    return { c : c in k | !isTrivial(c) };
-};
-
-// Die Prozedur isTrivial(c) testet ob die Klausel c trivial ist.
-isTrivial := procedure(c) {
-    return { p : p in c | fct(p) == "^variable" } * 
-           { args(l)[1] : l in c | fct(l) == "^not" } != {};
-};
-
-// clauses ist eine Menge von Klauseln und literals ist eine Menge
-// von Literalen.  Der Aufruf DavisPutnam(clauses, literals) versucht 
-// eine Lösung der Menge
-//                        clauses
-// zu berechnen.  Wenn dies gelingt, wird eine Menge von Unit-Klauseln 
-// zurück gegeben, die keine komplementären Literale enthält.  Aus dieser 
-// Menge kann dann unmittelbar eine Belegung berechnet werden, die clauses
-// löst.
-//       Wenn die Menge clauses unlösbar ist, wird { {} } zurück gegeben.
-// Das Argument literals dient der Buchhaltung bei den rekursiven Aufrufen.
-// Hier werden alle die Literale aufgesammelt, mit denen die Menge clauses
-// schon reduziert wurde.  Beim ersten Aufruf ist diese Menge leer.
-davisPutnam := procedure(clauses, literals) {
-    clauses := saturate(clauses);
-    if ({} in clauses) {
-        return { {} };
-    }
-    if (forall (c in clauses | #c == 1)) {
-        return clauses;
-    }
-    l := selectLiteral(clauses, literals);
-    notL := negateLiteral(l);    
-    r := davisPutnam(clauses + { {l} }, literals + { l, notL });
-    if (r != { {} }) {
-        return r;
-    }     
-    return davisPutnam(clauses + { {notL} }, literals + { l, notL });
-};
-// Gegeben ist eine Menge S von Klauseln.  Der Aufruf saturate(S) berechnet alle
-// Klauseln, die mit Unit Schnitten aus S ableitbar sind.  Zusätzlich werden alle
-// Klauseln, die von Unit-Klauseln subsumiert werden, aus der Menge S entfernt.
-saturate := procedure(s) {
-    units := { k : k in s | #k == 1 };
-    used  := {};
-    while (units != {}) {
-        unit  := arb(units);
-        used  += { unit };
-        l     := arb(unit);
-        s     := reduce(s, l);
-        units := { k : k in s | #k == 1 } - used;        
-    }
-    return s;
-};
-// Die Prozedur reduce(s,l) führt alle Unit-Schnitte und alle Unit-Subsumptionen,
-// die mit der Unit-Klausel {l} möglich sind, durch.
-reduce := procedure(s, l) {
-    notL := negateLiteral(l);
-    return   { k - { notL } : k in s | notL in k } 
-           + { k : k in s | !(notL in k) && !(l in k) } 
-           + { {l} };
-};
-
-// Wir wählen ein beliebiges Literal aus einer beliebigen Klausel,
-// so dass weder dieses Literal noch die Negation benutzt wurden.
-selectLiteral := procedure(s, forbidden) {
-    return arb(+/ s - forbidden);
-};
-
-// Diese Prozedur berechnet das Komplement des Literals l.
-negateLiteral := procedure(l) {
-    match (l) {
-        case !p : return p;
-        case  p : return !p;
-    }
+    return normalize(parseTerm(f));
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-// Die folgende Aufgabe ist aus dem Buch "99 Logeleien von Zweistein"         //
-// aus dem Jahre 1974.                                                        //
+// Die folgende Aufgabe ist dem Buch "99 Logeleien von Zweistein", das im     //
+// Jahre 1974 erschienen ist, entnommen.                                      //
 //                                                                            //
 // Die Herren Amann, Bemann, Cemann und Demann heissen – nicht unbedingt      //
-// in derselben Reihenfolge – mit Vornamen Erich, Fritz, Gustav und Heiner.   //
-// Sie sind alle verheiratet. Ausserdem weiss man über sie und ihre Ehefrauen //
+// in derselben Reihenfolge – mit Vornamen Erich, Fritz, Gustav und Heinrich. //
+// Sie sind alle verheiratet. Ausserdem weiss man über sie und ihre Ehefrauen //
 // noch dies:                                                                 //
-//     1. Entweder ist Amanns Vorname Heiner, oder Bemanns Frau heisst        //
+//     1. Entweder ist Amanns Vorname Heinrich, oder Bemanns Frau heisst      //
 //        Inge.                                                               //
 //     2. Wenn Cemann mit Josefa verheiratet ist, dann – und nur in diesem    //
 //        Falle – heisst Klaras Mann nicht Fritz.                             //
@@ -168,21 +33,20 @@ negateLiteral := procedure(l) {
 //        Gustav.                                                             //
 // Wie heissen die Herren mit vollem Namen, wie ihre Ehefrauen mit Vornamen?  //
 //                                                                            //
-//                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
 // Aussagenlogische Variablen:
 //
-// 1. Name(vorname, nachname) wobei vorname  in { "Erich", "Fritz", "Gustav", "Heiner" },
-//                                  nachname in { "Amann", "Bemann", "Cemann", "Demann" }
-// Name(x, y) ist wahr, falls Herr y mit Vornamen x heisst.
+// 1. @Name(vorname, nachname) wobei vorname  in { "Erich", "Fritz", "Gustav", "Heiner" },
+//                                   nachname in { "Amann", "Bemann", "Cemann", "Demann" }
+//    @Name(x, y) ist wahr, falls Herr y mit Vornamen x heisst.
 //
-// 2. Ehe(mann, frau) wobei mann in { "Erich",  "Fritz", "Gustav", "Heiner" },
-//                          frau in { "Inge",  "Josefa", "Klara",  "Luise"  }
+// 2. @Ehe(mann, frau) wobei mann in { "Erich",  "Fritz", "Gustav", "Heiner" },
+//                           frau in { "Inge",  "Josefa", "Klara",  "Luise"  }
 
-// s is a set of propositional variables. The call atMostOne(s) creates
-// a set of clauses.  This set expresses the fact that at most one of
-// the variables in s is true.
+// S is a set of propositional variables. The expression atMostOne(S) creates
+// a set of clauses.  This set expresses the fact that at most one of the
+// variables in the set S is true.
 atMostOne := procedure(s) {
     return { { !p, !q } : p in s, q in s | p != q };
 };
@@ -194,60 +58,76 @@ atMostOne := procedure(s) {
 // the propositional variable expressing that x relates to y.
 exactlyOne := procedure(a, b, fct) {
     // your code here
-
-
-    
-    return clauses;
+    return "???";
 };
-
 // Return a formula that is true if y is the wife of z.  The formula is returned as
-// a string.
+// a string.  Note that here z is the family name of a man and not his first name.
 isWifeOf := procedure(y, z) {
     // your code here
 
     // it might be wise to put the resulting formula in parenthesis
     return "(" + result + ")";
 };
-
 // Compute the exclusive or of the formulas a and b, which are given as strings.
-// The resulting formula itself is converted into CNF.
+// The resulting fiormula itself is converted into CNF.
 exclusiveOr := procedure(a, b) {
     return parseKNF("your code here");
 };
-
-// Compute the clauses describing the problem.  Be sure to make use of the procedure
-// parseKNF and the procedures you have defined above.
+// solution:
+// Erich  Demann ist mit Luise  verheiratet,
+// Fritz  Bemann ist mit Inge   verheiratet,
+// Gustav Amann  ist mit Klara  verheiratet,
+// Heiner Cemann ist mit Josefa verheiratet.
 computeClauses := procedure() {
-    vornamen  := { 1,  2,  3,  4 }; // { "Erich", "Fritz" , "Gustav", "Heiner" };
+    vornamen  := { 1,  2,  3,  4 }; // { "Erich",  "Fritz", "Gustav", "Heiner" };
     nachnamen := { 5,  6,  7,  8 }; // { "Amann", "Bemann", "Cemann", "Demann" };
-    frauen    := { 9, 10, 11, 12 }; // { "Inge" , "Josefa", "Klara" , "Luise"  };
+    frauen    := { 9, 10, 11, 12 }; // { "Inge",  "Josefa", "Klara",  "Luise"  };
     // Jedem Vornamen ist genau ein Nachname zugeordnet.
-    clauses := "?";
+    clauses := exactlyOne(vornamen, nachnamen, "Name");
     // Jeder Mann ist mit genau einer Frau zugeordnet.
-    clauses += "?";
+    clauses += exactlyOne(vornamen, frauen, "Ehe");
     // Entweder ist Amanns Vorname Heiner, oder Bemanns Frau heisst Inge.
-    clauses += "?";
+    clauses += "your code here";
     // Wenn Cemann mit Josefa verheiratet ist, dann – und nur in diesem Falle –
     // heisst Klaras Mann nicht Fritz.
-    clauses += "?";
+    clauses += parseKNF(isWifeOf(10, 7) + " <==> !@Ehe(2, 11)");
     // Wenn Josefas Mann nicht Erich heisst, dann ist Inge mit Fritz verheiratet.
-    clauses += "?";
+    clauses += parseKNF("your code here");
     // Wenn Luises Mann Fritz heisst, dann ist der Vorname von Klaras Mann nicht Gustav.
-    clauses += "?";
+    clauses += parseKNF("your code here");
     // Wenn die Frau von Fritz Inge heisst, dann ist Erich nicht mit Josefa verheiratet.
-    clauses += "?";
+    clauses += parseKNF("your code here");
     // Wenn Fritz nicht mit Luise verheiratet ist, dann heisst Gustavs Frau Klara.
-    clauses += "?";
+    clauses += parseKNF("your code here");
     // Entweder ist Demann mit Luise verheiratet, oder Cemann heisst Gustav.
-    clauses += "?";
+    clauses += "your code here";
     return clauses;
 };
 solve := procedure() {
     clauses := computeClauses();
     result  := davisPutnam(clauses, {});
-    print(result);
+    displaySolution(result);
+};
+// Pretty print the solution.
+displaySolution := procedure(solution) {
+    Dictionary := { [1, "Erich"], [ 2, "Fritz" ], [ 3, "Gustav"], [ 4, "Heiner"],
+                    [5, "Amann"], [ 6, "Bemann"], [ 7, "Cemann"], [ 8, "Demann"], 
+                    [9, "Inge" ], [10, "Josefa"], [11, "Klara" ], [12, "Luise" ] };
+    Married := {};
+    Names   := {};
+    for (U in solution) {
+        match (arb(U)) {
+        case @Ehe(x, y):  xName := Dictionary[x];
+                          yName := Dictionary[y];
+                          Married[xName] := yName;
+        case @Name(x, y): xName := Dictionary[x];
+                          yName := Dictionary[y];
+                          Names[xName] := yName;
+        }
+    }
+    for ([x, y] in Married) {
+        print("$x$ $Names[x]$ ist mit $y$ verheiratet.");
+    }
 };
 solve();
-
-
 

@@ -13,10 +13,10 @@
 davisPutnam := procedure(Clauses, Literals) {
     Clauses := saturate(Clauses);
     if ({} in Clauses) {
-        return { {} };
+        return { {} };    // unsolvable
     }
     if (forall (C in Clauses | #C == 1)) {
-        return Clauses;
+        return Clauses;   // solution found
     }
     l := selectLiteral(Clauses, Literals);
     notL := negateLiteral(l);    
