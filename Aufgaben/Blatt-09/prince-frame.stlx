@@ -1,142 +1,20 @@
+
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
 // Überführung in konjunktive Normal-Form                             //
 //                                                                    //
 ////////////////////////////////////////////////////////////////////////
 
-// Diese Prozedur überführt die Formel f in konjunktive Normalform.
-normalize := procedure(f) {
-    n1 := elimGdw(f);
-    n2 := elimFolgt(n1);
-    n3 := nnf(n2);
-    n4 := knf(n3);
-    return simplify(n4);
-};
-// Eliminiert den Operator "<==>" aus der eingegebenen Formel f.
-elimGdw := procedure(f) {
-    match (f) {
-        case !g       : return !elimGdw(g);
-        case g && h   : return elimGdw(g) && elimGdw(h);
-        case g || h   : return elimGdw(g) || elimGdw(h);
-        case g => h   : return elimGdw(g) => elimGdw(h);
-        case g <==> h : return elimGdw((g => h) && (h => g));
-        default       : return f; 
-    }
-};
-// Eliminiert den Operator "=>" aus der eingegebenen Formel f.
-elimFolgt := procedure(f) {
-    match (f) {
-        case !g     : return !elimFolgt(g);
-        case g && h : return  elimFolgt(g) && elimFolgt(h);
-        case g || h : return  elimFolgt(g) || elimFolgt(h);
-        case g => h : return  elimFolgt(!g || h);
-        default     : return f; 
-    }
-};
-// Berechnet die Negations-Normalform der Formel f.
-nnf := procedure(f) {
-    match (f) {
-        case !g     : return neg(g);
-        case g && h : return nnf(g) && nnf(h);
-        case g || h : return nnf(g) || nnf(h);
-        default     : return f; 
-    }
-};
-// Diese Funktion berechnet die Negations-Normalform von (-f) und schiebt dabei
-// das Negationszeichen soweit wie möglich nach innen.
-neg := procedure(f) {
-    match (f) {
-        case !g     : return nnf(g);
-        case g && h : return neg(g) || neg(h);
-        case g || h : return neg(g) && neg(h);
-        default     : return !f; 
-    }
-};
-knf := procedure(f) {
-    match (f) {
-        case !g     : return { { !g } };
-        case g && h : return knf(g) + knf(h);
-        case g || h : return { k1 + k2 : k1 in knf(g), k2 in knf(h) };
-        default     : return { { f } }; // f is a variable
-    }
-};
-// Die Prozedur simplify(k) eliminiert triviale Klauseln aus der KNF k.
-simplify := procedure(k) {
-    return { c : c in k | !isTrivial(c) };
+loadLibrary("termUtilities");
+load("knf.stlx");
+load("davis-putnam.stlx");
+
+// Parse a propositional formula and transform the result into a conjunctive
+// normal form in set notation.
+parseKNF := procedure(f) {
+    return normalize(parseTerm(f));
 };
 
-// Die Prozedur isTrivial(c) testet ob die Klausel c trivial ist.
-isTrivial := procedure(c) {
-    positiveLiterals := { p : p in c | fct(p) == "^variable" };
-    negativeLiterals := { args(l)[1] : l in c | fct(l) == "^not" };
-    return positiveLiterals * negativeLiterals != {};
-};
-
-// clauses ist eine Menge von Klauseln und literals ist eine Menge
-// von Literalen.  Der Aufruf DavisPutnam(clauses, literals) versucht 
-// eine Lösung der Menge
-//                        clauses
-// zu berechnen.  Wenn dies gelingt, wird eine Menge von Unit-Klauseln 
-// zurück gegeben, die keine komplementären Literale enthält.  Aus dieser 
-// Menge kann dann unmittelbar eine Belegung berechnet werden, die clauses
-// löst.
-//       Wenn die Menge clauses unlösbar ist, wird { {} } zurück gegeben.
-// Das Argument literals dient der Buchhaltung bei den rekursiven Aufrufen.
-// Hier werden alle die Literale aufgesammelt, mit denen die Menge clauses
-// schon reduziert wurde.  Beim ersten Aufruf ist diese Menge leer.
-davisPutnam := procedure(clauses, literals) {
-    clauses := saturate(clauses);
-    if ({} in clauses) {
-        return { {} };
-    }
-    if (forall (c in clauses | #c == 1)) {
-        return clauses;
-    }
-    l := selectLiteral(clauses, literals);
-    notL := negateLiteral(l);    
-    r := davisPutnam(clauses + { {l} }, literals + { l, notL });
-    if (r != { {} }) {
-        return r;
-    }     
-    return davisPutnam(clauses + { {notL} }, literals + { l, notL });
-};
-// Gegeben ist eine Menge S von Klauseln.  Der Aufruf saturate(S) berechnet alle
-// Klauseln, die mit Unit Schnitten aus S ableitbar sind.  Zusätzlich werden alle
-// Klauseln, die von Unit-Klauseln subsumiert werden, aus der Menge S entfernt.
-saturate := procedure(s) {
-    units := { k : k in s | #k == 1 };
-    used  := {};
-    while (units != {}) {
-        unit  := arb(units);
-        used  += { unit };
-        l     := arb(unit);
-        s     := reduce(s, l);
-        units := { k : k in s | #k == 1 } - used;        
-    }
-    return s;
-};
-// Die Prozedur reduce(s,l) führt alle Unit-Schnitte und alle Unit-Subsumptionen,
-// die mit der Unit-Klausel {l} möglich sind, durch.
-reduce := procedure(s, l) {
-    notL := negateLiteral(l);
-    return   { k - { notL } : k in s | notL in k } 
-           + { k : k in s | !(notL in k) && !(l in k) } 
-           + { {l} };
-};
-
-// Wir wählen ein beliebiges Literal aus einer beliebigen Klausel,
-// so dass weder dieses Literal noch die Negation benutzt wurden.
-selectLiteral := procedure(s, forbidden) {
-    return arb(+/ s - forbidden);
-};
-
-// Diese Prozedur berechnet das Komplement des Literals l.
-negateLiteral := procedure(l) {
-    match (l) {
-        case !p : return p;
-        case  p : return !p;
-    }
-};
 
 // Aufgabe: Der König führt den Prinzen in einen Raum mit 9 Türen. An
 // jeder Tür hängt ein Schild. In einem Zimmer ist eine Prinzessin, jedes
@@ -197,12 +75,16 @@ computeClauses := procedure() {
 atMostOne := procedure(s) {
     return { { !p, !q } : p in s, q in s | p != q };
 };
-
+// Parse a propositional formula and transform the result into a conjunctive
+// normal form in set notation.
+parseKNF := procedure(f) {
+    return normalize(parse(f));
+};
 solve := procedure() {
     clauses := computeClauses();
     possible := {};  // Räume, in denen die Prinzessin sein könnte
     for (r in {1 .. 9}) {
-        if (davisPutnam(clauses + {{ P(r) }}, {}) != {{}}) {
+        if (davisPutnam(clauses + {{ @P(r) }}, {}) != {{}}) {
             possible += { r };
         }
     }
