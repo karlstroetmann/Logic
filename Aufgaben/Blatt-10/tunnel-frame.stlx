@@ -12,6 +12,7 @@ findFastestPath := procedure(start, goal, rltn) {
         paths    += { l : l in pathProduct(paths, rltn)
                         | timePath(l) < fastest
                     };
+        print(#paths);
         if (goal in { l[-1] : l in paths }) {
             fastest := min({ timePath(l) : l in paths | l[-1] == goal });
         }
@@ -23,7 +24,6 @@ findFastestPath := procedure(start, goal, rltn) {
     // return a fastest path otherwise
     return arb({ l : l in paths | l[-1] == goal && timePath(l) == fastest });
 };
-
 pathProduct := procedure(paths, rltn) {
     return { l+[z] : l in paths, [y,z] in rltn | l[-1] == y };
 };
@@ -36,7 +36,8 @@ pathProduct := procedure(paths, rltn) {
 ////////////////////////////////////////////////////////////////////////////////
 
 // Druckt den Pfad aus
-printPath := procedure(list, all, timeNeeded) {
+printPath := procedure(list, all) {
+    timeNeeded := { ["Alice", 1], ["Britney", 2], ["Charly", 4], ["Daniel", 5] };
     time := 0;  // elapsed time
     for (i in [1 .. #list]) {
         left  := list[i];
@@ -73,27 +74,23 @@ printPath := procedure(list, all, timeNeeded) {
 // 3. Charly  is slower and needs 4 minutes.
 // 4. Daniel  is slowest and takes 5 minutes to cross the tunnel.
 // Their torch will only last 12 minutes.  Can they make it?
-all := { "Alice", "Britney", "Charly", "Daniel", "Torch" };
-// timeNeeded ist eine functional relation storing the time that
-// differen persons need to cross the tunnel.
-timeNeeded := { ["Alice", 1], ["Britney", 2], ["Charly", 4], ["Daniel", 5] };
-// Given a set s of those people walking through the tunnel, this procedure
-// computes the time that is needed by the group s to cross the tunnel.
-// Note that the set s wil also contain the torch.
-// This function is declared as a closure so that it can make use of the
-// variable timeNeeded, which is defined outside of this function.
-timeSet := closure(s) {
-
+All := { "Alice", "Britney", "Charly", "Daniel", "Torch" };
+// Given the set S of those people walking through the tunnel, this procedure
+// computes the time that is needed by the group S to cross the tunnel.
+// Note that the set S will also contain the torch.
+timeSet := procedure(S) {
+    // timeNeeded ist eine functional relation storing the time that
+    // differen persons need to cross the tunnel.
+    timeNeeded := { ["Alice", 1], ["Britney", 2], ["Charly", 4], ["Daniel", 5] };
+    // Your code here.
 };
 // This function computes the time needed for the transition from
 // lhsBefore to lhsAfter.  Here, lhsBefore is the set of those people
 // that are at the tunnel entry before the transition, while
 // lhsAfter is the set of those people that are at the tunnel entry
 // after the crossing.
-// This procedure is defined as a closure so it can make use of
-// the variable all defined above.
-timeTransition := closure(stateBefore, stateAfter) {
-
+timeTransition := procedure(stateBefore, stateAfter) {
+    All := { "Alice", "Britney", "Charly", "Daniel", "Torch" };
 
 
 
@@ -101,8 +98,8 @@ timeTransition := closure(stateBefore, stateAfter) {
 
     
 };
-// This procedure computes the time needed for the path l given as argument.
-timePath := procedure(l) {
+// This procedure computes the time needed for the path L given as argument.
+timePath := procedure(L) {
 
 
 
@@ -112,12 +109,12 @@ timePath := procedure(l) {
 // states is the set of all states.  A single state is represented by the
 // subset of those people at the entrance of the tunnel.  Note that this set
 // might also contain the torch.
-states := "?";
-// The relation r1 describes the crossings from the entry of the tunnel to the exit.
-r1 := "?";
-// The relation r2 describes the crossings from the exit of the tunnel to the entry.
-r2 := "?"
-r  := r1 + r2;
+States := "?";
+// The relation R1 describes the crossings from the entry of the tunnel to the exit.
+R1 := "?";
+// The relation R2 describes the crossings from the exit of the tunnel to the entry.
+R2 := "?"
+R  := R1 + R2;
 // At the start, everybody is at the entrance of the tunnel,
 start := "?";
 // In the end, everybody should be at the exit.
@@ -126,7 +123,8 @@ goal  := "?";
 path := findFastestPath(start, goal, r);
 print("Total time needed: " + timePath(path));
 // Print the path step by step
-printPath(path, all, timeNeeded);
+printPath(path, all);
+print("Time needed to compute solution: $finishTime - startTime$");
 
 
 

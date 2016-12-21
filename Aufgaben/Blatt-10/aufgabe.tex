@@ -51,35 +51,31 @@ Verwenden Sie zur Lösung des Problems die Vorlage, die Sie im Netz unter der Adr
 \\[0.2cm]
 finden.  Gehen Sie bei der Lösung des Problems in folgenden Schritten vor:
 \begin{enumerate}
-\item Implementieren Sie in Zeile 85 eine Funktion \texttt{timeSet}, die für eine gegebene 
-      Menge $s$ von Personen berechnet, wie lange es für die Gruppe $s$ dauern würde, den Tunnel zu
-      durchqueren.  Beachten Sie, dass die Menge $s$ auch das Element
+\item Implementieren Sie eine Funktion \texttt{timeSet}, die für eine gegebene 
+      Menge $S$ von Personen berechnet, wie lange es für die Gruppe $S$ dauern würde, den Tunnel zu
+      durchqueren.  Beachten Sie, dass die Menge $S$ auch das Element
       \texttt{\symbol{34}Torch\symbol{34}} enthält.
-
-      \textbf{Hinweis}:  Die Funktion \texttt{timeSet} ist als \texttt{closure} deklariert, damit
-      Sie bei der Implementierung auf die funktionale Relation \texttt{timeNeeded} zurück greifen
-      können.  Diese Relation ist in Zeile 79 bereits definiert.
-\item Implementieren Sie in Zeile 95 eine Funktion
+\item Implementieren Sie eine Funktion
       \\[0.2cm]
       \hspace*{1.3cm}
       $\texttt{timeTransition}(\textsl{stateBefore}, \textsl{stateBefore})$.
       \\[0.2cm]
       Hier bezeichnet \textsl{stateBefore} den Zustand am Eingang des Tunnels bevor eine Gruppe den
       Tunnel in eine der beiden Richtungen durchquert, während \textsl{stateAfter} den Zustand nach
-      der Durchquerung beschreibt.  Zustände werden dabei  durch Teilmengen der in Zeile 76
-      definierten Menge \texttt{all} kodiert.
-\item Implementieren Sie in Zeile 105 eine Funktion \texttt{timePath}, so dass der Aufruf
+      der Durchquerung beschreibt.  Zustände werden dabei durch Teilmengen der 
+      Menge \texttt{All} kodiert.
+\item Implementieren Sie eine Funktion \texttt{timePath}, so dass der Aufruf
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{timePath}(l)$
+      $\texttt{timePath}(L)$
       \\[0.2cm]
-      für eine Liste $l$ von aufeinander folgenden Zuständen die Zeit berechnet, die insgesamt für alle
+      für eine Liste $L$ von aufeinander folgenden Zuständen die Zeit berechnet, die insgesamt für alle
       Transitionen benötigt wird.  
 
-      \textbf{Beispiel}: Falls die Liste $l$ die Form
+      \textbf{Beispiel}: Falls die Liste $L$ die Form
       \\[0.2cm]
       \hspace*{1.3cm}
-      $l = [s_1, s_2, s_3, s_4]$
+      $L = [s_1, s_2, s_3, s_4]$
       \\[0.2cm]
       hätte, dann könnte $\texttt{timePath}(l)$ durch den Ausdruck
       \\[0.2cm]
@@ -87,21 +83,23 @@ finden.  Gehen Sie bei der Lösung des Problems in folgenden Schritten vor:
       $\texttt{timeTransition}(s_1, s_2) + \texttt{timeTransition}(s_2, s_3) +\texttt{timeTransition}(s_3, s_4)$
       \\[0.2cm]
       berechnet werden.
-\item Definieren Sie in Zeile 115 die Menge aller Zustände.  Ein einzelner Zustand ist dabei eine
-      Teilmenge der in Zeile 76 definierten Menge \texttt{all}.
-\item Definierten Sie in Zeile 117 die Relation \texttt{r1}, mit der die Zustandsübergänge
+\item Definieren Sie die Menge aller Zustände.  Ein einzelner Zustand ist dabei eine
+      Teilmenge der Menge \texttt{All}.
+\item Definierten Sie die Relation \texttt{R1}, mit der die Zustandsübergänge
       beschrieben werden, bei denen eine Gruppe von Personen den Tunnel vom Eingang zum Ausgang
       durchquert. 
-\item Definierten Sie in Zeile 119 die Relation \texttt{r2}, mit der die Zustandsübergänge
+\item Definierten Sie die Relation \texttt{R2}, mit der die Zustandsübergänge
       beschrieben werden, bei denen eine Gruppe von Personen im  Tunnel vom Ausgang zum Eingang
       zurück läuft. 
-\item Definieren Sie den Startzustand in Zeile 122.
-\item Definieren Sie den Zustand, der am Ende erreicht werden soll, in Zeile 124.
-\item Die Lösung wird nun in Zeile 126 berechnet und in Zeile 129 ausgegeben.  Bei der optimalen
+\item Definieren Sie den Startzustand.
+\item Definieren Sie den Zustand, der am Ende erreicht werden soll.
+\item Die Lösung wird nun berechnet und ausgegeben.  Bei der optimalen
       Lösung werden insgesamt 12 Minuten zur Durchquerung des Tunnels benötigt.
-
-      Auf meinem Rechner dauert die Berechnung der Lösung etwas weniger als 7 Sekunden.
 \end{enumerate}
+Auf meinem Rechner dauert die Berechnung der Lösung knapp 8 Sekunden.  Damit es nicht langweilig
+wird, gebe ich in jedem Schritt die Anzahl aller m\"oglichen Pfade aus.  Bei der Berechnung der Pfade
+habe ich die Funktion \texttt{findFastestPath} so implementiert, dass der \underline{schnellste}
+Pfad gefunden wird. 
 \end{document}
 
 %%% Local Variables: 
