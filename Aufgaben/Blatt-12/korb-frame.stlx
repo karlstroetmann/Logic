@@ -1,8 +1,9 @@
+// load("graph-2-dot.stlx");
 // Es war einmal ein König, der wog 195 Pfund, und seine Tochter, die Prinzessin, wog 105 Pfund. Der
 // Diener der Prinzessin war noch ein Kind und wog nur 90 Pfund. Dies alles wird so genau berichtet,
 // weil es eine große Rolle spielte, als die drei eines Tages fliehen mußten. Sie gerieten auf der
 // Flucht in einen Wald und versteckten sich dort in einem Turm. Unglücklicherweise brach beim
-// Besteigen des Turmes die Treppe unter dem // schwergewichtigen König zusammen, so daß die drei
+// Besteigen des Turmes die Treppe unter dem schwergewichtigen König zusammen, so daß die drei
 // oben festsaßen. Als der König aber zufällig aus dem Turmfenster blickte, sah er, daß außen an der
 // Mauer ein Mechanismus angebracht war, der den Heuaufzügen glich, welche die Bauern an ihren Scheunen
 // haben. In der Tat handelte es sich um einen doppelten Korbaufzug. Hoch oben am Dach des Turmes war
@@ -22,14 +23,14 @@
 //////////////////////////////////////////////////////////////////////////
 
 // Check wether there is a path from x to y in R and compute it.
-findPath := procedure(x, y, r) {
+findPath := procedure(x, y, R) {
     p := { [x] };
     while (true) {
         oldP  := p;
-        p     := p + pathProduct(p, r);
-        found := { l : l in p | l[#l] == y };
-        if (found != {}) {
-            return arb(found);
+        p     := p + pathProduct(p, R);
+        Found := { l : l in p | l[#l] == y };
+        if (Found != {}) {
+            return arb(Found);
         }
         if (p == oldP) {
             return;
@@ -59,47 +60,53 @@ add := procedure(p, q) {
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
-all    := { "Koenig", "Tochter", "Diener", "Kugel" };
-weight := { ["Koenig", 195], ["Tochter", 105], ["Diener", 90], ["Kugel", 75] };
+All    := { "Koenig", "Tochter", "Diener", "Kugel" };
+Weight := { ["Koenig", 195], ["Tochter", 105], ["Diener", 90], ["Kugel", 75] };
 
-weightSet := closure(m) {
-    return 0 +/ { weight[x] : x in m };
+// Given a set of objects M, this function computes the weight of the set M.
+weightSet := closure(M) {
+    return "your code here."
 };
-// Ein Zustand ist die Menge der Personen, die oben auf dem Turm sind
-// und p bezeichnet die Menge aller Zustände.
-p := "???";  
-// r ist eine Relation auf der Menge p und beschreibt die Zustandsübergänge.
-r := "???";
+// Ein Zustand ist die Menge der Personen, die oben auf dem Turm sind.
+P := "???";  
+// r beschreibt Zustandsübergänge.
+R := "???";
+
 // Am Anfang sind alle oben auf dem Turm.
 start := "???";
 // Am Ende ist keiner mehr oben auf dem Turm.
-goal  := "???";
+goal  := "???;
+
+// Die grafische Darstellung der Relation. Funktioniert nur, wenn Sie dot installiert haben!
+// graph := {[[M1, All - M1], [M2, All - M2]] : [M1, M2] in R};
+// graph2Dot(graph, [start, {}], [goal, All], "korb");
+
 // Berechne einen Pfad
-path  := findPath(start, goal, r);
+Path  := findPath(start, goal, R);
 
 // Print the path.
-printPath := procedure(path, all) {
-    for (i in [1 .. #path]) {
-        oben  := path[i];
-        unten := all - oben;
-        if (#oben == 0 || #unten == 0) {
-            print(oben, 63 * " ", unten);
+printPath := procedure(Path, All) {
+    for (i in [1 .. #Path]) {
+        Oben  := Path[i];
+        Unten := All - Oben;
+        if (#Oben == 0 || #Unten == 0) {
+            print(Oben, 63 * " ", Unten);
         } else {
-            print(oben, 65 * " ", unten);
+            print(Oben, 65 * " ", Unten);
         }
-        if (i == #path) { 
+        if (i == #Path) { 
             break;
         }
-        down := path[i] - path[i+1];
-        up   := (all - path[i]) - (all - path[i+1]);
+        Down := Path[i] - Path[i+1];
+        Up   := (All - Path[i]) - (All - Path[i+1]);
         print(" " * 40, "vvvvv", " " * 15, "^^^^^^");
-        if (up != {}) {
-            print(" " * 38,  down, " " * 10, up);
+        if (Up != {}) {
+            print(" " * 38,  Down, " " * 10, Up);
         } else {
-            print(" " * 38,  down, " " * 15, up);
+            print(" " * 38,  Down, " " * 15, Up);
         }
         print(" " * 40, "vvvvv", " " * 15, "^^^^^^");
     }
 };
-printPath(path, all);
+printPath(Path, All);
 
