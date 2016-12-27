@@ -107,6 +107,19 @@ solve := procedure() {
     clauses := computeClauses();
     result  := davisPutnam(clauses, {});
     displaySolution(result);
+    checkUniqueness(clauses, result);
+};
+// Check, whether the set of unit clauses result is the only solution for the given
+// set of clauses.
+checkUniqueness := procedure(clauses, result) {
+    negatedSolution := { negateLiteral(arb(u)) : u in result };
+    secondSolution := davisPutnam(clauses + { negatedSolution }, {});
+    if (secondSolution != {{}}) {
+        print("The solution is not unique! The second solution is as follows:");
+        displaySolution(secondSolution);
+    } else {
+        print("The solution is unique!");
+    }
 };
 // Pretty print the solution.
 displaySolution := procedure(solution) {
