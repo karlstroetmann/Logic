@@ -31,7 +31,7 @@ evalAtomic := procedure(a, s, i) {
 // This procedure evaluates the term t in the structure s
 // using the variable assignment i.
 evalTerm := procedure(t, s, i) {
-    if (fct(t) == "^variable") {
+    if (fct(t) == "@@@variable") {
         varName := args(t)[1];
         return i[varName];
     }
@@ -77,14 +77,14 @@ product := { [ [ a, a ], a ],  [ [ a, b ], b ],  [ [ b, a ], b ],  [ [ b, b ], a
 equals := { [ x, y ] : x in u, y in u | x == y };
 // The structure consists of the universe and the interpretation of
 // the function and predicate symbols.
-j := { [ "E", a ], [ "^product", product ], [ "^equals", equals ] };
+j := { [ "E", a ], [ "@@@product", product ], [ "@@@equals", equals ] };
 s := [ u, j ];
 // i is a variable assignment.
 i := { [ "x", a ], [ "y", b ], [ "z", a ] }; 
 
 // The following formulas are the axioms of commutative group theory.
-g1 := parse("forall (x in u | x * E() == x)");
-g2 := parse("forall (x in u | exists (y in u | x * y == E()))");
+g1 := parse("forall (x in u | x * @E() == x)");
+g2 := parse("forall (x in u | exists (y in u | x * y == @E()))");
 g3 := parse("forall (x in u | forall (y in u | forall (z in u | (x*y)*z == x*(y*z) )))");
 g4 := parse("forall (x in u | forall (y in u | x * y == y * x))");
 gt := { g1, g2, g3, g4 };
@@ -115,7 +115,7 @@ product := {
 equals := { [ x, y ] : x in u, y in u | x == y };
 // The structure consists of the universe and the interpretation of
 // the function and predicate symbols.
-s := [ u, { [ "E", a0 ], [ "^product", product ], [ "^equals", equals ] } ];
+s := [ u, { [ "E", a0 ], [ "@@@product", product ], [ "@@@equals", equals ] } ];
 // I is a variable assignment.
 i := { [ "x", a0 ], [ "y", a1 ], [ "z", a2 ] }; 
 
