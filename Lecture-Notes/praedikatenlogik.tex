@@ -308,38 +308,25 @@ Funktions- und Pr\"{a}dikats-Zeichen der Signatur $\Sigma$ zu interpretieren sin
               $f^\mathcal{J}\colon \mathcal{U} \times \cdots \times \mathcal{U} \rightarrow \mathcal{U}$ \\[0.2cm]
               zugeordnet, die $m$-Tupel des Universums $\mathcal{U}$ in das Universum $\mathcal{U}$ abbildet.
         \item Jedem Pr\"{a}dikats-Zeichen $p \el \mathcal{P}$ mit $\textsl{arity}(p) = n$ wird
-              eine $n$-stellige Funktion \\[0.2cm]
+              eine Teilmenge \\[0.2cm]
               \hspace*{1.3cm} 
-              $p^\mathcal{J}\colon \mathcal{U} \times \cdots \times \mathcal{U} \rightarrow \mathbb{B}$ \\[0.2cm]
-              zugeordnet, die jedem $n$-Tupel des Universums $\mathcal{U}$ einen Wahrheitswert aus
-              der  Menge $\mathbb{B} =  \{\mathtt{true}, \mathtt{false}\}$ zuordnet.
+              $p^\mathcal{J} \subseteq \mathcal{U} \times \cdots \times \mathcal{U}$ \\[0.2cm]
+              zugeordnet.  Die Idee ist, dass eine atomare Formel der Form $p(t_1, \cdots, t_n)$
+              genau dann als wahr interpretiert wird, wenn die Interpretation des Tupels
+              $\langle t_1, \cdots, t_n \rangle$ in der Menge $p^\mathcal{J}$ liegt.
         \item Ist das Zeichen ``$=$'' ein Element der Menge der Pr\"{a}dikats-Zeichen $\mathcal{P}$, so gilt
               \\[0.2cm]
               \hspace*{1.3cm}  
-              $=^\mathcal{J}(u,v) = \mathtt{true}$ \quad g.d.w. \quad $u = v$, \\[0.2cm]
-              das Gleichheits-Zeichen wird also durch die identische Relation
-              $\id_\mathcal{U}$ interpretiert. \eox
+              $=^\mathcal{J} \;=\; \bigl\{ \langle u, u \rangle \mid u \in \mathcal{U} \bigr\}$.
+              \\[0.2cm]
+              Eine Formel der Art $s = t$ wird als genau dann als wahr interpretiert, 
+              wenn die Interpretation des Terms $s$ den selben Wert ergibt wie die Interpretation des Terms $t$.
+              \eox
         \end{enumerate}
     \end{enumerate}
 \end{Definition}
 
 \example
-Wir geben ein Beispiel f\"{u}r eine $\Sigma_{\mathrm{arith}}$-Struktur
-$\struct_{\mathrm{arith}} = \langle \mathcal{U}_{\mathrm{arith}}, \mathcal{J}_{\mathrm{arith}} \rangle$,
-indem wir definieren:
-\begin{enumerate}
-\item $\mathcal{U}_{\mathrm{arith}} = \mathbb{N}$.
-\item Die Abbildung $\mathcal{J}_{\mathrm{arith}}$ legen wir dadurch fest, dass die
-      Funktions-Zeichen $0$, $1$, $\mathtt{+}$, $\mathtt{-}$, $*$
-      durch die entsprechend benannten Funktionen auf der Menge $\mathbb{N}$ 
-      der nat\"{u}rlichen Zahlen zu interpretieren sind.
-
-      Ebenso sollen die Pr\"{a}dikats-Zeichen $=$ und $\leq$ durch die Gleichheits-Relation
-      und die Kleiner-Gleich-Relation interpretiert werden. \eox
-\end{enumerate}
-
-\example
- Wir geben ein weiteres  Beispiel.
 Die Signatur  $\Sigma_G$ der Gruppen-Theorie sei definiert als \\[0.2cm]
 \hspace*{1.3cm} $\Sigma_G = \langle \mathcal{V}, \mathcal{F}, \mathcal{P},\textsl{arity}\rangle$ 
 \quad mit
@@ -354,16 +341,12 @@ b\},\mathcal{J}\rangle$ definieren,
 indem wir die Interpretation $\mathcal{J}$ 
 wie folgt festlegen:
 \begin{enumerate}
-\item $1^\mathcal{J} := a$ 
+\item $1^\mathcal{J} := a$,
 \item $*^\mathcal{J} := \Bigl\{ \bigl\langle\pair(a,a), a\bigr\rangle,
                                    \bigl\langle\pair(a,b), b\bigr\rangle,
                                    \bigl\langle\pair(b,a), b\bigr\rangle,
-                                   \bigl\langle\pair(b,b), a\bigr\rangle \Bigr\}$
-\item $=^\mathcal{J}$ ist die Identit\"{a}t: \\[0.2cm]
-       $=^\mathcal{J} \;:=\; \Bigl\{ \bigl\langle\pair(a,a), \mathtt{true}\bigr\rangle,
-                                 \bigl\langle\pair(a,b), \mathtt{false}\bigr\rangle,
-                                 \bigl\langle\pair(b,a), \mathtt{false}\bigr\rangle,
-                                 \bigl\langle\pair(b,b), \mathtt{true}\bigr\rangle \Bigr\}$
+                                   \bigl\langle\pair(b,b), a\bigr\rangle \Bigr\}$,
+\item $=^\mathcal{J} \;:=\; \bigl\{ \pair(a,a), \pair(b,b) \bigr\}$.
                                  
       Beachten Sie, dass wir bei der Interpretation des Gleichheits-Zeichens 
       keinen Spielraum haben! \eox
@@ -393,6 +376,7 @@ nun.
     \end{array}
     \right.$ \eox
 \end{Definition}
+\pagebreak
 
 \begin{Definition}[Semantik der Terme]
     Ist $\struct = \pair(\mathcal{U},\mathcal{J})$ eine $\Sigma$-Struktur und $\mathcal{I}$ eine $\struct$-Variablen-Belegung,
@@ -409,32 +393,33 @@ nun.
 \end{Definition}
 
 \example
-Mit der oben definieren $\Sigma_\mathrm{arith}$-Struktur
-$\struct_{\mathrm{arith}}$ definieren wir eine
-$\struct_{\mathrm{arith}}$-Variablen-Belegung $\mathcal{I}$ durch
+Mit der oben definieren $\Sigma_G$-Struktur
+$\mathcal{Z}$ definieren wir eine $\mathcal{Z}$-Variablen-Belegung $\mathcal{I}$ durch
 \\[0.2cm]
-\hspace*{1.3cm} $\mathcal{I} := \bigl\{ \pair(x,0), \pair(y,7), \pair(z,42)\bigr\}$,
+\hspace*{1.3cm} $\mathcal{I} := \bigl\{ \pair(x,a), \pair(y,b), \pair(z,a)\bigr\}$,
 \\[0.2cm]
 es gilt also
 \\[0.2cm]
-\hspace*{1.3cm} $\mathcal{I}(\mathtt{x}) := 0$, \quad $\mathcal{I}(\mathtt{y}) := 7$,
-\quad und \quad $\mathcal{I}(\mathtt{z}) := 42$.
+\hspace*{1.3cm} $\mathcal{I}(\mathtt{x}) := a$, \quad $\mathcal{I}(\mathtt{y}) := b$, \quad und \quad $\mathcal{I}(\mathtt{z}) := a$.
 \\[0.2cm]
-Dann gilt offenbar \\[0.2cm]
-\hspace*{1.3cm}  $\struct\bigl(\mathcal{I}, \mathtt{x} + \mathtt{y} \bigr) = 7$.
+Dann gilt  \\[0.2cm]
+\hspace*{1.3cm}  $\mathcal{Z}\bigl(\mathcal{I}, \mathtt{x} * \mathtt{y} \bigr) = b$. \eox
 
 \begin{Definition}[Semantik der atomaren $\Sigma$-Formeln]
     Ist $\struct$ eine $\Sigma$-Struktur und $\mathcal{I}$ eine $\struct$-Variablen-Belegung,
     so definieren wir f\"{u}r jede atomare $\Sigma$-Formel 
     $p(t_1, \cdots, t_n)$ den Wert $\struct\bigl(\mathcal{I}, p(t_1, \cdots, t_n) \bigr)$ wie folgt: \\[0.2cm]
-    \hspace*{1.3cm} $\struct\bigl(\mathcal{I}, p(t_1,\cdots,t_n)\bigr) := 
-                     p^\mathcal{J}\bigl( \struct(\mathcal{I}, t_1), \cdots, \struct(\mathcal{I}, t_n) \bigr)$.
-                     \eox
+    \hspace*{1.3cm}
+    $\struct\bigl(\mathcal{I}, p(t_1,\cdots,t_n)\bigr) := 
+       \Bigl(\bigl\langle \struct(\mathcal{I}, t_1), \cdots, \struct(\mathcal{I}, t_n) \bigr\rangle \in p^\mathcal{J}\Bigr)$.
+    \eox
 \end{Definition}
 
 \example
-In Fortf\"{u}hrung des obigen Beispiels gilt: \\[0.2cm]
-\hspace*{1.3cm}  $\struct\bigl(\mathcal{I},z \leq x + y \bigr) = \mathtt{false}$.
+In Fortf\"{u}hrung des obigen Beispiels gilt: 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\mathcal{Z}(\mathcal{I},x * y = y * x) = \mathtt{true}$.
 \eox
 
 Um die Semantik beliebiger $\Sigma$-Formeln definieren zu k\"{o}nnen, nehmen wir an, dass wir,
@@ -477,7 +462,7 @@ Die Semantik dieser Funktionen hatten wir durch die Tabelle in Abbildung
 
 \example
 In Fortf\"{u}hrung des obigen Beispiels gilt \\[0.2cm]
-\hspace*{1.3cm}  $\struct\bigl(\mathcal{I}, \forall \mathtt{x}: x *  0 < 1 \bigr) = \mathtt{true}$.
+\hspace*{1.3cm}  $\struct\bigl(\mathcal{I}, \forall \mathtt{x}: 1 * x = x \bigr) = \mathtt{true}$.
 \eox
 
 \begin{Definition}[Allgemeing\"{u}ltig]
@@ -547,8 +532,9 @@ wir jeden Beweis irgendwann versuchen.  Wenn es aber keinen Beweis gibt, so k\"{
 nie sicher sagen, denn zu jedem festen Zeitpunkt haben wir ja immer nur einen Teil der in
 Frage kommenden Schl\"{u}sse ausprobiert.
 
-Die Situation ist \"{a}hnlich der, wie bei der \"{u}berpr\"{u}fung bestimmter zahlentheoretischer
-Fragen.  Wir betrachten dazu ein konkretes Beispiel: Eine Zahl $n$ hei\ss{}t {\emph{\color{blue}perfekt}},
+Die Situation ist \"{a}hnlich der, wie bei der \"{U}berpr\"{u}fung bestimmter zahlentheoretischer
+Fragen.  Wir betrachten dazu ein konkretes Beispiel: Eine Zahl $n$ hei\ss{}t 
+ist eine \href{https://de.wikipedia.org/wiki/Vollkommene_Zahl}{perfekte Zahl},
 wenn die Summe aller echten Teiler von $n$ wieder die Zahl $n$ ergibt.  Beispielsweise ist
 die Zahl $6$ perfekt, denn die Menge der echten Teiler von $6$ ist $\{1,2,3\}$ und es gilt
 \\[0.2cm]
@@ -597,15 +583,6 @@ wir werden nie mit Sicherheit wissen, dass es keine ungeraden perfekten Zahlen g
   \label{fig:find-perfect.stlx}
 \end{figure} 
 
-
-In den n\"{a}chsten Abschnitten gehen wir daran, den oben erw\"{a}hnten Kalk\"{u}l $\vdash$ zu definieren.
-Es zeigt sich, dass die Arbeit wesentlich einfacher wird, wenn wir uns auf bestimmte
-Formeln, sogenannte {\emph{\color{blue}Klauseln}}, beschr\"{a}nken.  Wir zeigen daher zun\"{a}chst im n\"{a}chsten
-Abschnitt, dass jede Formel-Menge $M$ so in eine Menge von Klauseln $K$ transformiert
-werden kann, dass $M$ genau dann erf\"{u}llbar ist, wenn $K$ erf\"{u}llbar ist.  Daher ist die
-Beschr\"{a}nkung auf Klauseln keine echte Einschr\"{a}nkung.
-
-
 \subsection{Implementierung pr\"{a}dikatenlogischer Strukturen in \textsc{SetlX}}
 Der im letzten Abschnitt pr\"{a}sentierte Begriff einer pr\"{a}dikatenlogischen Struktur erscheint zun\"{a}chst
 sehr abstrakt.  Wir wollen in diesem Abschnitt zeigen, dass sich dieser Begriff in einfacher Weise in
@@ -618,7 +595,7 @@ Gruppen-Theorie war im letzten Abschnitt durch die Definition
 gegeben worden.  Hierbei ist also ``$1$'' ein 0-stelliges Funktions-Zeichen, ``$*$'' ist
 eine 2-stelliges Funktions-Zeichen und ``$=$'' ist ein 2-stelliges Pr\"{a}dikats-Zeichen.
 Wir hatten bereits eine Struktur $\mathcal{S}$ angegeben, deren Universum aus der Menge
-$\{ a, b \}$ besteht.  In \textsl{SetlX} k\"{o}nnen wir diese Struktur durch den in Abbildung
+$\{ a, b \}$ besteht.  In \textsc{SetlX} k\"{o}nnen wir diese Struktur durch den in Abbildung
 \ref{fig:gruppen.stl} gezeigten Code implementieren.
 
 \begin{figure}[!ht]
@@ -631,14 +608,14 @@ $\{ a, b \}$ besteht.  In \textsl{SetlX} k\"{o}nnen wir diese Struktur durch den
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-   a := "a";
-   b := "b"; 
-   u := { a, b };  // the universe
-   product := { [ [ a, a ], a ],  [ [ a, b ], b ],  [ [ b, a ], b ],  [ [ b, b ], a ] };
-   equals  := { [ x, y ] : x in u, y in u | x == y };
-   j := { [ "E", a ], [ "^product", product ], [ "^equals", equals ] };
-   s := [ u, j ];
-   i := { [ "x", a ], [ "y", b ], [ "z", a ] }; 
+    a := "a";
+    b := "b"; 
+    U := { a, b };  // the universe
+    product := { [ [ a, a ], a ],  [ [ a, b ], b ],  [ [ b, a ], b ],  [ [ b, b ], a ] };
+    equals  := { [ x, x ] : x in U };
+    J := { [ "E", a ], [ "@@@product", product ], [ "@@@equals", equals ] };
+    S := [ U, J ];
+    I := { [ "x", a ], [ "y", b ], [ "z", a ] }; 
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{Implementierung einer Struktur zur Gruppen-Theorie}
@@ -650,34 +627,34 @@ $\{ a, b \}$ besteht.  In \textsl{SetlX} k\"{o}nnen wir diese Struktur durch den
       als die Strings \texttt{\symbol{34}a\symbol{34}} und \texttt{\symbol{34}b\symbol{34}}
       definiert.  Dadurch k\"{o}nnen wir weiter unten die Interpretation des
       Funktions-Zeichens ``$*$'' k\"{u}rzer angeben.
-\item Das in Zeile 3 definierte Universum $u$ besteht aus den beiden Strings \quoted{a} und \quoted{b}.
+\item Das in Zeile 3 definierte Universum $U$ besteht aus den beiden Strings \quoted{a} und \quoted{b}.
 \item In Zeile 4 definieren wir eine Funktion \texttt{product} als bin\"{a}re Relation.  F\"{u}r
       die so definierte Funktion gilt
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{product}(\pair(\quoted{a},\quoted{a})) = \quoted{a}$, \quad
-      $\mathtt{product}(\pair(\quoted{a},\quoted{b})) = \quoted{b}$, 
+      $\mathtt{product}(\quoted{a},\quoted{a}) = \quoted{a}$, \quad
+      $\mathtt{product}(\quoted{a},\quoted{b}) = \quoted{b}$, 
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{product}(\pair(\quoted{b},\quoted{a})) = \quoted{b}$, \quad
-      $\mathtt{product}(\pair(\quoted{b},\quoted{b})) = \quoted{a}$.
+      $\mathtt{product}(\quoted{b},\quoted{a}) = \quoted{b}$, \quad
+      $\mathtt{product}(\quoted{b},\quoted{b}) = \quoted{a}$.
       \\[0.2cm]  
       Diese Funktion verwenden wir sp\"{a}ter als die Interpretation $*^\mathcal{J}$ des Funktions-Zeichens ``$*$''.
 \item Ebenso haben wir in Zeile 5 die Interpretation $=^\mathcal{J}$ des
-      Pr\"{a}dikats-Zeichens ``$=$'' als die bin\"{a}re Relation \texttt{equals} dargestellt. 
-\item In Zeile 6 fassen wir die einzelnen Interpretationen zu der Relation $j$
+      Pr\"{a}dikats-Zeichens ``$=$'' als Menge  \texttt{equals} dargestellt. 
+\item In Zeile 6 fassen wir die einzelnen Interpretationen zu der Relation $J$
       zusammen, so dass f\"{u}r ein Funktions-Zeichen $f$ die Interpretation $f^\mathcal{J}$ durch
-      den Wert $j(f)$ gegeben ist. 
+      den Wert $J(f)$ gegeben ist. 
 
       Da wir sp\"{a}ter den in \textsc{SetlX} eingebauten Parser verwenden werden, stellen wir
       den Operator ``\texttt{*}'' durch das Funktions-Zeichen
-      ``\texttt{\symbol{94}product}'' dar und das Pr\"{a}dikats-Zeichen ``\texttt{=}'' wird
-      durch das Zeichen ``\texttt{\symbol{94}equals}'' dargestellt, denn dies sind die
+      ``\texttt{@@@product}'' dar und das Pr\"{a}dikats-Zeichen ``\texttt{=}'' wird
+      durch das Zeichen ``\texttt{@@@equals}'' dargestellt, denn dies sind die
       Namen, die von \textsc{SetlX} intern benutzt werden.  Das neutrale Element ``$1$''
       stellen wir durch das Funktions-Zeichen ``\texttt{E}'' dar, so dass sp\"{a}ter der
       Ausdruck ``$1$'' durch den Term ``\texttt{E()}'' repr\"{a}sentiert wird.
-\item Die Interpretation $j$ wird dann in Zeile 7 mit dem
-      Universum $u$ zu der Struktur $s$ zusammengefasst.  
+\item Die Interpretation $J$ wird dann in Zeile 7 mit dem
+      Universum $U$ zu der Struktur $S$ zusammengefasst.  
 \item Schlie\ss{}lich zeigt Zeile 8, dass eine
       Variablen-Belegung ebenfalls als Relation dargestellt werden kann.  Die erste Komponente
       der Paare, aus denen diese Relation besteht, sind die Variablen.  Die zweite Komponente
@@ -722,55 +699,16 @@ Als n\"{a}chstes \"{u}berlegen wir uns, wie wir pr\"{a}dikatenlogische Formeln i
 auswerten k\"{o}nnen.  Abbildung \ref{fig:pl-evaluate.stlx} zeigt die Implementierung der Prozedur
 $\textsl{evalFormula}(f, S, I)$, der als Argumente eine pr\"{a}dikatenlogische Formel $f$, eine Struktur
 $\mathcal{S}$ und eine Variablen-Belegung $\mathcal{I}$ \"{u}bergeben werden.  Die Formel wird
-dabei als Term dargestellt,  
-ganz \"{a}hnlich, wie wir das bei der Implementierung der Aussagenlogik schon praktiziert haben.
-Beispielsweise k\"{o}nnen wir die Formel
-\[ \forall x: \forall y: x * y = y * x \]
-durch den Term
-\begin{verbatim}
-  ^forall(^variable("x"), ^forall(^variable("y"), 
-       ^equals(^product(^variable("x"), ^variable("y")), 
-              ^product(^variable("y"), ^variable("x"))
-              )))
-\end{verbatim}
-darstellen und dass ist im Wesentlichen auch die Struktur, die erzeugt wird, wenn wir den
-String
-\\[0.2cm]
-\hspace*{1.3cm}
-``\texttt{forall (x in u | exists (y in u | x * y == E()))}''
-\\[0.2cm]
-mit Hilfe der in \textsc{SetlX} vordefinierten Funktion \texttt{parse} in einen Term umwandeln. 
-
-\remark
- An dieser Stelle wundern Sie sich vermutlich, warum wir oben 
-``\texttt{x in \_}'' und ``\texttt{y in \_}'' schreiben, denn wir wollen die Variablen
-\texttt{x} und \texttt{y} eigentlich ja gar nicht einschr\"{a}nken.  Der Grund ist, dass die
-Syntax von \textsc{SetlX} nur solche Quantoren erlaubt, in denen die Variablen auf eine
-Menge eingeschr\"{a}nkt sind.  Daher sind wir gezwungen, bei der Verwendung von Quantoren die
-Variablen syntaktisch einzuschr\"{a}nken.  Wir schreiben deswegen 
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{forall (x in \_ | $g$)} \quad bzw. \quad
-\texttt{exists (x in \_ | $g$)} 
-\\[0.2cm]
-an Stelle von 
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{forall (x | $g$)} \quad bzw. \quad
-\texttt{exists (x | $g$)}. 
-\\[0.2cm]
-Da wir $x$ hier nicht wirklich einschr\"{a}nken wollen, schreiben wir ``\texttt{x in \_}'' und benutzen
-``\texttt{\_}'' als sogenannte {\emph{\color{blue}anonyme} Variable}.
-\eox
+dabei als Term dargestellt.  
 
 Die Auswertung einer pr\"{a}dikatenlogischen Formel ist nun analog zu der in Abbildung \ref{fig:evaluate.stlx}
 auf Seite \pageref{fig:evaluate.stlx} gezeigten Auswertung aussagenlogischer Formeln.  
 Neu ist nur die Behandlung der Quantoren.  In den Zeilen 11 und 12 behandeln wir die Auswertung
-allquantifizierter Formeln.  Ist $f$ eine Formel der Form $\forall y \in u \colon h$,
+allquantifizierter Formeln.  Ist $f$ eine Formel der Form $\forall y \in U \colon h$,
 so wird die Formel $f$ durch den Term 
 \\[0.2cm]
 \hspace*{1.3cm}
-$f = \texttt{\symbol{94}forall(}y, u, h\mathtt{)}$
+$f = \texttt{forall(}y, U, h\mathtt{)}$
 \\[0.2cm]
 dargestellt.  Das Muster 
 \\[0.2cm]
@@ -778,17 +716,19 @@ dargestellt.  Das Muster
 \texttt{forall (x in \_ | g)}
 \\[0.2cm]
 bindet daher \texttt{x} an die tats\"{a}chlich auftretende Variable $y$ und \texttt{g} an die Teilformel $h$.
-Die Auswertung von $\forall x\colon g$
-geschieht nach der Formel
-\[\struct\bigl(\mathcal{I}, \forall x\colon g\bigr) \;:=\; \left\{
+Die Auswertung von $\forall x\colon g$ geschieht nach der Formel
+\\[0.2cm]
+\hspace*{1.3cm}
+$\struct\bigl(\mathcal{I}, \forall x\colon g\bigr) \;:=\; \left\{
       \begin{array}{ll}
          \mathtt{true}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], g) = \mathtt{true}\quad \mbox{f\"{u}r alle}\; c\in \mathcal{U}\;\mbox{gilt}; \\
          \mathtt{false} & \mbox{sonst}.
       \end{array}
       \right.
-\]
+$
+\\[0.2cm]
 Um die Auswertung implementieren zu k\"{o}nnen, verwenden wir eine Prozedur $\textsl{modify}()$, welche die
-Variablen-Belegung $i$ an der Stelle $x$ zu $c$ ab\"{a}ndert, es gilt also
+Variablen-Belegung $I$ an der Stelle $x$ zu $c$ ab\"{a}ndert, es gilt also
 \[ \textsl{modify}(\mathcal{I},x,c) = \mathcal{I}[x/c]. \]
 Die Implementierung dieser Prozedur wird sp\"{a}ter in Abbildung \ref{fig:fol-evaluate-term.stlx}
 gezeigt.  Bei der Auswertung eines All-Quantors k\"{o}nnen wir ausnutzen, dass die Sprache \textsc{SetlX}
@@ -808,39 +748,38 @@ richtig ist.  Die Auswertung eines Existenz-Quantors ist analog zur Auswertung e
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-   evalAtomic := procedure(a, s, i) {
-       j  := s[2];
-       p  := fct(a); // predicate symbol
-       pJ := j[p];
-       argList := args(a);
-       argsVal := evalTermList(argList, s, i);
-       return argsVal in pJ;
-   };  
-   evalTerm := procedure(t, s, i) {
-       if (fct(t) == "^variable") {
-           varName := args(t)[1];
-           return i[varName];
-       }
-       j       := s[2];
-       f       := fct(t); // function symbol
-       fJ      := j[f];
-       argList := args(t);
-       argsVal := evalTermList(argList, s, i);
-       if (#argsVal > 0) {        
-           result := fJ[argsVal]; 
-       } else {
-           result := fJ;   // t is a constant
-       }
-       return result;
-   };
-   evalTermList := procedure(tl, s, i) {
-       return [ evalTerm(t, s, i) : t in tl ];
-   };
-   modify := procedure(i, v, c) {
-       x := args(v)[1];  // v = ^variable(x)
-       i[x] := c;
-       return i;
-   };
+    evalAtomic := procedure(a, S, I) {
+        J  := S[2];
+        p  := fct(a); // predicate symbol
+        pJ := J[p];
+        argList := args(a);
+        argsVal := evalTermList(argList, S, I);
+        return argsVal in pJ;
+    };  
+    evalTerm := procedure(t, S, I) {
+        if (fct(t) == "@@@variable") {
+            varName := args(t)[1];
+            return I[varName];
+        }
+        J    := S[2];
+        f    := fct(t); // function symbol
+        fJ   := J[f];
+        argList := args(t);
+        argsVal := evalTermList(argList, S, I);
+        if (#argsVal > 0) {        
+            return fJ[argsVal]; 
+        } else {
+            return fJ;   // t is a constant
+        }
+    };
+    evalTermList := procedure(tl, S, I) {
+        return [ evalTerm(t, S, I) : t in tl ];
+    };
+    modify := procedure(I, v, c) {
+        x := args(v)[1];
+        I[x] := c;
+        return I;
+    };
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{Auswertung von Termen und atomaren Formeln.}
@@ -851,9 +790,9 @@ Abbildung \ref{fig:fol-evaluate-term.stlx} zeigt die Auswertung atomarer Formeln
 pr\"{a}dikatenlogischer Terme.  Um eine atomare Formel der Form
 \\[0.2cm]
 \hspace*{1.3cm}
-$a = P(t_1, \cdots, t_n)$ 
+$a = p(t_1, \cdots, t_n)$ 
 \\[0.2cm]
-auszuwerten, verschaffen wir uns in Zeile 4 zun\"{a}chst die dem Pr\"{a}dikats-Zeichen $P$ in der
+auszuwerten, verschaffen wir uns in Zeile 4 zun\"{a}chst die dem Pr\"{a}dikats-Zeichen $p$ in der
 Struktur $S$ zugeordnete Menge $pJ$.  Anschlie\ss{}end werten wir die Argumente $t_1, \cdots, t_n$ 
 aus und \"{u}berpr\"{u}fen dann, ob das Ergebnis dieser Auswertung tats\"{a}chlich ein Element der Menge $pJ$ ist.
 
@@ -869,15 +808,15 @@ Struktur und das dritte Argument $\mathcal{I}$ ist eine Variablen-Belegung.
 \item Falls der auszuwertende Term $t$ die Form 
       \\[0.2cm]
       \hspace*{1.3cm}
-      $t = F(t_1,\cdots,t_n)$
+      $t = f(t_1,\cdots,t_n)$
       \\[0.2cm]
       hat,  werden in Zeile 18 zun\"{a}chst rekursiv die 
       Subterme $t_1$, $\cdots$, $t_n$ ausgewertet.  Anschlie\ss{}end wird die Interpretation
-      $F^\mathcal{J}$ des Funktions-Zeichens $F$ herangezogen, um die Funktion
-      $F^\mathcal{J}$ f\"{u}r die gegebenen
+      $f^\mathcal{J}$ des Funktions-Zeichens $f$ herangezogen, um die Funktion
+      $f^\mathcal{J}$ f\"{u}r die gegebenen
       Argumente auszuwerten, wobei in Zeile 20 der Fall betrachtet wird, dass tats\"{a}chlich Argumente
       vorhanden sind, w\"{a}hrend  in Zeile 22 der Fall behandelt wird, dass es sich bei dem
-      Funktions-Zeichen $F$ um eine Konstante handelt, deren Wert dann unmittelbar durch $F^\mathcal{J}$ gegeben ist.
+      Funktions-Zeichen $f$ um eine Konstante handelt, deren Wert dann unmittelbar durch $f^\mathcal{J}$ gegeben ist.
 \end{enumerate}
 Die Implementierung der Prozedur $\texttt{evalTermList}()$ wendet die Funktion
 $\mathtt{evalTerm}()$ auf alle Terme der gegebenen Liste an.
@@ -897,15 +836,11 @@ $\mathcal{I}(x) \mathtt{:=} c$ ab\"{a}ndern k\"{o}nnen.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-   g1 := parse("forall (x in u | x * E() == x)");
-   g2 := parse("forall (x in u | exists (y in u | x * y == E()))");
-   g3 := parse("forall (x in u | forall (y in u | forall (z in u | (x*y)*z == x*(y*z) )))");
-   gt := { g1, g2, g3 };
-   
-   print("checking group theory in the structure ", s);
-   for (f in gt) {
-       print( "checking ", f, ": ", evalFormula(f, s, i) );
-   }
+    g1 := parse("forall (x in U | x * @E() == x)");
+    g2 := parse("forall (x in U | exists (y in U | x * y == @E()))");
+    g3 := parse("forall (x in U | forall (y in U | forall (z in U | (x*y)*z == x*(y*z) )))");
+    g4 := parse("forall (x in U | forall (y in U | x * y == y * x))");
+    GT := { g1, g2, g3, g4 };
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{Axiome der Gruppen-Theorie}
@@ -936,7 +871,7 @@ wiedergegeben, wobei wir die ``$1$'' durch das Funktions-Zeichen ``\texttt{E}'' 
 Die Schleife in den Zeilen 7 bis 9 \"{u}berpr\"{u}ft schlie\ss{}lich, ob die Formeln in der oben
 definierten Struktur erf\"{u}llt sind.
 \vspace*{0.3cm}
-\pagebreak
+
 
 \noindent
 \textbf{Bemerkung}:  Mit dem oben vorgestellten Programm k\"{o}nnen wir \"{u}berpr\"{u}fen, ob eine
@@ -965,8 +900,14 @@ m\"{u}ssten, unendlich gro\ss{}.
 \end{enumerate}
 
 \section{Normalformen f\"{u}r pr\"{a}dikatenlogische Formeln}
-In diesem Abschnitt werden wir verschiedene M\"{o}glichkeiten zur Umformung pr\"{a}dikatenlogischer Formeln
-kennenlernen.  Zun\"{a}chst geben wir einige \"{A}quivalenzen an, mit deren Hilfe Quantoren manipuliert werden k\"{o}nnen.
+Im n\"{a}chsten Abschnitt gehen wir daran, den fr\"uher  erw\"{a}hnten Kalk\"{u}l $\vdash$ f\"ur die
+Pr\"aditenlogik zu definieren.  
+Es zeigt sich, dass die Arbeit wesentlich einfacher wird, wenn wir uns auf bestimmte
+Formeln, sogenannte {\emph{\color{blue}Klauseln}}, beschr\"{a}nken.  Wir zeigen daher zun\"{a}chst
+in diesem Abschnitt, dass jede Formel-Menge $M$ so in eine Menge von Klauseln $K$ transformiert
+werden kann, dass $M$ genau dann erf\"{u}llbar ist, wenn $K$ erf\"{u}llbar ist.  Daher ist die
+Beschr\"{a}nkung auf Klauseln keine echte Einschr\"{a}nkung.  Zun\"{a}chst geben wir einige
+\"{A}quivalenzen an, mit deren Hilfe Quantoren manipuliert werden k\"{o}nnen. 
 
 \begin{Satz}
   Es gelten die folgenden \"{A}quivalenzen:
