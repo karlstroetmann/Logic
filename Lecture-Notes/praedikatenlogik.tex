@@ -474,7 +474,7 @@ In Fortf\"{u}hrung des obigen Beispiels gilt \\[0.2cm]
     \eox
 \end{Definition}
 
-Ist $F$ eine Formel f\"{u}r die $\FV(F) = \{\}$ ist, dann h\"{a}ngt der Wert $\struct(\mathcal{I}, F)$
+Ist $F$ eine Formel f\"{u}r die $\FV(F) = \{\}$ ist, dann h\"{a}ngt der Wert $\struct(\mathcal{I}, F)$ 
 offenbar gar nicht von der Interpretation $\mathcal{I}$ ab.  Solche Formeln bezeichnen wir auch als 
 {\emph{\color{blue}geschlossene}} Formeln.   In diesem Fall schreiben wir k\"{u}rzer  $\struct(F)$
 an Stelle von $\struct(\mathcal{I}, F)$.  Gilt dann zus\"{a}tzlich $\struct(F) = \mathtt{true}$, 
@@ -611,8 +611,8 @@ $\{ a, b \}$ besteht.  In \textsc{SetlX} k\"{o}nnen wir diese Struktur durch den
     a := "a";
     b := "b"; 
     U := { a, b };  // the universe
-    product := { [ [ a, a ], a ],  [ [ a, b ], b ],  [ [ b, a ], b ],  [ [ b, b ], a ] };
-    equals  := { [ x, x ] : x in U };
+    product := { [[a, a], a],  [[a, b], b],  [[b, a], b],  [[b, b], a] };
+    equals := { [ x, x ] : x in U };
     J := { [ "E", a ], [ "@@@product", product ], [ "@@@equals", equals ] };
     S := [ U, J ];
     I := { [ "x", a ], [ "y", b ], [ "z", a ] }; 
@@ -640,25 +640,25 @@ $\{ a, b \}$ besteht.  In \textsc{SetlX} k\"{o}nnen wir diese Struktur durch den
       $\mathtt{product}(\quoted{b},\quoted{b}) = \quoted{a}$.
       \\[0.2cm]  
       Diese Funktion verwenden wir sp\"{a}ter als die Interpretation $*^\mathcal{J}$ des Funktions-Zeichens ``$*$''.
-\item Ebenso haben wir in Zeile 5 die Interpretation $=^\mathcal{J}$ des
-      Pr\"{a}dikats-Zeichens ``$=$'' als Menge  \texttt{equals} dargestellt. 
+\item In Zeile 5 haben wir  die Interpretation $=^\mathcal{J}$ des
+      Pr\"{a}dikats-Zeichens ``$=$'' als Menge aller Paare der Form $[x, x]$ dargestellt.
 \item In Zeile 6 fassen wir die einzelnen Interpretationen zu der Relation $J$
       zusammen, so dass f\"{u}r ein Funktions-Zeichen $f$ die Interpretation $f^\mathcal{J}$ durch
       den Wert $J(f)$ gegeben ist. 
 
-      Da wir sp\"{a}ter den in \textsc{SetlX} eingebauten Parser verwenden werden, stellen wir
-      den Operator ``\texttt{*}'' durch das Funktions-Zeichen
-      ``\texttt{@@@product}'' dar und das Pr\"{a}dikats-Zeichen ``\texttt{=}'' wird
-      durch das Zeichen ``\texttt{@@@equals}'' dargestellt, denn dies sind die
-      Namen, die von \textsc{SetlX} intern benutzt werden.  Das neutrale Element ``$1$''
-      stellen wir durch das Funktions-Zeichen ``\texttt{E}'' dar, so dass sp\"{a}ter der
-      Ausdruck ``$1$'' durch den Term ``\texttt{E()}'' repr\"{a}sentiert wird.
-\item Die Interpretation $J$ wird dann in Zeile 7 mit dem
-      Universum $U$ zu der Struktur $S$ zusammengefasst.  
+      Da wir sp\"{a}ter den in \textsc{SetlX} eingebauten Parser verwenden wollen, m\"ussen wir die
+      pr\"adikatenlogischen Formeln als
+      Terme darstellen.  Dazu stellen wir den Operator ``\texttt{*}'' durch den Funktor ``\texttt{@@@product}''
+      dar und f\"ur das Pr\"{a}dikats-Zeichen ``\texttt{=}'' verwenden wir den Funktor ``\texttt{@@@equals}'',
+      denn das sind die Funktoren, die von dem in \textsc{SetlX} integrierten Parser intern benutzt werden.
+      Das neutrale Element ``$1$'' stellen wir durch den Funktor ``\texttt{@E}'' dar, so dass sp\"{a}ter der
+      Ausdruck ``$1$'' durch den Term ``\texttt{@E()}'' repr\"{a}sentiert wird.
+\item Die Interpretation $\mathtt{J}$ wird dann in Zeile 7 mit dem
+      Universum $\mathtt{U}$ zu der Struktur $\mathtt{S}$ zusammengefasst.  
 \item Schlie\ss{}lich zeigt Zeile 8, dass eine
       Variablen-Belegung ebenfalls als Relation dargestellt werden kann.  Die erste Komponente
       der Paare, aus denen diese Relation besteht, sind die Variablen.  Die zweite Komponente
-      ist ein Wert aus dem Universum.
+      ist dann jeweils ein Wert aus dem Universum.
 \end{enumerate}
 
 
@@ -672,23 +672,23 @@ $\{ a, b \}$ besteht.  In \textsc{SetlX} k\"{o}nnen wir diese Struktur durch den
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-   evalFormula := procedure(f, s, i) {
-       u := s[1];
-       match (f) {
-           case true     :  return true;
-           case false    :  return false;
-           case !g       :  return !evalFormula(g, s, i);
-           case g && h   :  return evalFormula(g, s, i) && evalFormula(h, s, i);
-           case g || h   :  return evalFormula(g, s, i) || evalFormula(h, s, i);
-           case g => h   :  return evalFormula(g, s, i) => evalFormula(h, s, i);
-           case g <==> h :  return evalFormula(g, s, i) == evalFormula(h, s, i);
-           case forall (x in _ | g) : 
-                return forall (c in u | evalFormula(g, s, modify(i, x, c)));
-           case exists (x in _ | g) : 
-                return exists (c in u | evalFormula(g, s, modify(i, x, c)));
-           default : return evalAtomic(f, s, i);  // atomic formula
-       }
-   };
+    evalFormula := procedure(f, S, I) {
+        U := S[1];
+        match (f) {
+            case true     : return true;
+            case false    : return false;
+            case !g       : return !evalFormula(g, S, I);
+            case g && h   : return  evalFormula(g, S, I) && evalFormula(h, S, I);
+            case g || h   : return  evalFormula(g, S, I) || evalFormula(h, S, I);
+            case g => h   : return  evalFormula(g, S, I) => evalFormula(h, S, I);
+            case g <==> h : return  evalFormula(g, S, I) == evalFormula(h, S, I);
+            case @Forall(x, g) : 
+                 return forall (c in U | evalFormula(g, S, modify(I, x, c)));
+            case @Exists(x, g) : 
+                 return exists (c in U | evalFormula(g, S, modify(I, x, c)));
+            default : return evalAtomic(f, S, I);  // atomic formula
+        }
+    };
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{Auswertung pr\"{a}dikatenlogischer Formeln}
@@ -704,24 +704,24 @@ dabei als Term dargestellt.
 Die Auswertung einer pr\"{a}dikatenlogischen Formel ist nun analog zu der in Abbildung \ref{fig:evaluate.stlx}
 auf Seite \pageref{fig:evaluate.stlx} gezeigten Auswertung aussagenlogischer Formeln.  
 Neu ist nur die Behandlung der Quantoren.  In den Zeilen 11 und 12 behandeln wir die Auswertung
-allquantifizierter Formeln.  Ist $f$ eine Formel der Form $\forall y \in U \colon h$,
+allquantifizierter Formeln.  Ist $f$ eine Formel der Form $\forall y: h$,
 so wird die Formel $f$ durch den Term 
 \\[0.2cm]
 \hspace*{1.3cm}
-$f = \texttt{forall(}y, U, h\mathtt{)}$
+$f = \texttt{@Forall(}y, h\mathtt{)}$
 \\[0.2cm]
 dargestellt.  Das Muster 
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{forall (x in \_ | g)}
+\texttt{@Forall(x, g)}
 \\[0.2cm]
 bindet daher \texttt{x} an die tats\"{a}chlich auftretende Variable $y$ und \texttt{g} an die Teilformel $h$.
-Die Auswertung von $\forall x\colon g$ geschieht nach der Formel
+Die Auswertung von $\forall x\colon h$ geschieht nach der Formel
 \\[0.2cm]
 \hspace*{1.3cm}
-$\struct\bigl(\mathcal{I}, \forall x\colon g\bigr) \;:=\; \left\{
+$\struct\bigl(\mathcal{I}, \forall x\colon h\bigr) \;:=\; \left\{
       \begin{array}{ll}
-         \mathtt{true}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], g) = \mathtt{true}\quad \mbox{f\"{u}r alle}\; c\in \mathcal{U}\;\mbox{gilt}; \\
+         \mathtt{true}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], h) = \mathtt{true}\quad \mbox{f\"{u}r alle}\; c\in \mathcal{U}\;\mbox{gilt}; \\
          \mathtt{false} & \mbox{sonst}.
       \end{array}
       \right.
@@ -729,12 +729,68 @@ $
 \\[0.2cm]
 Um die Auswertung implementieren zu k\"{o}nnen, verwenden wir eine Prozedur $\textsl{modify}()$, welche die
 Variablen-Belegung $I$ an der Stelle $x$ zu $c$ ab\"{a}ndert, es gilt also
-\[ \textsl{modify}(\mathcal{I},x,c) = \mathcal{I}[x/c]. \]
-Die Implementierung dieser Prozedur wird sp\"{a}ter in Abbildung \ref{fig:fol-evaluate-term.stlx}
-gezeigt.  Bei der Auswertung eines All-Quantors k\"{o}nnen wir ausnutzen, dass die Sprache \textsc{SetlX}
-selber den Quantor \texttt{forall} unterst\"{u}tzt.  Wir k\"{o}nnen also direkt testen, ob die
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{modify}(\mathcal{I},x,c) = \mathcal{I}[x/c]$. 
+\\[0.2cm]
+Die Implementierung dieser Prozedur ist in \myfig{modify.stlx} gezeigt.
+ Bei der Auswertung eines All-Quantors k\"{o}nnen wir ausnutzen, dass die Sprache \textsc{SetlX}
+die beiden Quantoren ``$\forall$'' und ``$\exists$'' durch die Operatoren \texttt{forall} bzw.~\texttt{exists}
+unterst\"{u}tzt.  Wir k\"{o}nnen also direkt testen, ob die 
 Formel f\"{u}r alle m\"{o}glichen Werte $c$, die wir f\"{u}r die Variable $x$ einsetzen k\"{o}nnen,
 richtig ist.  Die Auswertung eines Existenz-Quantors ist analog zur Auswertung eines All-Quantors.
+
+Bei der Implementierung der in Zeile 31 gezeigten Prozedur $\texttt{modify}(\textsl{I},x,c)$, 
+die als Ergebnis die Variablen-Belegung $\mathcal{I}[x/c]$ berechnet, nutzen wir aus, dass
+wir bei einer Funktion, die als bin\"{a}re Relation gespeichert ist, den Wert, der in dieser
+Relation f\"{u}r ein Argument $x$ eingetragen ist, durch eine Zuweisung der Form
+$\mathcal{I}(x) \mathtt{:=} c$ ab\"{a}ndern k\"{o}nnen.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    modify := procedure(I, v, c) {
+        x := args(v)[1];
+        I[x] := c;
+        return I;
+    };
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Die Implementierung der Funktion \texttt{modify}.}
+\label{fig:modify.stlx}
+\end{figure}
+
+
+\myfig{evalAtomic.stlx} zeigt die Auswertung atomarer Formeln.  Um eine atomare Formel der Form
+\\[0.2cm]
+\hspace*{1.3cm}
+$a = p(t_1, \cdots, t_n)$ 
+\\[0.2cm]
+auszuwerten, verschaffen wir uns in Zeile 4 zun\"{a}chst die dem Pr\"{a}dikats-Zeichen $p$ in der
+Struktur $\mathcal{S}$ zugeordnete Menge $\mathtt{pJ}$.  Anschlie\ss{}end werten wir die Argumente
+ $t_1, \cdots, t_n$ aus.  Dabei erhalten wir die Liste $[t_1, \cdots, t_n]$ der Argumente des
+ Pr\"adikats-Zeichens $p$ durch Anwendung der Funktion $\mathtt{args}$ in Zeile 5.
+Die Auswertung des Terms $t_i$ in der Struktur $\mathcal{S}$ unter der Variablen-Belegung $\mathcal{I}$  hatten
+wir im letzten Abschnitt mit 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{S}(\mathcal{I}, t_i)$
+\\[0.2cm]
+bezeichnet.  Wir erhalten daher in Zeile 6 als Auswertung der Liste $[t_1,\cdots,t_n]$ die Liste
+\\[0.2cm]
+\hspace*{1.3cm}
+$[\mathcal{S}(\mathcal{I}, t_1), \cdots, \mathcal{S}(\mathcal{I}, t_n)]$.
+\\[0.2cm]
+Dies ist eine Liste von Werten aus dem Universum $\mathcal{U}$ der Struktur $\mathcal{S}$.  Wir pr\"ufen nun in
+Zeile 7, ob diese Liste tats\"{a}chlich ein Element der Menge $\mathtt{pJ}$ ist.
 
 
 
@@ -756,6 +812,65 @@ richtig ist.  Die Auswertung eines Existenz-Quantors ist analog zur Auswertung e
         argsVal := evalTermList(argList, S, I);
         return argsVal in pJ;
     };  
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Auswertung von atomaren Formeln.}
+\label{fig:evalAtomic.stlx}
+\end{figure}
+
+Die in \myfig{evalTerm.stlx} gezeigte Prozedur $\texttt{evalTerm}()$ arbeitet wie folgt:
+Das erste Argument $t$  der Prozedur $\texttt{evalTerm}(t, \mathcal{S}, \mathcal{I})$  ist der
+auszuwertende Term. Das zweite Argument $\mathcal{S}$ ist eine pr\"{a}dikatenlogische 
+Struktur und das dritte Argument $\mathcal{I}$ ist eine Variablen-Belegung.
+\begin{enumerate}
+\item Falls $t$ eine Variable ist, so geben wir in Zeile 4 einfach den Wert zur\"{u}ck, der in
+      der Variablen-Belegung $\mathcal{I}$ f\"{u}r diese Variable eingetragen ist.  
+      Die Variablen-Belegung $\mathcal{I}$ wird dabei durch eine
+      zweistellige Relation dargestellt, die wir als Funktion benutzen.
+
+      Variablen werden von dem in \textsc{SetlX} vorgegebenen Parser als Terme der Form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{@@@variable($v$)}
+      \\[0.2cm]
+      dargestellt.  Hierbei ist $v$ dann ein String, der als der Name der Variablen interpretiert wird.
+      Konkret liefert beispielsweise der Aufruf
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{parse("x")}
+      \\[0.2cm]
+      als Ergebnis den Term
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{@@@variable("x")}.
+\item Falls der auszuwertende Term $t$ die Form 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $t = f(t_1,\cdots,t_n)$
+      \\[0.2cm]
+      hat,  werden in Zeile 10 zun\"{a}chst rekursiv die 
+      Subterme $t_1$, $\cdots$, $t_n$ ausgewertet.  Anschlie\ss{}end wird die Interpretation
+      $\mathtt{fJ}$ des Funktions-Zeichens $f$ herangezogen, um die Funktion
+      $f$ f\"{u}r die gegebenen
+      Argumente auszuwerten, wobei in Zeile 12 der Fall betrachtet wird, dass tats\"{a}chlich Argumente
+      vorhanden sind, w\"{a}hrend  in Zeile 14 der Fall behandelt wird, dass es sich bei dem
+      Funktions-Zeichen $f$ um eine Konstante handelt, deren Wert dann unmittelbar durch
+      die Interpretation $\mathtt{fJ}$ gegeben ist.
+\end{enumerate}
+Die Implementierung der Prozedur $\texttt{evalTermList}()$ wendet die Funktion
+$\mathtt{evalTerm}()$ auf alle Terme der gegebenen Liste an.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
     evalTerm := procedure(t, S, I) {
         if (fct(t) == "@@@variable") {
             varName := args(t)[1];
@@ -775,82 +890,19 @@ richtig ist.  Die Auswertung eines Existenz-Quantors ist analog zur Auswertung e
     evalTermList := procedure(tl, S, I) {
         return [ evalTerm(t, S, I) : t in tl ];
     };
-    modify := procedure(I, v, c) {
-        x := args(v)[1];
-        I[x] := c;
-        return I;
-    };
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Auswertung von Termen und atomaren Formeln.}
-\label{fig:fol-evaluate-term.stlx}
+\caption{Auswertung von Termen}
+\label{fig:evalTerm.stlx}
 \end{figure}
 
-Abbildung \ref{fig:fol-evaluate-term.stlx} zeigt die Auswertung atomarer Formeln und
-pr\"{a}dikatenlogischer Terme.  Um eine atomare Formel der Form
-\\[0.2cm]
-\hspace*{1.3cm}
-$a = p(t_1, \cdots, t_n)$ 
-\\[0.2cm]
-auszuwerten, verschaffen wir uns in Zeile 4 zun\"{a}chst die dem Pr\"{a}dikats-Zeichen $p$ in der
-Struktur $S$ zugeordnete Menge $pJ$.  Anschlie\ss{}end werten wir die Argumente $t_1, \cdots, t_n$ 
-aus und \"{u}berpr\"{u}fen dann, ob das Ergebnis dieser Auswertung tats\"{a}chlich ein Element der Menge $pJ$ ist.
-
-Die Prozedur $\texttt{evalTerm}()$ arbeitet wie folgt:
-Das erste Argument $t$  der Prozedur $\texttt{evalTerm}(t, \mathcal{S}, \mathcal{I})$  ist der
-auszuwertende Term. Das zweite Argument $\mathcal{S}$ ist eine pr\"{a}dikatenlogische 
-Struktur und das dritte Argument $\mathcal{I}$ ist eine Variablen-Belegung.
-\begin{enumerate}
-\item Falls $t$ eine Variable ist, so geben wir in Zeile 12 einfach den Wert zur\"{u}ck, der in
-      der Variablen-Belegung 
-      $\mathcal{I}$ f\"{u}r diese Variable eingetragen ist.  Die Variablen-Belegung wird dabei durch eine
-      zweistellige Relation dargestellt, die wir als Funktion benutzen.
-\item Falls der auszuwertende Term $t$ die Form 
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $t = f(t_1,\cdots,t_n)$
-      \\[0.2cm]
-      hat,  werden in Zeile 18 zun\"{a}chst rekursiv die 
-      Subterme $t_1$, $\cdots$, $t_n$ ausgewertet.  Anschlie\ss{}end wird die Interpretation
-      $f^\mathcal{J}$ des Funktions-Zeichens $f$ herangezogen, um die Funktion
-      $f^\mathcal{J}$ f\"{u}r die gegebenen
-      Argumente auszuwerten, wobei in Zeile 20 der Fall betrachtet wird, dass tats\"{a}chlich Argumente
-      vorhanden sind, w\"{a}hrend  in Zeile 22 der Fall behandelt wird, dass es sich bei dem
-      Funktions-Zeichen $f$ um eine Konstante handelt, deren Wert dann unmittelbar durch $f^\mathcal{J}$ gegeben ist.
-\end{enumerate}
-Die Implementierung der Prozedur $\texttt{evalTermList}()$ wendet die Funktion
-$\mathtt{evalTerm}()$ auf alle Terme der gegebenen Liste an.
-Bei der Implementierung der in Zeile 31 gezeigten Prozedur $\texttt{modify}(\textsl{I},x,c)$, 
-die als Ergebnis die Variablen-Belegung $\mathcal{I}[x/c]$ berechnet, nutzen wir aus, dass
-wir bei einer Funktion, die als bin\"{a}re Relation gespeichert ist, den Wert, der in dieser
-Relation f\"{u}r ein Argument $x$ eingetragen ist, durch eine Zuweisung der Form
-$\mathcal{I}(x) \mathtt{:=} c$ ab\"{a}ndern k\"{o}nnen.
-
-\begin{figure}[!ht]
-\centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm,
-                ]
-    g1 := parse("forall (x in U | x * @E() == x)");
-    g2 := parse("forall (x in U | exists (y in U | x * y == @E()))");
-    g3 := parse("forall (x in U | forall (y in U | forall (z in U | (x*y)*z == x*(y*z) )))");
-    g4 := parse("forall (x in U | forall (y in U | x * y == y * x))");
-    GT := { g1, g2, g3, g4 };
-\end{Verbatim}
-\vspace*{-0.3cm}
-\caption{Axiome der Gruppen-Theorie}
-\label{fig:gruppen-theorie.stl}
-\end{figure}
 
 Wir zeigen nun, wie sich die in Abbildung \ref{fig:pl-evaluate.stlx} gezeigte Funktion
 $\texttt{evalFormula}(f, \mathcal{S}, \mathcal{I})$ benutzen l\"{a}sst um zu \"{u}berpr\"{u}fen, ob die
-in Abbildung \ref{fig:gruppen.stl} gezeigte Struktur die Axiome der \emph{Gruppen-Theorie}
-erf\"{u}llt.  Die Axiome der Gruppen-Theorie sind wie folgt:
+in Abbildung \ref{fig:gruppen.stl} gezeigte Struktur die Axiome einer
+\href{https://en.wikipedia.org/wiki/Abelian_group}{kommutativen Gruppe}
+\emph{Gruppen-Theorie}
+erf\"{u}llt.  Diese Axiome sind wie folgt:
 \begin{enumerate}
 \item Die Konstante $1$ ist das rechts-neutrale Element der Multiplikation:
       \\[0.2cm]
@@ -865,13 +917,36 @@ erf\"{u}llt.  Die Axiome der Gruppen-Theorie sind wie folgt:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\forall x \colon \forall y \colon \forall z \colon (x * y) * z = x * (y * z)$.
+\item Es gilt das Kommutativ-Gesetz:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x \colon \forall y \colon x * y = y * x$.
 \end{enumerate}
 Diese Axiome sind in den Zeilen 1 bis 3 der Abbildung \ref{fig:gruppen-theorie.stl}
 wiedergegeben, wobei wir die ``$1$'' durch das Funktions-Zeichen ``\texttt{E}'' dargestellt haben.
 Die Schleife in den Zeilen 7 bis 9 \"{u}berpr\"{u}ft schlie\ss{}lich, ob die Formeln in der oben
 definierten Struktur erf\"{u}llt sind.
-\vspace*{0.3cm}
 
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                ]
+    g1 := parse("@Forall(x, x * @E() == x)");
+    g2 := parse("@Forall(x, @Exists(y, x * y == @E()))");
+    g3 := parse("@Forall(x, @Forall(y, @Forall(z, (x * y) * z == x * (y * z) )))");
+    g4 := parse("@Forall(x, @Forall(y, x * y == y * x))");
+    GT := { g1, g2, g3, g4 };
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Axiome der Gruppen-Theorie}
+\label{fig:gruppen-theorie.stl}
+\end{figure}
 
 \noindent
 \textbf{Bemerkung}:  Mit dem oben vorgestellten Programm k\"{o}nnen wir \"{u}berpr\"{u}fen, ob eine
@@ -880,6 +955,7 @@ allerdings nicht \"{u}berpr\"{u}fen, ob eine Formel allgemeing\"{u}ltig ist, den
 wir das Programm nicht anwenden, wenn die Strukturen ein unendliches Universum haben,
 andererseits ist selbst die Zahl der verschiedenen endlichen Stukturen, die wir ausprobieren
 m\"{u}ssten, unendlich gro\ss{}.
+\pagebreak
 
 \exercise
 \begin{enumerate}
@@ -888,8 +964,8 @@ m\"{u}ssten, unendlich gro\ss{}.
       \hspace*{1.3cm}
       $\forall x: \exists y: p(x,y) \rightarrow \exists y: \forall x: p(x,y)$
       \\[0.2cm]
-      \underline{nicht} allgemeing\"{u}ltig ist, indem Sie eine geeignete pr\"{a}dikatenlogische Struktur
-      $\mathcal{S}$ implementieren, in der diese Formel falsch ist.
+      \underline{nicht} allgemeing\"{u}ltig ist, indem Sie in \textsc{SetlX} eine geeignete
+      pr\"{a}dikatenlogische Struktur $\mathcal{S}$ implementieren, in der diese Formel falsch ist.
 \item Entwickeln Sie ein \textsc{SetlX}-Programm, dass die obige Formel in allen Strukturen
       ausprobiert, in denen das Universum  aus einer vorgegebenen Zahl $n$ verschiedener Elemente
       besteht und testen Sie Ihr Programm f\"{u}r $n=2$.

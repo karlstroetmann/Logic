@@ -3,16 +3,16 @@
 evalFormula := procedure(f, S, I) {
     U := S[1];
     match (f) {
-        case true     :  return true;
-        case false    :  return false;
-        case !g       :  return !evalFormula(g, S, I);
-        case g && h   :  return  evalFormula(g, S, I) && evalFormula(h, S, I);
-        case g || h   :  return  evalFormula(g, S, I) || evalFormula(h, S, I);
-        case g => h   :  return  evalFormula(g, S, I) => evalFormula(h, S, I);
-        case g <==> h :  return  evalFormula(g, S, I) == evalFormula(h, S, I);
-        case forall (x in _ | g) : 
+        case true     : return true;
+        case false    : return false;
+        case !g       : return !evalFormula(g, S, I);
+        case g && h   : return  evalFormula(g, S, I) && evalFormula(h, S, I);
+        case g || h   : return  evalFormula(g, S, I) || evalFormula(h, S, I);
+        case g => h   : return  evalFormula(g, S, I) => evalFormula(h, S, I);
+        case g <==> h : return  evalFormula(g, S, I) == evalFormula(h, S, I);
+        case @Forall(x, g) : 
              return forall (c in U | evalFormula(g, S, modify(I, x, c)));
-        case exists (x in _ | g) : 
+        case @Exists(x, g) : 
              return exists (c in U | evalFormula(g, S, modify(I, x, c)));
         default : return evalAtomic(f, S, I);  // atomic formula
     }
@@ -83,10 +83,10 @@ S := [ U, J ];
 I := { [ "x", a ], [ "y", b ], [ "z", a ] }; 
 
 // The following formulas are the axioms of commutative group theory.
-g1 := parse("forall (x in U | x * @E() == x)");
-g2 := parse("forall (x in U | exists (y in U | x * y == @E()))");
-g3 := parse("forall (x in U | forall (y in U | forall (z in U | (x*y)*z == x*(y*z) )))");
-g4 := parse("forall (x in U | forall (y in U | x * y == y * x))");
+g1 := parse("@Forall(x, x * @E() == x)");
+g2 := parse("@Forall(x, @Exists(y, x * y == @E()))");
+g3 := parse("@Forall(x, @Forall(y, @Forall(z, (x*y)*z == x*(y*z) )))");
+g4 := parse("@Forall(x, @Forall(y, x * y == y * x))");
 GT := { g1, g2, g3, g4 };
 
 print("\nchecking group theory in the structure \n", S);
