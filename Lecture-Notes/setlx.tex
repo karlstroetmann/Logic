@@ -2389,17 +2389,17 @@ works also for cyclic graphs.
 
 In general, we are not really interested to compute all possible paths between two given vertices
 \texttt{x} and \texttt{y}.  Instead, we just want to compute the shortest path leading from \texttt{x} to \texttt{y}.
-Figure \ref{fig:find-path.stlx} on page \pageref{fig:find-path.stlx} shows the procedure \texttt{findPath(x, y, R)}. 
+Figure \ref{fig:find-path.stlx} on page \pageref{fig:find-path.stlx} shows the procedure \texttt{reachable}. 
 This procedure takes three arguments:
 \begin{enumerate}
 \item \texttt{x} and \texttt{y} are vertices of a graph.
 \item \texttt{R} is a binary relation representing a directed graph.
 \end{enumerate}
-The call  \texttt{findPath(x, y, R)} checks whether \texttt{x} and \texttt{y} are connected and, furthermore,
+The call  \texttt{reachable(x, y, R)} checks whether \texttt{x} and \texttt{y} are connected and, furthermore,
 computes the shortest path from \texttt{x} to \texttt{y}, provided such a path exists.
 The complete program can be found in the file
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/find-path.stlx}{\texttt{find-path.stlx}}.
-Next, we discuss the implementation of the procedure  \texttt{findPath}.
+Next, we discuss the implementation of the procedure  \texttt{reachable}.
 \begin{enumerate}
 \item Line 2 initializes the set \texttt{P}.  After $n$ iterations, this set will contain all paths
       that start in the vertex \texttt{x} and that have a length of at most $n$.
@@ -2599,7 +2599,7 @@ that combines the statements shown so far.  The solution computed by this progra
     start := All;
     goal  := {};
     
-    path  := findPath(start, goal, R);
+    path  := reachable(start, goal, R);
 \end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{Solving the wolf-goat-cabbage problem.}  
