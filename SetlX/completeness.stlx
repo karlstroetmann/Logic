@@ -42,22 +42,24 @@ saturate := procedure(Clauses) {
         Clauses += Derived;
     } 
 };
-// Given a set of clauses, the procedure findValuation tries to find a
-// propositional valuation satisfying the clauses in m.  If there is no
-// such valuation, { {} } is returned instead.
+// Given a set of Clauses, the procedure findValuation tries to find a
+// propositional valuation satisfying theses clauses.  If there is no
+// such valuation, false is returned instead.
 findValuation := procedure(Clauses) {
     Variables := collectVars(Clauses);
     Clauses   := saturate(Clauses);
     if ({} in Clauses) {
         return false;
     }
-    Literals  := {};  // refuted literals
+    Literals  := {};
     for (p in Variables) {
-        if (exists(C in Clauses | p in C && C <= Literals + {p})) {
-            Literals += { !p };
-        } else {
+        if (exists(C in Clauses |
+                   p in C && C <= {complement(l) : l in Literals} + {p})
+           ) {
             Literals += { p };
+        } else {
+            Literals += { !p };
         }
     }
-    return { complement(l) : l in Literals };
+    return Literals;
 };
