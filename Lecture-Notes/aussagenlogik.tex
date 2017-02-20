@@ -2208,15 +2208,17 @@ Zeile 23 nach sp\"{a}testens $2^{2 \cdot n}$ Iterationen abgebrochen wird.
         if ({} in Clauses) {
             return false;
         }
-        Literals  := {};  // refuted literals
+        Literals  := {};
         for (p in Variables) {
-            if (exists(C in Clauses | p in C && C <= Literals + {p})) {
-                Literals += { !p };
-            } else {
+            if (exists(C in Clauses |
+                       p in C && C <= {complement(l) : l in Literals} + {p})
+               ) {
                 Literals += { p };
+            } else {
+                Literals += { !p };
             }
         }
-        return { complement(l) : l in Literals };
+        return Literals;
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -2243,52 +2245,49 @@ Funktion \texttt{findValuation} wie folgt.
             Wert \texttt{false} zur\"{u}ck, denn eine widerspr\"{u}chliche Menge von Klauseln ist sicher
             nicht erf\"{u}llbar.
       \item Andernfalls berechnen wir nun eine aussagenlogische Belegung, unter der alle Klauseln aus
-            \texttt{Clauses} wahr werden.  Zu diesem Zweck berechnen wir zun\"{a}chst eine Menge von
+            der Menge \texttt{Clauses} wahr werden.  Zu diesem Zweck berechnen wir zun\"{a}chst eine Menge von
             Literalen \texttt{Literals}.  Die Idee ist dabei, dass wir die Variable \texttt{p} genau
             dann in die Menge \texttt{Literals} aufnehmen, wenn die gesuchte Belegung $\I$ die
-            Variable \texttt{p} zu \texttt{false} auswertet.  Andernfalls nehmen wir an Stelle von \texttt{p} das
+            Variable \texttt{p} zu \texttt{true} auswertet.  Andernfalls nehmen wir an Stelle von \texttt{p} das
             Literal $\neg \texttt{p}$ in der Menge \texttt{Literals} auf.  Als Ergebnis geben wir daher in
-            Zeile 50 die Menge $M$ zur\"{u}ck, bei der wir jedes Literal $l$ aus der 
-            Menge \texttt{Literals} durch sein Komplement $\komplement{\,l\,}$ ersetzen.  
-
-            Im engeren Sinne ist diese Menge $M$ keine aussagenlogische Belegung, aber wir
-            k\"{o}nnen aus dieser Menge leicht eine aussagenlogische Belegung $\I$ erzeugen, indem
-            wir $\I$ wie folgt definieren: 
+            Zeile 50 die Menge \texttt{Literals} zur\"{u}ck.  Die gesuchte aussagenlogische Belegung
+            $\mathcal{I}$ kann dann gem\"{a}{\ss} der Formel  
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\I(p) := \left\{
-            \begin{array}{ll}
-              \texttt{true}  & \mbox{falls $p \in M$;}  \\
-              \texttt{false} & \mbox{falls $\neg p \in M$.}
-            \end{array}
-            \right.
+            $\mathcal{I}(\mathtt{p}) = \left\{
+             \begin{array}{ll}
+               \mathtt{true}  & \mbox{falls $\mathtt{ p} \in \mathtt{Literals}$} \\
+               \mathtt{false} & \mbox{falls $\mathtt{!p} \in \mathtt{Literals}$}
+             \end{array}\right.
             $
+            \\[0.2cm]
+            berechnet werden.
       \end{enumerate}
 \item Die Berechnung der Menge \texttt{Literals} erfolgt nun \"{u}ber eine \texttt{for}-Schleife.
       Dabei ist die Idee, dass wir f\"{u}r eine aussagenlogische Variable \texttt{p} genau dann das Literal
-      $\neg \texttt{p}$ zu der Menge \texttt{Literals} hinzuf\"{u}gen, wenn die Belegung $\I$ die Variable \texttt{p}
+      $\texttt{p}$ zu der Menge \texttt{Literals} hinzuf\"{u}gen, wenn die Belegung $\I$ die Variable \texttt{p}
       auf \texttt{true} abbilden muss um die Klauseln zu erf\"{u}llen.  Andernfalls f\"ugen wir stattdessen das Literal 
-      \texttt{p} zu dieser Menge hinzu.
+     \texttt{!p} zu dieser Menge hinzu.
 
       Die Bedingung daf\"{u}r ist wie folgt: Angenommen, wir haben bereits Werte f\"{u}r die Variablen
       $p_1$, $\cdots$, $p_n$ in der Menge \texttt{Literals}  gefunden.
       Die Werte dieser Variablen seien durch die Literale $l_1$, $\cdots$, $l_n$ in der Menge \texttt{Literals}
-      wie folgt festgelegt: Wenn $l_i = \neg p_i$ ist, dann gilt $\I(p_i) = \texttt{true}$ 
-      und falls $l_i = p_i$ gilt, so haben wir $\I(p_i) = \texttt{false}$.
+      wie folgt festgelegt: Wenn $l_i = p_i$ ist, dann gilt $\I(p_i) = \texttt{true}$ 
+      und falls $l_i = \neg p_i$ gilt, so haben wir $\I(p_i) = \texttt{false}$.
       Nehmen wir nun weiter an, dass eine Klausel $C$ in der Menge \texttt{Clauses} existiert, so dass
       \\[0.2cm]
       \hspace*{1.3cm}
-      $C \subseteq \{ l_1, \cdots, l_n, \texttt{p} \}$ \quad und \quad $\texttt{p} \in C$
+      $C \subseteq \{ \komplement{l_1}, \cdots, \komplement{l_n}, \texttt{p} \}$ \quad und \quad $\texttt{p} \in C$
       \\[0.2cm]
       gilt.  Wenn $\I(C) = \texttt{true}$ gelten soll, dann muss $\I(\texttt{p}) = \texttt{true}$ gelten, denn
       nach Konstruktion von $\I$ gilt 
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\I(l_i) = \texttt{false}$ \quad f\"{u}r alle $i \in \{1,\cdots,n\}$
+      $\I(\komplement{l_i}) = \texttt{false}$ \quad f\"{u}r alle $i \in \{1,\cdots,n\}$
       \\[0.2cm]
       und damit ist \texttt{p} das einzige Literal in der Klausel $c$, das wir mit Hilfe der Belegung $\I$
       \"{u}berhaupt noch wahr machen k\"{o}nnen.  In diesem Fall f\"{u}gen wir also das Literal
-      $\neg \texttt{p}$ in die Menge \texttt{Literals} ein. 
+      $\texttt{p}$ in die Menge \texttt{Literals} ein. 
 \end{enumerate}
 Der entscheidende Punkt ist nun der Nachweis, dass die Funktion \texttt{findValuation} in dem Falle,
 dass in Zeile 39 nicht der Wert \texttt{false} zur\"{u}ck gegeben wird, eine aussagenlogische Belegung $\I$ berechnet, bei der
@@ -2338,9 +2337,9 @@ gilt.
                    Dann gilt f\"{u}r die Klausel $D$ gerade die Bedingung
                    \\[0.2cm]
                    \hspace*{1.3cm}
-                   $D \subseteq \texttt{Literals} \cup \{ p_{n+1} \}$
+                   $C \subseteq \{ \komplement{l_1}, \cdots, \komplement{l_n} \} \cup \{ p_{n+1} \}$
                    \\[0.2cm]
-                   und daher wird in Zeile 44 der Funktion \texttt{findValuation} das Literal $\neg p_{n+1}$ 
+                   und daher wird in Zeile 44 der Funktion \texttt{findValuation} das Literal $p_{n+1}$ 
                    zu der Menge \texttt{Literals} hinzugef\"{u}gt.  Nach Definition der Belegung $\I$, 
                    die von der Funktion \texttt{findValuation} zur\"{u}ck gegeben wird, hei\ss{}t dies
                    gerade, dass 
@@ -2356,10 +2355,10 @@ gilt.
                    \item Es gibt eine weitere Klausel $C$ in der Menge \texttt{Clauses}, so dass
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $C \subseteq \texttt{Literals} \cup \{p_{n+1}\}$
+                         $C \subseteq \{ \komplement{l_1}, \cdots, \komplement{l_n} \} \cup \{ p_{n+1} \}$
                          \\[0.2cm]
                          gilt.  Hier sieht es zun\"{a}chst so aus, als ob wir ein Problem h\"{a}tten, denn
-                         in diesem Fall w\"{u}rde um die Klausel $C$ wahr zu machen das Literal $\neg p_{n+1}$ zur Menge
+                         in diesem Fall w\"{u}rde um die Klausel $C$ wahr zu machen das Literal $p_{n+1}$ zur Menge
                          \texttt{Literals} hinzugef\"{u}gt und damit w\"{a}re zun\"{a}chst $\I(p_{n+1}) = \texttt{true}$ 
                          und damit $\I(\neg p_{n+1}) = \texttt{false}$, woraus insgesamt 
                          $\I(D) = \texttt{false}$ folgern w\"{u}rde.  In diesem Fall w\"{u}rden sich
@@ -2371,7 +2370,8 @@ gilt.
                          schreiben lassen, wobei 
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $C' \subseteq \texttt{Literals}$  \quad und \quad $D' \subseteq \texttt{Literals}$
+                         $C' \subseteq \bigl\{ \komplement{l} \mid l \in \texttt{Literals} \bigr\}$  \quad und \quad
+                         $D' \subseteq \bigl\{ \komplement{l} \mid l \in \texttt{Literals} \bigr\}$
                          \\[0.2cm]
                          gelten w\"{u}rde.  Daraus w\"{u}rde sowohl
                          \\[0.2cm]
@@ -2403,15 +2403,18 @@ gilt.
                          es keine Klausel $C \in \texttt{Clauses}$ mit 
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $C \subseteq \texttt{Literals} \cup \{p_{n+1}\}$ \quad und \quad $p_{n+1} \in C$
+                         $C \subseteq \bigl\{ \komplement{l} \mid l \in \texttt{Literals} \bigr\} \cup
+                         \{p_{n+1}\}$ 
+                         \quad und \quad $p_{n+1} \in C$
                          \\[0.2cm]
                          geben kann und damit tritt der hier untersuchte Fall gar nicht auf. 
                    \item Es gibt \underline{keine} Klausel $C$ in der Menge \texttt{Clauses}, so dass
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $C \subseteq \texttt{Literals} \cup \{p_{n+1}\}$ \quad und \quad $p_{n+1} \in C$
+                         $C \subseteq \bigl\{ \komplement{l} \mid l \in \texttt{Literals} \bigr\} \cup \{p_{n+1}\}$ 
+                         \quad und \quad $p_{n+1} \in C$
                          \\[0.2cm]
-                         gilt.  In diesem Fall wird das Literal $p_{n+1}$ zur Menge \texttt{Literals}
+                         gilt.  In diesem Fall wird das Literal $\neg p_{n+1}$ zur Menge \texttt{Literals}
                          hinzugef\"{u}gt und damit gilt zun\"{a}chst $\I(p_{n+1}) = \texttt{false}$ und folglich
                          $\I(\neg p_{n+1}) = \texttt{true}$, woraus schlie\ss{}lich $\I(D) = \texttt{true}$ folgt.
                    \end{enumerate}
