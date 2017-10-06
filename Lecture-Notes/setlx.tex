@@ -8,8 +8,10 @@ Furthermore, as many interesting problems have a straightforward solution as \se
 my experience has shown that students can appreciate the usefulness of abstract notions from set
 theory better by programming in \setl.
 
-\setl\ is based on the language \textsc{Setl} \cite{setl86}, which was introduced in the late
-sixties by Jacob T.~Schwartz.  However, while the syntax of \textsc{Setl} is similar to
+\setl\ is based on the language \href{https://en.wikipedia.org/wiki/SETL}{\textsc{Setl}} \cite{setl86}, which
+was introduced in the late sixties by the renowned mathematician 
+\href{https://en.wikipedia.org/wiki/Jacob_T._Schwartz}{Jacob T.~Schwartz}.  
+However, while the syntax of \textsc{Setl} is similar to   
 \href{https://en.wikipedia.org/wiki/ALGOL}{\textsl{Algol}}, \setl\ has been designed to be
 syntactically similar to the programming language
 \href{https://en.wikipedia.org/wiki/C_(programming_language)}{\texttt{C}}. 
@@ -18,8 +20,9 @@ The language \setl\ can be downloaded from the website
 \hspace*{1.3cm}
 \href{http://www.randoom.org/Software/SetlX}{\texttt{http://www.randoom.org/Software/SetlX}}.
 \\[0.2cm]
-I would like to mention that \setl\ runs on android based smart phones.  The version of \setl\ for
-\href{https://en.wikipedia.org/wiki/Android_(operating_system)}{Android} is available at
+I would like to mention that \setl\ runs on
+\href{https://en.wikipedia.org/wiki/Android_(operating_system)}{Android}
+based smart phones.  The version of \setl\ for Android  is available at
 \href{https://play.google.com/store/apps/details?id=org.randoom.setlxUI.android&hl=en}{Google Play}.
 
 \section{Introductory Examples}
@@ -34,34 +37,34 @@ impression of the language.
                   framesep      = 0.3cm, 
                   firstnumber   = 1,
                   labelposition = bottomline,
-                  numbers       = left,
+                  numbers       = none,
                   numbersep     = -0.2cm,
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-    -====================================setlX=============================v2.5.0=-
-    
-    Welcome to the setlX interpreter!
-    
-    Open Source Software from http://setlX.randoom.org/
-    (c) 2011-2016 by Herrmann, Tom
-    
-    You can display some helpful information by using '--help' as parameter when
-    launching this program.
-    
-    Interactive-Mode:
-      The 'exit;' statement terminates the interpreter.
-    
-    -===============================Interactive=Mode==============================-
-    
-    => 
+-====================================setlX=============================v2.7.0=-
+
+Welcome to the setlX interpreter!
+
+Open Source Software from http://setlX.randoom.org/
+(c) 2011-2017 by Herrmann, Tom
+
+You can display some helpful information by using '--help' as parameter when
+launching this program.
+
+Interactive-Mode:
+  The 'exit;' statement terminates the interpreter.
+
+-===============================Interactive=Mode==============================-
+
+=> 
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{The \textsc{SetlX}-Welcome message.}
 \label{fig:setlx}
 \end{figure}
 
-The language \textsc{SetlX} is an interpreted language.  Hence, there is no need to compile a
+The language \textsc{SetlX} is an \blue{interpreted} language.  Hence, there is no need to \blue{compile} a
 program.  Instead, \setl-programs can be executed via the interpreter.  The interpreter is started
 with the command:\footnote{
   While I am usually in the habit of terminating every sentence with either a full stop, a question
@@ -76,7 +79,7 @@ with the command:\footnote{
 \\[0.2cm]
 After the interpreter is started, the user sees the output that is shown in Figure 
 \ref{fig:setlx} on page \pageref{fig:setlx}.  The string
-``\texttt{=>}'' is the prompt.  It signals that the interpreter is waiting for input.
+``\texttt{=>}'' is the \blue{prompt}.  It signals that the interpreter is waiting for input.
 If we input the string
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -120,13 +123,14 @@ then the following output is produced:
 \end{Verbatim}
 Here, the interpreter has first printed the string ``\texttt{Hello, World!}''.  After that, the
 result of the function \texttt{print} is shown.  However, the function \texttt{print} does not
-return any value and therefore its return value is undefined.  An undefined value is denoted using
+return any value and therefore its return value is \blue{undefined}.  An undefined value is denoted using
 the \href{http://en.wikipedia.org/wiki/Greek_alphabet}{greek} letter
 \href{https://en.wikipedia.org/wiki/Omega}{$\Omega$.}  This letter is then
 abbreviated as the string ``\texttt{om}''.
 
-The function $\mathtt{print}()$ accepts any number of arguments.  For example, printing
-the value of $36 \cdot 37 / 2$, can be achieved via the following command:
+The function \texttt{print} accepts any number of arguments.  For example, printing
+the string ``\texttt{36 * 37 / 2}'' followed by
+the value of the expression $36 \cdot 37 / 2$ can be achieved via the following command:
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{print(\symbol{34}36 * 37 / 2 = \symbol{34}, 36 * 37 / 2);}
@@ -150,9 +154,9 @@ compute the set $\{1,\cdots,n\}$ of all positive natural number less or equal $n
 of this set, i.e.~compute the sum
 \\[0.2cm]
 \hspace*{1.3cm}
-$\sum\limits_{i=1}^n i$ 
+$\ds\sum\limits_{i=1}^n i$ 
 \\[0.2cm]
-and print the resulting number.
+and then print the resulting number.
 
 \begin{figure}[!ht]
 \centering
@@ -171,22 +175,23 @@ and print the resulting number.
     print("The sum 1 + 2 + ... + ", n, " is equal to ", s, ".");
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{A simple program to compute $\sum\limits_{i=1}^n i$.}
+\caption{A simple program to compute $\ds\sum\limits_{i=1}^n i$.}
 \label{fig:sum.stlx}
 \end{figure}
 
 
 Let us discuss the program shown in Figure \ref{fig:sum.stlx} on page \pageref{fig:sum.stlx} line by line.
-Note that the line numbers shown in this Figure are not part of the program and have only been added
+Note that the line numbers shown in this figure are not part of the program and have only been added
 so that I am able to refer to the different lines of the program more easily.
 \begin{enumerate}
 \item The first line is a comment.  In \textsc{SetlX}, the string  ``\texttt{//}'' starts a comment
       that extends to the end of the line.  In order to have multi-line comments, we can use the 
-      strings ``\texttt{/*}'' and ``\texttt{*/}''.  Every text starting with the string ``\texttt{/*}''
-      and ending with the string ``\texttt{*/}'' is ignored.
+      strings ``\texttt{/*}'' and ``\texttt{*/}''.  Every text that starts with the string ``\texttt{/*}''
+      and ends with the string ``\texttt{*/}'' is ignored.  Of course, this text must only contain the
+      terminating string ``\texttt{*/}'' at the end.
 
       Note that multi-line comments can not be nested.
-\item The second line is an assignment.  The function  $\textsl{read}(s)$ 
+\item The second line is an assignment.  The expression  \texttt{read($s$)}
       first prints the string $s$ and then reads and returns the number that is input by the user.
       This number is then assigned to the variable \texttt{n}.  This is done using the assignment operator
       ``\texttt{:=}''.  It is important to understand that the syntax of \setl\ differs from the
@@ -195,7 +200,7 @@ so that I am able to refer to the different lines of the program more easily.
       \begin{center}
       \colorbox{red}{\framebox{\colorbox{yellow}{\framebox{
       \begin{minipage}{0.65\linewidth}
-        \texttt{SetlX} uses the operator ``\texttt{:=}'' to assign a value to a variable, while
+        \texttt{SetlX} uses the operator ``\texttt{:=}'' to \blue{assign} a value to a variable, while
         the programming language \texttt{C} uses the operator ``\texttt{=}'' instead.
       \end{minipage}}}}}
       \end{center}      
@@ -218,12 +223,13 @@ so that I am able to refer to the different lines of the program more easily.
       \hspace*{1.3cm}
       $\{ x \in \mathbb{Z} \mid a \leq x \wedge x \leq b \}$.
       \\[0.2cm]
-      The operator ``\texttt{+/}'' computes the sum of all elements of the set
+      The prefix operator ``\texttt{+/}'' computes the sum of all elements of the set given to it as an
+      argument.  Since this set is equal to
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\{ i \in \mathbb{N} \mid 1 \leq i  \wedge i \leq n \}$.
+      $\{ 1, 2, \cdots,  n \}$,
       \\[0.2cm]
-      Of course, this is exactly the sum
+      the operator ``\texttt{+/}'' computes the sum
       \\[0.2cm]
       \hspace*{1.3cm}
       $\ds 1 + 2 + \cdots + n = \sum\limits_{i=1}^n i$.
@@ -234,7 +240,8 @@ so that I am able to refer to the different lines of the program more easily.
 The program
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/sum-recursive.stlx}{\texttt{sum-recursive.stlx}},
 which is shown in Figure \ref{fig:sum-recursive.stlx} on page \pageref{fig:sum-recursive.stlx}
-computes the sum $\sum\limits_{i=0}^n i$ recursively.
+computes the sum $\ds\sum\limits_{i=0}^n i$ \\[-0.3cm]
+recursively.
 
 \begin{figure}[!ht]
   \centering
@@ -254,7 +261,7 @@ computes the sum $\sum\limits_{i=0}^n i$ recursively.
         }
     };
     
-    n     := read("Zahl eingeben: "); 
+    n     := read("Enter a natural number: "); 
     total := sum(n);
     print("Sum 0 + 1 + 2 + ... + ", n, " = ", total);
 \end{Verbatim} 
@@ -265,10 +272,10 @@ computes the sum $\sum\limits_{i=0}^n i$ recursively.
 
 \begin{enumerate}
 \item The first seven lines define the procedure \texttt{sum}.  In \textsc{SetlX}, the definition of
-      a procedure is started with the key word ``\texttt{procedure}''.  The keyword is followed by
-      the list of arguments.  These arguments are separated by the character  ``\texttt{,}'' and
+      a procedure is started with the \blue{keyword} ``\texttt{procedure}''.  This keyword is followed by
+      a list of the \blue{formal arguments}.  These arguments are separated by the character ``\texttt{,}'' and
       are enclosed in parentheses.
-      As in the programming language \texttt{C}, the body of the procedure is enclosed with the curly braces
+      As in the programming language \texttt{C}, the body of the procedure is enclosed in the curly braces
       ``\texttt{\{}'' and ``\texttt{\}}''.  In general, the body of a procedure consists of a list
       of commands.  In Figure \ref{fig:sum-recursive.stlx} there is only a single command.  This
       command is a case distinction.  The general form of a case distinction is as follows:
@@ -283,28 +290,28 @@ computes the sum $\sum\limits_{i=0}^n i$ recursively.
                         xrightmargin  = 0.8cm,
                         commandchars  = \\\{\}
                       ]
-        if (\textsl{test}) \{
-            \textsl{body}\(_1\)
+        if (test) \{
+            body\(_1\)
         \} else \{
-            \textsl{body}\(_2\)
+            body\(_2\)
         \}
       \end{Verbatim}
       \vspace*{-0.1cm}
       A case distinction of this form is evaluated as follows:
       \begin{enumerate}
-      \item First, the expression \textsl{test} is evaluated.  The evaluation of \textsl{test} must
+      \item First, the expression \texttt{test} is evaluated.  The evaluation of \texttt{test} must
             either return the value ``\texttt{true}'' or ``\texttt{false}''.
-      \item If \textsl{test} evaluates as  ``\texttt{true}'' then the statements in
-            \textsl{body}$_1$ are executed.  Here,  \textsl{body}$_1$ is a list of statements.
-      \item Otherwise, the statements in \textsl{body}$_2$ are executed.
+      \item If \texttt{test} evaluates as  ``\texttt{true}'' then the statements in
+            \texttt{body}$_1$ are executed.  Here,  \texttt{body}$_1$ is a list of statements.
+      \item Otherwise, the statements in \texttt{body}$_2$ are executed.
       \end{enumerate}
-      \textbf{Note} the following \underline{differences} with respect to the programming language \texttt{C}:
+      \textbf{Note} the following \blue{differences} with respect to the programming language \texttt{C}:
       \begin{enumerate}
-      \item In \textsc{SetlX}, we have to enclose  $\textsl{body}_1$ and $\textsl{body}_2$ in curly
+      \item In \textsc{SetlX}, we have to enclose  \texttt{body}$_1$ and \texttt{body}$_2$ in curly
             braces even if they contain only a single statement.
       \item The definition of the procedure has to be terminated with the character ``\texttt{;}''.
             The reason is that syntactically the definition of the procedure is part of an
-            assignment and every assignment ends with a semicolon.  In case that we do not intend to
+            \blue{assignment} and every assignment ends with a \blue{semicolon}.  In case that we do not intend to
             assign the procedure to a name, for example if a procedure is used as an argument to
             another procedure, then the procedure is not terminated with a ``\texttt{;}''.
       \end{enumerate}  
@@ -333,16 +340,16 @@ in these equations, since we have:
 
 \end{enumerate}
 The first equation deals with the case that the procedure \texttt{sum} does not call itself.  This
-case is called the \emph{base case}.  Every recursive function must have a base case, for otherwise
+case is called the \blue{base case}.  Every recursive function must have a base case, for otherwise
 the recursion would never stop.
 
 
 \section{Sets in \setl}
 The most prominent difference between the programming language \setl\ and the programming language
-\texttt{C} is the fact that  \textsc{SetlX} has language support for both sets and lists.
+\texttt{C} is the fact that  \textsc{SetlX} has language support for both \blue{sets} and \blue{lists}.
 In order to demonstrate how sets are supported in \textsc{SetlX} we present a simple program that
-shows how to compute the union, the intersection, and the difference of two sets.  Furthermore, the
-program shows how to compute the \href{https://en.wikipedia.org/wiki/Power_set}{power set} of a
+shows how to compute the \blue{union}, the \blue{intersection}, and the \blue{difference} of two sets.
+Furthermore, the program shows how to compute the \href{https://en.wikipedia.org/wiki/Power_set}{power set} of a
 given set and it shows how to compare sets.  Figure \ref{fig:simple.stlx} on page
 \pageref{fig:simple.stlx} shows the file
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/simple.stlx}{\texttt{simple.stlx}}.  
@@ -360,27 +367,27 @@ We discuss it line by line.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    a := \{ 1, 2, 3 \};
-    b := \{ 2, 3, 4 \};
-    // compute the union             a $\cup$ b 
-    c := a + b;
-    print(a, " + ", b, " = ", c);
-    // compute the intersection      a $\cap$ b
-    c := a * b;
-    print(a, " * ", b, " = ", c);
-    // compute the set difference    a $\backslash$ b
-    c := a - b;
-    print(a, " - ", b, " = ", c);
-    // compute the power set        $\displaystyle 2^\texttt{a}$
-    c := 2 ** a;
-    print("2 ** ", a, " = ", c);
-    // test the subset relation      a $\subseteq$ b
-    print("(", a, " <= ", b, ") = ", (a <= b)); 
-    // test, whether 1 $\in$ a
-    print("1 in ", a, " = ", 1 in a);
+    A := \{ 1, 2, 3 \};
+    B := \{ 2, 3, 4 \};
+    // compute the union             A $\cup$ B 
+    C := A + B;
+    print(A, " + ", B, " = ", C);
+    // compute the intersection      A $\cap$ B
+    C := A * B;
+    print(A, " * ", B, " = ", C);
+    // compute the set difference    A $\backslash$ B
+    C := A - B;
+    print(A, " - ", B, " = ", C);
+    // compute the power set        $\displaystyle 2^\texttt{A}$
+    C := 2 ** A;
+    print("2 ** ", A, " = ", C);
+    // test the subset relation      A $\subseteq$ B
+    print("(", A, " <= ", B, ") = ", (A <= B)); 
+    // test, whether 1 $\in$ A
+    print("1 in ", A, " = ", 1 in A);
     // compute the cartesian product
-    c := a >< b;
-    print(a, " >< ", b, " = ", c);
+    C := A >< B;
+    print(A, " >< ", B, " = ", C);
 \end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{Computation of union, intersection, set difference, and power set.}
@@ -388,18 +395,18 @@ We discuss it line by line.
 \end{figure} %$
 
 \begin{enumerate}
-\item The first two lines show that sets can be defined as explicit enumerations of their elements.
-\item Line 4, 7, and 10 compute the union, the intersection, and the set difference of the sets
-      \texttt{a} and \texttt{b} respectively.
+\item The first two lines show that sets can be defined as explicit \blue{enumerations} of their elements.
+\item Line 4, 7, and 10 compute the \blue{union}, the \blue{intersection}, and the set \blue{difference} of the sets
+      \texttt{A} and \texttt{B} respectively.
 
       Hence, the mathematical operator ``$\cup$'' corresponds to ``\texttt{+}'', ``$\cap$''
       corresponds to ``\texttt{*}'', while ``$\backslash$'' corresponds to ``\texttt{-}''.
 \item Line 13 computes the \href{https://en.wikipedia.org/wiki/Power_set}{power set} of the set
-      \texttt{a}.
-\item Line 16 checks whether \texttt{a} is a subset of \texttt{b}.
-\item Line 18 checks whether the number \texttt{1} is an element of the set \texttt{a}.
-\item Line 20 computes the \href{https://en.wikipedia.org/wiki/Cartesian_product}{cartesian product}
-      of \texttt{a} and \texttt{b}.  The set operator ``$\times$'' is translated into the operator
+      \texttt{A}.
+\item Line 16 checks whether \texttt{A} is a \blue{subset} of \texttt{B}.
+\item Line 18 checks whether the number \texttt{1} is an element of the set \texttt{A}.
+\item Line 20 computes the \href{https://en.wikipedia.org/wiki/Cartesian_product}{Cartesian product}
+      of \texttt{A} and \texttt{B}.  The \blue{Cartesian product} ``$\times$'' is translated into the operator
       ``\texttt{><}'' in \setl.
 \end{enumerate}
 If we execute this program, the following results are obtained:
@@ -415,49 +422,49 @@ If we execute this program, the following results are obtained:
 
 \end{verbatim}
 In order to be able to present more interesting programs, we present a number of ways to define
-complex sets in  \textsc{SetlX}.
+more complex sets in  \textsc{SetlX}.
 
 \subsubsection{Defining Sets as Arithmetic Progressions}
 In the previous example we have defined sets as explicit enumerations of their elements.  Of course,
 this approach is much too tedious when working with sets containing large numbers of elements.  An
-alternative way is to define a set as an arithmetic progression.  Let us consider an example.  The assignment
+alternative way is to define a set as an \blue{arithmetic progression}.  Let us consider an example.  The assignment
 \begin{verbatim}
-        a := { 1 .. 100 };
+        A := { 1 .. 100 };
 \end{verbatim}
-defines \texttt{a} as the set of all positive natural numbers that are less than or equal to $100$.
+defines \texttt{A} as the set of all positive natural numbers that are less than or equal to $100$.
 The general form of an arithmetic progression is
 \\[0.2cm]
 \hspace*{1.3cm} 
-\texttt{a := \{ \textsl{start} .. \textsl{stop} \};} 
+\texttt{A := \{ \textsl{start} .. \textsl{stop} \};} 
 \\[0.2cm]
 This definition assigns the set of all integer numbers from \textsl{start} up to and including
-\textsl{stop} to the variable \texttt{a}, i.e.~we have
+\textsl{stop} to the variable \texttt{A}, i.e.~we have
  \\[0.2cm]
 \hspace*{1.3cm} 
-$\texttt{a} = \{ n \in \mathbb{Z} \mid \textsl{start} \leq n \wedge n \leq\textsl{stop} \}$. 
+$\texttt{A} = \{ n \in \mathbb{Z} \mid \textsl{start} \leq n \wedge n \leq\textsl{stop} \}$. 
 \\[0.2cm]
-We can define arithmetic progressions with a step size different from $1$.  For example,
+We can define arithmetic progressions with a \blue{step size} different from $1$.  For example,
 the assignment
 \begin{verbatim}
-        a := { 1, 3 .. 100 };
+       A := { 1, 3 .. 100 };
 \end{verbatim}
 assigns the set of all odd natural numbers less than or equal to $100$ to \texttt{a}.
 Of course, the number $100$ is not part of this set as $100$ is an even number.
 The general form of this kind of progression is
 \\[0.2cm]
 \hspace*{1.3cm} 
-\texttt{a := \{ \textsl{start}, \textsl{second} .. \textsl{stop} \}} 
+\texttt{A := \{ start, second .. stop \}} 
 \\[0.2cm]
-If we define $\textsl{step} = \textsl{second} - \textsl{start}$ and if, furthermore,  \textsl{step}
+If we define $\texttt{step} = \texttt{second} - \texttt{start}$ and if, furthermore,  \texttt{step}
 is positive, then this set can be written as follows:
 \\[0.2cm]
 \hspace*{1.3cm} 
-$\texttt{a} = \{ \textsl{start} + n \cdot \textsl{step} \mid n \in \mathbb{Z} \wedge \textsl{start} + n \cdot \textsl{step} \leq\textsl{stop} \}$. 
+$\texttt{A} = \{ \texttt{start} + n \cdot \texttt{step} \mid n \in \mathbb{Z} \wedge \texttt{start} + n \cdot \texttt{step} \leq\texttt{stop} \}$. 
 \\[0.2cm]
-\textbf{Note} that  $\textsl{stop}$ does not have to be an element of the set
+\textbf{Note} that  $\texttt{stop}$ does not have to be an element of the set
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{\{} \textsl{start}\texttt{,} \textsl{second} \texttt{..} \textsl{stop} \texttt{\}}.
+\texttt{\{} \texttt{start}\texttt{,} \texttt{second} \texttt{..} \texttt{stop} \texttt{\}}.
 \\[0.2cm]
 For example, we have
 \\[0.2cm]
@@ -466,18 +473,19 @@ For example, we have
 
 
 \subsubsection{Defining Sets via Iterators}
-We can also define sets via \emph{iterators}.  Consider the following example:
+We can also define sets via \blue{iterators}.  Consider the following example:
 \\[0.2cm]
 \hspace*{1.3cm} 
-\texttt{p := \{ n * m : n in \{2..10\}, m in \{2..10\} \};} 
+\texttt{P := \{ n * m : n in \{2..10\}, m in \{2..10\} \};} 
 \\[0.2cm]
-After this assignment,  \texttt{p} is the set of all \emph{non-trivial} products that have both factors
-less than or equal to 10.  (A product of the form $a \cdot b$ is called \emph{trivial} if and only if
+After this assignment,  \texttt{p} is the set of all \blue{non-trivial} products $\mathtt{n} * \mathtt{m}$ such
+that that have both \texttt{m} and \texttt{n} are at most 10.  
+(A product of the form $a \cdot b$ is called \blue{trivial} if and only if
 either of the factors  $a$ or $b$ is equal to $1$.)
-A mathematical notation for the set  \texttt{p} is as follows:
+A mathematical definition for the set  \texttt{P} is as follows:
 \\[0.2cm]
 \hspace*{1.3cm} 
-$\mathtt{p} = \bigl\{ n \cdot m \mid n \in \mathbb{N} \wedge m \in \mathbb{N} \wedge 
+$\mathtt{P} = \bigl\{ n \cdot m \mid n \in \mathbb{N} \wedge m \in \mathbb{N} \wedge 
                                  2 \leq n \wedge 2 \leq m \wedge n \leq 10 \wedge m \leq 10 
               \bigl\}
 $. 
@@ -487,11 +495,11 @@ Iterators can be quite useful.  For example, consider the program
 that is shown in Figure \ref{fig:primes-sieve.stlx} on page \pageref{fig:primes-sieve.stlx}.
 This program computes the set of all \href{https://en.wikipedia.org/wiki/Prime_number}{prime
   numbers} less than \texttt{n}.  The underlying idea is that 
-a number is prime iff\footnote{
+a number is prime \blue{iff}\footnote{
   Henceforth, the word ``iff'' is used as an abbreviation for ``if and only if''.
 }  
-it can not be written as a non-trivial product.  Hence, if we take the set of all numbers less than
-or equal to \texttt{n} and subtract the set of all non-trivial products from this set, then the
+it can not be written as a non-trivial product.  Hence, if we take the set of all natural numbers less than
+or equal to \texttt{n} and bigger than 1 and subtract the set of all non-trivial products from this set, then the
 remaining numbers must be prime.
 
 
@@ -521,17 +529,17 @@ $\{ \textsl{expr} : x_1 \;\mathtt{in}\; S_1,\; \cdots,\; x_n \;\mathtt{in}\; S_n
 \\[0.2cm]
 Here,  $\textsl{expr}$ is a term that makes use of the variables $x_1$, $\cdots$, $x_n$.  Furthermore,
 $S_1$, $\cdots$, $S_n$ are expressions that return sets (or lists) when they are evaluated.
-Here, an expression of the form ``\texttt{$x_i$ in $S_i$}'' is called an  \emph{iterator} since
-the variables $x_i$ \emph{iterate} over the different elements of the sets $S_i$.
+Here, an expression of the form ``\texttt{$x_i$ in $S_i$}'' is called an  blue{iterator} since
+the variables $x_i$ \blue{iterate} over the different elements of the sets $S_i$.
 The mathematical interpretation of the expression given above is then given as
 \\[0.2cm]
 \hspace*{1.3cm} 
 $\bigl\{ \textsl{expr} \mid x_1 \in S_1 \wedge \cdots \wedge x_n \in S_n \bigr\}$.
 \\[0.2cm]
-Hence, the definition of a set via iterators is the same as the definition of a set as an image set
+Hence, the definition of a set via iterators is the same as the definition of a set as an \blue{image set}
 in set theory.  
 
-In addition to image sets we can use \emph{selection} to define sets.
+In addition to image sets we can use \blue{selection} to define sets.
 The syntax is: 
 \\[0.2cm]
 \hspace*{1.3cm}  
@@ -546,17 +554,17 @@ $M = \bigl\{ \textsl{expr} \mid x_1 \in S_1 \wedge \cdots \wedge x_n \in S_n \we
 \,\bigr\}$, 
 \\[0.2cm]
 i.e.~$M$ is defined as the set of all those values that we get when we substitute those values $x_i$
-form the sets $S_i$ into \textsl{expr} that satisfy \textsl{cond}.  An example will clarify this.
+from the sets $S_i$ into \textsl{expr} that satisfy \textsl{cond}.  An example will clarify this.
 After the assignment
 \begin{alltt}
-  \texttt{primes := \{ p : p in  \{2..100\} | \{ x : x in \{1..p\} | p \% x == 0 \} == \{1, p\} \};}
+  \texttt{Primes := \{ p : p in  \{2..100\} | \{ x : x in \{1..p\} | p \% x == 0 \} == \{1, p\} \};}
 \end{alltt}
-the variable \texttt{primes} contains the set of all prime numbers that are less than 100.
-The idea is the number \texttt{p} is prime iff 1 and \texttt{p} are the only numbers that divide
+the variable \texttt{Primes} is the set of all prime numbers that are less than 100.
+The idea is that the number \texttt{p} is prime iff 1 and \texttt{p} are the only numbers that divide
 \texttt{p} evenly.  In order to check whether \texttt{p} is evenly dividable by some number
 \texttt{x} we can use the operator \texttt{\%}
 in \setl: The expression \texttt{p \% x}
-computes the rest that is left over after \texttt{p} is divided by \texttt{x}.
+computes the remainder that is left over when \texttt{p} is divided by \texttt{x}.
 Hence,
 \\[0.2cm]
 \hspace*{1.3cm} 
@@ -603,12 +611,12 @@ exchange the angle brackets ``$\langle$'' and ``$\rangle$'' with the square brac
 and ``\texttt{]}''.  In the
 \href{https://github.com/karlstroetmann/Lineare-Algebra/blob/master/Script/lineare-algebra.pdf}{lecture
   notes on mathematics}  it is shown that a relation that is both left-total and 
-right-unique can be regarded as a function and hence is called a \emph{functional relation}.  If $R$
+right-unique can be regarded as a function and hence is called a \blue{functional relation}.  If $R$
 is a functional relation and $x \in \textsl{dom}(R)$, then in \textsc{SetlX} the expression  $R[x]$
-denotes the unique element $y$ such that $\langle x, y \rangle \in R$ holds. The program  
+denotes the \blue{unique} element $y$ such that $\langle x, y \rangle \in R$ holds. The program  
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/function.stlx}{\texttt{function.stlx}}
 in Figure \ref{fig:function.stlx} on page \pageref{fig:function.stlx} shows this more concretely.
-Furthermore, the program shows that for a binary relation $R$, in \setlx\ we write
+Furthermore, the program shows that for a binary relation $R$, in \setlx\ we compute
 $\textsl{dom}(R)$ as $\texttt{domain}(R)$ and $\textsl{rng}(R)$ as $\mathtt{range}(R)$.
 Furthermore, line 2 shows that we can even change the y-value that is associated with a given
 x-value in a relation.
@@ -636,9 +644,9 @@ x-value in a relation.
 \vspace*{-0.3cm}
 \caption{Exercising a functional binary relation.}  \label{fig:function.stlx}
 \end{figure} 
-As a side note, Figure \ref{fig:function.stlx} shows that \setlx\ supports \emph{string interpolation}: 
-Inside a string that is enclosed by double quotes, any substring that is enclosed by dollar symbols is
-evaluated as an expression and the substring is then replaced by the result of its evaluation.
+As a side note, Figure \ref{fig:function.stlx} shows that \setlx\ supports \blue{string interpolation}: 
+Inside a string that is enclosed in double quotes, any substring that is enclosed in dollar symbols is
+\blue{evaluated} as an expression and the substring is then replaced by the result of its evaluation.
 
 The relation \texttt{Q} that is computed in line 1 of Figure \ref{fig:function.stlx} represents the
 function $x \mapsto x^2$ on the set $\{ 1, \cdots, 10 \}$.  
@@ -687,9 +695,9 @@ If the set  $\{ y \mid \langle x, y \rangle \in R \}$ is either empty or contain
 element, the expression $R[x]$ is undefined in \setlx.  Trying to insert an undefined expression
 into a set fails.  Hence, line 4 in Figure \ref{fig:buggy-function.stlx} returns the empty set.
 There is a way to avoid undefined values when working with non-functional binary relations.
-This is done by replacing the square brackets in the expression $R[x]$ with curly brackets, i.e.~we
+This is done by replacing the square brackets in the expression $R[x]$ with \blue{curly brackets}, i.e.~we
 have to write $R\{x\}$ instead of $R[x]$.
-For a binary relation $R$, the expression  $R\{x\}$  is defined as follows:
+For a binary relation $R$, the expression  $R\{x\}$  is defined as the following set:
 \\[0.2cm]
 \hspace*{1.3cm}
  $R\{x\} := \{ y \mid \langle x, y \rangle \in R \}$,
@@ -706,7 +714,7 @@ Hence, the program shown in Figure  \ref{fig:buggy-function.stlx} yields the fol
 
 \section{Lists}
 \setlx\ supports the data type of a list.  Lists can be defined similar to sets by replacing the curly brackets
-with square brackets.  Then, we are able to define sets as arithmetic progressions, iterations, or via selection.
+with square brackets.  Then, we are able to define lists as arithmetic progressions, iterations, or via selection.
 The program 
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-tuple.stlx}{\texttt{primes-tuple.stlx}}
 in Figure \ref{fig:primes-tuple.stlx} on page \pageref{fig:primes-tuple.stlx} demonstrates how lists can be
@@ -872,7 +880,7 @@ is executed, the function \texttt{from} takes some element from the set \texttt{
 If \texttt{S} is empty, then the undefined value \texttt{om} is assigned to the variable \texttt{x}
 and \texttt{S} remains empty.  
 
-At this point you might ask: When we call \texttt{form(S)}, how do we
+At this point you might ask: When we call \texttt{from(S)}, how do we
 know which element is taken from \texttt{S}?  The answer is that we don't know which element is
 taken by \texttt{from} and hence our program should work regardless of which element is removed from
 \texttt{S}. The program 
@@ -929,7 +937,7 @@ applied to lists.  If \texttt{L1} and \texttt{L2} are both lists, the expression
 \hspace*{1.3cm}
 \texttt{L1 + L2}
 \\[0.2cm]
-concatenates the lists \texttt{L1} and \texttt{L2}.  For example, the assignment
+\blue{concatenates} the lists \texttt{L1} and \texttt{L2}.  For example, the assignment
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{L := [1, 2, 3] + [4, 5, 6];}
@@ -984,7 +992,7 @@ to retrieve the last element of the list  \texttt{L}.  Similarly, the expression
 the ante-penultimate element of \texttt{L}. 
 
 \subsection{List Slicing}
-Often, we have to return a sublist of a given list.  This can be done using \emph{slicing}.  If
+Often, we have to return a sublist of a given list.  This can be done using \blue{slicing}.  If
 \texttt{L} is a list and \texttt{i} and \texttt{j} are positive natural numbers that are not greater
 than the length of \texttt{L}, then
 \\[0.2cm]
@@ -1129,11 +1137,11 @@ If \texttt{x} and \texttt{y} are sets instead,
 \item the expression ``\texttt{x < y}'' is true if \texttt{x} is a proper subset of \texttt{y}, 
       i.e.~if $\texttt{x} \subset \texttt{y}$ holds,
 \item the expression ``\texttt{x > y}'' is true if \texttt{y} is a proper subset of \texttt{x},
-      i.e.~if $\texttt{x} \supset \texttt{y}$ holds,
+      i.e.~if $\texttt{y} \subset \texttt{x}$ holds,
 \item the expression ``\texttt{x <= y}'' is true if \texttt{x} is a subset of \texttt{y},
       i.e.~if $\texttt{x} \subseteq \texttt{y}$ holds, \quad and
 \item the expression ``\texttt{x >= y}'' is true if \texttt{y} is a subset of \texttt{x},
-      i.e.~if $\texttt{x} \supseteq \texttt{y}$ holds.
+      i.e.~if $\texttt{y} \subseteq \texttt{x}$ holds.
 \end{enumerate}
 If \texttt{x} is an object and \texttt{S} is a set or a list, then
 \\[0.2cm]
@@ -1145,7 +1153,7 @@ returns ``\texttt{true}'' if \texttt{x} is an element of \texttt{S},
 The comparison tests that can be performed using the relational operators previously discussed can be combined into more
 complex tests via the following logical operators:
 \begin{enumerate}
-\item ``\texttt{!}''  represents the logical \emph{negation}.
+\item ``\texttt{!}''  represents the logical \blue{negation}.
 
       A Boolean expression of the form
       \\[0.2cm]
@@ -1153,7 +1161,7 @@ complex tests via the following logical operators:
       \texttt{!b}
       \\[0.2cm]
       is \texttt{true} iff the evaluation of the Boolean expression \texttt{b} returns \texttt{false}.
-\item ``\texttt{\&\&}'' represents the logical \emph{conjunction}.
+\item ``\texttt{\&\&}'' represents the logical \blue{conjunction}.
 
       A Boolean expression of the form
       \\[0.2cm]
@@ -1161,7 +1169,7 @@ complex tests via the following logical operators:
       \texttt{a \&\& b}
       \\[0.2cm]
       is \texttt{true} iff the Boolean expressions \texttt{a} and \texttt{b} both evaluate to \texttt{true}.
-\item ``\texttt{||}''  represents the logical \emph{disjunction}.
+\item ``\texttt{||}''  represents the logical \blue{disjunction}.
 
       A Boolean expression of the form
       \\[0.2cm]
@@ -1170,8 +1178,9 @@ complex tests via the following logical operators:
       \\[0.2cm]
       is \texttt{true} iff at least one of the Boolean expressions \texttt{a} or \texttt{b} evaluates to \texttt{true}.
 \end{enumerate}
-Syntactically, the operator ``\texttt{||}'' has the lowest precedence, while the precedence of the operator ``\texttt{!}''
-is higher than the precedence of ``\texttt{\&\&}'' and ``\texttt{||}''.  Hence, the expression 
+Syntactically, the operator ``\texttt{||}'' has the lowest \blue{precedence}, while the \blue{precedence} of
+the operator ``\texttt{!}'' is higher than the \blue{precedence} of ``\texttt{\&\&}'' and ``\texttt{||}''.
+Hence, the expression  
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{!a == b \&\& b < c || x >= y}
@@ -1183,8 +1192,8 @@ is read as if it had been parenthesized as follows:
 \\[0.2cm]
 Note that the precedence of these operators is the same as it is in the programming language \texttt{C}.
 
-In addition to these operators, \textsc{SetlX} support quantifiers.  The universal quantifier is written as
-follows:
+In addition to these operators, \textsc{SetlX} supports \blue{quantifiers}.  The \blue{universal quantifier} is
+written as follows:
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{forall (x in S | b)}
@@ -1244,7 +1253,7 @@ evaluates to \texttt{true} iff every number \texttt{x} that divides \texttt{p} e
 \label{fig:primes-forall.stlx}
 \end{figure}
 
-Besides the universal quantifier, \setlx\ supports the existential quantifier.  The syntax of this operator is
+Besides the universal quantifier, \setlx\ supports the \blue{existential quantifier}.  The syntax of this operator is
 given as follows: 
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1567,7 +1576,7 @@ shows the following output:
 This shows that the definitions of user defined procedures are available at runtime.
 
 \section{Strings}
-\setlx\ support \emph{strings}.  In  \textsc{SetlX} these have to be enclosed either in double quotes or in
+\setlx\ support \blue{strings}.  In  \textsc{SetlX} these have to be enclosed either in double quotes or in
 single quotes.  The operator ``\texttt{+}'' can be used to concatenate strings.  For example, the expression
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1784,7 +1793,7 @@ This equation is equivalent to the quadratic equation $x^2 + x = 1$.  Note that 
 \hspace*{1.3cm}
 \texttt{x |-> 1.0/(1+x)}.
 \\[0.2cm]
-This expression is called an \emph{anonymous function} since we haven't given a name to the function.  It is
+This expression is called an \blue{anonymous function} since we haven't given a name to the function.  It is
 also important to note that we have used the floating point number  $1.0$ instead of the integer \texttt{1}.
 The reason is that otherwise \setlx\ would use rational numbers when doing the fixed-point iteration.  Although this would
 work, arithmetic using rational numbers is considerable less efficient than arithmetic using floating point
@@ -1794,7 +1803,7 @@ numbers.
 The function \texttt{solve} is only able to solve the equation $f(x) = x$ if the function $f$ is a 
 \href{https://en.wikipedia.org/wiki/Contraction_mapping}{contraction mapping}.  A function 
 $f:\mathbb{R} \rightarrow \mathbb{R}$
-is called a \emph{contraction mapping} iff 
+is called a \blue{contraction mapping} iff 
 \\[0.2cm]
 \hspace*{1.3cm}
 $|f(x) - f(y)| < |x - y|$ \quad for all $x,y \in \mathbb{R}$.
@@ -1807,17 +1816,17 @@ This notion will be discussed in more detail in the lecture on
 In this short section we are going to show how to compute probabilities for the
 \href{https://en.wikipedia.org/wiki/Texas_hold_%27em}{\textsl{Texas Hold'em}} variation of 
 \href{https://en.wikipedia.org/wiki/Poker}{poker}.   Texas Hold'em poker is played with a deck of 52
-cards.  Every card has a \emph{value}.  This value is an element of the set
+cards.  Every card has a \blue{value}.  This value is an element of the set
 \\[0.2cm]
 \hspace*{1.3cm} 
 $\textsl{values} = \{ 2, 3, 4, 5, 6, 7, 8, 9, 10, \textsl{Jack}, \textsl{Queen}, \textsl{King}, \textsl{Ace} \}$.
 \\[0.2cm]
-Furthermore, every card has a \emph{suit}.  This suit is an element of the set
+Furthermore, every card has a \blue{suit}.  This suit is an element of the set
 \\[0.2cm]
 \hspace*{1.3cm} 
 $\textsl{suits} = \{ \club, \mbox{$\color{red}{\heart}$}, \mbox{$\color{red}{\diamondsuit}$}, \spade \}$.
 \\[0.2cm]
-These suits are pronounced \emph{club}, \emph{heart}, \emph{diamond}, and \emph{spade}.
+These suits are pronounced \blue{club}, \blue{heart}, \blue{diamond}, and \blue{spade}.
 As a card is determined by its value and its suit, a card can be represented as a pair $\pair(v,s)$, where $v$
 denotes the value while $s$ is the suit of the card.  Hence, the set of all cards can be represented as the set
 \\[0.2cm]
@@ -1825,9 +1834,9 @@ denotes the value while $s$ is the suit of the card.  Hence, the set of all card
 $\textsl{deck} = \{ \pair(v,s) \mid v \in \textsl{values} \wedge \textsl{s} \in \textsl{suits} \}$.
 \\[0.2cm]
 At the start of a game of Texas Hold'em, every player receives two cards.  These two cards are known
-as the \emph{preflop} or the \emph{hole}.  Next, there is a bidding phase where players can bet on their
+as the \blue{preflop} or the \blue{hole}.  Next, there is a bidding phase where players can bet on their
 cards.   After this bidding phase, the dealer puts three cards open on the table.  These three cards are
-known as \emph{flop}.  Let us assume that a player has been dealt the set of cards
+known as \blue{flop}.  Let us assume that a player has been dealt the set of cards
 \\[0.2cm]
 \hspace*{1.3cm}
 $\{ \pair(3, \club), \pair(3, \spade) \}$.
@@ -1877,19 +1886,19 @@ program line by line.
 \item In line 1 the set \texttt{values} is defined to be the set of all possible values that a card
       can take.  In defining this set we have made use of the following abbreviations:
       \begin{enumerate}
-      \item ``\texttt{T}'' is short for ``\emph{Ten}'',
-      \item ``\texttt{J}'' is short for ``\emph{Jack}'',
-      \item ``\texttt{Q}'' is short for ``\emph{Queen}'',
-      \item ``\texttt{K}'' is short for ``\emph{King}'', and
-      \item ``\texttt{A}'' is short for ``\emph{Ace}''.
+      \item ``\texttt{T}'' is short for ``\blue{Ten}'',
+      \item ``\texttt{J}'' is short for ``\blue{Jack}'',
+      \item ``\texttt{Q}'' is short for ``\blue{Queen}'',
+      \item ``\texttt{K}'' is short for ``\blue{King}'', and
+      \item ``\texttt{A}'' is short for ``\blue{Ace}''.
       \end{enumerate}
 \item In line 2 the set \texttt{suits} represents the possible suits of a card.  Here, we have used
       the following abbreviations:
       \begin{enumerate}
-      \item ``\texttt{c}'' is short for $\club$, which is pronounced as \emph{club},
-      \item ``\texttt{h}'' is short for \mbox{\color{red}{$\heart$}}, which is pronounced as \emph{heart}, 
-      \item ``\texttt{d}'' is short for \mbox{\color{red}{$\diamondsuit$}}, which is pronounced as \emph{diamond}, and 
-      \item ``\texttt{s}'' is short for $\spade$, which is pronounced as \emph{spade}. 
+      \item ``\texttt{c}'' is short for $\club$, which is pronounced as \blue{club},
+      \item ``\texttt{h}'' is short for \mbox{\color{red}{$\heart$}}, which is pronounced as \blue{heart}, 
+      \item ``\texttt{d}'' is short for \mbox{\color{red}{$\diamondsuit$}}, which is pronounced as \blue{diamond}, and 
+      \item ``\texttt{s}'' is short for $\spade$, which is pronounced as \blue{spade}. 
       \end{enumerate} 
 \item Line 3 defines the set of all cards.  This set is stored as the variable \texttt{deck}.  Every
       card is represented as a pair of the form $[v,s]$. Here, $v$ is the value of the card, while $s$ is its suit.
@@ -1939,7 +1948,7 @@ to compute the probabilities instead.  This method will be discussed in the lect
 In the following section, I will present an application that is practically relevant.  In order to prepare for this,
 we will now discuss the problem of finding a path in a
 \href{https://en.wikipedia.org/wiki/Directed_graph}{directed graph}. 
-Abstractly, a graph consists of \emph{vertices} and \emph{edges} that connect these vertices.  In an application, the
+Abstractly, a graph consists of \blue{vertices} and \blue{edges} that connect these vertices.  In an application, the
 vertices could be towns and villages, while the edges would be interpreted as streets connecting these
 villages.  To simplify matters, let us assume for now that the vertices are given as natural numbers, while the
 edges are represented as pairs of natural numbers.  Then, the graph can be represented as the set of its edges,
@@ -1975,7 +1984,7 @@ the graph shown in Figure \ref{fig:graph0}, there is a direct connection from ve
 another direct connection from vertex $2$ to vertex $4$.  Intuitively, vertex $4$ is reachable from vertex $1$,
 since from vertex $1$ we can first reach vertex $2$ and from vertex $2$ we can then reach vertex $4$.  However,
 there is is no direct connection between the vertices $1$ and $4$.  To make this more formal, define
-a \colorbox{amethyst}{\emph{path}} 
+a \colorbox{amethyst}{\blue{path}} 
 of a graph $R$ as a list of vertices
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1986,11 +1995,11 @@ In this case, the path $[x_1, x_2, \cdots, x_n]$ is written as
 \hspace*{1.3cm}
 $x_1 \mapsto x_2 \mapsto \cdots \mapsto x_n$
 \\[0.2cm]
-and has the \emph{length} $n-1$.  It is important to note that the length of a path
+and has the \blue{length} $n-1$.  It is important to note that the length of a path
 $[x_1,x_2,\cdots,x_n]$ is defined as the number of edges connecting the vertices and not as the
 number of vertices appearing in the path.
 
-Furthermore,  two vertices $a$ and $b$ are said to be \colorbox{amethyst}{\emph{connected}} iff there exists a path
+Furthermore,  two vertices $a$ and $b$ are said to be \colorbox{amethyst}{\blue{connected}} iff there exists a path
 \\[0.2cm]
 \hspace*{1.3cm}
 $[x_1,\cdots,x_n]$ \quad such that \quad $a = x_1$ \quad and \quad $b = x_n$.
@@ -2119,8 +2128,8 @@ $
 $
 \\[0.2cm]
 The sequence $(T_n)_{n\in\mathbb{N}}$ has another useful property:  It is 
-\emph{monotonically increasing}.  In general, a sequence of sets $(X_n)_{n\in\mathbb{N}}$ is called
-\emph{monotonically increasing} iff we have
+\blue{monotonically increasing}.  In general, a sequence of sets $(X_n)_{n\in\mathbb{N}}$ is called
+\blue{monotonically increasing} iff we have
 \\[0.2cm]
 \hspace*{1.3cm}
 $\forall n \in \mathbb{N}: X_n \subseteq X_{n+1}$,
@@ -2252,7 +2261,7 @@ So far, given a graph represented by a relation $R$ and two vertices $x$ and $y$
 whether there is a path leading from $x$ to $y$, but we cannot compute this path.  In this
 subsection we will extend the procedure \texttt{transClosure} so that it will also compute the
 corresponding path.  The main idea is to extend the notion of a relational product to the notion of
-a \emph{path product}, where a \emph{path product} is defined on sets of paths.  In order to do so,
+a \blue{path product}, where a \blue{path product} is defined on sets of paths.  In order to do so,
 we introduce three functions for lists.
 \begin{enumerate}
 \item Given a list $p$, the function $\texttt{first}(p)$ returns the first element of $p$: 
@@ -2264,11 +2273,11 @@ we introduce three functions for lists.
       \hspace*{1.3cm}
       $\texttt{last}\bigl([x_1,\cdots,x_m]\bigl) = x_m$.
 \item If $p = [ x_1, \cdots, x_m ]$ and $q =[ y_1, \cdots, y_n ]$ are two path such that
-      $\texttt{first}(q) = \texttt{last}(p)$, we define the \emph{join} of $p$ and $q$ as \\[0.2cm]
+      $\texttt{first}(q) = \texttt{last}(p)$, we define the \blue{join} of $p$ and $q$ as \\[0.2cm]
       \hspace*{1.3cm}
       $p \oplus q := [x_1, \cdots, x_m, y_2, \cdots, y_n ]$.
 \end{enumerate}
-If $P_1$ and $P_2$ are sets of paths, we define the  \emph{path product} of
+If $P_1$ and $P_2$ are sets of paths, we define the  \blue{path product} of
 $P_1$ and $P_2$ as follows: \\[0.2cm]
 \hspace*{1.3cm} 
 $P_1 \bullet P_2 := 
@@ -2324,14 +2333,14 @@ $.
   \label{fig:graph-zykl}
 \end{figure}
 
-Using the notion of a \emph{path product} we are able to extend the program shown in Figure
+Using the notion of a \blue{path product} we are able to extend the program shown in Figure
 \ref{fig:transitive-closure.stlx} such that it computes all paths between two vertices.
 The resulting program
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/path.stlx}{\texttt{path.stlx}}
 is shown in Figure \ref{fig:path.stlx} on page \pageref{fig:path.stlx}.
-Unfortunately, the program does not work any more if the graph is \emph{cyclic}.  A graph is defined
-to be \emph{cyclic} if there is a path of length greater than $1$ that starts and ends at the same
-vertex.  This path is then called a \colorbox{amethyst}{\emph{cycle}}.
+Unfortunately, the program does not work any more if the graph is \blue{cyclic}.  A graph is defined
+to be \blue{cyclic} if there is a path of length greater than $1$ that starts and ends at the same
+vertex.  This path is then called a \colorbox{amethyst}{\blue{cycle}}.
 Figure \ref{fig:graph-zykl} on page \pageref{fig:graph-zykl} shows a cyclic graph.  This graph is
 cyclic because it contains the path
 \\[0.2cm]
@@ -2643,7 +2652,7 @@ that combines the statements shown so far.  The solution computed by this progra
 \section{Terms and Matching}
 So far we have seen the basic data structures of \setlx\ like numbers, string, sets, and lists.
 There is one more data structure that is supported by \setlx.  This is the data structure of
-\colorbox{amethyst}{\emph{terms}}.  
+\colorbox{amethyst}{\blue{terms}}.  
 This data structure is especially useful when we develop programs that deal with mathematical formulas.
 For example, in this section we will develop a program that reads a string like 
 \\[0.2cm]
@@ -2657,13 +2666,13 @@ $x \mapsto x \cdot \exp(x)$,
 \\[0.2cm]
 and then takes the derivative of this function with respect to the variable $x$.  This program is
 easy to implement if real valued functions are represented as terms.  The reason is that \setlx\ provides 
-\colorbox{amethyst}{\emph{matching}} for terms.  We will define this notion later.  Matching
+\colorbox{amethyst}{\blue{matching}} for terms.  We will define this notion later.  Matching
 is one of the main ingredients of the programming language \href{https://en.wikipedia.org/wiki/Prolog}{Prolog}.
 This programming language was quite popular in artificial intelligence during the eighties.
 
 
 \subsection{Constructing and Manipulating Terms}
-In order to build terms, we first need \colorbox{amethyst}{\emph{functors}}.  It is important not to confuse functors with
+In order to build terms, we first need \colorbox{amethyst}{\blue{functors}}.  It is important not to confuse functors with
 function symbols.  Therefore, functors have to be preceded by the character  
 ``\texttt{@}''.
 For example, the following strings can be used as functors:
@@ -2673,7 +2682,7 @@ For example, the following strings can be used as functors:
 \\[0.2cm]
 However, in the expression ``\texttt{@f}'', the string ``\texttt{f}'' is the functor.  The
 character ``\texttt{@}'' is only used as an escape character that tells us that ``\texttt{f}'' is
-not a function symbol but rather a functor.  Next, we define \colorbox{amethyst}{\emph{terms}}.  If $F$ is a functor and 
+not a function symbol but rather a functor.  Next, we define \colorbox{amethyst}{\blue{terms}}.  If $F$ is a functor and 
 $t_1$, $t_2$, $\cdots$, are any values, i.e.~they could be number, strings, lists, sets, or terms
 themselves, then
 \\[0.2cm]
@@ -2837,7 +2846,7 @@ It would be quite tedious if the functions \texttt{fct} and \texttt{args} were t
 components of a term.  Figure \ref{fig:append-match.stlx} on page \pageref{fig:append-match.stlx}
 shows the program
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/append-match.stlx}{\texttt{append-match.stlx}}, 
-that uses \emph{matching} to implement the function \texttt{append}.  
+that uses \blue{matching} to implement the function \texttt{append}.  
 Line 3 checks, whether the list  \texttt{l} is empty, i.e.~whether \texttt{l} is identical to the term 
 \texttt{@nil()}.  Line 4 is more interesting, as it combines two actions.
 \begin{enumerate}
@@ -2877,7 +2886,7 @@ holds afterwards.
 \end{figure}
 In general, a \texttt{match} statement has the structure that is shown in Figure \ref{fig:match}.
 Here, $e$ is any expression that yields a term when evaluated.  The expressions 
-$t_1$, $\cdots$, $t_n$ are so called \emph{patterns} that contain variables.  When the \texttt{match} statement
+$t_1$, $\cdots$, $t_n$ are so called \blue{patterns} that contain variables.  When the \texttt{match} statement
 is executed, \textsc{SetlX} tries to bind the variables occurring in the pattern $t_1$ such that the resulting
 expression is equal to $e$.  If this succeeds, the statements in  $\textsl{body}_1$ are executed and the
 execution of the \texttt{match} statement ends.
