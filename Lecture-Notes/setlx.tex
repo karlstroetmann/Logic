@@ -1058,8 +1058,8 @@ that implements selection sort  in \textsc{SetlX}.
 \end{figure}
 
 \section{Control Flow and Boolean Operators}
-The language \textsc{SetlX} provides all those control flow statements that are in use in
-contemporary programming languages like \texttt{C} or \textsl{Java}.  We have already seen if-then-else
+The language \textsc{SetlX} provides all those \blue{control flow} statements that are used in
+contemporary programming languages like \texttt{C} or \textsl{Java}.  We have already seen \blue{if-then-else}
 statements on several occasions.  The most general form of this kind of branching statement is shown
 in Figure \ref{fig:if} on page \pageref{fig:if}.
 \begin{figure}[!ht]
@@ -1097,7 +1097,7 @@ evaluation of $\texttt{test}_i$ returns ``\texttt{true}'', then the statements i
 executed.  Otherwise, the next test $\texttt{test}_{i+1}$ is evaluated.  If all the tests $\texttt{test}_1$, $\cdots$, $\texttt{test}_n$ 
 fail, then the statements in $\texttt{body}_{n+1}$ are executed.
  
-The tests $\texttt{test}_i$ can make use of the following relational infix operators:
+The tests $\texttt{test}_i$ can use the following relational infix operators:
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{==}, \quad
@@ -1132,15 +1132,21 @@ tests, whether \texttt{x} is less than \texttt{y}.  Similarly, the expressions
 \texttt{x > y}, \quad \texttt{x <= y}, \quad and \quad \texttt{x >= y}
 \\[0.2cm]
 test whether \texttt{x} is bigger than, less than or equal to, or bigger than or equal to \texttt{y}, respectively.
-If \texttt{x} and \texttt{y} are sets instead, 
+If \texttt{x} and \texttt{y} are sets instead, then
 \begin{enumerate}
-\item the expression ``\texttt{x < y}'' is true if \texttt{x} is a proper subset of \texttt{y}, 
-      i.e.~if $\texttt{x} \subset \texttt{y}$ holds,
-\item the expression ``\texttt{x > y}'' is true if \texttt{y} is a proper subset of \texttt{x},
-      i.e.~if $\texttt{y} \subset \texttt{x}$ holds,
-\item the expression ``\texttt{x <= y}'' is true if \texttt{x} is a subset of \texttt{y},
-      i.e.~if $\texttt{x} \subseteq \texttt{y}$ holds, \quad and
-\item the expression ``\texttt{x >= y}'' is true if \texttt{y} is a subset of \texttt{x},
+\item the expression ``\texttt{x < y}'' is true if \texttt{x} is a \blue{proper subset} of \texttt{y}, 
+      i.e.~if $\texttt{x} \subset \texttt{y}$ holds.
+
+      A set $x$ is a proper subset of a set $y$ if $x$ is a subset of $y$, and, furthermore, $x \not= y$,
+      i.e.~we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $x \subset y \;\stackrel{\mathrm{def}}{\Longleftrightarrow}\; x \subseteq y \wedge x \not= y$. 
+\item The expression ``\texttt{x > y}'' is true if \texttt{y} is a proper subset of \texttt{x},
+      i.e.~if $\texttt{y} \subset \texttt{x}$ holds.
+\item The expression ``\texttt{x <= y}'' is true if \texttt{x} is a subset of \texttt{y},
+      i.e.~if $\texttt{x} \subseteq \texttt{y}$ holds.
+\item The expression ``\texttt{x >= y}'' is true if \texttt{y} is a subset of \texttt{x},
       i.e.~if $\texttt{y} \subseteq \texttt{x}$ holds.
 \end{enumerate}
 If \texttt{x} is an object and \texttt{S} is a set or a list, then
@@ -1153,34 +1159,48 @@ returns ``\texttt{true}'' if \texttt{x} is an element of \texttt{S},
 The comparison tests that can be performed using the relational operators previously discussed can be combined into more
 complex tests via the following logical operators:
 \begin{enumerate}
-\item ``\texttt{!}''  represents the logical \blue{negation}.
-
-      A Boolean expression of the form
+\item ``\texttt{!}''  represents logical \blue{negation}, i.e.~a Boolean expression of the form
       \\[0.2cm]
       \hspace*{1.3cm}
       \texttt{!b}
       \\[0.2cm]
       is \texttt{true} iff the evaluation of the Boolean expression \texttt{b} returns \texttt{false}.
-\item ``\texttt{\&\&}'' represents the logical \blue{conjunction}.
-
-      A Boolean expression of the form
+\item ``\texttt{\&\&}'' represents logical \blue{conjunction}, i.e.~a Boolean expression of the form
       \\[0.2cm]
       \hspace*{1.3cm}
       \texttt{a \&\& b}
       \\[0.2cm]
       is \texttt{true} iff the Boolean expressions \texttt{a} and \texttt{b} both evaluate to \texttt{true}.
-\item ``\texttt{||}''  represents the logical \blue{disjunction}.
-
-      A Boolean expression of the form
+\item ``\texttt{||}''  represents logical \blue{disjunction}, i.e.~a Boolean expression of the form
       \\[0.2cm]
       \hspace*{1.3cm}
       \texttt{a || b}
       \\[0.2cm]
       is \texttt{true} iff at least one of the Boolean expressions \texttt{a} or \texttt{b} evaluates to \texttt{true}.
+\item ``\texttt{=>}''  represents logical \blue{implication}, i.e.~a Boolean expression of the form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{a => b}
+      \\[0.2cm]
+      is \texttt{true} iff  \texttt{a} implies \texttt{b}.
+\item ``\texttt{<==>}''  represents logical \blue{equivalence}, i.e.~a Boolean expression of the form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{a <==> b}
+      \\[0.2cm]
+      is \texttt{true} iff  \texttt{a} has the same truth value as \texttt{b}.
+\item ``\texttt{<!=>}''  represents logical \blue{antivalence}, i.e.~a Boolean expression of the form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{a <!=> b}
+      \\[0.2cm]
+      is \texttt{true} iff the truth values of \texttt{a} and \texttt{b} are different.  Hence, the operator
+      ``\texttt{<!=>}'' implements an \href{https://en.wikipedia.org/wiki/Exclusive_or}{exclusive or}.
 \end{enumerate}
-Syntactically, the operator ``\texttt{||}'' has the lowest \blue{precedence}, while the \blue{precedence} of
-the operator ``\texttt{!}'' is higher than the \blue{precedence} of ``\texttt{\&\&}'' and ``\texttt{||}''.
-Hence, the expression  
+Syntactically, the operators ``\texttt{<!=>}'' and ``\texttt{<==>}'' have the lowest \blue{precedence},
+the \blue{precedence} of ``\texttt{=>}'' is lower than the \blue{precedence} of the operator
+``\texttt{||}'', the \blue{precedence} of ``\texttt{||}'' is lower than the \blue{precedence} of the operator
+``\texttt{\&\&}'', and the operator ``\texttt{!}'' has the highest \blue{precedence}.  Hence, the expression  
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{!a == b \&\& b < c || x >= y}
@@ -1240,13 +1260,14 @@ evaluates to \texttt{true} iff every number \texttt{x} that divides \texttt{p} e
                   xrightmargin  = 0.8cm,
                 ]
     isPrime := procedure(p) {
-        return forall (x in divisors(p) | x in {1, p});
+        return p != 1 && forall (x in divisors(p) | x in { 1, p });
     };
     divisors := procedure(p) {
-        return { t : t in {1..p} | p % t == 0 };
+        return { t : t in { 1 .. p } | p % t == 0 };
     };
     n := 100;
-    print([ p : p in [2..n] | isPrime(p) ]);
+    primes := [ p : p in [1 .. n] | isPrime(p) ];
+    print( primes );
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{Computing the prime numbers via a universal quantifier.}
@@ -1373,7 +1394,7 @@ The programming language \texttt{C} has a \texttt{switch}-statement that is synt
 \colorbox{amethyst}{differently} in \texttt{C}.  In \texttt{C}, if $\texttt{body}_i$ is executed and $\texttt{body}_i$ does not contain a
 \texttt{break}-statement, then the following block $\texttt{body}_{i+1}$ is also executed.  In contrast,
 \setlx\ will \colorbox{amethyst}{never} execute more than one of the blocks $\texttt{body}_i$.
-
+\pagebreak
 
 \subsection{\texttt{while}-Loops}
 The syntax of  \texttt{while}-loops is shown in Figure \ref{fig:while} on page
@@ -1420,9 +1441,9 @@ prime if there is no prime number \texttt{t} less than \texttt{p} that divides \
     while (p <= n) {
         if (forall (t in primes | p % t != 0)) {
             print(p);
-            primes := primes + { p };
+            primes += { p };
         }
-        p := p + 1;
+        p += 1;
     }
 \end{Verbatim} 
 \vspace*{-0.3cm}
@@ -1464,7 +1485,7 @@ idea is now that for every index $\texttt{k} \leq  \texttt{n}$ that is not prime
 where both \texttt{i} and \texttt{j} are natural numbers bigger than \texttt{1}.
 In order to set \texttt{primes[k]} to \texttt{0} for non-prime numbers \texttt{k} we need two loops,
 where the outer loop iterates over all possible values of \texttt{i}, while the inner loop iterates
-over \texttt{j}. The smallest value that a proper factor of any number lass or equal than \texttt{n}
+over \texttt{j}. The smallest value that a proper factor of any number less or equal than \texttt{n}
 can take is \texttt{2}, while the largest value is \texttt{n/2}.  Hence,
 the outer \texttt{for}-loop iterates over all values of \texttt{i} from \texttt{2} to \texttt{n/2}.
 The inner \texttt{while}-loop takes a given \texttt{i} and iterates over all \texttt{j}
@@ -1489,7 +1510,7 @@ the prime numbers.
         j := 2;
         while (i * j <= n) {
             primes[i * j] := 0;
-            j := j + 1;
+            j += 1;
         }
     }
     print({ i : i in [2 .. n] | primes[i] > 0 });
@@ -1515,7 +1536,7 @@ Figure \ref{fig:primes-eratosthenes.stlx} on page \pageref{fig:primes-eratosthen
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-eratosthenes.stlx}{\texttt{primes-eratosthenes.stlx}}, 
 that makes use of these ideas.  In order to skip the inner \texttt{while}-loop if \texttt{i} is not
 a prime number we have used the statement ``\texttt{continue}''.  This statement terminates the
-current iteration of the loop and proceeds to the next iteration.  This is the same behaviour as in
+current iteration of the loop and proceeds to the next iteration.  This works in the same way as in
 the programming language \texttt{C}. 
 
 
@@ -1538,7 +1559,7 @@ the programming language \texttt{C}.
         j := i;
         while (i * j <= n) {
             primes[i * j] := 0;
-            j := j + 1;
+            j += 1;
         }
     }
     print({ i : i in [2 .. n] | primes[i] > 0 });
@@ -1549,7 +1570,7 @@ the programming language \texttt{C}.
 
 
 \section{Loading a Program}
-The \setlx\ interpreter can load programs interactively into a running session.
+The \setlx\ interpreter can \blue{load} programs interactively into a running session.
 If \textsl{file} is the name of a file, then the command
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1611,8 +1632,8 @@ In order to support numerical analysis, \setlx\ provides floating point numbers.
 as 64 bit numbers.  In order to work with floating point numbers,  \textsc{SetlX} provides the following functions:
 \begin{enumerate}
 \item $\texttt{sin}(x)$ computes the \href{https://en.wikipedia.org/wiki/Sine}{sine} of $x$.
-      Furthermore, the trigonometrical functions $\texttt{cos}(x)$ and $\texttt{tan}(x)$ are supported.  The
-      inverse trigonometrical functions are written as 
+      Furthermore, the \blue{trigonometrical} functions $\texttt{cos}(x)$ and $\texttt{tan}(x)$ are supported.  The
+      \blue{inverse} trigonometrical functions are written as 
       $\texttt{asin}(x)$, $\texttt{acos}(x)$ and $\texttt{atan}(x)$.    
 \item $\texttt{sinh}(x)$ computes the \href{https://en.wikipedia.org/wiki/Hyperbolic_function}{hyperbolic sine} of $x$.
       Similarly,  $\mathtt{cosh}(x)$ returns the hyperbolic cosine of $x$, while
@@ -1652,7 +1673,7 @@ as 64 bit numbers.  In order to work with floating point numbers,  \textsc{SetlX
 \item $\texttt{round}(x)$ returns the nearest integer.  Floating point numbers of the form $x.5$ are rounded up.
       For example, $\texttt{round(1.5)}=2$ and $\texttt{round(-1.5)}=-1$.
 \end{enumerate}
-\textsc{SetlX} supports infinite precision via rational numbers.  For example, the expression
+\textsc{SetlX} supports \blue{unlimited precision} via rational numbers.  For example, the expression
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{1/2 + 1/3;}
@@ -2516,7 +2537,6 @@ are satisfied:
 \item either \texttt{S} contains both the goat and the cabbage or \texttt{S} contains both the wolf and the goat.
 \end{enumerate}
 Therefore, we can implement the function \texttt{problem} as follows:
-\pagebreak
 
 \begin{verbatim}
     problem := procedure(S) {
