@@ -1,5 +1,4 @@
 # Logik
-Hier finden Sie die Unterlagen zu meiner einführenden Informatik-Vorlesung, die
-sich im Wesentlichen mit der Mengenlehre, der Logik und der Sprache SetlX
-beschäftigt. Die Vorlesung ist als Einführung in die theoretische Informatik
-gedacht.
+These are the resources for my lecture on theoretical computer science I.
+The main topic of this lecture is logic and an introduction to the programming
+language SetlX.
