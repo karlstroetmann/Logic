@@ -1,0 +1,20 @@
+delete := procedure(K, i) {
+    return K[.. i-1] + K[i+1 ..];
+};
+isSublist := procedure(L, K) {
+    if (L == K) {
+        return true;
+    }
+    for (i in [1 .. #K]) {
+        if (isSublist(L, delete(K, i))) {
+            return true;
+        }
+    }
+    return false;
+};
+allSublists := procedure(L) {
+    if (L == []) {
+        return { [] };
+    }
+    return allSublists(L[2..]) + { [L[1]] + K: K in allSublists(L[2..]) };
+};

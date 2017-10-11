@@ -1,0 +1,70 @@
+loadLibrary("termUtilities");
+// Test, ob Formel f eine Tautologie ist.  Falls f keine Tautologie
+// ist, dann wird eine Belegung I zurück gegeben, so dass evaluate(f, I)
+// den Wert false ergibt.
+tautology := procedure(f) {
+    P := collectVars(f);
+    // A is the set of all propositional valuations.
+    A := { { [x, x in M] : x in P } : M in 2 ** P };
+    if (forall (I in A | evaluate(f, I))) {
+        return true;
+    } else {
+        return arb({ I : I in A | !evaluate(f, I) });
+    }
+};
+// This function collects all propositional variables occurring in 
+// the propositional formula f.
+collectVars := procedure(f) {
+    match (f) {
+        case true:              return {};
+        case false:             return {};
+        case p | isVariable(p): return { p };
+        case !g:                return collectVars(g);
+        case g && h:            return collectVars(g) + collectVars(h);
+        case g || h:            return collectVars(g) + collectVars(h);
+        case g => h:            return collectVars(g) + collectVars(h);
+        case g <==> h:          return collectVars(g) + collectVars(h);
+        case g <!=> h:          return collectVars(g) + collectVars(h);
+        default:                abort("syntax error in collectVars($f$)");
+    }
+};
+// Evaluate the formula f for the propositional interpretation I.
+evaluate := procedure(f, I) {
+    match (f) {
+        case true:              return true;
+        case false:             return false;
+        case p | isVariable(p): return I[p];
+        case !g:                return !evaluate(g, I);
+        case g && h:            return  evaluate(g, I) && evaluate(h, I);
+        case g || h:            return  evaluate(g, I) || evaluate(h, I);
+        case g => h:            return  evaluate(g, I) => evaluate(h, I);
+        case g <==> h:          return  evaluate(g, I) == evaluate(h, I);
+        case g <!=> h:          return  evaluate(g, I) != evaluate(h, I);
+        default:                abort("syntax error in evaluate($f$, $I$)");
+    }
+};
+
+test := procedure(s1, s2) {
+    f1 := parseTerm(s1);
+    f2 := parseTerm(s2);
+    counterExample := tautology(f1 <==> f2);
+    if (counterExample == true) {
+        print("The formulae $f1$ and $f2$ are equivalent.");
+    } else {
+        print("The formulae $f1$ and $f2$ are nor equivalent:");
+        print("    Counter example: ", counterExample );
+    }
+};
+
+test("!(p || q)"        , "!p && !q"      );
+test("p => q"           , "(!p => q) => q");
+test("!(p || q)"        , "!p || !q"      );
+test("p <!=> q"         , "q <!=> p"      );
+test("(p <!=> p) <!=> q", "q"             );
+
+
+    
+
+
+
+

@@ -15,12 +15,15 @@
 	linkcolor  = blue,
 	citecolor  = red,
         filecolor  = Gold,
-        urlcolor   = [rgb]{0.5, 0.1, 0.0},
+        urlcolor   = [rgb]{0.9, 0.1, 0.0},
 	pdfborder  = {0 0 0} 
 }
 
 \renewcommand*{\familydefault}{\sfdefault}
- 
+
+\newcommand{\blue}[1]{{\color{blue}#1}}
+\newcommand{\red}[1]{{\color{red}#1}}
+
 \pagestyle{fancy}
 \lhead{Theoretische Informatik \texttt{I}}
 \rhead{Aufgaben-Blatt Nr. 1}
@@ -42,19 +45,23 @@
 \newcommand{\diamo}{\ensuremath{\diamondsuit}}
 \def\pair(#1,#2){\langle #1, #2 \rangle}
 
+\renewcommand{\encodingdefault}{T1}
+\renewcommand{\ttdefault}{inconsolatag}
+
+
 \begin{document}
 
 
 \exercise
-Eine Zahl $m\in \mathbb{N}$ ist ein \emph{echter Teiler} einer Zahl
+Eine Zahl $m\in \mathbb{N}$ ist ein \blue{echter Teiler} einer Zahl
 $n \in \mathbb{N}$ genau dann, wenn $m$ ein Teiler von $n$ ist und wenn auﬂerdem $m < n$ gilt.
 
-Eine Zahl $n \in \mathbb{N}$ heiﬂt \emph{perfekt}, wenn $n$ gleich der Summe aller echten Teiler von
+Eine Zahl $n \in \mathbb{N}$ heiﬂt \blue{perfekt}, wenn $n$ gleich der Summe aller echten Teiler von
 $n$ ist. Zum Beispiel ist die Zahl $6$ perfekt, denn  die Menge der echten Teiler
 von 6 ist $\{1,2,3\}$ und es gilt $1 + 2 + 3 = 6$.
 \begin{enumerate}
 \item Implementieren Sie eine Prozedur \texttt{echteTeiler}, so dass der Aufruf
-      $\mathtt{echteTeiler}(n)$ f¸r eine nat¸rliche Zahl $n$ die Menge aller echten Teiler von
+      $\texttt{echteTeiler}(n)$ f¸r eine nat¸rliche Zahl $n$ die Menge aller echten Teiler von
       $n$ berechnet.
 \item Berechnen Sie die Menge aller perfekten Zahlen, die kleiner als $10\,000$ sind.
 \end{enumerate}
@@ -62,23 +69,23 @@ von 6 ist $\{1,2,3\}$ und es gilt $1 + 2 + 3 = 6$.
 
 \exercise
 \begin{enumerate}
-\item Implementieren Sie eine Prozedur \texttt{gt}, so dass der Aufruf 
-      $\mathtt{gt}(m,n)$ f¸r zwei nat¸rliche Zahlen $m$ und $n$ die Menge aller gemeinsamen
-      Teiler von $m$ und $n$ berechnet.
+\item Implementieren Sie eine Prozedur \texttt{gt}, so dass der Aufruf $\texttt{gt}(m,n)$ f¸r zwei nat¸rliche
+      Zahlen $m$ und $n$ die Menge aller \blue{gemeinsamen Teiler} von $m$ und $n$ berechnet. 
 
       \textbf{Hinweis}: Berechnen Sie zun‰chst die Menge der Teiler von $m$ und 
       die Menge der Teiler von $n$.  ‹berlegen Sie, wie die Mengenlehre Ihnen weiterhilft,
       wenn Sie diese beiden Mengen berechnet haben.
-\item Implementieren Sie nun eine Prozedur \texttt{ggt}, so dass der Aufruf
-      $\mathtt{ggt}(m,n)$ den grˆﬂten gemeinsamen Teiler der beiden Zahlen $m$ und $n$
-      berechnet. 
+\item Implementieren Sie nun eine Prozedur \texttt{ggt}, so dass der Aufruf $\texttt{ggt}(m,n)$ 
+      den \href{https://de.wikipedia.org/wiki/Grˆﬂter_gemeinsamer_Teiler}{grˆﬂten gemeinsamen Teiler} 
+      der beiden Zahlen $m$ und $n$ berechnet. 
 \end{enumerate}
 \vspace{0.3cm}
 
 \exercise
 Implementieren Sie  eine Prozedur \texttt{kgv}, so dass der Aufruf
-$\mathtt{kgv}(m,n)$ f¸r zwei nat¸rliche  Zahlen $m$ und $n$ das kleinste gemeinsame
-Vielfache der Zahlen $m$ und $n$ berechnet. 
+$\texttt{kgv}(m,n)$ f¸r zwei nat¸rliche  Zahlen $m$ und $n$ das 
+\href{https://de.wikipedia.org/wiki/Kleinstes_gemeinsames_Vielfaches}{kleinste gemeinsame Vielfache}
+der Zahlen $m$ und $n$ berechnet. 
  \vspace{0.2cm}
 
 \noindent
@@ -87,25 +94,33 @@ Vielfache der Zahlen $m$ und $n$ berechnet.
 
 \exercise
 Bei den folgenden beiden Teilaufgaben sollen Sie den Operator ``\texttt{**}'', mit dem Sie in \textsc{SetlX}
-die Potenz-Menge einer Menge berechnen k\"onnen, nicht benutzen.
+die Potenz-Menge einer Menge berechnen k\"onnen, \underline{\red{nicht}} benutzen.
 \begin{enumerate}
 \item Implementieren Sie eine Funktion \texttt{subsets}, so dass $\texttt{subsets}(M, k)$ f\"ur eine
       Menge $M$ und eine nat\"urliche Zahl $k$ die Menge aller der Teilmengen von $M$ berechnet, die
       genau $k$ Elemente haben.
 
       \textbf{Hinweis}:  Versuchen Sie, die Funktion  $\texttt{subsets}(M, k)$ rekursiv zu
-      implementieren. 
-\item Implementieren Sie eine Funktion \texttt{power} so dass $\texttt{power}(M)$ f\"ur eine
-      gegebene Menge $M$ die Potenz-Menge von $M$ berechnet.
+      implementieren.  
 
-      \textbf{Hinweis}:  Am einfachsten ist es, die Funktion  $\texttt{power}(M)$ rekursiv zu
-      implementieren. 
+\item Implementieren Sie eine Funktion \texttt{power}, so dass $\texttt{power}(M)$ f\"ur eine
+      gegebene Menge $M$ die Potenz-Menge von $M$ berechnet.  Sie sollen diese Funktion rekursiv implementieren
+      und sich dabei an dem Beweis im Skript zur Vorlesung 
+      ``\href{https://github.com/karlstroetmann/Lineare-Algebra/blob/master/Skript/lineare-algebra.pdf}{Lineare Algebra}'' 
+      orientieren, mit dem wir gezeigt haben, dass f¸r eine endliche Menge $M$ die Gleichung
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\displaystyle\texttt{card}\bigl(2^M\bigr) = 2^{\texttt{card}(M)}$
+      \\[0.2cm]
+      gilt.
+\item Geben Sie nun eine alternative Implementierung der Funktion \texttt{power} an, bei der Sie die Funktion
+      \texttt{subsets} aus Teil (a) dieser Aufgabe verwenden.
 \end{enumerate}
 \pagebreak
 
 \exercise
 Eine Liste der Form $[a, b, c]$ wird als 
-\emph{geordnetes} \href{http://de.wikipedia.org/wiki/Pythagoreisches_Tripel}{\emph{pythagoreisches Tripel}}
+\blue{geordnetes} \href{http://de.wikipedia.org/wiki/Pythagoreisches_Tripel}{pythagoreisches Tripel}
 bezeichnet, wenn 
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -116,10 +131,10 @@ gilt.  Beispielsweise ist $[3,4,5]$ ein geordnetes pythagoreisches Tripel, denn 
 \item Implementieren Sie eine Prozedur \texttt{pythagoras}, so dass der Aufruf
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{pythagoras}(n)$
+      $\texttt{pythagoras}(n)$
       \\[0.2cm]
       die Menge aller geordneten  pythagoreischen Tripel $[a,b,c]$ berechnet, f¸r die $c \leq n$ ist.
-\item Ein pythagoreisches Tripel $[a,b,c]$ ist ein \emph{reduziertes} Tripel, wenn
+\item Ein pythagoreisches Tripel $[a,b,c]$ ist ein \blue{reduziertes} Tripel, wenn
       die Zahlen $a$, $b$ und $c$ keinen nicht-trivialen gemeinsamen Teiler haben.
       Implementieren Sie eine Funktion \texttt{isReduced}, die als Argumente drei nat¸rliche Zahlen 
       $a$, $b$ und $c$ erh‰lt und die genau dann \texttt{true} als Ergebnis zur¸ck liefert,
@@ -127,7 +142,7 @@ gilt.  Beispielsweise ist $[3,4,5]$ ein geordnetes pythagoreisches Tripel, denn 
 \item Implementieren Sie eine Prozedur \texttt{reducedPythagoras}, so dass der Aufruf
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{reducedPythagoras}(n)$
+      $\texttt{reducedPythagoras}(n)$
       \\[0.2cm]
       die Menge aller geordneten pythagoreischen Tripel $[a,b,c]$ berechnet, die reduziert sind.
 
@@ -137,18 +152,45 @@ gilt.  Beispielsweise ist $[3,4,5]$ ein geordnetes pythagoreisches Tripel, denn 
 
 \exercise
 Nehmen Sie an, ein Spieler hat im Poker (Texas Hold'em) die beiden
-Karten $\pair(8,\spade)$ und $\pair(9,\spade)$ erhalten.  Schreiben Sie ein
+Karten $\pair(8,\red{\heart})$ und $\pair(9,\red{\heart})$ erhalten.  Schreiben Sie ein
 \textsc{SetlX}-Programm, dass die folgenden Fragen beantworten.
 \begin{enumerate}
 \item Wie groﬂ ist die Wahrscheinlichkeit, dass im Flop wenigsten zwei weitere Karten
-      der Farbe $\spade$ liegen?
+      der Farbe \red{$\heart$} liegen?
 \item Wie groﬂ ist die Wahrscheinlichkeit, dass alle drei Karten im Flop
-      die Farbe $\spade$ haben?
+      die Farbe \red{$\heart$} haben?
 \end{enumerate}
 
+\exercise
+Ein \href{https://de.wikipedia.org/wiki/Anagramm}{Anagramm} eines gegebenen Wortes $v$ ist ein Wort $w$, dass
+aus dem Wort $v$ durch Umstellung von Buchstaben entsteht.  Beispielsweise ist das Wort ``\texttt{atlas}'' ein
+Anagramm des Wortes ``\texttt{salat}''.  Implementieren Sie eine Funktion $\texttt{anagram}(s)$, die f¸r ein
+gegebenes Wort $s$ alle Wˆrter berechnet, die sich aus dem Wort $s$ durch Umstellung von Buchstaben
+ergeben.  Die Menge dieser Wˆrter soll dann als Ergebnis zur¸ck gegeben werden.  Es ist nicht gefordert, dass
+die Anagramme sinnvolle Wˆrter der deutschen Sprache sind.  Beispielsweise ist auch das Wort ``\texttt{talas}''
+ein Anagramm des Wortes ``\texttt{salat}''.
+
+\exercise
+Nehmen Sie an, dass Sie $n$ W¸rfel haben, deren Seiten mit den Zahlen 1 bis 6 bedruckt sind.  Weiter ist eine
+feste Zahl $s$ vorgegeben.  Entwickeln Sie eine \textsc{SetlX}-Prozedur \texttt{numberDiceRolls}, so dass der Aufruf
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{numberDiceRolls}(n, s)$ 
+\\[0.2cm]
+die Anzahl der Mˆglichkeiten berechnet, mit $n$ W¸rfeln in der Summe die Zahl $s$ zu w¸rfeln.  Beispielsweise
+soll $\texttt{numberDiceRolls}(3, 5)$ den Wert 6 liefern, denn es gibt 6 Mˆglichkeiten, um mit drei W¸rfeln in
+der Summe eine 6 zu w¸rfeln:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\langle1, 1, 3\rangle, \langle1, 2, 2\rangle, \langle1, 3, 1\rangle, \langle2, 1, 2\rangle, \langle2, 2,
+1\rangle, \langle3, 1, 1\rangle$
+
+\noindent
+\textbf{Hinweis}:  Implementieren Sie eine geeignete Hilfsfunktion.
 \end{document}
 
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: t
+%%% ispell-local-dictionary: "deutsch8"
 %%% End: 
