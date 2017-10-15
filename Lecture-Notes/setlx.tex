@@ -1137,8 +1137,8 @@ If \texttt{x} and \texttt{y} are sets instead, then
 \item the expression ``\texttt{x < y}'' is true if \texttt{x} is a \blue{proper subset} of \texttt{y}, 
       i.e.~if $\texttt{x} \subset \texttt{y}$ holds.
 
-      A set $x$ is a proper subset of a set $y$ if $x$ is a subset of $y$, and, furthermore, $x \not= y$,
-      i.e.~we have
+      A set $x$ is a proper subset of a set $y$ (written $x \subset y$) if $x$ is a subset of $y$, and,
+      furthermore, $x$ is different from $y$, i.e.~we have
       \\[0.2cm]
       \hspace*{1.3cm}
       $x \subset y \;\stackrel{\mathrm{def}}{\Longleftrightarrow}\; x \subseteq y \wedge x \not= y$. 
@@ -1149,14 +1149,14 @@ If \texttt{x} and \texttt{y} are sets instead, then
 \item The expression ``\texttt{x >= y}'' is true if \texttt{y} is a subset of \texttt{x},
       i.e.~if $\texttt{y} \subseteq \texttt{x}$ holds.
 \end{enumerate}
-If \texttt{x} is an object and \texttt{S} is a set or a list, then
+If \texttt{x} is an object and \texttt{S} is a set or a list, then the expression
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{x in S}
 \\[0.2cm]
-returns ``\texttt{true}'' if \texttt{x} is an element of \texttt{S},
+returns ``\texttt{true}'' if \texttt{x} is an element of \texttt{S}.
 
-The comparison tests that can be performed using the relational operators previously discussed can be combined into more
+The comparison tests using the previously discussed relational operators can be combined into more
 complex tests via the following logical operators:
 \begin{enumerate}
 \item ``\texttt{!}''  represents logical \blue{negation}, i.e.~a Boolean expression of the form
@@ -1194,8 +1194,9 @@ complex tests via the following logical operators:
       \hspace*{1.3cm}
       \texttt{a <!=> b}
       \\[0.2cm]
-      is \texttt{true} iff the truth values of \texttt{a} and \texttt{b} are different.  Hence, the operator
-      ``\texttt{<!=>}'' implements an \href{https://en.wikipedia.org/wiki/Exclusive_or}{exclusive or}.
+      is \texttt{true} iff the truth values of \texttt{a} and \texttt{b} are different.  Hence, the expression
+      ``\texttt{$a$ <!=> $b$}'' is an \href{https://en.wikipedia.org/wiki/Exclusive_or}{exclusive or} of the
+      expressions $a$ and $b$, i.e.~it is true if either $a$ or $b$ is true but not both.
 \end{enumerate}
 Syntactically, the operators ``\texttt{<!=>}'' and ``\texttt{<==>}'' have the lowest \blue{precedence},
 the \blue{precedence} of ``\texttt{=>}'' is lower than the \blue{precedence} of the operator
@@ -1238,7 +1239,7 @@ $1 \cdot 1 < 10$, \quad $2 \cdot 2 < 10$, \quad and \quad $3 \cdot 3 < 10$.
 \\[0.2cm]
 A more interesting example is shown in Figure \ref{fig:primes-forall.stlx} on page
 \pageref{fig:primes-forall.stlx}.  The program
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-forall.stlx}{\texttt{primes-forall.stlx}},
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-forall.stlx}{\texttt{primes-forall.stlx}}
 computes the set of prime numbers less than 100 by making use of a universal quantifier.
 For a given natural number \texttt{p}, the Boolean expression
 \\[0.2cm]
@@ -1278,7 +1279,7 @@ Besides the universal quantifier, \setlx\ supports the \blue{existential quantif
 given as follows: 
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{exists (x in s | b)}
+\texttt{exists (x in S | b)}
 \\[0.2cm]
 Here, \texttt{x} is a variable, \texttt{S} is a set or a list and \texttt{b} is a Boolean expression such
 that the variable \texttt{x} occurs in \texttt{b}.  Mathematically, this expression is interpreted
@@ -1291,7 +1292,7 @@ If there is at least one value for \texttt{x} in \texttt{S} such that \texttt{b}
 then the expression 
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{exists (x in s | b)}
+\texttt{exists (x in S | b)}
 \\[0.2cm]
 is evaluated as \texttt{true}. 
 
@@ -1299,16 +1300,46 @@ is evaluated as \texttt{true}.
 If the evaluation of
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{exists (x in s | b)}
+\texttt{exists (x in S | b)}
 \\[0.2cm]
-yields \texttt{true}, then the variable \texttt{x} is bound to a value from \texttt{S} such that the
+yields \texttt{true}, then the variable \texttt{x} is bound to the first value from \texttt{S} such that the
 evaluation of \texttt{b} returns \texttt{true}.  Otherwise, \texttt{x} is set to the undefined value
 \texttt{om}.  For example, evaluating the expression
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{exists (x in [1..10] | 2**x < x**2)}
 \\[0.2cm]
-returns \texttt{true} and, furthermore, assigns the value \texttt{3} to the variable \texttt{x}.
+returns \texttt{true} and, furthermore, assigns the value \texttt{3} to the variable \texttt{x}.  On the other
+hand, if the evaluation of 
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{exists (x in S | b)}
+\\[0.2cm]
+yields \texttt{false}, then the variable \texttt{x} is set to the undefined value.
+
+Similarly, if the evaluation of 
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{forall (x in S | b)}
+\\[0.2cm]
+yields \texttt{false}, then the variable \texttt{x} is set to the first value from \texttt{S} that falsifies \texttt{b}.
+For example, after evaluating the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{forall(x in [1 .. 10] | x**2 <= 2**x);}
+\\[0.2cm]
+the variable \texttt{x} is set to the number \texttt{3} since this is the first number from the set
+$\{1,\cdots,10\}$ such that the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{x**2 <= 2**x}
+\\[0.2cm]
+is false.  On the other hand if the evaluation of an expression of the form
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{forall (x in S | b)}
+\\[0.2cm]
+yields \texttt{true}, then the variable \texttt{x} is set to the undefined value. \eox
 
 \subsection{\texttt{Switch}-Statements}
 Instead of using \texttt{if}-\texttt{else}-statements, it is sometimes more convenient to use a
@@ -1318,7 +1349,7 @@ Instead of using \texttt{if}-\texttt{else}-statements, it is sometimes more conv
 \texttt{body}$_1$, $\cdots$, \texttt{body}$_n$, \texttt{body}$_{n+1}$ are lists of statements.
 When this \texttt{switch}-statement is executed, the Boolean expressions
 \texttt{test}$_1$, $\cdots$, \texttt{test}$_n$ are evaluated one by one until we find an expression 
-\texttt{test}$_i$ that is \texttt{true}.  Then the corresponding statements \texttt{body}$_i$ are executed and
+\texttt{test}$_i$ that is \texttt{true}.  Then the corresponding statements in \texttt{body}$_i$ are executed and
 the \texttt{switch}-statement ends.   The block \texttt{body}$_{n+1}$ following the keyword \texttt{default} is
 only executed if all of the tests \texttt{test}$_1$, $\cdots$, \texttt{test}$_n$ fail.
 A \texttt{switch}-statement can be rewritten as a long chain of \texttt{if}-\texttt{else-if} $\cdots$
@@ -1353,7 +1384,7 @@ Figure \ref{fig:switch.stlx} shows the program
 The purpose of this program is to print a message that depends on the last digit of a number that is input by
 the user.  In this program, the \texttt{switch}-statement  results in code that is much clearer than
 it would be if we had
-used \texttt{if}-statements instead.  Later, the chapter on propositional logic will present examples of the
+used \texttt{if-else}-statements instead.  Later, the chapter on propositional logic will present examples of the
 \texttt{switch}-statement that are even more convincing.
 
 
@@ -1394,18 +1425,18 @@ The programming language \texttt{C} has a \texttt{switch}-statement that is synt
 \colorbox{amethyst}{differently} in \texttt{C}.  In \texttt{C}, if $\texttt{body}_i$ is executed and $\texttt{body}_i$ does not contain a
 \texttt{break}-statement, then the following block $\texttt{body}_{i+1}$ is also executed.  In contrast,
 \setlx\ will \colorbox{amethyst}{never} execute more than one of the blocks $\texttt{body}_i$.
-\pagebreak
+
 
 \subsection{\texttt{while}-Loops}
 The syntax of  \texttt{while}-loops is shown in Figure \ref{fig:while} on page
 \pageref{fig:while}.  Here,  \texttt{test} is a Boolean expression and \texttt{body} is a list of statements.  
 The evaluation of \texttt{test} must
-return either  ``\texttt{true}'' or ``\texttt{false}''.
-If the evaluation of \texttt{test} yields  ``\texttt{false}'', then the loop is terminated.
+return either  \texttt{true} or \texttt{false}.
+If the evaluation of \texttt{test} yields  \texttt{false}, then the loop is terminated.
 Otherwise, the statements in \texttt{body} are executed.  After that, the \texttt{while}-loop starts over
-again, i.e.~the Boolean expression \texttt{test} is evaluated and depending on the result of this evaluation
+again, i.e.~the Boolean expression \texttt{test} is evaluated again and depending on the result of this evaluation
 the statements in  \texttt{body} are executed again.  This is repeated until the evaluation of  \texttt{test}
-finally yields  ``\texttt{false}''.  It should be noted that in \setlx\ \texttt{while}-loops work in exactly
+finally yields  \texttt{false}.  It should be noted that in \setlx\ \texttt{while}-loops work in exactly
 the same way as they work in the programming language \texttt{C}.
 
 \begin{figure}[!ht]
@@ -1450,6 +1481,7 @@ prime if there is no prime number \texttt{t} less than \texttt{p} that divides \
 \caption{Iterative computation of prime numbers.}  \label{fig:primes-while.stlx}
 \end{figure} %\$
 
+\pagebreak
 
 \subsection{\texttt{for}-Loops}
 The syntax of  \texttt{for}-loops is shown in Figure \ref{fig:for} on page \pageref{fig:for}.  
@@ -1457,10 +1489,8 @@ Here \texttt{S} is either a set or a list, while \texttt{x} is the name of a var
 is a list of statements.
 If \texttt{S} contains $n$ elements, then the \texttt{for}-loop is executed $n$ times.  Every time the loop is
 executed, a different value from \texttt{S} is assigned to the variable \texttt{x} and the statements in
-\texttt{body} are executed using the current value of \texttt{x}.
-
-A \texttt{for}-loop also works if \texttt{S} is a string.  In this case, the loop iterates over the different characters
-of the string \texttt{S}.
+\texttt{body} are executed using the current value of \texttt{x}.  A \texttt{for}-loop also works if \texttt{S}
+is a string.  In this case, the loop iterates over the different characters of the string \texttt{S}.
 
 \begin{figure}[!ht]
   \centering
@@ -1513,7 +1543,7 @@ the prime numbers.
             j += 1;
         }
     }
-    print({ i : i in [2 .. n] | primes[i] > 0 });
+    print({ i : i in [2 .. n] | primes[i] != 0 });
 \end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{The algorithm of Eratosthenes.}  \label{fig:primes-for.stlx}
@@ -1536,7 +1566,7 @@ Figure \ref{fig:primes-eratosthenes.stlx} on page \pageref{fig:primes-eratosthen
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/primes-eratosthenes.stlx}{\texttt{primes-eratosthenes.stlx}}, 
 that makes use of these ideas.  In order to skip the inner \texttt{while}-loop if \texttt{i} is not
 a prime number we have used the statement ``\texttt{continue}''.  This statement terminates the
-current iteration of the loop and proceeds to the next iteration.  This works in the same way as in
+current iteration of the innermost loop and proceeds to the next iteration.  This works in the same way as in
 the programming language \texttt{C}. 
 
 
@@ -1594,11 +1624,14 @@ shows the following output:
 \hspace*{1.3cm}
 \texttt{procedure (p) \{ return forall (x in divisors(p) | x in \{1, p\}); \}}.
 \\[0.2cm]
-This shows that the definitions of user defined procedures are available at runtime.
+This shows that the definitions of user defined function are available at run time once the file defining them
+has been loaded.
 
 \section{Strings}
-\setlx\ support \blue{strings}.  In  \textsc{SetlX} these have to be enclosed either in double quotes or in
-single quotes.  The operator ``\texttt{+}'' can be used to concatenate strings.  For example, the expression
+\setlx\ support \blue{strings}.  \href{https://en.wikipedia.org/wiki/String_(computer_science)}{Strings} are
+nothing more but sequences of characters.  In \textsc{SetlX}, these have to be 
+enclosed either in double quotes or in single quotes.  The operator ``\texttt{+}'' can be used to concatenate
+strings.  For example, the expression 
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{\squote{abc} + \texttt{'uvw'};}
@@ -1625,19 +1658,41 @@ arguments does not matter. Hence, the expression
 \hspace*{1.3cm}
 \texttt{\squote{abc} * 3}
 \\[0.2cm]
-also yields the result \squote{abcabcabc}.
+also yields the result \squote{abcabcabc}.  In order to extract substrings from a given string, we can use the same
+slicing operator that also works for lists.  Therefore, if $s$ is a string and $k$ and $l$ are numbers, then
+the expression 
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{$s$[$k$..$l$]}
+\\[0.2cm]
+extracts the substring form $s$ that starts with the $k$th character of $s$ and ends with the $l$th character.
+For example, if \texttt{s} is defined by the assignment
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{s := "abcdefgh";}
+\\[0.2cm]
+then the expression \texttt{s[2..5]} returns the substring
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{"bcde"}.
+
 
 \section{Numerical Functions}
-In order to support numerical analysis, \setlx\ provides floating point numbers.  These are internally stored
-as 64 bit numbers.  In order to work with floating point numbers,  \textsc{SetlX} provides the following functions:
+In order to support numerical computations, \setlx\ provides
+\href{https://en.wikipedia.org/wiki/Floating-point_arithmetic}{floating point numbers}.  These are internally
+stored as 64 bit numbers according to the \href{https://en.wikipedia.org/wiki/IEEE_754}{IEEE standard 754}.  In
+order to work with floating point numbers,  \textsc{SetlX} provides the following functions: 
 \begin{enumerate}
 \item $\texttt{sin}(x)$ computes the \href{https://en.wikipedia.org/wiki/Sine}{sine} of $x$.
-      Furthermore, the \blue{trigonometrical} functions $\texttt{cos}(x)$ and $\texttt{tan}(x)$ are supported.  The
-      \blue{inverse} trigonometrical functions are written as 
-      $\texttt{asin}(x)$, $\texttt{acos}(x)$ and $\texttt{atan}(x)$.    
+      Furthermore, the \href{https://en.wikipedia.org/wiki/Trigonometric_functions}{trigonometric functions}
+      $\texttt{cos}(x)$ and $\texttt{tan}(x)$ are supported.  The 
+      \href{https://en.wikipedia.org/wiki/Inverse_trigonometric_functions}{inverse trigonometrical functions}
+      are written as $\texttt{asin}(x)$, $\texttt{acos}(x)$ and $\texttt{atan}(x)$.    
 \item $\texttt{sinh}(x)$ computes the \href{https://en.wikipedia.org/wiki/Hyperbolic_function}{hyperbolic sine} of $x$.
-      Similarly,  $\mathtt{cosh}(x)$ returns the hyperbolic cosine of $x$, while
-      $\mathtt{tanh}(x)$ returns the hyperbolic tangent of $x$.
+       Similarly,  $\mathtt{cosh}(x)$ returns the
+       \href{https://en.wikipedia.org/wiki/Hyperbolic_function#Hyperbolic_cosine}{hyperbolic cosine} of $x$, while
+      $\mathtt{tanh}(x)$ returns the
+      \href{https://en.wikipedia.org/wiki/Hyperbolic_function#Hyperbolic_tangent}{hyperbolic tangent} of $x$. 
 \item $\texttt{exp}(x)$ computes the \href{https://en.wikipedia.org/wiki/Exponential_function}{exponential
       function}, i.e.~we have 
       \\[0.2cm]
@@ -1664,7 +1719,8 @@ as 64 bit numbers.  In order to work with floating point numbers,  \textsc{SetlX
       $\texttt{ceil}(x) = \min(\{ z \in \mathbb{Z} \mid z \geq x \})$.
       \\[0.2cm]
       Hence the function \texttt{ceil} rounds up.
-\item $\texttt{floor}(x)$ is the biggest integer not exceeding $x$, we have
+\item $\texttt{floor}(x)$ computes the \href{https://en.wikipedia.org/wiki/Floor_and_ceiling_functions}{floor function},
+      that is $\texttt{floor}(x)$ is the biggest integer not exceeding $x$, we have
       \\[0.2cm]
       \hspace*{1.3cm}
       $\texttt{floor}(x) = \max(\{ z \in \mathbb{Z} \mid z \leq x \})$.
@@ -1673,7 +1729,11 @@ as 64 bit numbers.  In order to work with floating point numbers,  \textsc{SetlX
 \item $\texttt{round}(x)$ returns the nearest integer.  Floating point numbers of the form $x.5$ are rounded up.
       For example, $\texttt{round(1.5)}=2$ and $\texttt{round(-1.5)}=-1$.
 \end{enumerate}
-\textsc{SetlX} supports \blue{unlimited precision} via rational numbers.  For example, the expression
+\textsc{SetlX} supports \blue{unlimited precision}\footnote{
+  In this context, \blue{unlimited precision} means
+  that the precision is only limited by the available memory.
+}
+via rational numbers.  For example, the expression
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{1/2 + 1/3;}
@@ -1685,16 +1745,18 @@ there any rounding errors.  For example, to compute
 \hspace*{1.3cm}
 $\displaystyle \mathrm{e} = \sum\limits_{n=0}^\infty \frac{1}{n!}$.
 \\[0.2cm]
-In \textsc{SetlX} the command
+In \textsc{SetlX} the expression
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{nDecimalPlaces(+/ \{ 1/n! : n in \{0..50\} \}, 50);}
 \\[0.2cm]
-computes $\mathrm{e}$ to a precision of more than 50 decimal digits.  The value returned is
+computes $\mathrm{e}$ to a precision of 50 decimal digits.  The value returned is
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{1.71828182845904523536028747135266249775724709369995}.
-
+\\[0.2cm]
+The function $\texttt{nDecimalPlaces}(x, n)$ takes a rational number $x$ and converts this number into a
+decimal number.  In this process, the first $n$ decimal places following the decimal point are retained.
 
 
 \section{An Application: Fixed-Point Algorithms}
@@ -1710,7 +1772,7 @@ $x_0 := 0$ \quad and \quad $x_{n+1} := \mathtt{cos}(x_n)$ \quad for all $n \in \
 With the help of the 
 \href{https://en.wikipedia.org/wiki/Banach_fixed-point_theorem}{Banach fixed-point theorem}\footnote{
   The Banach fixed-point theorem is discussed in the lecture on
-  \href{https://en.wikipedia.org/wiki/Differential_calculus}{differential calculus}.  This lecture is part of your
+  \href{https://en.wikipedia.org/wiki/Differential_calculus}{differential calculus}.  This lecture is part of the
   second semester.
 }
 it can be shown that this sequence converges to a solution of the equation $x = \cos(x)$, i.e.~if we define
@@ -1757,8 +1819,7 @@ In this program, the iteration stops as soon as the difference between the varia
 \texttt{old\_x} is less that $10^{-13}$.  Here, \texttt{x} corresponds to $x_{n+1}$, while \texttt{old\_x}
 corresponds to $x_n$.  Once the values of $x_{n+1}$ and $x_n$ are sufficiently close, the execution of the \texttt{while} loop
 is stopped using the \texttt{break} statement.  This statement works the same way as in the programming language
-\texttt{C}. 
-
+\texttt{C}, i.e.~it terminates the execution of the innermost loop containing the \texttt{break} statement. 
 
 
 \begin{figure}[!ht]
@@ -1799,17 +1860,17 @@ In this program we have implemented a function \texttt{solve} that takes two arg
       \hspace*{1.3cm}
       $f(x) = x$.
       \\[0.2cm]
-      This equation is solved with the help of the fixed-point algorithm.
+      This equation is solved with the help of a fixed-point algorithm.
 \item \texttt{x0} is used as the initial value for the fixed-point iteration.
 \end{enumerate}
 Line 11 calls \texttt{solve} to compute the solution of the equation $x = \cos(x)$.
 Line 12 solves the equation 
 \\[0.2cm]
 \hspace*{1.3cm}
-$x = \bruch{1}{1+x}$. 
+$\ds x = \bruch{1}{1+x}$. 
 \\[0.2cm]
 This equation is equivalent to the quadratic equation $x^2 + x = 1$.  Note that we have defined the function
- $x \mapsto \frac{1}{1+x}$ via the expression
+ $\ds x \mapsto \frac{1}{1+x}$ via the expression
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{x |-> 1.0/(1+x)}.
