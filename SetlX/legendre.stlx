@@ -1,3 +1,16 @@
+// This procedure checks whether there is a prime between the numbers n ** 2
+// and (n+1) ** 2.
+legendre := procedure(n) {
+    k := n * n + 1;
+    while (k < (n + 1) ** 2) {
+        if (isPrime(k)) {
+            print("$n$**2 < $k$ < $n+1$**2");
+            return true;
+        }
+        k += 1;
+    }
+    return false;
+};
 /* First, we read a number n.  Next, we check whether Legendre's claim is true for 
    this number.  If its wrong, the function just returns and prints the counter example.
    Otherwise, n is incremented and we try to check, whether Legendre's claim is true 
@@ -8,19 +21,6 @@
    would be able to solve open mathematical questions. 
 */
 findCounterExample := procedure(n) {
-    // This procedure checks whether there is a prime between the numbers n ** 2
-    // and (n+1) ** 2.
-    legendre := procedure(n) {
-        k := n * n + 1;
-        while (k < (n + 1) ** 2) {
-            if (isPrime(k)) {
-                print("$n$**2 < $k$ < $n+1$**2");
-                return true;
-            }
-            k += 1;
-        }
-        return false;
-    };
     while (true) {
        if (legendre(n)) {
            n := n + 1;

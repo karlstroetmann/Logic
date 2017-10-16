@@ -1,15 +1,15 @@
 \chapter{Grenzen der Berechenbarkeit}
-In jeder Disziplin der Wissenschaft wird die Frage gestellt, welche Grenzen die
+In jeder Disziplin der Wissenschaft wird die Frage gestellt, welche \blue{Grenzen} die
 verwendeten Methoden haben.   Wir wollen daher in diesem Kapitel beispielhaft ein Problem
 untersuchen, bei dem die Informatik an ihre Grenzen stößt.  Es handelt sich um das
 \href{http://de.wikipedia.org/wiki/Halteproblem}{Halte-Problem}.  
 
 \section{Das Halte-Problem}
-Das Halte-Problem ist die Frage, ob eine gegebene Funktion für eine bestimmte Eingabe 
-terminiert.  Bevor wir formal beweisen, dass das Halte-Problem im Allgemeinen unlösbar ist, wollen 
+Das \blue{Halte-Problem} ist die Frage, ob eine gegebene Funktion für eine bestimmte Eingabe 
+\blue{terminiert}.  Bevor wir formal beweisen, dass das Halte-Problem im Allgemeinen \blue{unlösbar} ist, wollen 
 wir versuchen, anschaulich zu verstehen, warum dieses Problem schwer sein muss.  Dieser informalen
 Betrachtung des Halte-Problems ist der nächste Abschnitt gewidmet.  Im Anschluss an diesen Abschluss
-zeigen wir dann die Unlösbarkeit des Halte-Problems. 
+zeigen wir dann die \blue{Unlösbarkeit} des Halte-Problems. 
 
 \subsection{Informale Betrachtungen zum Halte-Problem}
 
@@ -25,23 +25,23 @@ zeigen wir dann die Unlösbarkeit des Halte-Problems.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    findCounterExample := procedure(n) {
-        legendre := procedure(n) {
-            k := n * n + 1;
-            while (k < (n + 1) ** 2) {
-                if (isPrime(k)) {
-                    print("$n$**2 < $k$ < $n+1$**2");
-                    return true;
-                }
-                k += 1;
+    legendre := procedure(n) {
+        k := n * n + 1;
+        while (k < (n + 1) ** 2) {
+            if (isPrime(k)) {
+                print("$n$**2 < $k$ < $n+1$**2");
+                return true;
             }
-            return false;
-        };
+            k += 1;
+        }
+        return false;
+    };
+    findCounterExample := procedure(n) {
         while (true) {
            if (legendre(n)) {
                n := n + 1;
            } else {
-               print("Legendre was wrong, no prime between $n**2$ and $(n+1)**2$!");
+               print("Eureka! No prime between $n**2$ and $(n+1)**2$!");
                return;
            }
         }
@@ -76,6 +76,11 @@ $(n+1)^2$ bis $(n+2)^2$, dann das Intervall von
 $(n+2)^2$ bis $(n+3)^2$ und so weiter, bis wir schließlich eine Zahl $m$ finden, so dass zwischen
 $m^2$ und $(m+1)^2$ keine Primzahl liegt.  Falls Legendre Recht hatte, werden wir nie ein solches
 $k$ finden und in diesem Fall wird der Aufruf $\texttt{findCounterExample}(1)$ nicht terminieren. 
+
+Die Funktion \texttt{legendre}, die für eine gegebene natürliche Zahl $n$ überprüft, ob zwischen $n^2$ und und
+$(n+1)^2$ eine Primzahl liegt, benutzt die vordefinierte Funktion \texttt{isPrime}, mit der wir für eine
+vorgegebene natürliche Zahl $k$ überprüfen können, ob $k$ eine Primzahl ist.
+
 
 Nehmen wir nun an, wir hätten ein schlaues Programm, nennen wir es \texttt{stops}, das als Eingabe
 eine \textsc{SetlX} Funktion $f$ und ein Argument $a$ verarbeitet und das uns die Frage, ob die Berechnung von $f(a)$
