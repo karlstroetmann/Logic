@@ -1871,7 +1871,7 @@ $\ds x = \bruch{1}{1+x}$.
 \\[0.2cm]
 This equation is equivalent to the quadratic equation $x^2 + x = 1$.  Note that we have defined the function
  $\ds x \mapsto \frac{1}{1+x}$ via the expression
-\\[0.2cm]
+ \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{x |-> 1.0/(1+x)}.
 \\[0.2cm]
@@ -1913,17 +1913,17 @@ As a card is determined by its value and its suit, a card can be represented as 
 denotes the value while $s$ is the suit of the card.  Hence, the set of all cards can be represented as the set
 \\[0.2cm]
 \hspace*{1.3cm} 
-$\textsl{deck} = \{ \pair(v,s) \mid v \in \textsl{values} \wedge \textsl{s} \in \textsl{suits} \}$.
+$\textsl{deck} = \bigl\{ \pair(v,s) \mid v \in \textsl{values} \wedge \textsl{s} \in \textsl{suits} \bigr\}$.
 \\[0.2cm]
 At the start of a game of Texas Hold'em, every player receives two cards.  These two cards are known
-as the \blue{preflop} or the \blue{hole}.  Next, there is a bidding phase where players can bet on their
+as the \blue{preflop} or the \blue{hole}.  Next, there is a \blue{bidding phase} where players can bet on their
 cards.   After this bidding phase, the dealer puts three cards open on the table.  These three cards are
 known as \blue{flop}.  Let us assume that a player has been dealt the set of cards
 \\[0.2cm]
 \hspace*{1.3cm}
 $\{ \pair(3, \club), \pair(3, \spade) \}$.
 \\[0.2cm]
-This set of cards is known as a pocket pair.  Then the player would like to know the probability
+This set of cards is known as a \blue{pocket pair}.  Then the player would like to know the probability
 that the flop will contain another card with value $3$, as this would greatly increase her chance of
 winning the game.  In order to compute this probability we have to compute the number of possible
 flops that contain a card with the value $3$ and we have to divide this number by the number of all
@@ -2010,12 +2010,12 @@ program line by line.
       the ratio of the number of flops containing a card with a value of 3 to the number of all possible flops.
 
       However, we have to be careful here:  The evaluation of the expressions
-      \texttt{\#trips} and \texttt{\#flops} produces integer numbers.  Therefore, the division
-      \texttt{\#trips / \#flops} yields a rational number.  As we intend to compute a floating point
+      \texttt{\#trips} and \texttt{\#flops} produces \blue{integer} numbers.  Therefore, the division
+      \texttt{\#trips / \#flops} yields a \blue{rational} number.  As we intend to compute a \blue{floating point}
       number we have to convert the result into a floating point number by multiplying the result
       with the floating point number $1.0$.
 \end{enumerate}
-When we run the program we see that the probability of improving a pocket pair on the flop to trips or better
+When we run the program we see that the probability of improving a \blue{pocket pair} on the flop to \blue{trips} or better
 is about  $11.8\%$.
 
 \remarkEng
@@ -2091,7 +2091,7 @@ Furthermore, we want to be able to compute the corresponding path connecting the
 
 
 \subsection{Computing the Transitive Closure of a Relation}
-We have already noted that a graph can be represented as the set of its edges and hence as a relation.
+We have already noted that a graph can be represented as the set of its edges and hence as a \blue{relation}.
 In order to decide whether there is a path connecting two vertices we have to compute the 
 \href{https://en.wikipedia.org/wiki/Transitive_closure}{transitive closure} $R^+$ of a relation $R$.  
 In the \href{https://github.com/karlstroetmann/Lineare-Algebra/blob/master/Script/lineare-algebra.pdf}{math lecture}
@@ -2100,7 +2100,7 @@ we have seen that the transitive closure $R^+$ can be computed as follows:
 \hspace*{1.3cm}
 $R^+ = \bigcup\limits_{n=1}^{\infty} R^n = R^1 \cup R^2 \cup R^3 \cup \cdots$  
 \\[0.2cm]
-When first encountered, this formula might look intimidating as it suggests an infinite computation.
+Initially, this formula might look intimidating as it suggests an infinite computation.
 Fortunately, it turns out that we do not have to compute all powers of the form $R^n$.  Let me
 explain the reason that allows us to cut the computation short.  
 \begin{enumerate}
@@ -2141,9 +2141,9 @@ connects the same vertices.  Therefore, for a finite graph with $k$ vertices, th
 transitive closure can be simplified as follows:
 \\[0.2cm]
 \hspace*{1.3cm} 
-$R^+ = \bigcup\limits_{i=1}^{k-1} R^i$.
+$\ds R^+ = \bigcup\limits_{i=1}^{k-1} R^i$.
 \\[0.2cm]
-While we could use this formula as its stands, it is more efficient to use a fixed-point iteration instead.
+While we could use this formula as its stands, it is more efficient to use a \blue{fixed-point iteration} instead.
 To this end, we prove that the transitive closure $R^+$ satisfies the following equation:
 \begin{equation}
   \label{fixpunkt}
@@ -2151,7 +2151,7 @@ To this end, we prove that the transitive closure $R^+$ satisfies the following 
 \end{equation}
 Let me remind you that the precedence of the operator $\circ$ 
 is higher than the precedence of the operator $\cup$.  Therefore, the expression $R \cup R \circ R^+$ is parenthesized
-as $R \cup (R \circ R^+)$.  The equation \ref{fixpunkt} can be proven algebraically.  We have:
+as $R \cup (R \circ R^+)$.  Equation \ref{fixpunkt} can be proven algebraically.  We have:
 \\[0.2cm]
 \hspace*{1.3cm}
 $
@@ -2168,7 +2168,7 @@ $
 $
 \\[0.2cm]
 Equation  \ref{fixpunkt} can now be used to compute $R^+$ via a fixed-point iteration.
-To this end, let us define a sequence $(T_n)_{n \in \mathbb{N}}$ by induction on $n$:
+To this end, let us define a sequence of relations $(T_n)_{n \in \mathbb{N}}$ by induction on $n$:
 \begin{enumerate}
 \item[I.A.] $n = 0$: 
 
@@ -2199,13 +2199,13 @@ In the induction step we observe the following:
 \hspace*{1.3cm}
 $
  \begin{array}{lcll}
-   T_{n+1} & = & R \cup R \circ T_n & \mbox{by definition} \\[0.2cm]
-           & = & R \cup R \circ \left(\bigcup\limits_{i=1}^{n+1} R^i\right) &
-                 \mbox{by induction hypothesis} \\[0.4cm]
-           & = & R \cup R \circ \left(R \cup \cdots \cup R^{n+1}\right) \\[0.2cm] 
-           & = & R \cup R^2 \cup \cdots \cup R^{n+2}  &
-                 \mbox{distributivity} \\[0.2cm]
-           & = & \bigcup\limits_{i=1}^{n+2} R^i & \Box 
+   T_{n+1} & = & \ds R \cup R \circ T_n & \mbox{(by definition)} \\[0.2cm]
+           & = & \ds R \cup R \circ \biggl(\bigcup\limits_{i=1}^{n+1} R^i\biggr) &
+                 \mbox{(by induction hypothesis)} \\[0.4cm]
+           & = & \ds R \cup R \circ \left(R \cup \cdots \cup R^{n+1}\right) \\[0.2cm] 
+           & = & \ds R \cup R^2 \cup \cdots \cup R^{n+2}  &
+                 \mbox{(by the distributivity of $\circ$ over $\cup$)} \\[0.2cm]
+           & = & \ds \bigcup\limits_{i=1}^{n+2} R^i & \Box 
    \end{array}
 $
 \\[0.2cm]
@@ -2217,7 +2217,7 @@ The sequence $(T_n)_{n\in\mathbb{N}}$ has another useful property:  It is
 $\forall n \in \mathbb{N}: X_n \subseteq X_{n+1}$,
 \\[0.2cm]
 i.e.~the sets $X_n$ get bigger with growing index $n$.
-The monotonicity of the sequence Folge $(T_n)_{n \in \mathbb{N}}$ is an immediate consequence of the equation
+The monotonicity of the sequence  $(T_n)_{n \in \mathbb{N}}$ is an immediate consequence of the equation
 \\[0.2cm]
 \hspace*{1.3cm}
 $\ds T_n = \bigcup\limits_{i=1}^{n+1} R^i$ 
@@ -2227,9 +2227,9 @@ because we have:
 \hspace*{1.3cm}
 $
 \begin{array}[t]{llcl}
-                & T_n \subseteq T_{n+1} \\[0.2cm]
-\Leftrightarrow & \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{n+2} R^i \\[0.5cm]
-\Leftrightarrow & \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{n+1} R^i \cup R^{n+2} \\
+                & \ds T_n \subseteq T_{n+1} \\[0.2cm]
+\Leftrightarrow & \ds \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{n+2} R^i \\[0.5cm]
+\Leftrightarrow & \ds \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{n+1} R^i \cup R^{n+2} \\
 \end{array}
 $
 \\[0.2cm]
@@ -2237,25 +2237,25 @@ If the relation  $R$ is finite, then the transitive closure $R^+$ is finite, too
 are all subsets of $R^+$ because we have
 \\[0.2cm]
 \hspace*{1.3cm}
-$T_n = \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{\infty} R^i = R^+$ \quad for all $n \in \mathbb{N}$.
+$\ds T_n = \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{\infty} R^i = R^+$ \quad for all $n \in \mathbb{N}$.
 \\[0.2cm]
 Hence the sets $T_n$ can not grow indefinitely.  Because of the monotonicity of the sequence 
 $(T_n)_{n\in\mathbb{N}}$ it follows that there exists an index  $k \in \mathbb{N}$ such that the sets $T_n$ do
 not grow any further once $n$ has reached $k$, i.e.~we have
 \\[0.2cm]
 \hspace*{1.3cm}
-$\forall n \in \mathbb{N}:( n \geq k \rightarrow T_n = T_k)$.
+$\ds \forall n \in \mathbb{N}:( n \geq k \rightarrow T_n = T_k)$.
 \\[0.2cm]
 But this implies that
 \\[0.2cm]
 \hspace*{1.3cm}
-$T_n = \bigcup\limits_{i=1}^{n+1} R^i = \bigcup\limits_{i=1}^{\infty} R^i = R^+$ 
+$\ds T_n = \bigcup\limits_{i=1}^{n+1} R^i = \bigcup\limits_{i=1}^{\infty} R^i = R^+$ 
 \quad holds for all $n \geq k$.
 \\[0.2cm]
 Therefore, the algorithm for computing  $R^+$ iterates the equation 
 \\[0.2cm]
 \hspace*{1.3cm}
-$T_{n+1} := R \cup R \circ T_n$
+$\ds T_{n+1} := R \cup R \circ T_n$
 \\[0.2cm]
 until the equation  $T_{n+1} = T_n$ is satisfied, since this implies that $T_n = R^+$.
 
@@ -2422,7 +2422,7 @@ The resulting program
 is shown in Figure \ref{fig:path.stlx} on page \pageref{fig:path.stlx}.
 Unfortunately, the program does not work any more if the graph is \blue{cyclic}.  A graph is defined
 to be \blue{cyclic} if there is a path of length greater than $1$ that starts and ends at the same
-vertex.  This path is then called a \colorbox{amethyst}{\blue{cycle}}.
+vertex.  This path is then called a \blue{cycle}.
 Figure \ref{fig:graph-zykl} on page \pageref{fig:graph-zykl} shows a cyclic graph.  This graph is
 cyclic because it contains the path
 \\[0.2cm]
