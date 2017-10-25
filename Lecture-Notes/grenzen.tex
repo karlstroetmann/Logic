@@ -164,10 +164,10 @@ wenn der Aufruf $f(a_1, \cdots, a_k)$ das Ergebnis $r$ liefert.  Sind wir an dem
 selbst nicht interessiert, sondern wollen nur angeben, dass ein Ergebnis existiert, so
 schreiben wir \\[0.3cm]
 \hspace*{1.3cm} $f(a_1, \cdots, a_k) \,\downarrow$ \\[0.3cm]
-und sagen, dass der Aufruf $f(a_1, \cdots, a_k)$ \colorbox{yellow}{\blue{terminiert}}.
+und sagen, dass der Aufruf $f(a_1, \cdots, a_k)$ \blue{terminiert}.
 Terminiert der Aufruf $f(a_1, \cdots, a_k)$ nicht, so schreiben wir \\[0.3cm]
 \hspace*{1.3cm} $f(a_1, \cdots, a_k) \,\uparrow$ \\[0.3cm]
-und sagen, dass der Aufruf $f(a_1, \cdots, a_k)$ \colorbox{yellow}{\blue{divergiert}}.  Diese Notation
+und sagen, dass der Aufruf $f(a_1, \cdots, a_k)$ \blue{divergiert}.  Diese Notation
 verwenden wir auch, wenn der Aufruf  $f(a_1, \cdots, a_k)$ mit einer Fehlermeldung abbricht.
 \hspace*{\fill} $\Box$
 }
@@ -197,7 +197,7 @@ Eigenschaft hat:
 \item $t \not\in T\!F \quad\Leftrightarrow\quad \mathtt{stops}(t, a) \leadsto 2$.
 
       Der Aufruf \texttt{stops($t$, $a$)} liefert genau dann den Wert 2 zurück, 
-      wenn $t$ keine Test-Funktion ist.
+      wenn $t$ keine Test-Funktion ist oder der Aufruf $t(a)$ zu einem Fehler führt.
 
 \item $t \in T\!F \,\wedge\, t(a)\downarrow \quad\Leftrightarrow\quad
        \mathtt{stops}(t, a) \leadsto 1$.
@@ -264,7 +264,8 @@ Mit dieser Definition ist klar, dass \texttt{turing} eine Test-Funktion ist: \\[
 Damit sind wir in der Lage, den String \texttt{turing} als Eingabe der Funktion \texttt{stops}
 zu verwenden.  Wir betrachten nun den folgenden Aufruf: \\[0.3cm]
 \hspace*{1.3cm} \texttt{stops(\texttt{turing}, \texttt{turing});} \\[0.3cm]
-Da \texttt{turing} eine Test-Funktion ist, können nur zwei Fälle auftreten:
+Da \texttt{turing} eine Test-Funktion ist und der Aufruf von \texttt{turing} mit dem Argument \texttt{turing}
+auch nicht zu einem Fehler führen darf, können nur zwei Fälle auftreten:
 \\[0.1cm]
 \hspace*{1.3cm} 
 $\texttt{stops(\texttt{turing}, \texttt{turing})} \leadsto 0 \quad \vee\quad
@@ -441,6 +442,16 @@ geben, die das Äquivalenz-Problem löst.
 Die Unlösbarkeit des Äquivalenz-Problems und vieler weiterer praktisch interessanter
 Probleme folgen aus dem 1953 von Henry G.~Rice \cite{rice:53} bewiesenen
 \href{http://de.wikipedia.org/wiki/Satz_von_Rice}{Satz von Rice}.
+
+\section{Reflektion}
+Beantworten Sie die folgenden Fragen.
+\begin{enumerate}
+\item Wie ist das Halteproblem definiert?
+\item Versuchen Sie, die Definition der Funktion \texttt{turing} aus dem Gedächtnis aufzuschreiben und führen Sie
+      dann den Nachweis, dass das Halteproblem nicht lösbar ist.
+\item Wie haben wir das Äquivalenz-Problem definiert?
+\item Haben Sie den Beweis der Unlösbarkeit des Äquivalenz-Problems verstanden?
+\end{enumerate}
 
 
 %%% Local Variables: 
