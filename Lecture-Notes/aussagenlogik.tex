@@ -29,16 +29,24 @@ aus dem Wahrheitswert der einzelnen Teilaussagen berechnen lässt.  Darauf
 aufbauend wird dann gefragt, in welcher Art und Weise wir aus gegebenen Aussagen neue 
 Aussagen logisch folgern können.
 
-Um die Struktur komplexerer Aussagen übersichtlich werden zu lassen, führen wir in der Aussagenlogik zunächst sogenannte
-{\color{blue}Aussage-Variablen} ein.  Diese stehen für atomare Aussagen.
+Um die Struktur komplexerer Aussagen übersichtlich darstellen zu können, führen wir in der Aussagenlogik zunächst sogenannte
+{\color{blue}Aussage-Variablen} ein.  Diese Variablen sind Namen, die für atomare Aussagen stehen.
 Zusätzlich führen wir für die Junktoren
 ``\textsl{nicht}'', ``\textsl{und}'', ``\textsl{oder}'', ``\textsl{wenn, $\cdots$ dann}'', und ``\textsl{genau dann, wenn}'' die
-folgenden Abkürzungen ein:
+folgenden Symbole als Abkürzungen ein:
 \begin{enumerate}
 \item $\neg a$ \quad\quad\ steht für \quad \textsl{nicht} $a$ 
+      \vspace*{-0.2cm}
+
 \item $a \wedge b$ \,\quad\ steht für \quad $a$ \textsl{und} $b$
+      \vspace*{-0.2cm}
+
 \item $a \vee b$ \,\quad\ steht für \quad $a$ \textsl{oder} $b$
+      \vspace*{-0.2cm}
+
 \item $a \rightarrow b$   \quad steht für \quad \textsl{wenn} $a$, \textsl{dann} $b$
+      \vspace*{-0.2cm}
+
 \item $a \leftrightarrow b$ \quad steht für \quad  $a$ \textsl{genau dann, wenn} $b$
 \end{enumerate}
 Aussagenlogische Formeln werden aus Aussage-Variablen mit Hilfe von Junktoren aufgebaut
@@ -60,8 +68,8 @@ Diesen Beweis können wir übersichtlicher wie folgt angeben:
 $$ \schluss{\texttt{SonneScheint} \quad\quad \texttt{EsRegnet} \quad\quad \texttt{SonneScheint} \wedge \texttt{EsRegnet} \rightarrow
        \texttt{Regenbogen}}{\texttt{Regenbogen}} 
 $$
-Die Aussagen über dem Bruchstrich bezeichnen wir als {\color{blue}Prämissen}, die Aussage unter dem Bruchstrich ist die {\color{blue}Konklusion}.
-Statt Beweis-Prinzip sagen wir oft auch {\color{blue}Schluss-Regel}.
+Die Aussagen über dem Bruchstrich bezeichnen wir als die {\color{blue}Prämissen}, die Aussage unter dem Bruchstrich ist die {\color{blue}Konklusion}.
+Das Paar, das aus den Prämissen und der Konklusion besteht, bezeichnen wir als {\color{blue}Schluss-Regel}.
 
  Wir stellen fest, dass die obige Schluss-Regel unabhängig von dem Wahrheitswert der Aussagen in dem folgenden Sinne
 gültig ist: Wenn alle Prämissen gültig sind, dann folgt aus rein logischen Gründen auch die Gültigkeit der Konklusion. 
@@ -82,7 +90,7 @@ Formalisieren Sie die Schluss-Regel, die in dem folgenden Argument verwendet wir
 \solution
 Es wird die folgende Schluss-Regel verwendet: \\[0.2cm]
 \hspace*{1.3cm} $\schluss{p \rightarrow q \quad\quad \neg p}{\neg q}$\\[0.2cm]
-Diese Schluss-Regel ist nicht logisch korrekt.  Wenn Sie das nicht einsehen, sollten Sie bei
+Diese Schluss-Regel ist logisch \red{\textbf{nicht}} korrekt.  Wenn Sie das nicht einsehen, sollten Sie bei
 strahlendem Sonnenschein einen Eimer Wasser auf die Straße kippen.  \qed
 \vspace*{0.1cm}
 
@@ -108,7 +116,7 @@ Wir werden in einem späteren Abschnitt den Herleitungs-Begriff formal definieren
 Für den Moment können Sie einfach annehmen, dass ein Kalkül nichts anderes als ein System von
 {\color{blue}Spielregeln} ist, mit dem wir aus gegebenen Formeln rein mechanisch neue Formeln herleiten
 können, ohne dass wir dabei die Formeln im Detail verstehen müssen.  Durch den Umstand, dass
-sich die Spielregeln rein schematisch anwenden lassen, ist es dann möglich einen solchen Kalkül 
+sich die Spielregeln rein schematisch anwenden lassen, ist es dann möglich, einen solchen Kalkül 
 durch ein Programm zu implementieren.
 
 Parallel zu dem Herleitungs-Begriff gibt es auch den sogenannten {\color{blue}Folgerungs-Begriff}.
@@ -164,7 +172,7 @@ Tautologie ist oder ob Sie wenigstens erfüllbar ist.  Solche Verfahren spielen
 in der Praxis eine wichtige Rolle.
 
 \section{Anwendungen der Aussagenlogik}
-Die Aussagenlogik bildet nicht nur die Grundlage für die Prädikatenlogik, sondern sie hat auch wichtige praktische
+Die Aussagenlogik bildet nicht nur die Grundlage für die Prädikatenlogik, sondern sie hat auch wichtige prak\-tische
 Anwendungen.  Aus der großen Zahl der industriellen Anwendungen möchte ich stellvertretend vier Beispiele nennen:
 \begin{enumerate}
 \item Analyse und Design digitaler Schaltungen.
@@ -213,10 +221,10 @@ Anwendungen.  Aus der großen Zahl der industriellen Anwendungen möchte ich stell
 
 \section{Formale Definition der aussagenlogischen Formeln}
 Wir behandeln zunächst die {\color{blue}Syntax} der Aussagenlogik und besprechen anschließend die
-{\color{blue}Semantik}.  Die \textsl{Syntax} gibt an, wie Formeln geschrieben werden.
+{\color{blue}Semantik}.  Die \blue{Syntax} gibt an, wie Formeln geschrieben werden.
 Die {\color{blue}Semantik} befasst sich mit der Bedeutung der Formeln.
-Nachdem wir die Semantik der aussagenlogischen Formeln definiert haben, zeigen wir,
-wie sich diese Semantik in \textsc{SetlX} implementieren lässt.
+Nachdem wir die Semantik der aussagenlogischen Formeln mit Hilfe der Mengenlehre definiert haben, zeigen wir
+anschließend, wie sich diese Semantik in \textsc{SetlX} implementieren lässt.
 
 \subsection{Syntax der aussagenlogischen Formeln}
 Wir betrachten eine Menge $\mathcal{P}$ von  {\color{blue}Aussage-Variablen} als gegeben.
@@ -238,9 +246,9 @@ $\mathcal{F}$ durch eine induktive Definition:
 \item $\verum \in \mathcal{F}$ und $\falsum \in \mathcal{F}$.
 
       Hier steht $\verum$ für die Formel, die immer wahr ist, während $\falsum$ für die 
-      Formel steht, die immer falsch ist.  Die Formel $\verum$ trägt auch den Namen
-      \textsl{\color{blue}Verum},
-      für $\falsum$ sagen wir auch \textsl{\color{blue}Falsum}.
+      Formel steht, die immer falsch ist.  Die Formel $\verum$ trägt den Namen
+      {\color{blue}Verum},
+      für $\falsum$ sagen wir  {\color{blue}Falsum}.
 \item Ist $p \in \mathcal{P}$, so gilt auch $p \in \mathcal{F}$.
 
       Jede aussagenlogische Variable ist also eine aussagenlogische Formel.
@@ -335,7 +343,7 @@ Eine aussagenlogische Interpretation $\mathcal{I}$ interpretiert die Aussage-Var
 Um nicht nur Variablen sondern auch aussagenlogische Formel interpretieren zu können, 
 benötigen wir eine
 Interpretation der Junktoren ``$\neg$'', ``$\wedge$'', ``$\vee$'', ``$\rightarrow$'' und
-``$\leftrightarrow$''.  Zu diesem Zweck definieren wir auf der Menge $\mathbb{B}$
+``$\leftrightarrow$''.  Zu diesem Zweck definieren wir auf der Menge $\mathbb{B}$ der Wahr\-heits-Werte
 Funktionen
 $\circneg$, $\circwedge$, $\circvee$, $\circright$ und $\circleftright$
 mit deren Hilfe wir die aussagenlogischen Junktoren interpretieren können:
@@ -349,7 +357,10 @@ mit deren Hilfe wir die aussagenlogischen Junktoren interpretieren können:
 Wir haben in der Mengenlehre gesehen, dass Funktionen als spezielle Relationen
 aufgefasst werden können.  Die Funktion $\circneg$ dreht die Wahrheits-Werte um und
 kann daher als Relation wie folgt geschrieben werden:
-\[ \circneg = \bigl\{ \pair(\texttt{true},\texttt{false}), \pair(\texttt{false},\texttt{true}) \bigr\}. \]
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds\circneg = \bigl\{ \pair(\texttt{true},\texttt{false}), \pair(\texttt{false},\texttt{true}) \bigr\}$. 
+\\[0.2cm]
 Wir könnten auch die Funktionen $\circwedge$, $\circvee$, $\circright$ und $\circleftright$ als
 Relationen definieren, es ist aber anschaulicher, wenn wir die Werte dieser
 Funktionen durch eine Tabelle festlegen.  Diese Tabelle ist oben auf Seite
@@ -358,19 +369,19 @@ Funktionen durch eine Tabelle festlegen.  Diese Tabelle ist oben auf Seite
 \begin{table}[!ht]
   \centering
 \framebox{
-  \begin{tabular}{|l|l|l|l|l|l|l|}
+  \begin{tabular}{|l|l|l|l|l|l|}
 \hline
-   $p$            & $q$            & $\circneg\;(p)$ & $\circvee\;(p, q)$ & $\circwedge\;(p, q)$ & $\circright\;(p, q)$ & $\circleftright\;(p, q)$
+   $p$            & $q$            & $\circvee\;(p, q)$ & $\circwedge\;(p, q)$ & $\circright\;(p, q)$ & $\circleftright\;(p, q)$
    \\
 \hline
 \hline
-   \texttt{true}  & \texttt{true}  & \texttt{false} & \texttt{true}  & \texttt{true}  & \texttt{true}     & \texttt{true}  \\
+   \texttt{true}  & \texttt{true}   & \texttt{true}  & \texttt{true}  & \texttt{true}     & \texttt{true}  \\
 \hline
-   \texttt{true}  & \texttt{false} & \texttt{false} & \texttt{true}  & \texttt{false} & \texttt{false}    & \texttt{false}  \\
+   \texttt{true}  & \texttt{false}  & \texttt{true}  & \texttt{false} & \texttt{false}    & \texttt{false}  \\
 \hline
-   \texttt{false} & \texttt{true}  & \texttt{true}  & \texttt{true}  & \texttt{false} & \texttt{true}     & \texttt{false} \\
+   \texttt{false} & \texttt{true}   & \texttt{true}  & \texttt{false} & \texttt{true}     & \texttt{false} \\
 \hline
-   \texttt{false} & \texttt{false} & \texttt{true}  & \texttt{false} & \texttt{false} & \texttt{true}     & \texttt{true}  \\
+   \texttt{false} & \texttt{false}  & \texttt{false} & \texttt{false} & \texttt{true}     & \texttt{true}  \\
 \hline
   \end{tabular}}
   \caption{Interpretation der Junktoren.}
@@ -395,7 +406,7 @@ bezeichnen.  Wir setzen:
       für alle $f, g \in \mathcal{F}$.
 \end{enumerate}
 Um die Schreibweise nicht übermäßig kompliziert werden zu lassen, unterscheiden wir in
-Zukunft nicht  mehr zwischen $\widehat{\mathcal{I}}$ und $\mathcal{I}$, wir werden das Hütchen über dem
+Zukunft nicht  mehr zwischen der Funktion $\widehat{\mathcal{I}}$ und der Funktion $\mathcal{I}$, wir werden das Hütchen über dem
 $\mathcal{I}$ also weglassen.
 
 \noindent
@@ -494,7 +505,7 @@ Implikation wird der Satz
 \\[0.2cm]
 als wahr interpretiert, denn die Formel $3 \cdot 3 = 8$ ist ja falsch.  Dass ist problematisch, weil wir diesen Satz in der Umgangssprache 
 als sinnlos erkennen.  Insofern ist die extensionale Interpretation des sprachlichen Junktors
-``\textsl{wenn $\cdots$, dann}'' nur eine Approximation der umgangssprachlichen Interpretation, die sich für die
+``\textsl{wenn $\cdots$, dann}'' nur eine \red{Approximation} der umgangssprachlichen Interpretation, die sich für die
 Mathematik und die Informatik aber als ausreichend erwiesen hat.
 
 Es gibt durchaus auch andere Logiken, in denen die Interpretation des Operators ``$\rightarrow$'' von der
