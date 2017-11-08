@@ -2533,10 +2533,10 @@ Folglich liefert die Funktion \texttt{findValuation} für eine unerfüllbare Menge
 das Ergebnis \texttt{false}, was impliziert, dass $M \vdash \{\}$ gilt.  \qed
 
 \section{Das Verfahren von Davis und Putnam}
-In der Praxis stellt sich oft die Aufgabe, für eine gegebene Menge von Klauseln $K$ eine
-Belegung $\I$ der Variablen zu berechnen, so dass 
+In der Praxis stellt sich oft die Aufgabe, für eine gegebene Menge von Klauseln $K$ eine aussagenlogische
+Belegung $\I$ zu berechnen, so dass 
 \\[0.2cm]
-\hspace*{1.3cm} $\texttt{eval}(k,\I) = \texttt{true}$ \quad für alle $k\in K$ \\[0.2cm]
+\hspace*{1.3cm} $\texttt{eval}(C,\I) = \texttt{true}$ \quad für alle $C\in K$ \\[0.2cm]
 gilt.  In diesem Fall sagen wir auch, dass die Belegung $\I$ eine \blue{Lösung} der
  Klausel-Menge $K$ ist.  Im letzten Abschnitt haben wir bereits die Prozedur \texttt{findValuation}
  kennengelernt, mit der wir eine solche Belegung berechnen könnten.
@@ -2585,11 +2585,11 @@ wahr und falsch machen.
 Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass für zwei Definitionen.
 
 \begin{Definition}[Unit-Klausel]
-  Eine Klausel $k$ heißt \blue{Unit-Klausel}, wenn $k$ nur aus einem Literal besteht.
+  Eine Klausel $C$ heißt \blue{Unit-Klausel}, wenn $C$ nur aus einem Literal besteht.
   Es gilt dann entweder
   \\[0.2cm]
   \hspace*{1.3cm}
-  $k = \{p\}$ \quad oder \quad $k = \{\neg p\}$ 
+  $C = \{p\}$ \quad oder \quad $C = \{\neg p\}$ 
   \\[0.2cm]
   für eine geeignete Aussage-Variable \texttt{p}. \eox
 \end{Definition}
@@ -2601,12 +2601,12 @@ Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass
   \item $K$ enthält die leere Klausel: \qquad $\{\} \el K$.
 
         In diesem Fall ist $K$ offensichtlich unlösbar.
-  \item $K$ enthält nur Unit-Klauseln mit \colorbox{red}{verschiedenen} Aussage-Variablen.
+  \item $K$ enthält nur Unit-Klauseln mit \underline{\red{verschiedenen}} Aussage-Variablen.
         Bezeichnen wir die Menge der aussagenlogischen Variablen mit $\mathcal{P}$,
         so schreibt sich diese Bedingung als 
         \\[0.3cm]
         \hspace*{1.3cm}
-        $\forall k \el K: \texttt{card}(k) = 1$ \quad und \quad
+        $\forall C \el K: \texttt{card}(C) = 1$ \quad und \quad
         $\forall p \el \mathcal{P}: \neg\bigl( \{p\} \in K \wedge \{\neg p\} \in K\bigr)$.
         \\[0.3cm]
         In diesem Fall ist die aussagenlogische Belegung
@@ -2625,22 +2625,22 @@ Wie können wir nun eine Menge von Klauseln so vereinfachen, dass die Menge schli
 noch aus Unit-Klauseln besteht?  Es gibt drei
 Möglichkeiten, Klauselmengen zu vereinfachen:
 \begin{enumerate}
-\item Schnitt-Regel,
-\item Subsumption und
-\item Fallunterscheidung.
+\item \blue{Schnitt-Regel},
+\item \blue{Subsumption} und
+\item \blue{Fallunterscheidung}.
 \end{enumerate}
 Wir betrachten diese Möglickeiten jetzt der Reihe nach.
 
 \subsection{Vereinfachung mit der Schnitt-Regel}
 Eine typische Anwendung der Schnitt-Regel hat die Form: \\[0.2cm]
-\hspace*{1.3cm} $\schluss{ k_1 \cup \{p\} \quad \{\neg p\} \cup k_2}{k_1 \cup k_2}$
+\hspace*{1.3cm} $\schluss{ C_1 \cup \{p\} \quad \{\neg p\} \cup C_2}{C_1 \cup C_2}$
 \\[0.2cm]
-Die hierbei erzeugte Klausel $k_1 \cup k_2$ wird in der Regel mehr Literale enthalten
-als die Prämissen $k_1 \cup \{p\}$ und $\bigl\{\neg p\} \cup k_2$.  Enthält die
-Klausel $k_1 \cup \{p\}$ insgesamt $m+1$ Literale und enthält die Klausel
-$\bigl\{\neg p\} \cup k_2$ insgesamt $n+1$ Literale, so kann die Konklusion $k_1 \cup k_2$ 
+Die hierbei erzeugte Klausel $C_1 \cup C_2$ wird in der Regel mehr Literale enthalten
+als die Prämissen $C_1 \cup \{p\}$ und $\bigl\{\neg p\} \cup C_2$.  Enthält die
+Klausel $C_1 \cup \{p\}$ insgesamt $m+1$ Literale und enthält die Klausel
+$\bigl\{\neg p\} \cup C_2$ insgesamt $n+1$ Literale, so kann die Konklusion $C_1 \cup C_2$ 
 bis zu $m + n$ Literale enthalten.  Natürlich können es auch weniger Literale 
-sein, und zwar dann, wenn es Literale gibt, die sowohl in $k_1$ als auch in $k_2$
+sein, und zwar dann, wenn es Literale gibt, die sowohl in $C_1$ als auch in $C_2$
 auftreten.  Im allgemeinen ist $m + n$ größer als $m + 1$ und als $n + 1$.  Die
 Klauseln wachsen nur dann sicher nicht, wenn entweder $n = 0$ oder $m = 0$ ist.
 Dieser Fall liegt vor, wenn einer der beiden Klauseln nur aus einem Literal besteht
@@ -2658,11 +2658,11 @@ $\texttt{unitCut}(K,l)$ die Klausel-Menge $K$ soweit wie möglich mit Unit-Schnit
 $\{l\}$ vereinfacht:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{unitCut}(K,l) = \Bigl\{ k \backslash \bigl\{ \komplement{\,l\,} \bigr\} \;\Big|\; k \in K \Bigr\}$.
+$\texttt{unitCut}(K,l) = \Bigl\{ C \backslash \bigl\{ \komplement{\,l\,} \bigr\} \;\Big|\; C \in K \Bigr\}$.
 \\[0.2cm]
 Beachten Sie, dass die Menge $\texttt{unitCut}(K,l)$ genauso viele Klauseln enthält wie die Menge
 $K$.  Allerdings sind die Klauseln aus der Menge $K$, die das Literal $\komplement{\,l\,}$
-enthalten, verkürzt worden. 
+enthalten, verkürzt worden.   Alle anderen Klauseln aus $K$ bleiben unverändert.
 
 \subsection{Vereinfachung durch Subsumption}
 Das Prinzip der Subsumption demonstrieren wir zunächst an einem Beispiel.
@@ -2673,13 +2673,13 @@ $\{p\}$ erfüllt ist, ist automatisch auch $\{q, p, \neg r\}$ erfüllt.  Das liegt
 \\[0.2cm]
 \hspace*{1.3cm} $\models p \rightarrow q \vee p \vee \neg r$
 \\[0.2cm]
-gilt.  Allgemein sagen wir, dass eine Klausel $k$
- von einer Unit-Klausel $u$ \blue{subsumiert} wird, wenn
+gilt.  Allgemein sagen wir, dass eine Klausel $C$
+ von einer Unit-Klausel $U$ \blue{subsumiert} wird, wenn
 \\[0.2cm]
-\hspace*{1.3cm} $u \subseteq k$ \\[0.2cm]
-gilt.  Ist $K$ eine Klausel-Menge mit $k \in K$ und $u \in K$ und wird
-$k$ durch $u$ subsumiert, so können wir $K$ durch Unit-Subsumption zu $K - \{k\}$
-vereinfachen, wir können also die Klausel $k$ aus $K$ löschen.  Allgemein definieren wir eine Funktion
+\hspace*{1.3cm} $U \subseteq C$ \\[0.2cm]
+gilt.  Ist $K$ eine Klausel-Menge mit $C \in K$ und $U \in K$ und wird
+$C$ durch $U$ subsumiert, so können wir die Menge $K$ durch Unit-Subsumption zu der Menge $K - \{ C \}$
+verkleinern, wir können also die Klausel $C$ aus $K$ löschen.  Allgemein definieren wir eine Funktion
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{subsume}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$
@@ -2690,12 +2690,12 @@ Die Unit-Klausel $\{l\}$ selbst behalten wir natürlich.  Daher definieren wir:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{subsume}(K, l) := 
-\bigl(K \backslash \bigl\{ k \in K \mid l \in k \bigr\}\bigr) \cup \bigl\{\{l\}\bigr\} = 
-\bigl\{ k \in K \mid l \not\in k \bigr\} \cup \bigl\{\{l\}\bigr\}$.
+\bigl(K \backslash \bigl\{ C \in K \mid l \in C \bigr\}\bigr) \cup \bigl\{\{l\}\bigr\} = 
+\bigl\{ C \in K \mid l \not\in C \bigr\} \cup \bigl\{\{l\}\bigr\}$.
 \\[0.2cm]
 In der obigen Definition muss $\{l\}$ in das Ergebnis eingefügt werden, weil die Menge
-$\bigl\{ k \in K \mid l \not\in k \bigr\}$ die Unit-Klausel $\{l\}$ nicht enthält.
-
+\mbox{$\bigl\{ C \in K \mid l \not\in C \bigr\}$} die Unit-\-Klausel $\{l\}$ nicht enthält.  Die beiden Mengen
+$\mathtt{subsume}(K,l)$ und $K$ sind genau dann äquivalent, wenn $\{l\} \in K$ gilt.
 
 \subsection{Vereinfachung durch Fallunterscheidung}
 Ein Kalkül, der nur mit Unit-Schnitten und Subsumption arbeitet, ist nicht 
@@ -2710,7 +2710,9 @@ Satz.
   so ist $K$ genau dann erfüllbar, wenn $K \cup \bigl\{\{p\}\bigr\}$ oder 
   $K \cup \bigl\{\{\neg p\}\bigr\}$ erfüllbar ist.  
 \end{Satz}
-Beweis: 
+
+\noindent
+\textbf{Beweis}: 
 Ist $K$ erfüllbar durch eine
 Belegung $\I$, so gibt es für  $\I(p)$ zwei Möglichkeiten:  Falls $\I(p) = \texttt{true}$ ist, ist
 damit auch die Menge $K \cup \bigl\{\{p\}\bigr\}$ erfüllbar, andernfalls ist
@@ -2733,7 +2735,7 @@ erreicht.
 Andernfalls untersuchen wir rekursiv ob $K_2$ erfüllbar ist.
 Falls wir nun eine Lösung finden, ist dies auch eine Lösung von $K$ und wenn wir weder
 für $K_1$ noch für $K_2$ eine Lösung finden, dann kann auch $K$ keine Lösung haben,
-denn jede Lösung $\mathcal{I}$ von $K$ muss die Variable $P$ entweder wahr oder falsch machen.
+denn jede Lösung $\mathcal{I}$ von $K$ muss die Variable $p$ entweder wahr oder falsch machen.
 Die rekursive Untersuchung von $K_1$ bzw.~$K_2$ ist leichter als die Untersuchung von $K$,
 weil wir ja in $K_1$ und $K_2$ mit den Unit-Klausel $\{p\}$ bzw.~$\{\neg p\}$
 zunächst Unit-Subsumptionen und anschließend Unit-Schnitte durchführen können.
@@ -2743,7 +2745,7 @@ zunächst Unit-Subsumptionen und anschließend Unit-Schnitte durchführen können.
 Wir können jetzt den Algorithmus von Davis und Putnam skizzieren.
 Gegeben sei eine Menge $K$ von Klauseln.  Gesucht ist dann eine Lösung von $K$.  Wir
 suchen  also eine Belegung $\I$, so dass gilt: \\[0.2cm]
-\hspace*{1.3cm} $\I(k) = \texttt{true}$ \quad für alle $k \in K$.\\[0.2cm]
+\hspace*{1.3cm} $\I(k) = \texttt{true}$ \quad für alle $C \in K$.\\[0.2cm]
 Das Verfahren von Davis und Putnam besteht nun aus den folgenden Schritten.
 \begin{enumerate}
 \item Führe alle Unit-Schnitte und Unit-Subsumptionen aus, die mit Klauseln aus $K$ möglich sind.
@@ -2769,19 +2771,16 @@ wie folgt:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{reduce}(K,l)  = 
- \bigl\{\, k \backslash \{\komplement{l}\} \;|\; k \in K \wedge \komplement{l} \in k \,\bigr\} 
-       \,\cup\, \bigl\{\, k \in K \mid \komplement{l} \not\in k \wedge l \not\in k \} \cup \bigl\{\{l\}\bigr\}.
+ \bigl\{\, C \backslash \{\komplement{l}\} \;|\; C \in K \wedge \komplement{l} \in C \,\bigr\} 
+       \,\cup\, \bigl\{\, C \in K \mid \komplement{l} \not\in C \wedge l \not\in C \} \cup \bigl\{\{l\}\bigr\}.
 $
 \\[0.2cm]
 Die Menge enthält also einerseits die Ergebnisse von Schnitten mit
-der Unit-Klausel $\{l\}$ und andererseits nur noch die Klauseln $k$,
-die mit $l$ nichts zu tun haben weil weder $l \in k$ noch $\komplement{l} \in k$
-gilt.  Außerdem fügen wir auch noch die Unit-Klausel $\{l\}$ hinzu.
+der Unit-Klausel $\{l\}$ und andererseits nur die Klauseln $C$,
+die mit $l$ nichts zu tun haben, weil weder $l \in C$ noch $\komplement{l} \in C$
+gilt.  Außerdem fügen wir noch die Unit-Klausel $\{l\}$ hinzu.
 Dadurch erreichen wir, dass die beiden Mengen $K$ und $\texttt{reduce}(K,l)$
-logisch äquivalent sind, wenn wir diese Mengen als Formeln in konjunktiver Normalform
-interpretieren.  
-
-
+logisch äquivalent sind, falls $\{l\} \in K$ gilt.
 
 \subsection{Ein Beispiel}
 Zur Veranschaulichung demonstrieren wir das Verfahren von Davis und Putnam an einem Beispiel.
@@ -2844,11 +2843,12 @@ daher die aussagenlogische Variable $p$.
       gegebene Menge $K$ unlösbar.
 \end{enumerate}
 Bei diesem Beispiel hatten wir Glück, denn wir mussten nur eine einzige Fallunterscheidung
-durchführen. Bei komplexeren Beispielen ist es häufig so, dass wir mehrere Fallunterscheidungen
-durchführen müssen.
+durchführen. Bei komplexeren Beispielen ist es häufig so, dass wir innerhalb einer Fallunterscheidung eine
+weitere Fallunterscheidungen durchführen müssen.
 
 \subsection{Implementierung des Algorithmus von Davis und Putnam}
-Wir zeigen jetzt die Implementierung der Prozedur \texttt{davisPutnam}, 
+Wir zeigen jetzt die Implementierung der Prozedur 
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/davis-putnam.stlx}{\texttt{davisPutnam}}, 
 mit der die Frage, ob eine Menge von Klauseln erfüllbar ist, beantwortet werden kann. Die
 Implementierung ist in Abbildung \ref{fig:davisPutnam} auf Seite \pageref{fig:davisPutnam}
 gezeigt.  Die Prozedur erhält zwei Argumente: Die Mengen \texttt{Clauses} und \texttt{Literals}.
@@ -2861,7 +2861,7 @@ der Aufruf
 \\[0.2cm]
 eine Menge von Unit-Klauseln \texttt{R}, so
 dass jede Belegung $\I$, die alle Unit-Klauseln aus \texttt{R} erfüllt, auch alle Klauseln aus
-der Menge  $\texttt{clauses}$ erfüllt.  Falls die Menge $\texttt{clauses}$ nicht erfüllbar ist, liefert der Aufruf
+der Menge  $\texttt{Clauses}$ erfüllt.  Falls die Menge $\texttt{Clauses}$ nicht erfüllbar ist, liefert der Aufruf
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{davisPutnam(Clauses, Literals)} 
@@ -3040,7 +3040,7 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
 \begin{enumerate}
 \item Die Prozedur \texttt{selectLiteral} wählt ein beliebiges Literal aus 
       einer gegeben Menge $s$ von Klauseln aus, das außerdem nicht in der Menge
-      \texttt{forbidden} von Literalen vorkommen darf, die bereits benutzt worden sind.
+      \texttt{Used} von Literalen vorkommen darf, die bereits benutzt worden sind.
       Dazu werden alle Klauseln, die ja Mengen von Literalen sind, vereinigt.  Von dieser
       Menge wird dann die Menge der bereits benutzten Literalen abgezogen und aus der
       resultierenden Menge wird mit Hilfe der Funktion $\texttt{rnd}()$ zufällig ein Literal
@@ -3066,7 +3066,7 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
     };
     negateLiteral := procedure(l) {
         match (l) {
-            case !p : return p;
+            case !p : return  p;
             case  p : return !p;
         }
     };
@@ -3089,10 +3089,11 @@ In diesem Abschnitt zeigen wir, wie bestimmte kombinatorische Problem in aussage
 Probleme umformuliert werden können.  Diese
 können dann anschließend mit dem Algorithmus von Davis und Putnam bzw.~mit 
 Verbesserungen dieses Algorithmus gelöst werden.  Als konkretes
-Beispiel betrachten wir das 8-Damen-Problem.  Dabei geht es darum, 8 Damen so auf einem
+Beispiel betrachten wir das \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{8-Damen-Problem}.  Dabei
+geht es darum, 8 Damen so auf einem 
 Schach-Brett aufzustellen, dass keine Dame eine andere Dame schlagen kann.
-Beim Schach-Spiel kann eine Dame dann eine andere Figur schlagen, wenn diese Figur
-entweder 
+Beim \href{https://en.wikipedia.org/wiki/Chess}{Schach-Spiel} kann eine Dame dann eine andere Figur schlagen,
+wenn diese Figur entweder 
 \begin{itemize}
 \item in derselben Zeile,
 \item in derselben Spalte  oder
@@ -3270,8 +3271,8 @@ und die Klausel auf der rechten Seite dieser Äquivalenz schreibt sich in Mengen-
 Die Formel, die für eine Variablen-Menge $V$ ausdrückt, dass keine zwei verschiedenen
 Variablen gleichzeitig gesetzt sind, kann daher als Klausel-Menge in der Form
 \\[0.2cm]
-\hspace*{1.3cm} $\bigl\{\, \{ \neg p, \neg q \} \;|\; p \in V \,\wedge\, q \in V
-\,\wedge\, p \not= q \bigr\}$
+\hspace*{1.3cm}
+$\bigl\{\, \{ \neg p, \neg q \} \;|\; p \in V \wedge\ q \in V \wedge p \not= q \bigr\}$
 \\[0.2cm]
 geschrieben werden.
 Wir setzen diese Überlegungen in eine \textsc{SetlX}-Prozedur um.  Die in Abbildung \ref{fig:atMostOne}
@@ -3301,11 +3302,12 @@ den Wert \texttt{true} hat.
 
 Mit Hilfe der Prozedur \texttt{atMostOne} können wir nun die Prozedur
 \texttt{atMostOneInRow} implementieren.  Der Aufruf \\[0.2cm]
-\hspace*{1.3cm} \texttt{atMostOneInRow}(\textsl{row}, n) \\[0.2cm]
-berechnet für eine gegebene Zeile \textsl{row} bei einer Brettgröße von $n$ eine Formel,
-die ausdrückt, dass in der Zeile \textsl{row} höchstens eine Dame steht.
+\hspace*{1.3cm} 
+\texttt{atMostOneInRow(row, n)} \\[0.2cm]
+berechnet für eine gegebene Zeile \texttt{row} bei einer Brettgröße von \texttt{n} eine Formel,
+die ausdrückt, dass in der Zeile \texttt{row} höchstens eine Dame steht.
 Abbildung \ref{fig:atMostOneInRow} zeigt die
-Prozedur $\texttt{atMostOneInRow}()$: Wir sammeln alle Variablen der durch \texttt{row}
+Prozedur \texttt{atMostOneInRow}: Wir sammeln alle Variablen der durch \texttt{row}
 spezifizierten Zeile
 in der Menge 
 \\[0.2cm]
@@ -3326,7 +3328,7 @@ als Menge von Klauseln liefert.
                   xrightmargin  = 0.8cm
                 ]
     atMostOneInRow := procedure(row, n) {
-        return atMostOne({ @Var(row, j) : j in [1 .. n] });
+        return atMostOne({ @Var(row, j) : j in {1 .. n} });
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -3338,20 +3340,20 @@ Als nächstes berechnen wir eine Formel die aussagt, dass \blue{mindestens} eine 
 Spalte steht.  Für die erste Spalte hätte diese Formel im Falle eine $8 \times 8$-Bretts die Form 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{Var}(1,1) \vee \texttt{Var}(2,1) \vee \texttt{Var}(3,1) \vee \texttt{Var}(4,1) \vee \texttt{Var}(5,1) \vee
-\texttt{Var}(6,1) \vee \texttt{Var}(7,1) \vee \texttt{Var}(8,1)$
+$\texttt{@Var}(1,1) \vee \texttt{@Var}(2,1) \vee \texttt{@Var}(3,1) \vee \texttt{@Var}(4,1) \vee \texttt{@Var}(5,1) \vee
+\texttt{@Var}(6,1) \vee \texttt{@Var}(7,1) \vee \texttt{@Var}(8,1)$
 \\[0.2cm]
 und wenn allgemein eine Spalte $c$ mit $c \in \{1,\cdots,8\}$ gegeben ist, lautet die Formel
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{Var}(1,c) \vee \texttt{Var}(2,c) \vee \texttt{Var}(3,c) \vee \texttt{Var}(4,c) \vee \texttt{Var}(5,c) \vee
-\texttt{Var}(6,c) \vee \texttt{Var}(7,c) \vee \texttt{Var}(8,c)$.
+$\texttt{@Var}(1,c) \vee \texttt{@Var}(2,c) \vee \texttt{@Var}(3,c) \vee \texttt{@Var}(4,c) \vee \texttt{@Var}(5,c) \vee
+\texttt{@Var}(6,c) \vee \texttt{@Var}(7,c) \vee \texttt{@Var}(8,c)$.
 \\[0.2cm]
 Schreiben wir diese Formel in der Mengenschreibweise als Menge von Klauseln, so erhalten wir
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bigl\{ \{\texttt{Var}(1,c) , \texttt{Var}(2,c) , \texttt{Var}(3,c) , \texttt{Var}(4,c) , \texttt{Var}(5,c) ,
-\texttt{Var}(6,c) , \texttt{Var}(7,c) , \texttt{Var}(8,c) \}\bigr\}$.
+$\bigl\{ \{\texttt{@Var}(1,c) , \texttt{@Var}(2,c) , \texttt{@Var}(3,c) , \texttt{@Var}(4,c) , \texttt{@Var}(5,c) ,
+\texttt{@Var}(6,c) , \texttt{@Var}(7,c) , \texttt{@Var}(8,c) \}\bigr\}$.
 \\[0.2cm]
 Abbildung \ref{fig:oneInColumn} zeigt eine \textsc{SetlX}-Prozedur, die für eine gegebene Spalte
 \texttt{column} und eine gegebene Brettgröße \texttt{n }die entsprechende Klausel-Menge berechnet.
@@ -3396,10 +3398,10 @@ die aufsteigenden Diagonalen.  Die längste aufsteigende Diagonale, wir sagen daz
 \blue{Hauptdiagonale}, besteht im Fall eines $8 \times 8$-Bretts aus den
 Variablen \\[0.2cm]
 \hspace*{1.3cm} 
-$\texttt{Var}(8,1),\; \texttt{Var}(7,2),\; \texttt{Var}(6,3),\; \texttt{Var}(5,4),\; \texttt{Var}(4,5),\; \texttt{Var}(3,6),\; 
- \texttt{Var}(2,7),\; \texttt{Var}(1,8)$. 
+$\texttt{@Var}(8,1),\; \texttt{@Var}(7,2),\; \texttt{@Var}(6,3),\; \texttt{@Var}(5,4),\; \texttt{@Var}(4,5),\; \texttt{@Var}(3,6),\; 
+ \texttt{@Var}(2,7),\; \texttt{@Var}(1,8)$. 
 \\[0.2cm]
-Die Indizes $i$ und $j$ der Variablen $\texttt{Var}(i,j)$ erfüllen offenbar
+Die Indizes $i$ und $j$ der Variablen $\texttt{@Var}(i,j)$ erfüllen offenbar
 die Gleichung \\[0.2cm]
 \hspace*{1.3cm} $i + j = 9$. \\[0.2cm]
 Allgemein erfüllen die Indizes der Variablen einer aufsteigenden Diagonale die Gleichung \\[0.2cm]
@@ -3432,8 +3434,8 @@ Um zu sehen, wie die Variablen einer fallenden Diagonale
 charakterisiert werden können, betrachten wir die fallende Hauptdiagonale, die aus den
 Variablen \\[0.2cm]
 \hspace*{1.3cm} 
-$\texttt{Var}(1,1),\; \texttt{Var}(2,2),\; \texttt{Var}(3,3),\; \texttt{Var}(4,4),\; \texttt{Var}(5,5),\; 
- \texttt{Var}(6,6),\; \texttt{Var}(7,7),\; \texttt{Var}(8,8)$ 
+$\texttt{@Var}(1,1),\; \texttt{@Var}(2,2),\; \texttt{@Var}(3,3),\; \texttt{@Var}(4,4),\; \texttt{@Var}(5,5),\; 
+ \texttt{@Var}(6,6),\; \texttt{@Var}(7,7),\; \texttt{@Var}(8,8)$ 
 \\[0.2cm]
 besteht. Die Indizes  $i$ und $j$ dieser Variablen erfüllen offenbar
 die Gleichung \\[0.2cm]
@@ -3489,8 +3491,8 @@ die Vereinigung dieser Mengen.
                   labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm
+                  xleftmargin   = 0.3cm,
+                  xrightmargin  = 0.3cm
                 ]
     allClauses := procedure(n) {
         return   +/ { atMostOneInRow(row, n)         : row in {1..n}        }
@@ -3529,7 +3531,6 @@ Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
         Clauses  := allClauses(n);
         Solution := davisPutnam(Clauses, {});
         if (Solution != { {} }) {
-            // print(solution);
             printBoard(Solution, n);
         } else {
             print("The problem is not solvable for $n$ queens!");
@@ -3590,7 +3591,7 @@ Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
 
 
 Die durch den Aufruf $\texttt{davisPutnam}(\textsl{Clauses}, \{\})$ 
-berechnete Menge \texttt{solution} enthält für jede der Variablen $\texttt{Var}(i,j)$
+berechnete Menge \texttt{solution} enthält für jede der Variablen $\texttt{@Var}(i,j)$
 entweder die Unit-Klausel $\{\texttt{@Var}(i,j)\}$  (falls auf diesem Feld eine Dame steht) oder
 aber die Unit-Klausel  $\{ \texttt{!@Var}(i,j)\}$ (falls das Feld leer bleibt).
 Eine graphische Darstellung des durch die berechnete Belegung dargestellten Schach-Bretts
@@ -3624,7 +3625,8 @@ und Putnam sehr gut, denn die Menge der Klauseln, die von der Prozedur \texttt{a
 berechnet wird, füllt unformatiert fünf Bildschirm-Seiten, falls diese  eine Breite von 80
 Zeichen haben.  In dieser Klausel-Menge kommen 64 verschiedene Variablen vor.
 Der Algorithmus von Davis und Putnam benötigt zur Berechnung einer Belegung, die diese
-Klauseln erfüllt, auf meinem iMac weniger als fünf Sekunden.
+Klauseln erfüllt, auf meinem neuen
+\href{https://www.apple.com/de/shop/buy-mac/imac?product=MNE92D/A&step=config#}{iMac} weniger als eine Sekunde!
 
 In der Praxis gibt es viele Probleme, die sich in ganz ähnlicher Weise auf die Lösung einer
 Menge von Klauseln zurückführen lassen.  Dazu gehört zum Beispiel das Problem, einen
@@ -3632,6 +3634,18 @@ Stundenplan zu erstellen, der gewissen Nebenbedingungen genügt.  Verallgemeineru
 Stundenplan-Problems werden in der Literatur als \blue{Scheduling-Problemen} bezeichnet.
 Die effiziente Lösung solcher Probleme ist Gegenstand der aktuellen Forschung.
 
+\section{Reflexion}
+\begin{enumerate}
+\item Wie haben wir die Menge der aussagenlogischen Formeln definiert?
+\item Wie ist die Semantik der aussagenlogischen Formeln festgelegt worden?
+\item Wie können wir aussagenlogische Formeln in \textsc{SetlX} darstellen?
+\item Was ist eine Tautologie?
+\item Wie können Sie die konjunktive Normalform einer gegebenen aussagenlogischen Formel berechnen und wie lässt
+      sich diese Berechnung in \textsc{SetlX} implementieren?
+\item Wie haben wir den Beweis-Begriff $M \vdash C$ definiert?
+\item Welche Eigenschaften hat der Beweis-Begriff $\vdash$?
+\item Wie funktioniert das Verfahren von Davis und Putnam?
+\end{enumerate}
 
 %\input{compact-barwise}
 

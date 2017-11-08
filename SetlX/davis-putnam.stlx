@@ -1,13 +1,13 @@
-// clauses ist eine Menge von Klauseln und literals ist eine Menge
-// von Literalen.  Der Aufruf DavisPutnam(clauses, literals) versucht 
+// Clauses ist eine Menge von Klauseln und literals ist eine Menge
+// von Literalen.  Der Aufruf DavisPutnam(Clauses, Literals) versucht 
 // eine Lösung der Menge
-//                        clauses
+//                        Clauses
 // zu berechnen.  Wenn dies gelingt, wird eine Menge von Unit-Klauseln 
 // zurück gegeben, die keine komplementären Literale enthält.  Aus dieser 
-// Menge kann dann unmittelbar eine Belegung berechnet werden, die clauses
+// Menge kann dann unmittelbar eine Belegung berechnet werden, die Clauses
 // löst.
-//       Wenn die Menge clauses unlösbar ist, wird { {} } zurück gegeben.
-// Das Argument literals dient der Buchhaltung bei den rekursiven Aufrufen.
+//       Wenn die Menge Clauses unlösbar ist, wird { {} } zurück gegeben.
+// Das Argument Literals dient der Buchhaltung bei den rekursiven Aufrufen.
 // Hier werden alle die Literale aufgesammelt, mit denen die Menge clauses
 // schon reduziert wurde.  Beim ersten Aufruf ist diese Menge leer.
 davisPutnam := procedure(Clauses, Literals) {
@@ -41,7 +41,7 @@ saturate := procedure(S) {
     }
     return S;
 };
-// Die Prozedur reduce(s,l) führt alle Unit-Schnitte und alle Unit-Subsumptionen,
+// Die Prozedur reduce(S, l) führt alle Unit-Schnitte und alle Unit-Subsumptionen,
 // die mit der Unit-Klausel {l} möglich sind, durch.  S ist eine Menge von Klauseln,
 // l ist ein Literal.
 reduce := procedure(S, l) {
@@ -58,10 +58,10 @@ selectLiteral := procedure(S, Used) {
 // Diese Prozedur berechnet das Komplement des Literals l.
 negateLiteral := procedure(l) {
     match (l) {
-        case !p : return p;
+        case !p : return  p;
         case  p : return !p;
     }
 };
 
-m := parse("{ {r,p,s}, {r,s}, {q,p,s}, {!p,!q}, {!p,s,!r}, {p,!q,r}, {!r,!s,q}, {p,q,r,s}, {r,!s,q}, {!r,s,!q}, {s,!r} }");
-print(davisPutnam(m,{}));
+M := parse("{ {r,p,s}, {r,s}, {q,p,s}, {!p,!q}, {!p,s,!r}, {p,!q,r}, {!r,!s,q}, {p,q,r,s}, {r,!s,q}, {!r,s,!q}, {s,!r} }");
+print(davisPutnam(M,{}));
