@@ -2,43 +2,43 @@ loadLibrary("termUtilities");
 // Test, ob Formel f eine Tautologie ist.  Falls f keine Tautologie
 // ist, dann wird eine Belegung I zurück gegeben, so dass evaluate(f, I)
 // den Wert false ergibt.
-tautology := procedure(f) {
-    P := collectVars(f);
+tautology := procedure(F) {
+    P := collectVars(F);
     // A is the set of all propositional valuations.
     A := { { [x, x in M] : x in P } : M in 2 ** P };
-    if (forall (I in A | evaluate(f, I))) {
+    if (forall (I in A | evaluate(F, I))) {
         return true;
     } else {
-        return arb({ I : I in A | !evaluate(f, I) });
+        return arb({ I : I in A | !evaluate(F, I) });
     }
 };
 // This function collects all propositional variables occurring in 
 // the propositional formula f.
-collectVars := procedure(f) {
-    match (f) {
+collectVars := procedure(F) {
+    match (F) {
         case true:              return {};
         case false:             return {};
         case p | isVariable(p): return { p };
-        case !g:                return collectVars(g);
-        case g && h:            return collectVars(g) + collectVars(h);
-        case g || h:            return collectVars(g) + collectVars(h);
-        case g => h:            return collectVars(g) + collectVars(h);
-        case g <==> h:          return collectVars(g) + collectVars(h);
-        default:                abort("syntax error in collectVars($f$)");
+        case !G:                return collectVars(G);
+        case G && H:            return collectVars(G) + collectVars(H);
+        case G || H:            return collectVars(G) + collectVars(H);
+        case G => H:            return collectVars(G) + collectVars(H);
+        case G <==> H:          return collectVars(G) + collectVars(H);
+        default:                abort("syntax error in collectVars($F$)");
     }
 };
 
-evaluate := procedure(f, I) {
-    match (f) {
+evaluate := procedure(F, I) {
+    match (F) {
         case true:              return true;
         case false:             return false;
         case p | isVariable(p): return I[p];
-        case !g:                return !evaluate(g, I);
-        case g && h:            return  evaluate(g, I) && evaluate(h, I);
-        case g || h:            return  evaluate(g, I) || evaluate(h, I);
-        case g => h:            return  evaluate(g, I) => evaluate(h, I);
-        case g <==> h:          return  evaluate(g, I) == evaluate(h, I);
-        default:                abort("syntax error in evaluate($f$, $I$)");
+        case !G:                return !evaluate(G, I);
+        case G && H:            return  evaluate(G, I) && evaluate(H, I);
+        case G || H:            return  evaluate(G, I) || evaluate(H, I);
+        case G => H:            return  evaluate(G, I) => evaluate(H, I);
+        case G <==> H:          return  evaluate(G, I) == evaluate(H, I);
+        default:                abort("syntax error in evaluate($F$, $I$)");
     }
 };
 
@@ -54,12 +54,12 @@ run := procedure() {
 };
 
 test := procedure(s) {
-    f := parseTerm(s);
-    counterExample := tautology(f);
+    F := parseTerm(s);
+    counterExample := tautology(F);
     if (counterExample == true) {
-        print("The formula $f$ is a tautology.");
+        print("The formula $F$ is a tautology.");
     } else {
-        print("The formula $f$ isn't a tautology.");
+        print("The formula $F$ isn't a tautology.");
         print("Counter example: ", counterExample );
     }
 };

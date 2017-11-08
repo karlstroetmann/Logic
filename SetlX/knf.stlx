@@ -1,73 +1,73 @@
 loadLibrary("termUtilities");
 ////////////////////////////////////////////////////////////////////////
 //                                                                    //
-// Überführung in konjunktive Normal-Form                             //
+// Transform a propositional formula in conjunctive normal form.      //
 //                                                                    //
 ////////////////////////////////////////////////////////////////////////
 
-// Diese Prozedur überführt die Formel f in konjunktive Normalform.
-normalize := procedure(f) {
-    n1 := elimGdw(f);
-    n2 := elimFolgt(n1);
-    n3 := nnf(n2);
-    n4 := knf(n3);
-    return simplify(n4);
+// This procedure transforms the propositional formula F into
+// conjunctive normal form.
+normalize := procedure(F) {
+    N1 := elimGdw(F);
+    N2 := elimFolgt(N1);
+    N3 := nnf(N2);
+    N4 := cnf(N3);
+    return simplify(N4);
 };
-// Eliminiert den Operator "<==>" aus der eingegebenen Formel f.
-elimGdw := procedure(f) {
-    match (f) {
-        case !g       : return !elimGdw(g);
-        case g && h   : return elimGdw(g) && elimGdw(h);
-        case g || h   : return elimGdw(g) || elimGdw(h);
-        case g => h   : return elimGdw(g) => elimGdw(h);
-        case g <==> h : return elimGdw((g => h) && (h => g));
-        default       : return f;  // f must be atomic!
+// Eliminate the operator "<==>" from F.
+elimGdw := procedure(F) {
+    match (F) {
+        case !G       : return !elimGdw(G);
+        case G && H   : return elimGdw(G) && elimGdw(H);
+        case G || H   : return elimGdw(G) || elimGdw(H);
+        case G => H   : return elimGdw(G) => elimGdw(H);
+        case G <==> H : return elimGdw((G => H) && (H => G));
+        default       : return F;  // F must be a propositional variable
     }
 };
-// Eliminiert den Operator "=>" aus der eingegebenen Formel f.
-elimFolgt := procedure(f) {
-    match (f) {
-        case !g     : return !elimFolgt(g);
-        case g && h : return  elimFolgt(g) && elimFolgt(h);
-        case g || h : return  elimFolgt(g) || elimFolgt(h);
-        case g => h : return  elimFolgt(!g || h);
-        default     : return f; 
+// Eliminate the operator "=>" from F.
+elimFolgt := procedure(F) {
+    match (F) {
+        case !G     : return !elimFolgt(G);
+        case G && H : return  elimFolgt(G) && elimFolgt(H);
+        case G || H : return  elimFolgt(G) || elimFolgt(H);
+        case G => H : return  elimFolgt(!G || H);
+        default     : return F; 
     }
 };
-// Berechnet die Negations-Normalform der Formel f.
-nnf := procedure(f) {
-    match (f) {
-        case !g     : return neg(g);
-        case g && h : return nnf(g) && nnf(h);
-        case g || h : return nnf(g) || nnf(h);
-        default     : return f; 
+// Compute the negation normal form of F.
+nnf := procedure(F) {
+    match (F) {
+        case !G     : return neg(G);
+        case G && H : return nnf(G) && nnf(H);
+        case G || H : return nnf(G) || nnf(H);
+        default     : return F; 
     }
 };
-// Diese Funktion berechnet die Negations-Normalform von (-f) und 
-// schiebt dabei das Negationszeichen soweit wie möglich nach innen.
-neg := procedure(f) {
-    match (f) {
-        case !g     : return nnf(g);
-        case g && h : return neg(g) || neg(h);
-        case g || h : return neg(g) && neg(h);
-        default     : return !f; 
+// This function computes the negation normal form of !F.
+neg := procedure(F) {
+    match (F) {
+        case !G     : return nnf(G);
+        case G && H : return neg(G) || neg(H);
+        case G || H : return neg(G) && neg(H);
+        default     : return !F; 
     }
 };
-knf := procedure(f) {
-    match (f) {
-        case !g     : return { { !g } };
-        case g && h : return knf(g) + knf(h);
-        case g || h : return { k1 + k2 : k1 in knf(g), k2 in knf(h) };
-        default     : return { { f } }; // f is a variable
+cnf := procedure(F) {
+    match (F) {
+        case !G     : return { { !G } };
+        case G && H : return cnf(G) + cnf(H);
+        case G || H : return { K1 + K2 : K1 in cnf(G), K2 in cnf(H) };
+        default     : return { { F } }; // f is a variable
     }
-};
-// Is the clause C trivial?
-isTrivial := procedure(C) {
-    return exists(p in C | !p in C);
 };
 // Eliminate all trivial clauses from F
 simplify := procedure(F) {
     return { C : C in F | !isTrivial(C) };
+};
+// Is the clause C trivial?
+isTrivial := procedure(C) {
+    return exists(p in C | !p in C);
 };
 
 

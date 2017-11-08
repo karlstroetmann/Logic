@@ -1,10 +1,10 @@
 loadLibrary("termUtilities");
 load("knf.stlx");
 load("completeness.stlx");
-createValuation := procedure(v) {
+createValuation := procedure(Literals) {
     result := {};
-    for (c in v) {
-        match(c) {
+    for (l in Literals) {
+        match(l) {
             case !p: result += { [p, false] };
             case  p: result += { [p, true ] };
         }
@@ -13,11 +13,11 @@ createValuation := procedure(v) {
 };
 checkTautology := procedure(s) {
     print("\nChecking whether \"$s$\" is a tautology ...");
-    f := normalize(parseTerm("!(" + s + ")"));
-    v := findValuation(f);
-    if (v != false) {
+    Clauses  := normalize(parseTerm("!(" + s + ")"));
+    Literals := findValuation(Clauses);
+    if (Literals != false) {
         print("The formula $s$ is not a tautology. Counter example:");
-        print(createValuation(v));
+        print(createValuation(Literals));
     } else {
         print("The formula $s$ is a tautology.");
     }
