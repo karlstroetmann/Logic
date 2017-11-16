@@ -17,15 +17,15 @@ f5 := parse("!(a && b && !c)");
 // If Colin is innocent, then Austin is guilty.
 f6 := parse("!c => a");
 fs := { f1, f2, f3, f4, f5, f6 };
-v  := { "a", "b", "c" };
-All := 2 ** v;
+V  := { parseTerm("a"), parseTerm("b"), parseTerm("c") };
+All := 2 ** V;
 print("All = ", All);
 // b is the set of all propositional valuations.
-B  := { createValuation(m, v) : m in All };
-s  := { I : I in B | forall (f in fs | evaluate(f, I)) };
-print("Set of all valuations satisfying all facts: ", s);
-if (#s == 1) {
-    I := arb(s);
-    offenders := { x : x in v | I[x] };
+B  := { createValuation(M, V) : M in All };
+S  := { I : I in B | forall (f in fs | evaluate(f, I)) };
+print("Set of all valuations satisfying all facts: ", S);
+if (#S == 1) {
+    I := arb(S);
+    offenders := { x : x in V | I[x] };
     print("Set of offenders: ", offenders);
 }
