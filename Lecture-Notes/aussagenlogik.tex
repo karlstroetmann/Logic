@@ -2063,7 +2063,7 @@ Der Beweis der Widerlegungs-Vollständigkeit der Aussagenlogik benötigt den  Begr
   Weiter sagen wir, dass $M$ \blue{unerfüllbar} ist und schreiben 
   \\[0.2cm]
   \hspace*{1.3cm}
-  $\blue{M \models \falsum}$
+  $\blue{M \models \falsum}$,
   \\[0.2cm]
   wenn es keine aussagenlogische Interpretation $\I$ gibt, die alle Formel aus $M$ erfüllt.
   Bezeichnen wir die Menge der aussagenlogischen Interpretationen mit
@@ -2098,12 +2098,11 @@ die leere Klausel herleiten, dann ist $M$ aufgrund der Korrektheit der Schnitt-R
 unerfüllbar.  Falls es uns aber nicht gelingt, die leere Klausel aus $M$ abzuleiten, dann konstruieren wir
 aus der Menge aller Klauseln, die wir aus $M$ hergeleitet haben, eine aussagenlogische Interpretation
 $\I$, die alle Klauseln aus $M$ erfüllt.  Damit haben wir dann die Unerfüllbarkeit der Menge $M$ widerlegt.
-
 Wir diskutieren zunächst die Hilfsprozeduren, die in Abbildung \ref{fig:completeness.stlx-1} gezeigt
 sind. 
 \begin{enumerate}
 \item Die Funktion \texttt{complement} erhält als Argument ein Literal $l$ und berechnet das
-      \blue{Komplement} $\komplement{\,l\,}$ dieses Literals.  Falls $l$ die Form $\neg p$ mit einer
+      \blue{Komplement} $\komplement{l}$ dieses Literals.  Falls $l$ die Form $\neg p$ mit einer
       aussagenlogischen Variablen $p$ hat, so gilt $\komplement{\neg p} = p$.   Falls das Literal
       $l$ eine aussagenlogische Variable $p$ ist, haben wir $\komplement{p} = \neg p$.
 \item Die Funktion \texttt{extractVar} extrahiert die aussagenlogische Variable aus einem Literal $l$.
@@ -2140,8 +2139,8 @@ sind.
                   labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
                 ]
     complement := procedure(l) {
         match (l) {
@@ -2159,10 +2158,7 @@ sind.
         return { extractVar(l) : C in M, l in C };
     };
     cutRule := procedure(C1, C2) {
-        return { (C1 - {l}) + (C2 - {complement(l)}) 
-               : l in C1
-               | complement(l) in C2
-               };
+        return { (C1-{l})+(C2-{complement(l)}) : l in C1 | complement(l) in C2 };
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -2182,7 +2178,7 @@ definiert ist:
 \item Falls $S$ die leere Klausel $\{\}$ enthält, dann ist $S$ saturiert.
 \item Andernfalls muss \texttt{Clauses} eine Teilmenge von $S$ sein und es muss zusätzlich Folgendes
       gelten: Falls $C_1 \cup \{ l \}$ und  $C_2 \cup \bigl\{ \komplement{\,l\,} \bigr\}$ Klauseln aus $S$
-      sind, dann ist auch die Klausel $C_1 \cup C_2$ ein Element der Klauselmenge $S$:
+      sind, dann ist auch die Klausel $C_1 \cup C_2$ ein Element der Klausel\-menge $S$:
       \\[0.2cm]
       \hspace*{1.3cm}
       $C_1 \cup \{ l \} \in S \;\wedge\; C_2 \cup \bigl\{ \komplement{\,l\,} \bigr\} \in S \;\Rightarrow\; C_1 \cup C_2 \in S$ 
@@ -2220,23 +2216,22 @@ definiert ist:
 Wir erläutern nun die Implementierung der Funktion \texttt{saturate}.
 \begin{enumerate}
 \item Die \texttt{while}-Schleife, die in Zeile 23 beginnt, hat die Aufgabe, die Schnitt-Regel
-      solange wie möglich anzuwenden um mit Hilfe der Schnitt-Regel neue Klauseln aus den gegebenen
+      so lange wie möglich anzuwenden, um mit Hilfe der Schnitt-Regel neue Klauseln aus den gegebenen
       Klauseln herzuleiten.  Da die Bedingung dieser Schleife den Wert \texttt{true} hat, kann diese
       Schleife nur durch die Ausführung einer der beiden \texttt{return}-Befehle (Zeile 26 bzw.~Zeile 30)
       abgebrochen werden. 
-\item In Zeile 24 wird die Menge \texttt{Derived} dadurch ermittelt, dass alle Klauseln berechnet
-      werden, die mit Hilfe der Schnitt-Regel aus zwei der Klauseln in der Menge \texttt{Clauses} 
-      gefolgert werden können.
+\item In Zeile 24 wird die Menge \texttt{Derived} als die Menge der Klauseln definiert, die mit Hilfe der
+      Schnitt-Regel aus zwei der Klauseln in der Menge \texttt{Clauses} gefolgert werden können.
 \item Falls die Menge \texttt{Derived} die leere Klausel enthält, dann ist die Menge
       \texttt{Clauses} widersprüchlich und die Funktion \texttt{saturate} gibt als Ergebnis die
       Menge $\bigl\{ \{\} \bigr\}$ zurück.
 \item Andernfalls ziehen wir in Zeile 28 von der Menge \texttt{Derived} zunächst die Klauseln
-      ab, die wir schon in der Menge \texttt{Clauses} vorhanden waren, denn es geht uns darum
+      ab, die schon in der Menge \texttt{Clauses} vorhanden waren, denn es geht uns darum
       festzustellen, ob wir im letzten Schritt tatsächlich 
       \underline{neue} Klauseln gefunden haben, oder ob alle Klauseln, die wir im letzten Schritt in Zeile 24
       hergeleitet haben, eigentlich schon vorher bekannt waren.
 \item Falls wir nun in Zeile 29 feststellen, dass wir keine neuen Klauseln hergeleitet haben,
-      dann ist die Menge \texttt{Clauses} saturiert und wir geben diese Menge in Zeile 30 zurück.
+      dann ist die Menge \texttt{Clauses} \blue{saturiert} und wir geben diese Menge in Zeile 30 zurück.
 \item Andernfalls fügen wir in Zeile 32 die Klauseln, die wir neu gefunden haben, zu der Menge
       \texttt{Clauses} hinzu und setzen die \texttt{while}-Schleife fort.
 \end{enumerate}
