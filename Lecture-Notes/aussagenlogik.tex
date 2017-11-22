@@ -2177,11 +2177,11 @@ definiert ist:
 \begin{enumerate}
 \item Falls $S$ die leere Klausel $\{\}$ enthält, dann ist $S$ saturiert.
 \item Andernfalls muss \texttt{Clauses} eine Teilmenge von $S$ sein und es muss zusätzlich Folgendes
-      gelten: Falls $C_1 \cup \{ l \}$ und  $C_2 \cup \bigl\{ \komplement{\,l\,} \bigr\}$ Klauseln aus $S$
+      gelten: Falls $C_1 \cup \{ l \}$ und  $C_2 \cup \bigl\{ \komplement{l} \bigr\}$ Klauseln aus $S$
       sind, dann ist auch die Klausel $C_1 \cup C_2$ ein Element der Klausel\-menge $S$:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $C_1 \cup \{ l \} \in S \;\wedge\; C_2 \cup \bigl\{ \komplement{\,l\,} \bigr\} \in S \;\Rightarrow\; C_1 \cup C_2 \in S$ 
+      $C_1 \cup \{ l \} \in S \;\wedge\; C_2 \cup \bigl\{ \komplement{l} \bigr\} \in S \;\Rightarrow\; C_1 \cup C_2 \in S$ 
 \end{enumerate}
 \begin{figure}[!ht]
 \centering
@@ -2275,7 +2275,7 @@ Zeile 23 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.
         Literals  := {};
         for (p in Variables) {
             if (exists(C in Clauses |
-                       p in C && C <= {complement(l) : l in Literals} + {p})
+                       p in C && C - {p} <= {complement(l) : l in Literals})
                ) {
                 Literals += { p };
             } else {
@@ -2297,10 +2297,10 @@ das Ergebnis \texttt{false} zurück geben.  Andernfalls soll eine aussagenlogisch
 unter der alle Klauseln aus der Menge \texttt{Clauses} erfüllt sind.  Im Detail arbeitet die
 Funktion \texttt{findValuation} wie folgt.
 \begin{enumerate}
-\item Zunächst berechnen wir in Zeile 36 die Menge aller aussagenlogischen Variablen, die in
+\item Zunächst berechnen wir in Zeile 33 die Menge aller aussagenlogischen Variablen, die in
       der Menge \texttt{Clauses} auftreten.  Wir benötigen diese Menge, denn wir müssen diese
       Variablen ja auf die Menge $\{ \texttt{true}, \texttt{false} \}$ abbilden.
-\item In Zeile 37 saturieren wir die Menge \texttt{Clauses} und berechnen alle Klauseln, die aus der
+\item In Zeile 34 saturieren wir die Menge \texttt{Clauses} und berechnen alle Klauseln, die aus der
       ursprünglich gegebenen Menge von Klauseln mit Hilfe der Schnitt-Regel hergeleitet werden
       können.  Hier können zwei Fälle auftreten:
       \begin{enumerate}
@@ -2310,8 +2310,9 @@ Funktion \texttt{findValuation} wie folgt.
             nicht erfüllbar.
       \item Andernfalls berechnen wir nun eine aussagenlogische Belegung, unter der alle Klauseln aus
             der Menge \texttt{Clauses} wahr werden.  Zu diesem Zweck berechnen wir zunächst eine Menge von
-            Literalen \texttt{Literals}.  Die Idee ist dabei, dass wir die Variable \texttt{p} genau
-            dann in die Menge \texttt{Literals} aufnehmen, wenn die gesuchte Belegung $\I$ die
+            Literalen, die wir in der Variablen \texttt{Literals} abspeichern.  Die Idee ist dabei, dass wir
+            die aussagenlogische Variable \texttt{p} genau dann in die Menge \texttt{Literals} aufnehmen, wenn
+            die gesuchte Belegung $\I$ die aussagenlogische
             Variable \texttt{p} zu \texttt{true} auswertet.  Andernfalls nehmen wir an Stelle von \texttt{p} das
             Literal $\neg \texttt{p}$ in der Menge \texttt{Literals} auf.  Als Ergebnis geben wir daher in
             Zeile 50 die Menge \texttt{Literals} zurück.  Die gesuchte aussagenlogische Belegung
@@ -2328,9 +2329,9 @@ Funktion \texttt{findValuation} wie folgt.
             berechnet werden.
       \end{enumerate}
 \item Die Berechnung der Menge \texttt{Literals} erfolgt nun über eine \texttt{for}-Schleife.
-      Dabei ist die Idee, dass wir für eine aussagenlogische Variable \texttt{p} genau dann das Literal
+      Dabei ist der Gedanke, dass wir für eine aussagenlogische Variable \texttt{p} genau dann das Literal
       $\texttt{p}$ zu der Menge \texttt{Literals} hinzufügen, wenn die Belegung $\I$ die Variable \texttt{p}
-      auf \texttt{true} abbilden muss um die Klauseln zu erfüllen.  Andernfalls fügen wir stattdessen das Literal 
+      auf \texttt{true} abbilden muss, um die Klauseln zu erfüllen.  Andernfalls fügen wir stattdessen das Literal 
      \texttt{!p} zu dieser Menge hinzu.
 
       Die Bedingung dafür ist wie folgt: Angenommen, wir haben bereits Werte für die Variablen
@@ -2341,7 +2342,7 @@ Funktion \texttt{findValuation} wie folgt.
       Nehmen wir nun weiter an, dass eine Klausel $C$ in der Menge \texttt{Clauses} existiert, so dass
       \\[0.2cm]
       \hspace*{1.3cm}
-      $C \subseteq \{ \komplement{l_1}, \cdots, \komplement{l_n}, \texttt{p} \}$ \quad und \quad $\texttt{p} \in C$
+      $C \backslash \{p\} \subseteq \{ \komplement{l_1}, \cdots, \komplement{l_n} \}$ \quad und \quad $\texttt{p} \in C$
       \\[0.2cm]
       gilt.  Wenn $\I(C) = \texttt{true}$ gelten soll, dann muss $\I(\texttt{p}) = \texttt{true}$ gelten, denn
       nach Konstruktion von $\I$ gilt 
@@ -2358,7 +2359,7 @@ dass in Zeile 39 nicht der Wert \texttt{false} zurück gegeben wird, eine aussage
 alle Klauseln aus der Menge \texttt{Clauses} den Wert \texttt{true} erhalten.  Um diesen Nachweis zu
 erbringen, nummerieren wie die aussagenlogischen Variablen, die in der Menge \texttt{Clauses}
 auftreten, in derselben Reihenfolge durch, in der diese Variablen in der \texttt{for}-Schleife in Zeile
-42 betrachtet werden.  Wir bezeichnen diese Variablen als
+39 betrachtet werden.  Wir bezeichnen diese Variablen als
 \\[0.2cm]
 \hspace*{1.3cm}
  $p_1, p_2, p_3, \cdots, p_k$
@@ -2401,7 +2402,8 @@ gilt.
                    Dann gilt für die Klausel $D$ gerade die Bedingung
                    \\[0.2cm]
                    \hspace*{1.3cm}
-                   $C \subseteq \{ \komplement{l_1}, \cdots, \komplement{l_n} \} \cup \{ p_{n+1} \}$
+                   $C \backslash \{ p_{n+1} \} \subseteq \bigl\{ \komplement{l_1}, \cdots, \komplement{l_n} \bigr\}$
+                   \quad und \quad $p_{n+1} \in C$
                    \\[0.2cm]
                    und daher wird in Zeile 44 der Funktion \texttt{findValuation} das Literal $p_{n+1}$ 
                    zu der Menge \texttt{Literals} hinzugefügt.  Nach Definition der Belegung $\I$, 
@@ -2419,7 +2421,8 @@ gilt.
                    \item Es gibt eine weitere Klausel $C$ in der Menge \texttt{Clauses}, so dass
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $C \subseteq \{ \komplement{l_1}, \cdots, \komplement{l_n} \} \cup \{ p_{n+1} \}$
+                         $C \backslash \{ p_{n+1} \} \subseteq \bigl\{ \komplement{l_1}, \cdots,
+                         \komplement{l_n} \bigr\}$ \quad und \quad $p_{n+1} \in C$
                          \\[0.2cm]
                          gilt.  Hier sieht es zunächst so aus, als ob wir ein Problem hätten, denn
                          in diesem Fall würde um die Klausel $C$ wahr zu machen das Literal $p_{n+1}$ zur Menge
