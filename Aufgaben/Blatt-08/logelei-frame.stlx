@@ -2,12 +2,6 @@ loadLibrary("termUtilities");
 load("knf.stlx");
 load("davis-putnam.stlx");
 
-// Parse a propositional formula and transform the result into a conjunctive
-// normal form in set notation.
-parseKNF := procedure(f) {
-    return normalize(parseTerm(f));
-};
-
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 // Die folgende Aufgabe ist dem Buch "99 Logeleien von Zweistein", das im     //
@@ -42,78 +36,97 @@ parseKNF := procedure(f) {
 //    @Name(x, y) ist wahr, falls Herr y mit Vornamen x heisst.
 //
 // 2. @Ehe(mann, frau) wobei mann in { "Erich",  "Fritz", "Gustav", "Heiner" },
-//                           frau in { "Inge",  "Josefa", "Klara",  "Luise"  }
+//                           frau in {  "Inge", "Josefa",  "Klara",  "Luise" }
 
 // S is a set of propositional variables. The expression atMostOne(S) creates
 // a set of clauses.  This set expresses the fact that at most one of the
 // variables in the set S is true.
-atMostOne := procedure(s) {
-    return { { !p, !q } : p in s, q in s | p != q };
+atMostOne := procedure(S) {
+    return "your code here"
 };
-
-// For two sets a and b which must have the same number of elements, the
-// procedure exactlyOne(a, b, fct)  computes a set of clauses expressing the fact
-// that every element x from a corresponds to exactly one element y from b.
-// The third parameter fct is the name of a function symbol that is used to build
-// the propositional variable expressing that x relates to y.
-exactlyOne := procedure(a, b, fct) {
-    // your code here
-    return "???";
+// S is a set of propositional variables. The expression atMostOne(S) creates
+// a set of clauses.  This set expresses the fact that at least one of the
+// variables in the set S is true.
+atLeastOne := procedure(S) {
+    return "your code here";
 };
+// S is a set of propositional variables. The expression exactlyOne(S) creates
+// a set of clauses.  This set expresses the fact that exactly one of the
+// variables in the set S is true.
+exactlyOne := procedure(S) {
+    return "your code here";
+};
+// For two sets A and B that have the same number of elements and a functor name
+// f, this procedure computes a set of clauses that is equivalent to the formula
+//   forall(x in A, existsExactlyOne(y in B | @f(x, y))) &&
+//   forall(y in B, existsExactlyOne(x in A | @f(x, y)))
+bijective := procedure(A, B, f) {
+    Clauses := {};
+    for (x in A) {
+        PropVars := { makeTerm(f, [x, y]) : y in B };
+        Clauses  += "your code here";
+    }
+    for (y in B) {
+        PropVars := { makeTerm(f, [x, y]) : x in A };
+        Clauses  += "your code here";
+    }
+    return Clauses;
+};               
 // Return a formula that is true if y is the wife of z.  The formula is returned as
-// a string.  Note that here z is the family name of a man and not his first name.
+// a string.  z is the last name of one of the men.
 isWifeOf := procedure(y, z) {
-    // your code here
-
-    // it might be wise to put the resulting formula in parenthesis
-    return "(" + result + ")";
+    Vornamen := { "Erich",  "Fritz", "Gustav", "Heiner" };
+    return setToFormula({ @Name(x,z) => @Ehe(x, y) : x in Vornamen });
+};
+// Convert the a set of formula S to a conjunction of these formulae.
+setToFormula := procedure(S) {
+    if (#S == 1) {
+        return arb(S);
+    }
+    f := first(S);
+    return f && setToFormula(S - { f });
 };
 // Compute the exclusive or of the formulas a and b, which are given as strings.
-// The resulting fiormula itself is converted into CNF.
+// The resulting formula itself is converted into CNF.
 exclusiveOr := procedure(a, b) {
-    return parseKNF("your code here");
+    return normalize("your code here");
 };
-// solution:
-// Erich  Demann ist mit Luise  verheiratet,
-// Fritz  Bemann ist mit Inge   verheiratet,
-// Gustav Amann  ist mit Klara  verheiratet,
-// Heiner Cemann ist mit Josefa verheiratet.
 computeClauses := procedure() {
-    vornamen  := { 1,  2,  3,  4 }; // { "Erich",  "Fritz", "Gustav", "Heiner" };
-    nachnamen := { 5,  6,  7,  8 }; // { "Amann", "Bemann", "Cemann", "Demann" };
-    frauen    := { 9, 10, 11, 12 }; // { "Inge",  "Josefa", "Klara",  "Luise"  };
-    // Jedem Vornamen ist genau ein Nachname zugeordnet.
-    clauses := exactlyOne(vornamen, nachnamen, "Name");
-    // Jeder Mann ist mit genau einer Frau zugeordnet.
-    clauses += exactlyOne(vornamen, frauen, "Ehe");
+    Vornamen  := { "Erich",  "Fritz", "Gustav", "Heiner" };
+    Nachnamen := { "Amann", "Bemann", "Cemann", "Demann" };
+    Frauen    := { "Inge",  "Josefa", "Klara",  "Luise"  };
+    // Jedem Vornamen ist genau ein Nachname zugeordnet und umgekehrt.
+    Clauses := "your code here";
+    // Jeder Mann ist mit genau einer Frau verheiratet und umgekehrt.
+    Clauses += "your code here";
     // Entweder ist Amanns Vorname Heiner, oder Bemanns Frau heisst Inge.
-    clauses += "your code here";
+    Clauses += exclusiveOr(@Name("Heiner", "Amann"), isWifeOf("Inge", "Bemann"));
     // Wenn Cemann mit Josefa verheiratet ist, dann – und nur in diesem Falle –
     // heisst Klaras Mann nicht Fritz.
-    clauses += parseKNF(isWifeOf(10, 7) + " <==> !@Ehe(2, 11)");
+    Clauses += normalize(isWifeOf("Josefa", "Cemann") <==> !@Ehe("Fritz", "Klara"));
     // Wenn Josefas Mann nicht Erich heisst, dann ist Inge mit Fritz verheiratet.
-    clauses += parseKNF("your code here");
+    Clauses += normalize("your code here");
     // Wenn Luises Mann Fritz heisst, dann ist der Vorname von Klaras Mann nicht Gustav.
-    clauses += parseKNF("your code here");
+    Clauses += normalize("your code here");
     // Wenn die Frau von Fritz Inge heisst, dann ist Erich nicht mit Josefa verheiratet.
-    clauses += parseKNF("your code here");
+    Clauses += normalize("your code here");
     // Wenn Fritz nicht mit Luise verheiratet ist, dann heisst Gustavs Frau Klara.
-    clauses += parseKNF("your code here");
+    Clauses += normalize("your code here");
     // Entweder ist Demann mit Luise verheiratet, oder Cemann heisst Gustav.
-    clauses += "your code here";
-    return clauses;
+    Clauses += exclusiveOr("your code here");
+    return Clauses;
 };
 solve := procedure() {
-    clauses := computeClauses();
-    result  := davisPutnam(clauses, {});
-    displaySolution(result);
-    checkUniqueness(clauses, result);
+    Clauses := computeClauses();
+    Result  := davisPutnam(Clauses, {});
+    displaySolution(Result);
+    checkUniqueness(Clauses, Result);
 };
 // Check, whether the set of unit clauses result is the only solution for the given
 // set of clauses.
-checkUniqueness := procedure(clauses, result) {
-    negatedSolution := { negateLiteral(arb(u)) : u in result };
-    secondSolution := davisPutnam(clauses + { negatedSolution }, {});
+checkUniqueness := procedure(Clauses, Result) {
+    negatedSolution := { negateLiteral(arb(U)) : U in Result };
+    secondSolution := davisPutnam(Clauses + { negatedSolution }, {});
     if (secondSolution != {{}}) {
         print("The solution is not unique! The second solution is as follows:");
         displaySolution(secondSolution);
@@ -123,19 +136,12 @@ checkUniqueness := procedure(clauses, result) {
 };
 // Pretty print the solution.
 displaySolution := procedure(solution) {
-    Dictionary := { [1, "Erich"], [ 2, "Fritz" ], [ 3, "Gustav"], [ 4, "Heiner"],
-                    [5, "Amann"], [ 6, "Bemann"], [ 7, "Cemann"], [ 8, "Demann"], 
-                    [9, "Inge" ], [10, "Josefa"], [11, "Klara" ], [12, "Luise" ] };
     Married := {};
     Names   := {};
     for (U in solution) {
         match (arb(U)) {
-        case @Ehe(x, y):  xName := Dictionary[x];
-                          yName := Dictionary[y];
-                          Married[xName] := yName;
-        case @Name(x, y): xName := Dictionary[x];
-                          yName := Dictionary[y];
-                          Names[xName] := yName;
+        case @Ehe(x, y):  Married[x] := y;
+        case @Name(x, y): Names[x]   := y;
         }
     }
     for ([x, y] in Married) {
@@ -143,4 +149,3 @@ displaySolution := procedure(solution) {
     }
 };
 solve();
-
