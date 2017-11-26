@@ -52,7 +52,7 @@ findValuation := procedure(Clauses) {
     Literals  := {};
     for (p in Variables) {
         if (exists(C in Clauses |
-                   p in C && C <= {complement(l) : l in Literals} + {p})
+                   p in C && C - {p} <= {complement(l) : l in Literals})
            ) {
             Literals += { p };
         } else {
