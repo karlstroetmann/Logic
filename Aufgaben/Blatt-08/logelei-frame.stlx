@@ -5,7 +5,7 @@ load("davis-putnam.stlx");
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 // Die folgende Aufgabe ist dem Buch "99 Logeleien von Zweistein", das im     //
-// Jahre 1974 erschienen ist, entnommen.                                      //
+// Jahre 1968 erschienen ist, entnommen.                                      //
 //                                                                            //
 // Die Herren Amann, Bemann, Cemann und Demann heissen – nicht unbedingt      //
 // in derselben Reihenfolge – mit Vornamen Erich, Fritz, Gustav und Heinrich. //
@@ -72,13 +72,13 @@ bijective := procedure(A, B, f) {
     }
     return Clauses;
 };               
-// Return a formula that is true if y is the wife of z.  The formula is returned as
-// a string.  z is the last name of one of the men.
+// Return a formula that is true if y is the wife of z.
+// z is the last name of one of the men.
 isWifeOf := procedure(y, z) {
     Vornamen := { "Erich",  "Fritz", "Gustav", "Heiner" };
     return setToFormula({ @Name(x,z) => @Ehe(x, y) : x in Vornamen });
 };
-// Convert the a set of formula S to a conjunction of these formulae.
+// Convert a set of formulae S to a conjunction of these formulae.
 setToFormula := procedure(S) {
     if (#S == 1) {
         return arb(S);
@@ -86,7 +86,7 @@ setToFormula := procedure(S) {
     f := first(S);
     return f && setToFormula(S - { f });
 };
-// Compute the exclusive or of the formulas a and b, which are given as strings.
+// Compute the exclusive or of the two formulae a and b.
 // The resulting formula itself is converted into CNF.
 exclusiveOr := procedure(a, b) {
     return normalize("your code here");
@@ -125,27 +125,27 @@ solve := procedure() {
 // Check, whether the set of unit clauses result is the only solution for the given
 // set of clauses.
 checkUniqueness := procedure(Clauses, Result) {
-    negatedSolution := { negateLiteral(arb(U)) : U in Result };
-    secondSolution := davisPutnam(Clauses + { negatedSolution }, {});
-    if (secondSolution != {{}}) {
-        print("The solution is not unique! The second solution is as follows:");
-        displaySolution(secondSolution);
+    NegatedSolution := { negateLiteral(arb(U)) : U in Result };
+    SecondSolution := davisPutnam(Clauses + { NegatedSolution }, {});
+    if (SecondSolution != {{}}) {
+        print("The solution is not unique!  A second solution is as follows:");
+        displaySolution(SecondSolution);
     } else {
         print("The solution is unique!");
     }
 };
 // Pretty print the solution.
-displaySolution := procedure(solution) {
+displaySolution := procedure(Solution) {
     Married := {};
     Names   := {};
-    for (U in solution) {
+    for (U in Solution) {
         match (arb(U)) {
-        case @Ehe(x, y):  Married[x] := y;
-        case @Name(x, y): Names[x]   := y;
+            case @Ehe(x, y):  Married[x] := y;
+            case @Name(x, y): Names[x]   := y;
         }
     }
     for ([x, y] in Married) {
-        print("$x$ $Names[x]$ ist mit $y$ verheiratet.");
+        print("$x$ $Names[x]$ is married to $y$.");
     }
 };
 solve();
