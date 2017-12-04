@@ -2884,11 +2884,11 @@ Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie
 \item Dann testen wir in Zeile 6, ob bereits alle Klauseln $C$ aus der Menge
       \texttt{Clauses} Unit-Klauseln sind.  Wenn dies so ist,
       dann ist die Menge \texttt{Clauses} trivial und wir geben diese Menge als Ergebnis zurück.
-\item Andernfalls wählen wir in Zeile 9 ein Literal $l$ aus der Menge \texttt{Clauses}, 
+\item Andernfalls wählen wir in Zeile 9 ein Literal $\texttt{l}$ aus der Menge \texttt{Clauses}, 
       dass wir noch nicht benutzt haben.
       Wir untersuchen dann in Zeile 10 rekursiv, ob die Menge \\[0.2cm]
       \hspace*{1.3cm} 
-      $\texttt{Clauses} \cup \bigl\{\{l\}\bigr\}$ 
+      $\texttt{Clauses} \cup \bigl\{\{\texttt{l}\}\bigr\}$ 
       \\[0.2cm]
       lösbar ist.  Dabei gibt es zwei Fälle:
       \begin{enumerate}
@@ -2897,7 +2897,7 @@ Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie
       \item Sonst  prüfen wir rekursiv, ob die Menge 
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\texttt{Clauses} \cup \Bigl\{ \bigl\{ \komplement{l} \bigr\} \Bigr\}$ 
+            $\texttt{Clauses} \cup \Bigl\{ \bigl\{ \komplement{\texttt{l}} \bigr\} \Bigr\}$ 
             \\[0.2cm]
             lösbar ist.  Ist diese Menge lösbar, so ist diese Lösung auch eine
             Lösung der Menge $\texttt{Clauses}$ und wir geben diese Lösung zurück.  Ist die
@@ -3044,7 +3044,7 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
       Menge wird dann die Menge der bereits benutzten Literalen abgezogen und aus der
       resultierenden Menge wird mit Hilfe der Funktion $\texttt{rnd}()$ zufällig ein Literal
       ausgewählt.  An Stelle der Funktion $\texttt{rnd}()$ hätten wir hier auch die Funktion 
-      $\texttt{arb}()$ benutzen können.   Allerdings habe ich experimentell herausgefunden, dass
+      $\texttt{arb}()$ benutzen können.   Ich habe experimentell herausgefunden, dass
       der Davis-Putnam Algorithmus im Allgemeinen deutlich effizienter wird,  wenn wir das Literal
       mit Hilfe der Funktion $\texttt{rnd}()$ auswählen.  Allerdings führt die zufällige Auswahl des Literals
       auch dazu, dass die Zeiten, die der Algorithmus benötigt, bei verschiedenen Aufrufen unterschiedlich sein
@@ -3063,7 +3063,7 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
                   xrightmargin  = 0.8cm
                 ]
     selectLiteral := procedure(S, Used) {
-        return rnd({} +/ S - Used);  // used rnd instead of arb for efficiency
+        return rnd({} +/ S - Used);  // use rnd instead of arb for efficiency
     };
     negateLiteral := procedure(l) {
         match (l) {
