@@ -19,14 +19,14 @@ oneInColumn := procedure(column, n) {
 // iff there is at most one queen on the diagonal satisfying the equation 
 //    row + column = k.
 atMostOneInUpperDiagonal := procedure(k, n) {
-    S := { @Var(row, k - row) : row in [1..n] };
+    S := { @Var(row, col) : row in [1..n], col in [1..n] | row + col == k };
     return atMostOne(S);
 };
 // This procedure computes a set of clauses.  This set of clauses is true
 // iff there is at most one queen on the diagonal satisfying the equation 
 //    row - column = k.
 atMostOneInLowerDiagonal := procedure(k, n) {
-    S := { @Var(row, row - k) : row in [1..n] };
+    S := { @Var(row, col) : row in [1..n], col in [1..n] | row - col == k };
     return atMostOne(S);
 };
 // The procedure allClauses takes as input a matrix (i.e. a list of lists)

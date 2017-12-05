@@ -3424,7 +3424,7 @@ Prozedur ist in Abbildung \ref{fig:atMostOneInUpperDiagonal} gezeigt.
                   xrightmargin  = 0.8cm
                 ]
     atMostOneInUpperDiagonal := procedure(k, n) {
-        S := { @Var(row, k - row) : row in [1..n] };
+        S := { @Var(row, col) : row in [1..n], col in [1..n] | row + col == k };
         return atMostOne(S);
     };
 \end{Verbatim}
@@ -3464,7 +3464,7 @@ Diese Prozedur ist in Abbildung \ref{fig:atMostOneInLowerDiagonal} gezeigt.
                   xrightmargin  = 0.8cm
                 ]
     atMostOneInLowerDiagonal := procedure(k, n) {
-        S := { @Var(row, row - k) : row in [1..n] };
+        S := { @Var(row, col) : row in [1..n], col in [1..n] | row - col == k };
         return atMostOne(S);
     };
 \end{Verbatim}
@@ -3631,6 +3631,7 @@ Trotzdem zeigt es die Leistungsfähigkeit des Algorithmus von Davis
 und Putnam sehr gut, denn die Menge der Klauseln, die von der Prozedur \texttt{allClauses}
 berechnet wird, füllt unformatiert fünf Bildschirm-Seiten, falls diese  eine Breite von 80
 Zeichen haben.  In dieser Klausel-Menge kommen 64 verschiedene Variablen vor.
+
 
 In der Praxis gibt es viele Probleme, die sich in ganz ähnlicher Weise auf die Lösung einer
 Menge von Klauseln zurückführen lassen.  Dazu gehört zum Beispiel das Problem, einen
