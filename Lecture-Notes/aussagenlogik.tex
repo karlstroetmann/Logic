@@ -3086,13 +3086,10 @@ weiter eingehen. Der interessierte Leser sei hier auf die Arbeit \cite{moskewicz
 
 
 \section{Das 8-Damen-Problem}
-In diesem Abschnitt zeigen wir, wie bestimmte kombinatorische Problem in aussagenlogische
-Probleme umformuliert werden können.  Diese
-können dann anschließend mit dem Algorithmus von Davis und Putnam bzw.~mit 
-Verbesserungen dieses Algorithmus gelöst werden.  Als konkretes
-Beispiel betrachten wir das \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{8-Damen-Problem}.  Dabei
-geht es darum, 8 Damen so auf einem 
-Schach-Brett aufzustellen, dass keine Dame eine andere Dame schlagen kann.
+In diesem Abschnitt zeigen wir, wie bestimmte kombinatorische Problem in aussagenlogische Probleme umformuliert
+werden können.  Diese können dann anschließend mit dem Algorithmus von Davis und Putnam bzw gelöst werden.  Als
+konkretes Beispiel betrachten wir das \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{8-Damen-Problem}.  
+Dabei geht es darum, 8 Damen so auf einem Schach-Brett aufzustellen, dass keine Dame eine andere Dame schlagen kann.
 Beim \href{https://en.wikipedia.org/wiki/Chess}{Schach-Spiel} kann eine Dame dann eine andere Figur schlagen,
 wenn diese Figur entweder 
 \begin{itemize}
@@ -3270,7 +3267,7 @@ und die Klausel auf der rechten Seite dieser Äquivalenz schreibt sich in Mengen-
 \\[0.2cm]
 \hspace*{1.3cm}  $\{\neg x_i, \neg x_j \}$. \\[0.2cm]
 Die Formel, die für eine Variablen-Menge $V$ ausdrückt, dass keine zwei verschiedenen
-Variablen gleichzeitig gesetzt sind, kann daher als Klausel-Menge in der Form
+Variablen gleichzeitig wahr sind, kann daher als Klausel-Menge in der Form
 \\[0.2cm]
 \hspace*{1.3cm}
 $\bigl\{\, \{ \neg p, \neg q \} \;|\; p \in V \wedge\ q \in V \wedge p \not= q \bigr\}$
@@ -3359,8 +3356,8 @@ $\bigl\{ \{\texttt{@Var}(1,c) , \texttt{@Var}(2,c) , \texttt{@Var}(3,c) , \textt
 Abbildung \ref{fig:oneInColumn} zeigt eine \textsc{SetlX}-Prozedur, die für eine gegebene Spalte
 \texttt{column} und eine gegebene Brettgröße \texttt{n }die entsprechende Klausel-Menge berechnet.
 Der Schritt, von einer einzelnen Klausel 
-zu einer Menge von Klauseln überzugehen ist notwendig, da unsere Implementierung des Algorithmus von
-Davis und Putnam ja mit einer Menge von Klauseln arbeitet.
+zu einer Menge von Klauseln überzugehen ist notwendig, denn unsere Implementierung des Algorithmus von
+Davis und Putnam arbeitet mit einer Menge von Klauseln.
 
 \begin{figure}[!ht]
   \centering
@@ -3392,9 +3389,9 @@ automatisch klar, dass höchstens 8 Damen auf dem Brett stehen.  Damit stehen als
 in jeder Zeile mindestens eine Dame stehen, denn sonst würden wir nicht auf 8 Damen kommen.
 
 
-Als nächstes überlegen wir uns, wie wir die Variablen, die auf derselben Diagonale
+Als nächstes überlegen wir uns, wie wir die Variablen, die auf derselben \blue{Diagonale}
 stehen, charakterisieren können.  Es gibt grundsätzlich zwei verschiedene Arten von
-Diagonalen: absteigende Diagonalen und aufsteigende Diagonalen.  Wir betrachten zunächst
+Diagonalen: \blue{Absteigende} Diagonalen und \blue{aufsteigende} Diagonalen.  Wir betrachten zunächst
 die aufsteigenden Diagonalen.  Die längste aufsteigende Diagonale, wir sagen dazu auch
 \blue{Hauptdiagonale}, besteht im Fall eines $8 \times 8$-Bretts aus den
 Variablen \\[0.2cm]
@@ -3402,13 +3399,18 @@ Variablen \\[0.2cm]
 $\texttt{@Var}(8,1),\; \texttt{@Var}(7,2),\; \texttt{@Var}(6,3),\; \texttt{@Var}(5,4),\; \texttt{@Var}(4,5),\; \texttt{@Var}(3,6),\; 
  \texttt{@Var}(2,7),\; \texttt{@Var}(1,8)$. 
 \\[0.2cm]
-Die Indizes $i$ und $j$ der Variablen $\texttt{@Var}(i,j)$ erfüllen offenbar
+Die Indizes $r$ und $c$ der Variablen $\texttt{@Var}(r,c)$ erfüllen offenbar
 die Gleichung \\[0.2cm]
-\hspace*{1.3cm} $i + j = 9$. \\[0.2cm]
-Allgemein erfüllen die Indizes der Variablen einer aufsteigenden Diagonale die Gleichung \\[0.2cm]
-\hspace*{1.3cm} $i + j = k$, \\[0.2cm]
-wobei $k$ einen Wert aus der Menge $\{3, \cdots, 15 \}$ annimmt.  Diesen Wert $k$ geben
-wir nun als Argument bei der Prozedur \texttt{atMostOneInUpperDiagonal} mit.  Diese
+\hspace*{1.3cm} $r + c = 9$. \\[0.2cm]
+Allgemein erfüllen die Indizes der Variablen einer aufsteigenden Diagonale, die mehr als ein Feld enthält, die
+Gleichung \\[0.2cm] 
+\hspace*{1.3cm} $r + c = k$, \\[0.2cm]
+wobei $k$ einen Wert aus der Menge $\{3, \cdots, 15 \}$ annimmt.  Diese Gleichung ist äquivalent zu der Gleichung
+\\[0.2cm]
+\hspace*{1.3cm}
+$c = k - r$.
+\\[0.2cm]
+Den Wert $k$ geben wir als Argument bei der Prozedur \texttt{atMostOneInUpperDiagonal} mit.  Diese
 Prozedur ist in Abbildung \ref{fig:atMostOneInUpperDiagonal} gezeigt.
 
 \begin{figure}[!ht]
@@ -3422,8 +3424,8 @@ Prozedur ist in Abbildung \ref{fig:atMostOneInUpperDiagonal} gezeigt.
                   xrightmargin  = 0.8cm
                 ]
     atMostOneInUpperDiagonal := procedure(k, n) {
-        s := { @Var(r, c) : c in [1..n], r in [1..n] | r + c == k };
-        return atMostOne(s);
+        S := { @Var(row, k - row) : row in [1..n] };
+        return atMostOne(S);
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -3438,13 +3440,17 @@ Variablen \\[0.2cm]
 $\texttt{@Var}(1,1),\; \texttt{@Var}(2,2),\; \texttt{@Var}(3,3),\; \texttt{@Var}(4,4),\; \texttt{@Var}(5,5),\; 
  \texttt{@Var}(6,6),\; \texttt{@Var}(7,7),\; \texttt{@Var}(8,8)$ 
 \\[0.2cm]
-besteht. Die Indizes  $i$ und $j$ dieser Variablen erfüllen offenbar
+besteht. Die Indizes  $r$ und $c$ dieser Variablen erfüllen offenbar
 die Gleichung \\[0.2cm]
-\hspace*{1.3cm} $i - j = 0$. \\[0.2cm]
+\hspace*{1.3cm} $r - c = 0$. \\[0.2cm]
 Allgemein erfüllen die Indizes der Variablen einer absteigenden Diagonale die Gleichung \\[0.2cm]
-\hspace*{1.3cm} $i - j = k$, \\[0.2cm]
-wobei $k$ einen Wert aus der Menge $\{-6, \cdots, 6 \}$ annimmt.  Diesen Wert $k$ geben
-wir nun als Argument bei der Prozedur \texttt{atMostOneInLowerDiagonal} mit.
+\hspace*{1.3cm} $r - c = k$, \\[0.2cm]
+wobei $k$ einen Wert aus der Menge $\{-6, \cdots, 6 \}$ annimmt.  Diese Gleichung ist äquivalent zu der Gleichung
+\\[0.2cm]
+\hspace*{1.3cm}
+$r - k = c$.
+\\[0.2cm]
+Den Wert $k$ geben wir als Argument bei der Prozedur \texttt{atMostOneInLowerDiagonal} mit.
 Diese Prozedur ist in Abbildung \ref{fig:atMostOneInLowerDiagonal} gezeigt.
 
 \begin{figure}[!ht]
@@ -3458,8 +3464,8 @@ Diese Prozedur ist in Abbildung \ref{fig:atMostOneInLowerDiagonal} gezeigt.
                   xrightmargin  = 0.8cm
                 ]
     atMostOneInLowerDiagonal := procedure(k, n) {
-        s := { @Var(r, c) : c in [1..n], r in [1..n] | r - c == k };
-        return atMostOne(s);
+        S := { @Var(row, row - k) : row in [1..n] };
+        return atMostOne(S);
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -3468,7 +3474,7 @@ Diese Prozedur ist in Abbildung \ref{fig:atMostOneInLowerDiagonal} gezeigt.
 \end{figure}
 
 Jetzt sind wir in der Lage, unsere Ergebnisse zusammen zu fassen:  Wir können eine
-Menge von Klauseln konstruieren, die das 8-Damen-Problem vollständig beschreibt.
+Menge von Klauseln konstruieren, die das 8-Damen-Problem vollständig beschreiben.
 Abbildung \ref{fig:allClauses} zeigt die Implementierung der Prozedur \texttt{allClauses}.
 Der Aufruf \\[0.2cm]
 \hspace*{1.3cm} $\texttt{allClauses}(n)$ \\[0.2cm]
@@ -3592,9 +3598,9 @@ Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
 
 
 Die durch den Aufruf $\texttt{davisPutnam}(\textsl{Clauses}, \{\})$ 
-berechnete Menge \texttt{solution} enthält für jede der Variablen $\texttt{@Var}(i,j)$
-entweder die Unit-Klausel $\{\texttt{@Var}(i,j)\}$  (falls auf diesem Feld eine Dame steht) oder
-aber die Unit-Klausel  $\{ \texttt{!@Var}(i,j)\}$ (falls das Feld leer bleibt).
+berechnete Menge \texttt{solution} enthält für jede der Variablen $\texttt{@Var}(\texttt{r},\texttt{c})$
+entweder die Unit-Klausel $\{\texttt{@Var}(\texttt{r},\texttt{c})\}$  (falls auf diesem Feld eine Dame steht) oder
+aber die Unit-Klausel  $\{ \texttt{!@Var}(\texttt{r},\texttt{c})\}$ (falls das Feld leer bleibt).
 Eine graphische Darstellung des durch die berechnete Belegung dargestellten Schach-Bretts
 sehen Sie in Abbildung \ref{fig:queens-solution}. 
 
@@ -3625,9 +3631,6 @@ Trotzdem zeigt es die Leistungsfähigkeit des Algorithmus von Davis
 und Putnam sehr gut, denn die Menge der Klauseln, die von der Prozedur \texttt{allClauses}
 berechnet wird, füllt unformatiert fünf Bildschirm-Seiten, falls diese  eine Breite von 80
 Zeichen haben.  In dieser Klausel-Menge kommen 64 verschiedene Variablen vor.
-Der Algorithmus von Davis und Putnam benötigt zur Berechnung einer Belegung, die diese
-Klauseln erfüllt, auf meinem neuen
-\href{https://www.apple.com/de/shop/buy-mac/imac?product=MNE92D/A&step=config#}{iMac} weniger als eine Sekunde!
 
 In der Praxis gibt es viele Probleme, die sich in ganz ähnlicher Weise auf die Lösung einer
 Menge von Klauseln zurückführen lassen.  Dazu gehört zum Beispiel das Problem, einen
