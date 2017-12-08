@@ -993,10 +993,9 @@ müssten, unendlich groß.  \eox
 Im nächsten Abschnitt gehen wir daran, den früher  erwähnten Kalkül $\vdash$ für die
 Prädikatenlogik zu definieren.  
 Es zeigt sich, dass die Arbeit wesentlich einfacher wird, wenn wir uns auf bestimmte
-Formeln, sogenannte \blue{Klauseln}, beschränken.  Wir zeigen daher zunächst
-in diesem Abschnitt, dass jede Formel-Menge $M$ so in eine Menge von Klauseln $K$ transformiert
-werden kann, dass $M$ genau dann erfüllbar ist, wenn $K$ erfüllbar ist.  Daher ist die
-Beschränkung auf Klauseln keine echte Einschränkung.  Zunächst geben wir einige
+Formeln, sogenannte \blue{Klauseln}, beschränken.  Wir zeigen in diesem Abschnitt, dass jede Formel-Menge $M$
+so in eine Menge von Klauseln $K$ transformiert werden kann, dass $M$ genau dann erfüllbar ist, wenn $K$
+erfüllbar ist.  Daher ist die Beschränkung auf Klauseln keine echte Einschränkung.  Zunächst geben wir einige
 Äquivalenzen an, mit deren Hilfe Quantoren manipuliert werden können. 
 
 \begin{Satz}
@@ -1013,10 +1012,8 @@ Beschränkung auf Klauseln keine echte Einschränkung.  Zunächst geben wir einige
                         $\models  \big(\exists x\colon f) \leftrightarrow f$.
   \item Falls $x$ eine Variable ist, für die  $x \not\in \FV(g) \cup \BV(g)$ gilt, so haben wir die folgenden Äquivalenzen:
     \begin{enumerate}
-    \item $\models \big(\forall x\colon f) \vee g \leftrightarrow \forall x\colon (f \vee g)$
-    \item $\models g \vee \big(\forall x\colon f) \leftrightarrow \forall x\colon (g \vee f)$
-    \item $\models \big(\exists x\colon f) \wedge g \leftrightarrow \exists x\colon (f \wedge g)$
-    \item $\models g \wedge \big(\exists x\colon f) \leftrightarrow \exists x\colon (g \wedge f)$
+    \item $\models \big(\forall x\colon f) \vee g \leftrightarrow \forall x\colon (f \vee g)$ \quad und \quad $\models g \vee \big(\forall x\colon f) \leftrightarrow \forall x\colon (g \vee f)$,
+    \item $\models \big(\exists x\colon f) \wedge g \leftrightarrow \exists x\colon (f \wedge g)$ \quad und \quad $\models g \wedge \big(\exists x\colon f) \leftrightarrow \exists x\colon (g \wedge f)$.
     \end{enumerate}
   \end{enumerate}
 \end{Satz}
@@ -1028,13 +1025,13 @@ jedes Auftreten der Variablen $x$ in $f$ durch $y$ ersetzt wird.  Beispielsweise
 \hspace*{1.3cm} $\bigl(\forall u : \exists v : p(u,v)\bigr)[u/z] = \forall z : \exists v : p(z,v)$
 \\[0.2cm]
 Damit können wir eine letzte Äquivalenz angeben: Ist $f$ eine prädikatenlogische Formel,
-ist $x \in BV(F)$ und ist $y$ eine Variable, die in $f$ nicht auftritt, so gilt \\[0.2cm]
+ist $x \in BV(f)$ und ist $y$ eine Variable, die in $f$ nicht auftritt, so gilt \\[0.2cm]
 \hspace*{1.3cm} $\models f \leftrightarrow f[x/y]$.
 \vspace{0.3cm}
 
-Mit Hilfe der oben stehenden Äquivalenzen können wir eine Formel so umformen, dass die Quantoren nur
-noch außen stehen.  Eine solche Formel ist dann in \blue{pränexer Normalform}.  Wir führen
-das Verfahren an einem Beispiel vor: Wir zeigen, dass die Formel 
+Mit Hilfe der oben stehenden Äquivalenzen und der aussagenlogischen Äquivalenzen, die wir schon kennen, können
+wir eine Formel so umformen, dass die Quantoren nur noch außen stehen.  Eine solche Formel ist dann in
+\blue{pränexer Normalform}.  Wir führen das Verfahren an einem Beispiel vor: Wir zeigen, dass die Formel 
 \\[0.2cm]
 \hspace*{1.3cm}
 $\big(\forall x\colon p(x)\big) \rightarrow \big(\exists x\colon p(x)\big)$ 
@@ -1053,12 +1050,13 @@ $$
 \\[0.2cm]
 In diesem Fall haben wir Glück gehabt, dass es uns gelungen ist, die Formel als Tautologie zu
 erkennen.  Im Allgemeinen reichen die obigen Umformungen aber nicht aus, um prädikatenlogische
-Tautologien erkennen zu können.
-Um Formeln noch stärker normalisieren zu können, 
-führen wir einen weiteren
-Äquivalenz-Begriff ein.  Diesen Begriff wollen wir vorher durch ein Beispiel motivieren.
-Wir betrachten die beiden Formeln \\[0.2cm]
-\hspace*{1.3cm} $f_1 = \forall x \colon \exists y \colon p(x,y)$ \quad und \quad $f_2 = \forall x \colon p\bigl(x,s(x)\bigr)$.\\[0.2cm]
+Tautologien erkennen zu können.  Um Formeln noch stärker vereinfachen zu können, 
+führen wir einen weiteren Äquivalenz-Begriff ein.  Diesen Begriff wollen wir vorher durch ein Beispiel
+motivieren.  Wir betrachten die beiden Formeln 
+\\[0.2cm]
+\hspace*{1.3cm} $f_1 = \forall x \colon \exists y \colon p(x,y)$ \quad und \quad $f_2 = \forall x \colon
+p\bigl(x,s(x)\bigr)$.
+\\[0.2cm]
 Die beiden Formeln $f_1$ und $f_2$ sind nicht äquivalent, denn sie entstammen noch nicht
 einmal der gleichen Signatur: In der Formel $f_2$ wird das Funktions-Zeichen $s$
 verwendet, das in der Formel $f_1$ überhaupt nicht auftritt. 
@@ -1076,9 +1074,9 @@ Formel $f_2$ gilt:
 $\mathcal{S}_2 \models f_2$.
 \\[0.2cm]
 Dazu muss lediglich die Interpretation des Funktions-Zeichens $s$ so gewählt werden, dass
-für jedes $x$ tatsächlich $p\bigl(x,s(x)\bigr)$ gilt.  Dies ist möglich, denn die Formel
-$f_1$ sagt ja aus, dass wir tatsächlich zu jedem $x$ einen Wert $y$ finden, für den
-$p(x,y)$ gilt.   Die Funktion $s$ muss also lediglich zu jedem $x$ dieses $y$ zurück geben.
+für jedes $x$ tatsächlich $p\bigl(x,s(x)\bigr)$ gilt.  Dies ist möglich, denn die Formel $f_1$ sagt ja aus, 
+dass wir zu jedem $x$ einen Wert $y$ finden, für den $p(x,y)$ gilt.   Die Funktion $s$ muss also lediglich zu 
+jedem $x$ dieses $y$ zurück geben. 
 
 
 
@@ -1087,7 +1085,7 @@ $p(x,y)$ gilt.   Die Funktion $s$ muss also lediglich zu jedem $x$ dieses $y$ zu
   eine Signatur.  Ferner sei $f$ eine geschlossene $\Sigma$-Formel der Form \\[0.2cm]
   \hspace*{1.3cm} 
   $f = \forall x_1, \cdots, x_n \colon \exists y \colon g(x_1, \cdots, x_n, y)$. \\[0.2cm]
-  Dann wählen wir ein neues $n$-stelliges Funktions-Zeichen $s$, d.h.~wir nehmen ein Zeichen $s$, dass in
+  Dann wählen wir ein \red{neues} $n$-stelliges Funktions-Zeichen $s$, d.h.~wir nehmen ein Zeichen $s$, dass in
   der Signatur $\Sigma$ nicht auftritt und erweitern die Signatur $\Sigma$ zu der Signatur \\[0.2cm]
   \hspace*{1.3cm} 
   $\Sigma' := \Bigl\langle \mathcal{V}, \mathcal{F} \cup \{s\}, \mathcal{P}, \textsl{arity} \cup \bigl\{\pair(s,n)\bigr\} \Bigr\rangle$, \\[0.2cm]
@@ -1170,7 +1168,7 @@ bei der $k$ eine Disjunktion prädikatenlogischer Literale ist,
 bezeichnen wir als \blue{prädikatenlogische Klausel}.  Ist $M$
 eine Menge von Formeln deren Erfüllbarkeit wir untersuchen wollen, so können wir nach dem
 bisher gezeigten $M$ immer in eine Menge prädikatenlogischer Klauseln umformen.
-Da  dann nur noch All-Quantoren vorkommen, können wir hier die  Notation noch vereinfachen
+Da  dann nur noch All-Quantoren vorkommen, können wir hier die  Notation noch vereinfachen,
 indem wir vereinbaren, dass alle Formeln implizit allquantifiziert sind, wir lassen also
 die All-Quantoren weg.
 
@@ -1285,8 +1283,8 @@ Dazu benötigen wir zunächst den Begriff einer \blue{Substitution}.
     Ist $\sigma = \bigl\{ \langle x_1, t_1 \rangle, \cdots, \langle x_n, t_n \rangle \bigr\}$ eine
     $\Sigma$-Substitution, so schreiben wir  \\[0.2cm]
     \hspace*{1.3cm} $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$.  \\[0.2cm]
-    Außerdem definieren wir den \emph{Domain} einer Substitution als \\[0.2cm]
-    \hspace*{1.3cm} $\textsl{dom}(\sigma) = \{ x_1, \cdots, x_n\}$.
+    Außerdem definieren wir den \blue{Domain} einer Substitution als \\[0.2cm]
+    \hspace*{1.3cm} $\textsl{dom}(\sigma) := \{ x_1, \cdots, x_n\}$.
     \\[0.2cm]
     Die Menge aller Substitutionen bezeichnen wir mit \textsl{Subst}.
     \eox
@@ -1299,7 +1297,7 @@ Vorkommen einer Variablen $x_i$ durch den zugehörigen Term $t_i$ ersetzt wird.  
 \begin{Definition}[Anwendung einer Substitution]
 \hspace*{\fill} \\
 Es sei $t$ ein Term und es sei $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$
-eine Substitution. Wir definieren die \emph{Anwendung} von $\sigma$ auf $t$ (Schreibweise $t\sigma$) durch Induktion über
+eine Substitution. Wir definieren die \blue{Anwendung} von $\sigma$ auf $t$ (Schreibweise $t\sigma$) durch Induktion über
 den Aufbau von $t$: 
 \begin{enumerate}
 \item Falls $t$ eine Variable ist, gibt es zwei Fälle:
@@ -1322,7 +1320,7 @@ Wir definieren eine Substitution $\sigma$ durch \\[0.2cm]
 \hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto c,\; x_2 \mapsto f(d) \big]$. \\[0.2cm]
 In den folgenden drei Beispielen demonstrieren wir zunächst, wie eine Substitution
 auf einen Term angewendet werden kann.  Im vierten Beispiel wenden wir die Substitution
-dann auf eine Formel an:
+dann auf eine Klausel an:
 \begin{enumerate}
 \item $x_3\sigma = x_3$,
 \item $f(x_2)\sigma = f\bigl(f(d)\bigr)$,
@@ -1376,9 +1374,9 @@ von syntaktischen Gleichungen.
 \end{Definition}
 
 Was syntaktische Gleichungen angeht, so machen wir keinen Unterschied zwischen Funktions-Zeichen und
-Prädikats-Zeichen.   Dieser Ansatz ist deswegen berechtigt, weil wir Prädikats-Zeichen
-ja auch als spezielle Funktions-Zeichen auffassen können, nämlich als 
-Funktions-Zeichen, die einen Wahrheitswert aus der Menge   $\mathbb{B}$ berechnen.
+Prädikats-Zeichen.   Dieser Ansatz ist deswegen berechtigt, weil wir Prädikate
+ja auch als spezielle Funktionen auffassen können, nämlich als solche
+Funktionen, die als Ergebnis einen Wahrheitswert aus der Menge  $\mathbb{B}$ zurück geben.
 
 \begin{Definition}[Unifikator]
 Eine Substitution $\sigma$ \blue{löst} eine syntaktische Gleichung $s \doteq t$ genau dann, wenn
@@ -1447,7 +1445,10 @@ Unifikator der Menge $E$, mit der wir gestartet sind.  Es folgen die Reduktions-
 \item Wenn die Variable $y$  in dem Term $t$ auftritt, falls also $y \in \textsl{var}(t)$
       ist und wenn außerdem $t \not= y$ ist, dann hat das Gleichungs-System 
       $E \cup \big\{ y \doteq t \big\}$ \underline{\color{red}keine} Lösung, wir schreiben 
-      \[ \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle\;\leadsto\; \Omega. \]
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle\;\leadsto\; \Omega$ \quad
+      falls $x \in \textsl{var}(t)$ und $y \not=t$.
 \item Falls $y\in\mathcal{V}$ eine Variable ist und $t$ keine Variable ist, so haben wir folgende Reduktions-Regel:
       \[ \Big\langle E \cup \big\{ t \doteq y \big\}, \sigma \Big\rangle \quad\leadsto\quad 
          \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle.
@@ -1485,10 +1486,10 @@ Haben wir ein nicht-leeres Gleichungs-System $E$ gegeben und starten mit dem Paa
 $\langle E, []\rangle$  , so lässt sich immer eine der
 obigen Regeln anwenden.  Diese geht solange bis einer der folgenden Fälle eintritt:
 \begin{enumerate}
-\item Die 2.~oder die 6.~Regel ist anwendbar.  Dann hat das Gleichungs-System $E$ hat
+\item Die 2.~oder die 6.~Regel ist anwendbar.  Dann hat das Gleichungs-System $E$ 
       \underline{\color{red}keine} Lösung und als Ergebnis der Unifikation wird $\Omega$ zurück gegeben.
 \item Das Paar $\langle E, [] \rangle$ wird reduziert zu einem Paar $\langle \{\}, \sigma\rangle$.
-      Dann ist $\sigma$ ein Unifikator von $E$.  In diesem Fall schreiben wir $\sigma = \mathtt{mgu}(E)$.
+      Dann ist $\sigma$ ein \blue{Unifikator} von $E$.  In diesem Fall schreiben wir $\sigma = \mathtt{mgu}(E)$.
       Falls $E = \{ s \doteq t \}$ ist, schreiben wir auch $\sigma = \mathtt{mgu}(s, t)$.  Die Abkürzung
       $\mathtt{mgu}$ steht hier für {``\blue{most general unifier}''}.
 \end{enumerate}
@@ -1528,7 +1529,7 @@ $$
 \end{array}
 $$
 Damit haben wir die Substitution  $\big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \big]$ als Lösung 
-des anfangs gegebenen syntaktischen Gleichungs-Systems gefunden.  
+des anfangs gegebenen syn\-tak\-tischen Gleichungs-Systems gefunden.  
 \eox
 
 
@@ -1541,7 +1542,6 @@ die Prädikatenlogik einzuführen.  Zwar gibt es auch für den Fall, dass die Signa
 Gleichheits-Zeichen enthält, einen vollständigen Kalkül.  Dieser ist allerdings deutlich
 aufwendiger als der Kalkül, den wir gleich einführen werden,  denn der Kalkül für die Prädikatenlogik ohne
 das Gleichheits-Zeichen besteht nur aus zwei Schluss-Regeln, die wir jetzt definieren.
-\pagebreak
 
 \begin{Definition}[{\color{blue}Resolution}] 
     Es gelte:
@@ -1599,7 +1599,7 @@ durchführen.  Dabei würden wir dann sehen, dass die leere Klausel nie berechnet 
 Wir stellen daher jetzt die
 \blue{Faktorisierungs-Regel} vor, mir der wir später zeigen werden, dass $M$ widersprüchlich
 ist.
-\pagebreak
+
 
 \begin{Definition}[{\color{blue}Faktorisierung}] Es gelte 
   \begin{enumerate}
@@ -2178,4 +2178,3 @@ worden.  Das wird sich vermutlich auch in der näheren Zukunft nicht
 %%% TeX-master: "logic"
 %%% ispell-local-dictionary: "deutsch8"
 %%% End: 
-\ss
