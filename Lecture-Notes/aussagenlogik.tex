@@ -2923,11 +2923,11 @@ Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie
             return Clauses;
         }
         l := selectLiteral(Clauses, Literals);
-        notL := negateLiteral(l);    
         S := davisPutnam(Clauses + { {l} }, Literals + { l });
         if (S != { {} }) {
             return S;  // solution found
         }     
+        notL := negateLiteral(l);    
         return davisPutnam(Clauses + { {notL} }, Literals + { notL });
     };
 \end{Verbatim}
@@ -3405,13 +3405,9 @@ die Gleichung \\[0.2cm]
 Allgemein erfüllen die Indizes der Variablen einer aufsteigenden Diagonale, die mehr als ein Feld enthält, die
 Gleichung \\[0.2cm] 
 \hspace*{1.3cm} $r + c = k$, \\[0.2cm]
-wobei $k$ einen Wert aus der Menge $\{3, \cdots, 15 \}$ annimmt.  Diese Gleichung ist äquivalent zu der Gleichung
-\\[0.2cm]
-\hspace*{1.3cm}
-$c = k - r$.
-\\[0.2cm]
-Den Wert $k$ geben wir als Argument bei der Prozedur \texttt{atMostOneInUpperDiagonal} mit.  Diese
-Prozedur ist in Abbildung \ref{fig:atMostOneInUpperDiagonal} gezeigt.
+wobei $k$ einen Wert aus der Menge $\{3, \cdots, 15 \}$ annimmt.  Den Wert $k$ geben wir als Argument bei der
+Prozedur \texttt{atMostOneInUpperDiagonal} mit.  Diese Prozedur ist in Abbildung
+\ref{fig:atMostOneInUpperDiagonal} gezeigt. 
 
 \begin{figure}[!ht]
   \centering
@@ -3420,8 +3416,8 @@ Prozedur ist in Abbildung \ref{fig:atMostOneInUpperDiagonal} gezeigt.
                   labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm
                 ]
     atMostOneInUpperDiagonal := procedure(k, n) {
         S := { @Var(row, col) : row in [1..n], col in [1..n] | row + col == k };
@@ -3445,13 +3441,9 @@ die Gleichung \\[0.2cm]
 \hspace*{1.3cm} $r - c = 0$. \\[0.2cm]
 Allgemein erfüllen die Indizes der Variablen einer absteigenden Diagonale die Gleichung \\[0.2cm]
 \hspace*{1.3cm} $r - c = k$, \\[0.2cm]
-wobei $k$ einen Wert aus der Menge $\{-6, \cdots, 6 \}$ annimmt.  Diese Gleichung ist äquivalent zu der Gleichung
-\\[0.2cm]
-\hspace*{1.3cm}
-$r - k = c$.
-\\[0.2cm]
-Den Wert $k$ geben wir als Argument bei der Prozedur \texttt{atMostOneInLowerDiagonal} mit.
-Diese Prozedur ist in Abbildung \ref{fig:atMostOneInLowerDiagonal} gezeigt.
+wobei $k$ einen Wert aus der Menge $\{-6, \cdots, 6 \}$ annimmt.  Den Wert $k$ geben wir als Argument bei der
+Prozedur \texttt{atMostOneInLowerDiagonal} mit. Diese Prozedur ist in Abbildung
+\ref{fig:atMostOneInLowerDiagonal} gezeigt. 
 
 \begin{figure}[!ht]
   \centering
@@ -3460,8 +3452,8 @@ Diese Prozedur ist in Abbildung \ref{fig:atMostOneInLowerDiagonal} gezeigt.
                   labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm
                 ]
     atMostOneInLowerDiagonal := procedure(k, n) {
         S := { @Var(row, col) : row in [1..n], col in [1..n] | row - col == k };
@@ -3561,33 +3553,32 @@ Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    printBoard := procedure(i, n) {
-        if (i == { {} }) {
+    printBoard := procedure(I, n) {
+        if (I == { {} }) {
             return;
         }
-        print( "        " + ((8*n+1) * "-") );
+        print("-" * (8*n+1));
         for (row in [1..n]) {
-            line := "        |";
+            printEmptyLine(n);
+            line := "|";
             for (col in [1..n]) {
-                line += "       |";
-            }
-            print(line);
-            line := "        |";
-            for (col in [1..n]) {
-                if ({ @Var(row, col) } in i) {
+                if ({ @Var(row, col) } in I) {
                     line += "   Q   |";
                 } else {
                     line += "       |";
                 }
             }
             print(line);
-            line := "        |";
-            for (col in [1..n]) {
-                line += "       |";
-            }
-            print(line);
-            print( "        " + ((8*n+1) * "-") );
+            printEmptyLine(n);
+            print("-" * (8*n+1));
         }
+    };
+    printEmptyLine := procedure(n) {
+        line := "|";
+        for (col in [1..n]) {
+            line += "       |";
+        }
+        print(line);
     };
 \end{Verbatim}
 \vspace*{-0.3cm}

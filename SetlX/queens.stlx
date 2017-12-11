@@ -71,33 +71,32 @@ solve := procedure(n) {
 // i is a set of unit clauses and board is a matrix of propositional 
 // variables representing a chessboard.   This procedure prints the 
 // chessboard.
-printBoard := procedure(i, n) {
-    if (i == { {} }) {
+printBoard := procedure(I, n) {
+    if (I == { {} }) {
         return;
     }
-    print( "        " + ((8*n+1) * "-") );
+    print("-" * (8*n+1));
     for (row in [1..n]) {
-        line := "        |";
+        printEmptyLine(n);
+        line := "|";
         for (col in [1..n]) {
-            line += "       |";
-        }
-        print(line);
-        line := "        |";
-        for (col in [1..n]) {
-            if ({ @Var(row, col) } in i) {
+            if ({ @Var(row, col) } in I) {
                 line += "   Q   |";
             } else {
                 line += "       |";
             }
         }
         print(line);
-        line := "        |";
-        for (col in [1..n]) {
-            line += "       |";
-        }
-        print(line);
-        print( "        " + ((8*n+1) * "-") );
+        printEmptyLine(n);
+        print("-" * (8*n+1));
     }
+};
+printEmptyLine := procedure(n) {
+    line := "|";
+    for (col in [1..n]) {
+        line += "       |";
+    }
+    print(line);
 };
 start := now();
 solve(8);

@@ -19,11 +19,11 @@ davisPutnam := procedure(Clauses, Literals) {
         return Clauses;   // solution found
     }
     l := selectLiteral(Clauses, Literals);
-    notL := negateLiteral(l);    
     S := davisPutnam(Clauses + { {l} }, Literals + { l });
     if (S != { {} }) {
         return S;  // solution found
     }     
+    notL := negateLiteral(l);    
     return davisPutnam(Clauses + { {notL} }, Literals + { notL });
 };
 // Gegeben ist eine Menge S von Klauseln.  Der Aufruf saturate(S) berechnet alle
