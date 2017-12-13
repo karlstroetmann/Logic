@@ -20,10 +20,9 @@ evalFormula := procedure(f, S, I) {
 // This procedure evaluates the atomic formula a in the structure s
 // using the variable assignment i.
 evalAtomic := procedure(a, S, I) {
-    // we do not support nullary predicates 
-    J  := S[2];
-    p  := fct(a); // predicate symbol
-    pJ := J[p];
+    J       := S[2];
+    p       := fct(a); // predicate symbol
+    pJ      := J[p];
     argList := args(a);
     argsVal := evalTermList(argList, S, I);
     return argsVal in pJ;
@@ -35,9 +34,9 @@ evalTerm := procedure(t, S, I) {
         varName := args(t)[1];
         return I[varName];
     }
-    J    := S[2];
-    f    := fct(t); // function symbol
-    fJ   := J[f];
+    J       := S[2];
+    f       := fct(t); // function symbol
+    fJ      := J[f];
     argList := args(t);
     argsVal := evalTermList(argList, S, I);
     if (#argsVal > 0) {        
@@ -56,7 +55,7 @@ evalTermList := procedure(tl, S, I) {
 //     I[x/c](x) == c,
 //     I[x/c](y) == I(y) for x != y.
 modify := procedure(I, v, c) {
-    x := args(v)[1];
+    x    := args(v)[1];
     I[x] := c;
     return I;
 };

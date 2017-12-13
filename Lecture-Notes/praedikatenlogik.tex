@@ -1,6 +1,6 @@
 \chapter{Prädikatenlogik}
-In der Aussagenlogik haben wir die Verknüpfung von elementaren Aussagen mit Junktoren untersucht.
-Die Prädikatenlogik untersucht zusätzlich auch die Struktur dieser elementaren Aussagen.  Dazu werden in der
+In der \blue{Aussagenlogik} haben wir die Verknüpfung von elementaren Aussagen mit \blue{Junktoren} untersucht.
+Die \blue{Prädikatenlogik} untersucht zusätzlich auch die Struktur dieser elementaren Aussagen.  Dazu werden in der
 Prädikatenlogik die folgenden zusätzlichen Begriffe eingeführt:
 \begin{enumerate}
 \item Als Bezeichnungen für Objekte werden \blue{Terme} verwendet.
@@ -26,8 +26,9 @@ Prädikatenlogik die folgenden zusätzlichen Begriffe eingeführt:
       \hspace*{1.3cm}
       $\forall x \in \mathbb{R}: \exists n \in \mathbb{N}: x < n$.
 \end{enumerate}
-Wir werden im nächsten Abschnitt die Syntax der prädikatenlogischen Formeln festlegen und uns dann
-im darauf folgenden Abschnitt mit der Semantik dieser Formeln beschäftigen.
+Wir werden im nächsten Abschnitt die \href{https://de.wikipedia.org/wiki/Syntax}{Syntax} der
+prädikatenlogischen Formeln festlegen und uns dann im darauf folgenden Abschnitt mit der 
+\href{https://de.wikipedia.org/wiki/Semantik}{Semantik} dieser Formeln beschäftigen.
 
 \section{Syntax der Prädikatenlogik}
 Zunächst definieren wir den Begriff der \blue{Signatur}.  Inhaltlich ist das nichts anderes als eine 
@@ -39,9 +40,9 @@ einer Spezifikation der Stelligkeit dieser Zeichen.
   \hspace*{1.3cm} $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$, \\[0.2cm]
   für das Folgendes gilt: 
   \begin{enumerate}
-  \item $\mathcal{V}$ ist die Menge der Variablen.
-  \item $\mathcal{F}$ ist die Menge der Funktions-Zeichen.
-  \item $\mathcal{P}$ ist die Menge der Prädikats-Zeichen.
+  \item $\mathcal{V}$ ist die Menge der blue{Variablen}.
+  \item $\mathcal{F}$ ist die Menge der blue{Funktions-Zeichen}.
+  \item $\mathcal{P}$ ist die Menge der blue{Prädikats-Zeichen}.
   \item $\textsl{arity}$ ist eine Funktion, die jedem Funktions- und jedem Prädikats-Zeichen seine
         \blue{Stelligkeit} zuordnet: \\[0.2cm]
         \hspace*{1.3cm} $\textsl{arity}: \mathcal{F} \cup \mathcal{P} \rightarrow \mathbb{N}$. \\[0.2cm]
@@ -62,7 +63,7 @@ Funktions-Zeichen aufgebaut sind.  Solche Ausdrücke nennen wir \blue{Terme}.
 Formal werden diese wie folgt definiert.
 \begin{Definition}[Terme,  $\mathcal{T}_\Sigma$]
   Ist $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ eine Signatur, so definieren wir die Menge der \blue{$\Sigma$-Terme}
-  $\mathcal{T}_\Sigma$ induktiv:
+  \blue{$\mathcal{T}_\Sigma$} induktiv:
   \begin{enumerate}
   \item Für jede Variable $x \in \mathcal{V}$ gilt $x \in \mathcal{T}_\Sigma$.
   \item Ist $f \in \mathcal{F}$ ein n-stelliges Funktions-Zeichen und sind 
@@ -131,7 +132,7 @@ wird erst im nächsten Abschnitt untersucht.
 Bei der Definition der prädikatenlogischen Formeln ist es notwendig,
 zwischen sogenannten \blue{gebundenen} und \blue{freien} Variablen zu unterscheiden.
 Wir führen diese Begriffe zunächst informal mit Hilfe eines Beispiels aus der Analysis ein.
-Wir betrachten die folgende Identität: \\[0.2cm]
+Wir betrachten die folgende Gleichung: \\[0.2cm]
 \hspace*{1.3cm}
  $\ds\int_{0}^{x} y \cdot  t\, d t = \frac{1}{2} \cdot x^2 \cdot  y$ 
 \\[0.2cm]
@@ -141,7 +142,7 @@ In dieser Gleichung treten die Variablen $x$ und $y$ \blue{frei} auf, während di
 Gültigkeit der Formel etwas ändert.  Setzen wir zum Beispiel für $x$ den Wert $2$ ein, so erhalten wir \\[0.2cm]
 \hspace*{1.3cm}
 $\ds\int_{0}^{2} y \cdot  t\, d t = \frac{1}{2} \cdot 2^2 \cdot  y$ \\[0.2cm]
-und diese Identität ist ebenfalls gültig.  Demgegenüber macht es keinen Sinn, wenn wir für die gebundene Variable
+und diese Gleichung ist ebenfalls gültig.  Demgegenüber macht es keinen Sinn, wenn wir für die gebundene Variable
  $t$ eine Zahl einsetzen würden.
 Die linke Seite der entstehenden Gleichung wäre einfach undefiniert.  Wir können für $t$
 höchstens eine andere Variable einsetzen. 
@@ -176,8 +177,8 @@ Um diese Begriffe präzisieren zu können, definieren wir zunächst für einen
 $\Sigma$-Term $t$ die Menge der in $t$ enthaltenen Variablen.
 
 \begin{Definition}[$\var(t)$]
-    Ist $t$ ein $\Sigma$-Term, mit $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$,
-    so definieren wir die Menge $\var(t)$ der Variablen, die in $t$
+  Ist $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ eine Signatur und ist
+  $t$ ein $\Sigma$-Term, so definieren wir die Menge \blue{$\var(t)$} der Variablen, die in $t$
     auftreten, durch Induktion nach dem Aufbau des Terms:
     \begin{enumerate}
     \item $\var(x) := \{ x \}$ \quad für alle $x \in \mathcal{V}$,
@@ -270,8 +271,8 @@ $\forall x \colon p(x) \wedge G \quad \mathrm{statt} \quad \bigl(\forall x \colo
 \\[0.2cm]
 schreiben.
 Außerdem vereinbaren wir, dass wir zweistellige Prädikats- und Funktions-Zeichen auch in Infix-Notation angeben
-dürfen.  Um eine eindeutige Lesbarkeit zu erhalten, müssen wir dann gegebenenfalls Klammern setzen. 
-Wir schreiben beispielsweise \\[0.2cm]
+dürfen.  Um eine eindeutige Lesbarkeit zu erhalten, müssen wir dann die Präzedenz der Funktions-Zeichen
+festlegen.  Wir schreiben beispielsweise \\[0.2cm]
 \hspace*{1.3cm} $\mathtt{n}_1 = \mathtt{n}_2$  \quad anstelle von \quad $=(\mathtt{n}_1, \mathtt{n}_2)$. \\[0.2cm]
 Die Formel $(\exists x \colon \leq(\mathtt{+}(y, x),y))$ wird dann lesbarer als \\[0.2cm]
 \hspace*{1.3cm} $\exists x \colon y + x \leq y$ \\[0.2cm]
@@ -319,7 +320,7 @@ Funktions- und Prädikats-Zeichen der Signatur $\Sigma$ zu interpretieren sind.
               \hspace*{1.3cm}  
               $=^\mathcal{J} \;=\; \bigl\{ \langle u, u \rangle \mid u \in \mathcal{U} \bigr\}$.
               \\[0.2cm]
-              Eine Formel der Art $s = t$ wird als genau dann als wahr interpretiert, 
+              Eine Formel der Art $s = t$ wird also genau dann als wahr interpretiert, 
               wenn die Interpretation des Terms $s$ den selben Wert ergibt wie die Interpretation des Terms $t$.
               \eox
         \end{enumerate}
@@ -380,7 +381,7 @@ nun.
 
 \begin{Definition}[Semantik der Terme]
     Ist $\struct = \pair(\mathcal{U},\mathcal{J})$ eine $\Sigma$-Struktur und $\mathcal{I}$ eine $\struct$-Variablen-Belegung,
-    so definieren wir für jeden Term $t$ den \blue{Wert} $\struct(\mathcal{I}, t)$ durch Induktion über den Aufbau
+    so definieren wir für jeden Term $t$ den \blue{Wert} \blue{$\struct(\mathcal{I}, t)$} durch Induktion über den Aufbau
     von $t$:
     \begin{enumerate}
     \item Für Variablen $x \in \mathcal{V}$ definieren wir: \\[0.2cm]
@@ -408,7 +409,7 @@ Dann gilt  \\[0.2cm]
 \begin{Definition}[Semantik der atomaren $\Sigma$-Formeln]
     Ist $\struct$ eine $\Sigma$-Struktur und $\mathcal{I}$ eine $\struct$-Variablen-Belegung,
     so definieren wir für jede atomare $\Sigma$-Formel 
-    $p(t_1, \cdots, t_n)$ den Wert $\struct\bigl(\mathcal{I}, p(t_1, \cdots, t_n) \bigr)$ wie folgt: \\[0.2cm]
+    $p(t_1, \cdots, t_n)$ den Wert \blue{$\struct\bigl(\mathcal{I}, p(t_1, \cdots, t_n) \bigr)$} wie folgt: \\[0.2cm]
     \hspace*{1.3cm}
     $\struct\bigl(\mathcal{I}, p(t_1,\cdots,t_n)\bigr) := 
        \Bigl(\bigl\langle \struct(\mathcal{I}, t_1), \cdots, \struct(\mathcal{I}, t_n) \bigr\rangle \in p^\mathcal{J}\Bigr)$.
@@ -436,7 +437,7 @@ Die Semantik dieser Funktionen hatten wir durch die Tabelle in Abbildung
 
 \begin{Definition}[Semantik der $\Sigma$-Formeln]
     Ist $\struct$ eine $\Sigma$-Struktur und $\mathcal{I}$ eine $\struct$-Variablen-Belegung,
-    so definieren wir für jede $\Sigma$-Formel $F$ den Wert $\struct(\mathcal{I},F)$
+    so definieren wir für jede $\Sigma$-Formel $F$ den Wert \blue{$\struct(\mathcal{I},F)$}
     durch Induktion über den Aufbau von $F$:
     \begin{enumerate}
     \item $\struct(\mathcal{I},\verum) := \mathtt{true}$ und $\struct(\mathcal{I},\falsum) := \mathtt{false}$.
@@ -489,12 +490,18 @@ feste Signatur $\Sigma$ als gegeben an.  Dadurch können wir in den folgenden Def
 von Termen, Formeln, Strukturen, etc.~sprechen und meinen damit  $\Sigma$-Terme,
 $\Sigma$-Formeln und $\Sigma$-Strukturen.
 
-\begin{Definition}[äquivalent]
+\begin{Definition}[Äquivalent]
   Zwei Formeln $F$ und $G$, in denen die Variablen $x_1$, $\cdots$, $x_n$ frei auftreten, heißen
   \blue{äquivalent} g.d.w.  
   \\[0.2cm] 
-  \hspace*{1.3cm} $\models \forall x_1: \cdots\, \forall x_n: (F \leftrightarrow G)$
+  \hspace*{1.3cm}
+  $\models \forall x_1: \cdots\, \forall x_n: (F \leftrightarrow G)$
   \\[0.2cm] 
+  gilt.  Falls in $F$ und $G$ keine Variablen frei auftreten, dann ist $F$ genau dann äquivalent zu $G$, wenn
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\models F \leftrightarrow G$
+  \\[0.2cm]
   gilt.
   \eox
 \end{Definition}
@@ -523,7 +530,7 @@ ob eine Menge $M$ von Formeln \blue{widersprüchlich} ist, ob also
 möglich ist, die Frage, ob $M \models \falsum$ gilt, ist \red{unentscheidbar}.  Ein Beweis
 dieser Tatsache geht allerdings über den Rahmen dieser Vorlesung heraus.
 Dem gegenüber ist es möglich, ähnlich wie in der Aussagenlogik
-einen \blue{Kalkül} $\vdash$ anzugeben, so dass gilt \\[0.2cm]
+einen \blue{Kalkül} $\vdash$ anzugeben, so dass gilt: \\[0.2cm]
 \hspace*{1.3cm} $M \vdash \falsum$ \quad g.d.w. \quad $M \models \falsum$. \\[0.2cm]
 Ein solcher Kalkül kann dann zur Implementierung eines
 \blue{Semi-Entscheidungs-Verfahrens} benutzt werden:  Um zu überprüfen, ob
@@ -541,7 +548,7 @@ Frage kommenden Beweise ausprobiert.
 
 Die Situation ist ähnlich der, wie bei der Überprüfung bestimmter zahlentheoretischer
 Fragen.  Wir betrachten dazu ein konkretes Beispiel: Eine Zahl $n$ heißt 
-ist eine \href{https://de.wikipedia.org/wiki/Vollkommene_Zahl}{perfekte Zahl},
+eine \href{https://de.wikipedia.org/wiki/Vollkommene_Zahl}{perfekte Zahl},
 wenn die Summe aller echten Teiler von $n$ wieder die Zahl $n$ ergibt.  Beispielsweise ist
 die Zahl $6$ perfekt, denn die Menge der echten Teiler von $6$ ist $\{1,2,3\}$ und es gilt
 \\[0.2cm]
@@ -619,7 +626,7 @@ $\{ a, b \}$ besteht.  In \textsc{SetlX} können wir diese Struktur durch den in 
     b := "b"; 
     U := { a, b };  // the universe
     product := { [[a, a], a],  [[a, b], b],  [[b, a], b],  [[b, b], a] };
-    equals := { [ x, x ] : x in U };
+    equals  := { [ x, x ] : x in U };
     J := { [ "E", a ], [ "@@@product", product ], [ "@@@equals", equals ] };
     S := [ U, J ];
     I := { [ "x", a ], [ "y", b ], [ "z", a ] }; 
@@ -769,7 +776,7 @@ abändern können.
                   xrightmargin  = 0.8cm,
                 ]
     modify := procedure(I, v, c) {
-        x := args(v)[1];
+        x    := args(v)[1];
         I[x] := c;
         return I;
     };
@@ -801,7 +808,9 @@ bezeichnet.  Wir erhalten daher in Zeile 6 als Auswertung der Liste $[t_1,\cdots
 $[\mathcal{S}(\mathcal{I}, t_1), \cdots, \mathcal{S}(\mathcal{I}, t_n)]$.
 \\[0.2cm]
 Dies ist eine Liste von Werten aus dem Universum $\mathcal{U}$ der Struktur $\mathcal{S}$.  Wir prüfen nun in
-Zeile 7, ob diese Liste tatsächlich ein Element der Menge $\mathtt{pJ}$ ist.
+Zeile 7, ob diese Liste tatsächlich ein Element der Menge $\mathtt{pJ}$ ist.  Wenn dies so ist, gibt die
+Funktion $\texttt{evalAtomic}$ den Wert $\texttt{true}$ zurück, sonst wird $\texttt{false}$ zurück gegeben. 
+
 
 
 
@@ -816,9 +825,9 @@ Zeile 7, ob diese Liste tatsächlich ein Element der Menge $\mathtt{pJ}$ ist.
                   xrightmargin  = 0.8cm,
                 ]
     evalAtomic := procedure(a, S, I) {
-        J  := S[2];
-        p  := fct(a); // predicate symbol
-        pJ := J[p];
+        J       := S[2];
+        p       := fct(a); // predicate symbol
+        pJ      := J[p];
         argList := args(a);
         argsVal := evalTermList(argList, S, I);
         return argsVal in pJ;
@@ -887,9 +896,9 @@ $\mathtt{evalTerm}()$ auf alle Terme der gegebenen Liste an.
             varName := args(t)[1];
             return I[varName];
         }
-        J    := S[2];
-        f    := fct(t); // function symbol
-        fJ   := J[f];
+        J       := S[2];
+        f       := fct(t); // function symbol
+        fJ      := J[f];
         argList := args(t);
         argsVal := evalTermList(argList, S, I);
         if (#argsVal > 0) {        
@@ -993,7 +1002,7 @@ müssten, unendlich groß.  \eox
 Im nächsten Abschnitt gehen wir daran, den früher  erwähnten Kalkül $\vdash$ für die
 Prädikatenlogik zu definieren.  
 Es zeigt sich, dass die Arbeit wesentlich einfacher wird, wenn wir uns auf bestimmte
-Formeln, sogenannte \blue{Klauseln}, beschränken.  Wir zeigen in diesem Abschnitt, dass jede Formel-Menge $M$
+Formeln, sogenannte \blue{prädikatenlogische Klauseln}, beschränken.  Wir zeigen in diesem Abschnitt, dass jede Formel-Menge $M$
 so in eine Menge von Klauseln $K$ transformiert werden kann, dass $M$ genau dann erfüllbar ist, wenn $K$
 erfüllbar ist.  Daher ist die Beschränkung auf Klauseln keine echte Einschränkung.  Zunächst geben wir einige
 Äquivalenzen an, mit deren Hilfe Quantoren manipuliert werden können. 
@@ -1018,7 +1027,7 @@ erfüllbar ist.  Daher ist die Beschränkung auf Klauseln keine echte Einschränkun
   \end{enumerate}
 \end{Satz}
 
-Um die Äquivalenzen der letzten Gruppe anwenden zu können, ist es notwendig,
+Um die Äquivalenzen der letzten Gruppe anwenden zu können, kann es notwendig sein,
 gebundene Variablen umzubenennen. Ist $f$ eine prädikatenlogische Formel und sind $x$ und
 $y$ zwei Variablen, so bezeichnet $f[x/y]$ die Formel, die aus $f$ dadurch entsteht, dass
 jedes Auftreten der Variablen $x$ in $f$ durch $y$ ersetzt wird.  Beispielsweise gilt \\[0.2cm]
@@ -1125,7 +1134,7 @@ dient die folgende Definition.
    \hspace*{1.3cm} $f \approx_e g$.
 \eox
 \end{Definition}
-
+\vspace{-0.8cm}
 
 \noindent
 \begin{Satz}
@@ -1286,7 +1295,7 @@ Dazu benötigen wir zunächst den Begriff einer \blue{Substitution}.
     Außerdem definieren wir den \blue{Domain} einer Substitution als \\[0.2cm]
     \hspace*{1.3cm} $\textsl{dom}(\sigma) := \{ x_1, \cdots, x_n\}$.
     \\[0.2cm]
-    Die Menge aller Substitutionen bezeichnen wir mit \textsl{Subst}.
+    Die Menge aller Substitutionen bezeichnen wir mit \blue{\textsl{Subst}}.
     \eox
 \end{Definition}
 
@@ -1297,7 +1306,7 @@ Vorkommen einer Variablen $x_i$ durch den zugehörigen Term $t_i$ ersetzt wird.  
 \begin{Definition}[Anwendung einer Substitution]
 \hspace*{\fill} \\
 Es sei $t$ ein Term und es sei $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$
-eine Substitution. Wir definieren die \blue{Anwendung} von $\sigma$ auf $t$ (Schreibweise $t\sigma$) durch Induktion über
+eine Substitution. Wir definieren die \blue{Anwendung} von $\sigma$ auf $t$ (Schreibweise \blue{$t\sigma$}) durch Induktion über
 den Aufbau von $t$: 
 \begin{enumerate}
 \item Falls $t$ eine Variable ist, gibt es zwei Fälle:
@@ -1442,13 +1451,13 @@ Unifikator der Menge $E$, mit der wir gestartet sind.  Es folgen die Reduktions-
       gegebenen Menge von Gleichungen entfernen.  Gleichzeitig wird die Substitution
       $\sigma$ in die Substitution $\sigma\big[ y \mapsto t \big]$ transformiert und auf die restlichen syntaktischen Gleichungen
       wird die Substitution $[y \mapsto t]$ angewendet.
-\item Wenn die Variable $y$  in dem Term $t$ auftritt, falls also $y \in \textsl{var}(t)$
+\item Wenn die Variable $y$  in dem Term $t$ auftritt, falls also $y \in \textsl{Var}(t)$
       ist und wenn außerdem $t \not= y$ ist, dann hat das Gleichungs-System 
       $E \cup \big\{ y \doteq t \big\}$ \underline{\color{red}keine} Lösung, wir schreiben 
       \\[0.2cm]
       \hspace*{1.3cm}
       $\Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle\;\leadsto\; \Omega$ \quad
-      falls $x \in \textsl{var}(t)$ und $y \not=t$.
+      falls $x \in \textsl{Var}(t)$ und $y \not=t$.
 \item Falls $y\in\mathcal{V}$ eine Variable ist und $t$ keine Variable ist, so haben wir folgende Reduktions-Regel:
       \[ \Big\langle E \cup \big\{ t \doteq y \big\}, \sigma \Big\rangle \quad\leadsto\quad 
          \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle.
@@ -1540,8 +1549,7 @@ In diesem Abschnitt setzen wir voraus, dass unsere Signatur $\Sigma$ das Gleichh
 verwendet, denn durch diese Einschränkung wird es wesentlich einfacher, einen vollstängen Kalkül für
 die Prädikatenlogik einzuführen.  Zwar gibt es auch für den Fall, dass die Signatur $\Sigma$ das
 Gleichheits-Zeichen enthält, einen vollständigen Kalkül.  Dieser ist allerdings deutlich
-aufwendiger als der Kalkül, den wir gleich einführen werden,  denn der Kalkül für die Prädikatenlogik ohne
-das Gleichheits-Zeichen besteht nur aus zwei Schluss-Regeln, die wir jetzt definieren.
+aufwendiger als der Kalkül, den wir gleich einführen werden.
 
 \begin{Definition}[{\color{blue}Resolution}] 
     Es gelte:
@@ -1948,7 +1956,7 @@ auch die einzelnen Formel jeweils durch einen Punkt ``\texttt{.}'' beendet werde
 \end{enumerate}
 Aus diesen Axiomen folgt, dass das \texttt{e} auch ein rechts-neutrales Element ist und dass außerdem zu
 jedem Element $x$ ein rechts-neutrales Element $y$ existiert.  Diese beiden  Formeln sind die zu beweisenden 
-\emph{Ziele} und werden in der Datei durch ``\texttt{formulas}(goal)'' markiert.
+\blue{Ziele} und werden in der Datei durch ``\texttt{formulas}(goal)'' markiert.
 Trägt die in Abbildung \ref{fig:group2.in} gezeigte Datei den Namen ``\texttt{group2.in}'', so können wir das
 Programm \textsl{Prover9} mit dem Befehl 
 \\[0.2cm]
@@ -2159,18 +2167,17 @@ gilt, mithin ist das Kommutativ-Gesetz tatsächlich verletzt.
 
 \remark
 Der Theorem-Beweiser \textsl{Prover9} ist ein Nachfolger des Theorem-Beweisers \textsl{Otter}.  Mit Hilfe von
-\textsl{Otter} ist es McCune 1996 gelungen, die Robbin'sche Vermutung zu beweisen \cite{mccune:1997}.
-Dieser Beweis war damals sogar der \emph{New York Times} eine Schlagzeile wert,
+\textsl{Otter} ist es William McCune 1996 gelungen, die Robbin'sche Vermutung zu beweisen \cite{mccune:1997}.
+Dieser Beweis war damals sogar der \href{http://www.nytimes.com/}{New York Times} eine Schlagzeile wert,
 nachzulesen unter
 \\[0.2cm]
 \hspace*{1.3cm}
 \href{http://www.nytimes.com/library/cyber/week/1210math.html}{\texttt{http://www.nytimes.com/library/cyber/week/1210math.html}}.
 \\[0.2cm]
-Dies zeigt, dass automatische Theorem-Beweiser durchaus nützliche Werkzeuge sein
-können.  Nichtsdestoweniger ist die Prädikatenlogik unentscheidbar und bisher sind 
-nur wenige offene mathematische Probleme mit Hilfe von automatischen Beweisern gelöst
-worden.  Das wird sich vermutlich auch in der näheren Zukunft nicht 
-ändern.  \eox
+Dies zeigt, dass \href{https://en.wikipedia.org/wiki/Automated_theorem_proving}{automatische Theorem-Beweiser}
+durchaus nützliche Werkzeuge sein können.  Nichtsdestoweniger ist die Prädikatenlogik unentscheidbar und bisher
+sind  nur wenige offene mathematische Probleme mit Hilfe von automatischen Beweisern gelöst worden.  Das wird
+sich vermutlich auch in der näheren Zukunft nicht ändern.  \eox
 
 
 %%% Local Variables: 
