@@ -30,8 +30,9 @@ def power(s):
     """This function computes the power set of the set s."""
     if len(s) == 0:
         return set([frozenset(s)])
-    x = s.pop()
-    A = power(s)
+    m = set(s)
+    x = m.pop()
+    A = power(m)
     B = set(t | set([x]) for t in A)
     return A | B
 
