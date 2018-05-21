@@ -22,16 +22,16 @@ def path_product(P, Q):
               )
 
 # Compute the power set of a frozen set
-def power(s):
-    S = set(s)       # beware of aliasing
-    return power_(S)
+# def power(s):
+#     S = set(s)       # beware of aliasing
+#     return power_(S)
 
-def power_(s):
+def power(s):
     """This function computes the power set of the set s."""
     if len(s) == 0:
         return set([frozenset(s)])
     x = s.pop()
-    A = power_(s)
+    A = power(s)
     B = set(t | set([x]) for t in A)
     return A | B
 
