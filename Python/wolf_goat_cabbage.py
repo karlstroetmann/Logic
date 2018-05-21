@@ -5,15 +5,15 @@ def find_path(x, y, R):
     R is interpreted as a relation.  The function find_path tries to find
     a path from x to y.
     """
-    P = set()
+    P = set()                                    # set of nodes reachable from x
     P.add((x,))
     while True:
-        old_P  = set(P)
+        old_P  = set(P)                          # beware of aliasing
         P     |= path_product(P, R)
         Found  = set(t for t in P if t[-1] == y)
         if Found != set({}):
             return Found.pop()
-        if P == old_P:
+        if P == old_P:                           # y is not reachable from x
             return
             
 def path_product(P, Q):
@@ -23,7 +23,7 @@ def path_product(P, Q):
 
 # Compute the power set of a frozen set
 def power(s):
-    S = set(s)  # copy the set, as we must not change s
+    S = set(s)       # beware of aliasing
     return power_(S)
 
 def power_(s):
@@ -47,16 +47,16 @@ def problem(s):
               ("wolf" in s and "goat"    in s)   )
            )
 
-all = set( ["farmer", "wolf", "goat", "cabbage"] )
+all = frozenset( ["farmer", "wolf", "goat", "cabbage"] )
 P   = set( s for s in power(all) if not problem(s) and not problem(all - s) )
-R1  = set( (s, s - b) for s in P for b in power(set(s))
+R1  = set( (s, s - b) for s in P for b in power(s)
                       if s - b in P and "farmer" in b and len(b) <= 2
          )
 R2  = set( (y, x) for (x, y) in R1 )
 R   = R1 | R2
 
-start = frozenset(all)
-goal  = frozenset([])
+start = all
+goal  = frozenset()
 
 path  = find_path(start, goal, R)
 
