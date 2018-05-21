@@ -21,18 +21,13 @@ def path_product(P, Q):
                             if x[-1] == y[0] and y[1] not in x
               )
 
-# Compute the power set of a frozen set
-# def power(s):
-#     S = set(s)       # beware of aliasing
-#     return power_(S)
-
 def power(s):
     """This function computes the power set of the set s."""
     if len(s) == 0:
         return set([frozenset(s)])
-    m = set(s)
-    x = m.pop()
-    A = power(m)
+#    m = set(s)
+    x = iter(s).next()
+    A = power(s)
     B = set(t | set([x]) for t in A)
     return A | B
 
