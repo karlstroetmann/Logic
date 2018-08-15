@@ -1,0 +1,218 @@
+\section{Der Kompaktheits-Satz}
+
+\begin{Satz}[Kompaktheits-Satz]
+{\em
+  Es sei $M$ eine unendliche Menge von aussagenlogischen Formeln.  Falls 
+  \[ M \models \falsum \]
+  gilt, dann gibt es auch eine endliche Teilmenge $N \subseteq M$, so dass gilt:
+  \[ N \models \falsum. \]
+}  
+\end{Satz}
+
+\noindent
+\textbf{Bemerkung}:  Auf den ersten Blick mag Ihnen die Voraussetzung dieses Satzes
+wirklichkeitsfremd erscheinen.  Wieso sollte ein Informatiker sich mit einer Menge $M$
+beschÃ¤ftigen, die unendlich viele Formeln enthÃ¤lt?  Wir werden die Antwort auf diese Frage
+finden, wenn wir die PrÃ¤dikatenlogik behandeln.  Unser Ziel ist es, auch fÃ¼r die
+PrÃ¤dikatenlogik einen 
+KalkÃ¼l zu konstruieren, der widerlegungs-vollstÃ¤ndig ist.  Auf dem Weg zu diesem Ziel 
+werden wir prÃ¤dikatenlogische Klauseln in aussagenlogische Klauseln transformieren.
+Dazu mÃ¼ssen wir All-Quantoren eliminieren und bei dieser Elimination kann aus einer
+einzigen prÃ¤dikatenlogischen Klausel eine unendliche Menge von aussagenlogischen
+Klauseln werden.  Um dann den oben bewiesenen Satz Ã¼ber die
+Widerlegungs-VollstÃ¤ndigkeit der Aussagen-Logik benutzen zu kÃ¶nnen, benÃ¶tigen wir den
+Kompaktheits-Satz.
+\vspace*{0.1cm}
+
+\noindent
+\textbf{Beweis des Kompaktheits-Satzes}: 
+ZunÃ¤chst Ã¼berlegen wir, wie die Voraussetzung $M \models \falsum$ zu interpretieren
+ist.  Nach unserer Definition der Relation $\models$ bedeutet $M \models \falsum$, dass jede
+aussagenlogische Belegung $\I$, die alle Formeln aus $M$ wahr macht, auch die
+Formel $\falsum$ wahr macht.  Da es aber keine Belegung gibt, welche die Formel $\falsum$ wahr
+macht, heiÃt dies, dass es auch keine Belegung gibt, die alle Formeln aus $M$ wahr
+macht.  Mit anderen Worten: Die Menge $M$ ist unerfÃ¼llbar.  Wir mÃ¼ssen zeigen, dass
+es dann bereits eine endliche Teilmenge $N$ von $M$ gibt, die unerfÃ¼llbar ist.
+Wir werden den Beweis indirekt fÃ¼hren und werden annehmen, dass alle endlichen
+Teilmengen von $M$ erfÃ¼llbar sind.  Das Ziel des indirekten Beweises wird es dann
+sein eine aussagenlogische Belegung $\I$ zu konstruieren, die alle Formeln aus $M$
+wahr macht.  Dies steht dann im Widerspruch zu der Voraussetzung $M \models \falsum$.
+
+Wir betrachten hier nur den Fall, dass $M$ \emph{abzÃ¤hlbar} ist.  Es gibt also eine
+Folge $(f_n)_{n\in\mathbb{N}}$ von Formeln, so dass 
+\[ M = \bigl\{ f_n \mid n \el \mathbb{N} \bigr\} \]
+gilt.  Der Fall, dass $M$ Ã¼berabzÃ¤hlbar ist, hat fÃ¼r unsere Zwecke keine Bedeutung.
+Wir definieren dann fÃ¼r alle $n \el \mathbb{N}$ die Mengen 
+\[ M_n := \bigl\{ f_i \mid i \el\mathbb{N} \wedge i \leq n \bigr\} 
+          = \bigl\{ f_0, f_1,\cdots, f_n \bigr\}. 
+\] 
+Die Menge $M_n$ enthÃ¤lt $n+1$ Elemente und ist daher endlich.  
+Nach unserer Voraussetzung gibt es also fÃ¼r jede
+dieser Mengen eine aussagenlogische Belegung $\I_n$, so dass $\I_n$ alle Formeln aus
+$M_n$ wahr macht:
+\[ \I_n(f_i) = \mathtt{true} \quad \mbox{fÃ¼r alle}\; i\leq n. \]
+Unser Ziel ist es, aus den Belegungen $\I_n$ eine Belegung $\I$ zu konstruieren, die
+alle Formeln aus $M$ wahr macht.  Wir nehmen an, dass die Menge $\mathcal{P}$ der
+aussagenlogischen Variablen abzÃ¤hlbar ist und in der Form 
+\[ \mathcal{P} = \bigl\{ p_i \mid i \el \mathbb{N} \bigr\} \]
+geschrieben werden kann.  Genau wie oben ist auch diese Annahme eine EinschrÃ¤nkung, aber
+fÃ¼r unsere Zwecke ausreichend.  
+Bei der Konstruktion der Belegung $\I$ haben wir als Ausgangsmaterial nur die Belegungen
+$\I_n$ zur VerfÃ¼gung.  Wir werden die Belegung $\I$ durch
+Induktion Ã¼ber $i \el \mathbb{N}$ fÃ¼r alle aussagenlogischen Variablen $p_i$ definieren.
+Gleichzeitig definieren wir eine Menge von Indizes $B_i$ so, dass $B_i$ 
+gerade die natÃ¼rlichen Zahlen $n \el \mathbb{N}$ enthÃ¤lt, fÃ¼r die Interpretationen $\I$ und $\I_n$ fÃ¼r alle
+aussagenlogischen Variablen $p_j$ mit $j \leq i$ Ã¼bereinstimmt, es gilt also
+\[ B_i = \bigl\{ n \el \mathbb{N} \mid 
+                \forall j \el \mathbb{N} : j \leq i \rightarrow \I_n(p_j) = \I(p_j) \bigr\}.
+\]
+Definieren wir die Mengen $B_i$ auf diese Weise, so ist leicht zu sehen,
+dass die Mengen $B_i$ und $B_{i+1}$ in der folgenden Beziehung stehen:
+\[
+  B_{i+1} = \bigl\{ n \el B_i :  \I_n(p_{i+1}) = \I(p_{i+1}) \}
+\]
+Also ist $B_{i+1}$  eine Teilmenge von $B_i$.
+Die zentrale Idee bei der induktiven Definition von $\I(p_i)$ besteht nun darin,
+dass wir sicherstellen, dass die Menge $B_i$ immer unendlich viele Elemente besitzt,
+es soll also fÃ¼r alle $i\el \mathbb{N}$ die IdentitÃ¤t $\textsl{card}(B_i) = \infty$ gelten.
+\begin{enumerate}
+\item[I.A.:] $i \mapsto 0$.
+
+     Wir gehen demokratisch vor: Falls es unendlich viele Indizes $n \el \mathbb{N}$ gibt, so dass
+     $\I_n(p_0) = \mathtt{true}$ ist, setzen wir $\I(p_0)$ auf \texttt{true},
+     sonst auf \texttt{false}: 
+      \\[0.1cm]
+      \hspace*{1.3cm} 
+     $
+       \I(p_0) := \left\{
+       \begin{array}[c]{ll}
+         \mathtt{true}  & \mbox{falls}\;\; \textsl{card}\Bigl(\bigl\{ n \el \mathbb{N} \mid \I_n(p_0) = \mathtt{true}\bigr\}\Bigr) = \infty, \\
+         \mathtt{false} & \mbox{sonst}.
+       \end{array}
+       \right.
+     $
+      \\[0.1cm]
+      Falls die Menge  $D:=\{ n \el \mathbb{N} \mid \I_n(p_0) = \mathtt{true}\}$       unendlich
+      viele Elemente hat, gilt wegen $\I(p_0) = \mathtt{true}$
+    \[ B_0 = \bigl\{ n \el \mathbb{N} \mid \I_n(p_0) = \mathtt{true} \bigr\} = D \]
+     und also auch $\textsl{card}(B_0) = \infty$.
+     Ist die obige Menge $D$ endlich, so muss die Menge 
+     \[ E:= \{ n \el \mathbb{N} \mid \I_n(p_0) = \mathtt{false}\}\]
+     unendlich viele Elemente haben.   Da dann wegen $\I(p_0) = \mathtt{false}$
+     \[ B_0 =\bigl\{ n \el \mathbb{N} \mid \I_n(p_0) = \mathtt{false} \bigr\} = E \]
+     ist, folgt auch wieder $\textsl{card}(B_0) = \infty$.
+\item[I.S.:] $i \mapsto i + 1$.
+
+     Nach Induktions-Voraussetzung haben wir die aussagenlogische Belegung $\I$ schon fÃ¼r
+     die Variablen $p_0$, $p_1$, $\cdots$, $p_i$ definiert und wir wissen, dass
+     $\textsl{card}(B_i) = \infty$ gilt.
+     Wir setzen daher
+      \\[0.1cm]
+      \hspace*{1.3cm}      
+     $
+       \I(p_{i+1}) := \left\{
+       \begin{array}[c]{ll}
+         \mathtt{true}  & \mbox{falls}\; \textsl{card}\Bigl(\bigl\{ n \el B_i \mid \I_n(p_{i+1}) = \mathtt{true}\bigr\}\Bigr) = \infty, \\
+         \mathtt{false} & \mbox{sonst}.
+       \end{array}
+       \right.
+     $
+      \\[0.1cm]
+      Da die Menge $B_i$ nach Induktions-Voraussetzung unendlich viele Elemente hat, ist
+      mindestens eine der beiden Mengen 
+     \[ F:=\textsl{card}\bigl(\{ n \el B_i \mid \I_n(p_{i+1}) = \mathtt{true}\}\bigr),\]
+     \[G:=\textsl{card}\bigl(\{ n \el B_i \mid \I_n(p_{i+1}) = \mathtt{false}\}\bigr)\]
+      unendlich groÃ, denn es gilt $F \cup G = B_i$.  Falls die  Menge $F$ unendlich ist,
+      setzen wir $\I(p_{i+1}) := \mathtt{true}$ und damit gilt
+      \[ B_{i+1} = \textsl{card}\bigl(\{ n \el B_i \mid \I_n(p_{i+1}) = \mathtt{true}\}\bigr) = F, \]
+      so dass auch $B_{i+1}$ unendlich ist.  Falls $F$ endlich ist, muss $G$ unendlich
+      sein.  Da wir in diesem Fall $\I(p_{i+1}) := \mathtt{false}$ setzen, gilt dann
+       \[ B_{i+1} = \textsl{card}\bigl(\{ n \el B_i \mid \I_n(p_{i+1}) = \mathtt{false}\}\bigr) = G \]
+      und wieder ist $B_{i+1}$ unendlich.
+\end{enumerate}
+Damit ist die Definition der aussagenlogischen Belegung $\I$ abgeschlossen.
+Es bleibt zu zeigen, dass $\I$ tatsÃ¤chlich alle Formeln aus $M$ wahr macht.
+Wir betrachten also eine beliebige Formel $f\el M$ und zeigen, dass $\I(f) =
+\mathtt{true}$ gilt.  Die gewÃ¤hlte Formel $f$ kann nur endlich viele aussagenlogische 
+Variablen enthalten.  Wir nehmen an, dass fÃ¼r ein genÃ¼gend groÃes $i$ 
+die Menge der aussagenlogischen Variablen, die in $f$ vorkommen, in der Menge
+$\{p_0,p_1,\cdots,p_i\}$ enthalten ist.
+Da die Menge $B_i$ unendlich viele natÃ¼rliche Zahlen enthÃ¤lt, muss sie auch beliebig groÃe
+Zahlen enthalten.  
+Wir finden daher ein $k \el B_i$, so das $f \el M_k$ liegt.
+Nach Definition von $B_i$ gilt 
+\[ B_i = \bigl\{ n \el \mathbb{N} \mid 
+                \forall j \el \mathbb{N} : j \leq i \rightarrow \I_n(p_j) = \I(p_j)  \bigr\}.
+\]
+Wegen $k \el B_i$ folgt also
+\[ \forall j \el \mathbb{N} : j \leq i \rightarrow \I_k(p_j) = \I(p_j). \]
+Damit stimmen die Interpretationen $\I$ und $\I_k$ aber fÃ¼r alle aussagenlogischen
+Variablen aus der Menge 
+$\{p_0,p_1,\cdots,p_i\}$ Ã¼berein.  Da in der Formel $f$ keine anderen Variablen vorkommen,
+gilt folglich $\I(f) = \I_k(f) = \mathtt{true}$, denn die Interpretation $I_k$ hatten wir
+ja so gewÃ¤hlt, dass Sie alle Formeln aus $M_k$ wahr macht.
+\hspace*{\fill} $\Box$
+\vspace*{0.3cm}
+
+Damit kÃ¶nnen wir nun den Satz Ã¼ber die Widerlegungs-VollstÃ¤ndigkeit der Aussagen-Logik auf
+Formel-Mengen ausdehnen, die auch unendlich viele Formeln enthalten.
+
+\begin{Satz}[Widerlegungs-VollstÃ¤ndigkeit der Aussagen-Logik]
+  \label{widerlegungs-vollstaendig2}
+ \hspace*{\fill} \\ 
+{\em
+  Ist $M$ eine eventuell abzÃ¤hlbar unendliche Menge von Klauseln, fÃ¼r die
+  \[ M \models \falsum \quad \mbox{gilt, dann gilt auch} \quad M \vdash \{\}. \]
+}
+\end{Satz}
+
+\noindent
+\textbf{Beweis}:  FÃ¼r endliche Mengen haben wir den Satz bereits bewiesen.
+Gilt nun $\textsl{card}(M) = \infty$, dann gibt es nach dem Kompaktheits-Satzes eine
+endliche Teilmenge $N \subseteq M$, so dass $N \models \falsum$
+gilt.  Da $N$ endlich ist, kÃ¶nnen wir nach Satz \ref{widerlegungs-vollstaendig} schlieÃen,
+dass $N \vdash \{\}$
+gilt.  Wenn die leere Klausel sich aber bereits aus den in $N$ enthaltenen Klauseln
+herleiten lÃ¤sst, dann  ganz sicher auch aus den in $M$ enthaltenen Klauseln, denn $M$ ist
+ja eine Obermenge von $N$.  Also gilt $M \vdash \{\}$.
+\hspace*{\fill} $\Box$
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Bemerkung}: Der Beweis des Kompaktheits-Satzes bereitet vielen Studenten
+zunÃ¤chst Probleme, weil er an einer Stelle der naiven Intuition widerspricht.
+Die Folge der Mengen $(B_i)_{i\in\mathbb{N}}$ ist so aufgebaut, dass
+\[ B_{i+1} \subseteq B_i \quad \mbox{fÃ¼r alle}\; i \el \mathbb{N} \]
+gilt.  Dabei kann es sich bei den Inklusions-Beziehungen $B_{i+1} \subseteq B_i$ durchaus  
+um echte Inklusionen handeln, ja es kann sogar passieren, dass die Differenz-Mengen
+$B_i \backslash B_{i+1}$ unendlich viele Elemente enthalten.  Wie kann es nun sein, dass
+wir aus einer Menge in jedem Schritt unendlich viele Elemente entfernen, aber die Menge
+trotzdem nie leer wird?  Wir zeigen anhand eines konkreten Beispiels, wie dies mÃ¶glich
+ist.  FÃ¼r dieses Beispiel benÃ¶tigen wir die Tatsache, dass die Menge 
+\[ \{ p \el\mathbb{N} \mid p\; \mbox{ist Primzahl} \} \]
+unendlich ist.  Es sei $(p_n)_{n\in\mathbb{N}}$ eine Folge, die die Primzahlen der GrÃ¶Ãe
+nach aufzÃ¤hlt, es gilt also $p_0 = 2$, $p_1 = 3$, $p_2 = 5$, $\cdots$. 
+Dann definieren wir 
+\[ B_i := \{ n \in \mathbb{N} \mid \forall k\el\mathbb{N} : k \leq i \rightarrow n\;\mathtt{mod}\; p_k \not= 0 \} \]
+$B_i$ enthÃ¤lt also alle die Zahlen, die nicht durch die Primzahlen aus der Menge
+$\{p_0,p_1, \cdots, p_i\}$ teilbar sind.  $B_i$ ist sicher unendlich, denn $B_i$ enthÃ¤lt
+beispielsweise alle Zahlen aus der Menge
+\[ \bigl\{ p_{i+1}^n \mid n \in \mathbb{N} \wedge n \geq 1 \bigr\}, \]
+denn die Zahlen in dieser Menge sind nur durch die Primzahl $p_{i+1}$ teilbar.
+AuÃerdem gilt $B_{i+1} \subseteq B_i$, denn  $B_{i+1}$ enthÃ¤lt genau die Elemente aus
+$B_i$, die nicht durch $p_{i+1}$ teilbar sind: Genauer finden wir
+fÃ¼r die Differenz der beiden Mengen 
+\[ B_{i} \backslash B_{i+1} = \{ n \in \mathbb{N} \mid \forall k\el\mathbb{N} : n\;\mathtt{mod}\; p_{i+1} = 0 \}, \]
+Zu dieser Menge gehÃ¶ren aber insbesondere alle
+Zahlen aus der Menge
+\[ \bigl\{ p_{i+1}^n \mid n \in \mathbb{N} \wedge n \geq 1 \bigr\}. \]
+Diese Menge ist sicher unendlich.  Wir entfernen also in jedem Schritt beim Ãbergang von
+$B_i$ nach $B_{i+1}$ unendlich viele Elemente.  Trotzdem sind alle Mengen $B_i$ unendlich
+groÃ!
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "informatik-script"
+%%% End: 
