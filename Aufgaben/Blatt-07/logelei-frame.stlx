@@ -1,0 +1,42 @@
+loadLibrary("termUtilities");
+
+// The procedure evaluate(f, I) computes the truth value of the formula f, given
+// the propositional interpretation I.  It is assumed that I maps strings to
+// truth values.
+evaluate := procedure(f, I) {
+    match (f) {
+        case true:              return true;
+        case false:             return false;
+        case p | isVariable(p): return I[varName(p)];
+        case !g:                return !evaluate(g, I);
+        case g && h:            return  evaluate(g, I) && evaluate(h, I);
+        case g || h:            return  evaluate(g, I) || evaluate(h, I);
+        case g => h:            return  evaluate(g, I) => evaluate(h, I);
+        case g <==> h:          return  evaluate(g, I) == evaluate(h, I);
+        default:                abort("syntax error in evaluate($f$, $I$)");
+    }
+};
+// This procedure turns a subset M of the set of all variables V into a
+// propositional valuation I, such that for a propositional variable x,
+// I(x) is true iff x is an element of M.  Technically, V and M are sets
+// of strings and x is a string.
+createValuation := procedure(M, V) {
+    return { [ x, x in M ] : x in V };
+};
+
+// Wenn Herr Meier kommt, bringt er auch Frau Meier mit.
+f1 := parse("???");
+// Mindestens eines der beiden Kinder Walter und Katrin wird kommen.
+f2 := parse("???");
+// Entweder kommt Frau Meier oder Franziska, aber nicht beide.
+f3 := parse("???");
+// Entweder kommen Fransizka und Katrin zusammen oder beide kommen nicht.
+f4 := parse("???");
+// Wenn Walter kommt, dann kommen auch Katrin und Herr Meier.
+f5 := parse("???");
+
+Fs := {f1, f2, f3, f4, f5};
+
+
+
+
