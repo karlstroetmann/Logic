@@ -1,23 +1,25 @@
 \chapter{The Programming Language \textsl{Python}}
-We have started our lecture with set theory.  In my experience, the notions of
+We have started our lecture with an introduction to set theory.  In my experience, the notions of
 set theory are difficult to master for many students because the concepts introduced in set theory
 are quite abstract.  Fortunately, there is a programming language that is suitable to experiment with set
-theory and logic.  This is the language \href{http://www.python.org}{Python}.
+theory and logic.  This is the programming language
+\href{https://en.wikipedia.org/wiki/Python_(programming_language)}{Python}, which has its own website at
+\href{http://www.python.org}{\texttt{python.org}}.
 By programming in \textsl{Python}, students can get acquainted with set theory in a playful manner.
 Furthermore, as many interesting problems have a straightforward solution as \textsl{Python} programs,
-my experience has shown that students can appreciate the usefulness of abstract notions from set
-theory better by programming in \textsl{Python}.  Furthermore, according to
+students can appreciate the usefulness of abstract notions from set theory by programming in \textsl{Python}.
+Furthermore, as of 2014 according to 
 \href{https://cacm.acm.org/blogs/blog-cacm/176450-python-is-now-the-most-popular-introductory-teaching-language-at-top-u-s-universities/fulltext}{Philip Guo},
 8 of the top 10 US universities teach \textsl{Python} in their introductory computer science courses.
 
 The easiest way to install python and its libraries is via \href{https://www.anaconda.com/download/}{Anaconda}.
 On many computers, \textsl{Python} is already preinstalled.  Nevertheless, even on those systems it is easiest
 to use the \blue{Anaconda} distribution.  The reason is that Anaconda make it very easy to use different
-versions of python with different libraries.  In this lecture, we will be using \textsl{Python} version 3.6.
+versions of python with different libraries.  In this lecture, we will be using the version 3.6 of \textsl{Python}.
 
 \section{Introductory Examples}
-My goal is to first introduce \setl\ via a number of rather simple examples.  I will present more
-advanced features of \setl\ in later sections, but this section is intended to provide a first
+My goal is to introduce \textsl{Python} via a number of rather simple examples.  I will present more
+advanced features of \textsl{Python} in later sections, but this section is intended to provide a first
 impression of the language.
 
 
@@ -43,8 +45,8 @@ impression of the language.
 \end{figure}
 
 The language \textsl{Python} is an \blue{interpreted} language.  Hence, there is no need to \blue{compile} a
-program.  Instead, \setl-programs can be executed via the interpreter.  The interpreter is started
-with the command:\footnote{
+program.  Instead, \textsl{Python} programs can be executed via the interpreter.  The interpreter is started
+by the command:\footnote{
   While I am usually in the habit of terminating every sentence with either a full stop, a question
   mark or an exclamation mark, I refrain from doing so when the sentence ends in a \textsl{Python} command
   that is shown on a separate line.  The reason is that I want to avoid confusion as it can
@@ -69,14 +71,1276 @@ and press enter, we get the following output:
     >>> 
 \end{verbatim}
 The interpreter has computed the sum $1+2$, returned the result, and prints another prompt waiting
-for more input.  The command ``\texttt{1 + 2}''
-is a script.  Of course, this is a very small script as it consists only of a single command.
+for more input.  Formally, the command ``\texttt{1 + 2}''
+is a \blue{script}.  Of course, this is a very small script as it consists only of a single expression.
 The command
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{exit()}
 \\[0.2cm]
-terminates the interpreter.  In order to print arbitrary results to the screen, we can use the function
+terminates the interpreter.   The nice thing about \textsl{Python}  is the we can run \textsl{Python} even in a
+browser in so called \href{https://en.wikipedia.org/wiki/Project_Jupyter}{Jupyter notebooks}.  If you have
+installed \textsl{Python} by means of the \href{https://www.anaconda.com/download/}{Anaconda} distribution,
+then you already have installed Jupyter.  The following subsection  is a the jupyter notebook 
+\texttt{Introduction.ipynb}.
+
+\section{\texorpdfstring{An Introduction to
+\emph{Python}}{An Introduction to Python}}\label{an-introduction-to-python}
+
+    This \emph{Python} notebook gives a short introduction to \emph{Python}.
+We will start with the basics but as the main goal of this introduction
+is to show how \emph{Python} supports \emph{sets} we will quickly move
+to more advanced topics. In order to show of the features of
+\emph{Python} we will give some examples that are not fully explained at
+the point where we introduce them. However, rest assured that they will
+be explained eventually.
+
+    \subsection{Evaluating expressions}\label{evaluating-expressions}
+
+As Python is an interactive language, expressions can be evaluated
+directly. In a \emph{Jupyter} notebook we just have to type Ctrl-Enter
+in the cell containing the expression. Instead of Ctrl-Enter we can also
+use Shift-Enter.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{l+m+mi}{1} \PY{o}{+} \PY{l+m+mi}{2}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}1}]:} 3
+\end{Verbatim}
+            
+    In \emph{Python}, the precision of integers is not bounded. Hence, the
+following expression does not cause an overflow.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{l+m+mi}{1} \PY{o}{*} \PY{l+m+mi}{2} \PY{o}{*} \PY{l+m+mi}{3} \PY{o}{*} \PY{l+m+mi}{4} \PY{o}{*} \PY{l+m+mi}{5} \PY{o}{*} \PY{l+m+mi}{6} \PY{o}{*} \PY{l+m+mi}{7} \PY{o}{*} \PY{l+m+mi}{8} \PY{o}{*} \PY{l+m+mi}{9} \PY{o}{*} \PY{l+m+mi}{10} \PY{o}{*} \PY{l+m+mi}{11} \PY{o}{*} \PY{l+m+mi}{12} \PY{o}{*} \PY{l+m+mi}{13} \PY{o}{*} \PY{l+m+mi}{14} \PY{o}{*} \PY{l+m+mi}{15} \PY{o}{*} \PY{l+m+mi}{16} \PY{o}{*} \PY{l+m+mi}{17} \PY{o}{*} \PY{l+m+mi}{18} \PY{o}{*} \PY{l+m+mi}{19} \PY{o}{*} \PY{l+m+mi}{20} \PY{o}{*} \PY{l+m+mi}{21} \PY{o}{*} \PY{l+m+mi}{22} \PY{o}{*} \PY{l+m+mi}{23} \PY{o}{*} \PY{l+m+mi}{24} \PY{o}{*} \PY{l+m+mi}{25}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}2}]:} 15511210043330985984000000
+\end{Verbatim}
+            
+    The next \emph{cell} in this notebook shows how to compute the
+\emph{factorial} of 1000, i.e. it shows how to compute the product
+\[ 1000! = 1 * 2 * 3 * \cdots * 998 * 999 * 1000 \] It uses some
+advanced features from \emph{functional programming} that will be
+discussed at a later stage of this introduction.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{k+kn}{import} \PY{n+nn}{functools} 
+        
+        \PY{n}{functools}\PY{o}{.}\PY{n}{reduce}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{:} \PY{p}{(}\PY{n}{x}\PY{o}{*}\PY{n}{y}\PY{p}{)}\PY{p}{,} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1001}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}3}]:} 402387260077093773543702433923003985719374864210714632543799910429938512398629020592044208486969404800479988610197196058631666872994808558901323829669944590997424504087073759918823627727188732519779505950995276120874975462497043601418278094646496291056393887437886487337119181045825783647849977012476632889835955735432513185323958463075557409114262417474349347553428646576611667797396668820291207379143853719588249808126867838374559731746136085379534524221586593201928090878297308431392844403281231558611036976801357304216168747609675871348312025478589320767169132448426236131412508780208000261683151027341827977704784635868170164365024153691398281264810213092761244896359928705114964975419909342221566832572080821333186116811553615836546984046708975602900950537616475847728421889679646244945160765353408198901385442487984959953319101723355556602139450399736280750137837615307127761926849034352625200015888535147331611702103968175921510907788019393178114194545257223865541461062892187960223838971476088506276862967146674697562911234082439208160153780889893964518263243671616762179168909779911903754031274622289988005195444414282012187361745992642956581746628302955570299024324153181617210465832036786906117260158783520751516284225540265170483304226143974286933061690897968482590125458327168226458066526769958652682272807075781391858178889652208164348344825993266043367660176999612831860788386150279465955131156552036093988180612138558600301435694527224206344631797460594682573103790084024432438465657245014402821885252470935190620929023136493273497565513958720559654228749774011413346962715422845862377387538230483865688976461927383814900140767310446640259899490222221765904339901886018566526485061799702356193897017860040811889729918311021171229845901641921068884387121855646124960798722908519296819372388642614839657382291123125024186649353143970137428531926649875337218940694281434118520158014123344828015051399694290153483077644569099073152433278288269864602789864321139083506217095002597389863554277196742822248757586765752344220207573630569498825087968928162753848863396909959826280956121450994871701244516461260379029309120889086942028510640182154399457156805941872748998094254742173582401063677404595741785160829230135358081840096996372524230560855903700624271243416909004153690105933983835777939410970027753472000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+\end{Verbatim}
+            
+    The following command will stop the interpreter if executed. It is not
+useful inside a \emph{Jupyter} notebook.\\
+Hence, the next line should not be evaluated. Therefore, I have put a
+comment character "\#" in the first column of this line.
+
+However, if you do remove the comment character and then evaluate the
+line, nothing bad will happen as the interpreter is just restarted by
+\emph{Jupyter}.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{c+c1}{\PYZsh{} exit()}
+\end{Verbatim}
+
+
+    In order to write something to the screen, we can use the function
+print. This function can print objects of any type. In the following
+example, this function prints a string. In \emph{Python} any character
+sequence enclosed in single quotes is string.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}5}]:} \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Hello, World!}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Hello, World!
+
+    \end{Verbatim}
+
+    Instead of using single quotes we can also use double quotes as seen in
+the next example.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Hello, World!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Hello, World!
+
+    \end{Verbatim}
+
+    The function print accepts any number of arguments. For example, to
+print the string "36 * 37 / 2 = " followed by the value of the
+expression \(36 \cdot 37 / 2\) we can use the following print statement:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}7}]:} \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{36 * 37 / 2 =}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{36} \PY{o}{*} \PY{l+m+mi}{37} \PY{o}{/}\PY{o}{/} \PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+36 * 37 / 2 = 666
+
+    \end{Verbatim}
+
+    In the expression "36 * 37 // 2" we have used the operator "//" in order
+to enforce \emph{integer division}. If we had used the operator "/"
+instead, \emph{Python} would have used \emph{floating point division}
+and therefore would have printed the floating point number 666.0 instead
+of the integer 666.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}8}]:} \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{36 * 37 / 2 =}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{36} \PY{o}{*} \PY{l+m+mi}{37} \PY{o}{/} \PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+36 * 37 / 2 = 666.0
+
+    \end{Verbatim}
+
+    The following script reads a natural number \(n\) and computes the sum
+\(\sum\limits_{i=1}^n i\).
+
+\begin{enumerate}
+\item The function \texttt{input} prompts the user to enter a string.
+\item This string is then converted into an integer using the function \texttt{int}.
+\item Next, the \emph{set} \texttt{s} is created such that 
+      $$\texttt{s} = \{1, \cdots, n\}. $$  
+      The set \texttt{s} is constructed using the function \texttt{range}.  A function call 
+      of the form $\texttt{range}(a, b + 1)$ returns a \emph{generator} that produces the natural numbers 
+      from $a$ to $b$.  By using this generator as an argument to the function \texttt{set}, a set is created 
+      that contains all the natural number starting from $a$ upto and including $b$.
+      The precise mechanics of \emph{generators} will be explained later.
+\item The \texttt{print} statement uses the function \texttt{sum} to add up all the elements of the
+      set \texttt{s}.
+\end{enumerate}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{n} \PY{o}{=} \PY{n+nb}{input}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Type a natural number and press return: }\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{n} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{n}\PY{p}{)}
+        \PY{n}{s} \PY{o}{=} \PY{n+nb}{set}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{n}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{The sum 1 + 2 + ... + }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ is equal to }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n+nb}{sum}\PY{p}{(}\PY{n}{s}\PY{p}{)}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{sep}\PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Type a natural number and press return: 36
+The sum 1 + 2 + {\ldots} + 36 is equal to 666.
+
+    \end{Verbatim}
+
+    The following example shows how functions can be defined in
+\emph{Python}. The function \(\texttt{sum}(n)\) is supposed to compute
+the sum of all the numbers in the set \(\{1, \cdots, n\}\). Therefore,
+we have \[\texttt{sum}(n) = \sum\limits_{i=1}^n i. \]
+The function sum is defined \emph{recursively}. The recursive
+implementation of the function sum can best by understood if we observe
+that it satisfies the following two equations:
+\begin{enumerate}
+\item $\texttt{sum}(0) = 0$, 
+\item $\texttt{sum}(n) = \texttt{sum}(n-1) + n \quad$  provided that $n > 0$.
+\end{enumerate}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}10}]:} \PY{k}{def} \PY{n+nf}{sum}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{:}
+             \PY{k}{if} \PY{n}{n} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+                 \PY{k}{return} \PY{l+m+mi}{0}
+             \PY{k}{return} \PY{n+nb}{sum}\PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{+} \PY{n}{n}
+\end{Verbatim}
+ Let us discuss the implementation of the function sum line by line:
+
+\begin{enumerate}
+\item The keyword \texttt{def} starts the definition of the function. It is followed by the \emph{name} of the function that is defined.  The name is followed by the list of the \emph{parameters} of the function.  This list is enclosed in parentheses. If there is more than one parameter, the parameters have to be separated by commas.  Finally, there needs to be a colon at the end of the first line.
+\item The \emph{body} of the function is indented.  <b>Contrary</b> to most other programming languages, 
+     \emph{Python} is \emph{space sensitive}. 
+    
+     The first statement of the body is a \emph{conditional} statement, which starts with the keyword
+     \texttt{if}.  The keyword is followed by a test.  In this case we test whether the variable $n$ 
+     is equal to the number $0$.  Note that this test is followed by a colon.
+\item The next line contains a \texttt{return} statement.  Note that this statement is again indented.
+     All statements indented by the same amount that follow an \texttt{if}-statement are considered as
+     the \emph{body} of the \texttt{if}-statement.  In this case the body contains only a single statement.
+
+\item The last line of the function definition contains the recursive invocation of the function \texttt{sum}.
+\end{enumerate}
+
+Using the function sum, we can compute the sum \(\sum\limits_{i=1}^n i\)
+as follows:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{n}     \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Enter a natural number: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+         \PY{n}{total} \PY{o}{=} \PY{n+nb}{sum}\PY{p}{(}\PY{n}{n}\PY{p}{)}
+         \PY{k}{if} \PY{n}{n} \PY{o}{\PYZgt{}} \PY{l+m+mi}{2}\PY{p}{:}
+             \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{0 + 1 + 2 + ... + }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ = }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{total}\PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{k}{else}\PY{p}{:} 
+             \PY{n+nb}{print}\PY{p}{(}\PY{n}{total}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Enter a natural number: 100
+0 + 1 + 2 + {\ldots} + 100 = 5050
+
+    \end{Verbatim}
+
+    \subsection{\texorpdfstring{Sets in
+\emph{Python}}{Sets in Python}}\label{sets-in-python}
+
+    One of the big deals about \emph{Python} is that \emph{Python} supports
+sets as a \textbf{native} datatype. This is one of the reasons that have
+lead me to choose \emph{Python} as the programming language for this
+course. To get a first impression how sets are handled in \emph{Python},
+let us define two simple sets \(A\) and \(B\) and print them:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}12}]:} \PY{n}{A} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{\PYZcb{}}
+         \PY{n}{B} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{\PYZcb{}}
+         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{A = }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{A}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{, B = }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{B}\PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+A = \{1, 2, 3\}, B = \{2, 3, 4\}
+
+    \end{Verbatim}
+
+    The last argument sep='' prevents the print statement from separating
+its arguments with space characters.
+
+There is a caveat here, we cannot define the empty set using the
+expression \{\} since this expression creates the empty
+\emph{dictionary} instead. (We will discuss the data type of
+\emph{dictionaries} later.) To define the empty set, we therefore have
+to use the following expression:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}13}]:} \PY{n+nb}{set}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}13}]:} set()
+\end{Verbatim}
+            
+    Note that the empty set is also printed as set() in \emph{Python} and
+not as \{\}.
+
+    Next, let us compute the union \(A \cup B\). This is done using the
+function union.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}14}]:} \PY{n}{A}\PY{o}{.}\PY{n}{union}\PY{p}{(}\PY{n}{B}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}14}]:} \{1, 2, 3, 4\}
+\end{Verbatim}
+            
+    As the function union really acts like a \emph{method}, you might
+suspect that it does change its first argument. Fortunately, this is not
+the case, \(A\) is unchanged as you can see in the next line:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}15}]:} \PY{n}{A}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}15}]:} \{1, 2, 3\}
+\end{Verbatim}
+            
+    To compute the intersection \(A \cap B\), we use the function
+intersection:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}16}]:} \PY{n}{A}\PY{o}{.}\PY{n}{intersection}\PY{p}{(}\PY{n}{B}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}16}]:} \{2, 3\}
+\end{Verbatim}
+            
+    Again \(A\) is not changed.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}17}]:} \PY{n}{A}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}17}]:} \{1, 2, 3\}
+\end{Verbatim}
+            
+    The difference \(A \backslash B\) is computed using the operator "-":
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}18}]:} \PY{n}{A} \PY{o}{\PYZhy{}} \PY{n}{B}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}18}]:} \{1\}
+\end{Verbatim}
+            
+    It is easy to test whether \(A \subseteq B\) holds:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}19}]:} \PY{n}{A} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{n}{B}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}19}]:} False
+\end{Verbatim}
+            
+    Testing whether an object \(x\) is an element of a set \(M\), i.e. to
+test, whether \(x \in M\) holds is straightforward:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}20}]:} \PY{l+m+mi}{1} \PY{o+ow}{in} \PY{n}{A}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}20}]:} True
+\end{Verbatim}
+            
+    On the other hand, the number \(1\) is not an element of the set \(B\),
+i.e. we have \(1 \not\in B\):
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}21}]:} \PY{l+m+mi}{1} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n}{B}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}21}]:} True
+\end{Verbatim}
+            
+    \subsection{Defining Sets via Selection and
+Images}\label{defining-sets-via-selection-and-images}
+Remember that we can define subsets of a given set \(M\) via the axiom of
+selection. If \(p\) is a property such that for any object \(x\) from
+the set \(M\) the expression \(p(x)\) is either True or False, the
+subset of all those elements of \(M\) such that \(p(x)\) is True can be
+defined as \[ \{ x \in M \mid p(x) \}. \] For example, if \(M\) is the
+set \(\{1, \cdots, 100\}\) and we want to compute the subset of this set
+that contains all numbers from \(M\) that are divisible by \(7\), then
+this set can be defined as 
+\[ \{ x \in M \mid x \texttt{\%} 7 == 0 \}. \]
+In \emph{Python}, the definition of this set can be given as follows:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}22}]:} \PY{n}{M} \PY{o}{=} \PY{n+nb}{set}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{101}\PY{p}{)}\PY{p}{)}
+         \PY{p}{\PYZob{}} \PY{n}{x} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{M} \PY{k}{if} \PY{n}{x} \PY{o}{\PYZpc{}} \PY{l+m+mi}{7} \PY{o}{==} \PY{l+m+mi}{0} \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}22}]:} \{7, 14, 21, 28, 35, 42, 49, 56, 63, 70, 77, 84, 91, 98\}
+\end{Verbatim}
+            
+    In general, in \emph{Python} the set \[ \{ x \in M \mid p(x) \} \] is
+computed by the expression
+\[ \{\; x\; \texttt{for}\; x\; \texttt{in}\; M\; \texttt{if}\; p(x)\; \}. \]
+\emph{Image} sets can be computed in a similar way. If \(f\) is a
+function defined for all elements of a set \(M\), the image set
+\[ \{ f(x) \mid x \in M \} \] can be computed in \emph{Python} as
+follows: \[ \{\; f(x)\; \texttt{for}\; x\; \texttt{in}\; M\; \}. \] For
+example, the following expression computes the set of all squares of
+numbers from the set \(\{1,\cdots,10\}\):
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}23}]:} \PY{n}{M} \PY{o}{=} \PY{n+nb}{set}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{)}\PY{p}{)}
+         \PY{p}{\PYZob{}} \PY{n}{x}\PY{o}{*}\PY{n}{x} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{M} \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}23}]:} \{1, 4, 9, 16, 25, 36, 49, 64, 81, 100\}
+\end{Verbatim}
+            
+The computation of image sets and selections can be combined. If \(M\)
+is a set, \(p\) is a property such taht \(p(x)\) is either True or False
+for elements of \(M\), and \(f\) is a function such that \(f(x)\) is
+defined for all \(x \in M\) then we can compute set
+\[ \{ f(x) \mid  x \in M \wedge p(x) \} \] of all images \(f(x)\) from
+those \(x\in M\) that satisfy the property \(p(x)\) via the expression
+\[ \{\; f(x)\; \texttt{for}\; x\; \texttt{in}\; M\; \texttt{if}\; p(x)\; \}. \]
+For example, to compute the set of those squares of numbers from the set
+\(\{1,\cdots,10\}\) that are even we can write
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}24}]:} \PY{n}{M} \PY{o}{=} \PY{n+nb}{set}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{)}\PY{p}{)}
+         \PY{p}{\PYZob{}} \PY{n}{x}\PY{o}{*}\PY{n}{x} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{M} \PY{k}{if} \PY{n}{x} \PY{o}{\PYZpc{}} \PY{l+m+mi}{2} \PY{o}{==} \PY{l+m+mi}{0} \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}24}]:} \{4, 16, 36, 64, 100\}
+\end{Verbatim}
+            
+    We can iterate over more than one set. For example, let us define the
+set of all products \(p \cdot q\) of numbers \(p\) and \(q\) from the
+set \(\{2, \cdots, 10\}\), i.e. we intend to define the set
+\[ \bigl\{ p \cdot q \bigm| p \in \{2,\cdots,10\} \wedge q \in \{2,\cdots,10\} \bigr\}. \]
+In \emph{Python}, this set is defined as follows:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}25}]:} \PY{n+nb}{print}\PY{p}{(}\PY{p}{\PYZob{}} \PY{n}{p} \PY{o}{*} \PY{n}{q} \PY{k}{for} \PY{n}{p} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{)} \PY{k}{for} \PY{n}{q} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{)} \PY{p}{\PYZcb{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+\{4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 24, 25, 27, 28, 30, 32, 35, 36, 40, 42, 45, 48, 49, 50, 54, 56, 60, 63, 64, 70, 72, 80, 81, 90, 100\}
+
+    \end{Verbatim}
+
+    We can use this set to compute the set of \emph{prime numbers}. After
+all, the set of prime numbers is the set of all those natural numbers
+bigger than \(1\) that can not be written as a proper product, that is a
+number \(x\) is \emph{prime} if
+
+\begin{enumerate}
+\item $x$ is bigger than $1$ and 
+\item there are no natural numbers $x$ and $y$ both bigger than $1$ such that $x = p * q$ holds.
+\end{enumerate}
+
+More formally, the set \(\mathbb{P}\) of prime numbers is defined as
+follows:
+\[ \mathbb{P} = \bigl\{ x \in \mathbb{N} \;\bigm|\; x > 1 \wedge \neg \exists p, q \in \mathbb{N}: (x = p * q \wedge p > 1 \wedge q > 1)\bigr\}. \]
+Hence the following code computes the set of all primes less than 100:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}26}]:} \PY{n}{s} \PY{o}{=} \PY{n+nb}{set}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{100}\PY{p}{)}\PY{p}{)}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{s} \PY{o}{\PYZhy{}} \PY{p}{\PYZob{}} \PY{n}{p} \PY{o}{*} \PY{n}{q} \PY{k}{for} \PY{n}{p} \PY{o+ow}{in} \PY{n}{s} \PY{k}{for} \PY{n}{q} \PY{o+ow}{in} \PY{n}{s} \PY{p}{\PYZcb{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+\{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97\}
+
+    \end{Verbatim}
+
+    An alternative way to compute primes works by noting that a number \(p\)
+is prime iff there is no number \(t\) other than \(1\) and \(p\) that
+divides the number \(p\). The function dividers given below computes the
+set of all numbers dividing a given number \(p\) evenly:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}27}]:} \PY{k}{def} \PY{n+nf}{dividers}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{:}
+             \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Compute the set of numbers that divide the number p.}\PY{l+s+s2}{\PYZdq{}}
+             \PY{k}{return} \PY{p}{\PYZob{}} \PY{n}{t} \PY{k}{for} \PY{n}{t} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{p}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)} \PY{k}{if} \PY{n}{p} \PY{o}{\PYZpc{}} \PY{n}{t} \PY{o}{==} \PY{l+m+mi}{0} \PY{p}{\PYZcb{}}
+         
+         \PY{n}{n}      \PY{o}{=} \PY{l+m+mi}{100}\PY{p}{;}
+         \PY{n}{primes} \PY{o}{=} \PY{p}{\PYZob{}} \PY{n}{p} \PY{k}{for} \PY{n}{p} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{n}\PY{p}{)} \PY{k}{if} \PY{n}{dividers}\PY{p}{(}\PY{n}{p}\PY{p}{)} \PY{o}{==} \PY{p}{\PYZob{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{p}\PY{p}{\PYZcb{}} \PY{p}{\PYZcb{}}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{primes}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+\{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97\}
+
+    \end{Verbatim}
+
+    \subsection{Computing the Power Set}\label{computing-the-power-set}
+
+    Unfortunately, there is no operator to compute the power set \(2^M\) of
+a given set \(M\). Since the power set is needed frequently, we have to
+implement a function power to compute this set ourselves. The easiest
+way to compute the power set \(2^M\) of a set \(M\) is to implement the
+following recursive equations:
+
+\begin{enumerate}
+\item The power set of the empty set contains only the empty set:
+    $$2^{\{\}} = \bigl\{\{\}\bigr\}$$</li>
+\item If a set $M$ can be written as $M = C \cup \{x\}$, where the element $x$ does not occur in the set $C$, then the power set $2^M$ consists of two sets:
+      \begin{itemize}
+        \item Firstly, all subsets of $C$ are also subsets of $M$.</li>
+        \item Secondly, if A is a subset of $C$, then the set $A \cup\{x\}$ is also a subset of $M$.</li>
+      \end{itemize}
+    If we combine these parts we get the following equation:
+    $$2^{C \cup \{x\}} = 2^C \cup \bigl\{ A \cup \{x\} \bigm| A \in 2^C \bigr\}$$
+\end{enumerate}
+
+But there is another problem: In \emph{Python} we can't create a set
+that has elements that are sets themselves! The reason is that in
+\emph{Python} sets are implemented via \emph{hash tables} and therefore
+the elements of a set need to be \emph{hashable}. (The notion of an
+element being \emph{hashable} will be discussed in more detail in the
+lecture on \emph{Algorithms}.) However, sets are \emph{mutable} and
+\emph{mutable} objects are not \emph{hashable}. Fortunately, there is a
+workaround: \emph{Python} provides the data type of \emph{frozen sets}.
+These sets behave like sets but are are lacking certain function and
+hence are unmutable. So if we use \emph{frozen sets} as elements of the
+power set, we can compute the power set of a given set. The function
+power given below shows how this works.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}28}]:} \PY{k}{def} \PY{n+nf}{power}\PY{p}{(}\PY{n}{M}\PY{p}{)}\PY{p}{:}
+             \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{This function computes the power set of the set M.}\PY{l+s+s2}{\PYZdq{}}
+             \PY{k}{if} \PY{n}{M} \PY{o}{==} \PY{n+nb}{set}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+                 \PY{k}{return} \PY{p}{\PYZob{}} \PY{n+nb}{frozenset}\PY{p}{(}\PY{p}{)} \PY{p}{\PYZcb{}}
+             \PY{k}{else}\PY{p}{:}
+                 \PY{n}{C}  \PY{o}{=} \PY{n+nb}{set}\PY{p}{(}\PY{n}{M}\PY{p}{)}  \PY{c+c1}{\PYZsh{} C is a copy of M as we don\PYZsq{}t want to change the set M}
+                 \PY{n}{x}  \PY{o}{=} \PY{n}{C}\PY{o}{.}\PY{n}{pop}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{} pop removes the element x from the set C}
+                 \PY{n}{P1} \PY{o}{=} \PY{n}{power}\PY{p}{(}\PY{n}{C}\PY{p}{)}
+                 \PY{n}{P2} \PY{o}{=} \PY{p}{\PYZob{}} \PY{n}{A}\PY{o}{.}\PY{n}{union}\PY{p}{(}\PY{p}{\PYZob{}}\PY{n}{x}\PY{p}{\PYZcb{}}\PY{p}{)} \PY{k}{for} \PY{n}{A} \PY{o+ow}{in} \PY{n}{P1} \PY{p}{\PYZcb{}}
+                 \PY{k}{return} \PY{n}{P1}\PY{o}{.}\PY{n}{union}\PY{p}{(}\PY{n}{P2}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}29}]:} \PY{n}{power}\PY{p}{(}\PY{n}{A}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}29}]:} \{frozenset(),
+          frozenset(\{3\}),
+          frozenset(\{1\}),
+          frozenset(\{2\}),
+          frozenset(\{1, 2\}),
+          frozenset(\{2, 3\}),
+          frozenset(\{1, 3\}),
+          frozenset(\{1, 2, 3\})\}
+\end{Verbatim}
+            
+    Let us print this in a more readable way. To this end we implement a
+function prettyfy that turns a set of frozensets into a string that
+looks like a set of sets.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}30}]:} \PY{k}{def} \PY{n+nf}{prettyfy}\PY{p}{(}\PY{n}{M}\PY{p}{)}\PY{p}{:}
+             \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}Turn the set of frozen sets M into a string that looks like a set of sets.}
+         \PY{l+s+sd}{       M is assumed to be the power set of some set.}
+         \PY{l+s+sd}{    \PYZdq{}\PYZdq{}\PYZdq{}}
+             \PY{n}{result} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZob{}\PYZob{}}\PY{l+s+s2}{\PYZcb{}, }\PY{l+s+s2}{\PYZdq{}}   \PY{c+c1}{\PYZsh{} The emepty set is always an element of a power set.}
+             \PY{k}{for} \PY{n}{A} \PY{o+ow}{in} \PY{n}{M}\PY{p}{:}
+                 \PY{k}{if} \PY{n}{A} \PY{o}{==} \PY{n+nb}{set}\PY{p}{(}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} The empty set has already been taken care of.}
+                     \PY{k}{continue}
+                 \PY{n}{result} \PY{o}{+}\PY{o}{=} \PY{n+nb}{str}\PY{p}{(}\PY{n+nb}{set}\PY{p}{(}\PY{n}{A}\PY{p}{)}\PY{p}{)} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{, }\PY{l+s+s2}{\PYZdq{}} \PY{c+c1}{\PYZsh{} A is converted from a frozen set to a set}
+             \PY{n}{result} \PY{o}{=} \PY{n}{result}\PY{p}{[}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{]} \PY{c+c1}{\PYZsh{} remove the trailing substring \PYZdq{}, \PYZdq{}}
+             \PY{n}{result} \PY{o}{+}\PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}
+             \PY{k}{return} \PY{n}{result}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}31}]:} \PY{n}{prettyfy}\PY{p}{(}\PY{n}{power}\PY{p}{(}\PY{n}{A}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}31}]:} '\{\{\}, \{3\}, \{1, 2\}, \{2, 3\}, \{1\}, \{1, 3\}, \{1, 2, 3\}, \{2\}\}'
+\end{Verbatim}
+            
+    \subsection{Pairs and Cartesian
+Products}\label{pairs-and-cartesian-products}
+
+    In \emph{Python}, pairs can be created by enclosing the components of
+the pair in parentheses. For example, to compute the pair
+\(\langle 1, 2 \rangle\) we can write:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}32}]:} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}32}]:} (1, 2)
+\end{Verbatim}
+            
+    It is not even necessary to enclose the components of a pair in
+parentheses. For example, to compute the pair \(\langle 1, 2 \rangle\)
+we can use the following expression:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}33}]:} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}33}]:} (1, 2)
+\end{Verbatim}
+            
+    The Cartesian product \(A \times B\) of two sets \(A\) and \(B\) can now
+be computed via the following expression:
+\[ \{\; (x, y) \;\texttt{for}\; x \;\texttt{in}\; A\; \texttt{for}\; y\; \texttt{in}\; B\; \} \]
+For example, as we have defined \(A\) as \(\{1,2,3\}\) and \(B\) as
+\(\{2,3,4\}\), the Cartesian product of \(A\) and \(B\) is computed as
+follows:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}34}]:} \PY{p}{\PYZob{}} \PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{)} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{A} \PY{k}{for} \PY{n}{y} \PY{o+ow}{in} \PY{n}{B} \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}34}]:} \{(1, 2), (1, 3), (1, 4), (2, 2), (2, 3), (2, 4), (3, 2), (3, 3), (3, 4)\}
+\end{Verbatim}
+            
+    \subsection{Tuples}\label{tuples}
+
+    Tuples are a generalization of pairs. For example, to compute the tuple
+\(\langle 1, 2, 3 \rangle\) we can use the following expression:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}35}]:} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}35}]:} (1, 2, 3)
+\end{Verbatim}
+            
+    Longer tuples can be build using the function range in combination with
+the function tuple:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}36}]:} \PY{n+nb}{tuple}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{11}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}36}]:} (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+\end{Verbatim}
+            
+    Tuple can be concatenated using the operator +:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}37}]:} \PY{n}{T1} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+         \PY{n}{T2} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}
+         \PY{n}{T3} \PY{o}{=} \PY{n}{T1} \PY{o}{+} \PY{n}{T2}
+         \PY{n}{T3}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}37}]:} (1, 2, 3, 4, 5, 6)
+\end{Verbatim}
+            
+    The \emph{length} of a tuple is computed usingthe function len:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}38}]:} \PY{n+nb}{len}\PY{p}{(}\PY{n}{T3}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}38}]:} 6
+\end{Verbatim}
+            
+    The components of a tuple can be extracted using squre brackets. Not
+that the first component actually has the index \(0\)! This is similar
+to the behaviour of \emph{arrays} in the programming language C.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}39}]:} \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{T3[0] =}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{T3}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{T3[1] =}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{T3}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{T3[2] =}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{T3}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+T3[0] = 1
+T3[1] = 2
+T3[2] = 3
+
+    \end{Verbatim}
+
+    If we use negative indices, then we index from the back of the tuple, as
+shown in the following example:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}40}]:} \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{T3[\PYZhy{}1] =}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{T3}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} last element}
+         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{T3[\PYZhy{}2] =}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{T3}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} penultimate element}
+         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{T3[\PYZhy{}3] =}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{T3}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} third last element }
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+T3[-1] = 6
+T3[-2] = 5
+T3[-3] = 4
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}41}]:} \PY{n}{T3}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}41}]:} (1, 2, 3, 4, 5, 6)
+\end{Verbatim}
+            
+    The \emph{slicing} operator extracts a subtuple form a given list. If
+\(L\) is a tuple and \(a\) and \(b\) are natural numbers such that
+\(a \leq b\) and \(a,b \in \{0, \texttt{len}(L) \}\), then the syntax of
+the slicing operator is as follows: \[ L[a:b] \] The expression
+\(L[a:b]\) extracts the subtuple that starts with the element \(L[a]\)
+up to end excluding the element \(L[b]\). The following shows an
+example:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}42}]:} \PY{n}{L} \PY{o}{=} \PY{n+nb}{tuple}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{)}\PY{p}{)}
+         \PY{n}{L}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{:}\PY{l+m+mi}{6}\PY{p}{]}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}42}]:} (3, 4, 5, 6)
+\end{Verbatim}
+            
+    Slicing works with negative indices, too:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}43}]:} \PY{n}{L}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{]}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}43}]:} (3, 4, 5, 6, 7, 8)
+\end{Verbatim}
+            
+    \subsection{Lists}\label{lists}
+
+    Next, we discuss the data type of lists. Lists are a lot like tuples,
+but in contrast to tuples, lists are \emph{mutatable}, i.e. we can
+change lists. To construct a list, we use square backets:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}44}]:} \PY{n}{L} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}
+         \PY{n}{L}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}44}]:} [1, 2, 3]
+\end{Verbatim}
+            
+    To change the first element of a list, we can use the index operator:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}45}]:} \PY{n}{L}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{7}
+         \PY{n}{L}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}45}]:} [7, 2, 3]
+\end{Verbatim}
+            
+    This last operation would not be possible if L had been a tuple instead
+of a list. Lists support concatenation in the same way as tuples:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}46}]:} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]} \PY{o}{+} \PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}46}]:} [1, 2, 3, 4, 5, 6]
+\end{Verbatim}
+            
+    The function len computes the length of a list:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}47}]:} \PY{n+nb}{len}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}47}]:} 3
+\end{Verbatim}
+            
+    Lists and tuples both support the functions max and min. The expression
+\(\texttt{max}(L)\) computes the maximum of all the elements of the list
+(or tuple) \(L\), while \(\texttt{min}(L)\) computes the smallest
+element of \(L\).
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}48}]:} \PY{n+nb}{max}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}48}]:} 3
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}49}]:} \PY{n+nb}{min}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}49}]:} 1
+\end{Verbatim}
+            
+    \subsection{Boolean Operators}\label{boolean-operators}
+
+    In \emph{Python}, the Boolean values are written as True and False.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}50}]:} \PY{k+kc}{True}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}50}]:} True
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}51}]:} \PY{k+kc}{False}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}51}]:} False
+\end{Verbatim}
+            
+    These values can be combined using the Boolean operator \(\wedge\),
+\(\vee\), and \(\neg\). In \emph{Python}, these operators are denoted as
+and, or, and not. The following table shows how the operator and is
+defined:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}52}]:} \PY{n}{B} \PY{o}{=} \PY{p}{(}\PY{k+kc}{True}\PY{p}{,} \PY{k+kc}{False}\PY{p}{)}
+         \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{B}\PY{p}{:}
+             \PY{k}{for} \PY{n}{y} \PY{o+ow}{in} \PY{n}{B}\PY{p}{:}
+                 \PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{and}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{=}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{x} \PY{o+ow}{and} \PY{n}{y}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+True and True = True
+True and False = False
+False and True = False
+False and False = False
+
+    \end{Verbatim}
+
+    The disjunction of two Boolean values is only False if both values are
+False:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}53}]:} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{B}\PY{p}{:}
+             \PY{k}{for} \PY{n}{y} \PY{o+ow}{in} \PY{n}{B}\PY{p}{:}
+                 \PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{or}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{=}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{x} \PY{o+ow}{or} \PY{n}{y}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+True or True = True
+True or False = True
+False or True = True
+False or False = False
+
+    \end{Verbatim}
+
+    Finally, the negation operator works as expected:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}54}]:} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{B}\PY{p}{:}
+             \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{not}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{=}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{o+ow}{not} \PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+not True = False
+not False = True
+
+    \end{Verbatim}
+
+    Boolean values are created by comparing numbers using the follwing
+comparison operators:
+
+\begin{verbatim}
+\item$a\;\texttt{==}\;b$ is true iff $a$ is equal to $b$.</li>
+\item$a\;\texttt{!=}\;b$ is true iff $a$ is different from $b$.</li>
+\item$a\;\texttt{<}\;b$ is true iff $a$ is less than $b$.</li>
+\item$a\;\texttt{<=}\;b$ is true iff $a$ is less than or equal to $b$.</li>
+\item$a\;\texttt{>=}\;b$ is true iff $a$ is bigger than or equal to $b$.</li>
+\item$a\;\texttt{>}\;b$ is true iff $a$ is bigger than $b$.</li>
+\end{verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}55}]:} \PY{l+m+mi}{1} \PY{o}{==} \PY{l+m+mi}{2}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}55}]:} False
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}56}]:} \PY{l+m+mi}{1} \PY{o}{\PYZlt{}} \PY{l+m+mi}{2}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}56}]:} True
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}57}]:} \PY{l+m+mi}{1} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mi}{2}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}57}]:} True
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}58}]:} \PY{l+m+mi}{1} \PY{o}{\PYZgt{}} \PY{l+m+mi}{2}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}58}]:} False
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}59}]:} \PY{l+m+mi}{1} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mi}{2}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}59}]:} False
+\end{Verbatim}
+            
+    Comparison operators can be chained as shown in the following example:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}60}]:} \PY{l+m+mi}{1} \PY{o}{\PYZlt{}} \PY{l+m+mi}{2} \PY{o}{\PYZlt{}} \PY{l+m+mi}{3}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}60}]:} True
+\end{Verbatim}
+            
+    \emph{Python} supports the universal quantifier \(\forall\). If \(L\) is
+a list of Boolean values, then we can check whether all elements of
+\(L\) are True by writing \[ \texttt{all}(L) \] For example, to check
+whether all elements of a list \(L\) are even we can write the
+following:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}61}]:} \PY{n}{L} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{]}
+         \PY{n+nb}{all}\PY{p}{(}\PY{p}{[}\PY{n}{x} \PY{o}{\PYZpc{}} \PY{l+m+mi}{2} \PY{o}{==} \PY{l+m+mi}{0} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n}{L}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}61}]:} True
+\end{Verbatim}
+            
+    \subsection{Control Structures}\label{control-structures}
+
+    First of all, \emph{Python} supports branching statements. The following
+example is taken from the \emph{Python} tutorial at https://python.org:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}62}]:} \PY{n}{x} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Please enter an integer: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+         \PY{k}{if} \PY{n}{x} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{The number is negative!}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{k}{elif} \PY{n}{x} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{The number is zero.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{k}{elif} \PY{n}{x} \PY{o}{==} \PY{l+m+mi}{1}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{It}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{s a one.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{k}{else}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{It}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{s more than one.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Please enter an integer: 42
+It's more than one.
+
+    \end{Verbatim}
+
+    \emph{Loops} can be used to iterate over sets, lists, tuples, or
+generators. The following example prints the numbers from 1 to 10.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}63}]:} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{11}\PY{p}{)}\PY{p}{:}
+             \PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
+    \end{Verbatim}
+
+    The same can be achieved with a while loop:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}64}]:} \PY{n}{x} \PY{o}{=} \PY{l+m+mi}{1}
+         \PY{k}{while} \PY{n}{x} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mi}{10}\PY{p}{:}
+             \PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+             \PY{n}{x} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
+    \end{Verbatim}
+
+    The following program computes the prime numbers according to an
+algorithm given by Eratosthenes.
+
+\begin{enumerate}
+\item We set $n$ equal to 100 as we want to compute the set all prime numbers less or equal that 100.</li>
+\item \texttt{primes} is the list of numbers from 0 upto $n$, i.e. we have initially
+      $$ \texttt{primes} = [0,1,2,\cdots,n] $$
+      Therefore, we have
+      $$ \texttt{primes}[i] = i \quad \mbox{for all $i \in \{0,1,\cdots,n\}$.} $$
+      The idea is to set \texttt{primes[$i$]} to zero iff $i$ is a proper product of two numbers.
+
+\item To this end we iterate over all $i$ and $j$ from the set $\{2,\cdots,n\}$
+  and set the product $\texttt{primes}[i*j]$ to zero.  This is achieved by the two \texttt{for} loops in line 3 and 4 below.
+\item Note that we have to check that the product $i * j$ is not bigger than $n$ for otherwise we would get an
+  \emph{out of range error}  when trying to assign \texttt{primes[i*j]}.
+\item After the iteration, all non-prime elements greater than one of the list primes have been set to zero.
+\item Finally, we compute the set of primes by collecting those elements that have not been set to $0$.
+\end{enumerate}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}65}]:} \PY{n}{n}      \PY{o}{=} \PY{l+m+mi}{100}
+         \PY{n}{primes} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{n}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+         \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{n}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+             \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{n}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+                 \PY{k}{if} \PY{n}{i} \PY{o}{*} \PY{n}{j} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{n}{n}\PY{p}{:}
+                     \PY{n}{primes}\PY{p}{[}\PY{n}{i} \PY{o}{*} \PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{0}
+         \PY{n+nb}{print}\PY{p}{(}\PY{n}{primes}\PY{p}{)}
+         \PY{n+nb}{print}\PY{p}{(}\PY{p}{\PYZob{}} \PY{n}{i} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{n}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)} \PY{k}{if} \PY{n}{primes}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{!=} \PY{l+m+mi}{0} \PY{p}{\PYZcb{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[0, 1, 2, 3, 0, 5, 0, 7, 0, 0, 0, 11, 0, 13, 0, 0, 0, 17, 0, 19, 0, 0, 0, 23, 0, 0, 0, 0, 0, 29, 0, 31, 0, 0, 0, 0, 0, 37, 0, 0, 0, 41, 0, 43, 0, 0, 0, 47, 0, 0, 0, 0, 0, 53, 0, 0, 0, 0, 0, 59, 0, 61, 0, 0, 0, 0, 0, 67, 0, 0, 0, 71, 0, 73, 0, 0, 0, 0, 0, 79, 0, 0, 0, 83, 0, 0, 0, 0, 0, 89, 0, 0, 0, 0, 0, 0, 0, 97, 0, 0, 0]
+\{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97\}
+
+    \end{Verbatim}
+
+    The algorithm given above can be improved by using the following
+observations:
+
+\begin{enumerate}
+\item If a number $x$ can be written as a product $a * b$, then at least one of the numbers $a$ or $b$ has to
+      be less than $\sqrt{x}$.  Therefore, the \texttt{for} loop in line 5 below iterates as long as $i \leq
+      \sqrt{x}$.  The function \texttt{ceil} is needed to cast the square root of $x$ to a natural number.  In
+      order to use the functions \texttt{sqrt} and \texttt{ceil} we have to import them from the module
+      \texttt{math}.  This is done in line 1 of the program shown below.  
+\item When we iterate over $j$ in the inner loop, it is sufficient if we start with $j = i$ since all products
+      of the form $i * j$ where $j < i$ have already been eliminated at the time, when the multiples of $i$ had
+      been eliminated. 
+\item If \texttt{primes[$i$] = 0}, then $i$ is not a prime and hence it has to be a product of two numbers $a$
+      and $b$ both of which are smaller than $i$.  However, since all the multiples of $a$ and $b$ have already
+      been eliminated, there is no point in eliminating the multiples of $i$ since these are also mulples of both
+      $a$ and $b$ and hence have already been eliminated.  Therefore, if \texttt{primes[$i$] = 0} we can
+      immediately jump to the next value of $i$.  This is achieved by the \texttt{continue} statement in line 7
+      below. 
+\end{enumerate}
+The program shown below is easily capable of computing all prime numbers less than a million.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}66}]:} \PY{k+kn}{from} \PY{n+nn}{math} \PY{k}{import} \PY{n}{sqrt}\PY{p}{,} \PY{n}{ceil}
+         
+         \PY{n}{n} \PY{o}{=} \PY{l+m+mi}{1000}
+         \PY{n}{primes} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{n}{n}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+         \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{ceil}\PY{p}{(}\PY{n}{sqrt}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+             \PY{k}{if} \PY{n}{primes}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+                 \PY{k}{continue}
+             \PY{n}{j} \PY{o}{=} \PY{n}{i}
+             \PY{k}{while} \PY{n}{i} \PY{o}{*} \PY{n}{j} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{n}{n}\PY{p}{:}
+                 \PY{n}{primes}\PY{p}{[}\PY{n}{i} \PY{o}{*} \PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{0}
+                 \PY{n}{j} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}\PY{p}{;}
+         \PY{n+nb}{print}\PY{p}{(}\PY{p}{\PYZob{}} \PY{n}{i} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{n}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)} \PY{k}{if} \PY{n}{primes}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{!=} \PY{l+m+mi}{0} \PY{p}{\PYZcb{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+\{2, 3, 5, 7, 521, 11, 523, 13, 17, 19, 23, 29, 541, 31, 547, 37, 41, 43, 557, 47, 563, 53, 569, 59, 571, 61, 577, 67, 71, 73, 587, 79, 593, 83, 599, 89, 601, 607, 97, 101, 613, 103, 617, 107, 619, 109, 113, 631, 127, 641, 131, 643, 647, 137, 139, 653, 659, 149, 661, 151, 157, 673, 163, 677, 167, 683, 173, 179, 691, 181, 701, 191, 193, 197, 709, 199, 719, 211, 727, 733, 223, 227, 739, 229, 743, 233, 239, 751, 241, 757, 761, 251, 257, 769, 773, 263, 269, 271, 787, 277, 281, 283, 797, 293, 809, 811, 307, 821, 311, 823, 313, 827, 317, 829, 839, 331, 337, 853, 857, 347, 859, 349, 863, 353, 359, 877, 367, 881, 883, 373, 887, 379, 383, 389, 907, 397, 911, 401, 919, 409, 929, 419, 421, 937, 941, 431, 433, 947, 439, 953, 443, 449, 967, 457, 971, 461, 463, 977, 467, 983, 479, 991, 997, 487, 491, 499, 503, 509\}
+
+    \end{Verbatim}
+
+    \subsection{Numerical Functions}\label{numerical-functions}
+
+    \emph{Python} provides all of the mathematical functions that you have
+come to learn at school. A detailed listing of these functions can be
+found at https://docs.python.org/3.6/library/math.html. We just show the
+most important functions and constants. In order to make the module math
+available, we use the following import statement:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}67}]:} \PY{k+kn}{import} \PY{n+nn}{math}
+\end{Verbatim}
+
+
+    The mathematical constant Pi which is most often written as \(\pi\) is
+available as math.pi.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}68}]:} \PY{n}{math}\PY{o}{.}\PY{n}{pi}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}68}]:} 3.141592653589793
+\end{Verbatim}
+            
+    The sine function is called as follows:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}69}]:} \PY{n}{math}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{math}\PY{o}{.}\PY{n}{pi}\PY{o}{/}\PY{l+m+mi}{6}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}69}]:} 0.49999999999999994
+\end{Verbatim}
+            
+    The cosine function is called as follows:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}70}]:} \PY{n}{math}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{l+m+mf}{0.0}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}70}]:} 1.0
+\end{Verbatim}
+            
+    The tangent function is called as follows:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}71}]:} \PY{n}{math}\PY{o}{.}\PY{n}{tan}\PY{p}{(}\PY{n}{math}\PY{o}{.}\PY{n}{pi}\PY{o}{/}\PY{l+m+mi}{4}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}71}]:} 0.9999999999999999
+\end{Verbatim}
+            
+    The arc sine, arc cosine, and arc tangent are called by prefixing the
+character 'a' to the name of the function as seen below:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}72}]:} \PY{n}{math}\PY{o}{.}\PY{n}{asin}\PY{p}{(}\PY{l+m+mf}{1.0}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}72}]:} 1.5707963267948966
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}73}]:} \PY{n}{math}\PY{o}{.}\PY{n}{acos}\PY{p}{(}\PY{l+m+mf}{1.0}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}73}]:} 0.0
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}74}]:} \PY{n}{math}\PY{o}{.}\PY{n}{atan}\PY{p}{(}\PY{l+m+mf}{1.0}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}74}]:} 0.7853981633974483
+\end{Verbatim}
+            
+    Euler's number \(e\) can be computed as follows:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}75}]:} \PY{n}{math}\PY{o}{.}\PY{n}{e}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}75}]:} 2.718281828459045
+\end{Verbatim}
+            
+    The exponential function \(\mathrm{exp}(x) := e^x\) is computed as
+follows:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}76}]:} \PY{n}{math}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}76}]:} 2.718281828459045
+\end{Verbatim}
+            
+    The natural logarithm \(\ln(x)\), which is defined as the iverse of the
+function \(\exp(x)\), is called log (instead of ln):
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}77}]:} \PY{n}{math}\PY{o}{.}\PY{n}{log}\PY{p}{(}\PY{n}{math}\PY{o}{.}\PY{n}{e} \PY{o}{*} \PY{n}{math}\PY{o}{.}\PY{n}{e}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}77}]:} 2.0
+\end{Verbatim}
+            
+    The square root \(\sqrt{x}\) of a number \(x\) is computed using the
+function sqrt:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}78}]:} \PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}78}]:} 1.4142135623730951
+\end{Verbatim}
+
+
+
+In order to print arbitrary results to the screen, we can use the function
 \texttt{print}.  If we issue the 
 command 
 \\[0.2cm]
@@ -94,19 +1358,15 @@ then the following output is produced:
                   xrightmargin  = 0.8cm,
                   ]
     Hello, World!
-    >>>                   
 \end{Verbatim}
-Here, the interpreter has first printed the string ``\texttt{Hello, World!}''.  After that, the
-result of the function \texttt{print} is shown.  
-
 The function \texttt{print} accepts any number of arguments.  For example, printing
 the string ``\texttt{36 * 37 / 2}'' followed by
 the value of the expression $36 \cdot 37 / 2$ can be achieved via the following command:
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{print(\symbol{39}36 * 37 / 2 = \symbol{39}, 36 * 37 / 2);}
+\texttt{print(\symbol{39}36 * 37 / 2 = \symbol{39}, 36 * 37 / 2)}
 \\[0.2cm]
-The  \textsl{Python} interpreter can be executed offline to execute programs.
+The  \textsl{Python} interpreter can be used in a non-interactive fashion to execute programs.
 If the program shown in Figure  \ref{fig:sum.py} on page \pageref{fig:sum.py} is stored in a
 file with the file name  
 ``\href{https://github.com/karlstroetmann/Logik/blob/master/Python/sum.py}{\texttt{sum.py}}'',
@@ -159,7 +1419,7 @@ so that I am able to refer to the different lines of the program more easily.
 \begin{enumerate}
 \item The first line is a comment.  In \textsl{Python}, the string  ``\texttt{\#}'' starts a comment
       that extends to the end of the line.
-\item The second line is an assignment.  The expression  \texttt{read($s$)}
+\item The second line is an assignment.  The expression  \texttt{input($s$)}
       first prints the string $s$ and then reads and returns the string that is input by the user.
       The resulting string is assigned to the variable \texttt{n}.  This is done using the assignment
       operator ``\texttt{=}''.
@@ -181,6 +1441,8 @@ so that I am able to refer to the different lines of the program more easily.
       \\[0.2cm]
       successively computes the number from $1$ upto $n$.  These numbers are then inserted into the set $s$.
       Therefore, $s$ is the set $\{1,\cdots,n\}$.
+
+      I will give more details on the definition of sets in \textsl{Python} later.
 \item The function \texttt{sum($s$)} computes the sum of all elements of the set $s$.  Therefore, line 5
       computes the sum
       \\[0.2cm]
@@ -227,10 +1489,9 @@ recursively.
 \item The first 4 lines define the procedure \texttt{sum}.  In \textsl{Python}, the definition of
       a procedure is started with the \blue{keyword} ``\texttt{def}''.  This keyword is followed by
       a list of the \blue{formal arguments}.  These arguments are separated by the character ``\texttt{,}'' and
-      are enclosed in parentheses. The closing parenthesis is followed by the colon ``\texttt{:}''.
-      Contrary to  the programming language \texttt{C}, the body of the procedure is not enclosed curly braces.
-      instead, it needs to be indented.
-      In general, the body of a procedure consists of a list
+      are enclosed in parentheses. The closing parenthesis is followed by the character ``\texttt{:}''.
+      Contrary to  the programming language \texttt{C}, the body of the procedure is not enclosed in curly braces.
+      instead, it \underline{needs to be indented}.   In general, the body of a procedure consists of a list
       of commands.  In Figure \ref{fig:sum-recursive.py} there is only a single command.  This
       command is a case distinction.  The general form of a case distinction is as follows:
 
@@ -252,9 +1513,15 @@ recursively.
       \vspace*{-0.1cm}
       A case distinction of this form is evaluated as follows:
       \begin{enumerate}
-      \item First, the expression \texttt{test} is evaluated.  The evaluation of \texttt{test} must
-            either return the value ``\texttt{True}'' or ``\texttt{False}''.
-      \item If \texttt{test} evaluates as  ``\texttt{True}'' then the statements in
+      \item First, the expression \texttt{test} is evaluated.  The evaluation of \texttt{test} should
+            either return the Boolean value \texttt{True} or the value \texttt{False}.\footnote{
+              In \textsl{Python}, a value that is neither \texttt{True} nor \texttt{False} is converted into a 
+              Boolean value.  For example, an empty set, an empty list, an empty dictionary, or an empty string
+              is converted into the value \texttt{False}.  More or less everything else is interpreted as
+              \texttt{True}.  In our programs we will not make use of this feature and instead use only Boolean
+              values in conditional tests.
+            }
+      \item If \texttt{test} evaluates as  \texttt{True} then the statements in
             \texttt{body}$_1$ are executed.  Here,  \texttt{body}$_1$ is a list of statements.
             It is important that all these statements are indented by the same amount.
       \item Otherwise, the statements in \texttt{body}$_2$ are executed.
@@ -290,8 +1557,8 @@ case is called the \blue{base case}.  Every recursive function must have a base 
 the recursion would never stop.
 
 
-\section{Sets in \setl}
-The most prominent difference between the programming language \setl\ and the programming language
+\section{Sets in \textsl{Python}}
+The most prominent difference between the programming language \textsl{Python}and the programming language
 \texttt{C} is the fact that  \textsl{Python} has language support for both \blue{sets} and \blue{lists}.
 In order to demonstrate how sets are supported in \textsl{Python} we present a simple program that
 shows how to compute the \blue{union}, the \blue{intersection}, and the \blue{difference} of two sets.
@@ -313,26 +1580,26 @@ We discuss it line by line.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    A := \{ 1, 2, 3 \};
-    B := \{ 2, 3, 4 \};
+    A = \{ 1, 2, 3 \};
+    B = \{ 2, 3, 4 \};
     // compute the union             A $\cup$ B 
-    C := A + B;
+    C = A + B;
     print(A, " + ", B, " = ", C);
     // compute the intersection      A $\cap$ B
-    C := A * B;
+    C = A * B;
     print(A, " * ", B, " = ", C);
     // compute the set difference    A $\backslash$ B
-    C := A - B;
+    C = A - B;
     print(A, " - ", B, " = ", C);
     // compute the power set        $\displaystyle 2^\texttt{A}$
-    C := 2 ** A;
+    C = 2 ** A;
     print("2 ** ", A, " = ", C);
     // test the subset relation      A $\subseteq$ B
     print("(", A, " <= ", B, ") = ", (A <= B)); 
     // test, whether 1 $\in$ A
     print("1 in ", A, " = ", 1 in A);
     // compute the cartesian product
-    C := A >< B;
+    C = A >< B;
     print(A, " >< ", B, " = ", C);
 \end{Verbatim} 
 \vspace*{-0.3cm}
@@ -375,13 +1642,13 @@ In the previous example we have defined sets as explicit enumerations of their e
 this approach is much too tedious when working with sets containing large numbers of elements.  An
 alternative way is to define a set as an \blue{arithmetic progression}.  Let us consider an example.  The assignment
 \begin{verbatim}
-        A := { 1 .. 100 };
+        A = { 1 .. 100 };
 \end{verbatim}
 defines \texttt{A} as the set of all positive natural numbers that are less than or equal to $100$.
 The general form of an arithmetic progression is
 \\[0.2cm]
 \hspace*{1.3cm} 
-\texttt{A := \{ \textsl{start} .. \textsl{stop} \};} 
+\texttt{A = \{ \textsl{start} .. \textsl{stop} \};} 
 \\[0.2cm]
 This definition assigns the set of all integer numbers from \textsl{start} up to and including
 \textsl{stop} to the variable \texttt{A}, i.e.~we have
@@ -392,14 +1659,14 @@ $\texttt{A} = \{ n \in \mathbb{Z} \mid \textsl{start} \leq n \wedge n \leq\texts
 We can define arithmetic progressions with a \blue{step size} different from $1$.  For example,
 the assignment
 \begin{verbatim}
-       A := { 1, 3 .. 100 };
+       A = { 1, 3 .. 100 };
 \end{verbatim}
 assigns the set of all odd natural numbers less than or equal to $100$ to \texttt{a}.
 Of course, the number $100$ is not part of this set as $100$ is an even number.
 The general form of this kind of progression is
 \\[0.2cm]
 \hspace*{1.3cm} 
-\texttt{A := \{ start, second .. stop \}} 
+\texttt{A = \{ start, second .. stop \}} 
 \\[0.2cm]
 If we define $\texttt{step} = \texttt{second} - \texttt{start}$ and if, furthermore,  \texttt{step}
 is positive, then this set can be written as follows:
@@ -422,7 +1689,7 @@ For example, we have
 We can also define sets via \blue{iterators}.  Consider the following example:
 \\[0.2cm]
 \hspace*{1.3cm} 
-\texttt{P := \{ n * m : n in \{2..10\}, m in \{2..10\} \};} 
+\texttt{P = \{ n * m : n in \{2..10\}, m in \{2..10\} \};} 
 \\[0.2cm]
 After this assignment,  \texttt{p} is the set of all \blue{non-trivial} products $\mathtt{n} * \mathtt{m}$ such
 that that have both \texttt{m} and \texttt{n} are at most 10.  
@@ -459,8 +1726,8 @@ remaining numbers must be prime.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    n := 100;
-    primes := {2 .. n} - { p * q : p in {2..n}, q in {2..n} };
+    n = 100;
+    primes = {2 .. n} - { p * q : p in {2..n}, q in {2..n} };
     print(primes);
 \end{Verbatim} 
 \vspace*{-0.3cm}
@@ -489,7 +1756,7 @@ In addition to image sets we can use \blue{selection} to define sets.
 The syntax is: 
 \\[0.2cm]
 \hspace*{1.3cm}  
-$M := \{ \textsl{expr} : x_1 \;\mathtt{in}\; S_1,\; \cdots,\; x_n \;\mathtt{in}\; S_n \mid \textsl{cond}\, \}$. 
+$M = \{ \textsl{expr} : x_1 \;\mathtt{in}\; S_1,\; \cdots,\; x_n \;\mathtt{in}\; S_n \mid \textsl{cond}\, \}$. 
 \\[0.2cm]
 Here,   $\textsl{expr}$ and $S_i$ are interpreted as above and  
  $\textsl{cond}$ is an expression possibly containing the variables  $x_1$, $\cdots$, $x_n$.  The
@@ -503,7 +1770,7 @@ i.e.~$M$ is defined as the set of all those values that we get when we substitut
 from the sets $S_i$ into \textsl{expr} that satisfy \textsl{cond}.  An example will clarify this.
 After the assignment
 \begin{alltt}
-  \texttt{Primes := \{ p : p in  \{2..100\} | \{ x : x in \{1..p\} | p \% x == 0 \} == \{1, p\} \};}
+  \texttt{Primes = \{ p : p in  \{2..100\} | \{ x : x in \{1..p\} | p \% x == 0 \} == \{1, p\} \};}
 \end{alltt}
 the variable \texttt{Primes} is the set of all prime numbers that are less than 100.
 The idea is that the number \texttt{p} is prime iff 1 and \texttt{p} are the only numbers that divide
@@ -533,11 +1800,11 @@ shown in Figure
                   xleftmargin   = 0.4cm,
                   xrightmargin  = 0.4cm
                 ]
-    dividers := procedure(p) {
+    dividers = procedure(p) {
         return { t : t in {1..p} | p % t == 0 };
     };
-    n      := 100;
-    primes := { p : p in {2..n} | dividers(p) == {1, p} };
+    n      = 100;
+    primes = { p : p in {2..n} | dividers(p) == {1, p} };
     print(primes);
 \end{Verbatim} 
 \vspace*{-0.3cm}
@@ -578,8 +1845,8 @@ x-value in a relation.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    Q := { [n, n**2] : n in {1..10} };
-    Q[5] := 7;
+    Q = { [n, n**2] : n in {1..10} };
+    Q[5] = 7;
     print( "Q[3]   = $Q[3]$"      );
     print( "Q[5]   = $Q[5]$"      );
     print( "dom(Q) = $domain(Q)$" );
@@ -626,7 +1893,7 @@ shown in Figure
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    R := { [1, 1], [1, 4], [3, 3] };
+    R = { [1, 1], [1, 4], [3, 3] };
     print( "R[1] = $R[1]$" );
     print( "R[2] = $R[2]$" );
     print( "{ R[1], R[2] } = ${ R[1], R[2] }$" );
@@ -646,7 +1913,7 @@ have to write $R\{x\}$ instead of $R[x]$.
 For a binary relation $R$, the expression  $R\{x\}$  is defined as the following set:
 \\[0.2cm]
 \hspace*{1.3cm}
- $R\{x\} := \{ y \mid \langle x, y \rangle \in R \}$,
+ $R\{x\} = \{ y \mid \langle x, y \rangle \in R \}$,
 \\[0.2cm]
 i.e.~$R\{X\}$ is the set of all values $y$ such that the pair $\langle x, y \rangle$ is in $R$.
 Hence, the program shown in Figure  \ref{fig:buggy-function.py} yields the following results:
@@ -678,12 +1945,12 @@ used instead of sets.  This program computes the prime numbers similar to the pr
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    dividers := procedure(p) {
+    dividers = procedure(p) {
         return [ t : t in [1..p] | p % t == 0 ];
     };
     
-    n := 100;
-    primes := [ p : p in [2 .. n] | dividers(p) == [1, p] ];
+    n = 100;
+    primes = [ p : p in [2 .. n] | dividers(p) == [1, p] ];
     print(primes);
 \end{Verbatim} 
 \vspace*{-0.3cm}
@@ -728,10 +1995,10 @@ resulting list will contain every element exactly once, even if it occurs multip
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    sort := procedure(L) {
+    sort = procedure(L) {
         return [n : n in [0 .. max(L)] | n in L];
     };
-    L := [13, 5, 7, 2, 4];
+    L = [13, 5, 7, 2, 4];
     print("sort($L$) = ", sort(L));
 \end{Verbatim} 
 \vspace*{-0.3cm}
@@ -789,7 +2056,7 @@ numbers.  However, the functions \texttt{first} and \texttt{last} can be applied
 For example, if we define
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{S := \{ "a", "b", "c" \};}
+\texttt{S = \{ "a", "b", "c" \};}
 \\[0.2cm]
 then we have
 \\[0.2cm]
@@ -818,7 +2085,7 @@ Another function that can be used to extract elements from a set is the function
 This function is called as follows:
 \\[0.2cm]
 \hspace*{1.3cm} 
-\texttt{x := from(S);}
+\texttt{x = from(S);}
 \\[0.2cm]
 Here, \texttt{S} is supposed to be a set, while \texttt{x} is a variable.  If the assignment above
 is executed, the function \texttt{from} takes some element from the set \texttt{S} and assigns it to
@@ -846,15 +2113,15 @@ one.  Here, every element of \texttt{S} is printed in a separate row.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    printSet := procedure(S) {
+    printSet = procedure(S) {
         if (S == {}) {
             return;
         }
-        x := from(S);
+        x = from(S);
         print(x);
         printSet(S);
     };
-    S := { 13, 5, 7, 2, 4 };
+    S = { 13, 5, 7, 2, 4 };
     printSet(S);
 \end{Verbatim} 
 \vspace*{-0.3cm}
@@ -865,8 +2132,8 @@ In addition to the function \texttt{from}, \setlx\ provides the function \texttt
 arbitrary element from a given set.  However, in contrast to \texttt{from}, a call to \texttt{arb}
 does not change the set.  For example, when executing the statements 
 \begin{verbatim}
-    S := {2, 3, 5, 7, 13};
-    x := arb(S);
+    S = {2, 3, 5, 7, 13};
+    x = arb(S);
     print("x = $x$");
     print("S = $S$");
 \end{verbatim}
@@ -886,7 +2153,7 @@ applied to lists.  If \texttt{L1} and \texttt{L2} are both lists, the expression
 \blue{concatenates} the lists \texttt{L1} and \texttt{L2}.  For example, the assignment
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{L := [1, 2, 3] + [4, 5, 6];}
+\texttt{L = [1, 2, 3] + [4, 5, 6];}
 \\[0.2cm]
 creates the list \texttt{[1, 2, 3, 4, 5, 6]} and stores it into \texttt{L}.
 
@@ -905,7 +2172,7 @@ The list \texttt{L} can
 also be changed using this notation, so for example the assignment
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{L[3] := 42;}
+\texttt{L[3] = 42;}
 \\[0.2cm]
 sets the third element of \texttt{L} to the number \texttt{42}.  Basically, the syntax is the same
 as the syntax of array access in the programming language \texttt{C}.  However, there is one very
@@ -914,15 +2181,15 @@ important difference with respect to \texttt{C}:
       \begin{center}
       \colorbox{red}{\framebox{\colorbox{yellow}{\framebox{
       \begin{minipage}{0.45\linewidth}
-        In \textsl{Python}, list indexing starts with the number \texttt{1}!
+        In \textsl{Python}, list indexing starts with the number \texttt{0}!
       \end{minipage}}}}}
       \end{center}      
 
 \noindent
 Therefore, after executing the statements
 \\[0.2cm]
-\hspace*{1.3cm} \texttt{L := [1, 2, 3];} \\
-\hspace*{1.3cm} \texttt{x := L[1];}
+\hspace*{1.3cm} \texttt{L = [1, 2, 3];} \\
+\hspace*{1.3cm} \texttt{x = L[1];}
 \\[0.2cm]
 the variable  \texttt{x} is set to 1.  
 
@@ -950,7 +2217,7 @@ the \texttt{j}-th element of \texttt{L}.  If \texttt{j} is less than \texttt{i},
 \texttt{L[i..j]} returns the empty list instead.  For example, after defining
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{L := [5, 4, 3, 2, 1];}
+\texttt{L = [5, 4, 3, 2, 1];}
 \\[0.2cm]
 we have 
 \\[0.2cm]
@@ -988,14 +2255,14 @@ that implements selection sort  in \textsl{Python}.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    minSort := procedure(L) {
+    minSort = procedure(L) {
         if (L == []) {
             return [];
         }
-        m := min(L);
+        m = min(L);
         return [m] + minSort([x : x in L | x != m]);
     };   
-    L := [ 13, 5, 13, 7, 2, 4 ];
+    L = [ 13, 5, 13, 7, 2, 4 ];
     print("sort($L$) = $minSort(L)$");
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -1206,14 +2473,14 @@ evaluates to \texttt{True} iff every number \texttt{x} that divides \texttt{p} e
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    isPrime := procedure(p) {
+    isPrime = procedure(p) {
         return p != 1 && forall (x in divisors(p) | x in { 1, p });
     };
-    divisors := procedure(p) {
+    divisors = procedure(p) {
         return { t : t in { 1 .. p } | p % t == 0 };
     };
-    n := 100;
-    primes := [ p : p in [1 .. n] | isPrime(p) ];
+    n = 100;
+    primes = [ p : p in [1 .. n] | isPrime(p) ];
     print( primes );
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -1345,8 +2612,8 @@ used \texttt{if-else}-statements instead.  Later, the chapter on propositional l
                   xrightmargin  = 0.8cm,
                 ]
     print("Input a natural number:");
-    n := read();
-    m := n % 10;
+    n = read();
+    m = n % 10;
     switch {
         case m == 0 : print("The last digit is 0.");
         case m == 1 : print("The last digit is 1.");
@@ -1412,9 +2679,9 @@ prime if there is no prime number \texttt{t} less than \texttt{p} that divides \
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    n := 100;
-    primes := {};
-    p := 2;
+    n = 100;
+    primes = {};
+    p = 2;
     while (p <= n) {
         if (forall (t in primes | p % t != 0)) {
             print(p);
@@ -1480,12 +2747,12 @@ the prime numbers.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    n := 100;
-    primes := [1 .. n];
+    n = 100;
+    primes = [1 .. n];
     for (i in [2 .. n]) {
-        j := 2;
+        j = 2;
         while (i * j <= n) {
-            primes[i * j] := 0;
+            primes[i * j] = 0;
             j += 1;
         }
     }
@@ -1526,15 +2793,15 @@ the programming language \texttt{C}.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    n := 10000;
-    primes := [1 .. n];
+    n = 10000;
+    primes = [1 .. n];
     for (i in [2 .. floor(sqrt(n))]) {
         if (primes[i] == 0) {
             continue;
         }
-        j := i;
+        j = i;
         while (i * j <= n) {
-            primes[i * j] := 0;
+            primes[i * j] = 0;
             j += 1;
         }
     }
@@ -1615,7 +2882,7 @@ extracts the substring form $s$ that starts with the $k$th character of $s$ and 
 For example, if \texttt{s} is defined by the assignment
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{s := "abcdefgh";}
+\texttt{s = "abcdefgh";}
 \\[0.2cm]
 then the expression \texttt{s[2..5]} returns the substring
 \\[0.2cm]
@@ -1713,7 +2980,7 @@ Here, $x$ is a real number that we seek to compute.  A simple approach that work
 define the sequence $\bigl(x_n\bigr)_{n\in\mathbb{N}}$ inductively as follows:
 \\[0.2cm]
 \hspace*{1.3cm} 
-$x_0 := 0$ \quad and \quad $x_{n+1} := \mathtt{cos}(x_n)$ \quad for all $n \in \mathbb{N}$. 
+$x_0 = 0$ \quad and \quad $x_{n+1} = \mathtt{cos}(x_n)$ \quad for all $n \in \mathbb{N}$. 
 \\[0.2cm]
 With the help of the 
 \href{https://en.wikipedia.org/wiki/Banach_fixed-point_theorem}{Banach fixed-point theorem}\footnote{
@@ -1724,7 +2991,7 @@ With the help of the
 it can be shown that this sequence converges to a solution of the equation $x = \cos(x)$, i.e.~if we define
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bar{x} := \lim\limits_{n\rightarrow\infty} x_n$,
+$\bar{x} = \lim\limits_{n\rightarrow\infty} x_n$,
 \\[0.2cm]
 then we have
 \\[0.2cm]
@@ -1746,10 +3013,10 @@ that uses this approach to solve the equation $x = \cos(x)$.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    x := 0.0;
+    x = 0.0;
     while (true) {
-        old_x := x;
-        x := cos(x);    
+        old_x = x;
+        x = cos(x);    
         print(x);
         if (abs(x - old_x) < 1.0e-13) {
             print("x = ", x);
@@ -1779,11 +3046,11 @@ is stopped using the \texttt{break} statement.  This statement works the same wa
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    solve := procedure(f, x0) {
-        x := x0;
+    solve = procedure(f, x0) {
+        x = x0;
         for (n in [1 .. 10000]) {
-            oldX := x;
-            x := f(x);
+            oldX = x;
+            x = f(x);
             if (abs(x - oldX) < 1.0e-12) {
                 return x;
             }
@@ -1894,15 +3161,15 @@ program line by line.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-    values := { "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A" }; 
-    suits  := { "c", "h", "d", "s" };
-    deck   := { [ v, s ] : v in values, s in suits };
-    hole   := { [ "3", "c" ], [ "3", "s" ] };
-    rest   := deck - hole;
-    flops  := { { k1, k2, k3 } : k1 in rest, k2 in rest, k3 in rest 
+    values = { "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A" }; 
+    suits  = { "c", "h", "d", "s" };
+    deck   = { [ v, s ] : v in values, s in suits };
+    hole   = { [ "3", "c" ], [ "3", "s" ] };
+    rest   = deck - hole;
+    flops  = { { k1, k2, k3 } : k1 in rest, k2 in rest, k3 in rest 
                                | #{ k1, k2, k3 } == 3 
               };
-    trips  := { f : f in flops | [ "3", "d" ] in f || [ "3", "h" ] in f };
+    trips  = { f : f in flops | [ "3", "d" ] in f || [ "3", "h" ] in f };
     print(1.0 * #trips / #flops);
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -1984,7 +3251,7 @@ as the set of vertices is implicitly given once the edges are known.  To make th
 an example.  In this case, the set of edges is called \texttt{R} and is defined as follows: 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{R}\; \mathtt{:=}\; \bigl\{ \pair(1,2), \pair(2,3), \pair(1,3), \pair(2,4), \pair(4,5) \bigr\}$.
+$\texttt{R}\; \mathtt{=}\; \bigl\{ \pair(1,2), \pair(2,3), \pair(1,3), \pair(2,4), \pair(4,5) \bigr\}$.
 \\[0.2cm]
 In this graph, the set of vertices is given as
 \\[0.2cm]
@@ -2118,10 +3385,10 @@ To this end, let us define a sequence of relations $(T_n)_{n \in \mathbb{N}}$ by
 \begin{enumerate}
 \item[I.A.] $n = 0$: 
 
-            $T_0 := R$
+            $T_0 = R$
 \item[I.S.] $n \mapsto n+1$:
 
-            $T_{n+1} := R \cup R \circ T_n$. 
+            $T_{n+1} = R \cup R \circ T_n$. 
 \end{enumerate}
 The relation  $T_n$ can be expressed via the relation $R$, we have
 \begin{enumerate}
@@ -2201,7 +3468,7 @@ $\ds T_n = \bigcup\limits_{i=1}^{n+1} R^i = \bigcup\limits_{i=1}^{\infty} R^i = 
 Therefore, the algorithm for computing  $R^+$ iterates the equation 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\ds T_{n+1} := R \cup R \circ T_n$
+$\ds T_{n+1} = R \cup R \circ T_n$
 \\[0.2cm]
 until the equation  $T_{n+1} = T_n$ is satisfied, since this implies that $T_n = R^+$.
 
@@ -2216,23 +3483,23 @@ until the equation  $T_{n+1} = T_n$ is satisfied, since this implies that $T_n =
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    transClosure := procedure(R) {
-        T := R;
+    transClosure = procedure(R) {
+        T = R;
         while (true) {
-            oldT := T;
-            T    := R + product(R, T);
+            oldT = T;
+            T    = R + product(R, T);
             if (T == oldT) {
                 return T;
             }
         }
     };
-    product := procedure(R1, R2) {
+    product = procedure(R1, R2) {
         return { [x,z] : [x,y] in R1, [y,z] in R2 };
     };
-    R := { [1,2], [2,3], [1,3], [2,4], [4,5] };
+    R = { [1,2], [2,3], [1,3], [2,4], [4,5] };
     print( "R = ", R );
     print( "Computing the transitive closure of R:" );
-    T := transClosure(R);
+    T = transClosure(R);
     print( "R+ = ", T );
 \end{Verbatim} 
 \vspace*{-0.3cm}
@@ -2273,9 +3540,9 @@ Here, for all $i=1, \cdots, k$ the variable $s_i$ denotes a set of lists of leng
 expression given above is evaluated, the variables $x^{(i)}_1, \cdots, x^{(i)}_{n(i)}$ are replaced
 by the corresponding values in the lists from the sets  $s_i$.  For example, if we define
 \begin{verbatim}
-    s1 := { [ 1, 2, 3 ], [ 5, 6, 7 ] };
-    s2 := { [ "a", "b" ], [ "c", "d" ] };
-    m := { [ x1, x2, x3, y1, y2 ] : [ x1, x2, x3 ] in s1, [ y1, y2 ] in s2 };
+    s1 = { [ 1, 2, 3 ], [ 5, 6, 7 ] };
+    s2 = { [ "a", "b" ], [ "c", "d" ] };
+    m = { [ x1, x2, x3, y1, y2 ] : [ x1, x2, x3 ] in s1, [ y1, y2 ] in s2 };
 \end{verbatim}
 then the set  \texttt{m} has the following value:
 \begin{verbatim}
@@ -2303,12 +3570,12 @@ we introduce three functions for lists.
 \item If $p = [ x_1, \cdots, x_m ]$ and $q =[ y_1, \cdots, y_n ]$ are two path such that
       $\texttt{first}(q) = \texttt{last}(p)$, we define the \blue{join} of $p$ and $q$ as \\[0.2cm]
       \hspace*{1.3cm}
-      $p \oplus q := [x_1, \cdots, x_m, y_2, \cdots, y_n ]$.
+      $p \oplus q = [x_1, \cdots, x_m, y_2, \cdots, y_n ]$.
 \end{enumerate}
 If $P_1$ and $P_2$ are sets of paths, we define the  \blue{path product} of
 $P_1$ and $P_2$ as follows: \\[0.2cm]
 \hspace*{1.3cm} 
-$P_1 \bullet P_2 := 
+$P_1 \bullet P_2 = 
 \bigl\{\; p_1 \oplus p_2 \mid p_1 \in P_1 \wedge p_2 \in P_2 \wedge \texttt{last}(p_1) =
 \texttt{first}(p_2) \;\bigr\}
 $.
@@ -2323,27 +3590,27 @@ $.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    transClosure := procedure(R) {
-        P := R;
+    transClosure = procedure(R) {
+        P = R;
         while (true) {
-            oldP := P;
-            P    := R + pathProduct(R, P);
+            oldP = P;
+            P    = R + pathProduct(R, P);
             print(P);
             if (P == oldP) {
                 return P;
             }
         }
     };
-    pathProduct := procedure(P, Q) {
+    pathProduct = procedure(P, Q) {
         return { join(x, y) : x in P, y in Q | x[-1] == y[1] };
     };    
-    join := procedure(p, q) {
+    join = procedure(p, q) {
         return p + q[2..];
     };
-    R := { [1,2], [2,3], [1,3], [2,4], [4,5] };
+    R = { [1,2], [2,3], [1,3], [2,4], [4,5] };
     print( "R = ", R );
     print( "computing all paths" );
-    P := transClosure(R);
+    P = transClosure(R);
     print( "P = ", P );
 \end{Verbatim} 
 \vspace*{-0.3cm}
@@ -2397,10 +3664,10 @@ contain cycles.  Our goal is to eliminate all those paths that contain cycles.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-    pathProduct := procedure(P, Q) {
+    pathProduct = procedure(P, Q) {
         return { join(x,y) : x in P, y in Q | x[-1] == y[1] && noCycle(x, y) };
     };
-    noCycle := procedure(L1, L2) {
+    noCycle = procedure(L1, L2) {
         return #({ x : x in L1 } * { x : x in L2 }) == 1;
     };
 \end{Verbatim} 
@@ -2479,12 +3746,12 @@ The algorithm described above is known as
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    reachable := procedure(x, y, R) {
-        P := { [x] };
+    reachable = procedure(x, y, R) {
+        P = { [x] };
         while (true) {
-            oldP  := P;
-            P     := P + pathProduct(P, R);
-            Found := { l : l in P | l[-1] == y };
+            oldP  = P;
+            P     = P + pathProduct(P, R);
+            Found = { l : l in P | l[-1] == y };
             if (Found != {}) {
                 return arb(Found);
             }
@@ -2524,14 +3791,14 @@ be regarded as \blue{vertices} of a graph and this graph will be represented as 
 To this end we define the set
 \\[0.2cm]
 \hspace*{1.3cm} 
-$\texttt{All} := \{ \squote{farmer}, \squote{wolf}, \squote{goat},\squote{cabbage} \}$.
+$\texttt{All} = \{ \squote{farmer}, \squote{wolf}, \squote{goat},\squote{cabbage} \}$.
 \\[0.2cm]
 Every node will be represented as a subset \texttt{S} of the set \texttt{All}.  The idea is that the set \texttt{S}
 specifies those objects that are on the left side of the river.  We assume that initially the farmer
 is on the left side of the river. 
 Therefore, the set of all possible states can be defined as the set
 \begin{verbatim}
-        P := { S : S in 2 ** All | !problem(S) && !problem(All - S) };
+        P = { S : S in 2 ** All | !problem(S) && !problem(All - S) };
 \end{verbatim}
 Here, we have used the procedure \texttt{problem} to check whether a given set \texttt{S} has a problem. 
 Note that since \texttt{S} is the set of objects on the left side, the expression $\texttt{All - S}$
@@ -2546,7 +3813,7 @@ are satisfied:
 Therefore, we can implement the function \texttt{problem} as follows:
 
 \begin{verbatim}
-    problem := procedure(S) {
+    problem = procedure(S) {
         return !("farmer" in S)                                     && 
                ({"goat", "cabbage"} <= S || {"wolf", "goat"} <= S);
     };
@@ -2555,13 +3822,13 @@ We proceed to compute the relation \texttt{R} that contains all possible transit
 different states.  We will compute \texttt{R} using the formula:
 \\[0.2cm]
 \hspace*{0.75cm}
-\texttt{R := R1 + R2;}
+\texttt{R = R1 + R2;}
 \\[0.2cm]
 Here \texttt{R1} describes the transitions that result from the farmer crossing the river from left
 to right, while \texttt{R2} describes the transitions that result from the farmer crossing the river
 from right to left.  We can define the relation \texttt{R1} as follows:
 \begin{verbatim}
-    R1  := { [S, S - B]: S in P, B in 2 ** S
+    R1  = { [S, S - B]: S in P, B in 2 ** S
                        | S - B in P && "farmer" in B && #B <= 2
            };
 \end{verbatim}
@@ -2590,18 +3857,18 @@ is just the reverse of crossing the river from left to right, \texttt{R2} is jus
 \texttt{R1}.   Hence we define:
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{R2  := \{ [y, x] : [x, y] in R1 \};}
+\texttt{R2  = \{ [y, x] : [x, y] in R1 \};}
 \\[0.2cm]
 Finally, the start state has all objects on the left side.  Therefore, we have
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{start := All;}
+\texttt{start = All;}
 \\[0.2cm]
 In the end, all objects have to be on the right side of the river.  That means that nothing is left
 on the left side.  Therefore, we define
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{goal := \{\};}
+\texttt{goal = \{\};}
 \\[0.2cm]
 Figure \ref{fig:wolf-ziege} on page \pageref{fig:wolf-ziege} shows the program
 \href{https://github.com/karlstroetmann/Logik/blob/master/Python/wolf-goat-cabbage.py}{\texttt{wolf-goat-cabbage.py}}
@@ -2619,23 +3886,23 @@ that combines the statements shown so far.  The solution computed by this progra
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    problem := procedure(S) {
+    problem = procedure(S) {
         return !("farmer" in S)                                     && 
                ({"goat", "cabbage"} <= S || {"wolf", "goat"} <= S);
     };
     
-    All := { "farmer", "wolf", "goat", "cabbage" };
-    P   := { S : S in 2 ** All | !problem(S) && !problem(All - S) };
-    R1  := { [S, S - B]: S in P, B in 2 ** S
+    All = { "farmer", "wolf", "goat", "cabbage" };
+    P   = { S : S in 2 ** All | !problem(S) && !problem(All - S) };
+    R1  = { [S, S - B]: S in P, B in 2 ** S
                        | S - B in P && "farmer" in B && #B <= 2
            };
-    R2  := { [y, x] : [x, y] in R1 };
-    R   := R1 + R2;
+    R2  = { [y, x] : [x, y] in R1 };
+    R   = R1 + R2;
     
-    start := All;
-    goal  := {};
+    start = All;
+    goal  = {};
     
-    path  := reachable(start, goal, R);
+    path  = reachable(start, goal, R);
 \end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{Solving the wolf-goat-cabbage problem.}  
@@ -2795,7 +4062,7 @@ function for constructing terms.  These functions are described next.
 \item If $f$ is the name of a functor and  $l$ is a list, then the function \texttt{makeTerm} can be invoked as
       \\[0.2cm]
       \hspace*{1.3cm}
-      $t \;\mathtt{:=}\; \texttt{makeTerm}(f,l)$.
+      $t \;\mathtt{=}\; \texttt{makeTerm}(f,l)$.
       \\[0.2cm]
       This expression generates a term $t$ such that $f$ is the functor and $l$ is the list of its
       arguments.  Therefore we have
@@ -2825,14 +4092,14 @@ function for constructing terms.  These functions are described next.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    append := procedure(l, x) {
+    append = procedure(l, x) {
         if (fct(l) == "nil") {
             return @cons(x, @nil());  
         }
-        [head, tail] := args(l);
+        [head, tail] = args(l);
         return @cons(head, append(tail, x));
     };
-    l := @cons(1, @cons(2, @cons(3, @nil()))); // corresponds to [1,2,3]
+    l = @cons(1, @cons(2, @cons(3, @nil()))); // corresponds to [1,2,3]
     print(append(l, 4));
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -2901,7 +4168,7 @@ holds afterwards.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    append := procedure(l, x) {
+    append = procedure(l, x) {
         match (l) {
             case @nil():            return @cons(x, @nil());
             case @cons(head, tail): return @cons(head, append(tail, x));
@@ -2961,7 +4228,7 @@ $\textsl{body}_{n+1}$ are executed.
                 ]
     loadLibrary("termUtilities");  
 
-    diff := procedure(t, x) {
+    diff = procedure(t, x) {
         match (t) {
             case a + b :
                 return diff(a, x) + diff(b, x);
@@ -2985,10 +4252,10 @@ $\textsl{body}_{n+1}$ are executed.
                 return 0;  
          }
     };
-    test := procedure(s) {
-        t := parseTerm(s);
-        v := parseTerm("x");
-        d := diff(t, v);
+    test = procedure(s) {
+        t = parseTerm(s);
+        v = parseTerm("x");
+        d = diff(t, v);
         print("d/dx($s$) = $d$\n");
     };
     test("x ** x");
@@ -3034,7 +4301,7 @@ Let us now discuss the implementation of the function \texttt{diff} in more deta
       define a term \texttt{t} as follows:
       \\[0.2cm]
       \hspace*{1.3cm}
-      \texttt{t := @f(1) + @g(2);}
+      \texttt{t = @f(1) + @g(2);}
       \\[0.2cm]
       Then \texttt{t} is a term that is displayed as ``\texttt{@f(1) + @g(2)}'', but the expression
       \texttt{fct(t)} returns the string
@@ -3187,7 +4454,7 @@ will show how to develop efficient algorithms that are more efficient.
 
 \section{Reflection}
 After having completed this chapter, you should be able to answer the following questions.
-\begin{enumerate}[(a)]
+\begin{enumerate}
 \item Which data types are supported in \textsl{Python}?
 \item What are the different methods to define a set in \textsl{Python}?
 \item Do you understand how to construct lists via iterator? 
