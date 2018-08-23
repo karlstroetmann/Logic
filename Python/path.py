@@ -1,5 +1,5 @@
 def findPaths(R):
-    P = R;
+    P = R
     while True:
         oldP = P
         P    = R.union(pathProduct(P, R))

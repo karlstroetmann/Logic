@@ -1,33 +1,33 @@
-def find_path(x, y, R):
+def reachable(start, goal, R):
     """
-    x and y are nodes in a graph, while R is a set of pairs of nodes.
-    R is interpreted as a relation.  The function find_path tries to find
-    a path from x to y.
+    start and goal are nodes in a graph, which is represented by the binary relation R.
+    R is interpreted as a relation.  The function reachable tries to find a path
+    from start to goal.
     """
     P = set()
-    P.add((x,))
+    P.add((start,))
     while True:
-        old_P  = set(P)             # copy the set
-        P     |= path_product(P, R)
-        Found  = set(t for t in P if t[-1] == y)
+        oldP  = P
+        P     = P.union(path_product(P, R))
+        Found = { T for T in P if T[-1] == goal }
         if Found != set({}):
             return Found.pop()
-        if P == old_P:
+        if P == oldP:
             return
             
-def path_product(P, Q):
-    return set( add(x,y) for x in P for y in Q
-                         if x[-1] == y[0] and no_cycle(x, y)
+def path_product(P, R):
+    return set( add(T1, T2) for T1 in P for T2 in R
+                         if T1[-1] == T2[0] and noCycle(T1, T2)
               )
 
-def no_cycle(l1, l2):
-    return len(set(l1) & set(l2)) == 1
+def noCycle(T1, T2):
+    return len(set(T1).intersection(set(T2))) == 1
 
-# The product call add(p,q) computes the sum of the lists p and q.
-# The last point of p has to be the first point of q.
-def add(p, q):
-    return p + (q[-1],)
+# The function call add(T, P) computes the sum of the tuple T and the pair P.
+# The last element of T has to be the first element of P.
+def add(T, P):
+    return T + (P[-1],)
 
-R = set([(1,2), (2, 3), (3, 1), (3, 4), (4, 5)])
-p = find_path(1, 5, R)
-print(p)
+R = { (1, 2), (2, 3), (1, 3), (2, 4), (4, 1), (4, 5) }
+T = reachable(1, 5, R)
+print(T)
