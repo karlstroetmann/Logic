@@ -4,8 +4,7 @@ def reachable(start, goal, R):
     R is interpreted as a relation.  The function reachable tries to find a path
     from start to goal.
     """
-    P = set()
-    P.add((start,))
+    P = { (start,) }
     while True:
         oldP  = P
         P     = P.union(path_product(P, R))
