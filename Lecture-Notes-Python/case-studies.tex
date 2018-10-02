@@ -1,12 +1,32 @@
 \chapter{Applications and Case Studies}
-This chapter contains a number of case studies designed to deepen your understanding of \textsl{Python}.
+This chapter contains a number of case studies designed to deepen our understanding of \textsl{Python}.
 
 \section{Solving Equations via Fixed-Point Algorithms}
-\emph{Fixed-Point iterations} are very important, both in computer science and in mathematics.  As a first
+\blue{Fixed-Point iterations} are very important, both in computer science and in mathematics.  As a first
 example, we show how to solve an equation via a fixed point iteration.  Suppose we want to solve the equation  
 \\[0.2cm]
 \hspace*{1.3cm} $x = \cos(x)$. \\[0.2cm]
-Here, $x$ is a real number that we seek to compute.  A simple approach that works in this case is to use a
+Here, $x$ is a real number that we seek to compute.  Figure \ref{fig:xEqualsCosX.pdf} on page
+\pageref{fig:xEqualsCosX.pdf} shows the graphs of the two functions  
+\\[0.2cm]
+\hspace*{1.3cm}
+$y = x$  \quad and \quad $y = \cos(x)$.
+\\[0.2cm]
+Since the graphs of these functions intersect, it is obvious that there exists a value $x$ such that $x = \cos(x)$. 
+Furthermore, from Figure \ref{fig:xEqualsCosX.pdf} it is obvious that this value of $x$ is bigger than $0.6$
+and less than $0.8$. 
+
+\begin{figure}[!ht]
+  \hspace*{-3.0cm}
+  \epsfig{file=Figures/xEqualsCosX.pdf,scale=0.6}
+
+  \caption{The functions $y = x$ and $y = cos(x)$.}
+  \label{fig:xEqualsCosX.pdf}
+\end{figure}
+
+
+
+A simple approach that lets us compute the exact value of $x$ is to use a
 \href{https://en.wikipedia.org/wiki/Fixed-point_iteration}{fixed-point iteration}.  To this end, we
 define the sequence $\bigl(x_n\bigr)_{n\in\mathbb{N}}$ inductively as follows:
 \\[0.2cm]
@@ -52,7 +72,7 @@ that uses this approach to solve the equation $x = \cos(x)$.
     while abs(x - old_x) >= 4.0E-16:
         old_x = x
         x = math.cos(x)
-        print('{:2d}'.format(i), ': ', x, sep='')
+        print(f'{i} : {x}')
         i += 1
 \end{Verbatim} 
 \vspace*{-0.3cm}
@@ -82,7 +102,8 @@ shows a \textsl{Jupyter} notebook that implements fixed point iteration.
     
     def solve(f, x0):
         """
-        Solve the equation f(x) = x using a fixed point iteration.  x0 is the start value.
+        Solve the equation f(x) = x using a fixed point iteration.
+        x0 is the start value.
         """
         x = x0
         for n in range(10000):  # at most 10000 iterations
@@ -135,8 +156,8 @@ is called a \blue{contraction mapping} iff
 $|f(x) - f(y)| < |x - y|$ \quad for all $x,y \in \mathbb{R}$.
 \\[0.2cm]
 This notion will be discussed in more detail in the lecture on 
-\href{https://github.com/karlstroetmann/Analysis/blob/master/Script/analysis.pdf}{differential
-  calculus} in the second semester. \eox 
+\href{https://github.com/karlstroetmann/Analysis/blob/master/Script/analysis.pdf}{analysis} in the second
+semester. \eox  
 
 \section{Case Study: Computation of Poker Probabilities}
 In this short section we are going to show how to compute probabilities for the
