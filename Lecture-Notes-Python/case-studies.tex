@@ -842,19 +842,18 @@ without either the goat or the cabbage being eaten?
 In order to compute a schedule, we first have to model the problem.  The various \blue{states} of the problem will
 be regarded as \blue{vertices} of a graph and this graph will be represented as a binary relation.
 To this end we define the set
-\\[0.2cm]
-\hspace*{1.3cm} 
-$\texttt{All} = \{ \squote{farmer}, \squote{wolf}, \squote{goat},\squote{cabbage} \}$.
-\\[0.2cm]
+\begin{verbatim}
+  All = {'farmer', 'wolf, 'goat', 'cabbage'}
+\end{verbatim}
 Every node will be represented as a subset \texttt{S} of the set \texttt{All}.  The idea is that the set \texttt{S}
 specifies those objects that are on the left side of the river.  We assume that initially the farmer
 is on the left side of the river. 
 Therefore, the set of all possible states can be defined as the set
 \begin{verbatim}
-        P = { S : S in 2 ** All | !problem(S) && !problem(All - S) };
+  States = {S for S in power(All) if not problem(S) and not problem(All-S)}
 \end{verbatim}
 Here, we have used the procedure \texttt{problem} to check whether a given set \texttt{S} has a problem. 
-Note that since \texttt{S} is the set of objects on the left side, the expression $\texttt{All - S}$
+Note that since \texttt{S} is the set of objects on the left side, the expression $\texttt{All-S}$
 computes the set of objects on the right side of the river.
 
 Next, a set \texttt{S} of objects has a problem if both of the following conditions
@@ -864,12 +863,11 @@ are satisfied:
 \item either \texttt{S} contains both the goat and the cabbage or \texttt{S} contains both the wolf and the goat.
 \end{enumerate}
 Therefore, we can implement the function \texttt{problem} as follows:
-
 \begin{verbatim}
-    problem = procedure(S) {
-        return !("farmer" in S)                                     && 
-               ({"goat", "cabbage"} <= S || {"wolf", "goat"} <= S);
-    };
+  def problem(S):
+      return ("farmer" not in S) and             \
+             (("goat" in S and "cabbage" in S) or   # goat eats cabbage
+              ("wolf" in S and "goat"    in S)   )  # wolf eats goat
 \end{verbatim}
 We proceed to compute the relation \texttt{R} that contains all possible transitions between
 different states.  We will compute \texttt{R} using the formula:
@@ -881,9 +879,9 @@ Here \texttt{R1} describes the transitions that result from the farmer crossing 
 to right, while \texttt{R2} describes the transitions that result from the farmer crossing the river
 from right to left.  We can define the relation \texttt{R1} as follows:
 \begin{verbatim}
-    R1  = { [S, S - B]: S in P, B in 2 ** S
-                       | S - B in P && "farmer" in B && #B <= 2
-           };
+  R1 = { (S, S-B) for S in States for B in power(S)
+                  if S-B in States and 'farmer' in B and len(B) <= 2
+       }
 \end{verbatim}
 Let us explain this definition in detail:
 \begin{enumerate}
@@ -895,34 +893,49 @@ Let us explain this definition in detail:
       of \texttt{S}. 
 \item Then  \texttt{S-B} is the set of objects that are left on the left side of the river after
       the boat has crossed.  Of course, the new state \texttt{S-B} has to be a state that does not
-      have a problem.  Therefore, we check that \texttt{S-B} is an element of \texttt{P}.
-\item Furthermore, the farmer has to be in the boat.  This explains the condition 
+      have a problem.  Therefore, we check that \texttt{S-B} is an element of \texttt{States}.
+\item Furthermore, the farmer has to be inside the boat.  This explains the condition 
       \\[0.2cm]
       \hspace*{1.3cm}
       \texttt{\symbol{39}farmer\symbol{39} in B}.
 \item Finally, the boat can only have two passengers.  Therefore, we have added the condition
       \\[0.2cm]
       \hspace*{1.3cm}
-      \texttt{\#B <= 2}.
+      \texttt{len(B) <= 2}.
 \end{enumerate}
 Next, we have to define the relation \texttt{R2}.  However, as crossing the river from right to left
-is just the reverse of crossing the river from left to right, \texttt{R2} is just the inverse of
+is just the reverse of crossing the river from left to right, \texttt{R2} is just the \blue{inverse} of
 \texttt{R1}.   Hence we define:
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{R2  = \{ [y, x] : [x, y] in R1 \};}
-\\[0.2cm]
+\begin{verbatim}
+  R2 = { (S2, S1) for (S1, S2) in R1 }
+\end{verbatim}
+Next, the relation \texttt{R} is the union of \texttt{R1} and \texttt{R2}:
+\begin{verbatim}
+  R = R1.union(R2)
+\end{verbatim}
 Finally, the start state has all objects on the left side.  Therefore, we have
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{start = All;}
-\\[0.2cm]
+\begin{verbatim}
+  start = All
+\end{verbatim}
 In the end, all objects have to be on the right side of the river.  That means that nothing is left
 on the left side.  Therefore, we define
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{goal = \{\};}
-\\[0.2cm]
+\begin{verbatim}
+  goal = {}
+\end{verbatim}
+
+
+\begin{figure}[h]
+  \centering
+
+  \epsfig{file=Figures/wolf-goat-cabbage, scale=0.4}
+
+  \caption{The relation \texttt{R} shown as a directed graph.}
+  \label{fig:wolf-goat-cabbage.pdf}
+\end{figure}
+
+
+
+
 Figure \ref{fig:wolf-ziege} on page \pageref{fig:wolf-ziege} shows the program
 \href{https://github.com/karlstroetmann/Logik/blob/master/Python/wolf-goat-cabbage.py}{\texttt{wolf-goat-cabbage.py}}
 that combines the statements shown so far.  The solution computed by this program is shown in Figure
@@ -936,26 +949,23 @@ that combines the statements shown so far.  The solution computed by this progra
                   labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
+                  xleftmargin   = 0.3cm,
+                  xrightmargin  = 0.3cm,
                 ]
-    problem = procedure(S) {
-        return !("farmer" in S)                                     && 
-               ({"goat", "cabbage"} <= S || {"wolf", "goat"} <= S);
-    };
+    def problem(S):
+        return ('farmer' not in S) and             \
+               (('goat' in S and 'cabbage' in S) or   # goat eats cabbage
+                ('wolf' in S and 'goat'    in S)   )  # wolf eats goat
     
-    All = { "farmer", "wolf", "goat", "cabbage" };
-    P   = { S : S in 2 ** All | !problem(S) && !problem(All - S) };
-    R1  = { [S, S - B]: S in P, B in 2 ** S
-                       | S - B in P && "farmer" in B && #B <= 2
-           };
-    R2  = { [y, x] : [x, y] in R1 };
-    R   = R1 + R2;
-    
-    start = All;
-    goal  = {};
-    
-    path  = reachable(start, goal, R);
+    All   = frozenset( ['farmer', 'wolf', 'goat', 'cabbage'] )
+    R1    = { (S, S - B) for S in States for B in power(S)
+                         if S - B in States and 'farmer' in B and len(B) <= 2
+            }
+    R2    = { (S2, S1) for (S1, S2) in R1 }
+    R     = R1.union(R2)
+    start = All
+    goal  = frozenset()
+    Path  = findPath(start, goal, R)
 \end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{Solving the wolf-goat-cabbage problem.}  
@@ -994,6 +1004,8 @@ that combines the statements shown so far.  The solution computed by this progra
 \caption{A schedule for the agricultural economist.}  
 \label{fig:wolf-ziege-solution}
 \end{figure}
+
+
 
 
 \section{Terms and Matching}
