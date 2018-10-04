@@ -1004,343 +1004,77 @@ that combines the statements shown so far.  The solution computed by this progra
 \caption{A schedule for the agricultural economist.}  
 \label{fig:wolf-ziege-solution}
 \end{figure}
+\pagebreak
+\vspace*{\fill}
 
 
 
-
-\section{Terms and Matching}
-So far we have seen the basic data structures of \setlx\ like numbers, string, sets, and lists.
-There is one more data structure that is supported by \setlx.  This is the data structure of
-\colorbox{amethyst}{\blue{terms}}.  
-This data structure is especially useful when we develop programs that deal with mathematical formulas.
-For example, in this section we will develop a program that reads a string like 
+\section{Symbolic Differentiation}
+In this section we will develop a program that reads an arithmetic expression like 
 \\[0.2cm]
 \hspace*{1.3cm}
-``\texttt{x * exp(x)}'',
+\texttt{"x * exp(x)"},
 \\[0.2cm]
 interprets this string as describing the real valued function 
 \\[0.2cm]
 \hspace*{1.3cm}
 $x \mapsto x \cdot \exp(x)$, 
 \\[0.2cm]
-and then takes the derivative of this function with respect to the variable $x$.  This program is
-easy to implement if real valued functions are represented as terms.  The reason is that \setlx\ provides 
-\colorbox{amethyst}{\blue{matching}} for terms.  We will define this notion later.  Matching
-is one of the main ingredients of the programming language \href{https://en.wikipedia.org/wiki/Prolog}{Prolog}.
-This programming language was quite popular in artificial intelligence during the eighties and has
-inspired the matching that is available in \textsl{Python}.
-
-
-\subsection{Constructing and Manipulating Terms}
-In order to build terms, we first need \colorbox{amethyst}{\blue{functors}}.  It is important not to confuse functors with
-function symbols.  Therefore, functors have to be preceded by the character  
-``\texttt{@}''.
-For example, the following strings can be used as functors:
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{@f}, \quad \texttt{@FabcXYZ}, \quad \texttt{@sum}, \quad \texttt{@Hugo\_}.
-\\[0.2cm]
-However, in the expression ``\texttt{@f}'', the string ``\texttt{f}'' is the functor.  The
-character ``\texttt{@}'' is only used as an escape character that tells us that ``\texttt{f}'' is
-not a function symbol but rather a functor.  Next, we define \colorbox{amethyst}{\blue{terms}}.  If $F$ is a functor and 
-$t_1$, $t_2$, $\cdots$, are any values, i.e.~they could be number, strings, lists, sets, or terms
-themselves, then
-\\[0.2cm]
-\hspace*{1.3cm}
-$\texttt{@}F(t_1, t_2, \cdots, t_n)$
-\\[0.2cm]
-is a term.  Syntactically, terms look very similar to function calls.  The only difference between a function call
-and a term is the following: 
+and then takes the derivative of this function with respect to the variable $x$.  In order to specify the input
+of this program more clearly, we first define the notion of an \blue{arithmetic expression} inductively.
 \begin{enumerate}
-\item A function call starts with a function symbol. 
-\item A term starts with a functor. 
+\item Every number $c \in \mathbb{R}$ is an arithmetic expression.
+\item Every variable $v$ is an arithmetic expression.
+\item If $s$ and $t$ are arithmetic expressions, then
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $s + t$, \quad $s - t$, \quad $s * t$, \quad $s / t$, \quad and \quad $s \,\mathtt{**}\, t$
+      \\[0.2cm]
+      are arithmetic expressions.  Here $s \,\mathtt{**}\, t$ is interpreted as $s^t$.
+      
+\item If $e$ is an arithmetic expression, then both
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\exp(e)$ \quad and \quad $\ln(e)$
+      \\[0.2cm]
+      are arithmetic expressions.
 \end{enumerate}
-
-
-\examplesEng
+We want do implement a function \texttt{diff} that takes two arguments:
 \begin{enumerate}
-\item \texttt{@Address(\symbol{39}Coblitzallee 1-9\symbol{39}, 68163, \symbol{39}Mannheim\symbol{39})}
-
-      is a term that represents an address.
-\item \texttt{@product(@variable(\symbol{39}x\symbol{39}), @exp(@variable(\symbol{39}x\symbol{39})))}
-
-      is a term that represents the  function $x \mapsto x \cdot \exp(x)$.  
-      \eox
+\item The first argument \texttt{expr} represents an arithmetic expression.
+\item The second argument \texttt{var} is the name of a variable.
 \end{enumerate}
-At this point you might ask how terms are evaluated.  The answer is that terms
-\colorbox{amethyst}{are not evaluated!}  
-Terms are used to represent data in a way that is both concise and readable.  Hence, terms are values like
-numbers, sets or strings.  As terms are values, they don't need to be evaluated.
-
-Let us demonstrate a very simple application of terms.  Imagine that \setlx\ wouldn't provide lists as a native data
-type.  Then, we could implement lists via terms.  First, we would use a functor to represent the empty list.
-Let us choose the functor \texttt{nil} for this purpose.  Hence, we have
+The function call \texttt{diff(expr, var)} will then compute the derivative of \texttt{expr} with respect to the variable \texttt{var}.  For example, the function call \texttt{diff("x*exp(x)", "x")} will compute the output
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{@nil()} \;\widehat{=}\; \texttt{[]}$,
+"\texttt{1*exp(x) + x*exp(x)}"
 \\[0.2cm]
-where we read the symbol ``$\widehat{=}$'' as ``corresponds to''.
-Note that the parentheses after the functor  \texttt{nil} are \colorbox{amethyst}{necessary!}  Next, in order to represent
-a list with first element $x$ and a list $r$ of remaining elements we use the functor \texttt{cons}.
-Then we have the correspondence
-\\[0.2cm]
-\hspace*{1.3cm}
-$\texttt{@cons}(x, r) \;\widehat{=}\; \texttt{[}x\texttt{]} + r$. 
-\\[0.2cm]
-Concretely, the list \texttt{[1,2,3]} is represented as the term
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{@cons(1, @cons(2, @cons(3, @nil())))}.
-\\[0.2cm]
-The programming language \textsl{Prolog} represents lists internally in a similar form.
-
-\setlx\ provides two functions that allow us to extract the components of a term.  Furthermore, there is a
-function for constructing terms.  These functions are described next.
-\begin{enumerate}
-\item The function \texttt{fct} returns the functor of a given term.
-      If  $t$ is a term of the form $\at F(s_1,\cdots,s_n)$, then the result returned by the expression
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\texttt{fct}(\at F(s_1,\cdots,s_n))$
-      \\[0.2cm]
-      is the functor $F$ of this term.  For example the expression
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{fct(@cons(1, @cons(2, @cons(3, @nil()))))}
-      \\[0.2cm]
-      returns the string  \texttt{\symbol{39}cons\symbol{39}} as its result.
-\item The function \texttt{args} returns the arguments of a term.
-      If  $t$ is a term of the form $\at F(s_1,\cdots,s_n)$, then
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\mathtt{args}(\at F(s_1,\cdots,s_n))$
-      \\[0.2cm]
-      returns the list $[s_1, \cdots, s_n]$. For example, the expression
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{args(\at cons(1, \at cons(2, \at cons(3, \at nil()))))}
-      \\[0.2cm]
-      is evaluated as
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{[1, \at cons(2, \at cons(3, \at nil()))]}.
-\item If $f$ is the name of a functor and  $l$ is a list, then the function \texttt{makeTerm} can be invoked as
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $t \;\mathtt{=}\; \texttt{makeTerm}(f,l)$.
-      \\[0.2cm]
-      This expression generates a term $t$ such that $f$ is the functor and $l$ is the list of its
-      arguments.  Therefore we have
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\mathtt{fct}(t) = f$  \quad und \quad $\mathtt{args}(t) = l$.
-      \\[0.2cm]
-      For example, the expression
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{makeTerm(\symbol{39}cons\symbol{39}, [ 1, \at nil() ])}
-      \\[0.2cm]
-      returns the result
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{\at cons(1, \at nil())}.
-\end{enumerate}
-
-\begin{figure}[!ht]
-\centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  firstnumber   = 1,
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
-                ]
-    append = procedure(l, x) {
-        if (fct(l) == "nil") {
-            return @cons(x, @nil());  
-        }
-        [head, tail] = args(l);
-        return @cons(head, append(tail, x));
-    };
-    l = @cons(1, @cons(2, @cons(3, @nil()))); // corresponds to [1,2,3]
-    print(append(l, 4));
-\end{Verbatim}
-\vspace*{-0.3cm}
-\caption{Appending an element at the end of a list.}
-\label{fig:append.py}
-\end{figure}
-
-Figure \ref{fig:append.py} on page \pageref{fig:append.py} shows the
-program \href{https://github.com/karlstroetmann/Logik/blob/master/Python/append.py}{\texttt{append.py}}.
-This program implements the function \texttt{append}.  As its first arguments, this function takes a list \texttt{l}
-that is represented as a term.  As its second argument,  it takes an object \texttt{x}.  The purpose of the expression
+because we have:
+$$ \frac{\mathrm{d}\;}{\mathrm{d}x} \bigl( x \cdot \mathrm{e}^x \bigr) = 1 \cdot x + x \cdot \mathrm{e}^x $$
+It would be very tedious to \blue{represent} arithmetic expressions as strings.  Instead, we will represent
+arithmetic expressions as \blue{nested tuples}.  The notion of a \emph{nested tuple} is defined inductively:
+\begin{itemize}
+\item $\langle x_1, x_2, \cdots, x_n \rangle$ is a nested tuple if each of the components $x_i$ is either a
+      number, a string, or a nested tuple.
+\end{itemize}
+For example, the arithmetic expression "\texttt{x*exp(x)}" is represented as the nested tuple
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{append}(\texttt{l}, \texttt{x})$
+$\langle\texttt{"}*\texttt{"}, \texttt{"}x\texttt{"}, \langle \texttt{"}\mathtt{exp}\texttt{"}, \texttt{"}x\texttt{"} \rangle\rangle$.
 \\[0.2cm]
-is to append the object \texttt{x} at the end of the list \texttt{l}.  The implementation of the function \texttt{append}
-assumes that the list \texttt{l} is represented as a term using the functors ``\texttt{cons}'' and ``\texttt{nil}''.
-\begin{enumerate}
-\item Line 2 checks whether the list  \texttt{l} is empty. The list \texttt{l} is empty iff we have
-      $\texttt{l} = \texttt{\at nil()}$.  In the program we merely check the functor of the term \texttt{l}.  If the name of this functor is
-      \texttt{\symbol{39}nil\symbol{39}}, then \texttt{l} is the empty list.
-\item If \texttt{l} is not empty, then it must be a term of the form
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\texttt{l} = \texttt{\at cons(\textsl{head}, \textsl{tail})}$.
-      \\[0.2cm]     
-      Then, conceptually \texttt{head} is the first element of the list \texttt{l} and \texttt{tail} is the list of
-      the remaining elements.  In this case, we need to recursively append \texttt{t} at the end of the list \texttt{tail}.
-      Finally, the first element of the list \texttt{l}, which is called \texttt{head} in line 5, needs
-      to be prepended to the list that is returned from the recursive invocation of \texttt{append}.
-      This is done in line 6 by constructing the term 
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{@cons(head, append(tail, x))}.
-\end{enumerate}
-
-\subsection{Matching}
-It would be quite tedious if the functions \texttt{fct} and \texttt{args} were the only means to extract the
-components of a term.  Figure \ref{fig:append-match.py} on page \pageref{fig:append-match.py}
-shows the program
-\href{https://github.com/karlstroetmann/Logik/blob/master/Python/append-match.py}{\texttt{append-match.py}}, 
-that uses \blue{matching} to implement the function \texttt{append}.  
-Line 3 checks, whether the list  \texttt{l} is empty, i.e.~whether \texttt{l} is identical to the term 
-\texttt{@nil()}.  Line 4 is more interesting, as it combines two actions.
-\begin{enumerate}
-\item It checks, whether the list \texttt{l} is a term that starts with the functor \texttt{cons}.
-\item If \texttt{l} does indeed starts with the functor \texttt{cons}, the arguments of this functor are
-      extracted and assigned to the variables \texttt{head} and \texttt{tail}.
-\end{enumerate}
-Hence, if the \texttt{match} statement in line 4 is successful, the equation
-\\[0.2cm]
-\hspace*{1.3cm}
-$\texttt{l} = \texttt{@cons(head, tail)}$
-\\[0.2cm]
-holds afterwards.
-
-
-\begin{figure}[!ht]
-\centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  firstnumber   = 1,
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
-                ]
-    append = procedure(l, x) {
-        match (l) {
-            case @nil():            return @cons(x, @nil());
-            case @cons(head, tail): return @cons(head, append(tail, x));
-        }
-    };
-\end{Verbatim}
-\vspace*{-0.3cm}
-\caption{Implementing \texttt{append} using a \texttt{match} statement.}
-\label{fig:append-match.py}
-\end{figure}
-In general, a \texttt{match} statement has the structure that is shown in Figure \ref{fig:match}.
-Here, $e$ is any expression that yields a term when evaluated.  The expressions 
-$t_1$, $\cdots$, $t_n$ are so called \blue{patterns} that contain variables.  When the \texttt{match} statement
-is executed, \textsl{Python} tries to bind the variables occurring in the pattern $t_1$ such that the resulting
-expression is equal to $e$.  If this succeeds, the statements in  $\textsl{body}_1$ are executed and the
-execution of the \texttt{match} statement ends.
-Otherwise, the patterns $t_2$, $\cdots$, $t_n$ are tried one by one.  If the pattern $t_i$ is successfully
-matched to $e$, the statements in $\textsl{body}_i$ are executed and the execution of the \texttt{match}
-statement end.  If none of the patterns $t_1$, $\cdots$, $t_n$ can be matched with $e$, the statements in
-$\textsl{body}_{n+1}$ are executed.
-
-
-\begin{figure}[!ht]
-  \centering
-\begin{Verbatim}[ codes         = {\catcode`_=8\catcode`^=7},
-                  frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  commandchars  = \\\{\},
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm
-                ]
-      \texttt{\underline{match} (\(e\)) \{}
-          \texttt{\underline{case}} \(t_1\) : \textsl{body}\(_1\) 
-          \vdots
-          \texttt{\underline{case}} \(t_n\) : \textsl{body}\(_n\)
-          \texttt{\underline{default}:} \textsl{body}\(_{n+1}\)
-      \texttt{\}}
-\end{Verbatim}
-\vspace*{-0.3cm}
-\caption{Struktur eines \texttt{Match}-Blocks}  \label{fig:match}
-\end{figure} 
-
-
-\begin{figure}[!ht]
-\centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  firstnumber   = 1,
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
-                ]
-    loadLibrary("termUtilities");  
-
-    diff = procedure(t, x) {
-        match (t) {
-            case a + b :
-                return diff(a, x) + diff(b, x);
-            case a - b :
-                return diff(a, x) - diff(b, x);
-            case a * b :
-                return diff(a, x) * b + a * diff(b, x);
-            case a / b :
-                return ( diff(a, x) * b - a * diff(b, x) ) / b * b;
-            case a ** b :
-                return diff( @exp(b * @ln(a)), x);
-            case @ln(a) :
-                return diff(a, x) / a;
-            case @exp(a) :
-                return diff(a, x) * @exp(a);
-            case v | v == x :
-                return 1;
-            case y | isVariable(y) :  // must be different from x
-                return 0;
-            case n | isNumber(n):   
-                return 0;  
-         }
-    };
-    test = procedure(s) {
-        t = parseTerm(s);
-        v = parseTerm("x");
-        d = diff(t, v);
-        print("d/dx($s$) = $d$\n");
-    };
-    test("x ** x");
-\end{Verbatim}
-\vspace*{-0.3cm}
-\caption{A function to perform symbolic differentiation.}
-\label{fig:diff.py}
-\end{figure}
+In order to be able to convert string into nested tuples, we need a \blue{parser}.  A parser is a program that
+takes a string as input and transforms this string into a nested tuple, which is then returned as a result.
+I have implemented a parser in the file "\texttt{exprParser.py}".  The details of the implementation of this
+parser will be discussed in the lecture on algorithms.
 
 \noindent
 We close this section by showing an example that demonstrates the power of matching.
 The function \texttt{diff} that is shown in Figure \ref{fig:diff.py} on page \pageref{fig:diff.py} is part
 of the program
 \href{https://github.com/karlstroetmann/Logik/blob/master/Python/diff.py}{\texttt{diff.py}}.
-This function is called with two arguments.
-\begin{enumerate}
-\item The first argument \texttt{t} is a term that represents an arithmetical expression.
-\item The second argument \texttt{x} is a term that represents a variable.
-\end{enumerate}
-The function \texttt{diff} interprets its argument \texttt{t} as a function of the variable
+This function is called with one argument:
+The argument \texttt{e} is an arithmetic expression.
+The function \texttt{diff} interprets its argument \texttt{e} as a function of the variable
 \texttt{x}.  We take the \href{https://en.wikipedia.org/wiki/Derivative}{derivative} of this
 function with respect to the variable \texttt{x}.  For example, in order to compute the derivative of
 the function
@@ -1351,171 +1085,151 @@ $x \mapsto x^x$,
 we can call the function  \texttt{diff} as follows:
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{diff(parseTerm(\symbol{39}x ** x\symbol{39}), parseTerm(\symbol{39}x\symbol{39}));}
+\texttt{diff("x ** x")}.
 \\[0.2cm]
-Here, the function \texttt{parseTerm} is a function that is defined in the library \texttt{termUtilities}.
-This function takes a string as input and converts this string into a term.  In order to use the function
-\texttt{parseTerm}, we have to load the library that defines it.  This happens in line 1 of Figure
-\ref{fig:diff.py}. 
-
 Let us now discuss the implementation of the function \texttt{diff} in more detail.  
 \begin{enumerate}
-\item Line 5 makes use of the fact that the operator ``\texttt{+}'' can be applied to terms.
-      The result is a term that has the functor ``\texttt{@@@sum}''.  However, this functor is hidden from the
-      user and becomes only visible when we use the function \texttt{fct} to expose it.  For example, we can
-      define a term \texttt{t} as follows:
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{t = @f(1) + @g(2);}
-      \\[0.2cm]
-      Then \texttt{t} is a term that is displayed as ``\texttt{@f(1) + @g(2)}'', but the expression
-      \texttt{fct(t)} returns the string
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{"@@@sum"}.
-      \\[0.2cm]
-      There is no need to remember that the internal representation of the operator ``\texttt{+}'' as a functor
-      is given as the string ``\texttt{@@@sum}'''.  The only thing that you have to keep in mind is
-      the fact, that the operator ``\texttt{+}'' can be applied to terms.  The same is true for the
-      other arithmetical operators ``\texttt{+}'', ``\texttt{-}'', ``\texttt{*}'', ``\texttt{/}'',
-      ``\texttt{\symbol{37}}'', and ``\texttt{**}''.  Similarly, the logical operators
-      ``\texttt{\&\&}'', ``\texttt{||}'', ``\texttt{!}'', ``\texttt{=>}'', and ``\texttt{<==>}'' can
-      be used as functors.  Note, however, that the relational operators ``\texttt{<}'',
-      ``\texttt{>}'', ``\texttt{<=}'', ``\texttt{>=}'' \colorbox{amethyst}{can not be used} to
-      combine terms.  Finally, the operators ``\texttt{==}'' and ``\texttt{!=}'' can be used to
-      check whether two terms are identical or different, respectively.  Hence, while these
-      operators can be applied to terms, they return a Boolean value, not a term!
-      
-      As the operator ``\texttt{+}'' can be used as a functor, it can also be used in a pattern.  The
-      pattern 
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{a + b}
-      \\[0.2cm]
-      matches any term that can be written as a sum.  The derivative of a sum is computed by summing the
-      derivatives of the components of the sum, i.e.~we have
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\ds \diff\bigl(f(x) + g(x)\bigr) = \diff f(x) + \diff g(x)$.
-      \\[0.2cm]
-      Therefore, the case where the term \texttt{t} has the form \texttt{a + b} can be dealt with by
-      recursively computing the derivatives of \texttt{a} and \texttt{b} and adding them.  This
-      happens in line 6.
-\item Line 7 deals with the case where \texttt{t} is a difference.  Mathematically, the rule to take the
-      derivative of a difference is
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\ds \diff\bigl(f(x) - g(x)\bigr) = \diff f(x) - \diff g(x)$.
-      \\[0.2cm]
-      This rule is implemented in line 8.
-\item Line 9 deals with the case where \texttt{t} is a product.  The 
-      \href{https://en.wikipedia.org/wiki/Product_rule}{product rule} is
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\ds \diff\bigl(f(x) \cdot g(x)\bigr) = \left(\diff f(x)\right)\cdot g(x) + f(x) \cdot \left(\diff g(x)\right)$.
-      \\[0.2cm]
-      This rule is implemented in line 10.
-\item Line 11 deals with the case where \texttt{t} is a quotient.  The
-      \href{https://en.wikipedia.org/wiki/Quotient_rule}{quotient rule} is 
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\ds \diff\left(\frac{f(x)}{g(x)}\right) = \frac{\left(\diff f(x)\right)\cdot g(x) - f(x)
-        \cdot \left(\diff g(x)\right)}{g(x) \cdot g(x)}$.
-      \\[0.2cm]
-      This rule is implemented in line 12.
-\item Line 13 deals with the case where \texttt{t} is a power.  Now in order to take the derivative of an
+\item The lines 3 - 6 implement the rule: 
+      $$\frac{\mathrm{d}\;}{\mathrm{d}x}\bigl(f(x) + g(x)\bigr) = \frac{\mathrm{d}\;}{\mathrm{d}x} f(x) + \frac{\mathrm{d}\;}{\mathrm{d}x} g(x)$$
+\item Line 7 - 10 implement the rule:
+      $$\frac{\mathrm{d}\;}{\mathrm{d}x}\bigl(f(x) - g(x)\bigr) = \frac{\mathrm{d}\;}{\mathrm{d}x} f(x) - \frac{\mathrm{d}\;}{\mathrm{d}x} g(x)$$      
+\item Line 11 - 14 deals with the case where \texttt{e} is a product.  The 
+      \href{https://en.wikipedia.org/wiki/Product\_rule}{product rule} is      
+      $$ \frac{\mathrm{d}\;}{\mathrm{d}x}\bigl(f(x) \cdot g(x)\bigr) = \left(\frac{\mathrm{d}\;}{\mathrm{d}x} f(x)\right)\cdot g(x) + f(x) \cdot \left(\frac{\mathrm{d}\;}{\mathrm{d}x} g(x)\right)
+      $$
+\item Line 15 - 17 deals with the case where \texttt{e} is a quotient.  The
+      \href{https://en.wikipedia.org/wiki/Quotient\_rule}{quotient rule} is
+      $$ \frac{\mathrm{d}\;}{\mathrm{d}x}\left(\frac{f(x)}{g(x)}\right) = 
+         \frac{\displaystyle\left(\frac{\mathrm{d}\;}{\mathrm{d}x} f(x)\right)\cdot g(x) - 
+         f(x) \cdot \left(\frac{\mathrm{d}\;}{\mathrm{d}x} g(x)\right)}{g(x) \cdot g(x)}
+      $$      
+\item Line 19 - 21 deals with the case where \texttt{e} is a power.  Now in order to take the derivative of an
       expression of the form
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\ds f(x)^{g(x)}$
-      \\[0.2cm]
-      we first need to rewrite it using the following trick:
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\ds f(x)^{g(x)} = \exp\bigl(\ln\bigl(f(x)^{g(x)}\bigr)\bigr) = \exp\bigl(g(x) \cdot \ln(f(x))\bigr)$,
-      \\[0.2cm]
+      $$  f(x)^{g(x)} $$
+      we first need to rewrite this expression using the following trick:
+      $$ f(x)^{g(x)} = \exp\bigl(\ln\bigl(f(x)^{g(x)}\bigr)\bigr) = \exp\bigl(g(x) \cdot \ln(f(x))\bigr) $$
       Then, we can recursively call \texttt{diff} for this expression.  This works, because the function
       \texttt{diff} can deal with both the exponential function $x \mapsto \exp(x)$ and with the natural
-      logarithm $x \mapsto \ln(x)$.  This rewriting is done in line 14.
-\item Line 15 deals with the case where \texttt{t} has the form $\ln\bigl(f(x)\bigr)$.  
+      logarithm $x \mapsto \ln(x)$.  This rewriting is done in line 21.      
+\item Line 22-25 deals with the case where \texttt{e} has the form 
+      $$\ln\bigl(f(x)\bigr)$$  
       In order to take the derivative of this expression, we first need to know the derivative of the natural
-      logarithm.  This derivative is given as 
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\ds \diff \ln(x) = \frac{1}{x}$.
-      \\[0.2cm]
-      Then, using the \href{https://en.wikipedia.org/wiki/Chain_rule}{chain rule} we have that
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\ds \diff \ln\bigl(f(x)\bigr) = \frac{\diff f(x)}{f(x)}$.
-      \\[0.2cm]
-      This rule is used in line 16.
-\item Line 17 deals with the case where \texttt{t} has the form $\exp\bigl(f(x)\bigr)$.  
+      logarithm.  This derivative is given as     
+      $$ \frac{\mathrm{d}\;}{\mathrm{d}x} \ln(x) = \frac{1}{x}$$
+      Then, using the \href{https://en.wikipedia.org/wiki/Chain\_rule}{chain rule} we have that
+      $$ \frac{\mathrm{d}\;}{\mathrm{d}x} \ln\bigl(f(x)\bigr) = \frac{\frac{\mathrm{d}\;}{\mathrm{d}x} f(x)}{f(x)}$$     
+\item Line 26 - 29 deals with the case where \texttt{e} has the form $\exp\bigl(f(x)\bigr)$.  
       In order to take the derivative of this expression, we first need to know the derivative of the 
-      \href{https://en.wikipedia.org/wiki/Exponential_function}{exponential function}.  This derivative is given as 
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\ds \diff \exp(x) = \exp(x)$.
-      \\[0.2cm]
-      Then, using the \href{https://en.wikipedia.org/wiki/Chain_rule}{chain rule} we have that
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\ds \diff \exp\bigl(f(x)\bigr) = \left(\diff f(x)\right) \cdot \exp\bigl(f(x)\bigr)$.
-      \\[0.2cm]
-      This rule is used in line 18.
-\item Line 19 deals with the case where \texttt{t} is a variable and happens to be the same variable as
-      \texttt{x}.  This is checked using the condition
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{v == x}
-      \\[0.2cm]
-      that is attached using the \blue{condition operator} ``\texttt{|}''.   Since we have
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\ds \frac{\mathrm{d}x}{\mathrm{d}x} = 1$,
-      \\[0.2cm]
-      the function \texttt{diff} returns \texttt{1} in this case.
-\item Line 21 deals with the case where \texttt{t} is a variable.  As line 19 has already covered the case that
-      \texttt{t} and \texttt{x} are the same variable, in this case the variable \texttt{x} must be different
-      from \texttt{t}.  Therefore, with respect to \texttt{x} the term \texttt{t} can be seen as a constant and
-      the derivative is \texttt{0}.
-\item Line 23 covers the case where \texttt{t} is a number.  Note how we call \texttt{isNumber}
-      after the condition operator ``\texttt{|}''.  As a number is a constant, the derivative is \texttt{0}.
-\item Line 27 defines the procedure \texttt{test}.  This procedure takes a string \texttt{s} and transforms it
-      into the term \texttt{t} via the function \texttt{parseTerm} defined in the library
-      \texttt{termUtilities}.  Similarly, the string \texttt{"x"} is transformed into the term \texttt{v} that
-      represents this variable.\footnote{Internally, this variable is represented as the term
-      ``\texttt{@@@variable("x")}''.}
-      Line 30 call the function \texttt{diff} using the term \texttt{t} and the variable \texttt{v}
-      as arguments.  The resulting term is printed in line 31.
-\item Line 33 shows how the function \texttt{test} can be called to compute the derivative $\diff x^x$.
+      \href{https://en.wikipedia.org/wiki/Exponential\_function}{exponential function}.  
+      This derivative is given as 
+      $$ \frac{\mathrm{d}\;}{\mathrm{d}x} \exp(x) = \exp(x)$$    
+      Then, using the \href{https://en.wikipedia.org/wiki/Chain\_rule}{chain rule} we have that
+      $$\frac{\mathrm{d}\;}{\mathrm{d}x} \exp\bigl(f(x)\bigr) = \left(\frac{\mathrm{d}\;}{\mathrm{d}x} f(x)\right) \cdot \exp\bigl(f(x)\bigr) $$
+\item Line 30-31 deals with the case where \texttt{e} is a variable and happens to be the same variable as
+      \texttt{x}.  This is checked using the condition    
+      \texttt{e == x}.  As we have
+      $$\frac{\mathrm{d}x}{\mathrm{d}x} = 1,$$
+      the function \texttt{diff} returns \texttt{1} in this case.  
+\item Otherwise, the expression is assumed to be a constant and hence we return 0.
 \end{enumerate}
 
 
-\section{Outlook}
-This introductory chapter covers only a small part of the programming language  \textsl{Python}.  There are some
-additional features of \setlx\ that will be discussed in the following chapters as we need them.
-Furthermore,  \textsl{Python} is discussed in depth in the tutorial that can be found at the following address:
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    def diff(e):
+        "differentiate the expressions e with respect to the variable x"
+        if e[0] == '+':
+            f , g  = e[1:]
+            fs, gs = diff(f), diff(g)
+            return ('+', fs, gs)
+        if e[0] == '-':
+            f , g  = e[1:]
+            fs, gs = diff(f), diff(g)
+            return ('-', fs, gs)
+        if e[0] == '*':
+            f , g  = e[1:]
+            fs, gs = diff(f), diff(g)
+            return ('+', ('*', fs, g), ('*', f, gs))
+        if e[0] == '/':
+            f , g  = e[1:]
+            fs, gs = diff(f), diff(g)
+            return ('/', ('-', ('*', fs, g), ('*', f, gs)), ('*', g, g))
+        if e[0] == '**':
+            f , g  = e[1:]
+            return diff(('exp', ('*', g, ('ln', f))))
+        if e[0] == 'ln':
+            f  = e[1]
+            fs = diff(f) 
+            return ('/', fs, f)
+        if e[0] == 'exp':
+            f  = e[1]
+            fs = diff(f) 
+            return ('*', fs, e)
+        if e == 'x':
+            return '1'
+        return 0                  
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{A function for symbolic differentiation}
+\label{fig:diff.py}
+\end{figure}
+
+
+In order to test this function we can implement a function \texttt{test} as shown in Figure \ref{fig:test-diff.py}.
+Then the expression
 \\[0.2cm]
 \hspace*{1.3cm}
-\href{http://download.randoom.org/setlX/tutorial.pdf}{\texttt{http://download.randoom.org/setlX/tutorial.pdf}}
+\texttt{diff("x ** x")}
+\\[0.2cm]
+yields the result:
+\\[0.2cm]
+\hspace*{1.3cm}
+d/dx x ** x = (1*ln(x) + x*1/x)*exp(x*ln(x))
+\\[0.2cm]
+This shows that
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds \frac{\mathrm{d};}{\mathrm{d}x} x^x = \bigl(\ln(x) + 1\bigr) \cdot \exp\bigl(x \cdot \ln(x)\bigr) =
+ \bigl(\ln(x) + 1\bigr) \cdot x^x
+$.
 
 
-\remarkEng
-Most of the algorithm that were presented in this chapter are not very efficient.  The main purpose of these
-algorithms is to serve as examples that were presented for two reasons:
-\begin{enumerate}
-\item My first intention was to make the abstract notions introduced in set theory more accessible.  For
-      example, the program to compute the transitive closure serves to illustrate both the notion of the
-      relational product and the transitive closure.  Furthermore, it shows how these notions are useful in
-      solving real world problems.
-\item Second, these programs serve to introduce the programming language \setlx.
-\end{enumerate}
-Later, the lecture on
-\href{https://github.com/karlstroetmann/Algorithms/blob/master/Lecture-Notes/algorithms.pdf}{algorithms}
-will show how to develop efficient algorithms that are more efficient.
-\vspace*{0.3cm}
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    import exprParser as ep
 
+    def test(s):
+        t = ep.ExprParser(s).parse()
+        d = diff(t)
+        print(f"d/dx {s} = {ep.toString(d)}")
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Testing symbolic differentiation.}
+\label{fig:test-diff.py}
+\end{figure}
+
+
+
+\pagebreak
+\vspace*{\fill}
 
 \section{Reflection}
 After having completed this chapter, you should be able to answer the following questions.
@@ -1526,10 +1240,9 @@ After having completed this chapter, you should be able to answer the following 
 \item How can lists be defined in \textsl{Python}?
 \item How does \textsl{Python} support binary relations?
 \item How does list slicing and list indexing work?
-\item How does \textsl{Python} support terms?
+\item What are nested tuples?
 \item How does a fixed-point algorithm work?
 \item What type of control structures are supported in \textsl{Python}?
-\item How can terms be defined and how does matching for terms work?
 \end{enumerate}
 
 %%% Local Variables:
