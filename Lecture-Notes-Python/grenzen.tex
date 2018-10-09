@@ -26,28 +26,28 @@ beweisen wir dann formal die \blue{Unlösbarkeit} des Halte-Problems.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    legendre := procedure(n) {
-        k := n * n + 1;
-        while (k < (n + 1) ** 2) {
-            if (isPrime(k)) {
-                print("$n$**2 < $k$ < $n+1$**2");
-                return true;
-            }
-            k += 1;
-        }
-        return false;
-    };
-    findCounterExample := procedure() {
-        n := 2;
-        while (true) {
-           if (legendre(n)) {
-               n := n + 1;
-           } else {
-               print("Eureka! No prime between $n**2$ and $(n+1)**2$!");
-               return;
-           }
-        }
-    };
+    def legendre(n):
+        k = n * n + 1;
+        while k < (n + 1) ** 2:
+            if is_prime(k):
+                return True
+            k += 1
+        return False
+    
+    def is_prime(k):
+        return divisors(k) == {1, k}    
+    
+    def divisors(k):
+        return { t for t in range(1, k+1) if k % t == 0 }
+    
+    def find_counter_example():
+        n = 2
+        while True:
+           if legendre(n):
+               n = n + 1
+           else:
+               print(f'Eureka! No prime between {n}**2 and {n+1}**2!')
+               return
 \end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{Eine Funktion zur Überprüfung der von Legendre aufgestellten Vermutung.}
@@ -65,8 +65,11 @@ aufgestellt, dass zwischen zwei Quadrat-Zahlen immer eine Primzahl liegt.  Die F
 Vermutung richtig ist, ist auch heute noch unbeantwortet.  Die in Abbildung \ref{fig:legendre.stlx}
 definierte Funktion $\texttt{legendre}(n)$ überprüft für eine gegebene positive natürliche Zahl $n$,
 ob zwischen $n^2$ und $(n+1)^2$ eine Primzahl liegt.  Falls dies, wie von Legendre vermutet, der
-Fall ist, gibt die Funktion als Ergebnis \texttt{true} zurück, andernfalls wird \texttt{false}
-zurück gegeben.
+Fall ist, gibt die Funktion als Ergebnis \texttt{True} zurück, andernfalls wird \texttt{False}
+zurück gegeben.  Die Funktion \texttt{legendre} ist mit Hilfe der Funktion \texttt{is\_prime} definiert.  Für
+eine natürliche Zahl $k$ liefert $\mathtt{is\_prime}(k)$ genau dann den Wert \texttt{True} zurück, wenn $k$
+eine Primzahl ist.  Dazu überprüft die Funktion $\mathtt{is\_prime}(k)$ ob die Menge der Teiler von $k$ mit der Menge
+die Menge $\{1, k\}$ übereinstimmt.  Die Menge der Teiler wird mit Hilfe der Funktion \texttt{divisors} berechnet.
 
 Abbildung \ref{fig:legendre.stlx} enthält darüber hinaus die Definition der Funktion
 $\texttt{findCounterExample}(n)$, die versucht, für eine gegebene positive natürliche Zahl $n$ eine
@@ -77,15 +80,10 @@ eine Primzahl liegt.  Falls dies der Fall ist, untersuchen wir anschließend das
 $(n+1)^2$ bis $(n+2)^2$, dann das Intervall von 
 $(n+2)^2$ bis $(n+3)^2$ und so weiter, bis wir schließlich eine Zahl $m$ finden, so dass zwischen
 $m^2$ und $(m+1)^2$ keine Primzahl liegt.  Falls Legendre Recht hatte, werden wir nie ein solches
-$k$ finden und in diesem Fall wird der Aufruf $\texttt{findCounterExample}(1)$ nicht terminieren. 
-
-Die Funktion \texttt{legendre}, die für eine gegebene natürliche Zahl $n$ überprüft, ob zwischen $n^2$ und und
-$(n+1)^2$ eine Primzahl liegt, benutzt die in \textsc{SetlX} bereits vordefinierte Funktion \texttt{isPrime},
-mit der wir für eine vorgegebene natürliche Zahl $k$ überprüfen können, ob $k$ eine Primzahl ist.
-
+$k$ finden und in diesem Fall wird der Aufruf $\texttt{findCounterExample}(2)$ nicht terminieren. 
 
 Nehmen wir nun an, wir hätten ein schlaues Programm, nennen wir es \texttt{stops}, das als Eingabe
-eine \textsc{SetlX} Funktion $f$ und ein Argument $a$ verarbeitet und das uns die Frage, ob die Berechnung von $f(a)$
+eine \textsl{Python} Funktion $f$ und ein Argument $a$ verarbeitet und das uns die Frage, ob die Berechnung von $f(a)$
 terminiert, beantworten kann.  Die Idee wäre, dass die Funktion \texttt{stops} die folgende Spezifikation erfüllt:
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -123,7 +121,6 @@ nicht ganz einfach sein kann.
 \subsection{Formale Analyse des Halte-Problems}
 Wir werden in diesem Abschnitt beweisen, dass das Halte-Problem unlösbar ist.  Dazu führen
 wir den Begriff einer \blue{Test-Funktion} ein.  
-\pagebreak
 
 \begin{Definition}[Test-Funktion] 
 {\em Ein String $t$ ist genau dann eine \blue{Test-Funktion}, wenn $t$ 
