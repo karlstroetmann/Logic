@@ -1041,7 +1041,7 @@ of this program more clearly, we first define the notion of an \blue{arithmetic 
 \end{enumerate}
 We want do implement a function \texttt{diff} that takes two arguments:
 \begin{enumerate}
-\item The first argument \texttt{expr} represents an arithmetic expression.
+\item The first argument \texttt{expr} is an arithmetic expression.
 \item The second argument \texttt{var} is the name of a variable.
 \end{enumerate}
 The function call \texttt{diff(expr, var)} will then compute the derivative of \texttt{expr} with respect to the variable \texttt{var}.  For example, the function call \texttt{diff("x*exp(x)", "x")} will compute the output
@@ -1055,12 +1055,12 @@ It would be very tedious to \blue{represent} arithmetic expressions as strings. 
 arithmetic expressions as \blue{nested tuples}.  The notion of a \emph{nested tuple} is defined inductively:
 \begin{itemize}
 \item $\langle x_1, x_2, \cdots, x_n \rangle$ is a nested tuple if each of the components $x_i$ is either a
-      number, a string, or a nested tuple.
+      number, a string, or is itself a nested tuple.
 \end{itemize}
 For example, the arithmetic expression "\texttt{x*exp(x)}" is represented as the nested tuple
 \\[0.2cm]
 \hspace*{1.3cm}
-$\langle\texttt{"}*\texttt{"}, \texttt{"}x\texttt{"}, \langle \texttt{"}\mathtt{exp}\texttt{"}, \texttt{"}x\texttt{"} \rangle\rangle$.
+$\bigl\langle\texttt{"}*\texttt{"}, \texttt{"}x\texttt{"}, \langle \texttt{"}\mathtt{exp}\texttt{"}, \texttt{"}x\texttt{"} \rangle\bigr\rangle$.
 \\[0.2cm]
 In order to be able to convert string into nested tuples, we need a \blue{parser}.  A parser is a program that
 takes a string as input and transforms this string into a nested tuple, which is then returned as a result.
@@ -1068,7 +1068,6 @@ I have implemented a parser in the file "\texttt{exprParser.py}".  The details o
 parser will be discussed in the lecture on algorithms.
 
 \noindent
-We close this section by showing an example that demonstrates the power of matching.
 The function \texttt{diff} that is shown in Figure \ref{fig:diff.py} on page \pageref{fig:diff.py} is part
 of the program
 \href{https://github.com/karlstroetmann/Logik/blob/master/Python/diff.py}{\texttt{diff.py}}.
@@ -1198,7 +1197,7 @@ d/dx x ** x = (1*ln(x) + x*1/x)*exp(x*ln(x))
 This shows that
 \\[0.2cm]
 \hspace*{1.3cm}
-$\ds \frac{\mathrm{d};}{\mathrm{d}x} x^x = \bigl(\ln(x) + 1\bigr) \cdot \exp\bigl(x \cdot \ln(x)\bigr) =
+$\ds \frac{\mathrm{d}\;}{\mathrm{d}x} x^x = \bigl(\ln(x) + 1\bigr) \cdot \exp\bigl(x \cdot \ln(x)\bigr) =
  \bigl(\ln(x) + 1\bigr) \cdot x^x
 $.
 
