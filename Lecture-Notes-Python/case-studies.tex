@@ -291,11 +291,12 @@ In the following section, I will present an application that is more interesting
 relevant.  In order to prepare for this, we will now discuss the problem of finding a \blue{path} in a
 \href{https://en.wikipedia.org/wiki/Directed_graph}{directed graph}. 
 Abstractly, a graph consists of \blue{vertices} and \blue{edges} that connect these vertices.  In an application, the
-vertices could be towns and villages, while the edges would be interpreted as streets connecting these
-villages.  To simplify matters, let us assume for now that the vertices are given as natural numbers, while the
-edges are represented as pairs of natural numbers.  Then, the graph can be represented as the set of its edges,
-as the set of vertices is implicitly given once the edges are known.  To make things concrete, let us consider
-an example.  In this case, the set of edges is called \texttt{R} and is defined as follows: 
+vertices could be towns and villages, while the edges would be interpreted as one-way streets connecting these
+villages.  To simplify matters, let us assume for now that the vertices are given as natural numbers.  As the
+edges represent connections between vertices,  the edges are represented as pairs of natural numbers.  Then,
+the graph can be represented as the set of its edges, as the set of vertices is implicitly given once the edges
+are known.  To make things concrete, let us consider an example.  In this case, the set of edges is called
+\texttt{R} and is defined as follows:  
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{R}\; \mathtt{=}\; \bigl\{ \pair(1,2), \pair(2,3), \pair(1,3), \pair(2,4), \pair(4,5) \bigr\}$.
@@ -357,15 +358,15 @@ If $Q$ and $R$ are binary relations, then the \blue{relational product} $Q \circ
 \hspace*{1.3cm}
 $Q \circ R := \bigl\{ \pair(x, z) \bigm| \exists y:(\pair(x,y) \in Q \wedge \pair(y,z) \in R) \bigr\}$.
 \\[0.2cm]
-Furthermore, for any $n \in \mathbb{N}^*$ we can define the $n$-th power of the relation $R$ by induction.
-\begin{enumerate}
-\item[B.C.:] $n = 1$.
+Furthermore, for any $n \in \mathbb{N}^*$ we can define the $n$-th power $R^n$ of the relation $R$ by induction.
+\begin{description}
+\item[Base Case:] $n = 1$.
 
              $R^1 := R$
-\item[I.S.:] $n \mapsto n+1$ 
+\item[Induction Step:] $n \mapsto n+1$ 
 
              $R^{n+1} := R^n \circ R$.
-\end{enumerate}
+\end{description}
 In order to decide whether there is a path connecting two vertices we have to compute the 
 \href{https://en.wikipedia.org/wiki/Transitive_closure}{transitive closure} $R^+$ of a relation $R$.  
 To understand this notion, we first need to define the concept of \blue{transitivity}:  A relation $R$ is
@@ -374,8 +375,8 @@ transitive if and only if the following holds:
 \hspace*{1.3cm}
 $\pair(x,y) \in T \wedge \pair(y, z) \in T \rightarrow \pair(x, z) \in T$ \quad for all $x,y,z$. 
 \\[0.2cm]
-Now the \blue{transitive closure} $R^+$ of a binary relation $R$ is the smallest relation $T$ such that the following
-condition holds:
+Now the \blue{transitive closure} $R^+$ of a binary relation $R$ is the \blue{smallest} relation $T$ such that the following
+conditions hold:
 \begin{itemize}
 \item $R$ is a subset of $T$, i.e. we have $R \subseteq T$.
 \item $T$ is transitive.
@@ -388,7 +389,7 @@ gives a prove that the transitive closure $R^+$ of a binary relation can be comp
 $R^+ = \bigcup\limits_{n=1}^{\infty} R^n = R^1 \cup R^2 \cup R^3 \cup \cdots$  
 \\[0.2cm]
 Initially, this formula might look intimidating as it suggests an infinite computation.
-Fortunately, it turns out that we do not have to compute all powers of the form $R^n$.  Let me
+Fortunately, it turns out that we do not have to compute the powers $R^n$ for every $n \in \mathbb{N}$.  Let me
 explain the reason that allows us to cut the computation short.  
 \begin{enumerate}
 \item $R$ is the set of direct connections between two vertices.
@@ -399,9 +400,10 @@ explain the reason that allows us to cut the computation short.
       \\[0.2cm]
       Hence, $R \circ R$ contains those pairs $\pair(x,z)$ that are connected via one intermediate vertex $y$,
       i.e.~there is a path of the form $x \mapsto y \mapsto z$ that connects $x$ and $z$.  This path
-      has length 2.  In general, we can show by induction that $R^n$ connect those pairs that are
+      has length 2.  In general, we can show by induction on $n$ that $R^n$ connect those pairs that are
       connected by a path of length $n$.  The induction step of this proof runs as follows:
-\item $R^{n+1}$ is defined as $R^n \circ R$ and therefore we have
+
+      $R^{n+1}$ is defined as $R^n \circ R$ and therefore we have
       \\[0.2cm]
       \hspace*{1.3cm}
       $R^n \circ R = \{ \pair(x,z) \mid \exists y \colon \pair(x,y) \in R^n \wedge \pair(y,z) \in R \}$.
@@ -413,7 +415,7 @@ explain the reason that allows us to cut the computation short.
       \hspace*{1.3cm}
       $\underbrace{x \mapsto \cdots \mapsto y}_{\mbox{\scriptsize path of length $n$.}}$
       \\[0.2cm]
-      Adding $x$ at the end of this path will produce the path
+      Adding $z$ at the end of this path will produce the path
       \\[0.2cm]
       \hspace*{1.3cm}
       $x \mapsto \cdots \mapsto y \mapsto z$.
@@ -436,9 +438,9 @@ To this end, we prove that the transitive closure $R^+$ satisfies the following 
   \label{fixpunkt}
   R^+ = R \cup R^+ \circ R. 
 \end{equation}
-Let me remind you that the precedence of the operator $\circ$ 
-is higher than the precedence of the operator $\cup$.  Therefore, the expression $R \cup R^+ \circ R$ is parenthesized
-as $R \cup (R^+ \circ R)$.  Equation \ref{fixpunkt} can be proven algebraically.  We have:
+The precedence of the operator $\circ$ 
+is higher than the precedence of the operator $\cup$.  Therefore, the expression $R \cup R^+ \circ R$ is
+equivalent to the expression $R \cup (R^+ \circ R)$.  Equation \ref{fixpunkt} can be proven algebraically.  We have:
 \\[0.2cm]
 \hspace*{1.3cm}
 $
@@ -645,7 +647,6 @@ $.
         while True:
             oldP = P
             P    = R.union(pathProduct(P, R))
-            print(P)
             if P == oldP:
                 return P
 
@@ -759,7 +760,6 @@ Next, we discuss the implementation of the procedure  \texttt{reachable}.
       Initially, there is just the trivial path $\langle\texttt{start}\rangle$ that starts with vertex
       \texttt{start} and has length $0$.
 \item Line 5 tries to extend all previously computed paths by one step.
-      If we are lucky, the set \texttt{P} is increased in this step.
 \item Line 6 selects all those paths from the set \texttt{P} that lead to the vertex \texttt{goal}.
       These paths are stored in the set \texttt{Found}.
 \item Line 7 checks whether we have indeed found a path ending at \texttt{goal}.  This is the case if
@@ -798,7 +798,7 @@ The algorithm described above is known as
             oldP  = P
             P     = P.union(path_product(P, R))
             Found = { T for T in P if T[-1] == goal }
-            if Found != set({}):
+            if Found != set():
                 return Found.pop()
             if P == oldP:
                 return
@@ -825,7 +825,7 @@ the greatest agricultural economists for centuries.  The puzzle we want to solve
 \href{http://jeux.lulu.pagesperso-orange.fr/html/anglais/loupChe/loupChe1.htm}{wolf-goat-cabbage puzzle}:  
 \vspace*{0.3cm}
 
-\begin{minipage}[c]{14cm}
+\begin{minipage}[c]{16cm}
 {\sl
 An agricultural economist has to sell a wolf, a goat, and a cabbage on a market place.  In order to
 reach the market place, she has to cross a river.  The boat that she can use is so small that it can
@@ -846,8 +846,8 @@ To this end we define the set
   All = {'farmer', 'wolf, 'goat', 'cabbage'}
 \end{verbatim}
 Every node will be represented as a subset \texttt{S} of the set \texttt{All}.  The idea is that the set \texttt{S}
-specifies those objects that are on the left side of the river.  We assume that initially the farmer
-is on the left side of the river. 
+specifies those objects that are on the left side of the river.  We assume that initially the farmer and his goods
+are on the left side of the river. 
 Therefore, the set of all possible states can be defined as the set
 \begin{verbatim}
   States = {S for S in power(All) if not problem(S) and not problem(All-S)}
@@ -957,7 +957,7 @@ that combines the statements shown so far.  The solution computed by this progra
                (('goat' in S and 'cabbage' in S) or   # goat eats cabbage
                 ('wolf' in S and 'goat'    in S)   )  # wolf eats goat
     
-    All   = frozenset( ['farmer', 'wolf', 'goat', 'cabbage'] )
+    All   = frozenset( {'farmer', 'wolf', 'goat', 'cabbage'} )
     R1    = { (S, S - B) for S in States for B in power(S)
                          if S - B in States and 'farmer' in B and len(B) <= 2
             }
