@@ -354,45 +354,43 @@ Dieser Widerspruch zwingt uns zu der Folgerung, dass die gesuchte Funktion nicht
 Wir werden dieses Verfahren an einem Beispiel demonstrieren.  Vorweg benötigen wir aber
 noch eine Definition.
 
-\begin{Definition}[$\simeq$] 
-{\em 
-Es seien $t_1$ und $t_2$ zwei \textsl{Python}-Funktionen und
+\begin{Definition}[$\simeq$]  
+Es seien $f_1$ und $f_2$ die Namen zwei \textsl{Python}-Funktionen und
   $a_1$, $\cdots$, $a_k$ seien Argumente, mit denen wir diese Funktionen füttern können. Wir definieren \\[0.1cm]
 \hspace*{1.3cm} $t_1(a_1,\cdots,a_k) \simeq t_2(a_1,\cdots,a_k)$ \\[0.1cm]
 g.d.w. einer der beiden folgen Fälle auftritt:
 \begin{enumerate}
-\item $t_1(a_1,\cdots,a_k)\uparrow \quad\wedge\quad t_2(a_1,\cdots,a_k)\uparrow$,
+\item $f_1(a_1,\cdots,a_k)\uparrow \quad\wedge\quad f_2(a_1,\cdots,a_k)\uparrow$,
 
       beide Funktionen divergieren also für die gegebenen Argumente.
-\item $\exists r: \Bigl(t_1(a_1,\cdots,a_k) \leadsto r \;\wedge\; t_2(a_1,\cdots,a_k) \leadsto r\Bigr)$,
+\item $\exists r: \Bigl(f_1(a_1,\cdots,a_k) \leadsto r \;\wedge\; f_2(a_1,\cdots,a_k) \leadsto r\Bigr)$,
 
-      die Funktionen liefern also für die gegebenen Argumente das gleiche Ergebnis.
+      die beiden Funktionen liefern also für die gegebenen Argumente das gleiche Ergebnis.
 \end{enumerate}
       In diesem Fall sagen wir, dass die beiden Funktions-Aufrufe 
-      $t_1(a_1,\cdots,a_k) \simeq t_2(a_1,\cdots,a_k)$ \blue{partiell äquivalent} sind.  
+      $f_1(a_1,\cdots,a_k) \simeq f_2(a_1,\cdots,a_k)$ \blue{partiell äquivalent} sind.  
       \qed
-}
 \end{Definition}
 
 \noindent
-Wir kommen jetzt zum \blue{Äquivalenz-Problem}.  Die Funktion $\texttt{equal}$, die die Form
+Wir kommen jetzt zum \blue{Äquivalenz-Problem}.  Die Funktion $\texttt{equal}$ sei wie folgt definiert:
 \\[0.2cm]
-\hspace*{1.3cm}
-$\texttt{equal := procedure(p1, p2, a) \{ ... \}}$
+\hspace*{1.3cm} \texttt{def equal(t1, t2, a):} \\
+\hspace*{2.2cm} \textsl{body}
 \\[0.2cm]
-hat, möge folgender Spezifikation genügen:
+Zusätzlich erfüllt \texttt{equal} die folgende Spezifikation:
 \begin{enumerate}
-\item $p_1 \not\in T\!F \;\vee\; p_2 \not\in T\!F \quad\Leftrightarrow\quad \mathtt{equal}(p_1, p_2, a) \leadsto 2$.
+\item $t_1 \not\in T\!F \;\vee\; t_2 \not\in T\!F \quad\Leftrightarrow\quad \mathtt{equal}(t_1, t_2, a) \leadsto 2$.
 \item Falls 
   \begin{enumerate}
-  \item $p_1 \in T\!F$,
-  \item $p_2 \in T\!F$ \quad und
-  \item $p_1(a) \simeq p_2(a)$
+  \item $t_1 \in T\!F$ \quad und \quad $\textsl{name}(t_1) = f_1$,
+  \item $t_2 \in T\!F$ \quad und \quad $\textsl{name}(t_2) = f_2$ \quad und
+  \item $f_1(a) \simeq f_2(a)$
   \end{enumerate}
     gilt, dann muss gelten: \\[0.1cm]
-   \hspace*{1.3cm}  $\mathtt{equal}(p_1, p_2, a) \leadsto 1$.
+   \hspace*{1.3cm}  $\mathtt{equal}(t_1, t_2, a) \leadsto 1$.
 \item Ansonsten gilt \\[0.1cm]
-      \hspace*{1.3cm} $\mathtt{equal}(p_1, p_2, a) \leadsto 0$.
+      \hspace*{1.3cm} $\mathtt{equal}(t_1, t_2, a) \leadsto 0$.
 \end{enumerate}
 Wir sagen, dass eine Funktion, die der eben angegebenen Spezifikation genügt, das
 \blue{Äquivalenz-Problem} löst.
@@ -419,15 +417,17 @@ an, dass es doch eine Implementierung der Funktion \texttt{equal} gibt, die das
                   xleftmargin   = 0.3cm,
                   xrightmargin  = 0.3cm
                 ]
-     stops := procedure(p, a) {
-         f := "procedure(x) { while (true) { x := 1; } }"; 
-         e := equal(f, p, a);
-         if (e == 2) {
-             return 2;
-         } else {
-             return 1 - e;
-         }
-     };
+     def stops(t, a) {
+         l = """
+             def loop(x): 
+                 while True:
+                     x = 1
+             """ 
+         e = equal(l, t, a);
+         if e == 2:
+             return 2
+         else:
+             return 1 - e
 \end{Verbatim}
   \vspace*{-0.3cm}
   \caption{Eine Implementierung der Funktion \texttt{stops}.}
@@ -439,15 +439,16 @@ wird, der eine Test-Funktion ist.  Diese
 Test-Funktion hat die
 folgende Form:
 \begin{verbatim}
-      procedure(x) { while (true) { x := 1; } };
+            def loop(x): 
+                 while True:
+                     x = 1
 \end{verbatim}
-Es ist offensichtlich, dass diese Funktion für kein Ergebnis terminiert.
-Ist also das Argument $p$ eine Test-Funktion, so liefert die Funktion
+Es ist offensichtlich, dass diese Funktion für keine Eingabe terminiert.
+Ist also das Argument $t$ eine Test-Funktion mit Namen $f$, so liefert die Funktion
 \texttt{equal} immer dann den Wert 1, 
-wenn $p(a)$ nicht terminiert, andernfalls muss sie den Wert 0 zurück geben.
-Damit liefert die Funktion \texttt{stops} aber für eine Test-Funktion $p$ 
-und ein Argument 
-$a$ genau dann 1, wenn der Aufruf $p(a)$ terminiert und würde folglich das Halte-Problem
+wenn $f(a)$ nicht terminiert, andernfalls muss sie den Wert 0 zurück geben.
+Damit liefert die Funktion \texttt{stops} aber für eine Test-Funktion $t$ mit Namen $f$
+und ein Argument $a$ genau dann 1, wenn der Aufruf $f(a)$ terminiert und würde folglich das Halte-Problem
 lösen.  Das kann nicht sein, also kann es keine Funktion  \texttt{equal}
 geben, die das Äquivalenz-Problem löst. 
 \qed
