@@ -1013,7 +1013,7 @@ that combines the statements shown so far.  The solution computed by this progra
 In this section we will develop a program that reads an arithmetic expression like 
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{"x * exp(x)"},
+\texttt{\symbol{34}x * exp(x)\symbol{34}},
 \\[0.2cm]
 interprets this string as describing the real valued function 
 \\[0.2cm]
@@ -1044,10 +1044,10 @@ We want do implement a function \texttt{diff} that takes two arguments:
 \item The first argument \texttt{expr} is an arithmetic expression.
 \item The second argument \texttt{var} is the name of a variable.
 \end{enumerate}
-The function call \texttt{diff(expr, var)} will then compute the derivative of \texttt{expr} with respect to the variable \texttt{var}.  For example, the function call \texttt{diff("x*exp(x)", "x")} will compute the output
+The function call \texttt{diff(expr, var)} will then compute the derivative of \texttt{expr} with respect to the variable \texttt{var}.  For example, the function call \texttt{diff(\symbol{34}x*exp(x)\symbol{34}, \symbol{34}x\symbol{34})} will compute the output
 \\[0.2cm]
 \hspace*{1.3cm}
-"\texttt{1*exp(x) + x*exp(x)}"
+\symbol{34}\texttt{1*exp(x) + x*exp(x)}\symbol{34}
 \\[0.2cm]
 because we have:
 $$ \frac{\mathrm{d}\;}{\mathrm{d}x} \bigl( x \cdot \mathrm{e}^x \bigr) = 1 \cdot x + x \cdot \mathrm{e}^x $$
@@ -1057,14 +1057,14 @@ arithmetic expressions as \blue{nested tuples}.  The notion of a \emph{nested tu
 \item $\langle x_1, x_2, \cdots, x_n \rangle$ is a nested tuple if each of the components $x_i$ is either a
       number, a string, or is itself a nested tuple.
 \end{itemize}
-For example, the arithmetic expression "\texttt{x*exp(x)}" is represented as the nested tuple
+For example, the arithmetic expression ``\texttt{x*exp(x)}'' is represented as the nested tuple
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bigl\langle\texttt{"}*\texttt{"}, \texttt{"}x\texttt{"}, \langle \texttt{"}\mathtt{exp}\texttt{"}, \texttt{"}x\texttt{"} \rangle\bigr\rangle$.
+$\bigl\langle\texttt{\symbol{34}}*\texttt{\symbol{34}}, \texttt{\symbol{34}}x\texttt{\symbol{34}}, \langle \texttt{\symbol{34}}\mathtt{exp}\texttt{\symbol{34}}, \texttt{\symbol{34}}x\texttt{\symbol{34}} \rangle\bigr\rangle$.
 \\[0.2cm]
 In order to be able to convert string into nested tuples, we need a \blue{parser}.  A parser is a program that
 takes a string as input and transforms this string into a nested tuple, which is then returned as a result.
-I have implemented a parser in the file "\texttt{exprParser.py}".  The details of the implementation of this
+I have implemented a parser in the file ``\texttt{exprParser.py}''.  The details of the implementation of this
 parser will be discussed in the lecture on algorithms.
 
 \noindent
@@ -1084,7 +1084,7 @@ $x \mapsto x^x$,
 we can call the function  \texttt{diff} as follows:
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{diff("x ** x")}.
+\texttt{diff(\symbol{34}x ** x\symbol{34})}.
 \\[0.2cm]
 Let us now discuss the implementation of the function \texttt{diff} in more detail.  
 \begin{enumerate}
@@ -1187,7 +1187,7 @@ In order to test this function we can implement a function \texttt{test} as show
 Then the expression
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{diff("x ** x")}
+\texttt{diff(\symbol{34}x ** x\symbol{34})}
 \\[0.2cm]
 yields the result:
 \\[0.2cm]
