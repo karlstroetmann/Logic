@@ -1,8 +1,9 @@
 import re
 
 def tokenize(s):
-    """Transform the string s into a list of tokens.  The string s
-       is supposed to represent a formula from propositional logic.
+    """
+    Transform the string s into a list of tokens.  The string s
+    is supposed to represent a formula from propositional logic.
     """
     lexSpec = r""" ([ \t]+)               |  # blanks and tabs
                    ([A-Za-z][A-Za-z0-9]*) |  # identifier
@@ -21,14 +22,17 @@ def tokenize(s):
     return result
 
 def isPropVar(s):
-    """Check, whether the string s can be interpreted as a propositional variable. 
+    """
+    Check, whether the string s can be interpreted as a propositional variable. 
     """
     return re.fullmatch('[A-Za-z][A-Za-z0-9]*', s)
 
 class LogicParser:
-    """This class implements the shunting yard algorithm to parse formulas from
-       propositional logic.  The strings the represent formulas are transformed
-       into tuples that are interpreted as syntax trees representing the formulae.
+    """
+    This class implements the shunting yard algorithm to parse formulas from
+    propositional logic.  The strings that represent formulas are transformed
+    into nested tuples that are interpreted as syntax trees representing the 
+    formulae.
     """
     def __init__(self, s):
         "The constructor takes a string s that represents a formula."
