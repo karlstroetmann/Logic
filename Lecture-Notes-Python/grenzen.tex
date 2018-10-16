@@ -40,8 +40,7 @@ beweisen wir dann formal die \blue{Unlösbarkeit} des Halte-Problems.
     def divisors(k):
         return { t for t in range(1, k+1) if k % t == 0 }
     
-    def find_counter_example():
-        n = 2
+    def find_counter_example(n):
         while True:
            if legendre(n):
                n = n + 1
@@ -67,8 +66,8 @@ definierte Funktion $\texttt{legendre}(n)$ überprüft für eine gegebene positi
 ob zwischen $n^2$ und $(n+1)^2$ eine Primzahl liegt.  Falls dies, wie von Legendre vermutet, der
 Fall ist, gibt die Funktion als Ergebnis \texttt{True} zurück, andernfalls wird \texttt{False}
 zurück gegeben.  Die Funktion \texttt{legendre} ist mit Hilfe der Funktion \texttt{is\_prime} definiert.  Für
-eine natürliche Zahl $k$ liefert $\mathtt{is\_prime}(k)$ genau dann den Wert \texttt{True} zurück, wenn $k$
-eine Primzahl ist.  Dazu überprüft die Funktion $\mathtt{is\_prime}(k)$ ob die Menge der Teiler von $k$ mit der Menge
+eine natürliche Zahl $k$ liefert $\texttt{is\_prime}(k)$ genau dann den Wert \texttt{True} zurück, wenn $k$
+eine Primzahl ist.  Dazu überprüft die Funktion $\texttt{is\_prime}(k)$ ob die Menge der Teiler von $k$ mit der Menge
 die Menge $\{1, k\}$ übereinstimmt.  Die Menge der Teiler wird mit Hilfe der Funktion \texttt{divisors} berechnet.
 
 Abbildung \ref{fig:legendre.stlx} enthält darüber hinaus die Definition der Funktion
@@ -121,6 +120,7 @@ nicht ganz einfach sein kann.
 \subsection{Formale Analyse des Halte-Problems}
 Wir werden in diesem Abschnitt beweisen, dass das Halte-Problem unlösbar ist.  Dazu führen
 wir den Begriff einer \blue{Test-Funktion} ein.  
+\pagebreak
 
 \begin{Definition}[Test-Funktion] 
 Ein String $t$ ist genau dann eine \blue{Test-Funktion} mit Namen $f$, wenn $t$ 
@@ -210,18 +210,18 @@ $\texttt{stops := procedure}(t,\;a)\; \{\;\cdots\;\}$ \\[0.1cm]
 gibt, die als Eingabe eine Testfunktion $t$ und einen String $a$ erhält und die folgende
 Eigenschaft hat:
 \begin{enumerate}
-\item $t \not\in T\!F \quad\Leftrightarrow\quad \mathtt{stops}(t, a) \leadsto 2$.
+\item $t \not\in T\!F \quad\Leftrightarrow\quad \texttt{stops}(t, a) \leadsto 2$.
 
       Der Aufruf \texttt{stops($t$, $a$)} liefert genau dann den Wert 2 zurück, 
       wenn $t$ keine Test-Funktion ist.
 \item $t \in T\!F \,\wedge\, \textsl{name}(t) = f \,\wedge\, f(a)\downarrow \quad\Leftrightarrow\quad
-       \mathtt{stops}(t, a) \leadsto 1$.
+       \texttt{stops}(t, a) \leadsto 1$.
 
       Der Aufruf \texttt{stops($t$, $a$)} liefert genau dann den Wert 1 zurück,
       wenn $t$ eine Test-Funktion mit Namen $f$ ist und der Aufruf $f(a)$ terminiert.
 
 \item $t \in T\!F  \,\wedge\, \textsl{name}(t) = f \,\wedge\, t(a)\uparrow \quad\Leftrightarrow\quad
-       \mathtt{stops}(t, a) \leadsto 0$.
+       \texttt{stops}(t, a) \leadsto 0$.
 
       Der Aufruf \texttt{stops($t$, $a$)} liefert genau dann den Wert 0 zurück,
       wenn $t$ eine Test-Funktion ist und der Aufruf $t(a)$ \underline{nicht} terminiert.
@@ -299,7 +299,7 @@ Diese beiden Fälle analysieren wir nun im Detail:
       Widerspruch zu dem, was die Funktion \texttt{stops} behauptet hat. $\red{\lightning}$
 
       Damit ist der erste Fall ausgeschlossen.
-\item  $\mathtt{stops}(\texttt{turing}, \texttt{turing}) \leadsto 1$. 
+\item  $\texttt{stops}(\texttt{turing}, \texttt{turing}) \leadsto 1$. 
 
       Aus der Spezifikation der Funktion \texttt{stops} folgt, dass der Aufruf
       \texttt{alan(turing)} terminiert: \\[0.1cm]
@@ -380,7 +380,7 @@ Wir kommen jetzt zum \blue{Äquivalenz-Problem}.  Die Funktion $\texttt{equal}$ 
 \\[0.2cm]
 Zusätzlich erfüllt \texttt{equal} die folgende Spezifikation:
 \begin{enumerate}
-\item $t_1 \not\in T\!F \;\vee\; t_2 \not\in T\!F \quad\Leftrightarrow\quad \mathtt{equal}(t_1, t_2, a) \leadsto 2$.
+\item $t_1 \not\in T\!F \;\vee\; t_2 \not\in T\!F \quad\Leftrightarrow\quad \texttt{equal}(t_1, t_2, a) \leadsto 2$.
 \item Falls 
   \begin{enumerate}
   \item $t_1 \in T\!F$ \quad und \quad $\textsl{name}(t_1) = f_1$,
@@ -388,9 +388,9 @@ Zusätzlich erfüllt \texttt{equal} die folgende Spezifikation:
   \item $f_1(a) \simeq f_2(a)$
   \end{enumerate}
     gilt, dann muss gelten: \\[0.1cm]
-   \hspace*{1.3cm}  $\mathtt{equal}(t_1, t_2, a) \leadsto 1$.
+   \hspace*{1.3cm}  $\texttt{equal}(t_1, t_2, a) \leadsto 1$.
 \item Ansonsten gilt \\[0.1cm]
-      \hspace*{1.3cm} $\mathtt{equal}(t_1, t_2, a) \leadsto 0$.
+      \hspace*{1.3cm} $\texttt{equal}(t_1, t_2, a) \leadsto 0$.
 \end{enumerate}
 Wir sagen, dass eine Funktion, die der eben angegebenen Spezifikation genügt, das
 \blue{Äquivalenz-Problem} löst.
