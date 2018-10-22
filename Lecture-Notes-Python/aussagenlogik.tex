@@ -619,16 +619,10 @@ Wir haben nun eine Menge $F = \{ f_1, f_2, f_3, f_4, f_5, f_6 \}$ von Formeln.
 Wir fragen uns nun, für welche Belegungen $\mathcal{I}$ alle Formeln aus der Menge $F$ wahr werden.
 Wenn es genau eine Belegungen gibt, für die dies der Fall ist, dann liefert uns die
 Belegung den oder die Täter.  Eine Belegung entspricht dabei 1-zu-1 der Menge der Täter.
-Hätten wir beispielsweise \\[0.2cm]
-\hspace*{1.3cm} 
-$\mathcal{I} = \bigl\{ \pair(a,\texttt{False}), \pair(b,\texttt{False}), \pair(c,\texttt{True}) \bigr\}$,
-\\[0.2cm]
-so wäre Claus der alleinige Täter.  Diese Belegung löst unser Problem allerdings
-nicht, denn Sie widerspricht der dritten Aussage: Da Bruno unschuldig wäre, wäre dann auch
-Claus unschuldig.  Da es zu zeitraubend ist, alle Belegungen von Hand auszuprobieren,
+Da es zu zeitraubend ist, alle Belegungen von Hand auszuprobieren,
 schreiben wir besser ein Programm, das die notwendigen Berechnungen für uns durchführt.
-Abbildung \ref{fig:watson.stlx} zeigt das Programm
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/watson.stlx}{\texttt{watson.stlx}}.
+Abbildung \ref{fig:Usual-Suspects.ipynb} zeigt das Programm
+\href{https://github.com/karlstroetmann/Logik/blob/master/Python/Usual-Suspects.ipynb}{\texttt{Usual-Suspects.ipynb}}.
 Wir diskutieren diese Programm nun Zeile für Zeile.
 
 \begin{figure}[!ht]
@@ -640,91 +634,60 @@ Wir diskutieren diese Programm nun Zeile für Zeile.
                   numbersep     = -0.2cm,
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
-                ]
-    createValuation := procedure(M, V) {
-        return { [ x, x in M ] : x in V };
-    };
-    // Austin, Brian, or Colin is guilty.
-    f1 := parse("a || b || c");
-    // If Austin is guilty, he has exactly one accomplice.
-    f2 := parse("a => b || c");    // at least one accomplice
-    f3 := parse("a => !(b && c)"); // at most  one accomplice
-    // If Brian is innocent, then Colin is innocent, too.
-    f4 := parse("!b => !c"); 
-    // If exactly two are guilty, then Colin is one of them.
-    f5 := parse("!(a && b && !c)"); 
-    // If Colin is innocent, then Austin is guilty.
-    f6 := parse("!c => a");
-    fs := { f1, f2, f3, f4, f5, f6 };
-    v  := { "a", "b", "c" };
-    All := 2 ** v;
-    print("All = ", All);
-    // b is the set of all propositional valuations.
-    B  := { createValuation(m, v) : m in All };
-    s  := { I : I in B | forall (f in fs | evaluate(f, I)) };
-    print("Set of all valuations satisfying all facts: ", s);
-    if (#s == 1) {
-        I := arb(s);
-        offenders := { x : x in v | I[x] };
-        print("Set of offenders: ", offenders);
-    }
+                  ]
+    import propLogParser as plp
+
+    def transform(s):
+        "transform the string s into a nested tuple"
+        return plp.LogicParser(s).parse()
+    
+    P = { 'a', 'b', 'c' }
+    # Aaron, Bernard, or Caine is guilty.
+    f1 = 'a ∨ b ∨ c'
+    # If Aaron is guilty, he has exactly one accomplice.
+    f2 = 'a → b ∨ c'
+    f3 = 'a → ¬(b ∧ c)'
+    # If Bernard is innocent, then Caine is innocent, too.
+    f4 = '¬b → ¬c'
+    # If exactly two are guilty, then Caine is one of them.
+    f5 = '¬(¬c ∧ a ∧ b)'
+    # If Caine is innocent, then Aaron is guilty.
+    f6 = '¬c → a'
+    Fs = { f1, f2, f3, f4, f5, f6 };
+    Fs = { transform(f) for f in Fs }
+
+    def allTrue(Fs, I):
+        return all({evaluate(f, I) for f in Fs})
+
+    print({ I for I in power(P) if allTrue(Fs, I) })
 \end{Verbatim}
 \vspace*{-0.3cm}
   \caption{Programm zur Aufkärung des Einbruchs.}
-  \label{fig:watson.stlx}
+  \label{fig:Usual-Suspects.ipynb}
 \end{figure}
 
 \begin{enumerate}
-\item In den Zeilen 7 -- 17 definieren wir die Formeln $f_1$, $\cdots$, $f_6$      .
-      Wir müssen hier die Formeln in die \textsl{Python}-Repräsentation bringen.
-      Diese Arbeit wird uns durch die Benutzung der Funktion \texttt{parse} leicht gemacht.
-\item Als nächstes müssen wir uns überlegen, wie wir alle Belegungen aufzählen können. 
-      Wir hatten oben schon beobachtet, dass die Belegungen 1-zu-1 zu den möglichen Mengen der Täter
-      korrespondieren.  Die Mengen der möglichen Täter sind aber alle Teilmengen der Menge
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\{ \squote{a}, \squote{b}, \squote{c} \}$. 
-      \\[0.2cm]
-      Wir berechnen daher in Zeile 20 zunächst die Menge aller dieser Teilmengen.
-\item Wir brauchen jetzt eine Möglichkeit, eine Teilmenge in eine Belegung umzuformen.
-      In den Zeilen 3 -- 5 haben wir eine Prozedur implementiert, die genau dies
-      leistet.  Um zu verstehen, wie diese Funktion arbeitet, betrachten wir ein Beispiel
-      und nehmen an, dass wir aus der Menge \\[0.2cm]
-      \hspace*{1.3cm} $m = \{\squote{a}, \squote{c} \}$ \\[0.2cm]
-      eine Belegung $\mathcal{I}$ erstellen sollen.  Wir erhalten dann \\[0.2cm]
-      \hspace*{1.3cm} 
-      $\mathcal{I} = \{ \pair(\squote{a},\texttt{True}), 
-                        \pair(\squote{b},\texttt{False}),
-                        \pair(\squote{c},\texttt{True}) 
-       \bigr\}
-      $. 
-      \\[0.2cm]
-      Das allgemeine Prinzip ist offenbar, dass für eine aussagenlogische Variable
-      $x$ das Paar $\pair(x,\texttt{True})$ genau dann in der Belegung $\mathcal{I}$
-      enthalten ist, wenn $x \el m$ ist, andernfalls ist das Paar $\pair(x,\texttt{False})$
-      in $\mathcal{I}$.  Damit könnten wir die Menge aller Belegungen, die genau die
-      Elemente aus $m$ wahrmachen, wie folgt schreiben:
-      \\[0.2cm]
-      \hspace*{1.3cm}      
-      \texttt{\{ [ x, true ] : x in m \} + \{ [ x, false ] : x in all | !(x in m) \}}
-      \\[0.2cm]
-      Es geht aber einfacher, denn wir können beide Fälle zusammenfassen, indem wir fordern,
-      dass das Paar $\pair(x, x \el m)$ ein Element der Belegung $\mathcal{I}$ ist. Genau
-      das steht in Zeile 5.
-\item In Zeile 23 sammeln wir in der Menge $b$ alle möglichen Belegungen auf.
-\item In Zeile 24 berechnen wir die Menge $s$ aller der Belegungen $I$, für die alle 
-      Formeln aus der Menge $\textsl{fs}$ wahr werden. 
-\item Falls es genau eine Belegung gibt, die alle Formeln wahr macht, 
-      dann haben wir das Problem lösen können.  In diesem Fall
-      extrahieren wir in Zeile 26 diese Belegungen aus der Menge $s$ und geben
-      anschließemd die Menge der Täter aus.
+\item Da wir die aussagenlogischen Formeln als Strings eingeben, unsere Funktion \texttt{evaluate} aber
+      geschachtelte Tupel verarbeitet, importieren wir zunächst den Parser für aussagenlogische Formeln
+      und definieren außerdem die Funktion \texttt{transform}, die eine aussagenlogische Formel, die als
+      String vorliegt, in ein geschachteltes Tupel umwandelt.
+\item In Zeile 7 definieren wir die Menge $P$ der aussagenlogischen Variablen.  Wir benutzen \texttt{a} als
+      Abkürzung dafür, dass Aaron schuldig ist, \texttt{b} steht für Bernard und \texttt{c} ist wahr, wenn
+      Caine schuldig ist. 
+\item In den Zeilen 7 -- 17 definieren wir die Formeln $f_1$, $\cdots$, $f_6$.
+\item \texttt{Fs} ist die Menge aller Formeln.
+\item Die Formeln werden in Zeile 20 in geschachtelte Tupel transformiert.
+\item Die Funktion $\texttt{allTrue}(Fs, I)$ bekommt als Eingabe eine Menge von aussagenlogischen Formeln $Fs$
+      und eine aussagenlogische Belegung $I$, die als Teilmenge von $P$ dargestellt wird.  Falls alle Formeln
+      $f$ aus der Menge $Fs$ unter der Belegung $I$ wahr sind, gibt diese Funktion als Ergebnis \texttt{True} zurück.
+\item In Zeile 25 berechnen wir alle Belegungen, für die alle Formeln wahr werden.
 \end{enumerate}
-Lassen wir das Programm laufen, so erhalten wir als Ausgabe
+Lassen wir das Programm laufen, so sehen wir, dass es nur eine einzige Belegung gibt, bei der alle Formeln wahr
+werden.  Dies ist die Belegung
 \begin{verbatim}
-    Set of offenders: {"b", "c"}
+    {'b', 'c'}.
 \end{verbatim}
-Damit liefern unsere ursprünglichen Formeln ausreichende Information um die Täter zu überführen:
-Bruno und Claus sind schuldig.
+Damit ist das Problem eindeutig lösbar und Bernard und Caine sind schuldig.
 
 
 \section{Tautologien}
