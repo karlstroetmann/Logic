@@ -802,22 +802,32 @@ $\mathcal{I}(M)(p) := \left\{
 \right.
 $
 \\[0.2cm]
-Um die aussagenlogische Belegung $\mathcal{I}$ in \textsl{Python} darstellen zu können,
-fassen wir die Belegung $\mathcal{I}$ als eine binäre Relation
-$\mathcal{I} \subseteq \mathcal{P} \times \mathbb{B}$ auf, die links-total und rechts-eindeutig ist.  Dann haben wir
+Wir stellen daher eine aussagenlogische Belegung durch die Menge $M_\mathcal{I}$ der aussagenlogischen Variablen
+$x$ dar, für die $\mathcal{I}(x)$ den Wert \texttt{True} hat.  Bei gegebener aussagenlogischer Belegung
+$\mathcal{I}$ können wir die Menge $M_\mathcal{I}$ wie folgt definieren:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{I} = \bigl\{ \pair(p, \texttt{True} ) \mid p \in    M \bigr\} \cup 
-               \bigl\{ \pair(p, \texttt{False}) \mid p \notin M \bigr\}
-$.
+$M_\mathcal{I} := \bigl\{ p \in \mathcal{P} \mid \mathcal{I}(p) = \mathtt{True} \bigr\}$.
 \\[0.2cm]
-Dies lässt sich noch zu
-\\[0.2cm]
-\hspace*{1.3cm}
-$\mathcal{I} = \bigl\{ \langle p, p \el M\rangle \mid  p \in \mathcal{P} \bigr\}$
-\\[0.2cm]
-vereinfachen.  Mit dieser Idee können wir nun eine Prozedur implementieren, die für eine
-gegebene aussagenlogische Formel \texttt{F} testet, of \texttt{F} eine Tautologie ist.
+Damit können wir nun eine Prozedur implementieren, die für eine gegebene aussagenlogische Formel $f$
+testet, ob $f$ eine Tautologie ist.  Hierzu müssen wir zunächst die Menge $\mathcal{P}$ der
+aussagenlogischen Variablen bestimmen, die in $f$ auftreten.  Abstrakt definieren wir dazu eine Funktion 
+$\mathtt{collectVars}(f)$, welche die Menge aller aussagenlogischen Variablen berechnet, die in einer
+aussagenlogischen Formel $f$ auftreten.  Diese Funktion ist durch die folgenden rekursiven Gleichugen 
+spezifiziert:
+\begin{enumerate}
+\item $\mathtt{collectVars}(\verum) = \{\}$.
+\item $\mathtt{collectVars}(\falsum) = \{\}$.
+\item $\mathtt{collectVars}(p) = \{ p \}$ \quad für alle aussagenlogischen Variablen $p$.
+\item $\mathtt{collectVars}(\neg f) := \mathtt{collectVars}(f)$.
+\item $\mathtt{collectVars}(f \wedge g) := \mathtt{collectVars}(f) \cup \mathtt{collectVars}(g)$.
+\item $\mathtt{collectVars}(f \vee g) := \mathtt{collectVars}(f) \cup \mathtt{collectVars}(g)$.
+\item $\mathtt{collectVars}(f \rightarrow g) := \mathtt{collectVars}(f) \cup \mathtt{collectVars}(g)$.
+\item $\mathtt{collectVars}(f \leftrightarrow g) := \mathtt{collectVars}(f) \cup \mathtt{collectVars}(g)$.
+\end{enumerate}
+Die in Abbildung \ref{fig:tautology.py-collectVars} auf Seite \pageref{fig:tautology.py-collectVars} zeigt,
+dass wir diese Gleichungen unmittelbar in \textsl{Python} umsetzen können, wobei wir die letzten vier Fälle
+zusammen gefasst haben, denn die Berechnung der Variablen verläuft in diesen Fällen analog.
 
 \begin{figure}[!ht]
   \centering
@@ -829,102 +839,58 @@ gegebene aussagenlogische Formel \texttt{F} testet, of \texttt{F} eine Tautologi
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
                 ]
-    tautology := procedure(F) {
-        P := collectVars(F);
-        // A is the set of all propositional valuations.
-        A := { { [x, x in M] : x in P } : M in 2 ** P };
-        if (forall (I in A | evaluate(F, I))) {
-            return true;
-        } else {
-            return arb({ I : I in A | !evaluate(F, I) });
-        }
-    };
-    collectVars := procedure(F) {
-        match (F) {
-            case true:              return {};
-            case false:             return {};
-            case p | isVariable(p): return { p };
-            case !G:                return collectVars(G);
-            case G && H:            return collectVars(G) + collectVars(H);
-            case G || H:            return collectVars(G) + collectVars(H);
-            case G => H:            return collectVars(G) + collectVars(H);
-            case G <==> H:          return collectVars(G) + collectVars(H);
-            default:                abort("syntax error in collectVars($F$)");
-        }
-    };
+    def collectVars(f):
+        "Collect all propositional variables occurring in the formula f."
+        if isinstance(f, str):
+            return { f }
+        if f[0] in ['⊤', '⊥']:
+            return set()
+        if f[0] == '¬':
+            return collectVars(f[1])
+        return collectVars(f[1]) | collectVars(f[2]) 
 \end{Verbatim}
 \vspace*{-0.3cm}
   \caption{Überprüfung der Allgemeingültigkeit einer aussagenlogischen Formel.}
-  \label{fig:tautology.stlx}
-\end{figure} 
+  \label{fig:tautology.py-collectVars}
+\end{figure}
 
-\noindent
-Die in Abbildung \ref{fig:tautology.stlx} auf Seite \pageref{fig:tautology.stlx}
-gezeigte Funktion
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/tautology.stlx}{\texttt{tautology}}
-testet, ob die als Argument übergebene
-aussagenlogische Formel \texttt{F} allgemeingültig ist.   
-Die Prozedur verwendet die Funktion 
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/evaluate.stlx}{\texttt{evaluate}}
-aus dem in Abbildung
-\ref{fig:evaluate.py} auf Seite \pageref{fig:evaluate.py} gezeigten Programm.
-Wir diskutieren die Definition der Funktion \texttt{tautology} nun Zeile für Zeile:
+Damit sind wir nun in der Lage, eine Funktion $\mathtt{tautology}(f)$ zu implementieren, die für eine gegebene
+aussagenlogische $f$ überprüft, ob $f$ eine Tautologie ist.  Diese in Abbildung \ref{fig:tautology.stlx} auf Seite \pageref{fig:tautology.stlx}
+gezeigte Funktion arbeitet wie folgt:
 \begin{enumerate}
-\item In Zeile 2 sammeln wir alle aussagenlogischen Variablen auf, die in der zu
-      überprüfenden Formel auftreten.  Die dazu benötigte Prozedur \texttt{collectVars}
-      ist in den Zeilen 11 -- 23 gezeigt.  Diese Prozedur ist durch Induktion über den
-      Aufbau einer Formel definiert und liefert als Ergebnis die Menge aller Aussage-Variablen,
-      die in der aussagenlogischen Formel \texttt{F} auftreten.
-
-      Es ist klar, das bei der Berechnung von ${\cal I}(\texttt{f})$ für eine Formel \texttt{F}
-      und eine aussagenlogische Interpretation ${\cal I}$ nur die Werte von
-      ${\cal I}(p)$ eine Rolle spielen, für welche die Variable $p$ in der Formel \texttt{F}
-      auftritt.  Zur Analyse von \texttt{F} können wir uns also auf aussagenlogische 
-      Interpretationen  der Form \\[0.2cm]
-      \hspace*{1.3cm} 
-      ${\cal I}:\mathcal{P} \rightarrow \mathbb{B}$ \quad mit \quad $\mathcal{P} = \texttt{collectVars}(\texttt{F})$ 
-      \\[0.2cm]
-      beschränken.
-\item In Zeile 4 berechnen wir die Menge aller aussagenlogischen
-      Interpretationen über der Menge $\mathcal{P}$ der aussagenlogischen Variablen.  
-      Wir berechnen für eine Menge $M$ von aussagenlogischen Variablen
-      die Interpretation ${\cal I}(M)$ wie oben diskutiert mit Hilfe der Formel
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      ${\cal I}(M) := \{ \pair(x, x \!\in\! M) \mid x \in \mathcal{P} \}$.  
-      \\[0.2cm]
-      Betrachten wir zur Verdeutlichung als Beispiel die Formel \\[0.2cm]
-      \hspace*{1.3cm} $\neg (p \wedge q) \leftrightarrow \neg p \vee \neg q$. \\[0.2cm]
-      Die Menge $\mathcal{P}$ der aussagenlogischen Variablen, die in dieser Formel auftreten,
-      ist \\[0.2cm]
-      \hspace*{1.3cm} $\mathcal{P} = \{ p, q \}$. \\[0.2cm]
-      Die Potenz-Menge der Menge $\mathcal{P}$ ist \\[0.2cm]
-      \hspace*{1.3cm} $2^\mathcal{P} = \bigl\{ \{\}, \{p\}, \{q\}, \{p,q\} \bigr\}$. \\[0.2cm]
-      Wir bezeichnen die vier Elemente der Potenz-Menge mit $M_1$, $M_2$, $M_3$, $M_4$: \\[0.2cm]
-      \hspace*{1.3cm} $M_1 := \{\},\; M_2 :=\{p\},\; M_3 :=\{q\},\; M_4 :=\{p,q\}$. \\[0.2cm]
-      Aus jeder dieser vier Mengen $M_i$ gewinnen wir nun eine aussagenlogische Interpretation 
-      $\mathcal{I}(M_i)$: 
-
-      $\mathcal{I}(M_1) := \bigl\{ \bigl\langle x, x \!\in\! \{\} \bigl\rangle\, |\, x \!\in\! \{p,q\} = \bigl\{ \bigl\langle p, p \!\in\! \{\} \bigl\rangle,\, \bigl\langle q, q \!\in\! \{\} \bigl\rangle \bigr\} = \bigl\{ \bigl\langle p, \texttt{False} \bigl\rangle,\, \bigl\langle q, \texttt{False} \bigl\rangle \bigr\}$,
-
-      $\mathcal{I}(M_2) := \bigl\{ \bigl\langle x, x \!\in\! \{p\} \bigl\rangle\, |\, x \!\in\! \{p,q\} \bigr\} = \bigl\{ \bigl\langle p, p \!\in\! \{p\} \bigl\rangle,\, \bigl\langle q, q \!\in\! \{p\} \bigl\rangle \bigr\} = \bigl\{ \bigl\langle p, \texttt{True} \bigl\rangle,\, \bigl\langle q, \texttt{False} \bigl\rangle \bigr\}$,
-
-      $\mathcal{I}(M_3) := \bigl\{ \bigl\langle x, x \!\in\! \{q\} \bigl\rangle\, |\, x \!\in\! \{p,q\} \bigr\} = \bigl\{ \bigl\langle p, p \!\in\! \{q\} \bigl\rangle,\, \bigl\langle q, q \!\in\! \{q\} \bigl\rangle \bigr\} = \bigl\{ \bigl\langle p, \texttt{False} \bigl\rangle,\, \bigl\langle q, \texttt{True} \bigl\rangle \bigr\}$,
-
-      $\mathcal{I}(M_4) := \bigl\{ \bigl\langle x, x \!\in\! \{p,q\} \bigl\rangle\, |\, x \!\in\! \{p,q\} \bigr\} = \bigl\{ \bigl\langle p, p \!\in\! \{p,q\} \bigl\rangle,\, \bigl\langle q, q \!\in\! \{p,q\} \bigl\rangle \bigr\} = \bigl\{ \bigl\langle p, \texttt{True} \bigl\rangle,\, \bigl\langle q, \texttt{True} \bigl\rangle \bigr\}$.
-
-      Damit haben wir alle möglichen Interpretationen der Variablen $p$ und $q$ gefunden. 
-\item In Zeile 5 testen wir, ob die Formel \texttt{F} für alle möglichen Interpretationen $I$
-      aus der Menge \texttt{A} aller Interpretationen wahr ist.  Ist dies der Fall,
-      so geben wir die leere Menge als Ergebnis zurück.
-
-      Falls es allerdings eine Belegungen $I$ in der Menge \texttt{A} gibt, für welche die
-      Auswertung von \texttt{F} den Wert \texttt{False} liefert, so bilden wir in Zeile 8 die
-      Menge aller solcher Belegungen und wählen mit Hilfe der Funktion
-      $\texttt{arb}$ eine beliebige Belegungen aus dieser Menge aus.  Diese Belegung ist dann ein
-      \blue{Gegenbeispiel} für die Behauptung, dass die Formel \texttt{F} eine Tautologie ist.  
-      Dieses Gegenbeispiel wird als Ergebnis zurück gegeben.
+\item Zunächst berechnen wir die Menge \texttt{P} der aussagenlogischen Variablen, die in $f$ auftreten.
+\item Sodann berechnen wir mit Hilfe der in dem Modul $\mathtt{power}$ definierten Funktion
+      $\mathtt{allSubsets}$ die Liste \texttt{A} aller Teilmengen von \texttt{P}.  Jede als Menge dargestellte
+      aussagenlogische Belegung \texttt{I} ist ein Element dieser Liste.
+\item Anschließend prüfen wir für j\underline{ede} mögliche Belegung \texttt{I}, ob die Auswertung der Formel $f$ für die
+      Belegung \texttt{I} den Wert \texttt{True} ergibt und geben gegebenenfalls \texttt{True} zurück.
+\item Andernfalls geben wir die erste Belegung \texttt{I} zurück, für welche die Formel $f$ den Wert
+      \texttt{False} hat.
 \end{enumerate}
+
+\begin{figure}[!ht]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm
+                ]
+    def tautology(f):
+        "Check, whether the formula f is a tautology."
+        P = collectVars(f)
+        A = power.allSubsets(P)
+        if { evaluate(F, I) for I in A } == { True }:
+            return True
+        else:
+            return [I for I in A if not evaluate(F, I)][0]
+\end{Verbatim}
+\vspace*{-0.3cm}
+  \caption{Überprüfung der Allgemeingültigkeit einer aussagenlogischen Formel.}
+  \label{fig:tautology.py}
+\end{figure}
 
 \subsection{Nachweis der Allgemeingültigkeit durch Äquivalenz-Umformungen}
 Wollen wir nachweisen, dass eine Formel eine Tautologie ist, können wir uns prinzipiell
