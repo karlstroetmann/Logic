@@ -1235,16 +1235,24 @@ Prozedur
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
                 ]
-    elimGdw := procedure(F) {
-        match (F) {
-            case !G       : return !elimGdw(G);
-            case G && H   : return elimGdw(G) && elimGdw(H);
-            case G || H   : return elimGdw(G) || elimGdw(H);
-            case G => H   : return elimGdw(G) => elimGdw(H);
-            case G <==> H : return elimGdw((G => H) && (H => G));
-            default       : return F;  // F must be a propositional variable
-        }
-    };
+    def eliminateBiconditional(f):
+        "Eliminate the logical operator '↔' from the formula f."
+        if isinstance(f, str):   # This case covers propositional variables.
+            return f
+        if f[0] == '↔':
+            g, h = f[1:]
+            ge   = eliminateBiconditional(g)
+            he   = eliminateBiconditional(h)
+            return ('∧', ('→', ge, he), ('→', he, ge))
+        if f[0] == '¬':
+            g  = f[1]
+            ge = eliminateBiconditional(g)
+            return ('¬', g)
+        else:
+            op, g, h = f
+            ge       = eliminateBiconditional(g)
+            he       = eliminateBiconditional(h)
+            return (op, ge, he)
 \end{Verbatim}
 \vspace*{-0.3cm}
   \caption{Elimination von $\leftrightarrow$.}
@@ -1274,15 +1282,24 @@ Dadurch entfällt bei der Implementierung ein Fall.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
                 ]
-    elimFolgt := procedure(F) {
-        match (F) {
-            case !G     : return !elimFolgt(G);
-            case G && H : return  elimFolgt(G) && elimFolgt(H);
-            case G || H : return  elimFolgt(G) || elimFolgt(H);
-            case G => H : return  elimFolgt(!G || H);
-            default     : return F; 
-        }
-    };
+    def eliminateConditional(f):
+        "Eliminate the logical operator '→' from f."
+        if isinstance(f, str): 
+            return f
+        if f[0] == '→':
+            g, h = f[1:]
+            ge   = eliminateConditional(g)
+            he   = eliminateConditional(h)
+            return ('∨', ('¬', ge), he)
+        if f[0] == '¬':
+            g  = f[1]
+            ge = eliminateConditional(g)
+            return ('¬', g)
+        else:
+            op, g, h = f
+            ge       = eliminateConditional(g)
+            he       = eliminateConditional(h)
+            return (op, ge, he)
 \end{Verbatim}
 \vspace*{-0.3cm}
   \caption{Elimination von $\rightarrow$.}
@@ -1352,22 +1369,33 @@ spezifizieren wir ebenfalls durch rekursive Gleichungen:
                   numbers       = left,
                   numbersep     = -0.2cm,
                 ]
-    nnf := procedure(F) {
-        match (F) {
-            case !G     : return neg(G);
-            case G && H : return nnf(G) && nnf(H);
-            case G || H : return nnf(G) || nnf(H);
-            default     : return F; 
-        }
-    };
-    neg := procedure(F) {
-        match (F) {
-            case !G     : return nnf(G);
-            case G && H : return neg(G) || neg(H);
-            case G || H : return neg(G) && neg(H);
-            default     : return !F; 
-        }
-    };
+    def nnf(f):
+        "Compute the negation normal form of f."
+        if isinstance(f, str): 
+            return f
+        if f[0] == '¬':
+            g = f[1]
+            return neg(g)
+        if f[0] == '∧':
+            g, h = f[1:]
+            return ('∧', nnf(g), nnf(h))
+        if f[0] == '∨':
+            g, h = f[1:]
+            return ('∨', nnf(g), nnf(h))
+    
+    def neg(f):
+        "Compute the negation normal form of ¬f."
+        if isinstance(f, str): 
+            return ('¬', f)
+        if f[0] == '¬':
+            g = f[1]
+            return nnf(g)
+        if f[0] == '∧':
+            g, h = f[1:]
+            return ('∨', nnf(g), nnf(h))
+        if f[0] == '∨':
+            g, h = f[1:]
+            return ('∧', nnf(g), nnf(h))
 \end{Verbatim}
 \vspace*{-0.3cm}
   \caption{Berechnung der Negations-Normalform.}
@@ -1446,14 +1474,17 @@ Abbildung \ref{fig:knf} auf Seite \pageref{fig:knf} zeigt die Implementierung de
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
                 ]
-    cnf := procedure(f) {
-        match (f) {
-            case !g     : return { { !g } };
-            case g && h : return cnf(g) + cnf(h);
-            case g || h : return { k1 + k2 : k1 in cnf(g), k2 in cnf(h) };
-            default     : return { { f } }; // f is a variable
-        }
-    };
+    def cnf(f):
+        if isinstance(f, str): 
+            return { frozenset({f}) }
+        if f[0] == '¬':
+            return { frozenset({f}) }
+        if f[0] == '∧':
+            g, h = f[1:]
+            return cnf(g) | cnf(h)
+        if f[0] == '∨':
+            g, h = f[1:]
+            return { k1 | k2 for k1 in cnf(g) for k2 in cnf(h) }
 \end{Verbatim}
 \vspace*{-0.3cm}
   \caption{Berechnung der konjunktiven Normalform.}
@@ -1483,19 +1514,18 @@ unter GitHub.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
                 ]
-    normalize := procedure(f) {
-        n1 := elimGdw(f);
-        n2 := elimFolgt(n1);
-        n3 := nnf(n2);
-        n4 := cnf(n3);
-        return simplify(n4);
-    };
-    simplify := procedure(F) {
-        return { C : C in F | !isTrivial(C) };
-    };
-    isTrivial := procedure(C) {
-        return exists(p in C | !p in C);
-    };
+    def normalize (f):
+        n1 = eliminateBiconditional(f)
+        n2 = eliminateConditional(n1)
+        n3 = nnf(n2)
+        n4 = cnf(n3)
+        return simplify(n4)
+    
+    def simplify(Clauses):
+        return { C for C in Clauses if not isTrivial(C) }
+    
+    def isTrivial(Clause):
+        return any(('¬', p) in Clause for p in Clause)
 \end{Verbatim} 
 \vspace*{-0.3cm}
   \caption{Normalisierung einer Formel}
@@ -1512,12 +1542,12 @@ gilt.
 Es gibt verschiedene Möglichkeiten, diese Frage zu beantworten.  Ein Verfahren kennen wir
 schon: Zunächst überführen wir die Formel  $F_1 \wedge \cdots \wedge F_n \rightarrow G$ in
 konjunktive Normalform.  Wir erhalten dann eine Menge
-$\{K_1,\cdots,K_n\}$ von Klauseln, deren Konjunktion zu der  Formel
+$\{K_1,\cdots,K_m\}$ von Klauseln, deren Konjunktion zu der  Formel
 \\[0.2cm]
 \hspace*{1.3cm} $F_1 \wedge \cdots \wedge F_n \rightarrow G$
 \\[0.2cm] 
 äquivalent ist.  Diese Formel ist nun genau dann eine Tautologie, wenn
-jede der Klauseln $K_1$, $\cdots$, $K_n$ trivial ist.  
+jede der Klauseln $K_1$, $\cdots$, $K_m$ trivial ist.  
 
 Das oben dargestellte Verfahren ist aber sehr aufwendig.  Wir zeigen dies anhand eines
 Beispiels und wenden das Verfahren
@@ -1540,7 +1570,7 @@ ist es, die Formel $F$ mit Hilfe von \blue{Schluss-Regeln} aus den gegebenen For
 $F_1, \cdots, F_n$ \blue{herzuleiten}.
   Das Konzept einer Schluss-Regel wird in der nun folgenden Definition festgelegt.
 \begin{Definition}[Schluss-Regel]
-    Eine \blue{Schluss-Regel} ist eine Paar  $\langle \{F_1, \cdots, F_N\}, K \rangle$.
+    Eine \blue{Schluss-Regel} ist eine Paar  $\langle \{F_1, \cdots, F_n\}, K \rangle$.
     Dabei ist 
     $\{F_1, \cdots, F_n\}$ eine Menge von Formeln und $K$ ist eine einzelne Formel.  
     Die Formeln $F_1$, $\cdots$, $F_n$ bezeichnen wir als
