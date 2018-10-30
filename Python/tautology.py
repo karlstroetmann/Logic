@@ -29,10 +29,10 @@ def collectVars(F):
 
 def evaluate(F, I):
     "Evaluate the propositional formula F using the interpretation I"
-    if isinstance(F, str):
-        return F in I
     if F[0] == '⊤': return True
     if F[0] == '⊥': return False
+    if isinstance(F, str):
+        return F in I
     if F[0] == '¬': return not evaluate(F[1], I)
     if F[0] == '∧': return evaluate(F[1], I) and evaluate(F[2], I)
     if F[0] == '∨': return evaluate(F[1], I) or evaluate(F[2], I)
