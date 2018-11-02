@@ -145,8 +145,8 @@ gebildet werden.  Wir definieren die Menge der \blue{aussagenlogischen Formeln} 
 
       Hier steht $\verum$ für die Formel, die immer wahr ist, während $\falsum$ für die 
       Formel steht, die immer falsch ist.  Die Formel $\verum$ trägt den Namen
-      \blue{Verum},
-      für $\falsum$ sagen wir  \blue{Falsum}.
+      \blue{Verum}\footnote{Verum ist das lateinische Wort für ``wahr''.},  für $\falsum$ sagen wir  
+      \blue{Falsum}\footnote{Falsum ist das lateinische Wort für ``falsch''.}.
 \item Ist $p \in \mathcal{P}$, so gilt auch $p \in \mathcal{F}$.
 
       Jede aussagenlogische Variable ist also auch eine aussagenlogische Formel.
@@ -293,7 +293,7 @@ einfachsten durch die folgende Tabelle (Tabelle \ref{tab:aussagen-logik}) defini
    \texttt{False} & \texttt{False}  & \texttt{True}   & \texttt{False} & \texttt{False} & \texttt{True}     & \texttt{True}  \\
 \hline
   \end{tabular}}
-  \caption{Interpretation der Junktoren.}
+  \caption{Interpretation der Junktoren}
   \label{tab:aussagen-logik}
 \end{table}
 Nun können wir den Wert, den eine aussagenlogische Formel $f$ unter einer gegebenen
@@ -368,7 +368,7 @@ auftretende Teilformel eine Spalte enthält.  Tabelle \ref{tab:tautologie} auf S
    \texttt{False} & \texttt{False} & \texttt{True}  & \texttt{True} & \texttt{False} & \texttt{True}     & \texttt{True}  \\
 \hline
   \end{tabular}}
-  \caption{Berechnung der Wahrheitswerte von $(p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q$.}
+  \caption{Berechnung der Wahrheitswerte von $(p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q$}
   \label{tab:tautologie}
 \end{table}
 
@@ -544,7 +544,7 @@ Die Funktion \texttt{evaluate} erwartet zwei Argumente:
         if F[0] == '↔': return evaluate(F[1], I) == evaluate(F[2], I)
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Auswertung einer aussagenlogischen Formel.}
+  \caption{Auswertung einer aussagenlogischen Formel}
   \label{fig:evaluate.py}
 \end{figure} 
 
@@ -662,7 +662,7 @@ Wir diskutieren diese Programm nun Zeile für Zeile.
     print({ I for I in power(P) if allTrue(Fs, I) })
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Programm zur Aufkärung des Einbruchs.}
+  \caption{Programm zur Aufkärung des Einbruchs}
   \label{fig:Usual-Suspects.ipynb}
 \end{figure}
 
@@ -773,7 +773,7 @@ Wir demonstrieren dieses Verfahren anhand der ersten DeMorgan'schen Regel.
    \texttt{False} & \texttt{False} & \texttt{True}  & \texttt{True} & \texttt{False} & \texttt{True}     & \texttt{True}  \\
 \hline
   \end{tabular}}
-  \caption{Nachweis der ersten DeMorgan'schen Regel.}
+  \caption{Nachweis der ersten DeMorgan'schen Regel}
   \label{tab:deMorgan}
 \end{table}
 Wir erkennen, dass in Abbildung \ref{tab:deMorgan} in den letzten beiden Spalten in jeder Zeile dieselben Werte
@@ -850,7 +850,7 @@ zusammen gefasst haben, denn die Berechnung der Variablen verläuft in diesen F�
         return collectVars(f[1]) | collectVars(f[2]) 
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Überprüfung der Allgemeingültigkeit einer aussagenlogischen Formel.}
+  \caption{Überprüfung der Allgemeingültigkeit einer aussagenlogischen Formel}
   \label{fig:tautology.py-collectVars}
 \end{figure}
 
@@ -888,7 +888,7 @@ gezeigte Funktion arbeitet wie folgt:
             return [I for I in A if not evaluate(F, I)][0]
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Überprüfung der Allgemeingültigkeit einer aussagenlogischen Formel.}
+  \caption{Überprüfung der Allgemeingültigkeit einer aussagenlogischen Formel}
   \label{fig:tautology.py}
 \end{figure}
 
@@ -1172,63 +1172,60 @@ Damit ist die Formel in KNF überführt.
 
 \subsection{Berechnung der konjunktiven Normalform in \textsl{Python}}
 Wir geben nun eine Reihe von Prozeduren an, mit deren Hilfe sich eine gegebene
-Formel $F$ in konjunktive Normalform überführen lässt.  Diese Prozeduren sind Teil des Programms
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{knf.stlx}.
+Formel $F$ in konjunktive Normalform überführen lässt.  Diese Prozeduren sind Teil des Jupyter Notebooks
+\href{https://github.com/karlstroetmann/Logik/blob/master/Python/CNF.ipynb}{CNF.ipynb}.
 Wir beginnen mit der
 Prozedur 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{elimGdw}: \mathcal{F} \rightarrow \mathcal{F}$
+$\texttt{elimBiconditional}: \mathcal{F} \rightarrow \mathcal{F}$
 \\[0.2cm]
 welche die Aufgabe hat, eine vorgegebene aussagenlogische Formel \texttt{F} in eine äquivalente Formel
 umzuformen, die den Junktor ``$\leftrightarrow$'' nicht mehr enthält.  Die Funktion
-$\texttt{elimGdw}(\mathtt{F})$ wird durch Induktion über den Aufbau der aussagenlogischen Formel \texttt{F} definiert.
+$\texttt{elimBiconditional}(f)$ wird durch Induktion über den Aufbau der aussagenlogischen Formel $f$ definiert.
 Dazu stellen wir zunächst rekursive Gleichungen auf,
-die das Verhalten der Funktion $\texttt{elimGdw}()$ beschreiben:
+die das Verhalten der Funktion $\texttt{elimBiconditional}$ beschreiben:
 \begin{enumerate}
-\item Wenn \texttt{F} eine
+\item Wenn $f$ eine
       Aussage-Variable $p$ ist, so ist nichts zu tun:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{elimGdw}(p) = p$ \quad für alle $p \in \mathcal{P}$.
-\item Die Fälle, in denen \texttt{F} Verum oder Falsum ist, sind ebenfalls trivial:
+      $\texttt{elimBiconditional}(p) = p$ \quad für alle $p \in \mathcal{P}$.
+\item Die Fälle, in denen $f$ gleich dem Verum oder dem Falsum ist, sind ebenfalls trivial:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{elimGdw}(\verum) = \verum$ \quad und \quad
-      $\texttt{elimGdw}(\falsum) = \falsum$.
-\item Hat \texttt{F} die Form $\mathtt{F} = \neg \texttt{G}$, so eliminieren wir den Junktor
-      ``$\leftrightarrow$'' aus der Formel \texttt{G} und negieren die resultierende Formel: \\[0.2cm]
+      $\texttt{elimBiconditional}(\verum) = \verum$ \quad und \quad
+      $\texttt{elimBiconditional}(\falsum) = \falsum$.
+\item Hat $f$ die Form $f = \neg g$, so eliminieren wir den Junktor
+      ``$\leftrightarrow$'' aus der Formel $g$ und negieren die resultierende Formel: \\[0.2cm]
       \hspace*{1.3cm} 
-      $\texttt{elimGdw}(\neg \texttt{G}) = \neg \texttt{elimGdw}(\texttt{G})$.
-\item Im Falle $\texttt{F} = \texttt{G}_1 \wedge \texttt{G}_2$ eliminieren wir den Junktor
-      ``$\leftrightarrow$'' aus den Formeln $\texttt{G}_1$ und $\texttt{G}_2$: \\[0.2cm]
+      $\texttt{elimBiconditional}(\neg g) = \neg \texttt{elimBiconditional}(g)$.
+\item Im Falle $f = g_1 \wedge g_2$ eliminieren wir rekursiv den Junktor
+      ``$\leftrightarrow$'' aus den Formeln $g_1$ und $g_2$: \\[0.2cm]
       \hspace*{1.3cm} 
-      $\texttt{elimGdw}(\texttt{G}_1 \wedge \texttt{G}_2) = \texttt{elimGdw}(\texttt{G}_1) \wedge \texttt{elimGdw}(\texttt{G}_2)$.
-\item Im Falle $\texttt{F} = \texttt{G}_1 \vee \texttt{G}_2$ eliminieren wir den Junktor
-      ``$\leftrightarrow$'' aus den Formeln $\texttt{G}_1$ und $\texttt{G}_2$: \\[0.2cm]
+      $\texttt{elimBiconditional}(g_1 \wedge g_2) = \texttt{elimBiconditional}(g_1) \wedge \texttt{elimBiconditional}(g_2)$.
+\item Im Falle $f = g_1 \vee g_2$ eliminieren wir den Junktor
+      ``$\leftrightarrow$'' aus den Formeln $g_1$ und $g_2$: \\[0.2cm]
       \hspace*{1.3cm} 
-      $\texttt{elimGdw}(\texttt{G}_1 \vee \texttt{G}_2) = \texttt{elimGdw}(\texttt{G}_1) \vee \texttt{elimGdw}(\texttt{G}_2)$.
-\item Im Falle $\texttt{F} = \texttt{G}_1 \rightarrow \texttt{G}_2$ eliminieren wir den Junktor
-      ``$\leftrightarrow$'' aus den Formeln $\texttt{G}_1$ und $\texttt{G}_2$: \\[0.2cm]
+      $\texttt{elimBiconditional}(g_1 \vee g_2) = \texttt{elimBiconditional}(g_1) \vee \texttt{elimBiconditional}(g_2)$.
+\item Im Falle $f = g_1 \rightarrow g_2$ eliminieren wir den Junktor
+      ``$\leftrightarrow$'' aus den Formeln $g_1$ und $g_2$: \\[0.2cm]
       \hspace*{1.3cm} 
-      $\texttt{elimGdw}(\texttt{G}_1 \rightarrow \texttt{G}_2) = \texttt{elimGdw}(\texttt{G}_1) \rightarrow \texttt{elimGdw}(\texttt{G}_2)$.
-\item Hat \texttt{F} die Form $\texttt{F} = \texttt{G}_1 \leftrightarrow \texttt{G}_2$, so benutzen wir die
+      $\texttt{elimBiconditional}(g_1 \rightarrow g_2) = \texttt{elimBiconditional}(g_1) \rightarrow \texttt{elimBiconditional}(g_2)$.
+\item Hat $f$ die Form $f = g_1 \leftrightarrow g_2$, so benutzen wir die
       Äquivalenz \\[0.2cm]
       \hspace*{1.3cm} 
-      $(G_1 \leftrightarrow G_2) \leftrightarrow \bigl( (G_1 \rightarrow G_2) \wedge (G_2 \rightarrow G_1)\bigr)$.
+      $(g_1 \leftrightarrow g_2) \leftrightarrow \bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr)$.
       \\[0.2cm]
       Das führt auf die Gleichung:
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\texttt{elimGdw}(\texttt{G}_1 \leftrightarrow \texttt{G}_2) = \texttt{elimGdw}\bigl( (\texttt{G}_1 \rightarrow \texttt{G}_2) \wedge (\texttt{G}_2 \rightarrow \texttt{G}_1)\bigr)$. 
+      $\texttt{elimBiconditional}(g_1 \leftrightarrow g_2) = \texttt{elimBiconditional}\bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr)$. 
       \\[0.2cm]
-      Der Aufruf von \texttt{elimGdw} auf der rechten Seite der Gleichung ist notwendig,
-      denn der Junktor ``$\leftrightarrow$'' kann ja noch in $\texttt{G}_1$ und $\texttt{G}_2$ auftreten.
+      Der Aufruf von \texttt{elimBiconditional} auf der rechten Seite der Gleichung ist notwendig,
+      denn der Junktor ``$\leftrightarrow$'' kann ja noch in $g_1$ und $g_2$ auftreten.
 \end{enumerate}
-Abbildung
-\ref{fig:eliminate-gdw} auf Seite \pageref{fig:eliminate-gdw} zeigt die Implementierung der
-Prozedur 
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{elimGdw}}.
+
 
 \begin{figure}[!ht]
   \centering
@@ -1240,14 +1237,14 @@ Prozedur
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
                   ]
-    def eliminateBiconditional(f):
+    def elimBiconditional(f):
         "Eliminate the logical operator '↔' from the formula f."
         if isinstance(f, str):   # This case covers variables.
             return f
         if f[0] == '↔':
             g, h = f[1:]
-            ge   = eliminateBiconditional(g)
-            he   = eliminateBiconditional(h)
+            ge   = elimBiconditional(g)
+            he   = elimBiconditional(h)
             return ('∧', ('→', ge, he), ('→', he, ge))
         if f[0] == '⊤':
             return f
@@ -1255,18 +1252,45 @@ Prozedur
             return f
         if f[0] == '¬':
             g  = f[1]
-            ge = eliminateBiconditional(g)
-            return ('¬', g)
+            ge = elimBiconditional(g)
+            return ('¬', ge)
         else:
             op, g, h = f
-            ge       = eliminateBiconditional(g)
-            he       = eliminateBiconditional(h)
+            ge       = elimBiconditional(g)
+            he       = elimBiconditional(h)
             return (op, ge, he)
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Elimination von $\leftrightarrow$.}
-  \label{fig:eliminate-gdw}
+  \caption{Elimination von $\leftrightarrow$}
+  \label{fig:elimBiconditional}
 \end{figure} 
+Abbildung
+\ref{fig:elimBiconditional} auf Seite \pageref{fig:elimBiconditional} zeigt die Implementierung der
+Prozedur 
+\href{https://github.com/karlstroetmann/Logik/blob/master/Python/CNF.ipynb}{\texttt{elimBiconditional}}.
+\begin{enumerate}
+\item In Zeile 3 prüft der Funktions-Aufruf $\texttt{isinstance}(f, \mathtt{str})$, ob $f$ ein String ist.  In diesem Fall
+      muss $f$ eine aussagenlogische Variable sein, denn alle anderen aussagenlogischen Formeln werden als
+      geschachtelte Listen dargestellt.  Daher wird $f$ unverändert zurück gegeben.
+\item In Zeile 10 und 12 behandeln wir die Fälle, dass $f$ gleich dem Verum oder dem Falsum ist.
+      Hier ist zu beachten, dass diese Formeln ebenfalls als geschachtelte Tupel dargestellt werden,
+      Verum wird beispielsweise als das Tuple \texttt{('⊤',)} dargestellt, während Falsum von uns in
+      \textsl{Python} durch das Tuple \texttt{('⊥',)} repräsentiert wird.
+\item In Zeile 14 betrachten wir den Fall, dass $f$ eine Negation ist.  Dann hat $f$ Form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{('¬', $g$)}  
+      \\[0.2cm]
+      und wir müssen den Junktor ``$\leftrightarrow$'' rekursiv aus $g$ entfernen.
+\item In den jetzt noch verbleibenden Fällen hat $f$ die Form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{('$o$', $g$, $h$)}  \quad mit $o \in \{\rightarrow, \wedge, \vee\}$.
+      \\[0.2cm]
+      In diesen Fällen muss der Junktor ``$\leftrightarrow$'' rekursiv aus den Teilformeln $g$ und $h$ entfernt
+      werden. 
+\end{enumerate}
+
 
 Als nächstes betrachten wir die Prozedur zur Elimination des Junktors ``$\rightarrow$''. 
 Abbildung
@@ -1307,7 +1331,7 @@ Dadurch entfällt bei der Implementierung ein Fall.
         if f[0] == '¬':
             g  = f[1]
             ge = eliminateConditional(g)
-            return ('¬', g)
+            return ('¬', ge)
         else:
             op, g, h = f
             ge       = eliminateConditional(g)
@@ -1315,11 +1339,11 @@ Dadurch entfällt bei der Implementierung ein Fall.
             return (op, ge, he)
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Elimination von $\rightarrow$.}
+  \caption{Elimination von $\rightarrow$}
   \label{fig:eliminate-folgt}
 \end{figure}
  
-Als nächstes zeigen wir die Routinen zur Berechnung der Negations-Normalform.
+Als nächstes zeigen wir die Funktionen zur Berechnung der Negations-Normalform.
 Abbildung
 \ref{fig:nnf} auf Seite \pageref{fig:nnf} zeigt die Implementierung der Funktionen
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{nnf}} und
@@ -1331,7 +1355,7 @@ Negations-Normalform von \texttt{F} berechnet, es gilt also
 \hspace*{1.3cm}
 $\texttt{neg}(\texttt{F}) = \texttt{nnf}(\neg \texttt{F})$.
 \\[0.2cm]
-  Die eigentliche Arbeit wird dabei in der
+ Die eigentliche Arbeit wird dabei in der
 Funktion \texttt{neg} erledigt, denn dort werden die beiden DeMorgan'schen Gesetze 
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1359,7 +1383,10 @@ spezifizieren wir ebenfalls durch rekursive Gleichungen:
        \end{array}
       $
 
-      Also haben wir: \hspace*{3cm} $\texttt{neg}\bigl(F_1 \wedge F_2 \bigr) = \texttt{neg}(F_1) \vee \texttt{neg}(F_2)$.
+      Also haben wir:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{neg}\bigl(F_1 \wedge F_2 \bigr) = \texttt{neg}(F_1) \vee \texttt{neg}(F_2)$.
 \item $\begin{array}[t]{cl}
          & \texttt{neg}\bigl(F_1 \vee F_2 \bigr)        \\[0.1cm]
        = & \texttt{nnf}\bigl(\neg(F_1 \vee F_2) \bigr)  \\[0.1cm]
@@ -1369,7 +1396,10 @@ spezifizieren wir ebenfalls durch rekursive Gleichungen:
        \end{array}
       $
 
-      Also haben wir: \hspace*{3cm} $\texttt{neg}\bigl(F_1 \vee F_2 \bigr) = \texttt{neg}(F_1) \wedge \texttt{neg}(F_2)$.
+      Also haben wir: 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{neg}\bigl(F_1 \vee F_2 \bigr) = \texttt{neg}(F_1) \wedge \texttt{neg}(F_2)$.
 \end{enumerate}
 
 \begin{figure}[!ht]
@@ -1419,9 +1449,11 @@ spezifizieren wir ebenfalls durch rekursive Gleichungen:
             return ('∧', nnf(g), nnf(h))
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Berechnung der Negations-Normalform.}
+  \caption{Berechnung der Negations-Normalform}
   \label{fig:nnf}
 \end{figure}
+\pagebreak
+
 
 Als letztes stellen wir die Prozeduren vor, mit denen die Formeln, die bereits in
 Negations-Normalform sind, ausmultipliziert und dadurch in konjunktive
@@ -1429,60 +1461,68 @@ Normalform gebracht werden.  Gleichzeitig werden  die zu normalisierenden Formel
 in die Mengen-Schreibweise transformiert, d.h.~die Formeln werden als Mengen von Mengen 
 von Literalen dargestellt.  Dabei interpretieren wir eine Menge von Literalen als
 Disjunktion der Literale und eine Menge von Klauseln interpretieren wir als Konjunktion
-der Klauseln.
-Abbildung \ref{fig:knf} auf Seite \pageref{fig:knf} zeigt die Implementierung der Funktion
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{cnf}}.
-(Der Name \texttt{cnf} ist die Abkürzung von \emph{\underline{c}onjunctive \underline{n}ormal \underline{f}orm}.)
+der Klauseln.  Mathematisch ist unser Ziel also, eine Funktion
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{cnf}: \texttt{NNF} \rightarrow \texttt{KNF}$
+\\[0.2cm]
+zu definieren, so dass $\texttt{cnf}(f)$ für eine Formel $f$, die in Negations-Normalform vorliegt, eine Menge von Klauseln als
+Ergebnis zurück gibt, deren Konjunktion zu $f$ äquivalent ist.  Die Definition von $\texttt{cnf}(f)$ erfolgt
+rekursiv.
 \begin{enumerate}
-\item Falls die Formel \texttt{F}, die wir in KNF transformieren wollen, die Form \\[0.2cm]
-      \hspace*{1.3cm} $F = \neg G$ \\[0.2cm]
-      hat, so muss $G$ eine Aussage-Variable sein, denn \texttt{F} ist ja bereits in
-      Negations-Normalform und damit kann das Negations-Zeichen nur noch vor einer aussagenlogischen Variablen
-      stehen.  Damit können wir \texttt{F} in eine Klausel in Mengen-Schreibweise transformieren,  
-      indem wir $\mathtt{F}$ als die Menge $\{ !\texttt{G}\}$ darstellen.   Da eine KNF eine Menge von Klauseln ist, ist dann 
-      $\bigl\{\{ !\texttt{G} \}\bigr\}$ das Ergebnis, das wir in Zeile 3 zurück geben.
-\item Falls $F = F_1 \wedge F_2$ ist, transformieren wir zunächst $F_1$ und $F_2$ in KNF.
-      Dabei erhalten wir \\[0.2cm]
-      \hspace*{1.3cm} 
-      $\texttt{cnf}(F_1) = \{ H_1, \cdots, H_m \}$ \quad und \quad
-      $\texttt{cnf}(F_2) = \{ K_1, \cdots, K_n \}$. \\[0.2cm]
-      Dabei sind die $H_i$ und die $K_j$ Klauseln.  Da wir eine Menge von Klauseln als Konjunktion
-      der in der Menge enthaltenen Klauseln interpretieren, reicht es aus, 
-      die Vereinigung der Mengen $\texttt{cnf}(F_1)$ und $\texttt{cnf}(F_2)$ zu bilden,
-      wir haben also \\[0.2cm]
-      \hspace*{1.3cm} $\texttt{cnf}(F_1 \wedge F_2) = \texttt{cnf}(F_1) \cup  \texttt{cnf}(F_2)$.
+\item Falls $f$ eine aussagenlogische Variable ist, geben wir als Ergebnis eine Menge zurück, die genau eine
+      Klausel enthält.  Diese Klausel ist selbst wieder eine Menge von Literalen, die als einziges Literal die
+      aussagenlogische Variable $f$ enthält:
       \\[0.2cm]
-      Das liefert Zeile 4 der Implementierung.
-\item Falls $F = F_1 \vee F_2$ ist, transformieren wir zunächst $F_1$ und $F_2$ in KNF.
+      \hspace*{1.3cm}
+      $\texttt{cnf}(f) := \bigl\{\{f\}\bigr\}$ \quad falls $f \in \mathcal{P}$,
+\item Falls $f$ eine Negation ist, dann muss gelten
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $f = \neg p$ \quad mit $p \in \mathcal{P}$,
+      \\[0.2cm]
+      denn $f$ ist ja in Negations-Normalform und in einer solchen Formel kann der Negations-Operator nur auf
+      eine aussagenlogische Variable angewendet werden.  Daher ist $f$ ein Literal und wir geben als Ergebnis
+      eine Menge zurück, die genau eine Klausel enthält.  Diese Klausel ist selbst wieder eine Menge von
+      Literalen, die als einziges Literal die Formel $f$ enthält:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{cnf}(\neg p) := \bigl\{\{\neg p\}\bigr\}$ \quad falls $p \in \mathcal{P}$.
+\item Falls $f$ eine Konjunktion ist und also $f = g \wedge h$ gilt,  dann können wir die 
+      zunächst die Formeln $g$ und $h$ in KNF transformieren.  Dabei erhalten wir dann Mengen von Klauseln 
+      $\texttt{cnf}(g)$ und $\texttt{cnf}(h)$.  Da wir eine Menge von Klauseln als Konjunktion der in der Menge
+      enthaltenen Klauseln interpretieren, reicht es aus,  
+      die Vereinigung der Mengen $\texttt{cnf}(f)$ und $\texttt{cnf}(g)$ zu bilden,
+      wir haben also \\[0.2cm]
+      \hspace*{1.3cm} $\texttt{cnf}(g \wedge h) = \texttt{cnf}(g) \cup  \texttt{cnf}(h)$.
+\item Falls $f = g \vee h$ ist, transformieren wir zunächst $g$ und $h$ in KNF.
       Dabei erhalten wir \\[0.2cm]
       \hspace*{1.3cm} 
-      $\texttt{cnf}(F_1) = \{ H_1, \cdots, H_m \}$ \quad und \quad
-      $\texttt{cnf}(F_2) = \{ K_1, \cdots, K_n \}$. \\[0.2cm]
-      Dabei sind die $H_i$ und die $K_j$ Klauseln.  Um nun die KNF von $F_1 \vee F_2$ zu
+      $\texttt{cnf}(g) = \{ g_1, \cdots, g_m \}$ \quad und \quad
+      $\texttt{cnf}(h) = \{ h_1, \cdots, h_n \}$. \\[0.2cm]
+      Dabei sind die $g_i$ und die $h_j$ Klauseln.  Um nun die KNF von $g \vee h$ zu
       bilden, rechnen wir wie folgt: 
       $$
       \begin{array}[c]{ll}
-        & F_1 \vee F_2  \\[0.2cm]
-      \Leftrightarrow & (H_1 \wedge \cdots \wedge H_m) \vee (K_1 \wedge \cdots \wedge K_n) \\[0.2cm]
-      \Leftrightarrow & (H_1 \vee K_1) \quad \wedge \quad \cdots \quad \wedge \quad (H_m \vee K_1) \quad \wedge \\ 
+        & g \vee h  \\[0.2cm]
+      \Leftrightarrow & (k_1 \wedge \cdots \wedge k_m) \vee (l_1 \wedge \cdots \wedge l_n) \\[0.2cm]
+      \Leftrightarrow & (k_1 \vee l_1) \quad \wedge \quad \cdots \quad \wedge \quad (k_m \vee l_1) \quad \wedge \\ 
                       & \qquad \vdots     \hspace*{4cm} \vdots                \\
-                      & (H_1 \vee K_n) \quad \wedge \quad \cdots \quad \wedge \quad (H_m \vee K_n) \\[0.2cm] 
-      \Leftrightarrow & \bigl\{ H_i \vee K_j : i \in \{ 1, \cdots, m\}, j \in \{ 1, \cdots, n \} \bigr\} \\ 
+                      & (k_1 \vee l_n) \quad \wedge \quad \cdots \quad \wedge \quad (k_m \vee l_n) \\[0.2cm] 
+      \Leftrightarrow & \bigl\{ k_i \vee l_j : i \in \{ 1, \cdots, m\}, j \in \{ 1, \cdots, n \} \bigr\} \\ 
       \end{array}
       $$
       Berücksichtigen wir noch, dass Klauseln in der Mengen-Schreibweise als Mengen von
       Literalen aufgefasst werden, die implizit disjunktiv verknüpft werden, so können wir
-      für $H_i \vee K_j$ auch $H_i \cup K_j$ schreiben.  
-      Insgesamt erhalten wir damit \\[0.2cm]
-      \hspace*{1.3cm} 
-      $\texttt{cnf}(F_1 \vee F_2) = \bigl\{ H \cup K \mid H \in \texttt{cnf}(F_1) \;\wedge\; K \in \texttt{cnf}(F_2) \bigr\}$.
+      für $k_i \vee l_j$ auch $k_i \cup l_j$ schreiben.  
+      Insgesamt erhalten wir damit 
       \\[0.2cm]
-      Das liefert die Zeile 5 der Implementierung der Prozedur \texttt{cnf}.
-\item Falls die Formel \texttt{F}, die wir in KNF transformieren wollen, eine Aussage-Variable
-      ist, so transformieren wir \texttt{F} zunächst in eine Klausel. Das liefert $\{F\}$.  
-      Da eine KNF eine Menge von Klauseln ist, ist die KNF dann $\bigl\{\{F\}\bigr\}$.
-      Dieses Ergebnis geben wir in Zeile 6 zurück.
+      \hspace*{1.3cm} 
+      $\texttt{cnf}(g \vee h) = \bigl\{ k \cup l \mid k \in \texttt{cnf}(g) \;\wedge\; l \in \texttt{cnf}(h) \bigr\}$.
 \end{enumerate}
+Abbildung \ref{fig:cnf} auf Seite \pageref{fig:cnf} zeigt die Implementierung der Funktion
+\href{https://github.com/karlstroetmann/Logik/blob/master/Python/CNF.ipynb}{\texttt{cnf}}.
+(Der Name \texttt{cnf} ist die Abkürzung von \emph{\underline{c}onjunctive \underline{n}ormal \underline{f}orm}.)
 
 \begin{figure}[!ht]
   \centering
@@ -1511,8 +1551,8 @@ Abbildung \ref{fig:knf} auf Seite \pageref{fig:knf} zeigt die Implementierung de
             return { k1 | k2 for k1 in cnf(g) for k2 in cnf(h) }
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Berechnung der konjunktiven Normalform.}
-  \label{fig:knf}
+  \caption{Berechnung der konjunktiven Normalform}
+  \label{fig:cnf}
 \end{figure}
 
 Zum Abschluss zeigen wir in Abbildung \ref{fig:normalize} auf Seite \pageref{fig:normalize}
@@ -1539,7 +1579,7 @@ unter GitHub.
                   xrightmargin  = 0.0cm
                 ]
     def normalize (f):
-        n1 = eliminateBiconditional(f)
+        n1 = elimBiconditional(f)
         n2 = eliminateConditional(n1)
         n3 = nnf(n2)
         n4 = cnf(n3)
@@ -2000,7 +2040,7 @@ sind.
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Verschiedene Hilfsprozeduren, die in Abbildung \ref{fig:completeness.stlx-2} genutzt werden.}
+\caption{Hilfsprozeduren, die in Abbildung \ref{fig:completeness.stlx-2} genutzt werden}
 \label{fig:completeness.stlx-1}
 \end{figure}
 \pagebreak
@@ -2047,7 +2087,7 @@ definiert ist:
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Die Funktion \texttt{saturate}.}
+\caption{Die Funktion \texttt{saturate}}
 \label{fig:completeness.stlx-2}
 \end{figure}
 
@@ -2124,7 +2164,7 @@ Zeile 20 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Die Funktion \texttt{findValuation}.}
+\caption{Die Funktion \texttt{findValuation}}
 \label{fig:completeness.stlx-3}
 \end{figure}
 
@@ -2770,7 +2810,7 @@ Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{davisPutnam}.}
+  \caption{Die Prozedur \texttt{davisPutnam}}
   \label{fig:davisPutnam}
 \end{figure} 
 
@@ -2806,7 +2846,7 @@ gezeigt.
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{saturate}.}
+  \caption{Die Prozedur \texttt{saturate}}
   \label{fig:saturate}
 \end{figure} 
 Die Implementierung von \texttt{saturate} funktioniert wie folgt: 
@@ -2867,7 +2907,7 @@ Die Implementierung setzt diese Definition unmittelbar um.
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{reduce}.}
+  \caption{Die Prozedur \texttt{reduce}}
   \label{fig:reduce}
 \end{figure} 
 
@@ -2911,7 +2951,7 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozeduren \texttt{select} und \texttt{negateLiteral}.}
+  \caption{Die Prozeduren \texttt{select} und \texttt{negateLiteral}}
   \label{fig:solve-aux}
 \end{figure}
 
@@ -2967,7 +3007,7 @@ sind, und kann damit Figuren, die sich auf diesen Feldern befinden, schlagen.
 \multiput(4.5,5.75)(0,-1){5}{\vector(0,-1){0.5}}
 \end{picture}
 \vspace*{-1.0cm}
-  \caption{Das 8-Damen-Problem.}
+  \caption{Das 8-Damen-Problem}
   \label{fig:queens-problem}
 \end{figure}
 
@@ -3076,7 +3116,7 @@ Vereinfachung habe ich dort statt $\texttt{@Var}(i,j)$ nur $\texttt{Var}(i,j)$ g
 
 \end{picture}
 \vspace*{-1.0cm}
-  \caption{Zuordnung der Variablen.}
+  \caption{Zuordnung der Variablen}
   \label{fig:queens-assign}
 \end{figure}
 
@@ -3132,7 +3172,7 @@ den Wert \texttt{True} hat.
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{atMostOne}.}
+  \caption{Die Prozedur \texttt{atMostOne}}
   \label{fig:atMostOne}
 \end{figure}
 
@@ -3168,7 +3208,7 @@ als Menge von Klauseln liefert.
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{atMostOneInRow}.}
+  \caption{Die Prozedur \texttt{atMostOneInRow}}
   \label{fig:atMostOneInRow}
 \end{figure}
 
@@ -3212,7 +3252,7 @@ Davis und Putnam arbeitet mit einer Menge von Klauseln.
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{oneInColumn}.}
+  \caption{Die Prozedur \texttt{oneInColumn}}
   \label{fig:oneInColumn}
 \end{figure}
 
@@ -3263,7 +3303,7 @@ Prozedur \texttt{atMostOneInUpperDiagonal} mit.  Diese Prozedur ist in Abbildung
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{atMostOneInUpperDiagonal}.}
+  \caption{Die Prozedur \texttt{atMostOneInUpperDiagonal}}
   \label{fig:atMostOneInUpperDiagonal}
 \end{figure}
 
@@ -3299,7 +3339,7 @@ Prozedur \texttt{atMostOneInLowerDiagonal} mit. Diese Prozedur ist in Abbildung
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{atMostOneInLowerDiagonal}.}
+  \caption{Die Prozedur \texttt{atMostOneInLowerDiagonal}}
   \label{fig:atMostOneInLowerDiagonal}
 \end{figure}
 
@@ -3339,7 +3379,7 @@ die Vereinigung dieser Mengen.
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{allClauses}.}
+  \caption{Die Prozedur \texttt{allClauses}}
   \label{fig:allClauses}
 \end{figure}
 
@@ -3376,7 +3416,7 @@ Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Die Prozedur \texttt{solve}.}
+\caption{Die Prozedur \texttt{solve}}
 \label{fig:davisPutnam:solve}
 \end{figure}
 
@@ -3420,7 +3460,7 @@ Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Die Prozedur $\texttt{printBoard}()$.}
+\caption{Die Prozedur $\texttt{printBoard}()$}
 \label{fig:printBoard}
 \end{figure}
 
@@ -3450,7 +3490,7 @@ sehen Sie in Abbildung \ref{fig:queens-solution}.
          \vrule width1pt}
    \hrule height1pt}
 
-  \caption{Eine Lösung des 8-Damen-Problems.}
+  \caption{Eine Lösung des 8-Damen-Problems}
   \label{fig:queens-solution}
 \end{figure}
 
