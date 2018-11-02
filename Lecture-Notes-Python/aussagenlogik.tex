@@ -1172,7 +1172,7 @@ Damit ist die Formel in KNF überführt.
 
 \subsection{Berechnung der konjunktiven Normalform in \textsl{Python}}
 Wir geben nun eine Reihe von Prozeduren an, mit deren Hilfe sich eine gegebene
-Formel $F$ in konjunktive Normalform überführen lässt.  Diese Prozeduren sind Teil des Jupyter Notebooks
+Formel $f$ in konjunktive Normalform überführen lässt.  Diese Prozeduren sind Teil des Jupyter Notebooks
 \href{https://github.com/karlstroetmann/Logik/blob/master/Python/CNF.ipynb}{CNF.ipynb}.
 Wir beginnen mit der
 Prozedur 
@@ -1180,7 +1180,7 @@ Prozedur
 \hspace*{1.3cm}
 $\texttt{elimBiconditional}: \mathcal{F} \rightarrow \mathcal{F}$
 \\[0.2cm]
-welche die Aufgabe hat, eine vorgegebene aussagenlogische Formel \texttt{F} in eine äquivalente Formel
+welche die Aufgabe hat, eine vorgegebene aussagenlogische Formel $f$ in eine äquivalente Formel
 umzuformen, die den Junktor ``$\leftrightarrow$'' nicht mehr enthält.  Die Funktion
 $\texttt{elimBiconditional}(f)$ wird durch Induktion über den Aufbau der aussagenlogischen Formel $f$ definiert.
 Dazu stellen wir zunächst rekursive Gleichungen auf,
@@ -1197,7 +1197,7 @@ die das Verhalten der Funktion $\texttt{elimBiconditional}$ beschreiben:
       $\texttt{elimBiconditional}(\verum) = \verum$ \quad und \quad
       $\texttt{elimBiconditional}(\falsum) = \falsum$.
 \item Hat $f$ die Form $f = \neg g$, so eliminieren wir den Junktor
-      ``$\leftrightarrow$'' aus der Formel $g$ und negieren die resultierende Formel: \\[0.2cm]
+      ``$\leftrightarrow$'' rekursiv aus der Formel $g$ und negieren die resultierende Formel: \\[0.2cm]
       \hspace*{1.3cm} 
       $\texttt{elimBiconditional}(\neg g) = \neg \texttt{elimBiconditional}(g)$.
 \item Im Falle $f = g_1 \wedge g_2$ eliminieren wir rekursiv den Junktor
@@ -1222,7 +1222,7 @@ die das Verhalten der Funktion $\texttt{elimBiconditional}$ beschreiben:
       \hspace*{1.3cm} 
       $\texttt{elimBiconditional}(g_1 \leftrightarrow g_2) = \texttt{elimBiconditional}\bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr)$. 
       \\[0.2cm]
-      Der Aufruf von \texttt{elimBiconditional} auf der rechten Seite der Gleichung ist notwendig,
+      Der Aufruf der Funktion \texttt{elimBiconditional} auf der rechten Seite der Gleichung ist notwendig,
       denn der Junktor ``$\leftrightarrow$'' kann ja noch in $g_1$ und $g_2$ auftreten.
 \end{enumerate}
 
@@ -1271,11 +1271,12 @@ Prozedur
 \begin{enumerate}
 \item In Zeile 3 prüft der Funktions-Aufruf $\texttt{isinstance}(f, \mathtt{str})$, ob $f$ ein String ist.  In diesem Fall
       muss $f$ eine aussagenlogische Variable sein, denn alle anderen aussagenlogischen Formeln werden als
-      geschachtelte Listen dargestellt.  Daher wird $f$ unverändert zurück gegeben.
+      geschachtelte Listen dargestellt.  Daher wird $f$ in diesem Fall unverändert zurück gegeben.
 \item In Zeile 10 und 12 behandeln wir die Fälle, dass $f$ gleich dem Verum oder dem Falsum ist.
       Hier ist zu beachten, dass diese Formeln ebenfalls als geschachtelte Tupel dargestellt werden,
       Verum wird beispielsweise als das Tuple \texttt{('⊤',)} dargestellt, während Falsum von uns in
-      \textsl{Python} durch das Tuple \texttt{('⊥',)} repräsentiert wird.
+      \textsl{Python} durch das Tuple \texttt{('⊥',)} repräsentiert wird.  Auch in diesem Fall wird $f$
+      unverändert zurück gegeben.
 \item In Zeile 14 betrachten wir den Fall, dass $f$ eine Negation ist.  Dann hat $f$ Form
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -1315,7 +1316,7 @@ Dadurch entfällt bei der Implementierung ein Fall.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
                 ]
-    def eliminateConditional(f):
+    def elimConditional(f):
         "Eliminate the logical operator '→' from f."
         if isinstance(f, str): 
             return f
@@ -1325,17 +1326,17 @@ Dadurch entfällt bei der Implementierung ein Fall.
             return f
         if f[0] == '→':
             g, h = f[1:]
-            ge   = eliminateConditional(g)
-            he   = eliminateConditional(h)
+            ge   = elimConditional(g)
+            he   = elimConditional(h)
             return ('∨', ('¬', ge), he)
         if f[0] == '¬':
             g  = f[1]
-            ge = eliminateConditional(g)
+            ge = elimConditional(g)
             return ('¬', ge)
         else:
             op, g, h = f
-            ge       = eliminateConditional(g)
-            he       = eliminateConditional(h)
+            ge       = elimConditional(g)
+            he       = elimConditional(h)
             return (op, ge, he)
 \end{Verbatim}
 \vspace*{-0.3cm}
@@ -1348,59 +1349,65 @@ Abbildung
 \ref{fig:nnf} auf Seite \pageref{fig:nnf} zeigt die Implementierung der Funktionen
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{nnf}} und
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{neg}},
-die sich wechselseitig aufrufen.  Dabei berechnet \texttt{neg(F)}
-die Negations-Normalform von $\neg \texttt{F}$, während \texttt{nnf(F)} die
-Negations-Normalform von \texttt{F} berechnet, es gilt also
+die sich wechselseitig aufrufen.  Dabei berechnet \texttt{nnf($f$)} die Negations-Normalform von $f$, während  
+\texttt{neg($f$)} die Negations-Normalform von $\neg f$ berechnet,  es gilt also
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{neg}(\texttt{F}) = \texttt{nnf}(\neg \texttt{F})$.
+$\texttt{neg}(\texttt{F}) = \texttt{nnf}(\neg \texttt{f})$.
 \\[0.2cm]
  Die eigentliche Arbeit wird dabei in der
 Funktion \texttt{neg} erledigt, denn dort werden die beiden DeMorgan'schen Gesetze 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\neg (F \wedge G) \leftrightarrow (\neg F \vee \neg G)$ \quad und \quad 
-$\neg (F \vee G) \leftrightarrow (\neg F \wedge \neg G)$ 
+$\neg (f \wedge g) \leftrightarrow (\neg f \vee \neg g)$ \quad und \quad 
+$\neg (f \vee g) \leftrightarrow (\neg f \wedge \neg g)$ 
 \\[0.2cm]
 angewendet.  Wir beschreiben die Umformung in Negations-Normalform durch 
 die folgenden Gleichungen:
 \begin{enumerate}
-\item $\texttt{nnf}(\neg \texttt{F}) = \texttt{neg}(\texttt{F})$,
-\item $\texttt{nnf}(\texttt{F}_1 \wedge \texttt{F}_2) = \texttt{nnf}(\texttt{F}_1) \wedge \texttt{nnf}(\texttt{F}_2)$,
-\item $\texttt{nnf}(\texttt{F}_1 \vee \texttt{F}_2) = \texttt{nnf}(\texttt{F}_1) \vee \texttt{nnf}(\texttt{F}_2)$.
+\item $\texttt{nnf}(p) = p$ \quad für alle $p \in \mathcal{P}$,
+\item $\texttt{nnf}(\verum) = \verum$,
+\item $\texttt{nnf}(\falsum) = \falsum$,
+\item $\texttt{nnf}(\neg \texttt{f}) = \texttt{neg}(\texttt{f})$,
+\item $\texttt{nnf}(f_1 \wedge f_2) = \texttt{nnf}(f_1) \wedge \texttt{nnf}(f_2)$,
+\item $\texttt{nnf}(f_1 \vee f_2) = \texttt{nnf}(f_1) \vee \texttt{nnf}(f_2)$.
 \end{enumerate}
-Die Hilfsprozedur \texttt{neg}, die die Negations-Normalform von $\neg F$ berechnet,
+Die Hilfsprozedur \texttt{neg}, die die Negations-Normalform von $\neg f$ berechnet,
 spezifizieren wir ebenfalls durch rekursive Gleichungen:
 \begin{enumerate}
 \item $\texttt{neg}(p) = \texttt{nnf}(\neg p) = \neg p$ für alle Aussage-Variablen $p$.
-\item $\texttt{neg}(\neg F) = \texttt{nnf}(\neg \neg F) = \texttt{nnf}(F)$.
+\item $\texttt{neg}(\verum) = \texttt{nnf}(\neg\verum) = \texttt{nnf}(\falsum) = \falsum$, 
+\item $\texttt{neg}(\falsum) = \texttt{nnf}(\neg\falsum) = \texttt{nnf}(\verum) = \verum$,
+\item $\texttt{neg}(\neg f) = \texttt{nnf}(\neg \neg f) = \texttt{nnf}(f)$.
 \item $\begin{array}[t]{cl}
-         & \texttt{neg}\bigl(F_1 \wedge F_2 \bigr) \\[0.1cm]
-       = & \texttt{nnf}\bigl(\neg(F_1 \wedge F_2)\bigr) \\[0.1cm]
-       = & \texttt{nnf}\bigl(\neg F_1 \vee \neg F_2\bigr) \\[0.1cm]
-       = & \texttt{nnf}\bigl(\neg F_1\bigr) \vee \texttt{nnf}\bigl(\neg F_2\bigr) \\[0.1cm]
-       = & \texttt{neg}(F_1) \vee \texttt{neg}(F_2).
+         & \texttt{neg}\bigl(f_1 \wedge f_2 \bigr) \\[0.1cm]
+       = & \texttt{nnf}\bigl(\neg(f_1 \wedge f_2)\bigr) \\[0.1cm]
+       = & \texttt{nnf}\bigl(\neg f_1 \vee \neg f_2\bigr) \\[0.1cm]
+       = & \texttt{nnf}\bigl(\neg f_1\bigr) \vee \texttt{nnf}\bigl(\neg f_2\bigr) \\[0.1cm]
+       = & \texttt{neg}(f_1) \vee \texttt{neg}(f_2).
        \end{array}
       $
 
       Also haben wir:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{neg}\bigl(F_1 \wedge F_2 \bigr) = \texttt{neg}(F_1) \vee \texttt{neg}(F_2)$.
+      $\texttt{neg}\bigl(f_1 \wedge f_2 \bigr) = \texttt{neg}(f_1) \vee \texttt{neg}(f_2)$.
 \item $\begin{array}[t]{cl}
-         & \texttt{neg}\bigl(F_1 \vee F_2 \bigr)        \\[0.1cm]
-       = & \texttt{nnf}\bigl(\neg(F_1 \vee F_2) \bigr)  \\[0.1cm]
-       = & \texttt{nnf}\bigl(\neg F_1 \wedge \neg F_2 \bigr)  \\[0.1cm]
-       = & \texttt{nnf}\bigl(\neg F_1\bigr) \wedge \texttt{nnf}\bigl(\neg F_2 \bigr)  \\[0.1cm]
-       = & \texttt{neg}(F_1) \wedge \texttt{neg}(F_2). 
+         & \texttt{neg}\bigl(f_1 \vee f_2 \bigr)        \\[0.1cm]
+       = & \texttt{nnf}\bigl(\neg(f_1 \vee f_2) \bigr)  \\[0.1cm]
+       = & \texttt{nnf}\bigl(\neg f_1 \wedge \neg f_2 \bigr)  \\[0.1cm]
+       = & \texttt{nnf}\bigl(\neg f_1\bigr) \wedge \texttt{nnf}\bigl(\neg f_2 \bigr)  \\[0.1cm]
+       = & \texttt{neg}(f_1) \wedge \texttt{neg}(f_2). 
        \end{array}
       $
 
       Also haben wir: 
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{neg}\bigl(F_1 \vee F_2 \bigr) = \texttt{neg}(F_1) \wedge \texttt{neg}(F_2)$.
+      $\texttt{neg}\bigl(f_1 \vee f_2 \bigr) = \texttt{neg}(f_1) \wedge \texttt{neg}(f_2)$.
 \end{enumerate}
+Die in Abbildung \ref{fig:nnf} auf Seite \pageref{fig:nnf} gezeigten Funktionen setzen die oben diskutierten
+Gleichungen unmittelbar um. 
 
 \begin{figure}[!ht]
   \centering
@@ -1475,7 +1482,17 @@ rekursiv.
       aussagenlogische Variable $f$ enthält:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{cnf}(f) := \bigl\{\{f\}\bigr\}$ \quad falls $f \in \mathcal{P}$,
+      $\texttt{cnf}(f) := \bigl\{\{f\}\bigr\}$ \quad falls $f \in \mathcal{P}$.
+\item Wir hatten früher gesehen, dass die leere Menge von \emph{Klauseln} als $\verum$ interpretiert werden kann.
+      Daher gilt:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{cnf}(\verum) := \bigl\{\bigr\}$.      
+\item Wir hatten früher gesehen, dass die leere Menge von \emph{Literalen} als $\falsum$ interpretiert werden kann.
+      Daher gilt:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{cnf}(\falsum) := \bigl\{\{\}\bigr\}$.      
 \item Falls $f$ eine Negation ist, dann muss gelten
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -1556,14 +1573,21 @@ Abbildung \ref{fig:cnf} auf Seite \pageref{fig:cnf} zeigt die Implementierung de
 \end{figure}
 
 Zum Abschluss zeigen wir in Abbildung \ref{fig:normalize} auf Seite \pageref{fig:normalize}
-wie die einzelnen Funktionen zusammenspielen.  Die Funktion \texttt{normalize} eliminiert
-zunächst die Junktoren ``$\leftrightarrow$'' und ``$\rightarrow$'' und bringt die Formel
-in Negations-Normalform.  Die Negations-Normalform wird nun mit Hilfe der Funktion
-\texttt{cnf} in konjunktive Normalform gebracht, wobei gleichzeitig die Formel in
-Mengen-Schreibweise überführt wird.  Schließlich entfernt die Funktion \texttt{simplify}
-alle Klauseln aus der Menge \texttt{N4}, die trivial sind.  Die Funktion \texttt{isTrivial}
-überprüft, ob eine Klausel $C$, die in Mengen-Schreibweise vorliegt, sowohl eine Variable $p$
-als auch die Negation $\neg p$ dieser Variablen enthält, denn dann ist diese Klausel trivial.  
+wie die einzelnen Funktionen zusammenspielen.
+\begin{enumerate}
+\item Die Funktion \texttt{normalize} eliminiert zunächst die Junktoren ``$\leftrightarrow$''
+      mit Hilfe der Funktion \texttt{elimBiconditional}.
+\item Anschließend wird der Junktor  ``$\rightarrow$'' mit Hilfe der Funktion \texttt{elimConditional}
+      ersetzt.      
+\item Der Aufruf von \texttt{nnf} bringt die Formel in Negations-Normalform.
+\item Die Negations-Normalform wird nun mit Hilfe der Funktion \texttt{cnf} in konjunktive Normalform gebracht,
+      wobei gleichzeitig die Formel in Mengen-Schreibweise überführt wird.  
+\item Schließlich entfernt die Funktion \texttt{simplify} alle Klauseln aus der Menge \texttt{N4}, die trivial
+      sind.
+\item Die Funktion \texttt{isTrivial} überprüft, ob eine Klausel $C$, die in Mengen-Schreibweise vorliegt,
+      sowohl eine Variable $p$ als auch die Negation $\neg p$ dieser Variablen enthält, denn dann ist diese
+      Klausel zu $\verum$ äquivalent und kann weggelassen werden.
+\end{enumerate}
 Das vollständige Programm zur Berechnung der konjunktiven Normalform finden Sie als die Datei
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/knf.stlx}{\texttt{knf.stlx}} 
 unter GitHub.
@@ -1580,7 +1604,7 @@ unter GitHub.
                 ]
     def normalize (f):
         n1 = elimBiconditional(f)
-        n2 = eliminateConditional(n1)
+        n2 = elimConditional(n1)
         n3 = nnf(n2)
         n4 = cnf(n3)
         return simplify(n4)
@@ -1700,7 +1724,7 @@ Schluss-Regel nicht korrekt ist.
 
 Im Folgenden gehen wir davon aus, dass alle Formeln Klauseln sind.  Einerseits ist dies
 keine echte Einschränkung, denn wir können ja jede Formel in eine äquivalente Menge von
-Klauseln umrechnen.  Andererseits haben die Formeln bei vielen in der Praxis auftretenden aussagenlogischen
+Klauseln umformen.  Andererseits haben die Formeln bei vielen in der Praxis auftretenden aussagenlogischen
 Problemen ohnehin die Gestalt von Klauseln.  Daher stellen wir jetzt eine Schluss-Regel vor, in der
 sowohl die Prämissen als auch die Konklusion Klauseln sind.
      
@@ -1797,7 +1821,7 @@ Gleichzeitig zeigen wir anhand des Beispiels, wie wir Beweise zu Papier bringen:
       schreiben wir dies als 
       \[ \{\neg p, q \}, \{ \neg q, \neg p \} \;\vdash\; \{ \neg p \}. \]
       Dieses Beispiel zeigt, dass die Klausel $K_1 \cup K_2$ durchaus auch weniger
-      Elemente enthalten kann als die Summe $\symbol{35}K_1 + \symbol{35}K_2$.  Dieser
+      Elemente enthalten kann als die Summe $\mathtt{card}(K_1) + \mathtt{card}(K_2)$.  Dieser
       Fall tritt genau dann ein, wenn es Literale gibt, die sowohl in $K_1$ als auch in
       $K_2$ vorkommen.
 \item $\{\neg q, \neg p \},\; \{ p, \neg q \} \;\vdash\; \{ \neg q \}$. 
