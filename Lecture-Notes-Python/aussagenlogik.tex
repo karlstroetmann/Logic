@@ -1997,39 +1997,40 @@ $\models f_1 \wedge \cdots \wedge f_n \rightarrow \falsum$
 gilt. \eox
 
 Wir führen den Beweis der Widerlegungs-Vollständigkeit mit Hilfe eines Programms, das in den
-Abbildungen \ref{fig:completeness.stlx-1}, \ref{fig:completeness.stlx-2} und
-\ref{fig:completeness.stlx-3} auf den folgenden Seiten gezeigt ist.  Sie finden dieses Programm unter der Adresse
+Abbildungen \ref{fig:Completeness.ipynb-1}, \ref{fig:Completeness.ipynb-2} und
+\ref{fig:Completeness.ipynb-3} auf den folgenden Seiten gezeigt ist.  Sie finden dieses Programm unter der Adresse
 \\[0.2cm]
 \hspace*{0.8cm}
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/completeness.stlx}{\texttt{https://github.com/karlstroetmann/Logik/blob/master/SetlX/completeness.stlx}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/Python/Completeness.ipynb}{\texttt{https://github.com/karlstroetmann/Logik/blob/master/Python/Completeness.ipynb}}
 \\[0.2cm]
 im Netz.  Die Grundidee
 bei diesem Programm besteht darin, dass wir versuchen, aus einer gegebenen Menge $M$ von Klauseln
-alle Klauseln herzuleiten, die mit der Schnittregel aus $M$ herleitbar sind.  Wenn wir dabei auch
+\underline{alle} Klauseln herzuleiten, die mit der Schnitt-Regel aus $M$ herleitbar sind.  Wenn wir dabei auch
 die leere Klausel herleiten, dann ist $M$ aufgrund der Korrektheit der Schnitt-Regel offenbar
 unerfüllbar.  Falls es uns aber nicht gelingt, die leere Klausel aus $M$ abzuleiten, dann konstruieren wir
 aus der Menge aller Klauseln, die wir aus $M$ hergeleitet haben, eine aussagenlogische Interpretation
 $\I$, die alle Klauseln aus $M$ erfüllt.  Damit haben wir dann die Unerfüllbarkeit der Menge $M$ widerlegt.
-Wir diskutieren zunächst die Hilfsprozeduren, die in Abbildung \ref{fig:completeness.stlx-1} gezeigt
+Wir diskutieren zunächst die Hilfsprozeduren, die in Abbildung \ref{fig:Completeness.ipynb-1} gezeigt
 sind. 
 \begin{enumerate}
 \item Die Funktion \texttt{complement} erhält als Argument ein Literal $l$ und berechnet das
-      \blue{Komplement} $\komplement{l}$ dieses Literals.  Falls $l$ die Form $\neg p$ mit einer
-      aussagenlogischen Variablen $p$ hat, so gilt $\komplement{\neg p} = p$.   Falls das Literal
-      $l$ eine aussagenlogische Variable $p$ ist, haben wir $\komplement{p} = \neg p$.
-\item Die Funktion \texttt{extractVar} extrahiert die aussagenlogische Variable, die in einem Literal $l$
+      \blue{Komplement} $\komplement{l}$ dieses Literals.
+      Falls das Literal $l$ eine aussagenlogische Variable $p$ ist, haben wir $\komplement{p} = \neg p$.
+      Falls $l$ die Form $\neg p$ mit einer aussagenlogischen Variablen $p$ hat, so gilt $\komplement{\neg p} =
+      p$.
+\item Die Funktion \texttt{extractVariable} extrahiert die aussagenlogische Variable, die in einem Literal $l$
       enthalten ist.  Die Implementierung verläuft analog zur Implementierung der Funktion
       \texttt{complement} über eine Fallunterscheidung, bei der wir berücksichtigen, dass $l$ entweder die Form
-      $\neg p$ oder die Form $p$ hat, wobei $p$ die zu extrahierende aussagenlogische Variable ist.
+      $p$ oder die Form $\neg p$ hat, wobei $p$ die zu extrahierende aussagenlogische Variable ist.
 \item Die Funktion \texttt{collectVars} erhält als Argument eine Menge $M$ von Klauseln, wobei die
       einzelnen Klauseln  \mbox{$C \!\in\! M$} als Mengen von Literalen dargestellt werden.  Aufgabe der
       Funktion \texttt{collectVars} ist es, die Menge aller aussagenlogischen Variablen zu
       berechnen, die in einer der Klauseln $C$ aus $M$ vorkommen.  Bei der Implementierung iterieren
       wir zunächst über die Klauseln $C$ der Menge $M$ und dann für jede Klausel $C$ über die in $C$
-      vorkommenden Literale $l$, wobei die Literale mit Hilfe der Funktion \texttt{extractVar} in
+      vorkommenden Literale $l$, wobei die Literale mit Hilfe der Funktion \texttt{extractVariable} in
       aussagenlogische Variablen umgewandelt werden.
 \item Die Funktion \texttt{cutRule} erhält als Argumente zwei Klauseln $C_1$ und $C_2$ und berechnet
-      \underline{\color{red}alle} die Klauseln, die mit Hilfe der Schnittregel aus $C_1$ und $C_2$ gefolgert werden
+      die Menge aller Klauseln, die mit Hilfe einer Anwendung der Schnitt-Regel aus $C_1$ und $C_2$ gefolgert werden
       können.  Beispielsweise können wir aus den beiden Klauseln
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -2054,35 +2055,42 @@ sind.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-    complement := procedure(l) {
-        match (l) {
-            case !p : return  p;
-            case  p : return !p;
-        }
-    };
-    extractVar := procedure(l) {
-        match (l) {
-            case !p : return p;
-            case  p : return p;
-        }
-    };
-    collectVars := procedure(M) {
-        return { extractVar(l) : C in M, l in C };
-    };
-    cutRule := procedure(C1, C2) {
-        return { (C1-{l})+(C2-{complement(l)}) : l in C1 | complement(l) in C2 };
-    };
+    def complement(l):
+        "Compute the complement of the literal l."
+        if isinstance(l, str):  # l is a propositional variable
+            return ('¬', l)
+        else:
+        return l[1]
+
+    def extractVariable(l):
+        "Extract the variable of the literal l."
+        if isinstance(l, str):  # l is a propositional variable
+            return l
+        else:                   # l = ('¬', 'p')
+            return l[1]
+    
+    def collectVariables(M):
+        "Return the set of all variables occurring in M."
+        return { extractVariable(l) for C in M 
+                                    for l in C
+               }        
+        
+    def cutRule(C1, C2):
+        "Return the set of all clauses that can be deduced by the cut rule from c1 and c2."
+        return { C1 - {l} | C2 - {complement(l)} for l in C1
+                                                 if complement(l) in C2
+               }
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Hilfsprozeduren, die in Abbildung \ref{fig:completeness.stlx-2} genutzt werden}
-\label{fig:completeness.stlx-1}
+\caption{Hilfsprozeduren, die in Abbildung \ref{fig:Completeness.ipynb-2} genutzt werden}
+\label{fig:Completeness.ipynb-1}
 \end{figure}
 \pagebreak
 
-Abbildung \ref{fig:completeness.stlx-2} zeigt die Funktion \texttt{saturate}.  Diese Funktion erhält
+Abbildung \ref{fig:Completeness.ipynb-2} zeigt die Funktion \texttt{saturate}.  Diese Funktion erhält
 als Eingabe eine Menge \texttt{Clauses} von aus\-sagenlogischen Klauseln, die als Mengen von Literalen
 dargestellt werden.  Aufgabe der Funktion ist es, alle Klauseln herzuleiten, die mit Hilfe der
-Schnittregel auf direktem oder indirekten Wege aus der Menge \texttt{Clauses} hergeleitet werden
+Schnitt-Regel auf direktem oder indirekten Wege aus der Menge \texttt{Clauses} hergeleitet werden
 können.  Genauer sagen wir, dass die Menge $S$ der Klauseln, die von der Funktion \texttt{saturate}
 zurück gegeben wird, unter Anwendung der Schnitt-Regel \blue{saturiert} ist, was formal wie folgt
 definiert ist:
@@ -2106,45 +2114,45 @@ definiert ist:
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-    saturate := procedure(Clauses) {
-        while (true) {
-            Derived := {} +/ { cutRule(C1, C2) : C1 in Clauses, C2 in Clauses };
-            if ({} in Derived) {
-                return { {} };  // clauses are inconsistent
-            }
-            Derived -= Clauses;
-            if (Derived == {}) {
-                return Clauses;  // no new clauses found
-            }
-            Clauses += Derived;
-        }
-    };
+    def saturate(Clauses):
+        while True:
+            Derived = { C for C1 in Clauses
+                          for C2 in Clauses
+                          for C in cutRule(C1, C2)
+                      }
+            if frozenset() in Derived:
+                return { frozenset() }  # This is the set notation of Falsum.
+            Derived -= Clauses
+            if Derived == set():        # no new clauses found
+                return Clauses
+            Clauses |= Derived
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{Die Funktion \texttt{saturate}}
-\label{fig:completeness.stlx-2}
+\label{fig:Completeness.ipynb-2}
 \end{figure}
 
 Wir erläutern nun die Implementierung der Funktion \texttt{saturate}.
 \begin{enumerate}
-\item Die \texttt{while}-Schleife, die in Zeile 20 beginnt, hat die Aufgabe, die Schnitt-Regel
+\item Die \texttt{while}-Schleife, die in Zeile 27 beginnt, hat die Aufgabe, die Schnitt-Regel
       so lange wie möglich anzuwenden, um mit Hilfe der Schnitt-Regel neue Klauseln aus den gegebenen
       Klauseln herzuleiten.  Da die Bedingung dieser Schleife den Wert \texttt{True} hat, kann diese
-      Schleife nur durch die Ausführung einer der beiden \texttt{return}-Befehle (Zeile 23 bzw.~Zeile 27)
+      Schleife nur durch die Ausführung einer der beiden \texttt{return}-Befehle (Zeile 33 bzw.~Zeile 36)
       abgebrochen werden. 
-\item In Zeile 21 wird die Menge \texttt{Derived} als die Menge der Klauseln definiert, die mit Hilfe der
+\item In Zeile 28 wird die Menge \texttt{Derived} als die Menge der Klauseln definiert, die mit Hilfe der
       Schnitt-Regel aus zwei der Klauseln in der Menge \texttt{Clauses} gefolgert werden können.
 \item Falls die Menge \texttt{Derived} die leere Klausel enthält, dann ist die Menge
       \texttt{Clauses} widersprüchlich und die Funktion \texttt{saturate} gibt als Ergebnis die
-      Menge $\bigl\{ \{\} \bigr\}$ zurück.
-\item Andernfalls ziehen wir in Zeile 25 von der Menge \texttt{Derived} zunächst die Klauseln
+      Menge $\bigl\{ \{\} \bigr\}$ zurück, wobei die innere Menge als \texttt{frozenset} dargestellt werden
+      muss.  Beachten Sie, dass die Menge $\bigl\{ \{\} \bigr\}$ dem Falsum entspricht.
+\item Andernfalls ziehen wir in Zeile 34 von der Menge \texttt{Derived} zunächst die Klauseln
       ab, die schon in der Menge \texttt{Clauses} vorhanden waren, denn es geht uns darum
       festzustellen, ob wir im letzten Schritt tatsächlich 
-      \underline{neue} Klauseln gefunden haben, oder ob alle Klauseln, die wir im letzten Schritt in Zeile 21
+      \underline{neue} Klauseln gefunden haben, oder ob alle Klauseln, die wir im letzten Schritt in Zeile 28
       hergeleitet haben, eigentlich schon vorher bekannt waren.
-\item Falls wir nun in Zeile 26 feststellen, dass wir keine neuen Klauseln hergeleitet haben,
-      dann ist die Menge \texttt{Clauses} \blue{saturiert} und wir geben diese Menge in Zeile 27 zurück.
-\item Andernfalls fügen wir in Zeile 29 die Klauseln, die wir neu gefunden haben, zu der Menge
+\item Falls wir nun in Zeile 35 feststellen, dass wir keine neuen Klauseln hergeleitet haben,
+      dann ist die Menge \texttt{Clauses} \blue{saturiert} und wir geben diese Menge in Zeile 36 zurück.
+\item Andernfalls fügen wir in Zeile 37 die Klauseln, die wir neu gefunden haben, zu der Menge
       \texttt{Clauses} hinzu und setzen die \texttt{while}-Schleife fort.
 \end{enumerate}
 An dieser Stelle müssen wir uns überlegen, dass die \texttt{while}-Schleife tatsächlich irgendwann
@@ -2165,7 +2173,9 @@ abbricht.  Das hat zwei Gründe:
       \texttt{Clauses} auftreten können.  
 \end{enumerate}
 Aus den beiden oben angegebenen Gründen können wir schließen, dass die \texttt{while}-Schleife in
-Zeile 20 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird. 
+Zeile 20 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.   Tatsächlich ist es in der Praxis so,
+dass die \texttt{while} Schleife oft schon nach einer wesentlich geringeren Zahl von Iterationen abgebrochen 
+wird. 
 
 \begin{figure}[!ht]
 \centering
@@ -2178,41 +2188,39 @@ Zeile 20 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-    findValuation := procedure(Clauses) {
-        Variables := collectVars(Clauses);
-        Clauses   := saturate(Clauses);
-        if ({} in Clauses) {
-            return false;
-        }
-        Literals  := {};
-        for (p in Variables) {
-            if (exists(C in Clauses |
-                       p in C && C - {p} <= {complement(l) : l in Literals})
-               ) {
-                Literals += { p };
-            } else {
-                Literals += { !p };
-            }
-        }
-        return Literals;
-    };
+    def findValuation(Clauses):
+        "Given a set of Clauses, find an interpretation satisfying all of these clauses."
+        Variables = collectVariables(Clauses)
+        Clauses   = saturate(Clauses)
+        if frozenset() in Clauses:  # The set Clauses is inconsistent.
+            return False
+        Literals = set()
+        for p in Variables:
+            if any(C for C in Clauses 
+                     if p in C and C - {p} <= { complement(l) for l in Literals }
+                  ):
+                Literals |= { p }
+            else:
+                Literals |= { ('¬', p) }
+        return Literals
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{Die Funktion \texttt{findValuation}}
-\label{fig:completeness.stlx-3}
+\label{fig:Completeness.ipynb-3}
 \end{figure}
 
 Als nächstes diskutieren wir die Implementierung der Funktion \texttt{findValuation}, die in
-Abbildung \ref{fig:completeness.stlx-3} gezeigt ist.  Diese Funktion erhält als Eingabe eine Menge
+Abbildung \ref{fig:Completeness.ipynb-3} gezeigt ist.  Diese Funktion erhält als Eingabe eine Menge
 \texttt{Clauses} von Klauseln.  Falls diese Menge widersprüchlich ist, soll die Funktion
 das Ergebnis \texttt{False} zurück geben.  Andernfalls soll eine aussagenlogische Belegung $\I$ berechnet werden,
 unter der alle Klauseln aus der Menge \texttt{Clauses} erfüllt sind.  Im Detail arbeitet die
 Funktion \texttt{findValuation} wie folgt.
 \begin{enumerate}
-\item Zunächst berechnen wir in Zeile 33 die Menge aller aussagenlogischen Variablen, die in
-      der Menge \texttt{Clauses} auftreten.  Wir benötigen diese Menge, denn wir müssen diese
-      Variablen ja auf die Menge $\{ \texttt{True}, \texttt{False} \}$ abbilden.
-\item In Zeile 34 saturieren wir die Menge \texttt{Clauses} und berechnen alle Klauseln, die aus der
+\item Zunächst berechnen wir in Zeile 40 die Menge aller aussagenlogischen Variablen, die in der Menge
+      \texttt{Clauses} auftreten.  Wir benötigen diese Menge, denn in der
+      aussagenlogischen Interpretation, die wir als Ergebnis zurück geben wollen, müssen 
+      wir diese Variablen auf die Menge $\{ \texttt{True}, \texttt{False} \}$ abbilden.       
+\item In Zeile 41 saturieren wir die Menge \texttt{Clauses} und berechnen alle Klauseln, die aus der
       ursprünglich gegebenen Menge von Klauseln mit Hilfe der Schnitt-Regel hergeleitet werden
       können.  Hier können zwei Fälle auftreten:
       \begin{enumerate}
@@ -2227,14 +2235,14 @@ Funktion \texttt{findValuation} wie folgt.
             die gesuchte Belegung $\I$ die aussagenlogische
             Variable \texttt{p} zu \texttt{True} auswertet.  Andernfalls nehmen wir an Stelle von \texttt{p} das
             Literal $\neg \texttt{p}$ in der Menge \texttt{Literals} auf.  Als Ergebnis geben wir daher in
-            Zeile 50 die Menge \texttt{Literals} zurück.  Die gesuchte aussagenlogische Belegung
+            Zeile 52 die Menge \texttt{Literals} zurück.  Die gesuchte aussagenlogische Belegung
             $\mathcal{I}$ kann dann gemäß der Formel  
             \\[0.2cm]
             \hspace*{1.3cm}
             $\mathcal{I}(\texttt{p}) = \left\{
              \begin{array}{ll}
-               \texttt{True}  & \mbox{falls $\;\texttt{p} \in \texttt{Literals}$} \\
-               \texttt{False} & \mbox{falls $!\texttt{p} \in \texttt{Literals}$}
+               \texttt{True}  & \mbox{falls $\hspace*{0.25cm}\texttt{p} \in \texttt{Literals}$} \\
+               \texttt{False} & \mbox{falls $\neg\texttt{p} \in \texttt{Literals}$}
              \end{array}\right.
             $
             \\[0.2cm]
@@ -2244,7 +2252,7 @@ Funktion \texttt{findValuation} wie folgt.
       Dabei ist der Gedanke, dass wir für eine aussagenlogische Variable \texttt{p} genau dann das Literal
       $\texttt{p}$ zu der Menge \texttt{Literals} hinzufügen, wenn die Belegung $\I$ die Variable \texttt{p}
       auf \texttt{True} abbilden muss, um die Klauseln zu erfüllen.  Andernfalls fügen wir stattdessen das Literal 
-     \texttt{!p} zu dieser Menge hinzu.
+      $\neg\texttt{p}$ zu dieser Menge hinzu.
 
       Die Bedingung dafür ist wie folgt: Angenommen, wir haben bereits Werte für die Variablen
       $p_1$, $\cdots$, $p_n$ in der Menge \texttt{Literals}  gefunden.
@@ -2267,11 +2275,11 @@ Funktion \texttt{findValuation} wie folgt.
       $\texttt{p}$ in die Menge \texttt{Literals} ein. 
 \end{enumerate}
 Der entscheidende Punkt ist nun der Nachweis, dass die Funktion \texttt{findValuation} in dem Falle,
-dass in Zeile 36 nicht der Wert \texttt{False} zurück gegeben wird, eine aussagenlogische Belegung $\I$ berechnet, bei der
+dass in Zeile 43 nicht der Wert \texttt{False} zurück gegeben wird, eine aussagenlogische Belegung $\I$ berechnet, bei der
 alle Klauseln aus der Menge \texttt{Clauses} den Wert \texttt{True} erhalten.  Um diesen Nachweis zu
 erbringen, nummerieren wie die aussagenlogischen Variablen, die in der Menge \texttt{Clauses}
 auftreten, in derselben Reihenfolge durch, in der diese Variablen in der \texttt{for}-Schleife in Zeile
-39 betrachtet werden.  Wir bezeichnen diese Variablen als
+45 betrachtet werden.  Wir bezeichnen diese Variablen als
 \\[0.2cm]
 \hspace*{1.3cm}
  $p_1, p_2, p_3, \cdots, p_k$
@@ -2284,11 +2292,36 @@ $\I(D) = \texttt{True}$
 \\[0.2cm]
 gilt.
 \begin{enumerate}
-\item[I.A.:] $n = 0$.
+\item[I.A.:] $n = 1$.
 
-             Die einzige Klausel, in der überhaupt keine Variablen vorkommen, ist die leere Klausel.
-             Da wir aber vorausgesetzt haben, dass \texttt{Clauses} die leere Klausel nicht enthält,
-             ist die zu zeigende Behauptung tri\-vialerweise wahr.
+             In diesem Fall muss entweder
+             \\[0.2cm]
+             \hspace*{1.3cm}
+             $D = \{ p \}$ \quad oder \quad $D = \{ \neg p \}$
+             \\[0.2cm]
+             gelten.  An dieser Stelle brauchen wir eine Fallunterscheidung.
+             \begin{enumerate}
+             \item $D = \{ p \}$.
+
+                   Daraus folgt aber sofort
+                   \\[0.2cm]
+                   \hspace*{1.3cm}
+                   $D \backslash \{p\} = \{\} \subseteq \{\komplement{l} \mid l \in \texttt{Literals} \}$.
+                   \\[0.2cm]
+                   Also ist die Bedingung in Zeile 47 erfüllt und wir haben $\texttt{p} \in
+                   \texttt{Literals}$.
+                   Damit gilt $\I(p) = \texttt{True}$ nach Definition von $\I$.
+             \item $D = \{ \neg p \}$.
+
+                   Würde es jetzt eine Klausel $E = \{ p\} \in \texttt{Clauses}$ geben, so könnten
+                   wir aus den beiden Klauseln $E$ und $E$ sofort die leere Klausel $\{\}$
+                   herleiten und die Prozedur \texttt{findValuation} würde in Zeile 43 den Wert
+                   \texttt{False} zurück geben.  Da wir aber vorausgesetzt haben, dass dies nicht
+                   passiert, kann es keine solche Klausel $E$ geben.  Damit ist die Bedingung in
+                   Zeile 46 falsch und folglich gilt $\neg p \in \texttt{Literals}$.
+                   Nach Definition von $\I$ folgt dann $\I(\neg p) = \texttt{True}$.
+             \end{enumerate}
+             Damit haben wir in jedem Fall $\I(D) = \texttt{True}$.   
 \item[I.S.:] $n \mapsto n+1$.
 
              Wir setzen nun voraus, dass die Behauptung vor dem $(n\!+\!1)$-ten Durchlauf der
