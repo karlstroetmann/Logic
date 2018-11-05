@@ -807,7 +807,7 @@ $x$ dar, für die $\mathcal{I}(x)$ den Wert \texttt{True} hat.  Bei gegebener au
 $\mathcal{I}$ können wir die Menge $M_\mathcal{I}$ wie folgt definieren:
 \\[0.2cm]
 \hspace*{1.3cm}
-$M_\mathcal{I} := \bigl\{ p \in \mathcal{P} \mid \mathcal{I}(p) = \mathtt{True} \bigr\}$.
+$M_\mathcal{I} := \bigl\{ p \in \mathcal{P} \mid \mathcal{I}(p) = \texttt{True} \bigr\}$.
 \\[0.2cm]
 Damit können wir nun eine Prozedur implementieren, die für eine gegebene aussagenlogische Formel $f$
 testet, ob $f$ eine Tautologie ist.  Hierzu müssen wir zunächst die Menge $\mathcal{P}$ der
@@ -1634,56 +1634,62 @@ in Mengenschreibweise an.  Überprüfen Sie Ihr Ergebnis mit Hilfe des Jupyter-N
 
 
 \section{Der Herleitungs-Begriff}
-Ist $\{F_1,\cdots,F_n\}$ eine Menge von Formeln, und $G$ eine weitere Formel, so
-können wir uns fragen, ob  die  Formel $G$ aus $F_1$, $\cdots$, $F_n$ \blue{folgt}, ob
+Ist $\{f_1,\cdots,f_n\}$ eine Menge von Formeln, und $g$ eine weitere Formel, so
+können wir uns fragen, ob  die  Formel $g$ aus $f_1$, $\cdots$, $f_n$ \blue{folgt}, ob
 also 
-\[ \models F_1 \wedge \cdots \wedge F_n \rightarrow G \]
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds \models f_1 \wedge \cdots \wedge f_n \rightarrow g$
+\\[0.2cm]
 gilt.
 Es gibt verschiedene Möglichkeiten, diese Frage zu beantworten.  Ein Verfahren kennen wir
-schon: Zunächst überführen wir die Formel  $F_1 \wedge \cdots \wedge F_n \rightarrow G$ in
+schon: Zunächst überführen wir die Formel  $f_1 \wedge \cdots \wedge f_n \rightarrow g$ in
 konjunktive Normalform.  Wir erhalten dann eine Menge
-$\{K_1,\cdots,K_m\}$ von Klauseln, deren Konjunktion zu der  Formel
+$\{k_1,\cdots,k_m\}$ von Klauseln, deren Konjunktion zu der  Formel
 \\[0.2cm]
-\hspace*{1.3cm} $F_1 \wedge \cdots \wedge F_n \rightarrow G$
+\hspace*{1.3cm}
+$f_1 \wedge \cdots \wedge f_n \rightarrow g$
 \\[0.2cm] 
 äquivalent ist.  Diese Formel ist nun genau dann eine Tautologie, wenn
-jede der Klauseln $K_1$, $\cdots$, $K_m$ trivial ist.  
+jede der Klauseln $k_1$, $\cdots$, $k_m$ trivial ist.  
 
 Das oben dargestellte Verfahren ist aber sehr aufwendig.  Wir zeigen dies anhand eines
 Beispiels und wenden das Verfahren
 an, um zu entscheiden, ob $p \rightarrow r$ aus den beiden Formeln $p \rightarrow q$ und
 $q \rightarrow r$ folgt.   Wir bilden also die konjunktive Normalform der Formel 
-\[ H := (p \rightarrow q) \wedge (q \rightarrow r) \rightarrow p \rightarrow r
-\]
+\\[0.2cm]
+\hspace*{1.3cm}
+$h := (p \rightarrow q) \wedge (q \rightarrow r) \rightarrow p \rightarrow r$
+\\[0.2cm]
 und erhalten nach mühsamer Rechnung
-\[
-   (p \vee \neg p \vee r \vee \neg r) \wedge (\neg q \vee \neg p \vee r \vee \neg r) \wedge
-   (\neg q \vee \neg p \vee q \vee r) \wedge (p \vee \neg p \vee q \vee r). 
-\]
-Zwar können wir jetzt sehen, dass die Formel $H$ eine Tautologie ist, aber angesichts der
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds (p \vee \neg p \vee r \vee \neg r) \wedge (\neg q \vee \neg p \vee r \vee \neg r) \wedge
+     (\neg q \vee \neg p \vee q \vee r) \wedge (p \vee \neg p \vee q \vee r).
+$
+\\[0.2cm]
+Zwar können wir jetzt sehen, dass die Formel $h$ eine Tautologie ist, aber angesichts der
 Tatsache, dass wir mit bloßem Auge sehen, dass  $p \rightarrow r$ aus den Formeln $p \rightarrow q$ und
 $q \rightarrow r$ folgt, ist die Rechnung  doch  sehr aufwendig.
 
 Wir stellen daher nun eine weiteres Verfahren vor, mit dessen Hilfe wir entscheiden
 können, ob eine Formel aus einer gegebenen Menge von Formeln folgt.  Die Idee bei diesem Verfahren
-ist es, die Formel $F$ mit Hilfe von \blue{Schluss-Regeln} aus den gegebenen Formeln 
-$F_1, \cdots, F_n$ \blue{herzuleiten}.
-  Das Konzept einer Schluss-Regel wird in der nun folgenden Definition festgelegt.
+ist es, die Formel $f$ mit Hilfe von \blue{Schluss-Regeln} aus den gegebenen Formeln 
+$f_1, \cdots, f_n$ \blue{herzuleiten}.  Das Konzept einer Schluss-Regel wird in der nun folgenden Definition
+festgelegt. 
 \begin{Definition}[Schluss-Regel]
-    Eine \blue{Schluss-Regel} ist eine Paar  $\langle \{F_1, \cdots, F_n\}, K \rangle$.
-    Dabei ist 
-    $\{F_1, \cdots, F_n\}$ eine Menge von Formeln und $K$ ist eine einzelne Formel.  
-    Die Formeln $F_1$, $\cdots$, $F_n$ bezeichnen wir als
-    \blue{Prämissen}, die Formel $K$ heißt die \blue{Konklusion} der Schluss-Regel.
-    Ist das Paar 
-    $\langle \{F_1, \cdots, F_n\}, K \rangle$ eine Schluss-Regel, so schreiben wir
-    dies als: 
+    Eine \blue{Schluss-Regel} ist eine Paar  $\bigl\langle \langle f_1, \cdots, f_n\rangle, k \bigr\rangle$.
+    dabei ist  $\langle f_1, \cdots, f_n\rangle$ ein Tupel von Formeln und $k$ ist eine einzelne Formel.  
+    Die Formeln $f_1$, $\cdots$, $f_n$ bezeichnen wir als
+    \blue{Prämissen}, die Formel $k$ heißt die \blue{Konklusion} der Schluss-Regel.
+    Ist das Paar $\bigl\langle \langle f_1, \cdots, f_n\rangle, k \bigr\rangle$ eine Schluss-Regel, so
+    schreiben wir  dies als: 
     \\[0.3cm]
     \hspace*{1.3cm}      
-    $\schluss{F_1 \quad \cdots \quad F_n}{K}$.
+    $\schluss{f_1 \quad \cdots \quad f_n}{k}$.
     \\[0.3cm]
     Wir lesen diese Schluss-Regel wie folgt: 
-    ``\textsl{Aus $F_1$, $\cdots$, $F_n$ kann auf $K$ geschlossen werden.}''
+    ``\textsl{Aus $f_1$, $\cdots$, $f_n$ kann auf $k$ geschlossen werden.}''
     \eox
 \end{Definition}
 \vspace*{0.3cm}
@@ -1697,9 +1703,9 @@ $F_1, \cdots, F_n$ \blue{herzuleiten}.
 \rule{0pt}{15pt} \href{https://en.wikipedia.org/wiki/Modus_ponens}{Modus Ponens} & \href{https://en.wikipedia.org/wiki/Modus_tollens}{Modus Tollens} & \blue{Unfug} \\[0.3cm]
 \hline
 $
-\rule[-15pt]{0pt}{40pt}\schluss{F \quad\quad F \rightarrow G}{G}$ &
-$\schluss{\neg G \quad\quad F \rightarrow G}{\neg F}$ &
-$\schluss{\neg F \quad\quad F \rightarrow G}{\neg G}$ \\[0.3cm]
+\rule[-15pt]{0pt}{40pt}\schluss{f \quad\quad f \rightarrow g}{g}$ &
+$\schluss{\neg g \quad\quad f \rightarrow g}{\neg f}$ &
+$\schluss{\neg f \quad\quad f \rightarrow g}{\neg g}$ \\[0.3cm]
 \hline
 \end{tabular}
 \\[0.3cm]
@@ -1713,9 +1719,9 @@ Sinne \blue{korrekt} sein.
 
 \begin{Definition}[Korrekte Schluss-Regel]
   Eine Schluss-Regel der Form \\[0.2cm]
-  \hspace*{1.3cm} $\schluss{F_1 \quad \cdots \quad F_n}{K}$ \\[0.2cm]
+  \hspace*{1.3cm} $\schluss{f_1 \quad \cdots \quad f_n}{k}$ \\[0.2cm]
   ist genau dann \blue{korrekt}, wenn 
-  $\models F_1 \wedge \cdots \wedge F_n \rightarrow K$ gilt. \eox
+  $\models f_1 \wedge \cdots \wedge f_n \rightarrow k$ gilt. \eox
 \end{Definition}
 Mit dieser Definition sehen wir, dass 
 die oben als ``\blue{Modus Ponens}'' und ``\blue{Modus  Tollens}'' bezeichneten
@@ -1729,17 +1735,17 @@ Problemen ohnehin die Gestalt von Klauseln.  Daher stellen wir jetzt eine Schlus
 sowohl die Prämissen als auch die Konklusion Klauseln sind.
      
 \begin{Definition}[Schnitt-Regel]
-    Ist $p$ eine aussagenlogische Variable und sind $K_1$ und $K_2$ Mengen von Literalen,
+    Ist $p$ eine aussagenlogische Variable und sind $k_1$ und $k_2$ Mengen von Literalen,
     die wir als Klauseln interpretieren, so bezeichnen wir die folgende Schluss-Regel
     als die \blue{Schnitt-Regel}: 
     \\[0.2cm]
     \hspace*{1.3cm}
-    $\ds \schluss{ K_1 \cup \{p\} \quad \{\neg p\} \cup K_2 }{K_1 \cup K_2}$. 
+    $\ds \schluss{ k_1 \cup \{p\} \quad \{\neg p\} \cup k_2 }{k_1 \cup k_2}$. 
     \eox
 \end{Definition}
 
 \noindent
-Die Schnitt-Regel ist sehr allgemein.  Setzen wir in der obigen Definition für $K_1 = \{\}$ und  $K_2 = \{q\}$ 
+Die Schnitt-Regel ist sehr allgemein.  Setzen wir in der obigen Definition für $k_1 = \{\}$ und  $k_2 = \{q\}$ 
 ein, so erhalten wir die folgende Regel als Spezialfall: \\[0.2cm]
 \hspace*{1.3cm} $\schluss{\{\} \cup \{p\} \quad\quad \{\neg p\} \cup \{ q \} }{ \{\} \cup \{q\} }$ \\[0.2cm]
 Interpretieren wir nun die Mengen als Disjunktionen, so haben wir: \\[0.2cm]
@@ -1747,28 +1753,31 @@ Interpretieren wir nun die Mengen als Disjunktionen, so haben wir: \\[0.2cm]
 Wenn wir jetzt noch berücksichtigen, dass die Formel $\neg p \vee q$ äquivalent zu der
 Formel $p \rightarrow q$ ist, dann ist das nichts anderes als \blue{Modus Ponens}.  
 Die Regel \blue{Modus Tollens} ist ebenfalls ein Spezialfall der Schnitt-Regel.  Wir
-erhalten diese Regel, wenn wir in der Schnitt-Regel $K_1 = \{ \neg q \}$ und $K_2 = \{\}$ setzen.
+erhalten diese Regel, wenn wir in der Schnitt-Regel $k_1 = \{ \neg q \}$ und $k_2 = \{\}$ setzen.
 
 \begin{Satz}
   Die Schnitt-Regel ist korrekt.
 \end{Satz}
-\textbf{Beweis}:  Wir müssen zeigen, dass \\[0.2cm]
-\hspace*{1.3cm} $\models (K_1 \vee p) \wedge (\neg p \vee K_2) \rightarrow K_1 \vee K_2$ \\[0.2cm]
+\textbf{Beweis}:  Wir müssen zeigen, dass
+\\[0.2cm]
+\hspace*{1.3cm}
+$\models (k_1 \vee p) \wedge (\neg p \vee k_2) \rightarrow k_1 \vee k_2$
+\\[0.2cm]
 gilt.  Dazu überführen wir die obige Formel in konjunktive Normalform:
 $$
 \begin{array}{ll}
-  & (K_1 \vee p) \wedge (\neg p \vee K_2) \rightarrow K_1 \vee K_2  \\[0.2cm]
+  & (k_1 \vee p) \wedge (\neg p \vee k_2) \rightarrow k_1 \vee k_2  \\[0.2cm]
 \Leftrightarrow  & 
-    \neg \bigl( (K_1 \vee p) \wedge (\neg p \vee K_2) \bigr) \vee K_1 \vee K_2 \\[0.2cm]
+    \neg \bigl( (k_1 \vee p) \wedge (\neg p \vee k_2) \bigr) \vee k_1 \vee k_2 \\[0.2cm]
 \Leftrightarrow  & 
-    \neg (K_1 \vee p) \vee \neg (\neg p \vee K_2) \vee K_1 \vee K_2 \\[0.2cm]
+    \neg (k_1 \vee p) \vee \neg (\neg p \vee k_2) \vee k_1 \vee k_2 \\[0.2cm]
 \Leftrightarrow  & 
-     (\neg K_1 \wedge \neg p) \vee  (p \wedge \neg K_2) \vee K_1 \vee K_2 \\[0.2cm]
+     (\neg k_1 \wedge \neg p) \vee  (p \wedge \neg k_2) \vee k_1 \vee k_2 \\[0.2cm]
 \Leftrightarrow  & 
-     (\neg K_1 \vee p \vee K_1 \vee K_2)  \wedge 
-     (\neg K_1 \vee \neg K_2 \vee K_1 \vee K_2)  \wedge 
-     (\neg p \vee p \vee K_1 \vee K_2)  \wedge 
-     (\neg p \vee \neg K_2 \vee K_1 \vee K_2) 
+     (\neg k_1 \vee p \vee k_1 \vee k_2)  \wedge 
+     (\neg k_1 \vee \neg k_2 \vee k_1 \vee k_2)  \wedge 
+     (\neg p \vee p \vee k_1 \vee k_2)  \wedge 
+     (\neg p \vee \neg k_2 \vee k_1 \vee k_2) 
       \\[0.2cm]
 \Leftrightarrow  & 
      \verum  \wedge 
@@ -1785,24 +1794,24 @@ $$
 
 
 \begin{Definition}[Herleitungs-Begriff, $\vdash$]
-    Es sei $M$ eine Menge von Klauseln  und $F$ sei eine einzelne Klausel.  
+    Es sei $M$ eine Menge von Klauseln  und $f$ sei eine einzelne Klausel.  
     Die Formeln aus $M$ bezeichnen wir als unsere \blue{Prämissen}, die Formel
-    $F$ heißt \blue{Konklusion}.  Unser Ziel ist es, mit den Prämissen aus $M$
-    die Konklusion $F$ zu beweisen.  Dazu definieren wir induktiv die Relation \\[0.2cm]
+    $f$ heißt \blue{Konklusion}.  Unser Ziel ist es, mit den Prämissen aus $M$
+    die Konklusion $f$ zu beweisen.  Dazu definieren wir induktiv die Relation \\[0.2cm]
     \hspace*{1.3cm}
     $\blue{M \vdash f}$. \\[0.2cm]
-    Wir lesen ``$M \vdash F$'' als ``\blue{$M$ leitet $F$ her}''.  Die induktive Definition ist
+    Wir lesen ``$M \vdash f$'' als ``$M$ \blue{leitet} $f$ \blue{her}''.  Die induktive Definition ist
     wie folgt:
     \begin{enumerate}
     \item Aus einer Menge $M$ von Annahmen kann jede der Annahmen hergeleitet werden: \\[0.2cm]
           \hspace*{1.3cm} 
-          Falls $F \el M$ ist, dann gilt  $M \vdash F$.
-    \item Sind $K_1 \cup \{p\}$ und $\{ \neg p \} \cup K_2$ Klauseln, die aus $M$
-          hergeleitet werden können, so kann mit der Schnitt-Regel auch die Klausel $K_1 \cup K_2$ aus $M$
+          Falls $f \el M$ ist, dann gilt  $M \vdash f$.
+    \item Sind $k_1 \cup \{p\}$ und $\{ \neg p \} \cup k_2$ Klauseln, die aus $M$
+          hergeleitet werden können, so kann mit der Schnitt-Regel auch die Klausel $k_1 \cup k_2$ aus $M$
           hergeleitet werden: \\[0.2cm]
           \hspace*{1.3cm} 
-          Falls sowohl $M \vdash K_1 \cup \{p\}$ als auch $M \vdash \{ \neg p \} \cup K_2$
-          gilt, dann gilt auch $M \vdash K_1 \cup K_2$.
+          Falls sowohl $M \vdash k_1 \cup \{p\}$ als auch $M \vdash \{ \neg p \} \cup k_2$
+          gilt, dann gilt auch $M \vdash k_1 \cup k_2$.
     \eox
     \end{enumerate}
 \end{Definition}
@@ -1820,10 +1829,11 @@ Gleichzeitig zeigen wir anhand des Beispiels, wie wir Beweise zu Papier bringen:
       $\{ \neg p, \neg p \}$.   Wegen $\{ \neg p, \neg p \} = \{ \neg p \}$
       schreiben wir dies als 
       \[ \{\neg p, q \}, \{ \neg q, \neg p \} \;\vdash\; \{ \neg p \}. \]
-      Dieses Beispiel zeigt, dass die Klausel $K_1 \cup K_2$ durchaus auch weniger
-      Elemente enthalten kann als die Summe $\mathtt{card}(K_1) + \mathtt{card}(K_2)$.  Dieser
-      Fall tritt genau dann ein, wenn es Literale gibt, die sowohl in $K_1$ als auch in
-      $K_2$ vorkommen.
+      \remark
+      Dieses Beispiel zeigt, dass die Klausel $k_1 \cup k_2$ durchaus auch weniger
+      Elemente enthalten kann als die Summe $\mathtt{card}(k_1) + \mathtt{card}(k_2)$.  Dieser
+      Fall tritt genau dann ein, wenn es Literale gibt, die sowohl in $k_1$ als auch in
+      $k_2$ vorkommen.
 \item $\{\neg q, \neg p \},\; \{ p, \neg q \} \;\vdash\; \{ \neg q \}$. 
 \item $\{ p, q \},\; \{ \neg q \} \;\vdash\; \{ p \}$. 
 \item $\{ \neg p \},\; \{ p \} \;\vdash\; \{\}$. 
@@ -1843,107 +1853,107 @@ gilt.  Der Beweis besteht aus einer einzigen Anwendung der Schnitt-Regel:
 Die Relation $\vdash$ hat zwei wichtige Eigenschaften:
 
 \begin{Satz}[\blue{Korrektheit}]
-  Ist $\{K_1, \cdots, K_n \}$ eine Menge von Klauseln und $K$ eine einzelne Klausel,
+  Ist $\{k_1, \cdots, k_n \}$ eine Menge von Klauseln und $k$ eine einzelne Klausel,
   so haben wir: \\[0.2cm]
-  \hspace*{3.3cm} Wenn $\{K_1, \cdots, K_n \} \vdash K$ gilt, dann gilt auch $\models K_1 \wedge \cdots \wedge K_n \rightarrow K$.  
+  \hspace*{3.3cm} Wenn $\{k_1, \cdots, k_n \} \vdash k$ gilt, dann gilt auch $\models k_1 \wedge \cdots \wedge k_n \rightarrow k$.  
 \end{Satz}
 
 \noindent
 \textbf{Beweis}:  Der Beweis verläuft durch eine Induktion nach der Definition der Relation $\vdash$. 
 \begin{enumerate}
-\item Fall: Es gilt $\{ K_1, \cdots, K_n \} \vdash K$, weil $K \in \{ K_1, \cdots, K_n \}$ ist.  
-      Dann gibt es also ein $i \in \{1,\cdots,n\}$, so dass $K = K_i$ ist.  In diesem Fall
+\item Fall: Es gilt $\{ k_1, \cdots, k_n \} \vdash k$, weil $k \in \{ k_1, \cdots, k_n \}$ ist.  
+      Dann gibt es also ein $i \in \{1,\cdots,n\}$, so dass $k = k_i$ ist.  In diesem Fall
       müssen wir
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\models K_1 \wedge \cdots \wedge K_i \wedge \cdots \wedge K_n \rightarrow K_i$
+      $\ds\models k_1 \wedge \cdots \wedge k_i \wedge \cdots \wedge k_n \rightarrow k_i$
       \\[0.2cm]
       zeigen, was offensichtlich ist.
-\item Fall: Es gilt $\{ K_1, \cdots, K_n \} \vdash K$, weil es eine aussagenlogische
-      Variable $p$ und Klauseln $G$ und $H$ gibt, so dass 
+\item Fall: Es gilt $\{ k_1, \cdots, k_n \} \vdash k$, weil es eine aussagenlogische
+      Variable $p$ und Klauseln $g$ und $h$ gibt, so dass 
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\{ K_1, \cdots, K_n \} \vdash G \cup \{ p \} \quad \mathrm{und} \quad
-         \{ K_1, \cdots, K_n \} \vdash H \cup \{ \neg p \}
+      $\{ k_1, \cdots, k_n \} \vdash g \cup \{ p \} \quad \mathrm{und} \quad
+         \{ k_1, \cdots, k_n \} \vdash h \cup \{ \neg p \}
       $
       \\[0.2cm]
       gilt und daraus haben wir mit der Schnitt-Regel auf
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\{ K_1, \cdots, K_n \} \vdash G \cup H$
+      $\{ k_1, \cdots, k_n \} \vdash g \cup h$
       \\[0.2cm]
-      geschlossen, wobei $K = G \cup H$ gilt.  Wir müssen nun zeigen, dass 
+      geschlossen, wobei $k = g \cup h$ gilt.  Wir müssen nun zeigen, dass 
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\models K_1 \wedge \cdots \wedge K_n \rightarrow G \vee H$
+      $\models k_1 \wedge \cdots \wedge k_n \rightarrow g \vee h$
       \\[0.2cm]
       gilt.  Es sei also $\mathcal{I}$ eine aussagenlogische Interpretation, so dass
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathcal{I}(K_1 \wedge \cdots \wedge K_n) = \mathtt{true}$  
+      $\mathcal{I}(k_1 \wedge \cdots \wedge k_n) = \texttt{True}$  
       \\[0.2cm]
       ist. Dann müssen wir zeigen, dass 
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathcal{I}(G) = \mathtt{true}$ \quad oder \quad $\mathcal{I}(H) = \mathtt{true}$
+      $\mathcal{I}(G) = \texttt{True}$ \quad oder \quad $\mathcal{I}(H) = \texttt{True}$
       \\[0.2cm]
       ist.  Nach Induktions-Voraussetzung wissen wir
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\models K_1 \wedge \cdots \wedge K_n \rightarrow G \vee p \quad \mathrm{und} \quad 
-         \models K_1 \wedge \cdots \wedge K_n \rightarrow H \vee \neg p
+      $\models k_1 \wedge \cdots \wedge k_n \rightarrow g \vee p \quad \mathrm{und} \quad 
+         \models k_1 \wedge \cdots \wedge k_n \rightarrow h \vee \neg p
       $.
       \\[0.2cm]
-      Wegen $\mathcal{I}(K_1 \wedge \cdots \wedge K_n) = \mathtt{true}$ folgt dann
+      Wegen $\mathcal{I}(k_1 \wedge \cdots \wedge k_n) = \texttt{True}$ folgt dann
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathcal{I}(G \vee p) = \mathtt{true}$ \quad und \quad $\mathcal{I}(H \vee \neg p) = \mathtt{true}$.
+      $\mathcal{I}(g \vee p) = \texttt{True}$ \quad und \quad $\mathcal{I}(h \vee \neg p) = \texttt{True}$.
       \\[0.2cm]
       Nun gibt es zwei Fälle:
       \begin{enumerate}
-      \item Fall: $\mathcal{I}(p) = \mathtt{true}$.
+      \item Fall: $\mathcal{I}(p) = \texttt{True}$.
 
-            Dann ist $\mathcal{I}(\neg p) = \mathtt{false}$ und daher folgt aus der Tatsache, dass 
-            $\mathcal{I}(H \vee \neg p) = \mathtt{true}$ ist, dass
+            Dann ist $\mathcal{I}(\neg p) = \texttt{False}$ und daher folgt aus der Tatsache, dass 
+            $\mathcal{I}(h \vee \neg p) = \texttt{True}$ ist, dass
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(H) = \mathtt{true}$
+            $\mathcal{I}(h) = \texttt{True}$
             \\[0.2cm]
             sein muss.  Daraus folgt aber sofort
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(G \vee H) = \mathtt{true}$.  ${\color{green}\surd}$
-      \item Fall: $\mathcal{I}(p) = \mathtt{false}$.
+            $\mathcal{I}(g \vee h) = \texttt{True}$.  ${\color{green}\surd}$
+      \item Fall: $\mathcal{I}(p) = \texttt{False}$.
 
-            Nun folgt aus $\mathcal{I}(G \vee p) = \mathtt{true}$, dass
+            Nun folgt aus $\mathcal{I}(g \vee p) = \texttt{True}$, dass
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(G) = \mathtt{true}$
+            $\mathcal{I}(g) = \texttt{True}$
             \\[0.2cm]
             gelten muss.  Also gilt auch in diesem Fall
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(G \vee H) = \mathtt{true}$.  ${\color{green}\surd}$ 
+            $\mathcal{I}(g \vee h) = \texttt{True}$.  ${\color{green}\surd}$ 
             \qed
       \end{enumerate}
 \end{enumerate}
 
 \noindent
-Die Umkehrung dieses Satzes gilt leider nur in abgeschwächter Form und zwar dann, wenn $K$
-die leere Klausel ist, also im Fall $K = \falsum$.
+Die Umkehrung dieses Satzes gilt leider nur in abgeschwächter Form und zwar dann, wenn $k$
+die leere Klausel ist, die dem Falsum entspricht.
 \begin{Satz}[\blue{Widerlegungs-Vollständigkeit}] \label{widerlegungs-vollstaendig}
-  Ist  $M = \{K_1, \cdots, K_n \}$ eine Menge von Klauseln,
+  Ist  $M = \{k_1, \cdots, k_n \}$ eine Menge von Klauseln,
   so haben wir: \\[0.1cm]
   \hspace*{1.3cm} 
-  Wenn $\models K_1 \wedge \cdots \wedge K_n \rightarrow \falsum$ gilt, dann gilt auch  $M \vdash \{\}$.
+  Wenn $\models k_1 \wedge \cdots \wedge k_n \rightarrow \falsum$ gilt, dann gilt auch  $M \vdash \{\}$.
 \end{Satz}
 
 \remark
 Es gibt alternative Definitionen des Herleitungs-Begriffs, die nicht nur \blue{widerlegungs-vollständig} sondern
-tatsächlich \blue{vollständig} sind, d.h.~immer wenn $\models F_1 \wedge \cdots \wedge F_n \rightarrow G$ gilt, dann gilt auch
+tatsächlich \blue{vollständig} sind, d.h.~immer wenn $\models f_1 \wedge \cdots \wedge f_n \rightarrow g$ gilt, dann gilt auch
 \\[0.2cm]
 \hspace*{1.3cm}
-$\{ F_1, \cdots, F_n \} \vdash G$.
+$\{ f_1, \cdots, f_n \} \vdash g$.
 \\[0.2cm]  
 Diese Herleitungs-Begriffe sind allerdings wesentlich komplexer und daher umständlicher zu implementieren.  Wir
 werden später sehen, dass die Widerlegungs-Vollständigkeit für unsere Zwecke ausreichend ist.
@@ -1958,7 +1968,7 @@ Der Beweis der Widerlegungs-Vollständigkeit der Aussagenlogik benötigt den  Be
   Falls es eine aussagen\-logische Interpretation $\I$ gibt, die alle Formeln aus $M$ erfüllt, für die also
   \\[0.2cm]
   \hspace*{1.3cm}
-  $\mathcal{I}(F) = \mathtt{true}$ \quad für alle $F \in M$
+  $\mathcal{I}(f) = \texttt{True}$ \quad für alle $f \in M$
   \\[0.2cm]
   gilt, so nennen wir $M$ \blue{erfüllbar}. 
 
@@ -1973,20 +1983,20 @@ Der Beweis der Widerlegungs-Vollständigkeit der Aussagenlogik benötigt den  Be
   \\[0.2cm]
   \hspace*{1.3cm}
   $\blue{M \models \falsum}$ \quad g.d.w. \quad 
-  $\forall \I \in \textsc{Ali}: \exists G \in M: \I(G) = \texttt{False}$.   
+  $\forall \I \in \textsc{Ali}: \exists g \in M: \I(g) = \texttt{False}$.   
   \eox
 \end{Definition}
 
 \remark 
-Ist $M = \{ K_1, \cdots, K_n \}$ eine Menge von Klauseln, so können Sie sich leicht überlegen, dass
+Ist $M = \{ f_1, \cdots, f_n \}$ eine Menge von aussagenlogischen Formeln, so können Sie sich leicht überlegen, dass
 $M$ genau dann nicht erfüllbar ist, wenn
 \\[0.2cm]
 \hspace*{1.3cm}
-$\models K_1 \wedge \cdots \wedge K_n \rightarrow \falsum$
+$\models f_1 \wedge \cdots \wedge f_n \rightarrow \falsum$
 \\[0.2cm]
 gilt. \eox
 
-Wir führen den Bewies der Widerlegungs-Vollständigkeit mit Hilfe eines Programms, das in den
+Wir führen den Beweis der Widerlegungs-Vollständigkeit mit Hilfe eines Programms, das in den
 Abbildungen \ref{fig:completeness.stlx-1}, \ref{fig:completeness.stlx-2} und
 \ref{fig:completeness.stlx-3} auf den folgenden Seiten gezeigt ist.  Sie finden dieses Programm unter der Adresse
 \\[0.2cm]
