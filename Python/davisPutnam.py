@@ -1,4 +1,4 @@
-def negateLiteral(L):
+def complement(L):
     "Compute the complement of the literal L."
     if isinstance(L, str):
         return ('¬', L)
@@ -22,7 +22,7 @@ def selectLiteral(Clauses, Forbidden):
     return arb(Variables)
 
 def reduce(Clauses, L):
-    LBar = negateLiteral(L)
+    LBar = complement(L)
     return   { C - { LBar } for C in Clauses if LBar in C }          \
            | { C for C in Clauses if LBar not in C and L not in C }  \
            | { frozenset({L}) }
@@ -48,7 +48,7 @@ def solve(Clauses, Literals):
     if all(len(C) == 1 for C in S):
         return S
     L      = selectLiteral(S, Literals)
-    negL   = negateLiteral(L)
+    negL   = complement(L)
     Result = solve(S | { frozenset({L}) }, Literals | { L })
     if Result != falsum:
         return Result

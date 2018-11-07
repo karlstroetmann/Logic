@@ -2479,14 +2479,14 @@ das Ergebnis \texttt{False}, was impliziert, dass $M \vdash \{\}$ gilt.  \qed
 In der Praxis stellt sich oft die Aufgabe, für eine gegebene Menge von Klauseln $K$ eine aussagenlogische
 Belegung $\I$ zu berechnen, so dass 
 \\[0.2cm]
-\hspace*{1.3cm} $\texttt{eval}(C,\I) = \texttt{True}$ \quad für alle $C\in K$ \\[0.2cm]
+\hspace*{1.3cm} $\texttt{evaluate}(C,\I) = \texttt{True}$ \quad für alle $C\in K$ \\[0.2cm]
 gilt.  In diesem Fall sagen wir auch, dass die Belegung $\I$ eine \blue{Lösung} der
  Klausel-Menge $K$ ist.  Im letzten Abschnitt haben wir bereits die Prozedur \texttt{findValuation}
  kennengelernt, mit der wir eine solche Belegung berechnen könnten.
 Bedauerlicherweise ist diese Prozedur für eine praktische Anwendung nicht effizient genug.
 Wir werden daher in diesem Abschnitt ein Verfahren vorstellen, mit dem die Berechnung einer Lösung
-einer aussagenlogischen Klausel-Menge auch in der Praxis möglich ist.
-Dieses Verfahren geht auf Davis und Putnam
+einer aussagenlogischen Klausel-Menge in vielen praktisch relevanten Fällen auch dann möglich ist, wenn die
+Menge der Klauseln $K$ groß ist.  Dieses Verfahren geht auf Davis und Putnam
 \cite{davis:1960, davis:1962} zurück.  Verfeinerungen dieses Verfahrens werden beispielsweise
 eingesetzt, um die Korrektheit digitaler elektronischer Schaltungen nachzuweisen.  
 
@@ -2523,9 +2523,8 @@ Diese Klausel-Menge kodiert die Formel
 \hspace*{1.3cm}
 $p \wedge \neg q \wedge \neg p $
 \\[0.2cm]
-Offenbar ist $K_3$ ebenfalls unlösbar, denn eine Lösung $\I$ müsste die aussagenlogische Variable $p$ gleichzeitig
-wahr und falsch machen.
-Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass für zwei Definitionen.
+und ist offenbar  ebenfalls unlösbar, denn eine Lösung $\I$ müsste die aussagenlogische Variable $p$ gleichzeitig
+wahr und falsch machen.  Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass für zwei Definitionen.
 
 \begin{Definition}[Unit-Klausel]
   Eine Klausel $C$ heißt \blue{Unit-Klausel}, wenn $C$ nur aus einem Literal besteht.
@@ -2539,7 +2538,7 @@ Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass
 
 \begin{Definition}[Triviale Klausel-Mengen]
   Eine Klausel-Menge $K$ heißt \blue{trivial} wenn einer der beiden folgenden Fälle
-  vorliegt.
+  vorliegt:
   \begin{enumerate}
   \item $K$ enthält die leere Klausel: \qquad $\{\} \el K$.
 
@@ -2564,6 +2563,14 @@ Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass
   \end{enumerate}
 \end{Definition}
 
+\remark
+Beachten Sie, dass wir in dieser Vorlesung das Wort \blue{trivial} an zwei verschiedenen Stellen in
+unterschiedlicher Bedeutung benutzen:
+\begin{enumerate}
+\item Einerseits haben wir den Begriff der \blue{trivialen Klausel} definiert:  Eine Klausel ist genau dann trivial,
+      wenn sie eine Tautologie ist.
+\item Andererseits haben wir gerade den Begriff der \blue{trivialen Klausel-Menge} definiert.  \eox
+\end{enumerate}
 
 Wie können wir nun eine Menge von Klauseln so vereinfachen, dass die Menge schließlich nur
 noch aus Unit-Klauseln besteht?  Es gibt drei
@@ -2585,7 +2592,7 @@ Klausel $C_1 \cup \{p\}$ insgesamt $m+1$ Literale und enthält die Klausel
 $\bigl\{\neg p\} \cup C_2$ insgesamt $n+1$ Literale, so kann die Konklusion $C_1 \cup C_2$ 
 bis zu $m + n$ Literale enthalten.  Natürlich können es auch weniger Literale 
 sein, und zwar dann, wenn es Literale gibt, die sowohl in $C_1$ als auch in $C_2$
-auftreten.  Im allgemeinen ist $m + n$ größer als $m + 1$ und als $n + 1$.  Die
+auftreten.  Oft ist $m + n$ größer als $m + 1$ und als $n + 1$.  Die
 Klauseln wachsen nur dann sicher nicht, wenn  $n = 0$ oder $m = 0$ ist.
 Dieser Fall liegt vor, wenn einer der beiden Klauseln nur aus einem Literal besteht
 und folglich eine \blue{Unit-Klausel} ist.  Da es unser Ziel ist, die Klausel-Mengen
@@ -2602,10 +2609,10 @@ $\texttt{unitCut}(K,l)$ die Klausel-Menge $K$ soweit wie möglich mit Unit-Schni
 $\{l\}$ vereinfacht:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{unitCut}(K,l) = \Bigl\{ C \backslash \bigl\{ \komplement{\,l\,} \bigr\} \;\Big|\; C \in K \Bigr\}$.
+$\texttt{unitCut}(K,l) = \Bigl\{ C \backslash \bigl\{ \komplement{l} \bigr\} \;\Big|\; C \in K \Bigr\}$.
 \\[0.2cm]
 Beachten Sie, dass die Menge $\texttt{unitCut}(K,l)$ genauso viele Klauseln enthält wie die Menge
-$K$.  Allerdings sind die Klauseln aus der Menge $K$, die das Literal $\komplement{\,l\,}$
+$K$.  Allerdings sind die Klauseln aus der Menge $K$, die das Literal $\komplement{l}$
 enthalten, verkleinert worden.   Alle anderen Klauseln aus $K$ bleiben unverändert.
 
 \subsection{Vereinfachung durch Subsumption}
@@ -2859,25 +2866,23 @@ Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie
                   xleftmargin   = 0.2cm,
                   xrightmargin  = 0.2cm
                 ]
-    davisPutnam := procedure(Clauses, Literals) {
-        Clauses := saturate(Clauses);
-        if ({} in Clauses) {
-            return { {} };
-        }
-        if (forall (C in Clauses | #C == 1)) {
-            return Clauses;
-        }
-        l := selectLiteral(Clauses, Literals);
-        S := davisPutnam(Clauses + { {l} }, Literals + { l });
-        if (S != { {} }) {
-            return S;  // solution found
-        }     
-        notL := negateLiteral(l);    
-        return davisPutnam(Clauses + { {notL} }, Literals + { notL });
-    };
+    def solve(Clauses, Literals):
+        S      = saturate(Clauses);
+        empty  = frozenset()
+        falsum = {empty}
+        if empty in S:
+            return falsum
+        if all(len(C) == 1 for C in S):
+            return S
+        L      = selectLiteral(S, Literals)
+        negL   = complement(L)
+        Result = solve(S | { frozenset({L}) }, Literals | { L })
+        if Result != falsum:
+            return Result
+        return solve(S | { frozenset({negL}) }, Literals | { L })
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{davisPutnam}}
+  \caption{Die Prozedur \texttt{solve}}
   \label{fig:davisPutnam}
 \end{figure} 
 
@@ -2899,18 +2904,17 @@ gezeigt.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    saturate := procedure(S) {
-        Units := { C : C in S | #C == 1 };
-        Used  := {};
-        while (Units != {}) {
-            Unit  := arb(Units);
-            Used  += { Unit };
-            l     := arb(Unit);
-            S     := reduce(S, l);
-            Units := { C : C in S | #C == 1 && !(C in Used) };        
-        }
-        return S;
-    };
+    def saturate(Clauses):
+        S     = Clauses.copy()
+        Units = { C for C in S if len(C) == 1 }
+        Used  = set()
+        while len(Units) > 0:
+            unit  = Units.pop()
+            Used |= { unit }
+            L     = arb(unit)
+            S     = reduce(S, L)
+            Units = { C for C in S if len(C) == 1 } - Used        
+        return S
 \end{Verbatim}
 \vspace*{-0.3cm}
   \caption{Die Prozedur \texttt{saturate}}
@@ -2966,13 +2970,12 @@ Die Implementierung setzt diese Definition unmittelbar um.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    reduce := procedure(S, l) {
-        notL := negateLiteral(l);
-        return   { C - { notL } : C in S | notL in C } 
-               + { C : C in S | !(notL in C) && !(l in C) } 
-               + { {l} };
-    };
-\end{Verbatim}
+    def reduce(Clauses, L):
+        LBar = complement(L)
+        return   { C - { LBar } for C in Clauses if LBar in C }          \
+               | { C for C in Clauses if LBar not in C and L not in C }  \
+               | { frozenset({L}) }
+    \end{Verbatim}
 \vspace*{-0.3cm}
   \caption{Die Prozedur \texttt{reduce}}
   \label{fig:reduce}
@@ -3007,15 +3010,14 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    selectLiteral := procedure(S, Used) {
-        return rnd({} +/ S - Used);  // use rnd instead of arb for efficiency
-    };
-    negateLiteral := procedure(l) {
-        match (l) {
-            case !p : return  p;
-            case  p : return !p;
-        }
-    };
+    def selectLiteral(Clauses, Forbidden):
+        Variables = { extractVariable(L) for C in Clauses for L in C } - Forbidden
+        return arb(Variables)
+
+    def arb(S):
+        "Return some member from the set S."
+        for x in S:
+            return x
 \end{Verbatim}
 \vspace*{-0.3cm}
   \caption{Die Prozeduren \texttt{select} und \texttt{negateLiteral}}
