@@ -2799,32 +2799,32 @@ weitere Fallunterscheidungen durchführen müssen.
 
 \subsection{Implementierung des Algorithmus von Davis und Putnam}
 Wir zeigen jetzt die Implementierung der Prozedur 
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/davis-putnam.stlx}{\texttt{davisPutnam}}, 
+\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/davis-putnam.stlx}{\texttt{solve}}, 
 mit der die Frage, ob eine Menge von Klauseln erfüllbar ist, beantwortet werden kann. Die
-Implementierung ist in Abbildung \ref{fig:davisPutnam} auf Seite \pageref{fig:davisPutnam}
+Implementierung ist in Abbildung \ref{fig:solve} auf Seite \pageref{fig:solve}
 gezeigt.  Die Prozedur erhält zwei Argumente: Die Mengen \texttt{Clauses} und \texttt{Literals}.
 Hier ist \texttt{Clauses} eine Menge von Klauseln und \texttt{Literals} ist eine Menge von
 Literalen.  Falls  die Vereinigung dieser beiden Mengen erfüllbar ist, so liefert
 der Aufruf 
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{davisPutnam(Clauses, Literals)} 
+\texttt{solve(Clauses, Literals)} 
 \\[0.2cm]
 eine Menge von Unit-Klauseln \texttt{R}, so
 dass jede Belegung $\I$, die alle Unit-Klauseln aus \texttt{R} erfüllt, auch alle Klauseln aus
 der Menge  $\texttt{Clauses}$ erfüllt.  Falls die Menge $\texttt{Clauses}$ nicht erfüllbar ist, liefert der Aufruf
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{davisPutnam(Clauses, Literals)} 
+\texttt{solve(Clauses, Literals)} 
 \\[0.2cm]
 als Ergebnis die Menge $\bigl\{ \{\} \bigr\}$ zurück, denn die leere Klausel repräsentiert die unerfüllbare Formel $\falsum$.
 
-Sie fragen sich vielleicht, wozu wir in der Prozedur \texttt{davisPutnam} die Menge
+Sie fragen sich vielleicht, wozu wir in der Prozedur \texttt{solve} die Menge
 \texttt{Literals} brauchen.  Der Grund ist, dass wir uns bei den rekursiven Aufrufen
 merken müssen, welche Literale wir schon benutzt haben.  Diese Literale sammeln wir in der
 Menge \texttt{Literals}.
 
-Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie folgt:
+Die in Abbildung \ref{fig:solve} gezeigte Implementierung funktioniert wie folgt:
 \begin{enumerate}
 \item In Zeile 2 reduzieren wir mit Hilfe der Methode \texttt{saturate} 
       solange wie möglich die gegebene Klausel-Menge \texttt{Clauses} mit Hilfe
@@ -2883,11 +2883,11 @@ Die in Abbildung \ref{fig:davisPutnam} gezeigte Implementierung funktioniert wie
 \end{Verbatim}
 \vspace*{-0.3cm}
   \caption{Die Prozedur \texttt{solve}}
-  \label{fig:davisPutnam}
+  \label{fig:solve}
 \end{figure} 
 
 Wir diskutieren nun die Hilfsprozeduren, die bei der Implementierung der Prozedur
-\texttt{davisPutnam} verwendet wurden.
+\texttt{solve} verwendet wurden.
 Als erstes besprechen wir die Funktion \texttt{saturate}.  Diese Prozedur erhält eine
 Menge $S$ von Klauseln als Eingabe und führt alle möglichen Unit-Schnitte und
 Unit-Subsumptionen durch.  
@@ -3452,8 +3452,8 @@ die Vereinigung dieser Mengen.
   \label{fig:allClauses}
 \end{figure}
 
-Als letztes zeigen wir in Abbildung \ref{fig:davisPutnam:solve} die Prozedur
-\texttt{solve}, mit der wir das 8-Damen-Problem lösen können.
+Als letztes zeigen wir in Abbildung \ref{fig:solve:queens} die Prozedur
+\texttt{queens}, mit der wir das 8-Damen-Problem lösen können.
 Hierbei ist $\texttt{printBoard}()$ eine Prozedur, welche die Lösung in lesbarere Form als Schachbrett
 ausdruckt.  Das funktioniert allerdings nur, wenn ein Font verwendet wird, bei dem alle Zeichen die
 selbe Breite haben.  Diese Prozedur ist der Vollständigkeit halber in Abbildung \ref{fig:printBoard}
@@ -3473,9 +3473,9 @@ Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    solve := procedure(n) {
+    queens := procedure(n) {
         Clauses  := allClauses(n);
-        Solution := davisPutnam(Clauses, {});
+        Solution := solve(Clauses, {});
         if (Solution != { {} }) {
             printBoard(Solution, n);
         } else {
@@ -3485,8 +3485,8 @@ Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
     };
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Die Prozedur \texttt{solve}}
-\label{fig:davisPutnam:solve}
+\caption{Die Prozedur \texttt{queens}}
+\label{fig:solve:queens}
 \end{figure}
 
 
@@ -3535,7 +3535,7 @@ Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
 
 
 
-Die durch den Aufruf $\texttt{davisPutnam}(\textsl{Clauses}, \{\})$ 
+Die durch den Aufruf $\texttt{solve}(\textsl{Clauses}, \{\})$ 
 berechnete Menge \texttt{solution} enthält für jede der Variablen $\texttt{@Var}(\texttt{r},\texttt{c})$
 entweder die Unit-Klausel $\{\texttt{@Var}(\texttt{r},\texttt{c})\}$  (falls auf diesem Feld eine Dame steht) oder
 aber die Unit-Klausel  $\{ \texttt{!@Var}(\texttt{r},\texttt{c})\}$ (falls das Feld leer bleibt).
