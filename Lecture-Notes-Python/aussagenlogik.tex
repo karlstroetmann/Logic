@@ -809,7 +809,7 @@ $\mathcal{I}$ können wir die Menge $M_\mathcal{I}$ wie folgt definieren:
 \hspace*{1.3cm}
 $M_\mathcal{I} := \bigl\{ p \in \mathcal{P} \mid \mathcal{I}(p) = \texttt{True} \bigr\}$.
 \\[0.2cm]
-Damit können wir nun eine Prozedur implementieren, die für eine gegebene aussagenlogische Formel $f$
+Damit können wir nun eine Funktion implementieren, die für eine gegebene aussagenlogische Formel $f$
 testet, ob $f$ eine Tautologie ist.  Hierzu müssen wir zunächst die Menge $\mathcal{P}$ der
 aussagenlogischen Variablen bestimmen, die in $f$ auftreten.  Abstrakt definieren wir dazu eine Funktion 
 $\mathtt{collectVars}(f)$, welche die Menge aller aussagenlogischen Variablen berechnet, die in einer
@@ -1171,11 +1171,11 @@ Wir demonstrieren das Verfahren am Beispiel der Formel\\[0.2cm]
 Damit ist die Formel in KNF überführt.
 
 \subsection{Berechnung der konjunktiven Normalform in \textsl{Python}}
-Wir geben nun eine Reihe von Prozeduren an, mit deren Hilfe sich eine gegebene
-Formel $f$ in konjunktive Normalform überführen lässt.  Diese Prozeduren sind Teil des Jupyter Notebooks
+Wir geben nun eine Reihe von Funktionen an, mit deren Hilfe sich eine gegebene
+Formel $f$ in konjunktive Normalform überführen lässt.  Diese Funktionen sind Teil des Jupyter Notebooks
 \href{https://github.com/karlstroetmann/Logik/blob/master/Python/CNF.ipynb}{CNF.ipynb}.
 Wir beginnen mit der
-Prozedur 
+Funktion 
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{elimBiconditional}: \mathcal{F} \rightarrow \mathcal{F}$
@@ -1266,7 +1266,7 @@ die das Verhalten der Funktion $\texttt{elimBiconditional}$ beschreiben:
 \end{figure} 
 Abbildung
 \ref{fig:elimBiconditional} auf Seite \pageref{fig:elimBiconditional} zeigt die Implementierung der
-Prozedur 
+Funktion 
 \href{https://github.com/karlstroetmann/Logik/blob/master/Python/CNF.ipynb}{\texttt{elimBiconditional}}.
 \begin{enumerate}
 \item In Zeile 3 prüft der Funktions-Aufruf $\texttt{isinstance}(f, \mathtt{str})$, ob $f$ ein String ist.  In diesem Fall
@@ -1293,7 +1293,7 @@ Prozedur
 \end{enumerate}
 
 
-Als nächstes betrachten wir die Prozedur zur Elimination des Junktors ``$\rightarrow$''. 
+Als nächstes betrachten wir die Funktion zur Elimination des Junktors ``$\rightarrow$''. 
 Abbildung
 \ref{fig:eliminate-folgt} auf Seite \pageref{fig:eliminate-folgt} zeigt die
 Implementierung der Funktion
@@ -1462,7 +1462,7 @@ Gleichungen unmittelbar um.
 \pagebreak
 
 
-Als letztes stellen wir die Prozeduren vor, mit denen die Formeln, die bereits in
+Als letztes stellen wir die Funktionen vor, mit denen die Formeln, die bereits in
 Negations-Normalform sind, ausmultipliziert und dadurch in konjunktive
 Normalform gebracht werden.  Gleichzeitig werden  die zu normalisierenden Formeln dabei
 in die Mengen-Schreibweise transformiert, d.h.~die Formeln werden als Mengen von Mengen 
@@ -1950,7 +1950,8 @@ die leere Klausel ist, die dem Falsum entspricht.
 
 \remark
 Es gibt alternative Definitionen des Herleitungs-Begriffs, die nicht nur \blue{widerlegungs-vollständig} sondern
-tatsächlich \blue{vollständig} sind, d.h.~immer wenn $\models f_1 \wedge \cdots \wedge f_n \rightarrow g$ gilt, dann gilt auch
+tatsächlich \blue{vollständig} sind, d.h.~immer wenn $\models f_1 \wedge \cdots \wedge f_n \rightarrow g$ gilt,
+dann folgt auch
 \\[0.2cm]
 \hspace*{1.3cm}
 $\{ f_1, \cdots, f_n \} \vdash g$.
@@ -2059,7 +2060,7 @@ sind.
         "Compute the complement of the literal l."
         if isinstance(l, str):  # l is a propositional variable
             return ('¬', l)
-        else:
+        else:                   # l = ('¬', 'p')
         return l[1]
 
     def extractVariable(l):
@@ -2121,7 +2122,7 @@ definiert ist:
                           for C in cutRule(C1, C2)
                       }
             if frozenset() in Derived:
-                return { frozenset() }  # This is the set notation of Falsum.
+                return { frozenset() }  # This is the set notation of ⊥.
             Derived -= Clauses
             if Derived == set():        # no new clauses found
                 return Clauses
@@ -2137,7 +2138,7 @@ Wir erläutern nun die Implementierung der Funktion \texttt{saturate}.
 \item Die \texttt{while}-Schleife, die in Zeile 27 beginnt, hat die Aufgabe, die Schnitt-Regel
       so lange wie möglich anzuwenden, um mit Hilfe der Schnitt-Regel neue Klauseln aus den gegebenen
       Klauseln herzuleiten.  Da die Bedingung dieser Schleife den Wert \texttt{True} hat, kann diese
-      Schleife nur durch die Ausführung einer der beiden \texttt{return}-Befehle (Zeile 33 bzw.~Zeile 36)
+      Schleife nur durch die Ausführung einer der beiden \texttt{return}-Befehle in Zeile 33 bzw.~Zeile 36
       abgebrochen werden. 
 \item In Zeile 28 wird die Menge \texttt{Derived} als die Menge der Klauseln definiert, die mit Hilfe der
       Schnitt-Regel aus zwei der Klauseln in der Menge \texttt{Clauses} gefolgert werden können.
@@ -2149,7 +2150,7 @@ Wir erläutern nun die Implementierung der Funktion \texttt{saturate}.
       ab, die schon in der Menge \texttt{Clauses} vorhanden waren, denn es geht uns darum
       festzustellen, ob wir im letzten Schritt tatsächlich 
       \underline{neue} Klauseln gefunden haben, oder ob alle Klauseln, die wir im letzten Schritt in Zeile 28
-      hergeleitet haben, eigentlich schon vorher bekannt waren.
+      hergeleitet haben, schon vorher bekannt waren.
 \item Falls wir nun in Zeile 35 feststellen, dass wir keine neuen Klauseln hergeleitet haben,
       dann ist die Menge \texttt{Clauses} \blue{saturiert} und wir geben diese Menge in Zeile 36 zurück.
 \item Andernfalls fügen wir in Zeile 37 die Klauseln, die wir neu gefunden haben, zu der Menge
@@ -2159,23 +2160,22 @@ An dieser Stelle müssen wir uns überlegen, dass die \texttt{while}-Schleife ta
 abbricht.  Das hat zwei Gründe:  
 \begin{enumerate}
 \item In jeder Iteration der Schleife wird die Anzahl der Elemente der Menge \texttt{Clauses}
-      mindestens um Eins erhöht, denn wir wissen ja, dass die Menge \texttt{Derived}, die wir zu
-      \texttt{Clauses} hinzufügen, einerseits nicht leer ist und andererseits auch nur solche
+      mindestens um Eins erhöht, denn wir wissen ja, dass die Menge \texttt{Derived}, die wir in Zeile 37 zur
+      Menge \texttt{Clauses} hinzufügen, einerseits nicht leer ist und andererseits auch nur solche
       Klauseln enthält, die nicht bereits in \texttt{Clauses} auftreten.
 \item Die Menge \texttt{Clauses}, mit der wir ursprünglich starten, enthält eine bestimmte Anzahl $n$
       von aussagenlogischen Variablen.  Bei der Anwendung der Schnitt-Regel werden aber keine neue
       Variablen erzeugt.  Daher bleibt die Anzahl der aussagenlogischen Variablen, die in
       \texttt{Clauses} auftreten, immer gleich.  Damit ist natürlich auch die Anzahl der Literale,
       die in \texttt{Clauses} auftreten, beschränkt: Wenn es nur $n$ aussagenlogische Variablen gibt,
-      dann kann es auch höchstens $2 \cdot n$ Literale geben.  Jede Klausel aus \texttt{Clauses} ist
+      dann kann es auch höchstens $2 \cdot n$ verschiedene Literale geben.  Jede Klausel aus \texttt{Clauses} ist
       aber eine Teilmenge der Menge aller Literale.  Da eine Menge mit $k$ Elementen insgesamt $2^k$
       Teilmengen hat, gibt es höchstens $2^{2 \cdot n}$ verschiedene Klauseln, die in
       \texttt{Clauses} auftreten können.  
 \end{enumerate}
 Aus den beiden oben angegebenen Gründen können wir schließen, dass die \texttt{while}-Schleife in
-Zeile 20 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.   Tatsächlich ist es in der Praxis so,
-dass die \texttt{while} Schleife oft schon nach einer wesentlich geringeren Zahl von Iterationen abgebrochen 
-wird. 
+Zeile 20 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.
+
 
 \begin{figure}[!ht]
 \centering
@@ -2213,8 +2213,8 @@ Als nächstes diskutieren wir die Implementierung der Funktion \texttt{findValua
 Abbildung \ref{fig:Completeness.ipynb-3} gezeigt ist.  Diese Funktion erhält als Eingabe eine Menge
 \texttt{Clauses} von Klauseln.  Falls diese Menge widersprüchlich ist, soll die Funktion
 das Ergebnis \texttt{False} zurück geben.  Andernfalls soll eine aussagenlogische Belegung $\I$ berechnet werden,
-unter der alle Klauseln aus der Menge \texttt{Clauses} erfüllt sind.  Im Detail arbeitet die
-Funktion \texttt{findValuation} wie folgt.
+unter der alle Klauseln aus der Menge \texttt{Clauses} erfüllt sind.
+Im Detail arbeitet die Funktion \texttt{findValuation} wie folgt.
 \begin{enumerate}
 \item Zunächst berechnen wir in Zeile 40 die Menge aller aussagenlogischen Variablen, die in der Menge
       \texttt{Clauses} auftreten.  Wir benötigen diese Menge, denn in der
@@ -2314,8 +2314,8 @@ gilt.
              \item $D = \{ \neg p \}$.
 
                    Würde es jetzt eine Klausel $E = \{ p\} \in \texttt{Clauses}$ geben, so könnten
-                   wir aus den beiden Klauseln $E$ und $E$ sofort die leere Klausel $\{\}$
-                   herleiten und die Prozedur \texttt{findValuation} würde in Zeile 43 den Wert
+                   wir aus den beiden Klauseln $D$ und $E$ sofort die leere Klausel $\{\}$
+                   herleiten und die Funktion \texttt{findValuation} würde in Zeile 43 den Wert
                    \texttt{False} zurück geben.  Da wir aber vorausgesetzt haben, dass dies nicht
                    passiert, kann es keine solche Klausel $E$ geben.  Damit ist die Bedingung in
                    Zeile 46 falsch und folglich gilt $\neg p \in \texttt{Literals}$.
@@ -2382,8 +2382,8 @@ gilt.
                          schreiben lassen, wobei 
                          \\[0.2cm]
                          \hspace*{1.3cm}
-                         $C' \subseteq \bigl\{ \komplement{l} \mid l \in \texttt{Literals} \bigr\}$  \quad und \quad
-                         $D' \subseteq \bigl\{ \komplement{l} \mid l \in \texttt{Literals} \bigr\}$
+                         $C' \subseteq \Bigl\{ \komplement{l} \mid l \in \texttt{Literals} \Bigr\}$  \quad und \quad
+                         $D' \subseteq \Bigl\{ \komplement{l} \mid l \in \texttt{Literals} \Bigr\}$
                          \\[0.2cm]
                          gelten würde.  Daraus würde sowohl
                          \\[0.2cm]
@@ -2481,9 +2481,9 @@ Belegung $\I$ zu berechnen, so dass
 \\[0.2cm]
 \hspace*{1.3cm} $\texttt{evaluate}(C,\I) = \texttt{True}$ \quad für alle $C\in K$ \\[0.2cm]
 gilt.  In diesem Fall sagen wir auch, dass die Belegung $\I$ eine \blue{Lösung} der
- Klausel-Menge $K$ ist.  Im letzten Abschnitt haben wir bereits die Prozedur \texttt{findValuation}
+ Klausel-Menge $K$ ist.  Im letzten Abschnitt haben wir bereits die Funktion \texttt{findValuation}
  kennengelernt, mit der wir eine solche Belegung berechnen könnten.
-Bedauerlicherweise ist diese Prozedur für eine praktische Anwendung nicht effizient genug.
+Bedauerlicherweise ist diese Funktion für eine praktische Anwendung nicht effizient genug.
 Wir werden daher in diesem Abschnitt ein Verfahren vorstellen, mit dem die Berechnung einer Lösung
 einer aussagenlogischen Klausel-Menge in vielen praktisch relevanten Fällen auch dann möglich ist, wenn die
 Menge der Klauseln $K$ groß ist.  Dieses Verfahren geht auf Davis und Putnam
@@ -2540,7 +2540,7 @@ wahr und falsch machen.  Wir nehmen die an den letzten drei Beispielen gemachten
   Eine Klausel-Menge $K$ heißt \blue{trivial} wenn einer der beiden folgenden Fälle
   vorliegt:
   \begin{enumerate}
-  \item $K$ enthält die leere Klausel: \qquad $\{\} \el K$.
+  \item $K$ enthält die leere Klausel, es gilt also $\{\} \el K$.
 
         In diesem Fall ist $K$ offensichtlich unlösbar.
   \item $K$ enthält nur Unit-Klauseln mit \underline{\red{verschiedenen}} Aussage-Variablen. d.h. es kann nicht
@@ -2552,11 +2552,15 @@ wahr und falsch machen.  Wir nehmen die an den letzten drei Beispielen gemachten
         $\bigl(\forall C \el K: \texttt{card}(C) = 1\bigr) \;\wedge\;
          \forall p \el \mathcal{P}: \neg\bigl( \{p\} \in K \wedge \{\neg p\} \in K\bigr)$.
         \\[0.3cm]
-        In diesem Fall ist die aussagenlogische Belegung
+        In diesem Fall können wir die aussagenlogische Belegung $\I$ wie folgt definieren:
         \\[0.2cm]
         \hspace*{1.3cm}
-        $ \I = \bigl\{ \pair(p, \texttt{True}) \mid \{p\} \in K \bigr\} \,\cup\, \bigl\{
-             \pair(p, \texttt{False}) \mid \{\neg p\} \in K \bigr\} 
+        $\I(p) = \left\{
+                   \begin{array}{lcr}
+                     \texttt{True}  & \mbox{falls} & \{p\}      \in K, \\[0.1cm]
+                     \texttt{False} & \mbox{falls} & \{\neg p\} \in K.
+                   \end{array}
+                   \right.
         $
         \\[0.2cm]
         eine \blue{Lösung} der Klausel-Menge $K$. \eox
@@ -2630,7 +2634,7 @@ gilt.  Allgemein sagen wir, dass eine Klausel $C$
 \hspace*{1.3cm} $U \subseteq C$ \\[0.2cm]
 gilt.  Ist $K$ eine Klausel-Menge mit $C \in K$ und $U \in K$ und wird
 $C$ durch $U$ subsumiert, so können wir die Menge $K$ durch Unit-Subsumption zu der Menge $K - \{ C \}$
-verkleinern, wir können also die Klausel $C$ aus $K$ löschen.  Allgemein definieren wir eine Funktion
+verkleinern, wir können also die Klausel $C$ aus $K$ löschen.  Dazu definieren wir eine Funktion
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{subsume}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$
@@ -2696,7 +2700,7 @@ sowohl Unit-Subsumptionen als auch Unit-Schnitte durchführen können.
 Wir können jetzt den Algorithmus von Davis und Putnam skizzieren.
 Gegeben sei eine Menge $K$ von Klauseln.  Gesucht ist dann eine Lösung von $K$.  Wir
 suchen  also eine Belegung $\I$, so dass gilt: \\[0.2cm]
-\hspace*{1.3cm} $\I(k) = \texttt{True}$ \quad für alle $C \in K$.\\[0.2cm]
+\hspace*{1.3cm} $\I(C) = \texttt{True}$ \quad für alle $C \in K$.\\[0.2cm]
 Das Verfahren von Davis und Putnam besteht nun aus den folgenden Schritten.
 \begin{enumerate}
 \item Führe alle Unit-Schnitte und Unit-Subsumptionen aus, die mit Klauseln aus $K$ möglich sind.
@@ -2722,8 +2726,8 @@ wie folgt:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{reduce}(K,l)  = 
- \bigl\{\, C \backslash \{\komplement{l}\} \;|\; C \in K \wedge \komplement{l} \in C \,\bigr\} 
-       \,\cup\, \bigl\{\, C \in K \mid \komplement{l} \not\in C \wedge l \not\in C \} \cup \bigl\{\{l\}\bigr\}.
+ \Bigl\{\, C \backslash \bigl\{\komplement{l}\bigr\} \;|\; C \in K \wedge \komplement{l} \in C \,\Bigr\} 
+       \,\cup\, \Bigl\{\, C \in K \mid \komplement{l} \not\in C \wedge l \not\in C \Bigr\} \cup \bigl\{\{l\}\bigr\}.
 $
 \\[0.2cm]
 Die Menge enthält also einerseits die Ergebnisse von Schnitten mit
@@ -2798,20 +2802,20 @@ durchführen. Bei komplexeren Beispielen ist es häufig so, dass wir innerhalb e
 weitere Fallunterscheidungen durchführen müssen.
 
 \subsection{Implementierung des Algorithmus von Davis und Putnam}
-Wir zeigen jetzt die Implementierung der Prozedur 
+Wir zeigen jetzt die Implementierung der Funktion 
 \href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/davis-putnam.stlx}{\texttt{solve}}, 
 mit der die Frage, ob eine Menge von Klauseln erfüllbar ist, beantwortet werden kann. Die
 Implementierung ist in Abbildung \ref{fig:solve} auf Seite \pageref{fig:solve}
-gezeigt.  Die Prozedur erhält zwei Argumente: Die Mengen \texttt{Clauses} und \texttt{Literals}.
+gezeigt.  Die Funktion erhält zwei Argumente: Die Mengen \texttt{Clauses} und \texttt{Literals}.
 Hier ist \texttt{Clauses} eine Menge von Klauseln und \texttt{Literals} ist eine Menge von
-Literalen.  Falls  die Vereinigung dieser beiden Mengen erfüllbar ist, so liefert
+Literalen.  Falls die Menge \texttt{Clauses} erfüllbar ist, so liefert
 der Aufruf 
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{solve(Clauses, Literals)} 
 \\[0.2cm]
-eine Menge von Unit-Klauseln \texttt{R}, so
-dass jede Belegung $\I$, die alle Unit-Klauseln aus \texttt{R} erfüllt, auch alle Klauseln aus
+eine Menge von Unit-Klauseln \texttt{Result}, so
+dass jede Belegung $\I$, die alle Unit-Klauseln aus \texttt{Result} erfüllt, auch alle Klauseln aus
 der Menge  $\texttt{Clauses}$ erfüllt.  Falls die Menge $\texttt{Clauses}$ nicht erfüllbar ist, liefert der Aufruf
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -2819,43 +2823,12 @@ der Menge  $\texttt{Clauses}$ erfüllt.  Falls die Menge $\texttt{Clauses}$ nich
 \\[0.2cm]
 als Ergebnis die Menge $\bigl\{ \{\} \bigr\}$ zurück, denn die leere Klausel repräsentiert die unerfüllbare Formel $\falsum$.
 
-Sie fragen sich vielleicht, wozu wir in der Prozedur \texttt{solve} die Menge
+Sie fragen sich vielleicht, wozu wir in der Funktion \texttt{solve} die Menge
 \texttt{Literals} brauchen.  Der Grund ist, dass wir uns bei den rekursiven Aufrufen
 merken müssen, welche Literale wir schon benutzt haben.  Diese Literale sammeln wir in der
 Menge \texttt{Literals}.
 
-Die in Abbildung \ref{fig:solve} gezeigte Implementierung funktioniert wie folgt:
-\begin{enumerate}
-\item In Zeile 2 reduzieren wir mit Hilfe der Methode \texttt{saturate} 
-      solange wie möglich die gegebene Klausel-Menge \texttt{Clauses} mit Hilfe
-      von Unit-Schnitten und entfernen alle Klauseln, die durch Unit-Klauseln
-      subsumiert werden.
-\item Anschließend testen wir in Zeile 3, ob die so vereinfachte Klausel-Menge
-      die leere Klausel enthält und geben in diesem Fall als Ergebnis die Menge 
-      $\bigl\{\{\}\bigr\}$ zurück.
-\item Dann testen wir in Zeile 6, ob bereits alle Klauseln $C$ aus der Menge
-      \texttt{Clauses} Unit-Klauseln sind.  Wenn dies so ist,
-      dann ist die Menge \texttt{Clauses} trivial und wir geben diese Menge als Ergebnis zurück.
-\item Andernfalls wählen wir in Zeile 9 ein Literal $\texttt{l}$ aus der Menge \texttt{Clauses}, 
-      dass wir noch nicht benutzt haben.
-      Wir untersuchen dann in Zeile 10 rekursiv, ob die Menge \\[0.2cm]
-      \hspace*{1.3cm} 
-      $\texttt{Clauses} \cup \bigl\{\{\texttt{l}\}\bigr\}$ 
-      \\[0.2cm]
-      lösbar ist.  Dabei gibt es zwei Fälle:
-      \begin{enumerate}
-      \item Falls diese Menge lösbar ist, geben wir die Lösung dieser Menge als Ergebnis zurück.
 
-      \item Sonst  prüfen wir rekursiv, ob die Menge 
-            \\[0.2cm]
-            \hspace*{1.3cm}
-            $\texttt{Clauses} \cup \Bigl\{ \bigl\{ \komplement{\texttt{l}} \bigr\} \Bigr\}$ 
-            \\[0.2cm]
-            lösbar ist.  Ist diese Menge lösbar, so ist diese Lösung auch eine
-            Lösung der Menge $\texttt{Clauses}$ und wir geben diese Lösung zurück.  Ist die
-            Menge unlösbar, dann muss auch die Menge $\texttt{Clauses}$ unlösbar sein.
-      \end{enumerate}
-\end{enumerate}
 \begin{figure}[!ht]
   \centering
 \begin{Verbatim}[ frame         = lines, 
@@ -2869,29 +2842,62 @@ Die in Abbildung \ref{fig:solve} gezeigte Implementierung funktioniert wie folgt
     def solve(Clauses, Literals):
         S      = saturate(Clauses);
         empty  = frozenset()
-        falsum = {empty}
+        Falsum = {empty}
         if empty in S:
-            return falsum
+            return Falsum
         if all(len(C) == 1 for C in S):
             return S
-        L      = selectLiteral(S, Literals)
-        negL   = complement(L)
-        Result = solve(S | { frozenset({L}) }, Literals | { L })
-        if Result != falsum:
+        l      = selectLiteral(S, Literals)
+        negL   = complement(l)
+        Result = solve(S | { frozenset({l}) }, Literals | { l })
+        if Result != Falsum:
             return Result
-        return solve(S | { frozenset({negL}) }, Literals | { L })
+        return solve(S | { frozenset({negL}) }, Literals | { l })
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{solve}}
+  \caption{Die Funktion \texttt{solve}}
   \label{fig:solve}
 \end{figure} 
 
-Wir diskutieren nun die Hilfsprozeduren, die bei der Implementierung der Prozedur
+Die in Abbildung \ref{fig:solve} gezeigte Implementierung funktioniert wie folgt:
+\begin{enumerate}
+\item In Zeile 2 reduzieren wir mit Hilfe der Methode \texttt{saturate} 
+      solange wie möglich die gegebene Klausel-Menge \texttt{Clauses} mit Hilfe
+      von Unit-Schnitten und entfernen alle Klauseln, die durch Unit-Klauseln
+      subsumiert werden.
+\item Anschließend testen wir in Zeile 5, ob die so vereinfachte Klausel-Menge \texttt{S}
+      die leere Klausel enthält und geben in diesem Fall als Ergebnis die Menge 
+      $\bigl\{\{\}\bigr\}$ zurück.
+\item Dann testen wir in Zeile 7, ob bereits alle Klauseln $C$ aus der Menge
+      \texttt{S} Unit-Klauseln sind.  Wenn dies so ist,
+      dann ist die Menge \texttt{S} trivial und wir geben diese Menge als Ergebnis zurück.
+\item Andernfalls wählen wir in Zeile 9 ein Literal $\texttt{l}$ aus der Menge \texttt{S}, 
+      dass wir noch nicht benutzt haben.
+      Wir untersuchen dann in Zeile 11 rekursiv, ob die Menge \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\texttt{S} \cup \bigl\{\{\texttt{l}\}\bigr\}$ 
+      \\[0.2cm]
+      lösbar ist.  Dabei gibt es zwei Fälle:
+      \begin{enumerate}
+      \item Falls diese Menge lösbar ist, geben wir die Lösung dieser Menge als Ergebnis zurück.
+
+      \item Sonst  prüfen wir rekursiv, ob die Menge 
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $\texttt{S} \cup \Bigl\{ \bigl\{ \komplement{\texttt{l}} \bigr\} \Bigr\}$ 
+            \\[0.2cm]
+            lösbar ist.  Ist diese Menge lösbar, so ist diese Lösung auch eine
+            Lösung der Menge $\texttt{Clauses}$ und wir geben diese Lösung zurück.  Ist die
+            Menge unlösbar, dann muss auch die Menge $\texttt{Clauses}$ unlösbar sein.
+      \end{enumerate}
+\end{enumerate}
+
+Wir diskutieren nun die Hilfsprozeduren, die bei der Implementierung der Funktion
 \texttt{solve} verwendet wurden.
-Als erstes besprechen wir die Funktion \texttt{saturate}.  Diese Prozedur erhält eine
+Als erstes besprechen wir die Funktion \texttt{saturate}.  Diese Funktion erhält eine
 Menge $S$ von Klauseln als Eingabe und führt alle möglichen Unit-Schnitte und
 Unit-Subsumptionen durch.  
-Die Prozedur \texttt{saturate} ist in Abbildung \ref{fig:saturate} auf Seite \pageref{fig:saturate}
+Die Funktion \texttt{saturate} ist in Abbildung \ref{fig:saturate} auf Seite \pageref{fig:saturate}
 gezeigt.
 
 \begin{figure}[!ht]
@@ -2911,49 +2917,52 @@ gezeigt.
         while len(Units) > 0:
             unit  = Units.pop()
             Used |= { unit }
-            L     = arb(unit)
-            S     = reduce(S, L)
+            l     = arb(unit)
+            S     = reduce(S, l)
             Units = { C for C in S if len(C) == 1 } - Used        
         return S
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{saturate}}
+  \caption{Die Funktion \texttt{saturate}}
   \label{fig:saturate}
 \end{figure} 
 Die Implementierung von \texttt{saturate} funktioniert wie folgt: 
 \begin{enumerate}
-\item Zunächst berechnen wir in Zeile 2 die Menge \texttt{Units} aller Unit-Klauseln.  
-\item Dann initialisieren wir in Zeile 3 die Menge \texttt{Used} als die leere Menge.
+\item Zunächst kopieren wir die Menge \texttt{Clauses} in die Variable \texttt{S}.
+      Dies ist notwendig, da wir die Menge \texttt{S} später verändern werden.  Die Funktion
+      \texttt{saturate} soll das Argument \texttt{Clauses} aber nicht verändern.
+\item Dann berechnen wir in Zeile 3 die Menge \texttt{Units} aller Unit-Klauseln.  
+\item Anschließend initialisieren wir in Zeile 4 die Menge \texttt{Used} als die leere Menge.
       In dieser Menge merken wir uns, welche Unit-Klauseln wir schon für Unit-Schnitte und
       Subsumptionen benutzt haben.
-\item Solange die Menge \texttt{Units} der Unit-Klauseln nicht leer ist, wählen wir in Zeile 5
-      mit Hilfe der Funktion $\texttt{arb}$ eine beliebige Unit-Klausel \texttt{Unit} aus der Menge
+\item Solange die Menge \texttt{Units} der Unit-Klauseln nicht leer ist, wählen wir in Zeile 6
+      mit Hilfe der Funktion $\texttt{pop}$ eine beliebige Unit-Klausel \texttt{unit} aus der Menge
       \texttt{Units} aus. 
-\item In Zeile 6 fügen wir die Klausel \texttt{Unit} zu der Menge
+\item In Zeile 7 fügen wir die Klausel \texttt{unit} zu der Menge
       \texttt{Used} der benutzten Klausel hinzu.  
-\item In Zeile 7 extrahieren mit der Funktion \texttt{arb} das Literal \texttt{l} der Klausel
+\item In Zeile 8 extrahieren mit der Funktion \texttt{arb} das Literal \texttt{l} der Klausel
       \texttt{Unit}.  Die Funktion $\texttt{arb}$ liefert ein beliebiges Element der Menge zurück,
       das dieser Funktion als Argument übergeben wird.  Enthält diese Menge nur ein Element, so
       wird also dieses Element zurück gegeben.
-\item In Zeile 8 wird  die eigentliche Arbeit durch einen Aufruf der Prozedur
+\item In Zeile 9 wird  die eigentliche Arbeit durch einen Aufruf der Funktion
       \texttt{reduce} geleistet.  Diese Funktion berechnet alle Unit-Schnitte, die mit der
       Unit-Klausel $\{\texttt{l}\}$ möglich sind und entfernt darüber hinaus alle Klauseln, die
       durch die Unit-Klausel $\{\texttt{l}\}$ subsumiert werden.
 \item Wenn die Unit-Schnitte mit der Unit-Klausel $\{\texttt{l}\}$ berechnet werden, können neue
-      Unit-Klauseln entstehen, die wir in Zeile 9 aufsammeln.  Wir sammeln dort aber nur die Unit-Klauseln auf,
+      Unit-Klauseln entstehen, die wir in Zeile 10 aufsammeln.  Wir sammeln dort aber nur die Unit-Klauseln auf,
        die wir noch nicht benutzt haben. 
-\item Die Schleife in den Zeilen 4 -- 10 wird nun solange durchlaufen, wie wir 
+\item Die Schleife in den Zeilen 5 -- 10 wird nun solange durchlaufen, wie wir 
       Unit-Klauseln finden, die wir noch nicht benutzt haben.
-\item Am Ende geben wir die verbliebende Klauselmenge als Ergebnis zurück.
+\item Am Ende geben wir die verbliebene Klauselmenge als Ergebnis zurück.
 \end{enumerate}
-Die dabei verwendete Prozedur $\texttt{reduce}()$ ist in Abbildung \ref{fig:reduce} gezeigt.
+Die dabei verwendete Funktion $\texttt{reduce}$ ist in Abbildung \ref{fig:reduce} gezeigt.
 Im vorigen Abschnitt hatten wir die Funktion $\textsl{reduce}(S, l)$, die eine
-Klausel-Menge $S$ mit Hilfe des Literals $l$ reduziert, als
+Klausel-Menge $\texttt{Cs}$ mit Hilfe des Literals $l$ reduziert, als
 \\[0.2cm]
 \hspace*{1.3cm}
-$\textsl{reduce}(S,l)  = 
- \Bigl\{\, C \backslash \bigl\{\komplement{l}\bigr\} \;|\; C \in S \wedge \komplement{l} \in C \,\Bigr\} 
-       \,\cup\, \Bigl\{\, C \in S \mid \komplement{l} \not\in C \wedge l \not\in C \Bigr\} \cup \Bigl\{\{l\}\Bigr\}
+$\textsl{reduce}(\texttt{Cs},l)  = 
+ \Bigl\{\, C \backslash \bigl\{\komplement{l}\bigr\} \;|\; C \in \texttt{Cs} \wedge \komplement{l} \in C \,\Bigr\} 
+       \,\cup\, \Bigl\{\, C \in \texttt{Cs} \mid \komplement{l} \not\in C \wedge l \not\in C \Bigr\} \cup \Bigl\{\{l\}\Bigr\}
 $
 \\[0.2cm]
 definiert.
@@ -2970,35 +2979,28 @@ Die Implementierung setzt diese Definition unmittelbar um.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    def reduce(Clauses, L):
-        LBar = complement(L)
-        return   { C - { LBar } for C in Clauses if LBar in C }          \
-               | { C for C in Clauses if LBar not in C and L not in C }  \
-               | { frozenset({L}) }
+    def reduce(Clauses, l):
+        lBar = complement(l)
+        return   { C - { lBar } for C in Clauses if lBar in C }          \
+               | { C for C in Clauses if lBar not in C and l not in C }  \
+               | { frozenset({l}) }
     \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{reduce}}
+  \caption{Die Funktion \texttt{reduce}}
   \label{fig:reduce}
 \end{figure} 
 
-Die Implementierung des Algorithmus von Davis und Putnam benutzt außer den bisher diskutierten Prozeduren
+Die Implementierung des Algorithmus von Davis und Putnam benutzt außer den bisher diskutierten Funktionen
 noch zwei weitere Hilfsprozeduren, deren Implementierung in 
 Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
 \begin{enumerate}
-\item Die Prozedur \texttt{selectLiteral} wählt ein beliebiges Literal aus 
-      einer gegeben Menge $\texttt{S}$ von Klauseln aus, das außerdem nicht in der Menge
-      \texttt{Used} von Literalen vorkommen darf, die bereits benutzt worden sind.
-      Dazu werden alle Klauseln, die ja Mengen von Literalen sind, vereinigt.  Von dieser
-      Menge wird dann die Menge der bereits benutzten Literalen abgezogen und aus der
-      resultierenden Menge wird mit Hilfe der Funktion $\texttt{rnd}()$ zufällig ein Literal
-      ausgewählt.  An Stelle der Funktion $\texttt{rnd}()$ hätten wir hier auch die Funktion 
-      $\texttt{arb}()$ benutzen können.   Ich habe experimentell herausgefunden, dass
-      der Davis-Putnam Algorithmus im Allgemeinen deutlich effizienter wird,  wenn wir das Literal
-      mit Hilfe der Funktion $\texttt{rnd}()$ auswählen.  Allerdings führt die zufällige Auswahl des Literals
-      auch dazu, dass die Zeiten, die der Algorithmus benötigt, bei verschiedenen Aufrufen unterschiedlich sein
-      können. 
-\item Die Prozedur \texttt{negateLiteral} bildet das Komplement $\komplement{l}$ 
-      eines gegebenen Literals $l$.  
+\item Die Funktion \texttt{selectLiteral} wählt eine beliebige Variable aus 
+      einer gegeben Menge $\texttt{Clauses}$ von Klauseln aus, das außerdem nicht in der Menge
+      \texttt{Forbidden} von den Variablen vorkommen darf, die bereits benutzt worden sind.
+      Dazu iterieren wir zunächst über alle Klauseln $C \in \texttt{Clauses}$ und dann über alle Literale $l$
+      der Klauseln $C$.  Aus diesen Literalen extrahieren wir die darin enthaltene Variable mit Hilfe der Funktion
+      \texttt{extractVariable}.  Anschließend wird eine beliebige Variable zurück gegeben.
+\item Die Funktion \texttt{arb} gibt ein nicht näher spezifiziertes Element einer Menge zurück.
 \end{enumerate}
 \begin{figure}[!ht]
   \centering
@@ -3009,32 +3011,33 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
                   numbersep     = -0.2cm,
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
-                ]
+                  ]
     def selectLiteral(Clauses, Forbidden):
-        Variables = { extractVariable(L) for C in Clauses for L in C } - Forbidden
+        Variables = { extractVariable(l) for C in Clauses for l in C } - Forbidden
         return arb(Variables)
-
+        
     def arb(S):
         "Return some member from the set S."
         for x in S:
             return x
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozeduren \texttt{select} und \texttt{negateLiteral}}
+  \caption{Die Funktionen \texttt{select} und \texttt{negateLiteral}}
   \label{fig:solve-aux}
 \end{figure}
 
 Die oben dargestellte Version des Verfahrens von Davis und Putnam lässt sich in vielerlei
-Hinsicht verbessern.  Aus Zeitgründen können wir auf solche Verbesserungen leider nicht
-weiter eingehen. Der interessierte Leser sei hier auf die Arbeit \cite{moskewicz01}  verwiesen:
+Hinsicht verbessern.  Aus Zeitgründen können wir auf solche Verbesserungen nicht
+weiter eingehen. Der interessierte Leser sei hier auf die folgende Arbeit von Moskewicz
+et.al.~\cite{moskewicz01}  verwiesen: 
 \\[0.2cm]
 \hspace*{1.3cm} \textsl{Chaff: Engineering an Efficient SAT Solver} \\
 \hspace*{1.3cm} von \blue{M. Moskewicz, C. Madigan, Y. Zhao, L. Zhang, S. Malik} 
 
 
 \section{Das 8-Damen-Problem}
-In diesem Abschnitt zeigen wir, wie bestimmte kombinatorische Problem in aussagenlogische Probleme umformuliert
-werden können.  Diese können dann anschließend mit dem Algorithmus von Davis und Putnam bzw gelöst werden.  Als
+In diesem Abschnitt zeigen wir, wie bestimmte kombinatorische Problem als aussagenlogische Probleme formuliert
+werden können.  Diese können dann anschließend mit dem Algorithmus von Davis und Putnam gelöst werden.  Als
 konkretes Beispiel betrachten wir das \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{8-Damen-Problem}.  
 Dabei geht es darum, 8 Damen so auf einem Schach-Brett aufzustellen, dass keine Dame eine andere Dame schlagen kann.
 Beim \href{https://en.wikipedia.org/wiki/Chess}{Schach-Spiel} kann eine Dame dann eine andere Figur schlagen,
@@ -3085,15 +3088,38 @@ positionierten Damen aussagenlogisch repräsentieren können.  Eine Möglichkeit
 für jedes Feld eine aussagenlogische Variable einzuführen.  Diese Variable drückt
 aus, dass auf dem entsprechenden Feld eine Dame steht.  Wir ordnen diesen Variablen wie
 folgt Namen zu:  Die Variable, die das $j$-te Feld in der $i$-ten
-Zeile bezeichnet, stellen wir durch den Term 
+Zeile bezeichnet, stellen wir durch den String
 \\[0.2cm]
 \hspace*{1.3cm}
- $\texttt{@Var}(i,j)$ \quad mit $i,j \in \{1, \cdots, 8\}$ 
+ $\texttt{'Q(}i\texttt{,}j\texttt{)'}$ \quad mit $i,j \in \{1, \cdots, 8\}$ 
 \\[0.2cm]
-dar. Wir nummerieren die Zeilen dabei von oben beginnend von 1 bis 8 durch, während die
+dar.   Wir nummerieren die Zeilen dabei von oben beginnend von 1 bis 8 durch, während die
 Spalten von links nach rechts numeriert werden.  Abbildung \ref{fig:queens-assign} auf
-Seite \pageref{fig:queens-assign} zeigt die Zuordnung der Variablen zu den Feldern.  Zur
-Vereinfachung habe ich dort statt $\texttt{@Var}(i,j)$ nur $\texttt{Var}(i,j)$ geschrieben.
+Seite \pageref{fig:queens-assign} zeigt die Zuordnung der Variablen zu den Feldern.  Die in Abbildung
+\ref{fig:var} gezeigte Funktion $\texttt{var}(r,c)$ berechnet die Variable, die ausdrückt, dass sich in Zeile
+$r$ und Spalte $c$ eine Dame befindet.
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    def var(row, col):
+        return 'Q' + str(row) + ',' + str(col) + ')'                  
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Die Funktion \texttt{var} Zur Berechnung der aussagenlogischen Variablen}
+\label{fig:var}
+\end{figure}
+
+
 
 \begin{figure}[!ht]
   \centering
@@ -3118,70 +3144,70 @@ Vereinfachung habe ich dort statt $\texttt{@Var}(i,j)$ nur $\texttt{Var}(i,j)$ g
 %%\}
 %%  }
 
-\put(1.15,8.40){{ Var(1,1) }}
-\put(2.15,8.40){{ Var(1,2) }}
-\put(3.15,8.40){{ Var(1,3) }}
-\put(4.15,8.40){{ Var(1,4) }}
-\put(5.15,8.40){{ Var(1,5) }}
-\put(6.15,8.40){{ Var(1,6) }}
-\put(7.15,8.40){{ Var(1,7) }}
-\put(8.15,8.40){{ Var(1,8) }}
-\put(1.15,7.40){{ Var(2,1) }}
-\put(2.15,7.40){{ Var(2,2) }}
-\put(3.15,7.40){{ Var(2,3) }}
-\put(4.15,7.40){{ Var(2,4) }}
-\put(5.15,7.40){{ Var(2,5) }}
-\put(6.15,7.40){{ Var(2,6) }}
-\put(7.15,7.40){{ Var(2,7) }}
-\put(8.15,7.40){{ Var(2,8) }}
-\put(1.15,6.40){{ Var(3,1) }}
-\put(2.15,6.40){{ Var(3,2) }}
-\put(3.15,6.40){{ Var(3,3) }}
-\put(4.15,6.40){{ Var(3,4) }}
-\put(5.15,6.40){{ Var(3,5) }}
-\put(6.15,6.40){{ Var(3,6) }}
-\put(7.15,6.40){{ Var(3,7) }}
-\put(8.15,6.40){{ Var(3,8) }}
-\put(1.15,5.40){{ Var(4,1) }}
-\put(2.15,5.40){{ Var(4,2) }}
-\put(3.15,5.40){{ Var(4,3) }}
-\put(4.15,5.40){{ Var(4,4) }}
-\put(5.15,5.40){{ Var(4,5) }}
-\put(6.15,5.40){{ Var(4,6) }}
-\put(7.15,5.40){{ Var(4,7) }}
-\put(8.15,5.40){{ Var(4,8) }}
-\put(1.15,4.40){{ Var(5,1) }}
-\put(2.15,4.40){{ Var(5,2) }}
-\put(3.15,4.40){{ Var(5,3) }}
-\put(4.15,4.40){{ Var(5,4) }}
-\put(5.15,4.40){{ Var(5,5) }}
-\put(6.15,4.40){{ Var(5,6) }}
-\put(7.15,4.40){{ Var(5,7) }}
-\put(8.15,4.40){{ Var(5,8) }}
-\put(1.15,3.40){{ Var(6,1) }}
-\put(2.15,3.40){{ Var(6,2) }}
-\put(3.15,3.40){{ Var(6,3) }}
-\put(4.15,3.40){{ Var(6,4) }}
-\put(5.15,3.40){{ Var(6,5) }}
-\put(6.15,3.40){{ Var(6,6) }}
-\put(7.15,3.40){{ Var(6,7) }}
-\put(8.15,3.40){{ Var(6,8) }}
-\put(1.15,2.40){{ Var(7,1) }}
-\put(2.15,2.40){{ Var(7,2) }}
-\put(3.15,2.40){{ Var(7,3) }}
-\put(4.15,2.40){{ Var(7,4) }}
-\put(5.15,2.40){{ Var(7,5) }}
-\put(6.15,2.40){{ Var(7,6) }}
-\put(7.15,2.40){{ Var(7,7) }}
-\put(8.15,2.40){{ Var(7,8) }}
-\put(1.15,1.40){{ Var(8,1) }}
-\put(2.15,1.40){{ Var(8,2) }}
-\put(3.15,1.40){{ Var(8,3) }}
-\put(4.15,1.40){{ Var(8,4) }}
-\put(5.15,1.40){{ Var(8,5) }}
-\put(6.15,1.40){{ Var(8,6) }}
-\put(7.15,1.40){{ Var(8,7) }}
-\put(8.15,1.40){{ Var(8,8) }}
+\put(1.20,8.45){{ Q(1,1) }}
+\put(2.20,8.45){{ Q(1,2) }}
+\put(3.20,8.45){{ Q(1,3) }}
+\put(4.20,8.45){{ Q(1,4) }}
+\put(5.20,8.45){{ Q(1,5) }}
+\put(6.20,8.45){{ Q(1,6) }}
+\put(7.20,8.45){{ Q(1,7) }}
+\put(8.20,8.45){{ Q(1,8) }}
+\put(1.20,7.45){{ Q(2,1) }}
+\put(2.20,7.45){{ Q(2,2) }}
+\put(3.20,7.45){{ Q(2,3) }}
+\put(4.20,7.45){{ Q(2,4) }}
+\put(5.20,7.45){{ Q(2,5) }}
+\put(6.20,7.45){{ Q(2,6) }}
+\put(7.20,7.45){{ Q(2,7) }}
+\put(8.20,7.45){{ Q(2,8) }}
+\put(1.20,6.45){{ Q(3,1) }}
+\put(2.20,6.45){{ Q(3,2) }}
+\put(3.20,6.45){{ Q(3,3) }}
+\put(4.20,6.45){{ Q(3,4) }}
+\put(5.20,6.45){{ Q(3,5) }}
+\put(6.20,6.45){{ Q(3,6) }}
+\put(7.20,6.45){{ Q(3,7) }}
+\put(8.20,6.45){{ Q(3,8) }}
+\put(1.20,5.45){{ Q(4,1) }}
+\put(2.20,5.45){{ Q(4,2) }}
+\put(3.20,5.45){{ Q(4,3) }}
+\put(4.20,5.45){{ Q(4,4) }}
+\put(5.20,5.45){{ Q(4,5) }}
+\put(6.20,5.45){{ Q(4,6) }}
+\put(7.20,5.45){{ Q(4,7) }}
+\put(8.20,5.45){{ Q(4,8) }}
+\put(1.20,4.45){{ Q(5,1) }}
+\put(2.20,4.45){{ Q(5,2) }}
+\put(3.20,4.45){{ Q(5,3) }}
+\put(4.20,4.45){{ Q(5,4) }}
+\put(5.20,4.45){{ Q(5,5) }}
+\put(6.20,4.45){{ Q(5,6) }}
+\put(7.20,4.45){{ Q(5,7) }}
+\put(8.20,4.45){{ Q(5,8) }}
+\put(1.20,3.45){{ Q(6,1) }}
+\put(2.20,3.45){{ Q(6,2) }}
+\put(3.20,3.45){{ Q(6,3) }}
+\put(4.20,3.45){{ Q(6,4) }}
+\put(5.20,3.45){{ Q(6,5) }}
+\put(6.20,3.45){{ Q(6,6) }}
+\put(7.20,3.45){{ Q(6,7) }}
+\put(8.20,3.45){{ Q(6,8) }}
+\put(1.20,2.45){{ Q(7,1) }}
+\put(2.20,2.45){{ Q(7,2) }}
+\put(3.20,2.45){{ Q(7,3) }}
+\put(4.20,2.45){{ Q(7,4) }}
+\put(5.20,2.45){{ Q(7,5) }}
+\put(6.20,2.45){{ Q(7,6) }}
+\put(7.20,2.45){{ Q(7,7) }}
+\put(8.20,2.45){{ Q(7,8) }}
+\put(1.20,1.45){{ Q(8,1) }}
+\put(2.20,1.45){{ Q(8,2) }}
+\put(3.20,1.45){{ Q(8,3) }}
+\put(4.20,1.45){{ Q(8,4) }}
+\put(5.20,1.45){{ Q(8,5) }}
+\put(6.20,1.45){{ Q(8,6) }}
+\put(7.20,1.45){{ Q(8,7) }}
+\put(8.20,1.45){{ Q(8,8) }}
 
 \end{picture}
 \vspace*{-1.0cm}
@@ -3220,8 +3246,8 @@ Variablen gleichzeitig wahr sind, kann daher als Klausel-Menge in der Form
 $\bigl\{\, \{ \neg p, \neg q \} \;|\; p \in V \wedge\ q \in V \wedge p \not= q \bigr\}$
 \\[0.2cm]
 geschrieben werden.
-Wir setzen diese Überlegungen in eine \textsl{Python}-Prozedur um.  Die in Abbildung \ref{fig:atMostOne}
-gezeigte Prozedur \texttt{atMostOne}() bekommt als Eingabe eine Menge $S$ von
+Wir setzen diese Überlegungen in eine \textsl{Python}-Funktion um.  Die in Abbildung \ref{fig:atMostOne}
+gezeigte Funktion \texttt{atMostOne}() bekommt als Eingabe eine Menge $S$ von
 aussagenlogischen Variablen.  Der Aufruf $\texttt{atMostOne}(S)$ berechnet eine Menge von
 Klauseln.  Diese Klauseln sind genau dann wahr, wenn höchstens eine der Variablen aus $S$
 den Wert \texttt{True} hat.
@@ -3236,28 +3262,30 @@ den Wert \texttt{True} hat.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    atMostOne := procedure(S) {
-        return { { !p, !q } : p in S, q in S | p != q };
-    };
+    def atMostOne(S): 
+        return { frozenset({('¬',p), ('¬', q)}) for p in S
+                                                for q in S 
+                                                if  p != q 
+               }
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{atMostOne}}
+  \caption{Die Funktion \texttt{atMostOne}}
   \label{fig:atMostOne}
 \end{figure}
 
-Mit Hilfe der Prozedur \texttt{atMostOne} können wir nun die Prozedur
+Mit Hilfe der Funktion \texttt{atMostOne} können wir nun die Funktion
 \texttt{atMostOneInRow} implementieren.  Der Aufruf \\[0.2cm]
 \hspace*{1.3cm} 
 \texttt{atMostOneInRow(row, n)} \\[0.2cm]
 berechnet für eine gegebene Zeile \texttt{row} bei einer Brettgröße von \texttt{n} eine Formel,
 die ausdrückt, dass in der Zeile \texttt{row} höchstens eine Dame steht.
 Abbildung \ref{fig:atMostOneInRow} zeigt die
-Prozedur \texttt{atMostOneInRow}: Wir sammeln alle Variablen der durch \texttt{row}
+Funktion \texttt{atMostOneInRow}: Wir sammeln alle Variablen der durch \texttt{row}
 spezifizierten Zeile
 in der Menge 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bigl\{ \texttt{Var}(\texttt{row},j) \mid j \in \{1, \cdots, n \} \bigr\}$
+$\bigl\{ \texttt{var}(\texttt{row},j) \mid j \in \{1, \cdots, n \} \bigr\}$
 \\[0.2cm]
  auf und rufen mit dieser Menge die Funktion $\texttt{atMostOne}()$ auf, die das Ergebnis
 als Menge von Klauseln liefert.
@@ -3272,36 +3300,35 @@ als Menge von Klauseln liefert.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    atMostOneInRow := procedure(row, n) {
-        return atMostOne({ @Var(row, j) : j in {1 .. n} });
-    };
+    def atMostOneInRow(row, n):
+        return atMostOne({ var(row, col) for col in range(1,n+1) })
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{atMostOneInRow}}
+  \caption{Die Funktion \texttt{atMostOneInRow}}
   \label{fig:atMostOneInRow}
 \end{figure}
 
 Als nächstes berechnen wir eine Formel die aussagt, dass \blue{mindestens} eine Dame in einer gegebenen
-Spalte steht.  Für die erste Spalte hätte diese Formel im Falle eine $8 \times 8$-Bretts die Form 
+Spalte steht.  Für die erste Spalte hätte diese Formel die Form 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{@Var}(1,1) \vee \texttt{@Var}(2,1) \vee \texttt{@Var}(3,1) \vee \texttt{@Var}(4,1) \vee \texttt{@Var}(5,1) \vee
-\texttt{@Var}(6,1) \vee \texttt{@Var}(7,1) \vee \texttt{@Var}(8,1)$
+$\texttt{Q}(1,1) \vee \texttt{Q}(2,1) \vee \texttt{Q}(3,1) \vee \texttt{Q}(4,1) \vee \texttt{Q}(5,1) \vee
+\texttt{Q}(6,1) \vee \texttt{Q}(7,1) \vee \texttt{Q}(8,1)$
 \\[0.2cm]
 und wenn allgemein eine Spalte $c$ mit $c \in \{1,\cdots,8\}$ gegeben ist, lautet die Formel
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{@Var}(1,c) \vee \texttt{@Var}(2,c) \vee \texttt{@Var}(3,c) \vee \texttt{@Var}(4,c) \vee \texttt{@Var}(5,c) \vee
-\texttt{@Var}(6,c) \vee \texttt{@Var}(7,c) \vee \texttt{@Var}(8,c)$.
+$\texttt{Q}(1,c) \vee \texttt{Q}(2,c) \vee \texttt{Q}(3,c) \vee \texttt{Q}(4,c) \vee \texttt{Q}(5,c) \vee
+\texttt{Q}(6,c) \vee \texttt{Q}(7,c) \vee \texttt{Q}(8,c)$.
 \\[0.2cm]
 Schreiben wir diese Formel in der Mengenschreibweise als Menge von Klauseln, so erhalten wir
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bigl\{ \{\texttt{@Var}(1,c) , \texttt{@Var}(2,c) , \texttt{@Var}(3,c) , \texttt{@Var}(4,c) , \texttt{@Var}(5,c) ,
-\texttt{@Var}(6,c) , \texttt{@Var}(7,c) , \texttt{@Var}(8,c) \}\bigr\}$.
+$\bigl\{ \{\texttt{Q}(1,c) , \texttt{Q}(2,c) , \texttt{Q}(3,c) , \texttt{Q}(4,c) , \texttt{Q}(5,c) ,
+\texttt{Q}(6,c) , \texttt{Q}(7,c) , \texttt{Q}(8,c) \}\bigr\}$.
 \\[0.2cm]
-Abbildung \ref{fig:oneInColumn} zeigt eine \textsl{Python}-Prozedur, die für eine gegebene Spalte
-\texttt{column} und eine gegebene Brettgröße \texttt{n }die entsprechende Klausel-Menge berechnet.
+Abbildung \ref{fig:oneInColumn} zeigt eine \textsl{Python}-Funktion, die für eine gegebene Spalte
+\texttt{col} und eine gegebene Brettgröße \texttt{n} die entsprechende Klausel-Menge berechnet.
 Der Schritt, von einer einzelnen Klausel 
 zu einer Menge von Klauseln überzugehen ist notwendig, denn unsere Implementierung des Algorithmus von
 Davis und Putnam arbeitet mit einer Menge von Klauseln.
@@ -3316,12 +3343,11 @@ Davis und Putnam arbeitet mit einer Menge von Klauseln.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]
-    oneInColumn := procedure(column, n) {
-        return { { @Var(row, column) : row in { 1 .. n } } };
-    };
+    def oneInColumn(col, n):
+        return { frozenset({ var(row, col) for row in range(1,n+1) }) }
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{oneInColumn}}
+  \caption{Die Funktion \texttt{oneInColumn}}
   \label{fig:oneInColumn}
 \end{figure}
 
@@ -3332,9 +3358,9 @@ Solche Formeln sind aber unnötig, denn wenn wir wissen, dass in jeder Spalte mi
 eine Dame steht, so wissen wir bereits, dass auf dem Brett mindestens 8 Damen stehen.
 Wenn wir nun zusätzlich wissen, dass in jeder Zeile höchstens eine Dame steht, so ist
 automatisch klar, dass höchstens 8 Damen auf dem Brett stehen.  Damit stehen also insgesamt genau
-8 Damen auf dem Brett.  Dann kann aber in jeder Spalte nur höchstens eine Dame stehen und genauso muss
-in jeder Zeile mindestens eine Dame stehen, denn sonst würden wir nicht auf 8 Damen kommen.
-
+8 Damen auf dem Brett.  Dann kann aber in jeder Spalte nur höchstens eine Dame stehen, denn sonst hätten wir
+mehr als 8 Damen auf dem Brett und genauso muss in jeder Zeile mindestens eine Dame stehen, denn sonst würden
+wir in der Summe nicht auf 8 Damen kommen. 
 
 Als nächstes überlegen wir uns, wie wir die Variablen, die auf derselben \blue{Diagonale}
 stehen, charakterisieren können.  Es gibt grundsätzlich zwei verschiedene Arten von
@@ -3343,17 +3369,17 @@ die aufsteigenden Diagonalen.  Die längste aufsteigende Diagonale, wir sagen da
 \blue{Hauptdiagonale}, besteht im Fall eines $8 \times 8$-Bretts aus den
 Variablen \\[0.2cm]
 \hspace*{1.3cm} 
-$\texttt{@Var}(8,1),\; \texttt{@Var}(7,2),\; \texttt{@Var}(6,3),\; \texttt{@Var}(5,4),\; \texttt{@Var}(4,5),\; \texttt{@Var}(3,6),\; 
- \texttt{@Var}(2,7),\; \texttt{@Var}(1,8)$. 
+$\texttt{Q}(8,1),\; \texttt{Q}(7,2),\; \texttt{Q}(6,3),\; \texttt{Q}(5,4),\; \texttt{Q}(4,5),\; \texttt{Q}(3,6),\; 
+ \texttt{Q}(2,7),\; \texttt{Q}(1,8)$. 
 \\[0.2cm]
-Die Indizes $r$ und $c$ der Variablen $\texttt{@Var}(r,c)$ erfüllen offenbar
+Die Indizes $r$ und $c$ der Variablen $\texttt{Q}(r,c)$ erfüllen offenbar
 die Gleichung \\[0.2cm]
 \hspace*{1.3cm} $r + c = 9$. \\[0.2cm]
 Allgemein erfüllen die Indizes der Variablen einer aufsteigenden Diagonale, die mehr als ein Feld enthält, die
 Gleichung \\[0.2cm] 
 \hspace*{1.3cm} $r + c = k$, \\[0.2cm]
-wobei $k$ einen Wert aus der Menge $\{3, \cdots, 15 \}$ annimmt.  Den Wert $k$ geben wir als Argument bei der
-Prozedur \texttt{atMostOneInUpperDiagonal} mit.  Diese Prozedur ist in Abbildung
+wobei $k$ im Falle eines $8 \times 8$ Schach-Bretts einen Wert aus der Menge $\{3, \cdots, 15 \}$ annimmt.  Den Wert $k$ geben wir als Argument bei der
+Funktion \texttt{atMostOneInRisingDiagonal} mit.  Diese Funktion ist in Abbildung
 \ref{fig:atMostOneInUpperDiagonal} gezeigt. 
 
 \begin{figure}[!ht]
@@ -3366,13 +3392,15 @@ Prozedur \texttt{atMostOneInUpperDiagonal} mit.  Diese Prozedur ist in Abbildung
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
                 ]
-    atMostOneInUpperDiagonal := procedure(k, n) {
-        S := { @Var(row, col) : row in [1..n], col in [1..n] | row + col == k };
-        return atMostOne(S);
-    };
+    def atMostOneInRisingDiagonal(k, n):
+        S = { var(row, col) for row in range(1, n+1)
+                            for col in range(1, n+1) 
+                            if  row + col == k 
+            }
+        return atMostOne(S)
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{atMostOneInUpperDiagonal}}
+  \caption{Die Funktion \texttt{atMostOneInUpperDiagonal}}
   \label{fig:atMostOneInUpperDiagonal}
 \end{figure}
 
@@ -3380,8 +3408,8 @@ Um zu sehen, wie die Variablen einer fallenden Diagonale
 charakterisiert werden können, betrachten wir die fallende Hauptdiagonale, die aus den
 Variablen \\[0.2cm]
 \hspace*{1.3cm} 
-$\texttt{@Var}(1,1),\; \texttt{@Var}(2,2),\; \texttt{@Var}(3,3),\; \texttt{@Var}(4,4),\; \texttt{@Var}(5,5),\; 
- \texttt{@Var}(6,6),\; \texttt{@Var}(7,7),\; \texttt{@Var}(8,8)$ 
+$\texttt{Q}(1,1),\; \texttt{Q}(2,2),\; \texttt{Q}(3,3),\; \texttt{Q}(4,4),\; \texttt{Q}(5,5),\; 
+ \texttt{Q}(6,6),\; \texttt{Q}(7,7),\; \texttt{Q}(8,8)$ 
 \\[0.2cm]
 besteht. Die Indizes  $r$ und $c$ dieser Variablen erfüllen offenbar
 die Gleichung \\[0.2cm]
@@ -3389,7 +3417,7 @@ die Gleichung \\[0.2cm]
 Allgemein erfüllen die Indizes der Variablen einer absteigenden Diagonale die Gleichung \\[0.2cm]
 \hspace*{1.3cm} $r - c = k$, \\[0.2cm]
 wobei $k$ einen Wert aus der Menge $\{-6, \cdots, 6 \}$ annimmt.  Den Wert $k$ geben wir als Argument bei der
-Prozedur \texttt{atMostOneInLowerDiagonal} mit. Diese Prozedur ist in Abbildung
+Funktion \texttt{atMostOneInLowerDiagonal} mit. Diese Funktion ist in Abbildung
 \ref{fig:atMostOneInLowerDiagonal} gezeigt. 
 
 \begin{figure}[!ht]
@@ -3402,19 +3430,21 @@ Prozedur \texttt{atMostOneInLowerDiagonal} mit. Diese Prozedur ist in Abbildung
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
                 ]
-    atMostOneInLowerDiagonal := procedure(k, n) {
-        S := { @Var(row, col) : row in [1..n], col in [1..n] | row - col == k };
-        return atMostOne(S);
-    };
+    def atMostOneInFallingDiagonal(k, n):
+        S = { var(row, col) for row in range(1, n+1)
+                            for col in range(1, n+1) 
+                            if  row - col == k 
+            }
+        return atMostOne(S)
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{atMostOneInLowerDiagonal}}
+  \caption{Die Funktion \texttt{atMostOneInLowerDiagonal}}
   \label{fig:atMostOneInLowerDiagonal}
 \end{figure}
 
 Jetzt sind wir in der Lage, unsere Ergebnisse zusammen zu fassen:  Wir können eine
 Menge von Klauseln konstruieren, die das 8-Damen-Problem vollständig beschreiben.
-Abbildung \ref{fig:allClauses} zeigt die Implementierung der Prozedur \texttt{allClauses}.
+Abbildung \ref{fig:allClauses} zeigt die Implementierung der Funktion \texttt{allClauses}.
 Der Aufruf \\[0.2cm]
 \hspace*{1.3cm} $\texttt{allClauses}(n)$ \\[0.2cm]
 rechnet für ein Schach-Brett der Größe $n$ eine Menge von Klauseln aus, die
@@ -3425,10 +3455,11 @@ genau dann erfüllt sind, wenn auf dem Schach-Brett
 \item in jeder aufsteigenden Diagonale höchstens eine Dame steht (Zeile 4) und
 \item in jeder Spalte mindestens eine Dame steht (Zeile 5).
 \end{enumerate}
-Die Ausdrücke in den einzelnen Zeilen liefern Mengen, deren Elemente
-Klausel-Mengen sind.  Was wir als Ergebnis brauchen ist aber eine Klausel-Menge
-und keine Menge von Klausel-Mengen.  Daher bilden wir mit dem Operator ``\texttt{+/}''
-die Vereinigung dieser Mengen.
+Die Ausdrücke in den einzelnen Zeilen liefern Listen, deren Elemente
+Klausel-Mengen sind.  Was wir als Ergebnis brauchen, ist aber eine Klausel-Menge
+und keine Liste von Klausel-Mengen.  Daher wandeln wir in Zeile 6 die Liste \texttt{All} in eine Menge von
+Klauseln um.
+
 
 \begin{figure}[!ht]
   \centering
@@ -3440,26 +3471,34 @@ die Vereinigung dieser Mengen.
                   xleftmargin   = 0.3cm,
                   xrightmargin  = 0.3cm
                 ]
-    allClauses := procedure(n) {
-        return   +/ { atMostOneInRow(row, n)         : row in {1..n}        }
-               + +/ { atMostOneInLowerDiagonal(k, n) : k in {-(n-2) .. n-2} }
-               + +/ { atMostOneInUpperDiagonal(k, n) : k in {3 .. 2*n - 1}  }
-               + +/ { oneInColumn(column, n)         : column in {1 .. n}   };
-    };
+    def allClauses(n):
+        All = [ atMostOneInRow(row, n)           for row in range(1, n+1)        ] \
+            + [ atMostOneInFallingDiagonal(k, n) for k in range(3, (2*n-1)+1)    ] \
+            + [ atMostOneInRisingDiagonal(k, n)  for k in range(-(n-2), (n-2)+1) ] \
+            + [ oneInColumn(col, n)              for col in range(1, n+1)        ]
+        return { clause for S in All for clause in S }
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Die Prozedur \texttt{allClauses}}
+  \caption{Die Funktion \texttt{allClauses}}
   \label{fig:allClauses}
 \end{figure}
 
-Als letztes zeigen wir in Abbildung \ref{fig:solve:queens} die Prozedur
+Als letztes zeigen wir in Abbildung \ref{fig:solve:queens} die Funktion
 \texttt{queens}, mit der wir das 8-Damen-Problem lösen können.
-Hierbei ist $\texttt{printBoard}()$ eine Prozedur, welche die Lösung in lesbarere Form als Schachbrett
-ausdruckt.  Das funktioniert allerdings nur, wenn ein Font verwendet wird, bei dem alle Zeichen die
-selbe Breite haben.  Diese Prozedur ist der Vollständigkeit halber in Abbildung \ref{fig:printBoard}
-gezeigt, wir wollen die Implementierung aber nicht weiter diskutieren.
-Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/queens.stlx}{\texttt{queens.stlx}}.
+\begin{enumerate}
+\item Zunächst kodieren wir das Problem als eine Menge von Klauseln, die genau dann lösbar ist,
+      wenn das Problem eine Lösung hat.
+\item Anschließend berechnen wir die Lösung mit Hilfe der Funktion \texttt{sovle} aus dem Modul
+      \texttt{davisPutnam}, das wir als \texttt{dp} importiert haben.
+\item Zum Schluss wird die berechnete Lösung mit Hilfe der Funktion \texttt{printBoard} ausgedruckt.
+
+      Hierbei ist $\texttt{printBoard}$ eine Funktion, welche die Lösung in lesbarere Form 
+      ausdruckt.  Das funktioniert allerdings nur, wenn ein Font verwendet wird, bei dem alle Zeichen die
+      selbe Breite haben.  Diese Funktion ist der Vollständigkeit halber in Abbildung \ref{fig:printBoard}
+      gezeigt, wir wollen die Implementierung aber nicht weiter diskutieren.
+\end{enumerate}
+Das vollständige Programm finden Sie als Jupyter Notebook auf meiner Webseite unter dem Namen
+\href{https://github.com/karlstroetmann/Logik/blob/master/Python/N-Queens.ipynb}{\texttt{N-Queens.ipynb}}.
 
 
 \begin{figure}[!ht]
@@ -3473,19 +3512,17 @@ Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    queens := procedure(n) {
-        Clauses  := allClauses(n);
-        Solution := solve(Clauses, {});
-        if (Solution != { {} }) {
-            printBoard(Solution, n);
-        } else {
-            print("The problem is not solvable for $n$ queens!");
-            print("Try to increase the number of queens.");
-        }
-    };
+    def queens(n):
+        "Solve the n queens problem."
+        Clauses  = allClauses(n)
+        Solution = dp.solve(Clauses, set())
+        if Solution != { frozenset() }:
+            printBoard(Solution, n)
+        else:
+            print(f'The problem is not solvable for {n} queens!')                  
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Die Prozedur \texttt{queens}}
+\caption{Die Funktion \texttt{queens}}
 \label{fig:solve:queens}
 \end{figure}
 
@@ -3500,47 +3537,40 @@ Das vollständige Programm finden Sie auf meiner Webseite unter dem Namen
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    printBoard := procedure(I, n) {
-        if (I == { {} }) {
-            return;
-        }
-        print("-" * (8*n+1));
-        for (row in [1..n]) {
-            printEmptyLine(n);
-            line := "|";
-            for (col in [1..n]) {
-                if ({ @Var(row, col) } in I) {
-                    line += "   Q   |";
-                } else {
-                    line += "       |";
-                }
-            }
-            print(line);
-            printEmptyLine(n);
-            print("-" * (8*n+1));
-        }
-    };
-    printEmptyLine := procedure(n) {
-        line := "|";
-        for (col in [1..n]) {
-            line += "       |";
-        }
-        print(line);
-    };
+    def printBoard(I, n):
+        if I == { frozenset() }:
+            return
+        print("-" * (8*n+1))
+        for row in range(1, n+1):
+            printEmptyLine(n)
+            line = "|";
+            for col in range(1, n+1):
+                if frozenset({ var(row, col) }) in I:
+                    line += "   Q   |"
+                else:
+                    line += "       |"
+            print(line)
+            printEmptyLine(n)
+            print("-" * (8*n+1))
+    
+    def printEmptyLine(n):
+        line = "|"
+        for col in range(1, n+1):
+            line += "       |"
+        print(line)
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Die Prozedur $\texttt{printBoard}()$}
+\caption{Die Funktion $\texttt{printBoard}()$}
 \label{fig:printBoard}
 \end{figure}
 
 
 
 Die durch den Aufruf $\texttt{solve}(\textsl{Clauses}, \{\})$ 
-berechnete Menge \texttt{solution} enthält für jede der Variablen $\texttt{@Var}(\texttt{r},\texttt{c})$
-entweder die Unit-Klausel $\{\texttt{@Var}(\texttt{r},\texttt{c})\}$  (falls auf diesem Feld eine Dame steht) oder
-aber die Unit-Klausel  $\{ \texttt{!@Var}(\texttt{r},\texttt{c})\}$ (falls das Feld leer bleibt).
-Eine graphische Darstellung des durch die berechnete Belegung dargestellten Schach-Bretts
-sehen Sie in Abbildung \ref{fig:queens-solution}. 
+berechnete Menge \texttt{solution} enthält für jede der Variablen $\texttt{'Q(}r\texttt{,}c\texttt{)'}$
+entweder die Unit-Klausel $\{\texttt{'Q(}r\texttt{,}c\texttt{)'}\}$  (falls auf diesem Feld eine Dame steht) oder
+aber die Unit-Klausel  $\{ \texttt{('¬', 'Q(}r\texttt{,}c\texttt{)')}\}$ (falls das Feld leer bleibt).
+Eine graphische Darstellung einer berechneten Lösungen sehen Sie in Abbildung \ref{fig:queens-solution}.   
 
 \begin{figure}[!ht]
   \centering
@@ -3566,15 +3596,14 @@ sehen Sie in Abbildung \ref{fig:queens-solution}.
 
 Das 8-Damen-Problem ist natürlich nur eine spielerische Anwendung der Aussagen-Logik.
 Trotzdem zeigt es die Leistungsfähigkeit des Algorithmus von Davis
-und Putnam sehr gut, denn die Menge der Klauseln, die von der Prozedur \texttt{allClauses}
-berechnet wird, füllt unformatiert fünf Bildschirm-Seiten, falls diese  eine Breite von 80
-Zeichen haben.  In dieser Klausel-Menge kommen 64 verschiedene Variablen vor.
-
+und Putnam sehr gut, denn die Menge der Klauseln, die von der Funktion \texttt{allClauses}
+berechnet wird, besteht aus 512 verschiedenen Klauseln.  In dieser Klausel-Menge kommen 64 verschiedene
+Variablen vor. 
 
 In der Praxis gibt es viele Probleme, die sich in ganz ähnlicher Weise auf die Lösung einer
 Menge von Klauseln zurückführen lassen.  Dazu gehört zum Beispiel das Problem, einen
 Stundenplan zu erstellen, der gewissen Nebenbedingungen genügt.  Verallgemeinerungen des
-Stundenplan-Problems werden in der Literatur als \blue{Scheduling-Problemen} bezeichnet.
+Stundenplan-Problems werden in der Literatur als \blue{Scheduling-Probleme} bezeichnet.
 Die effiziente Lösung solcher Probleme ist Gegenstand der aktuellen Forschung.
 
 \section{Reflexion}
@@ -3583,10 +3612,12 @@ Die effiziente Lösung solcher Probleme ist Gegenstand der aktuellen Forschung.
 \item Wie ist die Semantik der aussagenlogischen Formeln festgelegt worden?
 \item Wie können wir aussagenlogische Formeln in \textsl{Python} darstellen?
 \item Was ist eine Tautologie?
+\item Was ist eine konjunktive Normalform?
 \item Wie können Sie die konjunktive Normalform einer gegebenen aussagenlogischen Formel berechnen und wie lässt
       sich diese Berechnung in \textsl{Python} implementieren?
 \item Wie haben wir den Beweis-Begriff $M \vdash C$ definiert?
 \item Welche Eigenschaften hat der Beweis-Begriff $\vdash$?
+\item Wann ist eine Menge von Klauseln lösbar?
 \item Wie funktioniert das Verfahren von Davis und Putnam?
 \end{enumerate}
 
