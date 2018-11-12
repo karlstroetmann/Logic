@@ -1473,6 +1473,222 @@ And there we go. Ladies and gentlemen, lo and behold: Here are the first 100 dig
 5945713821785251664274
 \end{Verbatim}
 
+\section{Dictionaries}\label{dictionaries}
+
+    A \emph{binary relation} \(R\) is a subset of the cartesian product of
+two sets \(A\) and \(B\), i.e. if \(R\) is a binary relation we have:
+\[ R \subseteq A \times B \] A binary relation
+\(R \subseteq A \times B\) is a \emph{functional} relation if and only if
+we have: \[ \forall x \in A: \forall y_1, y_2 \in B: \bigl(
+     \langle x, y_1\rangle \in R \wedge \langle x, y_2\rangle \in R
+     \rightarrow y_1 = y_2
+   \bigr)
+ \]
+ If \(R\) is a fuctional relation, then \(R \subseteq A \times B\) can
+be interpreted as a function \[ f_R:A \rightarrow B \] that is defined
+as follows:
+\[ f_R(x) := y \quad\mbox{iff}\quad \langle x, y\rangle \in R. \]
+In \emph{Python} a functional relation \(R \subseteq A \times B\) can be
+represented as a \textbf{dictionary}, provided \(R\) is finite. The
+empty dictionary is defined as follows:
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{n}{emptyDict} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+\end{Verbatim}
+The syntax to define a functional relation \(R\) of the form
+\[ \bigl\{ \langle x_1, y_1\rangle, \cdots, \langle x_n, y_n\rangle \bigr\} \]
+in \textsl{Python} is as follows: We have to write
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\{ x1:y1, ... xn:yn \}}
+\\[0.2cm]
+An example will clarify this. The dictionary Number2English maps the first nine
+numbers to their English names.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{Number2English} \PY{o}{=} \PY{p}{\PYZob{}} \PY{l+m+mi}{1}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{one}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{two}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{three}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{four}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{five}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                           \PY{l+m+mi}{6}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{six}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{seven}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{eight}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{nine}\PY{l+s+s1}{\PYZsq{}}
+                         \PY{p}{\PYZcb{}}
+        \PY{n}{Number2English}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}3}]:} \{1: 'one',
+         2: 'two',
+         3: 'three',
+         4: 'four',
+         5: 'five',
+         6: 'six',
+         7: 'seven',
+         8: 'eight',
+         9: 'nine'\}
+\end{Verbatim}
+Here, the numbers \(1, \cdots, 9\) are called the \emph{keys} of the dictionary.
+
+We can use the dictionary Number2English as if it were a function: If we
+write \(\texttt{Number2English[}k\texttt{]}\), then this expression will
+return the name of the number \(k\) provided \(k \in \{1,\cdots,9\}\).
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{n}{Number2English}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}
+\end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}4}]:} 'two'
+\end{Verbatim}       
+The expression Number2English{[}10{]} would return an error message, as
+\(10\) is not a key of the dictionary Number2English. We can check
+whether an object is a key of a dictionary by using the operator in as
+shown below:
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}5}]:} \PY{l+m+mi}{10} \PY{o+ow}{in} \PY{n}{Number2English}
+\end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}5}]:} False
+\end{Verbatim}
+            
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{l+m+mi}{7} \PY{o+ow}{in} \PY{n}{Number2English}
+\end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}6}]:} True
+\end{Verbatim}
+We can easily extend our dictionary as shown below:
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}7}]:} \PY{n}{Number2English}\PY{p}{[}\PY{l+m+mi}{10}\PY{p}{]} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ten}\PY{l+s+s1}{\PYZsq{}}
+\end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}8}]:} \PY{n}{Number2English}
+\end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}8}]:} \{1: 'one',
+         2: 'two',
+         3: 'three',
+         4: 'four',
+         5: 'five',
+         6: 'six',
+         7: 'seven',
+         8: 'eight',
+         9: 'nine',
+         10: 'ten'\}
+\end{Verbatim}          
+In order to have more fun, let us define a second dictionary.
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{Number2Hebrew} \PY{o}{=} \PY{p}{\PYZob{}} \PY{l+m+mi}{1}\PY{p}{:}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{echad}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{:}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{shtaim}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{:}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{shalosh}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{:}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{arba}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{:}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{hamesh}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+                          \PY{l+m+mi}{6}\PY{p}{:}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{shesh}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{:}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{sheva}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{:}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{shmone}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{tesha}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{eser}\PY{l+s+s2}{\PYZdq{}}
+                        \PY{p}{\PYZcb{}}
+\end{Verbatim}
+\textbf{Disclaimer:} I don't know any Hebrew, I have taken these names from the youtube video at
+\\[0.2cm]
+\hspace*{1.3cm}
+\href{https://www.youtube.com/watch?v=FBd9QdpqUz0}{https://www.youtube.com/watch?v=FBd9QdpqUz0}.
+\\[0.2cm]
+Dictionaries can be built via comprehension expressions. Let us
+demonstrate this be computing the inverse of the dictionary
+Number2English:
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}10}]:} \PY{n}{English2Number} \PY{o}{=} \PY{p}{\PYZob{}} \PY{n}{Number2English}\PY{p}{[}\PY{n}{name}\PY{p}{]}\PY{p}{:}\PY{n}{name} \PY{k}{for} \PY{n}{name} \PY{o+ow}{in} \PY{n}{Number2English} \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{English2Number}
+\end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}11}]:} \{'one': 1,
+          'two': 2,
+          'three': 3,
+          'four': 4,
+          'five': 5,
+          'six': 6,
+          'seven': 7,
+          'eight': 8,
+          'nine': 9,
+          'ten': 10\}
+\end{Verbatim}
+The example above shows that we can iterate over the keys of a
+dictionary. Lets use this to build a dictionary that translates the
+English names of numbers into their Hebrew equivalents:
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}12}]:} \PY{n}{English2Hebrew} \PY{o}{=} \PY{p}{\PYZob{}} \PY{n}{name}\PY{p}{:}\PY{n}{Number2Hebrew}\PY{p}{[}\PY{n}{English2Number}\PY{p}{[}\PY{n}{name}\PY{p}{]}\PY{p}{]} \PY{k}{for} \PY{n}{name} \PY{o+ow}{in} \PY{n}{English2Number} \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}13}]:} \PY{n}{English2Hebrew}
+\end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}13}]:} \{'one': 'echad',
+          'two': 'shtaim',
+          'three': 'shalosh',
+          'four': 'arba',
+          'five': 'hamesh',
+          'six': 'shesh',
+          'seven': 'sheva',
+          'eight': 'shmone',
+          'nine': 'tesha',
+          'ten': 'eser'\}
+\end{Verbatim}
+In order to get the number of entries in a dictionary, we can use the
+function \texttt{len}.
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}14}]:} \PY{n+nb}{len}\PY{p}{(}\PY{n}{English2Hebrew}\PY{p}{)}
+\end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}14}]:} 10
+\end{Verbatim}
+If we want to delete an entry from a dictionary, we can use the keyword
+\texttt{del} as follows:
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}15}]:} \PY{k}{del} \PY{n}{Number2English}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+\end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}16}]:} \PY{n}{Number2English}
+\end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}16}]:} \{2: 'two',
+          3: 'three',
+          4: 'four',
+          5: 'five',
+          6: 'six',
+          7: 'seven',
+          8: 'eight',
+          9: 'nine',
+          10: 'ten'\}
+\end{Verbatim}      
+It is important to know that only \emph{immutable} objects can serve as keys in
+a dictionary. Therefore, number, strings, tuples, or frozensets can be
+used as keys, but lists or sets can not be used as keys.
+
+Given a dictionary \(d\), the method \(d.\texttt{items}()\) can be used
+to iterate over all key-value pairs stored in the dictionary \(d\).
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}17}]:} \PY{p}{\PYZob{}} \PY{n}{pair} \PY{k}{for} \PY{n}{pair} \PY{o+ow}{in} \PY{n}{English2Hebrew}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)} \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}17}]:} \{('eight', 'shmone'),
+          ('five', 'hamesh'),
+          ('four', 'arba'),
+          ('nine', 'tesha'),
+          ('one', 'echad'),
+          ('seven', 'sheva'),
+          ('six', 'shesh'),
+          ('ten', 'eser'),
+          ('three', 'shalosh'),
+          ('two', 'shtaim')\}
+\end{Verbatim}
+This last example shows that the entries in a dictionary are not ordered.  In this respect, dictionaries are
+similar to sets.
+
 \section{Other References}
 For reasons of time an space, this lecture has just scratched the surface of what is possible with
 \textsl{Python}.  If you want to attain a deeper understanding of \textsl{Python}, here are three places that 
