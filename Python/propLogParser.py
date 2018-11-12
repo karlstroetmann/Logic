@@ -5,9 +5,9 @@ def tokenize(s):
     Transform the string s into a list of tokens.  The string s
     is supposed to represent a formula from propositional logic.
     """
-    lexSpec = r""" ([ \t]+)               |  # blanks and tabs
-                   ([A-Za-z][A-Za-z0-9]*) |  # identifier
-                   ([⊤⊥∧∨¬→↔⊕()])         |  # junctors, '(', ')'
+    lexSpec = r""" ([ \t]+)                  |  # blanks and tabs
+                   ([A-Za-z][A-Za-z0-9<>,]*) |  # identifier
+                   ([⊤⊥∧∨¬→↔⊕()])            |  # junctors, '(', ')'
                """
     scanner   = re.compile(lexSpec, re.VERBOSE)
     tokenList = re.findall(scanner, s)
@@ -25,7 +25,7 @@ def isPropVar(s):
     """
     Check, whether the string s can be interpreted as a propositional variable. 
     """
-    return re.fullmatch('[A-Za-z][A-Za-z0-9]*', s)
+    return re.fullmatch('[A-Za-z][A-Za-z0-9<>,]*', s)
 
 class LogicParser:
     """
@@ -118,4 +118,4 @@ if __name__ == '__main__':
     testParser('p ∧ q ↔ q ∨ p')
     testParser('¬(p ∨ q) ↔ ¬p ∨ ¬q')
     testParser('¬(p ⊕ q) ↔ (p ↔ q)')
-    
+    testParser('a<1,2> ↔ b<2,1>')
