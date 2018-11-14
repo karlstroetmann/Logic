@@ -74,6 +74,10 @@ class LogicParser:
             stack_op = self._operators[-1]
             if stack_op == '(' and next_op == ')':
                 self._operators.pop()
+                if len(self._operators) > 0:
+                    fct = self._operators[-1]
+                    if isFunction(fct):
+                        self._pop_and_evaluate()
             elif (next_op == ')' or self._eval_before(stack_op, next_op)):
                 self._pop_and_evaluate()
                 self._tokens.append(next_op)
@@ -139,7 +143,7 @@ def testParser(s):
     print(p.parse())
 
 if __name__ == '__main__':
-#   testParser('P(x,y)')
+    testParser('P(F(x),G(z))')
     testParser('∀x:∃y:P(x,y)')
     testParser('∀x:∃y:P(x,y)→∃y:∀x:P(x,y)')
 
