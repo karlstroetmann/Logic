@@ -143,6 +143,7 @@ def testParser(s):
     print(p.parse())
 
 if __name__ == '__main__':
+    testParser('G(F(x,y),x)')
     testParser('P(F(x),G(z))')
     testParser('∀x:∃y:P(x,y)')
     testParser('∀x:∃y:P(x,y)→∃y:∀x:P(x,y)')

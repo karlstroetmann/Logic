@@ -333,16 +333,16 @@ Die Signatur  $\Sigma_G$ der Gruppen-Theorie sei definiert als \\[0.2cm]
 \quad mit
 \begin{enumerate}
 \item $\mathcal{V} := \{ x, y, z \}$
-\item $\mathcal{F} := \{ 1, * \}$
+\item $\mathcal{F} := \{ \mathrm{e}, * \}$
 \item $\mathcal{P} := \{ \mathtt{=} \}$
-\item $\textsl{arity} = \bigl\{ \pair(1,0), \pair(*,2), \pair(\mathtt{=},2)\bigr\}$
+\item $\textsl{arity} = \bigl\{ \pair(\mathrm{e},0), \pair(*,2), \pair(\mathtt{=},2)\bigr\}$
 \end{enumerate}
 Dann können wir eine $\Sigma_G$ Struktur $\mathcal{Z} = \langle \{a,
 b\},\mathcal{J}\rangle$ definieren, 
 indem wir die Interpretation $\mathcal{J}$ 
 wie folgt festlegen:
 \begin{enumerate}
-\item $1^\mathcal{J} := a$,
+\item $\mathrm{e}^\mathcal{J} := a$,
 \item $*^\mathcal{J} := \Bigl\{ \bigl\langle\pair(a,a), a\bigr\rangle,
                                    \bigl\langle\pair(a,b), b\bigr\rangle,
                                    \bigl\langle\pair(b,a), b\bigr\rangle,
@@ -463,7 +463,7 @@ Die Semantik dieser Funktionen hatten wir durch die Tabelle in Abbildung
 
 \example
 In Fortführung des obigen Beispiels gilt \\[0.2cm]
-\hspace*{1.3cm}  $\struct\bigl(\mathcal{I}, \forall \mathtt{x}: 1 * x = x \bigr) = \mathtt{true}$.
+\hspace*{1.3cm}  $\struct\bigl(\mathcal{I}, \forall \mathtt{x}: \mathrm{e} * x = x \bigr) = \mathtt{true}$.
 \eox
 
 \begin{Definition}[Allgemeingültig]
@@ -557,9 +557,9 @@ $1 + 2 + 3 = 6$.
 \\[0.2cm]
 Bisher sind alle bekannten perfekten Zahlen durch $2$ teilbar.  Die Frage, ob es auch
 ungerade Zahlen gibt, die perfekt sind, ist ein offenes mathematisches Problem.  Um dieses
-Problem zu lösen könnten, wir eine Programm schreiben, dass der Reihe nach für alle
-ungerade Zahlen überprüft, ob die Zahl perfekt ist.  Abbildung \ref{fig:find-perfect.stlx}
-auf Seite \pageref{fig:find-perfect.stlx} zeigt ein solches Programm.  Wenn es eine ungerade perfekte Zahl
+Problem zu lösen, könnten wir eine Programm schreiben, dass der Reihe nach für alle
+ungerade Zahlen überprüft, ob die Zahl perfekt ist.  Abbildung \ref{fig:Find-Perfect.ipynb}
+auf Seite \pageref{fig:Find-Perfect.ipynb} zeigt ein solches Programm.  Wenn es eine ungerade perfekte Zahl
 gibt, dann wird dieses Programm diese Zahl auch irgendwann finden.  Wenn es aber keine
 ungerade perfekte Zahl gibt, dann wird das Programm bis zum St.~Nimmerleinstag rechnen und
 wir werden nie mit Sicherheit wissen, dass es keine ungeraden perfekten Zahlen gibt.
@@ -574,43 +574,40 @@ wir werden nie mit Sicherheit wissen, dass es keine ungeraden perfekten Zahlen g
                   xleftmargin   = 0.3cm,
                   xrightmargin  = 0.3cm
                 ]
-    perfect := procedure(n) {
-        return +/ { x : x in {1 .. n-1} | n % x == 0 } == n;
-    };    
-    findPerfect := procedure() {
-        n := 1;
-        while (true) {
-            if (perfect(n)) {
-                if (n % 2 == 0) {
-                    print(n);
-                } else {
-                    print("Heureka: Odd perfect number $n$ found!");
-                }
-            } 
-            n := n + 1;
-        }
-    };
-    findPerfect();
+    def perfect(n):
+        return sum({ x for x in range(1, n) if n % x == 0 }) == n
+    
+    def findOddPerfect():
+        n = 1
+        while True:
+            if perfect(n):
+                return n
+            n += 2
+    
+    findOddPerfect()
 \end{Verbatim}
 \vspace*{-0.3cm}
   \caption{Suche nach einer ungeraden perfekten Zahl.}
-  \label{fig:find-perfect.stlx}
+  \label{fig:Find-Perfect.ipynb}
 \end{figure} 
 
-\subsection{Implementierung prädikatenlogischer Strukturen in \textsc{SetlX}}
+\subsection{Implementierung prädikatenlogischer Strukturen in \textsl{Python}}
 Der im letzten Abschnitt präsentierte Begriff einer prädikatenlogischen Struktur erscheint zunächst
 sehr abstrakt.  Wir wollen in diesem Abschnitt zeigen, dass sich dieser Begriff in einfacher Weise in
-\textsc{SetlX} implementieren lässt.  Dadurch gelingt es, diesen Begriff zu veranschaulichen.  Als konkretes
+\textsl{Python} implementieren lässt.  Dadurch gelingt es, diesen Begriff zu veranschaulichen.  Als konkretes
 Beispiel wollen wir Strukturen zu Gruppen-Theorie betrachten.  Die Signatur $\Sigma_G$ der
 Gruppen-Theorie war im letzten Abschnitt durch die Definition
-\[ \Sigma_G = 
-   \bigl\langle \{x,y,z\},\; \{1,*\},\; \{=\},\; \{ \pair(1,0), \pair(*,2), \pair(=,2) \} \bigr\rangle 
-\]
-gegeben worden.  Hierbei ist also ``$1$'' ein 0-stelliges Funktions-Zeichen, ``$*$'' ist
+\\[0.2cm]
+\hspace*{1.3cm}
+$\Sigma_G = 
+   \bigl\langle \{x,y,z\},\; \{\mathrm{e},*\},\; \{=\},\; \{ \pair(\mathrm{e},0), \pair(*,2), \pair(=,2) \} \bigr\rangle 
+$
+\\[0.2cm]
+gegeben worden.  Hierbei ist also ``$\mathrm{e}$'' ein 0-stelliges Funktions-Zeichen, ``$*$'' ist
 eine 2-stelliges Funktions-Zeichen und ``$=$'' ist ein 2-stelliges Prädikats-Zeichen.
 Wir hatten bereits eine Struktur $\mathcal{S}$ angegeben, deren Universum aus der Menge
-$\{ a, b \}$ besteht.  In \textsc{SetlX} können wir diese Struktur durch den in Abbildung
-\ref{fig:gruppen.stlx} gezeigten Code implementieren.
+$\{ a, b \}$ besteht.  In \textsl{Python} können wir diese Struktur durch den in Abbildung
+\ref{fig:Group.ipynb} gezeigten Code implementieren.
 
 \begin{figure}[!ht]
 \centering
@@ -622,18 +619,19 @@ $\{ a, b \}$ besteht.  In \textsc{SetlX} können wir diese Struktur durch den in
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-    a := "a";
-    b := "b"; 
-    U := { a, b };  // the universe
-    product := { [[a, a], a],  [[a, b], b],  [[b, a], b],  [[b, b], a] };
-    equals  := { [ x, x ] : x in U };
-    J := { [ "E", a ], [ "@@@product", product ], [ "@@@equals", equals ] };
-    S := [ U, J ];
-    I := { [ "x", a ], [ "y", b ], [ "z", a ] }; 
+    a = "a"
+    b = "b"
+    U = { a, b }  
+    Product   = { (a, a): a,  (a, b): b,  (b, a): b,  (b, b): a }
+    Equals    = { (x, x) for x in U }
+    ConstantA = { (): a }
+    J = { "E": ConstantA, "Multiply": Product, "Equals": Equals }
+    S = (U, J)
+    I = { "x": a, "y": b, "z": a }
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{Implementierung einer Struktur zur Gruppen-Theorie}
-\label{fig:gruppen.stlx}
+\label{fig:Group.ipynb}
 \end{figure}
 
 \begin{enumerate}
@@ -660,11 +658,11 @@ $\{ a, b \}$ besteht.  In \textsc{SetlX} können wir diese Struktur durch den in
       zusammen, so dass für ein Funktions-Zeichen $f$ die Interpretation $f^\mathcal{J}$ durch
       den Wert $\texttt{J}(f)$ gegeben ist. 
 
-      Da wir später den in \textsc{SetlX} eingebauten Parser verwenden wollen, müssen wir die
+      Da wir später den in \textsl{Python} eingebauten Parser verwenden wollen, müssen wir die
       prädikatenlogischen Formeln als
       Terme darstellen.  Dazu stellen wir den Operator ``\texttt{*}'' durch den Funktor ``\texttt{@@@product}''
       dar und für das Prädikats-Zeichen ``\texttt{=}'' verwenden wir den Funktor ``\texttt{@@@equals}'',
-      denn das sind die Funktoren, die von dem in \textsc{SetlX} integrierten Parser intern benutzt werden.
+      denn das sind die Funktoren, die von dem in \textsl{Python} integrierten Parser intern benutzt werden.
       Das neutrale Element ``$1$'' stellen wir durch den Funktor ``\texttt{@E}'' dar, so dass später der
       Ausdruck ``$1$'' durch den Term ``\texttt{@E()}'' repräsentiert wird.
 \item Die Interpretation $\texttt{J}$ wird dann in Zeile 7 mit dem
@@ -748,7 +746,7 @@ Variablen-Belegung $I$ an der Stelle $x$ zu $c$ abändert, es gilt also
 $\texttt{modify}(\mathcal{I},x,c) = \mathcal{I}[x/c]$. 
 \\[0.2cm]
 Die Implementierung dieser Prozedur ist in \myfig{modify.stlx} gezeigt.
- Bei der Auswertung eines All-Quantors können wir ausnutzen, dass die Sprache \textsc{SetlX}
+ Bei der Auswertung eines All-Quantors können wir ausnutzen, dass die Sprache \textsl{Python}
 die beiden Quantoren ``$\forall$'' und ``$\exists$'' durch die Operatoren \texttt{forall} bzw.~\texttt{exists}
 unterstützt.  Wir können also direkt testen, ob die 
 Formel für alle möglichen Werte $c$, die wir für die Variable $x$ einsetzen können,
@@ -848,7 +846,7 @@ Struktur und das dritte Argument $\mathcal{I}$ ist eine Variablen-Belegung.
       Die Variablen-Belegung $\mathcal{I}$ wird dabei durch eine
       zweistellige Relation dargestellt, die wir als Funktion benutzen.
 
-      Variablen werden von dem in \textsc{SetlX} vorgegebenen Parser als Terme der Form
+      Variablen werden von dem in \textsl{Python} vorgegebenen Parser als Terme der Form
       \\[0.2cm]
       \hspace*{1.3cm}
       \texttt{@@@variable($v$)}
@@ -919,7 +917,7 @@ $\mathtt{evalTerm}()$ auf alle Terme der gegebenen Liste an.
 
 Wir zeigen nun, wie sich die in Abbildung \ref{fig:pl-evaluate.stlx} gezeigte Funktion
 $\texttt{evalFormula}(f, \mathcal{S}, \mathcal{I})$ benutzen lässt um zu überprüfen, ob die
-in Abbildung \ref{fig:gruppen.stlx} gezeigte Struktur die Axiome einer
+in Abbildung \ref{fig:Group.ipynb} gezeigte Struktur die Axiome einer
 \href{https://en.wikipedia.org/wiki/Abelian_group}{kommutativen Gruppe}
 erfüllt.  Diese Axiome sind wie folgt:
 \begin{enumerate}
@@ -987,9 +985,9 @@ müssten, unendlich groß.  \eox
       \hspace*{1.3cm}
       $\forall x: \exists y: p(x,y) \rightarrow \exists y: \forall x: p(x,y)$
       \\[0.2cm]
-      \underline{nicht} allgemeingültig ist, indem Sie in \textsc{SetlX} eine geeignete
+      \underline{nicht} allgemeingültig ist, indem Sie in \textsl{Python} eine geeignete
       prädikatenlogische Struktur $\mathcal{S}$ implementieren, in der diese Formel falsch ist.
-\item Entwickeln Sie ein \textsc{SetlX}-Programm, dass die obige Formel in allen Strukturen
+\item Entwickeln Sie ein \textsl{Python}-Programm, dass die obige Formel in allen Strukturen
       ausprobiert, in denen das Universum  aus einer vorgegebenen Zahl $n$ verschiedener Elemente
       besteht und testen Sie Ihr Programm für $n=2$.
 \item Überlegen Sie, wie viele verschiedene Strukturen mit $n$ Elementen es für die obige Formel gibt.
