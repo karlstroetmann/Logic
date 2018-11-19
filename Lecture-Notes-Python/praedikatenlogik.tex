@@ -591,20 +591,161 @@ wir werden nie mit Sicherheit wissen, dass es keine ungeraden perfekten Zahlen g
   \label{fig:Find-Perfect.ipynb}
 \end{figure} 
 
-\subsection{Implementierung prädikatenlogischer Strukturen in \textsl{Python}}
+\section{Implementierung prädikatenlogischer Strukturen in \textsl{Python}}
 Der im letzten Abschnitt präsentierte Begriff einer prädikatenlogischen Struktur erscheint zunächst
 sehr abstrakt.  Wir wollen in diesem Abschnitt zeigen, dass sich dieser Begriff in einfacher Weise in
 \textsl{Python} implementieren lässt.  Dadurch gelingt es, diesen Begriff zu veranschaulichen.  Als konkretes
-Beispiel wollen wir Strukturen zu Gruppen-Theorie betrachten.  Die Signatur $\Sigma_G$ der
-Gruppen-Theorie war im letzten Abschnitt durch die Definition
+Beispiel wollen wir Strukturen zu Gruppen-Theorie betrachten.  Wir gehen dazu in vier Schritten vor:
+\begin{enumerate}
+\item Zunächst definieren wir mathematisch, was wir unter einer \emph{Gruppe} verstehen.
+\item Anschließend diskutieren wir, wie wir die Formeln der Gruppen-Theorie in \textsl{Python} darstellen.
+\item Dann definieren wir eine Struktur, in der die Formeln der Gruppen-Theorie gelten.
+\item Schließlich zeigen wir, wie wir prädikaten-logische Formeln in \textsl{Python} auswerten können.
+\end{enumerate}
+
+\subsection{Gruppen-Theorie}
+In der Mathematik wird eine Gruppe $\mathcal{G}$ als eine Tripel der Form
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{G} = \langle G, \mathrm{e}, * \rangle$
+\\[0.2cm]
+definiert.  Dabei gilt:
+\begin{enumerate}
+\item $G$ ist eine Menge,
+\item $\mathrm{e}$ ist ein Element der Menge $G$ und
+\item $*:G \times G \rightarrow G$ ist eine binäre Funktion auf $G$.
+\item Zusätzlich müssen die folgenden Axiome gelten:
+      \begin{enumerate}
+      \item $\forall x: \mathrm{e} * x = x$,
+      \item $\forall x: \exists{y}: y * x = \mathrm{e}$,
+      \item $\forall x: \forall y: \forall z: (x * y) * z = x * (y * z)$.
+      \item Die Gruppe $\mathcal{G}$ ist eine \emph{kommutative} Gruppe genau dann, wenn zusätzlich das folgende Axiom gilt:
+        
+            $\forall x: \forall y: x * y = y * x$.
+      \end{enumerate}
+\end{enumerate}
+
+\subsection{Darstellung der Formeln in \textsl{Python}}
+Im letzten Abschnitt haben wir die Signatur $\Sigma_G$ der
+Gruppen-Theorie wie folgt definiert:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\Sigma_G = 
    \bigl\langle \{x,y,z\},\; \{\mathrm{e},*\},\; \{=\},\; \{ \pair(\mathrm{e},0), \pair(*,2), \pair(=,2) \} \bigr\rangle 
-$
+$.
 \\[0.2cm]
-gegeben worden.  Hierbei ist also ``$\mathrm{e}$'' ein 0-stelliges Funktions-Zeichen, ``$*$'' ist
+Hierbei ist also ``$\mathrm{e}$'' ein 0-stelliges Funktions-Zeichen, ``$*$'' ist
 eine 2-stelliges Funktions-Zeichen und ``$=$'' ist ein 2-stelliges Prädikats-Zeichen.
+Wir werden für prädikaten-logische Formeln einen Parser verwenden, der keine binären Operatoren wie
+``$*$'' oder ``$=$'' unterstützt.  Bei diesem Parser können Terme nur in der Form
+\\[0.2cm]
+\hspace*{1.3cm}
+$f(t_1,\cdots,t_n)$
+\\[0.2cm]
+angegeben werden, wobei $f$ eine Funktions-Zeichen ist und $t_1$, $\cdots$, $t_n$ Terme sind.  Analog werden
+atomare Formeln durch Ausdrücke der Form
+\\[0.2cm]
+\hspace*{1.3cm}
+$p(t_1,\cdots,t_n)$
+\\[0.2cm]
+dargestellt, wobei $p$ eine Prädikats-Zeichen ist.  Variablen werden von den Funktions- und Prädikats-Zeichen
+dadurch unterschieden, dass Variablen mit einem kleinen Buchstaben beginnen, während Funktions- und
+Prädikats-Zeichen mit einem großen Buchstaben beginnen.  Um die Formeln der Gruppentheorie darstellen zu
+können, vereinbaren wir daher Folgendes:
+\begin{enumerate}
+\item Das neutrale Element $\mathrm{e}$ schreiben wir als $\texttt{E}()$.  
+\item Für den Operator $*$ verwenden wir das zweistellige Funktions-Zeichen $\texttt{Multiply}$.
+      Damit wird der Ausdruck $x*y$ also als $\texttt{Multiply}(x, y)$ geschrieben.
+\item Das Gleichheits-Zeichen ``$=$'' repräsentieren wir durch das zweistellige Prädikats-Zeichen
+      $\texttt{Equals}$.  Damit schreibt sich die Formel $x = y$ dann als $\texttt{Equals}(x, y)$.
+\end{enumerate}
+Abbildung \ref{fig:group-theory} zeigt die Formeln der Gruppen-Theorie als Strings.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    G1 = '∀x:Equals(Multiply(E(),x),x)'                  
+    G2 = '∀x:∃y:Equals(Multiply(x,y),E())'
+    G3 = '∀x:∀y:∀z:Equals(Multiply(Multiply(x,y),z), Multiply(x,Multiply(y,z)))'
+    G4 = '∀x:∀y:Equals(Multiply(x,y), Multiply(y,x))'
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Die Formeln der kommutativen Gruppentheorie als Strings}
+\label{fig:group-theory}
+\end{figure}
+
+Wir können die Formeln mit der in Abbildung \ref{fig:fol-parse.py} gezeigten Funktion $\texttt{parse}(s)$ in
+geschachtelte Tupel überführen.  Das Ergebnis dieser Transformation ist in Abbildung
+\ref{fig:group-theory-tupel} zu sehen.
+
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    import folParser as fp
+    
+    def parse(s):
+        "Parse string s as fol formula."
+        p = fp.LogicParser(s)
+        return p.parse()
+
+        F1 = parse(G1)
+        F2 = parse(G2)
+        F3 = parse(G3)
+        F4 = parse(G4)
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Die Funktion \texttt{parse}}
+\label{fig:fol-parse.py}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    F1 = ('∀', 'x', ('Equals', ('Multiply', ('E',), 'x'), 'x'))
+    F2 = ('∀', 'x', ('∃', 'y', ('Equals', ('Multiply', 'x', 'y'), ('E',))))
+    F3 = ('∀', 'x', ('∀', 'y', ('∀', 'z',
+              ('Equals', ('Multiply', ('Multiply', 'x', 'y'), 'z'),
+                         ('Multiply', 'x', ('Multiply', 'y', 'z'))
+              )
+         )))
+    F4 = ('∀', 'x', ('∀', 'y',
+              ('Equals', ('Multiply', 'x', 'y'),
+                         ('Multiply', 'y', 'x')
+              )
+         ))        
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Die Axiome einer kommutativen Gruppe als geschachtelte Tupel}
+\label{fig:group-theory-tupel}
+\end{figure}
+
+\subsection{Darstellung prädikaten-logischer Strukturen in \textsl{Python}}
 Wir hatten bereits eine Struktur $\mathcal{S}$ angegeben, deren Universum aus der Menge
 $\{ a, b \}$ besteht.  In \textsl{Python} können wir diese Struktur durch den in Abbildung
 \ref{fig:Group.ipynb} gezeigten Code implementieren.
