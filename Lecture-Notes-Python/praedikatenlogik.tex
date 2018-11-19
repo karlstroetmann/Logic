@@ -286,7 +286,7 @@ $\ds\bigl(\exists x\el M: F\bigr) \stackrel{\mathtt{def}}{\Longleftrightarrow} \
 \\[0.2cm]
 definiert sind.
 
-\section{Semantik der Prädikatenlogik}
+\section{Semantik der Prädikatenlogik \label{sec:semantik}}
 Als nächstes legen wir die Bedeutung der Formeln fest.  Dazu definieren wir 
 den Begriff einer \blue{$\Sigma$-Struktur}.  Eine solche Struktur legt fest, wie die
 Funktions- und Prädikats-Zeichen der Signatur $\Sigma$ zu interpretieren sind.
@@ -687,7 +687,6 @@ geschachtelte Tupel überführen.  Das Ergebnis dieser Transformation ist in Abb
 \ref{fig:group-theory-tupel} zu sehen.
 
 
-
 \begin{figure}[!ht]
 \centering
 \begin{Verbatim}[ frame         = lines, 
@@ -706,10 +705,10 @@ geschachtelte Tupel überführen.  Das Ergebnis dieser Transformation ist in Abb
         p = fp.LogicParser(s)
         return p.parse()
 
-        F1 = parse(G1)
-        F2 = parse(G2)
-        F3 = parse(G3)
-        F4 = parse(G4)
+    F1 = parse(G1)
+    F2 = parse(G2)
+    F3 = parse(G3)
+    F4 = parse(G4)
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{Die Funktion \texttt{parse}}
@@ -746,9 +745,10 @@ geschachtelte Tupel überführen.  Das Ergebnis dieser Transformation ist in Abb
 \end{figure}
 
 \subsection{Darstellung prädikaten-logischer Strukturen in \textsl{Python}}
-Wir hatten bereits eine Struktur $\mathcal{S}$ angegeben, deren Universum aus der Menge
-$\{ a, b \}$ besteht.  In \textsl{Python} können wir diese Struktur durch den in Abbildung
-\ref{fig:Group.ipynb} gezeigten Code implementieren.
+Wir hatten bei der Definition der Semantik Prädikaten-Logik in Abschnitt \ref{sec:semantik} bereits eine
+Struktur $\mathcal{S}$ angegeben, deren Universum aus der Menge $\{ a, b \}$ besteht.  In \textsl{Python}
+können wir diese Struktur durch den in Abbildung \ref{fig:Group.ipynb} auf Seite \pageref{fig:Group.ipynb}
+gezeigten Code implementieren. 
 
 \begin{figure}[!ht]
 \centering
@@ -763,10 +763,10 @@ $\{ a, b \}$ besteht.  In \textsl{Python} können wir diese Struktur durch den i
     a = "a"
     b = "b"
     U = { a, b }  
-    Product   = { (a, a): a,  (a, b): b,  (b, a): b,  (b, b): a }
-    Equals    = { (x, x) for x in U }
-    ConstantA = { (): a }
-    J = { "E": ConstantA, "Multiply": Product, "Equals": Equals }
+    NeutralElement = { (): a }
+    Product        = { (a, a): a,  (a, b): b,  (b, a): b,  (b, b): a }
+    Identity       = { (x, x) for x in U }
+    J = { "E": NeutralElement, "Multiply": Product, "Equals": Identity }
     S = (U, J)
     I = { "x": a, "y": b, "z": a }
 \end{Verbatim}
@@ -779,39 +779,37 @@ $\{ a, b \}$ besteht.  In \textsl{Python} können wir diese Struktur durch den i
 \item Zur Abkürzung haben wir in den Zeile 1 und 2 die Variablen $\texttt{a}$ und $\texttt{b}$
       als die Strings \texttt{\symbol{34}a\symbol{34}} und \texttt{\symbol{34}b\symbol{34}}
       definiert.  Dadurch können wir weiter unten die Interpretation des
-      Funktions-Zeichens ``$*$'' einfacher angeben.
+      Funktions-Zeichens ``$\texttt{Multiply}$'' einfacher angeben.
 \item Das in Zeile 3 definierte Universum $U$ besteht aus den beiden Strings \quoted{a} und \quoted{b}.
-\item In Zeile 4 definieren wir eine Funktion \texttt{product} als binäre Relation.  Für
+      
+\item In Zeile 4 definieren wir die Interpretation des nullstelligen Funktions-Zeichens $\texttt{E}$
+      als das \textsl{Python}-Dictionary, das dem leeren Tupel das Objekt $\texttt{a}$ zuordnet.
+\item In Zeile 5 definieren wir eine Funktion $\texttt{Product}$ als \textsl{Python}-Dictionary.  Für
       die so definierte Funktion gilt
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{product}(\quoted{a},\quoted{a}) = \quoted{a}$, \quad
-      $\mathtt{product}(\quoted{a},\quoted{b}) = \quoted{b}$, 
+      $\mathtt{Product}(\quoted{a},\quoted{a}) = \quoted{a}$, \quad
+      $\mathtt{Product}(\quoted{a},\quoted{b}) = \quoted{b}$, 
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{product}(\quoted{b},\quoted{a}) = \quoted{b}$, \quad
-      $\mathtt{product}(\quoted{b},\quoted{b}) = \quoted{a}$.
+      $\mathtt{Product}(\quoted{b},\quoted{a}) = \quoted{b}$, \quad
+      $\mathtt{Product}(\quoted{b},\quoted{b}) = \quoted{a}$.
       \\[0.2cm]  
-      Diese Funktion verwenden wir später als die Interpretation $*^\mathcal{J}$ des Funktions-Zeichens ``$*$''.
-\item In Zeile 5 haben wir  die Interpretation $=^\mathcal{J}$ des
-      Prädikats-Zeichens ``$=$'' als Menge aller Paare der Form $[x, x]$ dargestellt.
-\item In Zeile 6 fassen wir die einzelnen Interpretationen zu der Relation $\texttt{J}$
-      zusammen, so dass für ein Funktions-Zeichen $f$ die Interpretation $f^\mathcal{J}$ durch
-      den Wert $\texttt{J}(f)$ gegeben ist. 
-
-      Da wir später den in \textsl{Python} eingebauten Parser verwenden wollen, müssen wir die
-      prädikatenlogischen Formeln als
-      Terme darstellen.  Dazu stellen wir den Operator ``\texttt{*}'' durch den Funktor ``\texttt{@@@product}''
-      dar und für das Prädikats-Zeichen ``\texttt{=}'' verwenden wir den Funktor ``\texttt{@@@equals}'',
-      denn das sind die Funktoren, die von dem in \textsl{Python} integrierten Parser intern benutzt werden.
-      Das neutrale Element ``$1$'' stellen wir durch den Funktor ``\texttt{@E}'' dar, so dass später der
-      Ausdruck ``$1$'' durch den Term ``\texttt{@E()}'' repräsentiert wird.
-\item Die Interpretation $\texttt{J}$ wird dann in Zeile 7 mit dem
-      Universum $\texttt{U}$ zu der Struktur $\texttt{S}$ zusammengefasst.  
-\item Schließlich zeigt Zeile 8, dass eine
-      Variablen-Belegung ebenfalls als Relation dargestellt werden kann.  Die erste Komponente
-      der Paare, aus denen diese Relation besteht, sind die Variablen.  Die zweite Komponente
-      ist dann jeweils ein Wert aus dem Universum.
+      Diese Funktion verwenden wir später als die Interpretation $\texttt{Multiply}^\mathcal{J}$ des Funktions-Zeichens ``$\texttt{Multiply}$''.
+\item In Zeile 6 haben wir  die Interpretation $\texttt{Equals}^\mathcal{J}$ des
+      Prädikats-Zeichens ``$\texttt{Equals}$'' als Menge aller Paare der Form $(x, x)$ dargestellt, wobei $x$ ein beliebiges
+      Element des Universums ist.
+\item In Zeile 7 fassen wir die Interpretationen der Funktions-Zeichen ``$\texttt{E}$'' und
+      ``$\texttt{Multiply}$'' und des Prädikats-Zeichens ``$\texttt{Equals}$'' zu dem Dictionary $\texttt{J}$
+      zusammen, so dass für ein Funktions- oder Prädikats-Zeichen $f$ die Interpretation $f^\mathcal{J}$ durch
+      den Wert $\texttt{J}[f]$ gegeben ist. 
+\item Die Interpretation $\texttt{J}$ wird dann in Zeile 8 mit dem
+      Universum $\texttt{U}$ zu der Struktur $\texttt{S}$ zusammengefasst, die in \textsl{Python} einfach als
+      Paar dargestellt wird.
+\item Schließlich zeigt Zeile 9, dass eine
+      Variablen-Belegung ebenfalls als Dictionary dargestellt werden kann.  Die Schlüssel
+      sind die Variablen, die Werte sind dann die Objekte aus dem Universum, auf welche die Variablen
+      abgebildet werden.
 \end{enumerate}
 
 
@@ -819,87 +817,182 @@ $\{ a, b \}$ besteht.  In \textsl{Python} können wir diese Struktur durch den i
 \centering
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
+                  firstnumber   = 1,
                   labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
                 ]
-    evalFormula := procedure(f, S, I) {
-        U := S[1];
-        match (f) {
-            case true     : return true;
-            case false    : return false;
-            case !g       : return !evalFormula(g, S, I);
-            case g && h   : return  evalFormula(g, S, I) && evalFormula(h, S, I);
-            case g || h   : return  evalFormula(g, S, I) || evalFormula(h, S, I);
-            case g => h   : return  evalFormula(g, S, I) => evalFormula(h, S, I);
-            case g <==> h : return  evalFormula(g, S, I) == evalFormula(h, S, I);
-            case @Forall(x, g) : 
-                 return forall (c in U | evalFormula(g, S, modify(I, x, c)));
-            case @Exists(x, g) : 
-                 return exists (c in U | evalFormula(g, S, modify(I, x, c)));
-            default : return evalAtomic(f, S, I);  // atomic formula
-        }
-    };
+    def evalTerm(t, S, I):
+        if isinstance(t, str):  # t is a variable
+            return I[t]
+        J        = S[1]   # dictionary of interpretations
+        f        = t[0]   # function symbol
+        fJ       = J[f]   # interpretation of function symbol
+        argTuple = t[1:]
+        argVals  = evalTermTuple(argTuple, S, I)
+        return fJ[argVals]
+        
+    def evalTermTuple(Ts, S, I):
+        return tuple(evalTerm(t, S, I) for t in Ts)    
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Auswertung prädikatenlogischer Formeln}
-\label{fig:pl-evaluate.stlx}
+\caption{Auswertung von Termen}
+\label{fig:evalTerm.ipynb}
 \end{figure}
 
-Als nächstes überlegen wir uns, wie wir prädikatenlogische Formeln in einer solchen Struktur
-auswerten können.  Abbildung \ref{fig:pl-evaluate.stlx} zeigt die Implementierung der Prozedur
-$\texttt{evalFormula}(f, S, I)$, der als Argumente eine prädikatenlogische Formel $f$, eine Struktur
-$\mathcal{S}$ und eine Variablen-Belegung $\mathcal{I}$ übergeben werden.  Die Formel wird
-dabei als Term dargestellt.  
 
-Die Auswertung einer prädikatenlogischen Formel ist nun analog zu der in Abbildung \ref{fig:pl-evaluate.stlx}
-auf Seite \pageref{fig:pl-evaluate.stlx} gezeigten Auswertung aussagenlogischer Formeln.  
-Neu ist nur die Behandlung der Quantoren.  In den Zeilen 11 und 12 behandeln wir die Auswertung
-allquantifizierter Formeln.  Ist $f$ eine Formel der Form $\forall y: h$,
-so wird die Formel $f$ durch den Term 
+Als nächstes überlegen wir uns, wie wir prädikatenlogische Terme in einer solchen Struktur
+auswerten können.  Abbildung \ref{fig:evalTerm.ipynb} zeigt die Implementierung der Prozedur
+$\texttt{evalTerm}(t, \mathcal{S}, \mathcal{I})$, der als Argumente ein prädikatenlogischer Term $t$, eine
+prädikatenlogische Struktur $\mathcal{S}$ und eine Variablen-Belegung $\mathcal{I}$ übergeben werden.  Der Term
+$t$ wird dabei in \textsl{Python} als geschachteltes Tupel dargestellt.
+\begin{enumerate}
+\item In Zeile 2 überprüfen wir, ob der Term $t$ eine Variable ist.  Dies ist daran zu erkennen, dass Variablen
+      als Strings dargestellt werden, während alle anderen Terme Tupel sind.  Falls $t$ eine Variable ist, dann 
+      geben wir den Wert zurück, der in der Variablen-Belegung $\mathcal{I}$ für diese Variable gespeichert
+      ist.
+\item Sonst extrahieren wir in Zeile 4 das Dictionary $\mathcal{J}$, das die Interpretationen der Funktions- und
+      Prädikats-Zeichen enthält, aus der Struktur $\mathcal{S}$.
+\item Das Funktions-Zeichen $f$ des Terms $t$ ist die erste Komponente des Tupels $t$.
+\item Die Interpretation $f^\mathcal{J}$ dieses Funktions-Zeichens schlagen wir in Zeile 6 in dem Dictionary
+      $\mathcal{J}$ nach.
+\item Die Argumente des Funktions-Zeichens $f$ sind die restlichen Komponenten des Tupels $t$.
+\item Das Tupel, das aus diesen Argumenten besteht, wird in Zeile 8 rekursiv ausgewertet.
+      Als Ergebnis erhalten wir dabei ein Tupel von Werten.
+\item Dieses Tupel dient dann in Zeile 9 als Argument für das Dictionary $f^\mathcal{J}$.  Der in diesem
+      Dictionary für die Argumente abgelegte Wert ist dann das Ergebnis der Auswertung des Terms $t$.
+\end{enumerate}
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    def evalAtomic(a, S, I):
+        J        = S[1]  # dictionary of interpretations
+        p        = a[0]  # predicate symbol
+        pJ       = J[p]  # interpretation of predicate symbol
+        argTuple = a[1:]
+        argVals  = evalTermTuple(argTuple, S, I)
+        return argVals in pJ
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Auswertung atomarer Formeln}
+\label{fig:evalAtomic.ipynb}
+\end{figure}
+
+Abbildung \ref{fig:evalAtomic.ipynb} zeigt die Auswertung einer atomaren Formel.  Eine atomare Formel $a$ hat
+ist in Python als Tupel der Form
 \\[0.2cm]
 \hspace*{1.3cm}
-$f = \texttt{@Forall(}y, h\mathtt{)}$
+$a = (p, t_1,\cdots,t_n)$.
 \\[0.2cm]
-dargestellt.  Das Muster 
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{@Forall(x, g)}
-\\[0.2cm]
-bindet daher \texttt{x} an die tatsächlich auftretende Variable $y$ und \texttt{g} an die Teilformel $h$.
-Die Auswertung von $\forall x\colon h$ geschieht nach der Formel
+dargestellt.  Das Prädikats-Zeichen ergibt sich daher als $a[0]$, während das Tupel der Argumente durch den
+Ausdruck $a[1:]$ gegeben ist.  Um zu überprüfen, ob die atomare Formel $a$ wahr ist, müssen wir überprüfen, ob
 \\[0.2cm]
 \hspace*{1.3cm}
-$\struct\bigl(\mathcal{I}, \forall x\colon h\bigr) \;:=\; \left\{
+$\bigl(\texttt{evalTerm}(t_1,\mathcal{S}, \mathcal{I}), \cdots, \texttt{evalTerm}(t_n,\mathcal{S},\mathcal{I})\bigr)\in p^\mathcal{J}$
+\\[0.2cm]
+gilt.  Dieser Test wird in Zeile 7 von Abbildung durchgeführt. Der Rest der Implementierung der Funktion
+$\texttt{evalAtomic}$ ist analog zur Implementierung der Funktion $\texttt{evalTerm}$.
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                  ]
+    def evalFormula(F, S, I):
+        U = S[0]  # universe
+        if F[0] == '⊤': return True
+        if F[0] == '⊥': return False
+        if F[0] == '¬': return not evalFormula(F[1], S, I)
+        if F[0] == '∧': return evalFormula(F[1], S, I) and evalFormula(F[2], S, I)
+        if F[0] == '∨': return evalFormula(F[1], S, I) or evalFormula(F[2], S, I)
+        if F[0] == '→': return not evalFormula(F[1], S, I) or evalFormula(F[2], S, I)
+        if F[0] == '↔': return evalFormula(F[1], S, I) == evalFormula(F[2], S, I)
+        if F[0] == '∀': 
+            x, G = F[1:] 
+            return all({ evalFormula(G, S, modify(I, x, c)) for c in U} )
+        if F[0] == '∃':
+            x, G = F[1:] 
+            return any({ evalFormula(G, S, modify(I, x, c)) for c in U} )
+        return evalAtomic(F, S, I)                   
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{}
+\label{fig:evalFormula.ipynb}
+\end{figure}
+
+Abbildung \ref{fig:evalFormula.ipynb} auf Seite \pageref{fig:evalFormula.ipynb} zeigt die Implementierung der
+Funktion $\texttt{evalFormula}(F, \mathcal{S}, \mathcal{I})$, die als Argumente eine prädikatenlogische Formel
+$F$, eine prädikatenlogische Struktur $\mathcal{S}$ und eine Variablen-Belegung $\mathcal{I}$ erhält und die
+als Ergebnis den Wert $\mathcal{S}(\mathcal{I}, F)$ berechnet.
+Die Auswertung der Formel $F$ erfolgt dabei analog zu der in Abbildung \ref{fig:evaluate.py} auf
+Seite \pageref{fig:evaluate.py} gezeigten Auswertung aussagenlogischer Formeln.   Neu ist hier nur die
+Behandlung der Quantoren.  In den Zeilen 10, 11 und 12 behandeln wir die Auswertung allquantifizierter Formeln.
+Ist $F$ eine Formel der Form $\forall x: G$, so wird die Formel $F$ durch das Tupel
+\\[0.2cm]
+\hspace*{1.3cm}
+$F = (\texttt{'∀'}, x, G)$
+\\[0.2cm]
+dargestellt.  Die Auswertung von $\forall x\colon G$ geschieht nach der Formel
+\\[0.2cm]
+\hspace*{1.3cm}
+$\struct\bigl(\mathcal{I}, \forall x\colon G\bigr) \;:=\; \left\{
       \begin{array}{ll}
-         \mathtt{true}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], h) = \mathtt{true}\quad \mbox{für alle}\; c\in \mathcal{U}\;\mbox{gilt}; \\
+         \mathtt{true}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], G) = \mathtt{true}\quad \mbox{für alle}\; c\in \mathcal{U}\;\mbox{gilt}; \\
          \mathtt{false} & \mbox{sonst}.
       \end{array}
       \right.
 $
 \\[0.2cm]
 Um die Auswertung implementieren zu können, verwenden wir die Prozedur $\texttt{modify}()$, welche die
-Variablen-Belegung $I$ an der Stelle $x$ zu $c$ abändert, es gilt also
+Variablen-Belegung $\mathcal{I}$ an der Stelle $x$ zu $c$ abändert, es gilt also
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{modify}(\mathcal{I},x,c) = \mathcal{I}[x/c]$. 
 \\[0.2cm]
-Die Implementierung dieser Prozedur ist in \myfig{modify.stlx} gezeigt.
+Die Implementierung dieser Prozedur ist in \myfig{modify.ipynb} gezeigt.
  Bei der Auswertung eines All-Quantors können wir ausnutzen, dass die Sprache \textsl{Python}
-die beiden Quantoren ``$\forall$'' und ``$\exists$'' durch die Operatoren \texttt{forall} bzw.~\texttt{exists}
-unterstützt.  Wir können also direkt testen, ob die 
+den Quantor ``$\forall$'' durch die Funktion \texttt{all} unterstützt.  Wir können also direkt testen, ob die 
 Formel für alle möglichen Werte $c$, die wir für die Variable $x$ einsetzen können,
-richtig ist.  Die Auswertung eines Existenz-Quantors ist analog zur Auswertung eines All-Quantors.
-
-Bei der Implementierung der in Zeile 31 gezeigten Prozedur $\texttt{modify}(\textsl{I},x,c)$, 
-die als Ergebnis die Variablen-Belegung $\mathcal{I}[x/c]$ berechnet, nutzen wir aus, dass
-wir bei einer Funktion, die als binäre Relation gespeichert ist, den Wert, der in dieser
-Relation für ein Argument $x$ eingetragen ist, durch eine Zuweisung der Form
+richtig ist.  Für eine Menge $S$ von Wahrheitswerten ist der Ausdruck
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{I}(x) \;\texttt{:=}\; c$ 
+$\texttt{all}(S)$
+\\[0.2cm]
+genau dann wahr, wenn alle Elemente von $S$ den Wert \texttt{True} haben.
+Die Auswertung eines Existenz-Quantors ist analog zur Auswertung eines All-Quantors.
+Der einzige Unterschied besteht darin, dass wir statt der Funktion \texttt{all} die Funktion \texttt{any}
+verwenden.  Der Ausdruck
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{any}(S)$
+\\[0.2cm]
+ist für eine Menge von Wahrheitswerten $S$ genau dann wahr, wenn es wenigstens ein Element in der Menge $S$
+gibt, dass den Wert \texttt{True} hat.
+
+Bei der Implementierung der Prozedur $\texttt{modify}(\textsl{I},x,c)$, die als Ergebnis die Variablen-Belegung $\mathcal{I}[x/c]$ berechnet, nutzen wir aus, dass
+wir bei einer Funktion, die als Dictionary gespeichert ist, den Wert, der für ein Argument $x$ eingetragen ist,
+durch eine Zuweisung der Form 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I}[x] \;\texttt{=}\; c$ 
 \\[0.2cm]
 abändern können.
 
@@ -914,110 +1007,17 @@ abändern können.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    modify := procedure(I, v, c) {
-        x    := args(v)[1];
-        I[x] := c;
-        return I;
-    };
+    def modify(I, x, c):
+        I[x] = c
+        return I
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{Die Implementierung der Funktion \texttt{modify}.}
-\label{fig:modify.stlx}
+\label{fig:modify.ipynb}
 \end{figure}
-
-
-\myfig{evalAtomic.stlx} zeigt die Auswertung atomarer Formeln.  Um eine atomare Formel der Form
-\\[0.2cm]
-\hspace*{1.3cm}
-$a = p(t_1, \cdots, t_n)$ 
-\\[0.2cm]
-auszuwerten, verschaffen wir uns in Zeile 4 zunächst die dem Prädikats-Zeichen $p$ in der
-Struktur $\mathcal{S}$ zugeordnete Menge $\mathtt{pJ}$.  Anschließend werten wir die Argumente
- $t_1, \cdots, t_n$ aus.  Dabei erhalten wir die Liste $[t_1, \cdots, t_n]$ der Argumente des
- Prädikats-Zeichens $p$ durch Anwendung der Funktion $\mathtt{args}$ in Zeile 5.
-Die Auswertung des Terms $t_i$ in der Struktur $\mathcal{S}$ unter der Variablen-Belegung $\mathcal{I}$  hatten
-wir im letzten Abschnitt mit 
-\\[0.2cm]
-\hspace*{1.3cm}
-$\mathcal{S}(\mathcal{I}, t_i)$
-\\[0.2cm]
-bezeichnet.  Wir erhalten daher in Zeile 6 als Auswertung der Liste $[t_1,\cdots,t_n]$ die Liste
-\\[0.2cm]
-\hspace*{1.3cm}
-$[\mathcal{S}(\mathcal{I}, t_1), \cdots, \mathcal{S}(\mathcal{I}, t_n)]$.
-\\[0.2cm]
-Dies ist eine Liste von Werten aus dem Universum $\mathcal{U}$ der Struktur $\mathcal{S}$.  Wir prüfen nun in
-Zeile 7, ob diese Liste tatsächlich ein Element der Menge $\mathtt{pJ}$ ist.  Wenn dies so ist, gibt die
-Funktion $\texttt{evalAtomic}$ den Wert $\texttt{true}$ zurück, sonst wird $\texttt{false}$ zurück gegeben. 
-
-
-
-
-\begin{figure}[!ht]
-  \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
-                ]
-    evalAtomic := procedure(a, S, I) {
-        J       := S[2];
-        p       := fct(a); // predicate symbol
-        pJ      := J[p];
-        argList := args(a);
-        argsVal := evalTermList(argList, S, I);
-        return argsVal in pJ;
-    };  
-\end{Verbatim}
-\vspace*{-0.3cm}
-\caption{Auswertung von atomaren Formeln.}
-\label{fig:evalAtomic.stlx}
-\end{figure}
-
-Die in \myfig{evalTerm.stlx} gezeigte Prozedur $\texttt{evalTerm}()$ arbeitet wie folgt:
-Das erste Argument $t$  der Prozedur $\texttt{evalTerm}(t, \mathcal{S}, \mathcal{I})$  ist der
-auszuwertende Term. Das zweite Argument $\mathcal{S}$ ist eine prädikatenlogische 
-Struktur und das dritte Argument $\mathcal{I}$ ist eine Variablen-Belegung.
-\begin{enumerate}
-\item Falls $t$ eine Variable ist, so geben wir in Zeile 4 einfach den Wert zurück, der in
-      der Variablen-Belegung $\mathcal{I}$ für diese Variable eingetragen ist.  
-      Die Variablen-Belegung $\mathcal{I}$ wird dabei durch eine
-      zweistellige Relation dargestellt, die wir als Funktion benutzen.
-
-      Variablen werden von dem in \textsl{Python} vorgegebenen Parser als Terme der Form
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{@@@variable($v$)}
-      \\[0.2cm]
-      dargestellt.  Hierbei ist $v$ dann ein String, der als der Name der Variablen interpretiert wird.
-      Konkret liefert beispielsweise der Aufruf
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{parse(\symbol{34}x\symbol{34})}
-      \\[0.2cm]
-      als Ergebnis den Term
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{@@@variable(\symbol{34}x\symbol{34})}.
-\item Falls der auszuwertende Term $t$ die Form 
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $t = f(t_1,\cdots,t_n)$
-      \\[0.2cm]
-      hat,  werden in Zeile 10 zunächst rekursiv die 
-      Subterme $t_1$, $\cdots$, $t_n$ ausgewertet.  Anschließend wird die Interpretation
-      $\mathtt{fJ}$ des Funktions-Zeichens $f$ herangezogen, um die Funktion
-      $f$ für die gegebenen
-      Argumente auszuwerten, wobei in Zeile 12 der Fall betrachtet wird, dass tatsächlich Argumente
-      vorhanden sind, während  in Zeile 14 der Fall behandelt wird, dass es sich bei dem
-      Funktions-Zeichen $f$ um eine Konstante handelt, deren Wert dann unmittelbar durch
-      die Interpretation $\mathtt{fJ}$ gegeben ist.
-\end{enumerate}
-Die Implementierung der Prozedur $\texttt{evalTermList}()$ wendet die Funktion
-$\mathtt{evalTerm}()$ auf alle Terme der gegebenen Liste an.
+Mit dem in Abbildung \ref{fig:isGroup.ipynb} gezeigten Skript können wir nun überprüfen, ob die in
+\myfig{isGroup.ipynb} definierte Struktur eine Gruppe ist.  Wir erhalten die in Abbildung \ref{fig:isGroup.out}
+gezeigte Ausgabe uns können daher folgern, dass diese Struktur in der Tat eine kommutative Gruppe ist.
 
 \begin{figure}[!ht]
 \centering
@@ -1030,87 +1030,43 @@ $\mathtt{evalTerm}()$ auf alle Terme der gegebenen Liste an.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    evalTerm := procedure(t, S, I) {
-        if (fct(t) == "@@@variable") {
-            varName := args(t)[1];
-            return I[varName];
-        }
-        J       := S[2];
-        f       := fct(t); // function symbol
-        fJ      := J[f];
-        argList := args(t);
-        argsVal := evalTermList(argList, S, I);
-        if (#argsVal > 0) {        
-            return fJ[argsVal]; 
-        } else {
-            return fJ;   // t is a constant
-        }
-    };
-    evalTermList := procedure(tl, S, I) {
-        return [ evalTerm(t, S, I) : t in tl ];
-    };
+    f"evalFormula({G1}, S, I) = {evalFormula(F1, S, I)}"
+    f"evalFormula({G2}, S, I) = {evalFormula(F2, S, I)}"
+    f"evalFormula({G3}, S, I) = {evalFormula(F3, S, I)}"
+    f"evalFormula({G4}, S, I) = {evalFormula(F4, S, I)}"
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Auswertung von Termen}
-\label{fig:evalTerm.stlx}
+\caption{Überprüfung, ob die in Abbildung \ref{fig:Group.ipynb} definierte Struktur eine Gruppe ist}
+\label{fig:isGroup.ipynb}
 \end{figure}
-
-
-Wir zeigen nun, wie sich die in Abbildung \ref{fig:pl-evaluate.stlx} gezeigte Funktion
-$\texttt{evalFormula}(f, \mathcal{S}, \mathcal{I})$ benutzen lässt um zu überprüfen, ob die
-in Abbildung \ref{fig:Group.ipynb} gezeigte Struktur die Axiome einer
-\href{https://en.wikipedia.org/wiki/Abelian_group}{kommutativen Gruppe}
-erfüllt.  Diese Axiome sind wie folgt:
-\begin{enumerate}
-\item Die Konstante $1$ ist das rechts-neutrale Element der Multiplikation:
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\forall x\colon x * 1 = x$.
-\item Für jedes Element $x$ gibt es ein rechts-inverses Element $y$, dass mit
-      dem Element $x$ multipliziert die $1$ ergibt:      
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\forall x \colon \exists y \colon x * y = 1$.
-\item Es gilt das Assoziativ-Gesetz:
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\forall x \colon \forall y \colon \forall z \colon (x * y) * z = x * (y * z)$.
-\item Es gilt das Kommutativ-Gesetz:
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\forall x \colon \forall y \colon x * y = y * x$.
-\end{enumerate}
-Diese Axiome sind in den Zeilen 1 bis 3 der Abbildung \ref{fig:gruppen-theorie.stl}
-wiedergegeben, wobei wir die ``$1$'' durch das Funktions-Zeichen ``\texttt{E}'' dargestellt haben.
-Die Schleife in den Zeilen 7 bis 9 überprüft schließlich, ob die Formeln in der oben
-definierten Struktur erfüllt sind.
 
 \begin{figure}[!ht]
 \centering
 \begin{Verbatim}[ frame         = lines, 
                   framesep      = 0.3cm, 
+                  firstnumber   = 1,
                   labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]
-    g1 := parse("@Forall(x, x * @E() == x)");
-    g2 := parse("@Forall(x, @Exists(y, x * y == @E()))");
-    g3 := parse("@Forall(x, @Forall(y, @Forall(z, (x * y) * z == x * (y * z) )))");
-    g4 := parse("@Forall(x, @Forall(y, x * y == y * x))");
-    GT := { g1, g2, g3, g4 };
+    evalFormula(∀x:Equals(Multiply(E(),x),x), S, I) = True
+    evalFormula(∀x:∃y:Equals(Multiply(x,y),E()), S, I) = True
+    evalFormula(∀x:∀y:∀z:Equals(Multiply(Multiply(x,y),z), Multiply(x,Multiply(y,z))), S, I)
+    = True
+    evalFormula(∀x:∀y:Equals(Multiply(x,y), Multiply(y,x)), S, I) = True
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Axiome der Gruppen-Theorie}
-\label{fig:gruppen-theorie.stl}
+\caption{Ausgabe des in Abbildung \ref{fig:isGroup.ipynb} gezeigten Skripts}
+\label{fig:isGroup.out}
 \end{figure}
 
 \noindent
-\textbf{Bemerkung}:  Das oben vorgestellte Programm finden sie auf GitHub unter der Adresse:
+\textbf{Bemerkung}:  Das oben vorgestellte Programm finden sie als Jupyter Notebook auf GitHub unter der Adresse:
 \\[0.2cm]
 \hspace*{0.8cm}
-\href{https://github.com/karlstroetmann/Logik/blob/master/SetlX/fol-evaluate.stlx}{\texttt{https://github.com/karlstroetmann/Logik/blob/master/SetlX/fol-evaluate.stlx}}
+\href{https://github.com/karlstroetmann/Logik/blob/master/Python/FOL-Evaluation.ipynb}{\texttt{https://github.com/karlstroetmann/Logik/blob/master/FOL-Evaluation.ipynb}}
 \\[0.2cm]
 Mit diesem Programm können wir überprüfen, ob eine
 prädikatenlogische Formel in einer vorgegebenen endlichen Struktur erfüllt ist. Wir können damit
@@ -1128,20 +1084,21 @@ müssten, unendlich groß.  \eox
       \\[0.2cm]
       \underline{nicht} allgemeingültig ist, indem Sie in \textsl{Python} eine geeignete
       prädikatenlogische Struktur $\mathcal{S}$ implementieren, in der diese Formel falsch ist.
-\item Entwickeln Sie ein \textsl{Python}-Programm, dass die obige Formel in allen Strukturen
-      ausprobiert, in denen das Universum  aus einer vorgegebenen Zahl $n$ verschiedener Elemente
-      besteht und testen Sie Ihr Programm für $n=2$.
 \item Überlegen Sie, wie viele verschiedene Strukturen mit $n$ Elementen es für die obige Formel gibt.
 \item Geben Sie eine \underline{erfüllbare} prädikatenlogische Formel $F$ an, die in einer prädikatenlogischen
       Struktur $\mathcal{S} = \pair(\mathcal{U},\mathcal{J})$ immer falsch ist, wenn das Universum
-      $\mathcal{U}$ endlich ist.  \exend  
+      $\mathcal{U}$ endlich ist.
+
+      \textbf{Hinweis}: Es sei $f:U \rightarrow U$ eine Funktion.  Überlegen Sie, wie die Aussagen
+      ``\emph{$f$ ist injektiv}'' und ``\emph{$f$ ist surjektiv}'' zusammen hängen.
+      \exend  
 \end{enumerate}
 
 \section{Normalformen für prädikatenlogische Formeln}
-Im nächsten Abschnitt gehen wir daran, den früher  erwähnten Kalkül $\vdash$ für die
-Prädikatenlogik zu definieren.  
-Es zeigt sich, dass die Arbeit wesentlich einfacher wird, wenn wir uns auf bestimmte
-Formeln, sogenannte \blue{prädikatenlogische Klauseln}, beschränken.  Wir zeigen in diesem Abschnitt, dass jede Formel-Menge $M$
+Im nächsten Abschnitt gehen wir daran, einen Kalkül $\vdash$ für die
+Prädikaten-Logik zu definieren.  Genau wie im Falle der Aussagen-Logik wird dies wesentlich einfacher, wenn wir
+uns auf Formeln, die in einer \emph{Normalform}  vorliegen, beschränken.  Bei dieser Normalform handelt es sich
+nun um sogenannte \blue{prädikatenlogische Klauseln}.  Wir zeigen in diesem Abschnitt, dass jede Formel-Menge $M$
 so in eine Menge von Klauseln $K$ transformiert werden kann, dass $M$ genau dann erfüllbar ist, wenn $K$
 erfüllbar ist.  Daher ist die Beschränkung auf Klauseln keine echte Einschränkung.  Zunächst geben wir einige
 Äquivalenzen an, mit deren Hilfe Quantoren manipuliert werden können. 
