@@ -1094,6 +1094,520 @@ müssten, unendlich groß.  \eox
       \exend  
 \end{enumerate}
 
+\section{Constraint Programing}
+It is time to see an application of first order logic. One of these applications is \blue{constraint programming}.  
+\emph{Constraint programming} is an example of the \blue{declarative programming} paradigm.  The idea is that
+in order to solve a given problem, this problem is only \blue{specified} and then this \blue{specification} is
+given as input to a problem solver which will then compute a solution to the problem.  Hence, the task of the
+programmer is much easier than it normally is: Instead of implementing a program that solves a given problem,
+the programmer only has to specify the problem precisely.  Usually, the specification of a problem is much
+shorter than the specification of an algorithm to solve the problem.  This approach works well for those problems
+that can be specified using first order logic.  In the remainder of this section is structured as follows:
+\begin{enumerate}
+\item We first define \blue{constraint satisfaction problems}.
+
+      As an example, we show how the eight queens puzzle can be formulated as a constraint satisfaction
+      problem.  
+\item We discuss a simple constraint solver that is based on \blue{backtracking}.
+\end{enumerate}
+
+\subsection{Constraint Satisfaction Problems}
+Conceptually, a constraint satisfaction problem is given by a set of first order logic formulas that contain a
+number of free variables.  Furthermore, a structure $\mathcal{S} = \langle \mathcal{U}, \mathcal{J}\rangle $
+consisting of a universe $\mathcal{U}$ and the interpretation $\mathcal{J}$ of the function and predicate 
+symbols used in these formulas is assumed to be understood from the context of the problem.  The goal is 
+to find a variable assignment such that the given formulas are evaluated as true.
+
+\begin{Definition}[CSP] \hspace*{\fill} \linebreak
+Formally, a \blue{constraint satisfaction problem} (abbreviated as \textsc{Csp}) is defined as a triple
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{P} := \langle \mathtt{Vars}, \mathtt{Values}, \mathtt{Constraints} \rangle$
+\\[0.2cm]
+where
+\begin{enumerate}
+\item $\mathtt{Vars}$ is a set of strings which serve as \blue{variables},
+\item $\mathtt{Values}$ is a set of \blue{values} that can be assigned to the variables in $\mathtt{Vars}$.
+
+      This set of values is assumed to be identical to the universe of the \blue{first order structure}
+      $\mathcal{S} = \langle \mathcal{U}, \mathcal{J} \rangle$ that is given implicitly, i.e.~we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{Values} = \mathcal{U}$.
+\item $\mathtt{Constraints}$ is a set of formulas from \blue{first order logic}.  Each of these formulas is
+      called a \blue{constraint} of $\mathcal{P}$.  \eox
+\end{enumerate}
+\end{Definition}
+
+\noindent
+Given a \textsc{Csp}
+\\[0.2cm]
+\hspace*{1.3cm}
+ $\mathcal{P} = \langle \mathtt{Vars}, \mathtt{Values}, \mathtt{Constraints} \rangle$, 
+\\[0.2cm]
+a \blue{variable assignment} for $\mathcal{P}$ is a function
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I}: \mathtt{Vars} \rightarrow \mathtt{Values}$.
+\\[0.2cm]
+A variable assignment $\mathcal{I}$ is a \blue{solution} of the \textsc{Csp} $\mathcal{P}$ 
+if, given the assignment $\mathcal{I}$, all constraints of $\mathcal{P}$ are satisfied, i.e.~we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{S}(\mathcal{I}, f) = \mathtt{true}$ \quad for all $f \in \mathtt{Constraints}$.
+\\[0.2cm]
+Finally, a \blue{partial variable assignment} $\mathcal{B}$ for $\mathcal{P}$ is a function
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{B}: \mathtt{Vars} \rightarrow \mathtt{Values} \cup \{ \Omega \}$ \quad where $\Omega$ denotes the undefined value.
+\\[0.2cm]
+Hence, a partial variable assignment does not assign values to all variables.  Instead, it assigns values only
+to a subset of the set $\mathtt{Vars}$.  The \blue{domain} $\mathtt{dom}(\mathcal{B})$ of a partial variable assignment $\mathcal{B}$ is the
+set of those variables that are assigned a value different from $\Omega$, i.e.~we define
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{dom}(\mathcal{B}) := \bigl\{ x \in \mathtt{Vars} \mid \mathcal{B}(x) \not= \Omega \bigr\}$.
+\\[0.2cm]
+We proceed to illustrate the definitions given so far by presenting two examples.
+
+
+\begin{figure}[!ht]
+  \centering
+  \framebox{\epsfig{file=Figures/australia.pdf,scale=0.8}} 
+  \caption{A map of Australia.}
+  \label{fig:australia.pdf}
+\end{figure}
+
+\subsection{Example: Map Colouring}
+In \href{https://en.wikipedia.org/wiki/Four_color_theorem}{map colouring} a map showing different state
+borders is given and the task is to colour the different states such that no two states that have a common
+border share the same colour.  \myFig{australia.pdf} shows a map of Australia.  There are seven different
+states in Australia:
+\begin{enumerate}
+\item Western Australia, abbreviated as $\mathrm{WA}$,
+\item Northern Territory, abbreviated as $\mathrm{NT}$,
+\item South Australia, abbreviated as $\mathrm{SA}$,
+\item Queensland, abbreviated as $\mathrm{Q}$,
+\item New South Wales, abbreviated as $\mathrm{NSW}$,
+\item Victoria, abbreviated as $\mathrm{V}$, and
+\item Tasmania, abbreviated as $\mathrm{T}$.
+\end{enumerate}
+Figure \ref{fig:australia.pdf} would certainly look better if different states had been coloured with different
+colours.  For the purpose of 
+this example let us assume that we have only three colours available.  The question then is whether it is 
+possible to colour the different states in a way that no two neighbouring states share the same colour.  This
+problem can be formalized as a constraint satisfaction problem.  To this end we define:
+\begin{enumerate}
+\item $\texttt{Vars} := \{ \mathrm{WA}, \mathrm{NT}, \mathrm{SA}, \mathrm{Q}, \mathrm{NSW}, \mathrm{V}, \mathrm{T} \}$,
+\item $\texttt{Values} := \{ \texttt{red}, \texttt{green}, \texttt{blue} \}$,
+\item $\texttt{Constraints} := $ \\[0.1cm]
+      \hspace*{0.3cm}
+      $\bigl\{ \mathrm{WA} \not= \mathrm{NT}, \mathrm{WA} \not= \mathrm{SA},
+                 \mathrm{NT} \not= \mathrm{SA}, \mathrm{NT} \not= \mathrm{Q},
+                 \mathrm{SA} \not= \mathrm{Q},  \mathrm{SA} \not= \mathrm{NSW}, \mathrm{SA} \not= \mathrm{V}, 
+                 \mathrm{Q}  \not= \mathrm{NSW},
+                 \mathtt{NSW}\not= \mathtt{V}, 
+                 \mathrm{V}  \not= \mathrm{T}
+       \bigr\}
+      $
+\end{enumerate}
+Then $\mathcal{P} := \langle \texttt{Vars}, \texttt{Values}, \texttt{Constraints} \rangle$ is a constraint satisfaction problem.  
+If we define the assignment $\mathcal{I}$ such that
+\begin{enumerate}
+\item $\mathcal{I}(\mathrm{WA}) = \texttt{blue}$,
+\item $\mathcal{I}(\mathrm{NT}) = \texttt{red}$,
+\item $\mathcal{I}(\mathrm{SA}) = \texttt{green}$,
+\item $\mathcal{I}(\mathrm{Q}) = \texttt{blue}$,
+\item $\mathcal{I}(\mathrm{NSW}) = \texttt{red}$,
+\item $\mathcal{I}(\mathrm{V}) = \texttt{blue}$,
+\item $\mathcal{I}(\mathrm{T}) = \texttt{red}$,
+\end{enumerate}
+then you can check that the assignment $\mathcal{I}$ is indeed a solution to the constraint satisfaction problem $\mathcal{P}$.
+
+\subsection{Example: The Eight Queens Puzzle}
+The \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{eight queens problem} asks to put 8 queens onto a
+chessboard such that no queen can attack another queen.  In \href{https://en.wikipedia.org/wiki/Chess}{chess},
+a queen can attack all pieces that are either in the same row, the same column, or the same diagonal.  If we
+want to put 8 queens on a chessboard such that no two queens can attack each other, we have to put exactly one
+queen in every row:  If we would put more than one queen in a row, the queens in that row can attack each other.
+If we would leave a row empty, then, given that the other rows contain at most one queen, there would be less
+than 8 queens on the board.  Therefore, in order to model the eight queens problem as a constraint satisfaction
+problem, we will use the following set of variables:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{Vars} := \{ \texttt{V}_1, \texttt{V}_2, \texttt{V}_3, \texttt{V}_4, \texttt{V}_5, \texttt{V}_6, \texttt{V}_7,\texttt{V}_8 \}$,
+\\[0.2cm]
+where for $i \in \{1,\cdots,8\}$ the variable $\texttt{V}_i$ specifies the column of the queen that is placed in
+row $i$.   As the columns run from one to eight, we define the set $\texttt{Values}$ as
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{Values} := \{1,2,3,4,5,6,7,8\}$.
+\\[0.2cm]
+Next, let us define the constraints.  There are two different types of constraints.
+\begin{enumerate}
+\item We have constraints that express that no two queens positioned in different rows share the same column.
+      To capture these constraints, we define
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{SameRow} := \bigl\{ \texttt{V}_i \not= \texttt{V}_j \bigm| i \in \{1,\cdots,8\} \wedge j \in \{1,\cdots,8\} \wedge j < i \bigr\}$.
+      \\[0.2cm]
+      Here the condition $i < j$ ensures that, for example, we have the constraint $\texttt{V}_2 \not= \texttt{V}_1$
+      but not the constraint  $\texttt{V}_1 \not= \texttt{V}_2$, as the latter constraint would be redundant if
+      the former constraint has already been established.
+\item We have constraints that express that no two queens positioned in different rows share the same 
+      diagonal.  The queens in row $i$ and row $j$ share the same diagonal iff the equation
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $|i - j| = |V_i - V_j|$
+      \\[0.2cm]
+      holds.  The expression $|i-j|$ is the absolute value of the difference of the rows of the queens in row
+      $i$ and row $j$,  while the expression $|V_i - V_j|$ is the absolute value of the difference of the
+      columns of these queens.  To capture these constraints, we define
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{SameDiagonal} := \bigl\{ |i  - j| \not= |\texttt{V}_i - \texttt{V}_j| \bigm| i \in \{1,\cdots,8\} \wedge j \in \{1,\cdots,8\} \wedge j < i \bigr\}$.
+\end{enumerate}
+Then, the set of constraints is defined as 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{Constraints} := \texttt{SameRow} \cup \texttt{SameRising} \cup \texttt{SameFalling}$
+\\[0.2cm]
+and the eight queens problem can be stated as the constraint satisfaction problem
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{P} := \langle \texttt{Vars}, \texttt{Values}, \texttt{Constraints} \rangle$.
+\\[0.2cm]
+If we define the assignment $\mathcal{I}$ such that
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I}(V_1) := 4,\; \mathcal{I}(V_2) := 8,\; \mathcal{I}(V_3) := 1,\; \mathcal{I}(V_4) := 2,\; \mathcal{I}(V_5) := 6,\; \mathcal{I}(V_6) := 2,\; \mathcal{I}(V_7) := 7,\; \mathcal{I}(V_8) := 5$,
+\\[0.2cm]
+then it is easy to see that this assignment is a solution of the eight queens problem.  This solution is shown
+in \myFig{eight-queens.txt}.
+
+
+\begin{figure}[!ht]
+  \centering
+\hspace*{0.0cm}
+\vbox{\offinterlineskip
+   \hrule height1pt
+   \hbox{\vrule width1pt\bigchess
+         \vbox{\hbox{0Z0L0Z0Z}
+               \hbox{Z0Z0Z0ZQ}
+               \hbox{QZ0Z0Z0Z}
+               \hbox{Z0L0Z0Z0}
+               \hbox{0Z0Z0L0Z}
+               \hbox{ZQZ0Z0Z0}
+               \hbox{0Z0Z0ZQZ}
+               \hbox{Z0Z0L0Z0}}%
+         \vrule width1pt}
+   \hrule height1pt}
+
+  \caption{A solution of the eight queens problem.}
+  \label{fig:eight-queens.txt}
+\end{figure}
+Later, when we implement procedures to solve  \textsc{Csp}s, we will represent variable assignments and partial
+variable assignments as dictionaries.  For example, $\mathcal{I}$ would then be represented as the dictionary
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I} = \bigl\{ \mathrm{V}_1:4, \mathrm{V}_2:8, \mathrm{V}_3:1, \mathrm{V}_4:2, 
+             \mathrm{V}_5:6, \mathrm{V}_6:2, \mathrm{V}_7:7, \mathrm{V}_8:5) 
+     \bigr\}$.
+\\[0.2cm]
+If we define 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{B} := \bigl\{ \mathrm{1}_V:4, \mathrm{V}_2:8, \mathrm{V}_3:1) \bigr\}$,
+\\[0.2cm]
+then $\mathcal{B}$ is a partial assignment and $\texttt{dom}(\mathcal{B}) = \{ \mathrm{V}_1, \mathrm{V}_2, \mathrm{V}_3 \}$.  This
+partial assignment is shown in \myFig{eight-queens-partial.txt}.
+
+\begin{figure}[!ht]
+  \centering
+\hspace*{0.0cm}
+\vbox{\offinterlineskip
+   \hrule height1pt
+   \hbox{\vrule width1pt\bigchess
+         \vbox{\hbox{0Z0L0Z0Z}
+               \hbox{Z0Z0Z0ZQ}
+               \hbox{QZ0Z0Z0Z}
+               \hbox{Z0Z0Z0Z0}
+               \hbox{0Z0Z0Z0Z}
+               \hbox{Z0Z0Z0Z0}
+               \hbox{0Z0Z0Z0Z}
+               \hbox{Z0Z0Z0Z0}}%
+         \vrule width1pt}
+   \hrule height1pt}
+
+  \caption{The partial assignment $\bigl\{ \mathrm{V}_1,4, \mathrm{V}_2,8, \mathrm{V}_3,1) \bigr\}$.}
+  \label{fig:eight-queens-partial.txt}
+\end{figure}
+
+
+
+\myFig{queens-csp.stlx} shows a \textsl{Python} program that can be used to create the eight queens puzzle as a
+\textsc{Csp}.  The code shown in this figure is more general than the eight queens puzzle:  Given a natural
+number $n$, the function call $\texttt{queensCSP}(n)$ creates a constraint satisfaction problem $\mathcal{P}$ that generalizes
+the eight queens problem to the problem of putting $n$ queens on a board of size $n$ times $n$.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    def queensCSP():
+        "Returns a CSP coding the 8 queens problem."
+        S            = range(1, 8+1)          # used as indices
+        Variables    = [ f'Q{i}' for i in S ]
+        Values       = { 1, 2, 3, 4, 5, 6, 7, 8 }
+        SameRow      = { f'Q{i} != Q{j}' for i in S for j in S if i < j }
+        SameDiagonal = { f'abs(Q{i}-Q{j})!={j-i}' for i in S for j in S if i < j }
+        return (Variables, Values, SameRow | SameDiagonal)
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{\textsl{Python} code to create the CSP representing the eight-queens puzzle.}
+\label{fig:queens-csp.stlx}
+\end{figure}
+
+
+\subsection{A Backtracking Constraint Solver}
+One approach to solve a \textsc{Csp} that is both conceptually simple and reasonable efficient is
+\blue{backtracking}.  The idea is to try to build variable assignments incrementally:  We start with
+an empty dictionary and pick a variable $x_1$ that needs to have a value assigned.  For this variable, we
+choose a value $v_1$ and assign it to this variable.  This yields the partial assignment $\{ x_1:v_1 \}$.
+Next, we evaluate all constraints that mention only the variable $x_1$ and check whether these constraints
+are satisfied.  If any of these constraints is evaluated as \texttt{False}, we try to assign another value to
+$x_1$ until we find a value that satisfies all constraints that mention only $x_1$.
+
+In general, if we have a partial variable assignment $\mathcal{B}$ of the form
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{B} = \{ x_1:v_1, \cdots, x_k:v_k \}$
+\\[0.2cm]
+and we already know that all constraints that mention only the variables $x_1$, $\cdots$, $x_k$ are satisfied
+by $\mathcal{B}$, then in order to extend $\mathcal{B}$ we pick another variable $x_{k+1}$ and choose a
+value $v_{k+1}$ such that all those constraints that mention only the variables  $x_1$, $\cdots$, $x_k$,
+$x_{k+1}$ are satisfied.  If we discover that there is no such value $v_{k+1}$, then we have to undo the
+assignment $x_k:v_k$ and try to find a new value $v_k$ such that, first, those constraints mentioning only 
+the variables  $x_1$, $\cdots$, $x_k$ are satisfied, and, second, it is possible to find a value $v_{k+1}$ that
+can be assigned to $x_{k+1}$.  This step of going back and trying to find a new value for the variable $x_k$ is
+called \blue{backtracking}.  It might be necessary to backtrack more than one level and to also undo the
+assignment of $v_{k-1}$ to $x_{k-1}$ or, indeed, we might be forced to undo the assignments of all variables
+$x_i$, $\cdots$, $x_k$ for some $i \in \{1,\cdots, n\}$.  The details of this search procedure are best
+explained by looking at its implementation. \myFig{CSP-Solver.ipynb} shows a simple \textsc{Csp} solver that
+employs backtracking.  We discuss this program next.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                  ]
+    import extractVars as ev
+                  
+    def solve(CSP):
+        "Compute a solution for the given constraint satisfaction problem."
+        Variables, Values, Constraints = CSP
+        CSP = (Variables,
+               Values,
+               [(f, ev.extractVars(f) & set(Variables)) for f in Constraints]
+              )
+        try:
+            return backtrack_search({}, CSP)
+        except Backtrack:
+            return  # no solution found
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{A backtracking \textsc{Csp} solver}
+\label{fig:CSP-Solver.ipynb}
+\end{figure}
+
+\begin{enumerate}
+\item As we need to determine the variables occurring in a given constraint, we import the module
+      \texttt{extractVar}.  This module implements a function $\texttt{extractVars}(f)$ that takes
+      a formula $f$ written as a \textsl{Python} expression and returns the set of all variables occurring in
+      $f$. 
+
+\item The procedure $\texttt{solve}$ takes a constraint satisfaction problem $\texttt{CSP}$ as input and tries
+      to find a solution.    
+      \begin{enumerate}
+      \item  First, the $\texttt{CSP}$ is split into its three components.
+      \item Next, for every constraint $\texttt{f}$ of the given $\texttt{CSP}$, we compute the set of variables that
+            are used in $\texttt{f}$.  This is done using the procedure $\texttt{extractVars}$.
+            Of these variables we keep only those variables that also occur in the set $\texttt{Variables}$
+            because we assume that any other \textsl{Python} variable occurring in a constraint $f$ has already
+            a value assigned to it.
+
+            These variables are then stored together with the constraint $\texttt{f}$ and
+            the correspondingly modified data structure is stored in $\texttt{CSP}$ and is called an
+            \blue{augmented \textsc{Csp}}.
+
+            The reason to compute and store these variables is efficiency: When we later check whether a constraint $\texttt{f}$
+            is satisfied for a partial variable assignment $\texttt{Assignment}$ where $\texttt{Assignment}$ is
+            stored as a dictionary, we only need to check the constraint $\texttt{f}$ iff all of the variables occurring
+            in $\texttt{f}$ are elements of the domain of $\texttt{Assignment}$.   It would be wasteful to compute
+            these variables every time.
+      \item Next, we call the procedure $\texttt{backtrack\_search}$ to compute a solution of $\texttt{CSP}$.
+            This procedure is enclosed in a \texttt{try}-\texttt{except}-block.
+            The procedure $\texttt{backtrack\_search}$ either returns a solution or, if it is not able to
+            find a solution, it throws an exception of class \texttt{Backtrack}.  If this happens,
+            the \texttt{except} block silently discards this exception and the procedure \texttt{solve} returns
+            without a result.
+   \end{enumerate}
+ \end{enumerate}
+
+ \begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                ]                 
+    def backtrack_search(Assignment, CSP):
+        """
+        Given a partial variable assignment, this function tries to complete this assignment
+        towards a solution of the CSP.
+        """
+        (Variables, Values, Constraints) = CSP
+        if len(Assignment) == len(Variables):
+            return Assignment
+        var = [x for x in Variables if x not in Assignment][0]
+        for value in Values:
+            try:
+                if isConsistent(var, value, Assignment, Constraints):
+                    NewAssign      = Assignment.copy()
+                    NewAssign[var] = value
+                    return backtrack_search(NewAssign, CSP)
+            except Backtrack:
+                continue
+        # all values have been tried without success, no solution has been found
+        raise Backtrack()
+    
+    class Backtrack(Exception):
+        pass
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{The function \texttt{backtrack\_search}}
+\label{fig:CSP-Solver.ipynb-backtrack_search}
+\end{figure}
+
+Next, we discuss the implementation of the procedure $\texttt{backtrack\_search}$ that is shown in
+\myFig{CSP-Solver.ipynb-backtrack_search}.  This procedure receives a partial assignment 
+$\texttt{Assignment}$ as input together with an augmented $\texttt{CSP}$.  This partial assignment is
+\blue{consistent} with $\texttt{CSP}$:  If $\texttt{f}$ is a constraint of $\texttt{CSP}$ such that
+all the variables occurring in $\texttt{f}$ are assigned to in $\texttt{Assignment}$, then evaluating
+$\texttt{f}$ using $\texttt{Assignment}$ yields $\texttt{true}$.  Initially, this partial assignment is empty
+and hence trivially consistent.  The idea is to extend this partial assignment until it is a complete
+assignment that satisfies all constraints of the given $\texttt{CSP}$.
+\begin{enumerate}
+\item First, the augmented $\texttt{CSP}$ is split into its components.
+\item Next, if $\texttt{Assignment}$ is already a complete variable assignment, i.e.~if the dictionary
+      $\texttt{Assignment}$ has as many elements as there are variables, then it must be a solution of
+      the $\texttt{CSP}$ and, therefore, it is returned.
+\item Otherwise, we have to extend the partial $\texttt{Assignment}$.  In order to do so, we first have to
+      select a variable $\texttt{var}$ that has not yet been assigned a value in $\texttt{Assignment}$ so far.
+      We pick the next variable in the list \texttt{Variables} that is yet unassigned.
+\item Next, it is tried to assign a $\texttt{value}$ to the selected variable $\texttt{var}$.  After assigning
+      a $\texttt{value}$ to $\texttt{var}$, we immediately check whether this assignment would be consistent
+      with the constraints using the procedure $\texttt{is\_consistent}$.
+      If the partial $\texttt{Assignment}$ turns out to be consistent, the partial $\texttt{Assignment}$
+      is extended to the new partial assignment \texttt{NewAssign} that satisfies
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{NewAssign[var] = value}.
+      \\[0.2cm]
+      Then, the procedure $\texttt{backtrack\_search}$ is called recursively to complete this new partial assignment.
+      If this is successful, the resulting assignment is a solution that is returned.  Otherwise,
+      the recursive call of $\texttt{backtrack\_search}$ will instead raise an exception.  This exception is muted 
+      by the \texttt{try}-\texttt{except}-block that surrounds the recursive call to $\texttt{backtrack\_search}$.  In that case, the
+      \texttt{for}-loop generates a new possible $\texttt{value}$ that can be assigned to the variable
+      $\texttt{var}$.  If all possible values have been tried and none was successful, the \texttt{for}-loop
+      ends and the statement
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      raise Backtrack()
+      \\[0.2cm]
+      is executed.  This raises an exception that signals that the current partial $\texttt{Assignment}$ can
+      not be completed into a solution of the \texttt{CSP}.
+      This exception is caught by one of the \texttt{try}-\texttt{except}-blocks that have been encountered previously.
+\end{enumerate}
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                  ]
+    def isConsistent(var, value, Assignment, Constraints):
+        NewAssign      = Assignment.copy()
+        NewAssign[var] = value
+        return all(eval(f, NewAssign) for (f, Vs) in Constraints
+                                      if var in Vs and Vs <= NewAssign.keys()
+                  )
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{The procedure \texttt{isConsistent}}
+\label{fig:CSP-Solver.ipynb-isConsistent}
+\end{figure}
+
+We still need to discuss the implementation of the auxiliary procedure $\texttt{isConsistent}$
+shown in \myFig{CSP-Solver.ipynb-isConsistent}.  This procedure takes a variable $\texttt{var}$, a $\texttt{value}$, a partial 
+$\texttt{Assignment}$ and a set of $\texttt{Constraints}$.  It is assumed that $\texttt{Assignment}$ is
+\blue{partially consistent} with respect to the set $\texttt{Constraints}$, i.e.~for every formula $\texttt{f}$
+occurring in $\texttt{Constraints}$ such that
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{vars}(\texttt{f}) \subseteq \texttt{dom}(\texttt{Assignment})$
+\\[0.2cm]
+holds, the formula $\texttt{f}$ evaluates to $\texttt{true}$ given the $\texttt{Assignment}$.  The purpose of
+$\texttt{isConsistent}$ is to check, whether the extended assignment
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{NA} \;\texttt{:=}\;\texttt{Assignment} \cup \{ \pair(\texttt{var}, \texttt{value}) \}$
+\\[0.2cm]
+that assigns $\texttt{value}$ to the variable $\texttt{var}$ is still partially consistent with $\texttt{Constraints}$. 
+To this end, the \texttt{for}-loop iterates over all $\texttt{Formula}$ in $\texttt{Constraints}$. 
+However, we only have to check those $\texttt{Formula}$ that contain the variable $\texttt{var}$ and,
+furthermore, have the property that
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{Vars}(\texttt{Formula}) \subseteq \texttt{dom}(\texttt{NA})$,
+\\[0.2cm]
+i.e.~all variables occurring in $\texttt{Formula}$ need to have a value assigned in
+$\texttt{NA}$.  The reasoning is as follows:
+\begin{enumerate}
+\item If $\texttt{var}$ does not occur in $\texttt{Formula}$, then adding $\texttt{var}$ to
+      $\texttt{Assignment}$ cannot change the result of evaluating $\texttt{Formula}$ and as
+      $\texttt{Assignment}$ is assumed to be partially consistent with respect to $\texttt{Formula}$, 
+      $\texttt{NA}$ is also partially consistent with respect to $\texttt{Formula}$.
+\item If $\texttt{dom}(\texttt{NA}) \not\subseteq \texttt{Vars}(\texttt{Formula})$, then $\texttt{Formula}$ can not be evaluated anyway. 
+\end{enumerate}
+If we use backtracking, we can solve the 8 queens problem in less than a second.
+
+
+
+
 \section{Normalformen für prädikatenlogische Formeln}
 Im nächsten Abschnitt gehen wir daran, einen Kalkül $\vdash$ für die
 Prädikaten-Logik zu definieren.  Genau wie im Falle der Aussagen-Logik wird dies wesentlich einfacher, wenn wir
@@ -1108,17 +1622,17 @@ erfüllbar ist.  Daher ist die Beschränkung auf Klauseln keine echte Einschrän
   \begin{enumerate}
   \item $\models \neg\big(\forall x\colon f\big) \leftrightarrow \big(\exists x\colon \neg f\big)$
   \item $\models \neg\big(\exists x\colon f\big) \leftrightarrow \big(\forall x\colon \neg f\big)$
-  \item $\models \big(\forall x\colon f\big) \wedge \big(\forall x\colon g\big) \leftrightarrow \big(\forall x\colon f \wedge g\big)$
-  \item $\models \big(\exists x\colon f\big) \vee \big(\exists x\colon g\big) \leftrightarrow \big(\exists x\colon f \vee g\big)$
-  \item $\models \big(\forall x\colon \forall y\colon f \big) \leftrightarrow \big(\forall y\colon  \forall x\colon f \big)$
-  \item $\models \big(\exists x\colon \exists y\colon f \big) \leftrightarrow \big(\exists y\colon  \exists x\colon f \big)$
+  \item $\models \forall x\colon f \wedge \forall x\colon g \leftrightarrow \forall x\colon (f \wedge g)$
+  \item $\models \exists x\colon f \vee \exists x\colon g \leftrightarrow \exists x\colon (f \vee g)$
+  \item $\models \forall x\colon \forall y\colon f \leftrightarrow \forall y\colon  \forall x\colon f$
+  \item $\models \exists x\colon \exists y\colon f \leftrightarrow \exists y\colon  \exists x\colon f$
   \item Falls $x$ eine Variable ist, für die $x \not\in \FV(f)$ ist, so haben wir \\[0.2cm]
-        \hspace*{1.3cm} $\models  \big(\forall x\colon f) \leftrightarrow f$ \quad und \quad
-                        $\models  \big(\exists x\colon f) \leftrightarrow f$.
+        \hspace*{1.3cm} $\models  \forall x\colon f \leftrightarrow f$ \quad und \quad
+                        $\models  \exists x\colon f \leftrightarrow f$.
   \item Falls $x$ eine Variable ist, für die  $x \not\in \FV(g) \cup \BV(g)$ gilt, so haben wir die folgenden Äquivalenzen:
     \begin{enumerate}
-    \item $\models \big(\forall x\colon f) \vee g \leftrightarrow \forall x\colon (f \vee g)$ \quad und \quad $\models g \vee \big(\forall x\colon f) \leftrightarrow \forall x\colon (g \vee f)$,
-    \item $\models \big(\exists x\colon f) \wedge g \leftrightarrow \exists x\colon (f \wedge g)$ \quad und \quad $\models g \wedge \big(\exists x\colon f) \leftrightarrow \exists x\colon (g \wedge f)$.
+    \item $\models \forall x\colon f \vee g \leftrightarrow \forall x\colon (f \vee g)$ \quad und \quad $\models g \vee \forall x\colon f \leftrightarrow \forall x\colon (g \vee f)$,
+    \item $\models \exists x\colon f \wedge g \leftrightarrow \exists x\colon (f \wedge g)$ \quad und \quad $\models g \wedge \exists x\colon f \leftrightarrow \exists x\colon (g \wedge f)$.
     \end{enumerate}
   \end{enumerate}
 \end{Satz}
@@ -1139,14 +1653,14 @@ wir eine Formel so umformen, dass die Quantoren nur noch außen stehen.  Eine so
 \blue{pränexer Normalform}.  Wir führen das Verfahren an einem Beispiel vor: Wir zeigen, dass die Formel 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\big(\forall x\colon p(x)\big) \rightarrow \big(\exists x\colon p(x)\big)$ 
+$\forall x\colon p(x) \rightarrow \exists x\colon p(x)$ 
 \\[0.2cm]
 allgemeingültig ist: 
 $$ 
 \begin{array}{ll}
-                 & \big(\forall x\colon p(x)\big) \rightarrow \big(\exists x\colon p(x)\big)  \\
- \Leftrightarrow & \neg \big(\forall x\colon p(x)\big) \vee \big(\exists x\colon p(x)\big)    \\
- \Leftrightarrow & \big(\exists x\colon \neg p(x)\big) \vee \big(\exists x\colon p(x)\big)    \\
+                 & \forall x\colon p(x) \rightarrow \exists x\colon p(x)  \\
+ \Leftrightarrow & \neg \forall x\colon p(x) \vee \exists x\colon p(x)    \\
+ \Leftrightarrow & \exists x\colon \neg p(x) \vee \exists x\colon p(x)    \\
  \Leftrightarrow & \exists x\colon \bigl(\neg p(x) \vee p(x)\bigr) \\
  \Leftrightarrow & \exists x\colon \verum                                                  \\
  \Leftrightarrow & \verum                                                  \\
@@ -1230,14 +1744,13 @@ dient die folgende Definition.
    \hspace*{1.3cm} $f \approx_e g$.
 \eox
 \end{Definition}
-\vspace{-0.8cm}
 
 \noindent
-\begin{Satz}
-  Falls die Formel $f'$ aus der Formel $f$ durch einen Skolemisierungs-Schritt 
-  hervorgegangen ist, so sind $f$ und $f'$ erfüllbarkeits-äquivalent.
-\end{Satz}
-
+\textbf{Beobachtung:}
+Falls die Formel $f'$ aus der Formel $f$ durch einen Skolemisierungs-Schritt 
+hervorgegangen ist, so sind $f$ und $f'$ erfüllbarkeits-äquivalent, denn wir können jede Struktur
+$\mathcal{S}$, in der die Formel $f$ gilt, zu einer Struktur $\mathcal{S}'$ erweitern, in der auch $f'$ gilt.
+\eox
 
 Wir können nun ein einfaches Verfahren angeben, um Existenz-Quantoren aus einer Formel
 zu eliminieren.  Dieses Verfahren besteht aus zwei Schritten:  Zunächst bringen wir die Formel
