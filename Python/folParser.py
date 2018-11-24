@@ -41,7 +41,7 @@ def isFunction(s):
 class LogicParser:
     """
     This class implements the shunting yard algorithm to parse formulas from
-    propositional logic.  The strings that represent formulas are transformed
+    first order logic.  The strings that represent formulas are transformed
     into nested tuples that are interpreted as syntax trees representing the 
     formulae.
     """
