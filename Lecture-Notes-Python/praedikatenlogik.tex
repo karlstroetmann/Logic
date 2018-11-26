@@ -1639,10 +1639,10 @@ erfüllbar ist.  Daher ist die Beschränkung auf Klauseln keine echte Einschrän
   \item Falls $x$ eine Variable ist, für die $x \not\in \FV(f)$ ist, so haben wir \\[0.2cm]
         \hspace*{1.3cm} $\models  \forall x\colon f \leftrightarrow f$ \quad und \quad
                         $\models  \exists x\colon f \leftrightarrow f$.
-  \item Falls $x$ eine Variable ist, für die  $x \not\in \FV(g) \cup \BV(g)$ gilt, so haben wir die folgenden Äquivalenzen:
+  \item Falls $x$ eine Variable ist, für die  $x \not\in \FV(g)$ gilt, so haben wir die folgenden Äquivalenzen:
     \begin{enumerate}
-    \item $\models \forall x\colon f \vee g \leftrightarrow \forall x\colon (f \vee g)$ \quad und \quad $\models g \vee \forall x\colon f \leftrightarrow \forall x\colon (g \vee f)$,
-    \item $\models \exists x\colon f \wedge g \leftrightarrow \exists x\colon (f \wedge g)$ \quad und \quad $\models g \wedge \exists x\colon f \leftrightarrow \exists x\colon (g \wedge f)$.
+    \item $\models (\forall x\colon f) \vee g \leftrightarrow \forall x\colon (f \vee g)$ \quad und \quad $\models g \vee (\forall x\colon f) \leftrightarrow \forall x\colon (g \vee f)$,
+    \item $\models (\exists x\colon f) \wedge g \leftrightarrow \exists x\colon (f \wedge g)$ \quad und \quad $\models g \wedge (\exists x\colon f) \leftrightarrow \exists x\colon (g \wedge f)$.
     \end{enumerate}
   \end{enumerate}
 \end{Satz}
@@ -1713,7 +1713,7 @@ jedem $x$ dieses $y$ zurück geben.
   Es sei $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$
   eine Signatur.  Ferner sei $f$ eine geschlossene $\Sigma$-Formel der Form \\[0.2cm]
   \hspace*{1.3cm} 
-  $f = \forall x_1, \cdots, x_n \colon \exists y \colon g(x_1, \cdots, x_n, y)$. \\[0.2cm]
+  $f = \forall x_1, \cdots, x_n \colon \exists y \colon g$. \\[0.2cm]
   Dann wählen wir ein \red{neues} $n$-stelliges Funktions-Zeichen $s$, d.h.~wir nehmen ein Zeichen $s$, dass in
   der Signatur $\Sigma$ nicht auftritt und erweitern die Signatur $\Sigma$ zu der Signatur \\[0.2cm]
   \hspace*{1.3cm} 
@@ -1722,10 +1722,11 @@ jedem $x$ dieses $y$ zurück geben.
   $f'$ wie folgt: \\[0.2cm]
   \hspace*{1.3cm} 
   $f' := \mathtt{Skolem}(f) := 
-  \forall x_1 \colon \cdots \forall x_n \colon g\bigl(x_1, \cdots, x_n, s(x_1,\cdots,x_n)\bigr)$
+  \forall x_1 \colon \cdots \forall x_n \colon g\bigl[y \mapsto s(x_1,\cdots,x_n)\bigr]$
   \\[0.2cm]
-  Wir lassen also den Existenz-Quantor $\exists y$ weg und ersetzen jedes Auftreten
-  der Variable $y$ durch den Term $s(x_1,\cdots,x_n)$.  Wir sagen, dass die Formel $f'$ aus der Formel $f$
+  Hierbei bezeichnet der Ausdruck $g\bigl[y \mapsto s(x_1,\cdots,x_n)\bigr]$ die Formel, die wir aus $g$
+  dadurch erhalten, dass wir jedes Auftreten der Variablen $y$ in der Formel $g$ durch den Term
+  $s(x_1,\cdots,x_n)$ ersetzen.  Wir sagen, dass die Formel $f'$ aus der Formel $f$
   durch einen \blue{Skolemisierungs-Schritt} hervorgegangen ist. 
   \eox
 \end{Definition}
@@ -1782,7 +1783,7 @@ Dabei sind die $k_i$ Disjunktionen von \blue{Literalen}.  In der Prädikatenlogi
 hier  die Äquivalenz 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bigl(\forall x\colon (f_1\wedge f_2)\bigr) \leftrightarrow (\forall x\colon f_1) \wedge (\forall x\colon f_2)$
+$\forall x\colon (f_1\wedge f_2) \leftrightarrow (\forall x\colon f_1) \wedge (\forall x\colon f_2)$
 \\[0.2cm]
 an, so können wir die All-Quantoren auf die einzelnen $k_i$ verteilen und
 die resultierende Formel hat die Gestalt \\[0.2cm]
@@ -1818,7 +1819,7 @@ Wenn dies gelingt, dann wissen wir, dass die Menge $\{k_1, \cdots, k_n\}$ unerf�
 Damit ist auch $\neg f$ unerfüllbar und also ist $f$ allgemeingültig.
 Damit wir aus den Klauseln $k_1,\cdots,k_n$ einen Widerspruch herleiten können,
 brauchen wir natürlich noch einen Kalkül, der mit prädikatenlogischen Klauseln arbeitet. 
-Einen solchen Kalkül werden wir am Ende dieses Kapitel vorstellen.
+Einen solchen Kalkül werden wir im übernächsten Abschnitt vorstellen.
 
 Um das Verfahren näher zu erläutern demonstrieren wir es an einem Beispiel. 
 Wir wollen untersuchen, ob \\[0.2cm]
@@ -1862,9 +1863,12 @@ $$
 $$
 Da jetzt nur noch All-Quantoren auftreten, können wir diese auch noch weglassen,
 da wir ja vereinbart haben, dass alle freien Variablen implizit allquantifiziert sind.
-Damit können wir nun die prädikatenlogische Klausel-Normalform angeben, diese ist\\[0.2cm]
+Damit können wir nun die prädikatenlogische Klausel-Normalform in Mengen-Schreibweise angeben, diese
+ist
+\\[0.2cm] 
 \hspace*{1.3cm}
-$M := \Big\{ \big\{ p(s_2,y) \big\}, \big\{\neg p(u,s_1)\big\}\Big\}$. \\[0.2cm]
+$M := \Big\{ \big\{ p(s_2,y) \big\}, \big\{\neg p(u,s_1)\big\}\Big\}$.
+\\[0.2cm]
 Wir zeigen, dass die Menge $M$ widersprüchlich ist.
 Dazu betrachten wir zunächst die Klausel $\big\{ p(s_2,y) \big\}$ und setzen in
 dieser Klausel für $y$ die Konstante $s_1$ ein.  Damit erhalten wir die Klausel \\[0.2cm]
