@@ -19,30 +19,49 @@ def apply(t, σ):
         ts = t[1:]
         return (f,) + tuple(apply(s, σ) for s in ts)
 
-varCounter = 0
-
-def renameBoundVariables(f):
-    global varCounter
+def boundVariables(f):
     if f[0] in ('∀', '∃'):
-        varCounter += 1
-        q, x, g = f
-        xNew    = x + str(varCounter)
-        ge      = renameBoundVariables(apply(g, { x: xNew }))
-        return (q, xNew, ge)
+        _, x, g = f
+        return { x } | boundVariables(g)
     if f[0] == '⊤':
-        return f
+        return set()
     if f[0] == '⊥':
-        return f
+        return set()
     if f[0] == '¬':
         g  = f[1]
-        ge = renameBoundVariables(g)
-        return ('¬', ge)
+        return boundVariables(g)
     if f[0] in ('∧', '∨', '→', '↔'):
-        op, g, h = f
-        ge       = renameBoundVariables(g)
-        he       = renameBoundVariables(h)
-        return (op, ge, he)
-    return f  # f must be an atomic formula
+        _, g, h = f
+        return boundVariables(g) | boundVariables(h)
+    return set()  # f must be an atomic formula
+
+def allVariables(f):
+    if isinstance(f, str):  # f is a variable
+        return { f }
+    if f[0] in ('∀', '∃'):
+        _, _, g = f
+        return allVariables(g)
+    if f[0] == '⊤':
+        return set()
+    if f[0] == '⊥':
+        return set()
+    if f[0] == '¬':
+        g  = f[1]
+        return allVariables(g)
+    if f[0] in ('∧', '∨', '→', '↔'):
+        _, g, h = f
+        return allVariables(g) | allVariables(h)
+    args = f[1:]
+    return { x for t in args for x in allVariables(t) }
+
+import string
+
+def renameBoundVariables(f):
+    BoundVs = boundVariables(f)
+    NewVars = set(string.ascii_lowercase) - BoundVs - allVariables(f)
+    NewVars = list(NewVars)
+    sigma   = { x: NewVars[i] for (i, x) in enumerate(BoundVs) }
+    return apply(f, sigma)
 
 def eliminateBiconditional(f):
     "Eliminate the logical operator '↔' from the formula f."
