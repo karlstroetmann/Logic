@@ -96,7 +96,7 @@ class LogicParser:
         if isFunction(stack_op):
             return True
         precedences = { '↔':1, '→':2, '⊕':3, '∨':4, '∧':5,
-                        '¬':6, '∀':6, '∃':6, '⊤':7, '⊥':7
+                        '¬':6, '∀':7, '∃':7, '⊤':8, '⊥':8
                       }
         if precedences[stack_op] > precedences[next_op]:
             return True
@@ -147,5 +147,5 @@ if __name__ == '__main__':
     testParser('P(F(x),G(z))')
     testParser('∀x:∃y:P(x,y)')
     testParser('∀x:∃y:P(x,y)→∃y:∀x:P(x,y)')
-
-
+    testParser('¬∀x:(Red(x) → Happy(x))')
+    testParser('∀x:∀y:(¬P(F(x),y)) ∨ ∀u:∀v:(¬P(u,G(v)))')

@@ -200,7 +200,7 @@ def skolemConstant():
 def skolemize(f, Vs):
     if f[0] == '∃':
         x, g = f[1:]
-        t = (skolemConstant(), Vs) 
+        t = (skolemConstant(),) + Vs 
         σ = { x: t }
         return skolemize(apply(g, σ), Vs)
     if f[0] == '∀':

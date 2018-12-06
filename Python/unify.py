@@ -31,7 +31,6 @@ def unify(s, t):
 
 def solve(E, σ):
     while E != set():
-        print(E, σ)
         (s, t) = E.pop()
         if s == t:
             continue
