@@ -59,7 +59,7 @@ import string
 def renameBoundVariables(f):
     BoundVs = boundVariables(f)
     NewVars = set(string.ascii_lowercase) - BoundVs - allVariables(f)
-    NewVars = list(NewVars)
+    NewVars = sorted(list(NewVars))
     sigma   = { x: NewVars[i] for (i, x) in enumerate(BoundVs) }
     return apply(f, sigma)
 
