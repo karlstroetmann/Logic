@@ -27,21 +27,21 @@ def occurs(x, t):
     return any(occurs(x, arg) for arg in t[1:])
 
 def unify(s, t):
-    return solve({(s, t)}, {})
+    return solve({('≐', s, t)}, {})
 
 def solve(E, σ):
     while E != set():
-        (s, t) = E.pop()
+        _, s, t = E.pop()
         if s == t:
             continue
-        if isinstance(s, str):
+        if isinstance(s, str): # s is a variable
             if occurs(s, t):
                 return None
             else:
                 apply(E, { s: t })
                 σ = compose(σ, { s: t })
-        elif isinstance(t, str):
-            E.add((t, s))
+        elif isinstance(t, str): # t is a variable, but s is not
+            E.add(('≐', t, s))
         else:
             f    , g     = s[0]      , t[0]
             sArgs, tArgs = s[1:]     , t[1:]
@@ -49,7 +49,7 @@ def solve(E, σ):
             if f != g or m != n:
                 return None
             else:
-                E |= { (sArgs[i], tArgs[i]) for i in range(m) }
+                E |= { ('≐', sArgs[i], tArgs[i]) for i in range(m) }
     return σ
 
 if __name__ == '__main__':
