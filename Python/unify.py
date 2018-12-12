@@ -26,7 +26,7 @@ def occurs(x, t):
         return False
     return any(occurs(x, arg) for arg in t[1:])
 
-def unify(s, t):
+def mgu(s, t):
     return solve({('≐', s, t)}, {})
 
 def solve(E, σ):
@@ -61,5 +61,5 @@ if __name__ == '__main__':
 
     t1 = parseTerm('P(x1,F(x4))')
     t2 = parseTerm('P(x2,x3)')
-    μ = unify(t1, t2)
+    μ = mgu(t1, t2)
     print(μ)
