@@ -588,32 +588,32 @@ Zeile:
 \subsection{Eine Anwendung}
 Wir betrachten eine spielerische Anwendung der Aussagenlogik.  Inspektor Watson wird zu
 einem Juweliergeschäft gerufen, in das eingebrochen worden ist.
-In der unmittelbaren Umgebung werden drei Verdächtige Anton, Bruno und Claus festgenommen.
+In der unmittelbaren Umgebung werden drei Verdächtige Aaron, Bernard und Caine festgenommen.
 Die Auswertung der Akten ergibt folgendes:
 \begin{enumerate}
 \item Einer der drei Verdächtigen muss die Tat begangen haben: \\[0.2cm]
       \hspace*{1.3cm} 
       $f_1 := a \vee b \vee c$.
-\item Wenn Anton schuldig ist, so hat er genau einen Komplizen. 
+\item Wenn Aaron schuldig ist, so hat er genau einen Komplizen. 
 
       Diese Aussage zerlegen wir zunächst in zwei Teilaussagen:
       \begin{enumerate}
-      \item Wenn Anton schuldig ist, dann hat er mindestens einen Komplizen: \\[0.2cm]
+      \item Wenn Aaron schuldig ist, dann hat er mindestens einen Komplizen: \\[0.2cm]
             \hspace*{1.3cm} $f_2 := a \rightarrow b \vee c$ 
-      \item Wenn Anton schuldig ist, dann hat er höchstens einen Komplizen: \\[0.2cm]
+      \item Wenn Aaron schuldig ist, dann hat er höchstens einen Komplizen: \\[0.2cm]
            \hspace*{1.3cm} $f_3 := a \rightarrow \neg (b \wedge c)$
       \end{enumerate}
-\item Wenn Bruno unschuldig ist, dann ist auch Claus unschuldig: \\[0.2cm]
+\item Wenn Bernard unschuldig ist, dann ist auch Caine unschuldig: \\[0.2cm]
       \hspace*{1.3cm} $f_4 :=  \neg b \rightarrow \neg c$ 
-\item Wenn genau zwei schuldig sind, dann ist Claus einer von ihnen.
+\item Wenn genau zwei schuldig sind, dann ist Caine einer von ihnen.
 
       Es ist nicht leicht zu sehen, wie sich diese Aussage aussagenlogisch
       formulieren lässt.  Wir behelfen uns mit einem Trick und überlegen uns, wann die
       obige Aussage falsch ist.  Wir sehen, die Aussage ist dann falsch,
-      wenn Claus nicht schuldig ist und wenn gleichzeitig Anton und Bruno schuldig sind.
+      wenn Caine nicht schuldig ist und wenn gleichzeitig Aaron und Bernard schuldig sind.
       Damit lautet die Formalisierung der obigen Aussage: \\[0.2cm]
       \hspace*{1.3cm} $f_5 := \neg ( \neg c  \wedge a \wedge b )$ 
-\item Wenn Claus unschuldig ist, ist Anton schuldig. \\[0.2cm]
+\item Wenn Caine unschuldig ist, ist Aaron schuldig. \\[0.2cm]
       \hspace*{1.3cm} $f_6 := \neg c \rightarrow a$
 \end{enumerate}
 Wir haben nun eine Menge $F = \{ f_1, f_2, f_3, f_4, f_5, f_6 \}$ von Formeln.
@@ -624,7 +624,7 @@ Da es zu zeitraubend ist, alle Belegungen von Hand auszuprobieren,
 schreiben wir besser ein Programm, das die notwendigen Berechnungen für uns durchführt.
 Abbildung \ref{fig:Usual-Suspects.ipynb} zeigt das Programm
 \href{https://github.com/karlstroetmann/Logik/blob/master/Python/Usual-Suspects.ipynb}{\texttt{Usual-Suspects.ipynb}}.
-Wir diskutieren diese Programm nun Zeile für Zeile.
+Wir diskutieren dieses Programm nun Zeile für Zeile.
 
 \begin{figure}[!ht]
   \centering
@@ -663,7 +663,7 @@ Wir diskutieren diese Programm nun Zeile für Zeile.
     print({ I for I in power(P) if allTrue(Fs, I) })
 \end{Verbatim}
 \vspace*{-0.3cm}
-  \caption{Programm zur Aufkärung des Einbruchs}
+  \caption{Programm zur Aufklärung des Einbruchs}
   \label{fig:Usual-Suspects.ipynb}
 \end{figure}
 
@@ -695,7 +695,7 @@ Damit ist das Problem eindeutig lösbar und Bernard und Caine sind schuldig.
 Die Tabelle in Abbildung \ref{tab:tautologie} zeigt, dass die Formel
 $$  (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $$
 für jede aussagenlogische Interpretation wahr ist, denn in der letzten Spalte dieser Tabelle steht immer der
-Wert \texttt{True}.  Formeln mit dieser Eigenschaft  bezeichnen wir als \blue{Tautologie}.
+Wert \texttt{True}.  Formeln mit dieser Eigenschaft bezeichnen wir als \blue{Tautologie}.
 \begin{Definition}[Tautologie]
   Ist $f$ eine aussagenlogische Formel und gilt \\[0.2cm]
   \hspace*{1.3cm} $\mathcal{I}(f) = \texttt{True}$ \quad für jede aussagenlogische Interpretation $\mathcal{I}$, \\[0.2cm]
