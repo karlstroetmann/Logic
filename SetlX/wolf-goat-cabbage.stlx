@@ -1,11 +1,11 @@
 load("graph-2-dot.stlx");
 // Es war einmal ein Bauer, der wollte mit einem wolf, einer goat und
-// einer Kiste cabbage über einen Fluss übersetzen.  In dem Boot war aber
-// nicht genug Platz für alles, der Bauer konnte maximal ein Tiere oder 
-// das Gemüse mitnehmen.  Er konnte aber auch wolf und goat nicht 
-// alleine lassen, denn dann hätte der wolf die goat gefressen.
+// einer Kiste cabbage Ã¼ber einen Fluss Ã¼bersetzen.  In dem Boot war aber
+// nicht genug Platz fÃ¼r alles, der Bauer konnte maximal ein Tiere oder 
+// das GemÃ¼se mitnehmen.  Er konnte aber auch wolf und goat nicht 
+// alleine lassen, denn dann hÃ¤tte der wolf die goat gefressen.
 // Ebensowenig konnte er die goat mit dem cabbage alleine lassen, denn
-// dann hätte die goat den cabbage gefressen.
+// dann hÃ¤tte die goat den cabbage gefressen.
 
 // Check wether there is a path from x to y in R and compute it.
 findPath := procedure(x, y, r) {
@@ -22,17 +22,18 @@ findPath := procedure(x, y, r) {
         }
     }
 };
+// The product call add(p,q) computes the sum of the lists p and q.
+// The last point of p has to be the first point of q.
+join := procedure(p, q) {
+    return p + q[2..];
+};
 pathProduct := procedure(p, q) {
     return { join(x,y) : x in p, y in q | x[-1] == y[1] && noCycle(x,y) };
 };
 noCycle := procedure(l1, l2) {
     return #({ x : x in l1 } * { x : x in l2 }) == 1;
 };
-// The product call add(p,q) computes the sum of the lists p and q.
-// The last point of p has to be the first point of q.
-join := procedure(p, q) {
-    return p + q[2..];
-};
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 // Problem specific code                                                      //
@@ -45,8 +46,8 @@ problem := procedure(S) {
 };
 
 All := { "farmer", "wolf", "goat", "cabbage" };
-P   := { S : S in 2 ** All | !problem(S) && !problem(All - S) };
-R1  := { [S, S - B]: S in P, B in 2 ** S
+P   := { S : S in pow(All) | !problem(S) && !problem(All - S) };
+R1  := { [S, S - B]: S in P, B in pow(S)
                    | S - B in P && "farmer" in B && #B <= 2
        };
 R2  := { [y, x] : [x, y] in R1 };
@@ -65,7 +66,7 @@ path  := findPath(start, goal, R);
 
 mkPair := S |=> [S, All - S];
 graph  := { [mkPair(s1), mkPair(s2)] : [s1, s2] in R1 };
-graph2Dot(graph, mkPair(start), mkPair(goal), "wolf-goat-cabbage");
+// graph2Dot(graph, mkPair(start), mkPair(goal), "wolf-goat-cabbage");
 
 // Print the path.
 printPath := procedure(path, all) {
