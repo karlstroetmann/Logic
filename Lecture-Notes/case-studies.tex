@@ -290,7 +290,7 @@ to compute the probabilities instead.  This method will be discussed in the lect
 In the following section, I will present an application that is more interesting since it is practically
 relevant.  In order to prepare for this, we will now discuss the problem of finding a \blue{path} in a
 \href{https://en.wikipedia.org/wiki/Directed_graph}{directed graph}. 
-Abstractly, a graph consists of \blue{vertices} and \blue{edges} that connect these vertices.  In an application, the
+Abstractly, a \emph{directed graph} consists of \blue{vertices} and \blue{edges} that connect these vertices.  In an application, the
 vertices could be towns and villages, while the edges would be interpreted as one-way streets connecting these
 villages.  To simplify matters, let us assume for now that the vertices are given as natural numbers.  As the
 edges represent connections between vertices,  the edges are represented as pairs of natural numbers.  Then,
@@ -337,11 +337,13 @@ In this case, the path $[x_1, x_2, \cdots, x_n]$ is written as
 \hspace*{1.3cm}
 $x_1 \mapsto x_2 \mapsto \cdots \mapsto x_n$
 \\[0.2cm]
-and has the \blue{length} $n-1$.  It is important to note that the length of a path
+and has the \blue{length} $n-1$, since there are $n-1$ direct connections of the form $\pair(x_i,x_{i+1})$ that
+make up this path.
+To put it differently,  the length of a path
 $[x_1,x_2,\cdots,x_n]$ is defined as the number of edges connecting the vertices and not as the
-number of vertices appearing in the path.
+number of vertices appearing on the path.
 
-Furthermore,  two vertices $a$ and $b$ are said to be \blue{connected} iff there exists a path
+Furthermore,  two vertices $a$ and $b$ of a graph are said to be \blue{connected} iff there exists a path
 \\[0.2cm]
 \hspace*{1.3cm}
 $[x_1,\cdots,x_n]$ \quad such that \quad $a = x_1$ \quad and \quad $b = x_n$.
@@ -352,11 +354,11 @@ Furthermore, we want to be able to compute the corresponding path connecting the
 
 \subsection{Computing the Transitive Closure of a Relation}
 We have already noted that a graph can be represented as the set of its edges and hence as a \blue{binary relation}.
-A \blue{binary relation} is defined as a set of pairs.  We also need the notion of a \blue{relational product}:
+We have previously defined a \blue{binary relation} as a set of pairs.  We also need the notion of a \blue{relational product}:
 If $Q$ and $R$ are binary relations, then the \blue{relational product} $Q \circ R$ of $Q$ and $R$ is defined as
 \\[0.2cm]
 \hspace*{1.3cm}
-$Q \circ R := \bigl\{ \pair(x, z) \bigm| \exists y:(\pair(x,y) \in Q \wedge \pair(y,z) \in R) \bigr\}$.
+$Q \circ R := \Bigl\{ \pair(x, z) \Bigm| \exists y:\bigl(\pair(x,y) \in Q \wedge \pair(y,z) \in R\bigr) \Bigr\}$.
 \\[0.2cm]
 Furthermore, for any $n \in \mathbb{N}^*$ we can define the $n$-th power $R^n$ of the relation $R$ by induction.
 \begin{description}
@@ -367,6 +369,9 @@ Furthermore, for any $n \in \mathbb{N}^*$ we can define the $n$-th power $R^n$ o
 
              $R^{n+1} := R^n \circ R$.
 \end{description}
+The idea behind this definition is that if $\pair(x, z) \in R^n$, then there is a path of length $n$ that
+starts in $x$ and ends in $z$.
+
 In order to decide whether there is a path connecting two vertices we have to compute the 
 \href{https://en.wikipedia.org/wiki/Transitive_closure}{transitive closure} $R^+$ of a relation $R$.  
 To understand this notion, we first need to define the concept of \blue{transitivity}:  A relation $R$ is
@@ -418,7 +423,7 @@ explain the reason that allows us to cut the computation short.
       Adding $z$ at the end of this path will produce the path
       \\[0.2cm]
       \hspace*{1.3cm}
-      $x \mapsto \cdots \mapsto y \mapsto z$.
+      $\underbrace{\underbrace{x \mapsto \cdots \mapsto y}_{\mbox{\scriptsize path of length $n$.}} \mapsto z}_{\mbox{\scriptsize path of length $n+1$.}}$.
       \\[0.2cm]
       This path has a length of $n + 1$ and, furthermore, connects $x$ and $z$.  Hence $R^{n+1}$
       contains those pairs $\pair(x, z)$ that are connected by a path of length $n+1$.
@@ -440,7 +445,13 @@ To this end, we prove that the transitive closure $R^+$ satisfies the following 
 \end{equation}
 The precedence of the operator $\circ$ 
 is higher than the precedence of the operator $\cup$.  Therefore, the expression $R \cup R^+ \circ R$ is
-equivalent to the expression $R \cup (R^+ \circ R)$.  Equation \ref{fixpunkt} can be proven algebraically.  We have:
+equivalent to the expression $R \cup (R^+ \circ R)$.  In order to prove equation \ref{fixpunkt} we first note
+that the following  \blue{law of distributivity} holds:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds (P \cup Q) \circ R = (P \circ R) \cup (Q \circ R)$.
+\\[0.2cm]
+Then, equation \ref{fixpunkt} can be proven algebraically.  We have:
 \\[0.2cm]
 \hspace*{1.3cm}
 $
@@ -480,9 +491,9 @@ The relation  $T_n$ can be expressed via the relation $R$, we have
 In general, we can show by induction that
 \\[0.2cm]
 \hspace*{1.3cm}
-$T_n = \bigcup\limits_{i=1}^{n+1} R^i$
+$\ds T_n = \bigcup\limits_{i=1}^{n+1} R^i$
 \\[0.2cm]
-holds for all $n \in \mathbb{N}$.  The base case of this proof is immediate from the definition of $T_0$.
+holds for all $n \in \mathbb{N}$.  As $R^1 = R$, the base case $n=0$ of this proof is immediate from the definition of $T_0$.
 In the induction step we observe the following:
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -518,12 +529,12 @@ $
 \begin{array}[t]{llcl}
                 & \ds T_n \subseteq T_{n+1} \\[0.2cm]
 \Leftrightarrow & \ds \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{n+2} R^i \\[0.5cm]
-\Leftrightarrow & \ds \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{n+1} R^i \cup R^{n+2} \\
+\Leftrightarrow & \ds \bigcup\limits_{i=1}^{n+1} R^i \subseteq \left(\bigcup\limits_{i=1}^{n+1} R^i\right) \cup R^{n+2} \\
 \end{array}
 $
 \\[0.2cm]
-If the relation  $R$ is finite, then the transitive closure $R^+$ is finite, too.  The sets $T_n$ 
-are all subsets of $R^+$ because we have
+If the relation  $R$ is finite, then the transitive closure $R^+$ is finite, too.  All of the sets $T_n$ 
+are subsets of $R^+$ because we have
 \\[0.2cm]
 \hspace*{1.3cm}
 $\ds T_n = \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{\infty} R^i = R^+$ \quad for all $n \in \mathbb{N}$.
@@ -560,11 +571,11 @@ until the equation  $T_{n+1} = T_n$ is satisfied, since this implies that $T_n =
                   xrightmargin  = 0.8cm,
                 ]
     def product(R1, R2):
-        "Compute the relational product of R1 and R2."
+        'Compute the relational product of R1 and R2.'
         return { (x, z) for (x, y1) in R1 for (y2, z) in R2 if y1 == y2 }
     
     def transClosure(R):
-        "Compute the transitive closure of the binary relation R."
+        'Compute the transitive closure of the binary relation R.'
         T = R
         while True:
             oldT = T
@@ -573,10 +584,10 @@ until the equation  $T_{n+1} = T_n$ is satisfied, since this implies that $T_n =
                 return T
     
     R = { (1,2), (2,3), (1,3), (2,4), (4,5) }
-    print( "R  = ", R );
-    print( "Computing the transitive closure of R:" );
+    print( 'R  = ', R );
+    print( 'Computing the transitive closure of R:' );
     T = transClosure(R);
-    print( "R+ = ", T );
+    print( 'R+ = ', T );
 \end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{Computing the transitive closure.}  
@@ -601,7 +612,7 @@ The function $\texttt{product}(R_1, R_2)$ computes the relational product $R_1\c
 according to the formula
 \\[0.2cm]
 \hspace*{1.3cm}
-$R_1 \circ R_2 = \{ \langle x, z \rangle \mid \exists y:\bigl(\pair(x,y) \in R_1 \wedge \pair(y,z) \in R_2\bigr) \}$.
+$R_1 \circ R_2 = \Bigl\{ \langle x, z \rangle \Bigm| \exists y:\bigl(\pair(x,y) \in R_1 \wedge \pair(y,z) \in R_2\bigr) \Bigr\}$.
 
 
 \subsection{Computing the Paths}
@@ -657,10 +668,10 @@ $.
         return S + T[1:]
     
     R = { (1,2), (2,3), (1,3), (2,4), (4,5) }
-    print("R = ", R)
-    print("Computing all paths:" )
+    print('R = ', R)
+    print('Computing all paths:' )
     P = findPaths(R)
-    print("P = ", P)
+    print('P = ', P)
 \end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{Computing all connections.}  \label{fig:path.py}
@@ -865,9 +876,9 @@ are satisfied:
 Therefore, we can implement the function \texttt{problem} as follows:
 \begin{verbatim}
   def problem(S):
-      return ("farmer" not in S) and             \
-             (("goat" in S and "cabbage" in S) or   # goat eats cabbage
-              ("wolf" in S and "goat"    in S)   )  # wolf eats goat
+      return ('farmer' not in S) and             \
+             (('goat' in S and 'cabbage' in S) or   # goat eats cabbage
+              ('wolf' in S and 'goat'    in S)   )  # wolf eats goat
 \end{verbatim}
 We proceed to compute the relation \texttt{R} that contains all possible transitions between
 different states.  We will compute \texttt{R} using the formula:
@@ -984,21 +995,21 @@ that combines the statements shown so far.  The solution computed by this progra
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                 ]
-    {"cabbage", "farmer", "goat", "wolf"}                                 {}
-                             >>>> {"farmer", "goat"} >>>> 
-    {"cabbage", "wolf"}                                   {"farmer", "goat"}
-                             <<<< {"farmer"} <<<< 
-    {"cabbage", "farmer", "wolf"}                                   {"goat"}
-                             >>>> {"farmer", "wolf"} >>>> 
-    {"cabbage"}                                   {"farmer", "goat", "wolf"}
-                             <<<< {"farmer", "goat"} <<<< 
-    {"cabbage", "farmer", "goat"}                                   {"wolf"}
-                             >>>> {"cabbage", "farmer"} >>>> 
-    {"goat"}                                   {"cabbage", "farmer", "wolf"}
-                             <<<< {"farmer"} <<<< 
-    {"farmer", "goat"}                                   {"cabbage", "wolf"}
-                             >>>> {"farmer", "goat"} >>>> 
-    {}                                 {"cabbage", "farmer", "goat", "wolf"}
+    {'cabbage', 'farmer', 'goat', 'wolf'}                                 {}
+                             >>>> {'farmer', 'goat'} >>>> 
+    {'cabbage', 'wolf'}                                   {'farmer', 'goat'}
+                             <<<< {'farmer'} <<<< 
+    {'cabbage', 'farmer', 'wolf'}                                   {'goat'}
+                             >>>> {'farmer', 'wolf'} >>>> 
+    {'cabbage'}                                   {'farmer', 'goat', 'wolf'}
+                             <<<< {'farmer', 'goat'} <<<< 
+    {'cabbage', 'farmer', 'goat'}                                   {'wolf'}
+                             >>>> {'cabbage', 'farmer'} >>>> 
+    {'goat'}                                   {'cabbage', 'farmer', 'wolf'}
+                             <<<< {'farmer'} <<<< 
+    {'farmer', 'goat'}                                   {'cabbage', 'wolf'}
+                             >>>> {'farmer', 'goat'} >>>> 
+    {}                                 {'cabbage', 'farmer', 'goat', 'wolf'}
 \end{Verbatim} 
 \vspace*{-0.3cm}
 \caption{A schedule for the agricultural economist.}  
@@ -1145,7 +1156,7 @@ Let us now discuss the implementation of the function \texttt{diff} in more deta
                   xrightmargin  = 0.8cm,
                 ]
     def diff(e):
-        "differentiate the expressions e with respect to the variable x"
+        'differentiate the expressions e with respect to the variable x'
         if e[0] == '+':
             f , g  = e[1:]
             fs, gs = diff(f), diff(g)
@@ -1218,7 +1229,7 @@ $.
     def test(s):
         t = ep.ExprParser(s).parse()
         d = diff(t)
-        print(f"d/dx {s} = {ep.toString(d)}")
+        print(f'd/dx {s} = {ep.toString(d)}')
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{Testing symbolic differentiation.}
