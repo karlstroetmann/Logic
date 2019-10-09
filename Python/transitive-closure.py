@@ -7,7 +7,7 @@ def transClosure(R):
     T = R
     while True:
         oldT = T
-        T    = product(R,T).union(R)
+        T    = product(R,T) | R
         if T == oldT:
             return T
 
