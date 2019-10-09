@@ -581,7 +581,7 @@ until the equation  $T_{n+1} = T_n$ is satisfied, since this implies that $T_n =
         T = R
         while True:
             oldT = T
-            T    = product(R,T).union(R)
+            T    = product(R,T) | R
             if T == oldT:
                 return T
     
@@ -659,7 +659,7 @@ $.
         P = R;
         while True:
             oldP = P
-            P    = R.union(pathProduct(P, R))
+            P    = R | pathProduct(P, R)
             if P == oldP:
                 return P
 
@@ -809,7 +809,7 @@ The algorithm described above is known as
         P = { (start,) }
         while True:
             oldP  = P
-            P     = P.union(path_product(P, R))
+            P     = P | path_product(P, R)
             Found = { T for T in P if T[-1] == goal }
             if Found != set():
                 return Found.pop()
@@ -924,7 +924,7 @@ is just the reverse of crossing the river from left to right, \texttt{R2} is jus
 \end{verbatim}
 Next, the relation \texttt{R} is the union of \texttt{R1} and \texttt{R2}:
 \begin{verbatim}
-  R = R1.union(R2)
+  R = R1 | R2
 \end{verbatim}
 Finally, the start state has all objects on the left side.  Therefore, we have
 \begin{verbatim}
@@ -975,7 +975,7 @@ that combines the statements shown so far.  The solution computed by this progra
                          if S - B in States and 'farmer' in B and len(B) <= 2
             }
     R2    = { (S2, S1) for (S1, S2) in R1 }
-    R     = R1.union(R2)
+    R     = R1 | R2
     start = All
     goal  = frozenset()
     Path  = findPath(start, goal, R)
