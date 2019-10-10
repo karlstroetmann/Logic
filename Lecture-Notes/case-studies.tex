@@ -785,10 +785,10 @@ Next, we discuss the implementation of the procedure  \texttt{reachable}.
 \end{enumerate}
 The procedure call \texttt{reachable(start,goal R)} will compute the \textbf{shortest} path connecting
 \texttt{start} and \texttt{goal} because it computes path with increasing length.  The first iteration
-computes all paths starting in \texttt{start} that have a length of at most 1, the second iteration
-computes all paths starting in \texttt{start} that have a length of at most 2, and in general the $n$-th
+computes all paths starting in vertex \texttt{start} that have a length of at most 1, the second iteration
+computes all paths starting in vertex \texttt{start} that have a length of at most 2, and in general the $n$-th
 iteration computes all paths starting in \texttt{start} that have a length of at most $n$.  Hence, if
-there is a path of length $n$, then this path will be found in the $n$-iteration unless a shorter path has
+there is a path of length $n$, then this path will be found in the $n$-th iteration unless a shorter path has
 already been found in a previous iteration.  
 
 \remarkEng
@@ -856,20 +856,22 @@ In order to compute a schedule, we first have to model the problem.  The various
 be regarded as \blue{vertices} of a graph and this graph will be represented as a binary relation.
 To this end we define the set
 \begin{verbatim}
-  All = {'farmer', 'wolf, 'goat', 'cabbage'}
+  All = {'farmer', 'wolf, 'goat', 'cabbage'}.
 \end{verbatim}
 Every node will be represented as a subset \texttt{S} of the set \texttt{All}.  The idea is that the set \texttt{S}
 specifies those objects that are on the left side of the river.  We assume that initially the farmer and his goods
 are on the left side of the river. 
-Therefore, the set of all possible states can be defined as the set
+Therefore, the set of all states that are \blue{allowed} according to the specification of the problem can be defined
+as the set 
 \begin{verbatim}
-  States = {S for S in power(All) if not problem(S) and not problem(All-S)}
+  States = { S for S in power(All) if not problem(S) and not problem(All-S) }
 \end{verbatim}
-Here, we have used the procedure \texttt{problem} to check whether a given set \texttt{S} has a problem. 
+Here, we have used the procedure \texttt{problem} to check whether a given set \texttt{S} has a problem,
+where a problem is any situation where either the goat eats the cabbage or the wolf eats the goat.
 Note that since \texttt{S} is the set of objects on the left side, the expression $\texttt{All-S}$
 computes the set of objects on the right side of the river.
 
-Next, a set \texttt{S} of objects has a problem if both of the following conditions
+Formally, a set \texttt{S} of objects has a problem if both of the following conditions
 are satisfied:
 \begin{enumerate}
 \item The farmer is not an element of \texttt{S} and
@@ -882,6 +884,13 @@ Therefore, we can implement the function \texttt{problem} as follows:
              (('goat' in S and 'cabbage' in S) or   # goat eats cabbage
               ('wolf' in S and 'goat'    in S)   )  # wolf eats goat
 \end{verbatim}
+Note that we have to use a \blue{line continuation backslash} ``\texttt{$\backslash$}''
+at the end of the first line of the return statement.
+We do not need a continuation backslash at the end of the second line of the return statement since
+the opening parenthesis at the beginning of the second line has not yet been closed when the second line
+finishes and therefore \textsl{Python} is able to figure out that the expression defined in this line is
+continued in the third line.
+
 We proceed to compute the relation \texttt{R} that contains all possible transitions between
 different states.  We will compute \texttt{R} using the formula:
 \\[0.2cm]
@@ -892,21 +901,22 @@ Here \texttt{R1} describes the transitions that result from the farmer crossing 
 to right, while \texttt{R2} describes the transitions that result from the farmer crossing the river
 from right to left.  We can define the relation \texttt{R1} as follows:
 \begin{verbatim}
-  R1 = { (S, S-B) for S in States for B in power(S)
+  R1 = { (S, S-B) for S in States 
+                  for B in power(S)
                   if S-B in States and 'farmer' in B and len(B) <= 2
        }
 \end{verbatim}
 Let us explain this definition in detail:
 \begin{enumerate}
 \item Initially, \texttt{S} is the set of objects on the left side of the river.  Hence, \texttt{S}
-      is an element of the set of all states that we have defined as \texttt{P}.
+      is an element of the set of all states that we have defined as \texttt{States}.
 \item \texttt{B} is the set of objects that are put into the boat and that do cross the river.  Of
       course, for an object to go into the boat is has to be on the left side of the river to begin
-      with.  Therefore, \texttt{B} is a subset of \texttt{S} and hence an element of the power set
+      with.  Therefore, \texttt{B} is a subset of \texttt{S} and hence \texttt{B} is an element of the power set
       of \texttt{S}. 
-\item Then  \texttt{S-B} is the set of objects that are left on the left side of the river after
+\item Therefore  \texttt{S-B} is the set of objects that are left on the left side of the river after
       the boat has crossed.  Of course, the new state \texttt{S-B} has to be a state that does not
-      have a problem.  Therefore, we check that \texttt{S-B} is an element of \texttt{States}.
+      have a problem.  Therefore, we check that the set \texttt{S-B} is an element of the set \texttt{States}.
 \item Furthermore, the farmer has to be inside the boat.  This explains the condition 
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -920,20 +930,20 @@ Next, we have to define the relation \texttt{R2}.  However, as crossing the rive
 is just the reverse of crossing the river from left to right, \texttt{R2} is just the \blue{inverse} of
 \texttt{R1}.   Hence we define:
 \begin{verbatim}
-  R2 = { (S2, S1) for (S1, S2) in R1 }
+  R2 = { (S2, S1) for (S1, S2) in R1 }.
 \end{verbatim}
 Next, the relation \texttt{R} is the union of \texttt{R1} and \texttt{R2}:
 \begin{verbatim}
-  R = R1 | R2
+  R = R1 | R2.
 \end{verbatim}
 Finally, the start state has all objects on the left side.  Therefore, we have
 \begin{verbatim}
-  start = All
+  start = All.
 \end{verbatim}
 In the end, all objects have to be on the right side of the river.  That means that nothing is left
 on the left side.  Therefore, we define
 \begin{verbatim}
-  goal = {}
+  goal = {}.
 \end{verbatim}
 
 
@@ -948,7 +958,8 @@ on the left side.  Therefore, we define
 
 
 
-
+\noindent
+Figure \ref{fig:wolf-goat-cabbage.pdf} on page \pageref{fig:wolf-goat-cabbage.pdf} displays the relation $R$ graphically.
 Figure \ref{fig:wolf-ziege} on page \pageref{fig:wolf-ziege} shows the program
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/wolf-goat-cabbage.py}{\texttt{wolf-goat-cabbage.py}}
 that combines the statements shown so far.  The solution computed by this program is shown in Figure
@@ -970,7 +981,7 @@ that combines the statements shown so far.  The solution computed by this progra
                (('goat' in S and 'cabbage' in S) or   # goat eats cabbage
                 ('wolf' in S and 'goat'    in S)   )  # wolf eats goat
     
-    All   = frozenset( {'farmer', 'wolf', 'goat', 'cabbage'} )
+    All   = frozenset({ 'farmer', 'wolf', 'goat', 'cabbage' })
     R1    = { (S, S - B) for S in States for B in power(S)
                          if S - B in States and 'farmer' in B and len(B) <= 2
             }
@@ -1023,7 +1034,7 @@ that combines the statements shown so far.  The solution computed by this progra
 
 
 \section{Symbolic Differentiation}
-In this section we will develop a program that reads an arithmetic expression like 
+In this section we will develop a program that reads an arithmetic expression like the string
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{\symbol{34}x * exp(x)\symbol{34}},
@@ -1078,7 +1089,9 @@ $\bigl\langle\texttt{\symbol{34}}*\texttt{\symbol{34}}, \texttt{\symbol{34}}x\te
 In order to be able to convert string into nested tuples, we need a \blue{parser}.  A parser is a program that
 takes a string as input and transforms this string into a nested tuple, which is then returned as a result.
 I have implemented a parser in the file ``\texttt{exprParser.py}''.  The details of the implementation of this
-parser will be discussed in the lecture on algorithms.
+parser will be discussed in the lecture on
+\href{https://github.com/karlstroetmann/Algorithms/blob/master/Lecture-Notes/algorithms.pdf}{algorithms} in the
+second semester..
 
 \noindent
 The function \texttt{diff} that is shown in Figure \ref{fig:diff.py} on page \pageref{fig:diff.py} is part
