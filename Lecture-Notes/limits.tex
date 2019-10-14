@@ -5,7 +5,7 @@ have trouble \href{http://www.youtube.com/watch?v=RUMX_b_m3Js}{to walk on water}
 computer science has its limits.  We will discuss 
 these limits next.  First, we show that we cannot decide whether a computer program will eventually
 terminate or whether it will run forever.  
-Second, we prove that it is impossible to atomatically check whether two functions are equivalent.
+Second, we prove that it is impossible to automatically check whether two functions are equivalent.
 
 
 \section{The Halting Problem}
@@ -15,25 +15,28 @@ another computer program does terminate.  This problem is known as the
 Before we give a formal proof that the halting problem is undecidable, let us
 discuss one example that shows why it is indeed difficult to decide whether a program does always
 terminate.  Consider the program shown in Figure \ref{fig:legendre.stlx} on page
-\pageref{fig:legendre.stlx}.  This program contains an obvious infinite loop in line 6.   However,
-this loop is only entered if the expression
+\pageref{fig:legendre.stlx}.  This program contains a \texttt{while}-loop in line 18.  
+If there is a natural number $n \geq m$ such that the expression,
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathtt{legendre}(n)$
 \\[0.2cm]
-in line 5 evaluates to \texttt{false}.  Given a natural number \texttt{n}, the expression
-$\texttt{legendre}(n)$ tests whether there is a prime between $\texttt{n}^2$ and $(\texttt{n}+1)^2$.  
-If, however, the intervall
+in line 19 evaluates to \texttt{false}, then the program prints a message and terminates.   However, if 
+$\mathtt{legendre}(n)$ is true for all $n \geq m$, then the \texttt{while}-loop does not terminate.
+
+Given a natural number \texttt{n}, the expression
+$\texttt{legendre}(n)$ tests whether there is a prime number between $\texttt{n}^2$ and $(\texttt{n}+1)^2$.  
+If, however, the interval
 \\[0.2cm]
 \hspace*{1.3cm}
 $[n^2, (n+1)^2] := \{ k \in \mathbb{N} \mid n^2 \leq k \wedge k \leq (n+1)^2 \}$
 \\[0.2cm]
 does not contain a prime number, then $\texttt{legendre}(n)$ evaluates
-to \texttt{false} for this value of $n$.  The function \texttt{legendre} is defined in line 2.  
-Given a natural number $n$, it returns \texttt{true} if and only if the formula
+to \texttt{False} for this value of $n$.  The function \texttt{legendre} is defined in line 7.  
+Given a natural number $n$, it returns \texttt{True} if and only if the formula
 \\[0.2cm]
 \hspace*{1.3cm}
-$\exists k \in \mathbb{N}: n^2 \leq k \wedge k \leq (n+1)^2 \wedge \textsl{isPrime}(k)$
+$\exists k \in \mathbb{N}:\bigl( n^2 \leq k \wedge k \leq (n+1)^2 \wedge \textsl{isPrime}(k)\bigr)$
 \\[0.2cm]
 holds true.  The French mathematican 
 \href{http://en.wikipedia.org/wiki/Adrien-Marie_Legendre}{Adrien-Marie Legendre} (1752 -- 1833) conjectured that
@@ -42,11 +45,11 @@ for any natural number $n \in \mathbb{N}$ there is prime number $p$ such that
 \hspace*{1.3cm}
 $n^2 \leq p \wedge  p \leq (n+1)^2$
 \\[0.2cm]
-holds.  Although there are a number of reasons in support of Legendre's conjecture,  to this day
-nobody has been able to prove it.  The question, whether the invocation of the function $f$ will
+holds.  Although there are a number of arguments in support of Legendre's conjecture,  to this day
+nobody has been able to prove it.  The answer to the question, whether the invocation of the function $f$ will
 terminate for every user input is, therefore, unknown as it depends on the truth of 
 \href{http://en.wikipedia.org/wiki/Legendre's_conjecture}{Legendre's conjecture}:  If we
-had some procedure that could check whether the function $\texttt{find\_counter\_example}(1)$ does terminate,
+had some procedure that could check whether the function call $\texttt{find\_counter\_example}(1)$ does terminate,
 then this procedure would be able to decide whether Legendre's theorem is true.  Therefore, it
 should come as no surprise that such a procedure does not exist.
 
@@ -77,9 +80,10 @@ should come as no surprise that such a procedure does not exist.
             k += 1
         return False
 
-    def find_counter_example(n):
+    def find_counter_example(m):
+        n = m
         while True:
-           if legendre(n):
+           if legendre(k):
                n = n + 1
            else:
                print(f'Eureka! No prime between {n}**2 and {n+1}**2!')
@@ -94,7 +98,7 @@ Let us proceed to prove formally that the halting problem is not solvable.  To t
 following definition.
 
 \begin{Definition}[Test Function] 
-A string $t$ is a \emph{test function with name $f$} iff $t$ has the form \\[0.2cm]
+A string $t$ is a \blue{test function with name $f$} iff $t$ has the form \\[0.2cm]
 \hspace*{1.3cm} \texttt{\symbol{34}\symbol{34}\symbol{34}}         \\
 \hspace*{1.3cm} \texttt{def $f$(x):} \\
 \hspace*{1.8cm} \textsl{body}        \\
@@ -121,7 +125,7 @@ $\mathtt{name}(t) = f$. \hspace*{\fill} $\Box$
              return 0
       '''
       \end{verbatim}
-      \vspace*{-0.8cm}
+0      \vspace*{-0.8cm}
 
       Then $s_1$ is a test function with the name \texttt{simple}.
 \item We define the string $s_2$ as
@@ -161,11 +165,11 @@ then we write
  $n(a_1, \cdots, a_k) \leadsto r$ 
 \\[0.2cm]
 iff the evaluation of the expression $n(a_1, \cdots, a_k)$ yields the result $r$.  If we are not
-concerned with the result $r$ but only want to state that the evaluation terminates,
+concerned with the result $r$ but only want to state that the evaluation terminates eventually,
 then we will write
 \\[0.2cm]
 \hspace*{1.3cm} $n(a_1, \cdots, a_k) \,\downarrow$ \\[0.3cm]
-and read this notation as ``\emph{evaluating $n(a_1, \cdots, a_k)$ terminates}''.
+and read this notation as ``\emph{evaluation of $n(a_1, \cdots, a_k)$ terminates}''.
 If the evaluation of the expression $n(a_1, \cdots, a_k)$ does \underline{not} terminate, this is
 written as \\[0.2cm]
 \hspace*{1.3cm}
@@ -175,7 +179,7 @@ This notation is read as ``\emph{evaluation of $n(a_1, \cdots, a_k)$ diverges}''
 \hspace*{\fill} $\Box$
 \end{Notation}
 
-\examples  Using the test functions defined earlier, we have:
+\examplesEng  Using the test functions defined earlier, we have:
 \begin{enumerate}
 \item {\tt simple(\symbol{34}emil\symbol{34}) $\leadsto 0$},
 \item {\tt simple(\symbol{34}emil\symbol{34}) $\downarrow$},
@@ -183,7 +187,7 @@ This notation is read as ``\emph{evaluation of $n(a_1, \cdots, a_k)$ diverges}''
 \end{enumerate}
 
 \noindent
-The \emph{halting problem} for \textsl{Python} functions is the question whether there is a
+The \blue{halting problem} for \textsl{Python} functions is the question whether there is a
 \textsl{Python} function \\[0.2cm]
 \hspace*{1.3cm} \texttt{def stops($t$,$\;a$): } \\
 \hspace*{2.3cm} $\vdots$
@@ -205,10 +209,11 @@ that takes as input a test function $t$ and a string $a$ and that satisfies the 
        \mathtt{stops}(t, a) \leadsto 0$.
 
       If the first argument of \texttt{stops} is a test function but the evaluation of $n(a)$ 
-      diverges, then \texttt{stops($t$, $a$)} returns the number $0$.
+      diverges, then \linebreak
+      \texttt{stops($t$, $a$)} returns the number $0$.
 \end{enumerate}
 If there was a \textsl{Python} function \texttt{stops} that did satisfy the specification given above,
-then the halting problem for \textsl{Python} would be decidable.
+then the halting problem for \textsl{Python} would be \blue{decidable}.
 
 \begin{Theorem}[\href{http://en.wikipedia.org/wiki/Alan_Turing}{Alan Turing}, 1936]
   The halting problem is undecidable.
@@ -217,11 +222,11 @@ then the halting problem for \textsl{Python} would be decidable.
 \noindent
 \textbf{Proof}:  In order to prove the undecidabilty of the halting problem we have to show that
 there can be no function \texttt{stops} satisfying the specification given above.  This calls for an
-indirect proof also known as \href{http://en.wikipedia.org/wiki/Indirect_proof}{\emph{proof by contradiction}}.
+indirect proof also known as a \href{http://en.wikipedia.org/wiki/Indirect_proof}{\emph{proof by contradiction}}.
 We will therefore assume that a function \texttt{stops} solving the halting problem does
 exist and we will then show that this assumption leads to a contradiction.  This contradiction will
 leave us with the conclusion that there can be no function \texttt{stops} that satisfies
-the specification given above and that, therefore, the halting problem is not solvable.
+the specification given above and that, therefore, the halting problem is undecidable.
 
 In order to proceed, let us assume that a \textsl{Python} function \texttt{stops}
 satisfying the specification given above exists and let us define the string
@@ -252,16 +257,16 @@ satisfying the specification given above exists and let us define the string
 \end{figure}
 
 Given this definition it is easy to check that \textsl{turing} is, indeed, a test function with the name
-``\texttt{alan}', that is we have 
+``\texttt{alan}'', that is we have 
 \\[0.3cm]
 \hspace*{1.3cm} 
 $\textsl{turing} \in T\!F \;\wedge\; \mathtt{name}(\textsl{turing}) = \mathtt{alan}$. 
 \\[0.2cm]
 Therefore, we can use the string \textsl{turing} as the first argument of the function
-\texttt{stops}.  Let us think about the following expression:
+\texttt{stops}.  Let us determine the value of the following expression:
 \\[0.2cm]
 \hspace*{1.3cm} 
-\texttt{stops(\textsl{turing}, \textsl{turing});} 
+\texttt{stops(\textsl{turing}, \textsl{turing})} 
 \\[0.2cm]
 Since we have already noted that \textsl{turing} is test function, according to the specification of
 the function \texttt{stops} there are only two cases left:
@@ -294,7 +299,7 @@ Let us consider these cases in turn.
             this test fails.  Therefore, the block of the \texttt{if}-statement is not executed.
       \item Finally, in line 8 the value of the variable \texttt{result} is returned. 
       \end{enumerate}
-      All in all we see that the call of the function \texttt{alan} does terminate with the argument
+      All in all we see that the call of the function \texttt{alan} does terminate when given the argument
       \textsl{turing}.  However, this is the opposite of what the function \texttt{stops} has claimed.
       
       Therefore, this case has lead us to a contradiction.
@@ -315,7 +320,7 @@ Let us consider these cases in turn.
       \item Line 3 now tests whether \texttt{result} is $1$.  Of course,
             this time the test succeeds.  
             Therefore, the block of the \texttt{if}-statement \underline{is} executed.
-      \item However, this block contains an obvious infinite loop.  Therefore, the
+      \item However, this block contains an infinite loop.  Therefore, the
             evaluation of $\mathtt{alan}(\textsl{turing})$ \underline{diver}g\underline{es}.
             But this contradicts the specification of \texttt{stops}!
       \end{enumerate}   
@@ -332,7 +337,7 @@ The proof of the fact that the halting problem is undecidable was given 1936 by 
 \cite{turing:36}.  Of course, Turing did not solve the problem for \textsl{Python} but rather
 for the so called 
 \href{http://en.wikipedia.org/wiki/Indirect_proof}{\emph{Turing machines}}.  
-A \emph{Turing maschine} can be interpreted as a formal description of an algorithm.  
+A \blue{Turing maschine} can be interpreted as a formal description of an algorithm.  
 Therefore, Turing has shown, that there is no algorithm that is able to decide whether some given
 algorithm will always terminate.
 \vspace*{0.3cm}
@@ -352,13 +357,13 @@ given above shows that the halting problem is not solvable.
 
 \exerciseEng
 Show that if the halting problem would be solvable, then it would be possible to write a program that checks
-whether there are infinitely many \emph{twin primes}.  A \emph{twin prime} is pair of natural numbers
+whether there are infinitely many \blue{twin primes}.  A \blue{twin prime} is pair of natural numbers
 $\langle p, p + 2 \rangle$ such that both $p$ and $p+2$ are prime numbers.  
 The \href{http://en.wikipedia.org/wiki/Twin_prime_conjecture}{\emph{twin prime conjecture}} is one
-of the oldest unsolved mathematical problems.
+of the oldest unsolved mathematical problems.  \eox
 
 \exerciseEng
-A set $X$ is called \emph{countable}  iff there is a function 
+A set $X$ is called \blue{countable}  iff there is a function 
 \\[0.2cm]
 \hspace*{1.3cm}
  $f: \mathbb{N} \rightarrow X$ 
@@ -384,7 +389,7 @@ holds.  Next, and this is the crucial step, define a set \texttt{Cantor} as foll
 \\[0.2cm]
 \hspace*{1.3cm} $\mathtt{Cantor} := \bigl\{ n \in \mathbb{N} \mid n \notin f(n) \bigr\}$.
 \\[0.2cm]
-Now try to derive a contradiction.  
+Now try to derive a contradiction.  \eox
 
 
 
@@ -411,17 +416,17 @@ if and only if either of the following cases is true:
       that is both function calls terminate and compute the same result.
 \end{enumerate}
 If $n_1(a_1,\cdots,a_k) \simeq n_2(a_1,\cdots,a_k)$ holds, then the expressions $n_1(a_1,\cdots,a_k)$ and $n_2(a_1,\cdots,a_k)$ are called
-\emph{partially equivalent}. \hspace*{\fill} $\Box$
+\blue{partially equivalent}. \hspace*{\fill} $\Box$
 \end{Definition}
 
 \noindent
-We are now ready to state the \emph{equivalence problem}.  A \textsl{Python} function \texttt{equal} solves the
+We are now ready to state the \blue{equivalence problem}.  A \textsl{Python} function \texttt{equal} solves the
 \emph{equivalence problem} if it is defined as
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{equal := procedure(p1, p2, a) \{ ... \};}$
 \\[0.2cm]
-and, furthermore, satisfies the following specification:
+and, furthermore, it satisfies the following specification:
 \begin{enumerate}
 \item $p_1 \not\in T\!F \;\vee\; p_2 \not\in T\!F \quad\Leftrightarrow\quad \mathtt{equal}(p_1, p_2, a) \leadsto 2$.
 \item If 
@@ -480,16 +485,18 @@ of the function \texttt{equal}.
   \label{fig:stops}
 \end{figure}
 
-Notice that in line 2 the function \texttt{equal} is called with a string that is test function with
+Notice that in line 6 the function \texttt{equal} is called with a string that is test function with
 name \texttt{loop}.  This test function has the following form:
 \begin{verbatim}
-      loop := procedure(x) { while (true) {} };
+        def loop(x): 
+             while True:
+                 x = 1
 \end{verbatim}
-Obviously, the function \texttt{loop} does never terminate.
-Therefore, if the argument $p$ of \texttt{stops} is a test function with name $n$, 
+Independent from the argument $x$, the function \texttt{loop} does not terminate.
+Therefore, if the first argument $t$ of \texttt{stops} is a test function with name $n$, 
 the function \texttt{equal} will return $1$ if $n(a)$ diverges, and will return $0$ otherwise.
 But this implementation of \texttt{stops} would then solve the halting problem as
-for a given test function $p$ with name $n$ and argument $a$ the function \texttt{stops} would
+for a given test function $t$ with name $n$ and argument $a$ the function \texttt{stops} would
 return 1 if and only the evaluation of $n(a)$ terminates.  As we have already proven that the
 halting problem is undecidable, there can be no function \texttt{equal} that solves the equivalence
 problem either.
