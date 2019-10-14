@@ -1,0 +1,539 @@
+\chapter{Limits of Computability}
+Every discipline of the sciences has its limits: Students of the medical sciences soon realize that
+it is difficult to \href{http://www.wowhead.com/spell=61999}{raise the dead} and even religious zealots
+have trouble \href{http://www.youtube.com/watch?v=RUMX_b_m3Js}{to walk on water}.  Similarly,
+computer science has its limits.  We will discuss 
+these limits next.  First, we show that we cannot decide whether a computer program will eventually
+terminate or whether it will run forever.  
+Second, we prove that it is impossible to atomatically check whether two functions are equivalent.
+
+
+\section{The Halting Problem}
+In this subsection we prove that it is not possible for a computer program to decide whether 
+another computer program does terminate.  This problem is known as the 
+\href{http://en.wikipedia.org/wiki/Halting_problem}{\emph{halting problem}}.
+Before we give a formal proof that the halting problem is undecidable, let us
+discuss one example that shows why it is indeed difficult to decide whether a program does always
+terminate.  Consider the program shown in Figure \ref{fig:legendre.stlx} on page
+\pageref{fig:legendre.stlx}.  This program contains an obvious infinite loop in line 6.   However,
+this loop is only entered if the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{legendre}(n)$
+\\[0.2cm]
+in line 5 evaluates to \texttt{false}.  Given a natural number \texttt{n}, the expression
+$\texttt{legendre}(n)$ tests whether there is a prime between $\texttt{n}^2$ and $(\texttt{n}+1)^2$.  
+If, however, the intervall
+\\[0.2cm]
+\hspace*{1.3cm}
+$[n^2, (n+1)^2] := \{ k \in \mathbb{N} \mid n^2 \leq k \wedge k \leq (n+1)^2 \}$
+\\[0.2cm]
+does not contain a prime number, then $\texttt{legendre}(n)$ evaluates
+to \texttt{false} for this value of $n$.  The function \texttt{legendre} is defined in line 2.  
+Given a natural number $n$, it returns \texttt{true} if and only if the formula
+\\[0.2cm]
+\hspace*{1.3cm}
+$\exists k \in \mathbb{N}: n^2 \leq k \wedge k \leq (n+1)^2 \wedge \textsl{isPrime}(k)$
+\\[0.2cm]
+holds true.  The French mathematican 
+\href{http://en.wikipedia.org/wiki/Adrien-Marie_Legendre}{Adrien-Marie Legendre} (1752 -- 1833) conjectured that
+for any natural number $n \in \mathbb{N}$ there is prime number $p$ such that
+\\[0.2cm]
+\hspace*{1.3cm}
+$n^2 \leq p \wedge  p \leq (n+1)^2$
+\\[0.2cm]
+holds.  Although there are a number of reasons in support of Legendre's conjecture,  to this day
+nobody has been able to prove it.  The question, whether the invocation of the function $f$ will
+terminate for every user input is, therefore, unknown as it depends on the truth of 
+\href{http://en.wikipedia.org/wiki/Legendre's_conjecture}{Legendre's conjecture}:  If we
+had some procedure that could check whether the function $\texttt{find\_counter\_example}(1)$ does terminate,
+then this procedure would be able to decide whether Legendre's theorem is true.  Therefore, it
+should come as no surprise that such a procedure does not exist.
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                ]
+    def divisors(k):
+        return { t for t in range(1, k+1) if k % t == 0 }
+
+    def is_prime(k):
+        return divisors(k) == {1, k}    
+    
+    def legendre(n):
+        k = n * n + 1;
+        while k < (n + 1) ** 2:
+            if is_prime(k):
+                print(f'{n}**2 < {k} < {n+1}**2')
+                return True
+            k += 1
+        return False
+
+    def find_counter_example(n):
+        while True:
+           if legendre(n):
+               n = n + 1
+           else:
+               print(f'Eureka! No prime between {n}**2 and {n+1}**2!')
+               return
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{A program checking Legendre's conjecture.}
+\label{fig:legendre.stlx}
+\end{figure}
+
+Let us proceed to prove formally that the halting problem is not solvable.  To this end, we need the
+following definition.
+
+\begin{Definition}[Test Function] 
+A string $t$ is a \emph{test function with name $f$} iff $t$ has the form \\[0.2cm]
+\hspace*{1.3cm} \texttt{\symbol{34}\symbol{34}\symbol{34}}         \\
+\hspace*{1.3cm} \texttt{def $f$(x):} \\
+\hspace*{1.8cm} \textsl{body}        \\
+\hspace*{1.3cm} \texttt{\symbol{34}\symbol{34}\symbol{34}}         \\[0.2cm]
+and, furthermore, the string $t$ can be parsed as a \textsl{Python} function, that is the evaluation of
+the expression
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{exec}(t)$
+\\[0.2cm]
+does not yield an error.  
+The set of all test functions is denoted as $T\!F$.  If $t \in T\!F$ and $t$ has the name $f$, then
+this is written as 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{name}(t) = f$. \hspace*{\fill} $\Box$
+\end{Definition}
+
+\examplesEng
+\begin{enumerate}
+\item We define the string $s_1$ as follows:
+      \begin{verbatim}
+      '''def simple(x): 
+             return 0
+      '''
+      \end{verbatim}
+      \vspace*{-0.8cm}
+
+      Then $s_1$ is a test function with the name \texttt{simple}.
+\item We define the string $s_2$ as
+      \begin{verbatim}
+      '''def loop(x): 
+             while True: 
+                 x = x + 1
+      '''
+      \end{verbatim}
+      \vspace*{-0.8cm}
+
+      Then $s_2$ is a test function with the name \texttt{loop}. 
+\item We define the string $s_3$ as
+      \begin{verbatim}
+      '''def hugo(x):
+             return ++x
+      '''
+      \end{verbatim}
+      \vspace*{-0.8cm}
+
+      Then $s_3$ is not a test function.  The reason is that \textsl{Python} does not support the operator
+      ``\texttt{++}''.  Therefore, 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{exec(s3)}
+      \\[0.2cm]
+      yields an error message complaining about the two ``\texttt{+}'' characters.
+\end{enumerate}
+In order to be able to formalize the halting problem succinctly, we introduce three additional
+notations.
+
+\begin{Notation}[$\leadsto$, $\downarrow$, $\uparrow$]
+If $n$ is the name of a \textsl{Python} function that takes $k$ arguments $a_1$, $\cdots$, $a_k$,
+then we write 
+\\[0.2cm]
+\hspace*{1.3cm}
+ $n(a_1, \cdots, a_k) \leadsto r$ 
+\\[0.2cm]
+iff the evaluation of the expression $n(a_1, \cdots, a_k)$ yields the result $r$.  If we are not
+concerned with the result $r$ but only want to state that the evaluation terminates,
+then we will write
+\\[0.2cm]
+\hspace*{1.3cm} $n(a_1, \cdots, a_k) \,\downarrow$ \\[0.3cm]
+and read this notation as ``\emph{evaluating $n(a_1, \cdots, a_k)$ terminates}''.
+If the evaluation of the expression $n(a_1, \cdots, a_k)$ does \underline{not} terminate, this is
+written as \\[0.2cm]
+\hspace*{1.3cm}
+ $n(a_1, \cdots, a_k) \,\uparrow$. 
+\\[0.2cm]
+This notation is read as ``\emph{evaluation of $n(a_1, \cdots, a_k)$ diverges}''.
+\hspace*{\fill} $\Box$
+\end{Notation}
+
+\examples  Using the test functions defined earlier, we have:
+\begin{enumerate}
+\item {\tt simple(\symbol{34}emil\symbol{34}) $\leadsto 0$},
+\item {\tt simple(\symbol{34}emil\symbol{34}) $\downarrow$},
+\item {\tt loop(2) $\uparrow$}.
+\end{enumerate}
+
+\noindent
+The \emph{halting problem} for \textsl{Python} functions is the question whether there is a
+\textsl{Python} function \\[0.2cm]
+\hspace*{1.3cm} \texttt{def stops($t$,$\;a$): } \\
+\hspace*{2.3cm} $\vdots$
+\\[0.2cm] 
+that takes as input a test function $t$ and a string $a$ and that satisfies the following specification:
+\begin{enumerate}
+\item $t \not\in T\!F \quad\Leftrightarrow\quad \mathtt{stops}(t, a) \leadsto 2$.
+
+      If the first argument of \texttt{stops} is not a test function, then 
+      \texttt{stops($t$, $a$)} returns the number $2$.
+
+\item $t \in T\!F \,\wedge\, \mathtt{name}(t) = n \,\wedge\, n(a)\downarrow \quad\Leftrightarrow\quad
+       \mathtt{stops}(t, a) \leadsto 1$.
+
+      If the first argument of \texttt{stops} is a test function and, furthermore,
+      the evaluation of $n(a)$ terminates, then \texttt{stops($t$, $a$)} returns the number $1$.
+
+\item $t \in T\!F \,\wedge\, \mathtt{name}(t) = n \,\wedge\, n(a)\uparrow \quad\Leftrightarrow\quad
+       \mathtt{stops}(t, a) \leadsto 0$.
+
+      If the first argument of \texttt{stops} is a test function but the evaluation of $n(a)$ 
+      diverges, then \texttt{stops($t$, $a$)} returns the number $0$.
+\end{enumerate}
+If there was a \textsl{Python} function \texttt{stops} that did satisfy the specification given above,
+then the halting problem for \textsl{Python} would be decidable.
+
+\begin{Theorem}[\href{http://en.wikipedia.org/wiki/Alan_Turing}{Alan Turing}, 1936]
+  The halting problem is undecidable.
+\end{Theorem}
+
+\noindent
+\textbf{Proof}:  In order to prove the undecidabilty of the halting problem we have to show that
+there can be no function \texttt{stops} satisfying the specification given above.  This calls for an
+indirect proof also known as \href{http://en.wikipedia.org/wiki/Indirect_proof}{\emph{proof by contradiction}}.
+We will therefore assume that a function \texttt{stops} solving the halting problem does
+exist and we will then show that this assumption leads to a contradiction.  This contradiction will
+leave us with the conclusion that there can be no function \texttt{stops} that satisfies
+the specification given above and that, therefore, the halting problem is not solvable.
+
+In order to proceed, let us assume that a \textsl{Python} function \texttt{stops}
+satisfying the specification given above exists and let us define the string
+\textsl{turing} as shown in Figure \ref{fig:turing-string} below.
+
+\begin{figure}[!h]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                  commandchars  = \\\{\},
+                ]
+    turing = """def alan(x):
+                    result = stops(x, x)
+                    if result == 1:
+                        while True:
+                            print("... looping ...")
+                    return result
+             """ 
+\end{Verbatim}
+  \vspace*{-0.3cm}
+  \caption{Definition of the string \textsl{turing}.}
+  \label{fig:turing-string}
+\end{figure}
+
+Given this definition it is easy to check that \textsl{turing} is, indeed, a test function with the name
+``\texttt{alan}', that is we have 
+\\[0.3cm]
+\hspace*{1.3cm} 
+$\textsl{turing} \in T\!F \;\wedge\; \mathtt{name}(\textsl{turing}) = \mathtt{alan}$. 
+\\[0.2cm]
+Therefore, we can use the string \textsl{turing} as the first argument of the function
+\texttt{stops}.  Let us think about the following expression:
+\\[0.2cm]
+\hspace*{1.3cm} 
+\texttt{stops(\textsl{turing}, \textsl{turing});} 
+\\[0.2cm]
+Since we have already noted that \textsl{turing} is test function, according to the specification of
+the function \texttt{stops} there are only two cases left:
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\mathtt{stops}(\textsl{turing}, \textsl{turing}) \leadsto 0 \quad \vee\quad
+ \mathtt{stops}(\textsl{turing}, \textsl{turing}) \leadsto 1$. 
+\\[0.2cm]
+Let us consider these cases in turn.
+\begin{enumerate}
+\item $\mathtt{stops}(\textsl{turing}, \textsl{turing}) \leadsto 0$. 
+
+      According to the specification of \texttt{stops} we should then have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{alan}(\textsl{turing}) \uparrow$.
+      \\[0.2cm]
+      Let us check whether this is true.  In order to do this, we have to check what happens when
+      the expression
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{alan(\textsl{turing})} 
+      \\[0.2cm]
+      is evaluated:
+      \begin{enumerate}
+      \item Since we have assumed for this case that the expression 
+            $\mathtt{stops}(\textsl{turing}, \textsl{turing})$ yields $0$, 
+            in line 2, the variable \texttt{result} is assigned the value 0. 
+      \item Line 3 now tests whether \texttt{result} is $1$.  Of course,
+            this test fails.  Therefore, the block of the \texttt{if}-statement is not executed.
+      \item Finally, in line 8 the value of the variable \texttt{result} is returned. 
+      \end{enumerate}
+      All in all we see that the call of the function \texttt{alan} does terminate with the argument
+      \textsl{turing}.  However, this is the opposite of what the function \texttt{stops} has claimed.
+      
+      Therefore, this case has lead us to a contradiction.
+\item  $\mathtt{stops}(\textsl{turing}, \textsl{turing}) \leadsto 1$. 
+
+      According to the specification of \texttt{stops} we should then have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{alan}(\textsl{turing}) \downarrow$, 
+      \\[0.2cm]
+      i.e.~the evaluation of $\mathtt{alan}(\textsl{turing}) \downarrow$ should terminate.
+      
+      Again, let us check in detail whether this is true.  
+      \begin{enumerate}
+      \item Since we have assumed for this case that the expression 
+            $\mathtt{stops}(\textsl{turing}, \textsl{turing})$ yields $1$, 
+            in line 2, the variable \texttt{result} is assigned the value $1$. 
+      \item Line 3 now tests whether \texttt{result} is $1$.  Of course,
+            this time the test succeeds.  
+            Therefore, the block of the \texttt{if}-statement \underline{is} executed.
+      \item However, this block contains an obvious infinite loop.  Therefore, the
+            evaluation of $\mathtt{alan}(\textsl{turing})$ \underline{diver}g\underline{es}.
+            But this contradicts the specification of \texttt{stops}!
+      \end{enumerate}   
+      Therefore, the second case also leads to a contradiction.
+\end{enumerate}
+As we have obtained contradictions in both cases, the assumption that there is a function
+\texttt{stops} that solves the halting problem is refuted.
+\hspace*{\fill} $\Box$
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Remark}:
+The proof of the fact that the halting problem is undecidable was given 1936 by Alan Turing (1912 -- 1954)
+\cite{turing:36}.  Of course, Turing did not solve the problem for \textsl{Python} but rather
+for the so called 
+\href{http://en.wikipedia.org/wiki/Indirect_proof}{\emph{Turing machines}}.  
+A \emph{Turing maschine} can be interpreted as a formal description of an algorithm.  
+Therefore, Turing has shown, that there is no algorithm that is able to decide whether some given
+algorithm will always terminate.
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Remark}:
+At this point you might wonder whether there might be another programming language
+that is more powerful so that programming in this more powerful language it would be possible to
+solve the halting problem.  However, if you check the proof given for \textsl{Python} you will easily
+see that this proof can be adapted to any other programming language that is as least as powerful as
+\textsl{Python}. 
+
+Of course, if a programming language is very restricted, then it might be possible to check the
+halting problem for this weak programming language.  But for any programming language that supports
+at least \texttt{while}-loops, \texttt{if}-statements, and the definition of procedures the argument
+given above shows that the halting problem is not solvable.
+
+\exerciseEng
+Show that if the halting problem would be solvable, then it would be possible to write a program that checks
+whether there are infinitely many \emph{twin primes}.  A \emph{twin prime} is pair of natural numbers
+$\langle p, p + 2 \rangle$ such that both $p$ and $p+2$ are prime numbers.  
+The \href{http://en.wikipedia.org/wiki/Twin_prime_conjecture}{\emph{twin prime conjecture}} is one
+of the oldest unsolved mathematical problems.
+
+\exerciseEng
+A set $X$ is called \emph{countable}  iff there is a function 
+\\[0.2cm]
+\hspace*{1.3cm}
+ $f: \mathbb{N} \rightarrow X$ 
+\\[0.2cm]
+such that for all $x\in X$ there is a $n \in \mathbb{N}$ such that $x$ is the image of
+$n$ under $f$: 
+\\[0.2cm]
+\hspace*{1.3cm} $\forall x \in X: \exists n \in \mathbb{N}: x = f(n)$.
+\\[0.2cm]
+Prove that the set $2^\mathbb{N}$, which is the set of all subsets of $\mathbb{N}$ is \underline{not} countable. 
+
+\vspace*{0.2cm}
+
+\noindent
+\textbf{Hint}:  Your proof should be similar to the proof that the halting problem is undecidable. 
+Proceed as follows:
+Assume that there is a function $f$ enumerating the subsets of $\mathbb{N}$, that is assume that 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\forall x \in 2^\mathbb{N}: \exists n \in \mathbb{N}: x = f(n)$
+\\[0.2cm]
+holds.  Next, and this is the crucial step, define a set \texttt{Cantor} as follows:
+\\[0.2cm]
+\hspace*{1.3cm} $\mathtt{Cantor} := \bigl\{ n \in \mathbb{N} \mid n \notin f(n) \bigr\}$.
+\\[0.2cm]
+Now try to derive a contradiction.  
+
+
+
+\section[The Equivalence Problem]{Undecidability of the Equivalence Problem}
+Unfortunately, the halting problem is not the only undecidable problem in computer science.  Another
+important problem that is undecidable is the question whether two given functions always compute the
+same result.  To state this more formally, we need the following definition.
+
+
+\begin{Definition}[$\simeq$] 
+Assume $n_1$ and $n_2$ are the names of two \textsl{Python} functions that take arguments
+  $a_1$, $\cdots$, $a_k$.  Let us define \\[0.2cm]
+\hspace*{1.3cm} 
+$n_1(a_1,\cdots,a_k) \simeq n_2(a_1,\cdots,a_k)$ 
+\\[0.2cm]
+if and only if either of the following cases is true:
+\begin{enumerate}
+\item $n_1(a_1,\cdots,a_k)\uparrow \quad\wedge\quad n_2(a_1,\cdots,a_k)\uparrow$,
+
+      that is both function calls diverge.
+\item $\exists r: \Bigl(n_1(a_1,\cdots,a_k) \leadsto r \quad\wedge\quad n_2(a_1,\cdots,a_k) \leadsto
+  r\Bigr)$
+
+      that is both function calls terminate and compute the same result.
+\end{enumerate}
+If $n_1(a_1,\cdots,a_k) \simeq n_2(a_1,\cdots,a_k)$ holds, then the expressions $n_1(a_1,\cdots,a_k)$ and $n_2(a_1,\cdots,a_k)$ are called
+\emph{partially equivalent}. \hspace*{\fill} $\Box$
+\end{Definition}
+
+\noindent
+We are now ready to state the \emph{equivalence problem}.  A \textsl{Python} function \texttt{equal} solves the
+\emph{equivalence problem} if it is defined as
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{equal := procedure(p1, p2, a) \{ ... \};}$
+\\[0.2cm]
+and, furthermore, satisfies the following specification:
+\begin{enumerate}
+\item $p_1 \not\in T\!F \;\vee\; p_2 \not\in T\!F \quad\Leftrightarrow\quad \mathtt{equal}(p_1, p_2, a) \leadsto 2$.
+\item If 
+      \begin{enumerate}
+      \item $p_1 \in T\!F \;\wedge\; \mathtt{name}(p_1) = n_1$,
+      \item $p_2 \in T\!F \;\wedge\; \mathtt{name}(p_2) = n_2$ \quad and
+      \item $n_1(a) \simeq n_2(a)$
+      \end{enumerate}
+      holds, then we must have: 
+      \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\mathtt{equal}(p_1, p_2, a) \leadsto 1$.
+\item Otherwise we must have \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\mathtt{equal}(p_1, p_2, a) \leadsto 0$.
+\end{enumerate}
+
+
+\begin{Theorem}[\href{http://en.wikipedia.org/wiki/Henry_Gordon_Rice}{Henry Gordon Rice}, 1953]
+\hspace*{\fill} \linebreak
+The equivalence problem is undecidable.  
+\end{Theorem}
+
+\noindent
+\textbf{Proof}:
+The proof is by contradiction.  Therefore, assume that there is a function \texttt{equal}
+such that \texttt{equal} solves the equivalence problem.  Assuming \texttt{equal} exists, we will
+then proceed to define a function \texttt{stops} that does solve the halting problem.
+Figure \ref{fig:stops} shows how we construct the function \texttt{stops} that makes use 
+of the function \texttt{equal}.
+
+
+\begin{figure}[!h]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.3cm,
+                  xrightmargin  = 0.3cm
+                ]
+     def stops(t, a):
+         l = """def loop(x): 
+                    while True:
+                        x = 1
+             """ 
+         e = equal(l, t, a);
+         if e == 2:
+             return 2
+         else:
+             return 1 - e
+\end{Verbatim}
+  \vspace*{-0.3cm}
+  \caption{An implementation of the function \texttt{stops}.}
+  \label{fig:stops}
+\end{figure}
+
+Notice that in line 2 the function \texttt{equal} is called with a string that is test function with
+name \texttt{loop}.  This test function has the following form:
+\begin{verbatim}
+      loop := procedure(x) { while (true) {} };
+\end{verbatim}
+Obviously, the function \texttt{loop} does never terminate.
+Therefore, if the argument $p$ of \texttt{stops} is a test function with name $n$, 
+the function \texttt{equal} will return $1$ if $n(a)$ diverges, and will return $0$ otherwise.
+But this implementation of \texttt{stops} would then solve the halting problem as
+for a given test function $p$ with name $n$ and argument $a$ the function \texttt{stops} would
+return 1 if and only the evaluation of $n(a)$ terminates.  As we have already proven that the
+halting problem is undecidable, there can be no function \texttt{equal} that solves the equivalence
+problem either.
+\qed
+
+\section{Concluding Remarks}
+Although, in general, we cannot decide whether a program terminates for a given input, this does not mean
+that we should not attempt to do so.  After all, we only have proven that there is no procedure that
+can \underline{alwa}y\underline{s} check whether a given program will terminate.  There might well exist a
+procedure for termination checking that works most of the time.  Indeed, there are a number of
+systems that try to check whether a program will always terminate.  For example, for \textsl{Prolog}
+programs, the article 
+``\href{http://link.springer.com/chapter/10.1007%2F3-540-61739-6_44}{\emph{Automated Modular Termination Proofs for Real Prolog Programs}}''
+\cite{mueller:1996} describes a successful approach.  The recent years have seen a lot of progress in
+this area.  The article 
+``\href{http://dl.acm.org/citation.cfm?id=1941509}{{Proving Program Termination}}''
+\cite{cook:2011} reviews these developments.  However, as the recently developed systems rely on both
+\href{http://en.wikipedia.org/wiki/Automated_theorem_proving}{\emph{automatic theorem proving}} and
+\href{http://en.wikipedia.org/wiki/Ramsey_theory}{\emph{Ramsey theory}} they are quite out of the
+scope of this lecture.
+
+\section{Chapter Review}
+You should be able to solve the following exercises.
+\begin{enumerate}
+\item Define the halting problem.
+\item Define the equivalence problem.
+\item Define the notion of a countable set.
+\item Prove that the set $2^{\mathbb{N}}$ is not countable.
+\end{enumerate}
+
+
+\section{Further Reading}
+The book ``\emph{Introduction to the Theory of Computation}'' by Michael Sipser \cite{sipser:1996}
+discusses the undecidability of the halting problem in section 4.2.  It also covers many related
+undecidable problems.  The exposition in the book of Sipser is based on Turing machines.  
+
+Another good book discussing undecidability is the book 
+``\emph{Introduction to Automata Theory, Languages, and Computation}'' written by John E.~Hopcroft,
+Rajeev Motwani and Jeffrey D.~Ullman \cite{hopcroft:06}.  This book is the third edition of a
+classic text.  In this book, the topic of undecidability is discussed in chapter 9.
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "logic.tex"
+%%% End: 
