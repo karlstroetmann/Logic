@@ -1,3 +1,5 @@
+
+
 def minSort(L):
     if L == []:
         return []
