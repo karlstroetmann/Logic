@@ -363,7 +363,7 @@ The \href{http://en.wikipedia.org/wiki/Twin_prime_conjecture}{\emph{twin prime c
 of the oldest unsolved mathematical problems.  \eox
 
 \exerciseEng
-A set $X$ is called \blue{countable}  iff there is a function 
+A set $X$ is \blue{countable}  iff there is a function 
 \\[0.2cm]
 \hspace*{1.3cm}
  $f: \mathbb{N} \rightarrow X$ 
@@ -415,7 +415,7 @@ if and only if either of the following cases is true:
 
       that is both function calls terminate and compute the same result.
 \end{enumerate}
-If $n_1(a_1,\cdots,a_k) \simeq n_2(a_1,\cdots,a_k)$ holds, then the expressions $n_1(a_1,\cdots,a_k)$ and $n_2(a_1,\cdots,a_k)$ are called
+If $n_1(a_1,\cdots,a_k) \simeq n_2(a_1,\cdots,a_k)$ holds, then the expressions $n_1(a_1,\cdots,a_k)$ and $n_2(a_1,\cdots,a_k)$ are 
 \blue{partially equivalent}. \hspace*{\fill} $\Box$
 \end{Definition}
 
@@ -423,9 +423,8 @@ If $n_1(a_1,\cdots,a_k) \simeq n_2(a_1,\cdots,a_k)$ holds, then the expressions 
 We are now ready to state the \blue{equivalence problem}.  A \textsl{Python} function \texttt{equal} solves the
 \emph{equivalence problem} if it is defined as
 \\[0.2cm]
-\hspace*{1.3cm}
-$\texttt{equal := procedure(p1, p2, a) \{ ... \};}$
-\\[0.2cm]
+\hspace*{1.3cm} \texttt{def equal(p1, p2, a):}               \\
+\hspace*{1.8cm} \textsl{body}                                \\[0.2cm]
 and, furthermore, it satisfies the following specification:
 \begin{enumerate}
 \item $p_1 \not\in T\!F \;\vee\; p_2 \not\in T\!F \quad\Leftrightarrow\quad \mathtt{equal}(p_1, p_2, a) \leadsto 2$.
@@ -445,8 +444,7 @@ and, furthermore, it satisfies the following specification:
 \end{enumerate}
 
 
-\begin{Theorem}[\href{http://en.wikipedia.org/wiki/Henry_Gordon_Rice}{Henry Gordon Rice}, 1953]
-\hspace*{\fill} \linebreak
+\begin{Theorem}
 The equivalence problem is undecidable.  
 \end{Theorem}
 
@@ -454,9 +452,8 @@ The equivalence problem is undecidable.
 \textbf{Proof}:
 The proof is by contradiction.  Therefore, assume that there is a function \texttt{equal}
 such that \texttt{equal} solves the equivalence problem.  Assuming \texttt{equal} exists, we will
-then proceed to define a function \texttt{stops} that does solve the halting problem.
-Figure \ref{fig:stops} shows how we construct the function \texttt{stops} that makes use 
-of the function \texttt{equal}.
+then proceed to define a function \texttt{stops} that solves the halting problem.
+Figure \ref{fig:stops} shows this construction of the function \texttt{stops}.
 
 
 \begin{figure}[!h]
@@ -502,13 +499,18 @@ halting problem is undecidable, there can be no function \texttt{equal} that sol
 problem either.
 \qed
 
+\remarkEng
+The unsolvability of the equivalence problem has been proven by \href{http://en.wikipedia.org/wiki/Henry_Gordon_Rice}{Henry Gordon Rice} \cite{rice:1953} in 1953.
+\eox
+
 \section{Concluding Remarks}
 Although, in general, we cannot decide whether a program terminates for a given input, this does not mean
 that we should not attempt to do so.  After all, we only have proven that there is no procedure that
 can \underline{alwa}y\underline{s} check whether a given program will terminate.  There might well exist a
 procedure for termination checking that works most of the time.  Indeed, there are a number of
-systems that try to check whether a program will always terminate.  For example, for \textsl{Prolog}
-programs, the article 
+systems that try to check whether a program will terminate for every input.  For example, for
+\href{https://en.wikipedia.org/wiki/Prolog}{Prolog}
+programs, the paper
 ``\href{http://link.springer.com/chapter/10.1007%2F3-540-61739-6_44}{\emph{Automated Modular Termination Proofs for Real Prolog Programs}}''
 \cite{mueller:1996} describes a successful approach.  The recent years have seen a lot of progress in
 this area.  The article 
@@ -531,12 +533,19 @@ You should be able to solve the following exercises.
 \section{Further Reading}
 The book ``\emph{Introduction to the Theory of Computation}'' by Michael Sipser \cite{sipser:1996}
 discusses the undecidability of the halting problem in section 4.2.  It also covers many related
-undecidable problems.  The exposition in the book of Sipser is based on Turing machines.  
+undecidable problems.
 
 Another good book discussing undecidability is the book 
 ``\emph{Introduction to Automata Theory, Languages, and Computation}'' written by John E.~Hopcroft,
 Rajeev Motwani and Jeffrey D.~Ullman \cite{hopcroft:06}.  This book is the third edition of a
 classic text.  In this book, the topic of undecidability is discussed in chapter 9.
+
+The exposition in these books is based on
+\href{https://en.wikipedia.org/wiki/Turing_machine}{Turing machines} and is therefore more formal than the
+exposition given here.  This increased formality seems necessary to prove that, for example, it is undecidable
+whether two \href{https://en.wikipedia.org/wiki/Context-free_grammar}{context free grammars} are equivalent.
+
+
 
 
 
