@@ -347,18 +347,18 @@ berechnen lässt:
 \\[0.2cm]
 \hspace*{1.3cm}
 $
-  \begin{array}{lcl}
+  \begin{array}[b]{lcl}
    \mathcal{I}\Bigl( (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q  \Bigr) 
    & = &  \circright\Bigl( \mathcal{I}\bigl( (p \rightarrow q) \bigr),\, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
    & = & \circright\Bigl( \circright\bigl( \mathcal{I}(p), \mathcal{I}(q) \bigr),\, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
    & = & \circright\Bigl( \circright\bigl( \texttt{True}, \texttt{False} \bigr),\, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
    & = & \circright\Bigl( \texttt{False}, \, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
-   & = & \texttt{True} \\
+   & = & \texttt{True} 
   \end{array}
-$
+$ \eox
 \\[0.2cm]
 Beachten Sie, dass wir bei der Berechnung gerade soviele Teile der Formel ausgewertet
-haben, wie notwendig waren um den Wert der Formel zu bestimmen.  Trotzdem ist die
+haben, wie notwendig waren, um den Wert der Formel zu bestimmen.  Trotzdem ist die
 eben durchgeführte Rechnung für die Praxis zu umständlich.  Stattdessen wird der Wert
 einer Formel direkt mit Hilfe der Tabelle \ref{tab:aussagen-logik} auf Seite
 \pageref{tab:aussagen-logik} berechnet.  Wir zeigen exemplarisch, wie wir den
@@ -467,46 +467,57 @@ $\textsl{rep}: \mathcal{F} \rightarrow \textsl{Python}$
 \\[0.2cm]
 definieren, die einer aussagenlogischen Formel $f$ ein geschachteltes Tupel $\textsl{rep}(f)$ zuordnet.  
 \begin{enumerate}
-\item $\verum$ wird repräsentiert durch den String \texttt{'\symbol{92}N\{up tack\}'}, der das Unicode-Zeichen
-      ``$\top$'' darstellt: 
+\item $\verum$ wird repräsentiert durch den String \texttt{'$\top$'}.
+      Dies ist möglich, da \texttt{'$\top$'} ein Unicode-Zeichen ist und Python die Verwendung von
+      Unicode-Zeichen in Strings erlaubt.  Wir können diesen String alternativ in \textsl{Python} 
+      auch in der Form
+      \texttt{'\symbol{92}N\{up tack\}'} schreiben, denn ``\texttt{up tack}'' ist der Name des
+      Unicode-Zeichens ``$\top$'' und ein Unicode Zeichen, das den Namen $n$ hat, kann in \textsl{Python}
+      als \texttt{'\symbol{92}N\{$n$\}'} geschrieben werden.  Also haben wir
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\textsl{rep}(\verum) := \texttt{'\symbol{92}N\{up tack\}'}$.
-\item $\falsum$  wird repräsentiert durch den String \texttt{'\symbol{92}N\{down tack\}'}, der das Unicode-Zeichen
-     ``$\bot$'' darstellt:
+      $\textsl{rep}(\verum) := \texttt{'$\top$'}$.
+\item $\falsum$  wird repräsentiert durch den String \texttt{'$\falsum$'}.
+      Das Unicode-Zeichen \texttt{'$\falsum$'} trägt den Namen \linebreak
+      ``\texttt{down tack}''.
+      Also haben wir
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{rep}(\falsum) := \texttt{'\symbol{92}N\{down tack\}'}$.
-\item Eine aussagenlogische Variable $p \in \mathcal{P}$ repräsentieren wir durch sich selber:
+\item Da aussagenlogische Variablen nichts anderes als Strings sind, können wir eine aussagenlogische Variable
+      durch sich selbst repräsentieren:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{rep}(p) := p$ \quad für alle $p \in \mathcal{P}$.
-\item Ist $f$ eine aussagenlogische Formel, so repräsentieren wir $\neg f$ als verschachteltes Tupel,
-      bei dem wir das Unicode-Zeichen \texttt{'\symbol{92}N\{not sign\}'} verwenden, denn dieses Zeichen wird
-      als ``$\neg$'' dargestellt:
+\item Ist $f$ eine aussagenlogische Formel, so repräsentieren wir die Negation $\neg f$ als verschachteltes Tupel,
+      bei dem wir das Unicode-Zeichen \texttt{'$\neg$'} an die erste Stelle setzen und anschließend
+      rekursiv die Formel $f$ in ihre \textsl{Python}-Repräsentierung umwandeln.
+      Der Name des Unicode-Zeichen ``$\neg$'' ist 
+      ``\texttt{not sign}''.  Also haben wir
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(\neg f) := \bigl(\texttt{'\symbol{92}N\{not sign\}'}, \textsl{rep}(f)\bigr)$.
+      $\textsl{rep}(\neg f) := \bigl(\texttt{'$\neg$'}, \textsl{rep}(f)\bigr)$.
 \item Sind $f_1$ und $f_2$ aussagenlogische Formeln, so repräsentieren wir $f_1 \wedge f_2$ mit
-      Hilfe des Unicode-Zeichens  \texttt{'\symbol{92}N\{logical and\}'}:
+      Hilfe des Unicode-Zeichens  \texttt{'$\wedge$'}, das den Namen 
+      ``\texttt{logical and}'' hat:
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(f \vee g) := \bigl(\texttt{'\symbol{92}N\{logical and\}'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
+      $\textsl{rep}(f \vee g) := \bigl(\texttt{'$\wedge$'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
 \item Sind $f_1$ und $f_2$ aussagenlogische Formeln, so repräsentieren wir $f_1 \vee f_2$ mit
-      Hilfe des Unicode-Zeichens  \texttt{'\symbol{92}N\{logical or\}'}:
+      Hilfe des Unicode-Zeichens  \texttt{'$\vee$'}, das den Namen ``\texttt{logical or}'' hat:
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(f \vee g) := \bigl(\texttt{'\symbol{92}N\{logical or\}'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
+      $\textsl{rep}(f \vee g) := \bigl(\texttt{'$\vee$'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
 \item Sind $f_1$ und $f_2$ aussagenlogische Formeln, so repräsentieren wir $f_1 \rightarrow f_2$ mit
-      Hilfe des Unicode-Zeichens  \texttt{'\symbol{92}N\{rightwards arrow\}'}:
+      Hilfe des Unicode-Zeichens  \texttt{'$\rightarrow$'}, das den Namen ``\texttt{rightwards arrow}'' hat:
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(f \rightarrow g) := \bigl(\texttt{'\symbol{92}N\{rightwards arrow\}'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
+      $\textsl{rep}(f \rightarrow g) := \bigl(\texttt{'$\rightarrow$'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
 \item Sind $f_1$ und $f_2$ aussagenlogische Formeln, so repräsentieren wir $f_1 \leftrightarrow f_2$ mit
-      Hilfe des Unicode-Zeichens  \texttt{'\symbol{92}N\{left right arrow\}'}:
+      Hilfe des Unicode-Zeichens  \texttt{'$\leftrightarrow$'}, das den Namen ``\texttt{left rigfht arrow}'' hat:
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(f \leftrightarrow g) := \bigl(\texttt{'\symbol{92}N\{left right arrow\}'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
+      $\textsl{rep}(f \leftrightarrow g) := \bigl(\texttt{'$\leftrightarrow$'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
 \end{enumerate}
 Bei der Wahl der Repräsentation, mit der wir eine Formel in \textsl{Python} repäsentieren,
 sind wir weitgehend frei.  Wir hätten oben sicher auch eine andere Repräsentation
@@ -521,8 +532,8 @@ darstellen.  Eine aussagenlogische Interpretation ist eine Funktion
 \\[0.2cm]
 \hspace*{1.3cm} ${\cal I}: {\cal P} \rightarrow \mathbb{B}$ \\[0.2cm]
 von der Menge der Aussage-Variablen ${\cal P}$ in die Menge der Wahrheitswerte 
-$\mathbb{B}$.  Die einfachste Möglichkeit eine solche aussagenlogische Interpretation darzustellen besteht
-darin,  dass wir die Menge allee aussagenlogischen Variablen angeben, die unter der aussagenlogischen
+$\mathbb{B}$.  Eine Möglichkeit eine solche aussagenlogische Interpretation darzustellen besteht
+darin,  dass wir die Menge aller aussagenlogischen Variablen angeben, die unter der aussagenlogischen
 Interpretation $\mathcal{I}$ den Wert \texttt{True} annehmen:
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -531,15 +542,15 @@ $\textsl{rep}(\mathcal{I}) := \bigl\{ x \in \mathcal{P} \mid \mathcal{I}(x) = \t
 Damit können wir jetzt eine einfache Funktion implementieren, die den Wahrheitswert
 einer aussagenlogischen Formel $f$ unter einer gegebenen aussagenlogischen
 Interpretation ${\cal I}$ berechnet. Die Funktion
-\texttt{evaluate.py}
+\texttt{evaluate}
 ist in Abbildung \ref{fig:evaluate.py} auf Seite \pageref{fig:evaluate.py} gezeigt.
 Die Funktion \texttt{evaluate} erwartet zwei Argumente:
 \begin{enumerate}
-\item Das erste Argument $f$ ist eine aussagenlogische Formel, die als verschachteltes Tupel dargestellt
+\item Das erste Argument $F$ ist eine aussagenlogische Formel, die als verschachteltes Tupel dargestellt
       wird.
 \item Das zweite Argument $I$ ist eine aussagenlogische Interpretation, die als Menge von aussagenlogischen Variablen
       dargestellt wird.  Für eine aussagenlogische Variable mit dem Namen $p$ können wir den Wert,
-      der dieser Variablen durch $I$ zugeordnet wird, mittels des Ausdrucks $p \;\mathtt{in}\; I$ berechnen.
+      der dieser Variablen durch $I$ zugeordnet wird, mittels des Ausdrucks ``$p \;\mathtt{in}\; I$'' berechnen.
 \end{enumerate}
 
 \begin{figure}[!ht]
@@ -554,10 +565,10 @@ Die Funktion \texttt{evaluate} erwartet zwei Argumente:
                 ]
     def evaluate(F, I):
         "Evaluate the propositional formula F using the interpretation I"
-        if isinstance(F, str): # F is a propositional variable
-            return F in I
         if F[0] == '⊤': return True
         if F[0] == '⊥': return False
+        if isinstance(F, str): # F is a propositional variable
+            return F in I
         if F[0] == '¬': return not evaluate(F[1], I)
         if F[0] == '∧': return evaluate(F[1], I) and evaluate(F[2], I)
         if F[0] == '∨': return evaluate(F[1], I) or evaluate(F[2], I)
@@ -573,35 +584,35 @@ Die Funktion \texttt{evaluate} erwartet zwei Argumente:
 Wir diskutieren jetzt die Implementierung der Funktion \texttt{evaluate()} Zeile für
 Zeile:
 \begin{enumerate}
-\item Falls die Formel $f$ den Wert $\verum$ hat, so ist das Ergebnis der Auswertung unabhängig von der
+\item Falls die Formel $F$ den Wert $\verum$ hat, so ist das Ergebnis der Auswertung unabhängig von der
       aussagenlogischen Interpretation $I$ immer \texttt{True}. 
-\item Falls die Formel $f$ den Wert $\falsum$ hat, so ist das Ergebnis der
+\item Falls die Formel $F$ den Wert $\falsum$ hat, so ist das Ergebnis der
       Auswertung unabhängig von der aussagenlogischen Interpretation $I$ immer \texttt{False}.
-\item In Zeile 5 betrachten wir den Fall, dass das Argument $f$ eine aussagenlogische
-      Variable repräsentiert.  Dies erkennen wir daran, dass $f$ ein String ist.
-      die vordefinierte Funktion \texttt{isinstance} führt diese Überprüfung durch.
+\item In Zeile 5 betrachten wir den Fall, dass das Argument $F$ eine aussagenlogische
+      Variable repräsentiert.  Dies erkennen wir daran, dass $F$ ein String ist.
+      Die vordefinierte Funktion \texttt{isinstance} führt diese Überprüfung durch.
 
-      In diesem Fall müssen wir wissen, ob die Variable $f$ ein Element der Menge $I$ ist, denn genau dann
-      wird $f$ als wahr interpretiert.
-\item In Zeile 7 betrachten wir den Fall, dass $f$ die Form $\neg g$  hat.
-      In diesem Fall werten wir erst $g$ unter der Belegung $I$ aus und negieren dann das Ergebnis.
-\item In Zeile 8 betrachten wir den Fall, dass $f$ die Form 
-      $g_1 \wedge g_2$ hat.
-      In diesem Fall werten wir zunächst $g_1$ und $g_2$ unter der Belegung $I$ 
+      In diesem Fall müssen wir wissen, ob die Variable $F$ ein Element der Menge $I$ ist, denn genau dann
+      wird $F$ als wahr interpretiert.
+\item In Zeile 7 betrachten wir den Fall, dass $F$ die Form $\neg G$  hat.
+      In diesem Fall werten wir erst $G$ unter der Belegung $I$ aus und negieren dann das Ergebnis.
+\item In Zeile 8 betrachten wir den Fall, dass $F$ die Form 
+      $G_1 \wedge G_2$ hat.
+      In diesem Fall werten wir zunächst $G_1$ und $G_2$ unter der Belegung $I$ 
       aus und verknüpfen  das Ergebnis mit dem Operator ``\texttt{and}''.
-\item In Zeile 9 betrachten wir den Fall, dass $f$ die Formel $g_1 \vee g_2$ repräsentiert.
-      In diesem Fall werten wir zunächst $g_1$ und $g_2$ unter der Belegung $I$ 
+\item In Zeile 9 betrachten wir den Fall, dass $F$ die Formel $G_1 \vee G_2$ repräsentiert.
+      In diesem Fall werten wir zunächst $G_1$ Und $G_2$ unter der Belegung $I$ 
       aus und verknüpfen  das Ergebnis mit dem Operator ``\texttt{or}''.
-\item In Zeile 10 betrachten wir den Fall, dass $f$ die Form $g_1 \rightarrow g_2$ hat.
-      In diesem Fall werten wir zunächst $g_1$ und $g_2$ unter der Belegung $I$ 
+\item In Zeile 10 betrachten wir den Fall, dass $F$ die Form $G_1 \rightarrow G_2$ hat.
+      In diesem Fall werten wir zunächst $G_1$ und $G_2$ unter der Belegung $I$ 
       aus und nutzen dann aus, dass die Formeln
       \\[0.2cm]
       \hspace*{1.3cm}
-      $g_1 \rightarrow g_2$ \quad und \quad $\neg g_1 \vee g_2$
+      $G_1 \rightarrow G_2$ \quad und \quad $\neg G_1 \vee G_2$
       \\[0.2cm]
       äquivalent sind.
-\item In Zeile 11 führen wir die Auswertung einer Formel $f \leftrightarrow g$ darauf zurück, dass diese
-      Formel genau dann wahr ist, wenn $f$ und $g$ denselben Wahrheitswert haben.
+\item In Zeile 11 führen wir die Auswertung einer Formel $F \leftrightarrow G$ darauf zurück, dass diese
+      Formel genau dann wahr ist, wenn $F$ und $G$ den selben Wahrheitswert haben.
 \end{enumerate}
 
 \subsection{Eine Anwendung}
