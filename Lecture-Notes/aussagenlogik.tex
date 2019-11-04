@@ -565,10 +565,10 @@ Die Funktion \texttt{evaluate} erwartet zwei Argumente:
                 ]
     def evaluate(F, I):
         "Evaluate the propositional formula F using the interpretation I"
-        if F[0] == '⊤': return True
-        if F[0] == '⊥': return False
         if isinstance(F, str): # F is a propositional variable
             return F in I
+        if F[0] == '⊤': return True
+        if F[0] == '⊥': return False
         if F[0] == '¬': return not evaluate(F[1], I)
         if F[0] == '∧': return evaluate(F[1], I) and evaluate(F[2], I)
         if F[0] == '∨': return evaluate(F[1], I) or evaluate(F[2], I)
@@ -584,16 +584,18 @@ Die Funktion \texttt{evaluate} erwartet zwei Argumente:
 Wir diskutieren jetzt die Implementierung der Funktion \texttt{evaluate()} Zeile für
 Zeile:
 \begin{enumerate}
-\item Falls die Formel $F$ den Wert $\verum$ hat, so ist das Ergebnis der Auswertung unabhängig von der
-      aussagenlogischen Interpretation $I$ immer \texttt{True}. 
-\item Falls die Formel $F$ den Wert $\falsum$ hat, so ist das Ergebnis der
-      Auswertung unabhängig von der aussagenlogischen Interpretation $I$ immer \texttt{False}.
-\item In Zeile 5 betrachten wir den Fall, dass das Argument $F$ eine aussagenlogische
+\item In Zeile 3 betrachten wir den Fall, dass das Argument $F$ eine aussagenlogische
       Variable repräsentiert.  Dies erkennen wir daran, dass $F$ ein String ist.
       Die vordefinierte Funktion \texttt{isinstance} führt diese Überprüfung durch.
 
       In diesem Fall müssen wir wissen, ob die Variable $F$ ein Element der Menge $I$ ist, denn genau dann
       wird $F$ als wahr interpretiert.
+\item Falls die Formel $F$ den Wert $\verum$ hat, so ist das Ergebnis der Auswertung unabhängig von der
+      aussagenlogischen Interpretation $I$ immer \texttt{True}. 
+      Um zu erkennen, ob $F$ die Formel $\verum$ repräsentiert, betrachten wir die erste Komponente
+      des Tupels $F$ und überprüfen also, ob $F[0]$ das Zeichen \texttt{'$\verum$'} ist.
+\item Falls die Formel $F$ den Wert $\falsum$ hat, so ist das Ergebnis der
+      Auswertung unabhängig von der aussagenlogischen Interpretation $I$ immer \texttt{False}.
 \item In Zeile 7 betrachten wir den Fall, dass $F$ die Form $\neg G$  hat.
       In diesem Fall werten wir erst $G$ unter der Belegung $I$ aus und negieren dann das Ergebnis.
 \item In Zeile 8 betrachten wir den Fall, dass $F$ die Form 
@@ -847,9 +849,9 @@ $\mathtt{collectVars}(f)$, welche die Menge aller aussagenlogischen Variablen be
 aussagenlogischen Formel $f$ auftreten.  Diese Funktion ist durch die folgenden rekursiven Gleichugen 
 spezifiziert:
 \begin{enumerate}
+\item $\mathtt{collectVars}(p) = \{ p \}$ \quad für alle aussagenlogischen Variablen $p$.
 \item $\mathtt{collectVars}(\verum) = \{\}$.
 \item $\mathtt{collectVars}(\falsum) = \{\}$.
-\item $\mathtt{collectVars}(p) = \{ p \}$ \quad für alle aussagenlogischen Variablen $p$.
 \item $\mathtt{collectVars}(\neg f) := \mathtt{collectVars}(f)$.
 \item $\mathtt{collectVars}(f \wedge g) := \mathtt{collectVars}(f) \cup \mathtt{collectVars}(g)$.
 \item $\mathtt{collectVars}(f \vee g) := \mathtt{collectVars}(f) \cup \mathtt{collectVars}(g)$.
@@ -993,18 +995,18 @@ präzise formulieren zu können, benötigen wir noch einige Definitionen.
 \end{Definition}
 
 Später werden wird noch den Begriff des \blue{Komplements} eines Literals benötigen.
-Ist $l$ ein Literal, so wird das Komplement von $l$ mit $\komplement{\,l\,}$
+Ist $l$ ein Literal, so wird das Komplement von $l$ mit $\komplement{l}$
 bezeichnet.  Das Komplement wird durch Fall-Unterscheidung definiert:
 \begin{enumerate}
 \item $\komplement{\verum} = \falsum$ \quad und \quad $\komplement{\falsum} = \verum$. 
 \item $\komplement{p} := \neg p$, \quad falls $p \in \mathcal{P}$.
 \item $\komplement{\neg p} := p$, \quad falls $p \in \mathcal{P}$.
 \end{enumerate}
-Wir sehen, dass das Komplement $\komplement{\,l\,}$ eines Literals $l$ äquivalent zur
+Wir sehen, dass das Komplement $\komplement{l}$ eines Literals $l$ äquivalent zur
 Negation von $l$ ist, wir haben also
 \\[0.2cm]
 \hspace*{1.3cm}
-$\models \komplement{\,l\,} \leftrightarrow \neg l$.
+$\models \komplement{l} \leftrightarrow \neg l$.
 
 \begin{Definition}[Klausel]
   Eine aussagenlogische Formel $K$ ist eine \blue{Klausel} wenn $K$ die Form \\[0.2cm]
@@ -1041,7 +1043,7 @@ In einer Menge kommt jedes Element höchstens einmal vor und die Reihenfolge, in
 Elemente auftreten, spielt auch keine Rolle.  Daher sind die beiden obigen Mengen gleich!
 Durch die Tatsache, dass Mengen von der Reihenfolge und der Anzahl der Elemente
 abstrahieren, implementiert die Mengen-Schreibweise die Assoziativität, Kommutativität und
-Idempotenz der Disjunktion.  Über\-tragen wir die  aussagenlogische Äquivalenz
+Idempotenz der Disjunktion.  Über\-tragen wir nun die  aussagenlogische Äquivalenz
 \\[0.2cm]
 \hspace*{1.3cm}
 $l_1 \vee \cdots \vee l_r \vee \falsum \leftrightarrow l_1 \vee \cdots \vee l_r$
@@ -1063,7 +1065,7 @@ Damit sehen wir, dass die leere Menge von Literalen als $\falsum$ zu interpretie
   Eine Klausel $K$ ist \blue{trivial}, wenn einer der beiden folgenden Fälle vorliegt:
   \begin{enumerate}
   \item $\verum \in K$.
-  \item Es existiert $p \in \mathcal{P}$ mit $p \in K$ und $\neg p \in K$.
+  \item Es existiert eine Variable $p \in \mathcal{P}$, so dass sowohl $p \in K$ als auch $\neg p \in K$ gilt.
 
         In diesem Fall bezeichnen wir $p$ und $\neg p$ als \blue{komplementäre Literale}.
         \eox
@@ -1071,7 +1073,7 @@ Damit sehen wir, dass die leere Menge von Literalen als $\falsum$ zu interpretie
 \end{Definition}
 
 \begin{Satz} \label{satz:trivial}
-  Eine Klausel ist genau dann eine Tautologie, wenn sie trivial ist.
+  Eine Klausel $K$ ist genau dann eine Tautologie, wenn sie trivial ist.
 \end{Satz}
 \textbf{Beweis}:  Wir nehmen zunächst an, dass die Klausel $K$ trivial ist.
 Falls nun $\verum \el K$ ist, dann gilt wegen der Gültigkeit der Äquivalenz 
@@ -1184,9 +1186,9 @@ Wir demonstrieren das Verfahren am Beispiel der Formel\\[0.2cm]
 \begin{enumerate}
 \item Da die Formel den Junktor ``$\leftrightarrow$'' nicht enthält,
       ist im ersten Schritt nichts zu tun.
-\item Die Elimination von ``$\rightarrow$'' liefert \\[0.2cm]
+\item Die Elimination des Junktors ``$\rightarrow$'' liefert \\[0.2cm]
       \hspace*{1.3cm} $\neg (\neg p \vee q) \vee (\neg \neg p \vee \neg q)$.
-\item Die Umrechnung auf Negations-Normalform liefert \\[0.2cm]
+\item Die Umrechnung auf Negations-Normalform ergibt \\[0.2cm]
       \hspace*{1.3cm} $(p \wedge \neg q) \vee (p \vee \neg q)$.
 \item Durch ``Ausmultiplizieren'' erhalten wir \\[0.2cm]
       \hspace*{1.3cm} $\bigl(p \vee (p \vee \neg q)\bigr) \wedge \bigl(\neg q \vee (p \vee \neg q)\bigr)$.
@@ -1394,7 +1396,7 @@ $\neg (f \wedge g) \leftrightarrow (\neg f \vee \neg g)$ \quad und \quad
 $\neg (f \vee g) \leftrightarrow (\neg f \wedge \neg g)$ 
 \\[0.2cm]
 angewendet.  Wir beschreiben die Umformung in Negations-Normalform durch 
-die folgenden Gleichungen:
+die folgenden Glei\-chungen:
 \begin{enumerate}
 \item $\texttt{nnf}(p) = p$ \quad für alle $p \in \mathcal{P}$,
 \item $\texttt{nnf}(\verum) = \verum$,
