@@ -555,14 +555,14 @@ Die Funktion \texttt{evaluate} erwartet zwei Argumente:
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.3cm,
-                  xrightmargin  = 0.3cm
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                bgcolor       = sepia,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                xleftmargin   = 0.3cm,
+                xrightmargin  = 0.3cm
+               ]{python3}
     def evaluate(F, I):
         "Evaluate the propositional formula F using the interpretation I"
         if isinstance(F, str): # F is a propositional variable
@@ -574,7 +574,7 @@ Die Funktion \texttt{evaluate} erwartet zwei Argumente:
         if F[0] == '∨': return evaluate(F[1], I) or evaluate(F[2], I)
         if F[0] == '→': return not evaluate(F[1], I) or evaluate(F[2], I)
         if F[0] == '↔': return evaluate(F[1], I) == evaluate(F[2], I)
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Auswertung einer aussagenlogischen Formel}
   \label{fig:evaluate.py}
@@ -660,14 +660,14 @@ Wir diskutieren dieses Programm nun Zeile für Zeile.
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm
-                  ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm
+              ]{python3}
     import propLogParser as plp
 
     def transform(s):
@@ -693,7 +693,7 @@ Wir diskutieren dieses Programm nun Zeile für Zeile.
         return all({evaluate(f, I) for f in Fs})
 
     print({ I for I in power(P) if allTrue(Fs, I) })
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Programm zur Aufklärung des Einbruchs}
   \label{fig:Usual-Suspects.ipynb}
@@ -864,14 +864,14 @@ zusammengefasst haben, denn die Berechnung der Variablen verläuft in diesen Fä
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{python3}
     def collectVars(f):
         "Collect all propositional variables occurring in the formula f."
         if isinstance(f, str):
@@ -881,7 +881,7 @@ zusammengefasst haben, denn die Berechnung der Variablen verläuft in diesen Fä
         if f[0] == '¬':
             return collectVars(f[1])
         return collectVars(f[1]) | collectVars(f[2]) 
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Überprüfung der Allgemeingültigkeit einer aussagenlogischen Formel}
   \label{fig:tautology.py-collectVars}
@@ -903,14 +903,14 @@ gezeigte Funktion arbeitet wie folgt:
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{python3}
     def tautology(f):
         "Check, whether the formula f is a tautology."
         P = collectVars(f)
@@ -919,7 +919,7 @@ gezeigte Funktion arbeitet wie folgt:
             return True
         else:
             return [I for I in A if not evaluate(F, I)][0]
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Überprüfung der Allgemeingültigkeit einer aussagenlogischen Formel}
   \label{fig:tautology.py}
@@ -1262,14 +1262,14 @@ die das Verhalten der Funktion $\texttt{elimBiconditional}$ beschreiben:
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm
-                  ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{python3}
     def elimBiconditional(f):
         "Eliminate the logical operator '↔' from the formula f."
         if isinstance(f, str):   # This case covers variables.
@@ -1292,7 +1292,7 @@ die das Verhalten der Funktion $\texttt{elimBiconditional}$ beschreiben:
             ge       = elimBiconditional(g)
             he       = elimBiconditional(h)
             return (op, ge, he)
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Elimination von $\leftrightarrow$}
   \label{fig:elimBiconditional}
@@ -1341,14 +1341,14 @@ Dadurch entfällt bei der Implementierung ein Fall.
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
+\begin{minted}[ frame         = lines, 
                   framesep      = 0.3cm, 
-                  labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
+                  bgcolor       = sepia,
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
-                ]
+                ]{python3}
     def elimConditional(f):
         "Eliminate the logical operator '→' from f."
         if isinstance(f, str): 
@@ -1371,7 +1371,7 @@ Dadurch entfällt bei der Implementierung ein Fall.
             ge       = elimConditional(g)
             he       = elimConditional(h)
             return (op, ge, he)
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Elimination von $\rightarrow$}
   \label{fig:eliminate-folgt}
@@ -1444,14 +1444,14 @@ Gleichungen unmittelbar um.
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
+\begin{minted}[ frame         = lines, 
                   framesep      = 0.3cm, 
-                  labelposition = bottomline,
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
+                  bgcolor       = sepia,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                ]
+                ]{python3}
     def nnf(f):
         "Compute the negation normal form of f."
         if isinstance(f, str): 
@@ -1487,7 +1487,7 @@ Gleichungen unmittelbar um.
         if f[0] == '∨':
             g, h = f[1:]
             return ('∧', neg(g), neg(h))
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Berechnung der Negations-Normalform}
   \label{fig:nnf}
@@ -1576,14 +1576,14 @@ Abbildung \ref{fig:cnf} auf Seite \pageref{fig:cnf} zeigt die Implementierung de
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
+\begin{minted}[ frame         = lines, 
                   framesep      = 0.3cm, 
-                  labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
+                  bgcolor       = sepia,
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
-                ]
+                ]{python3}
     def cnf(f):
         if isinstance(f, str): 
             return { frozenset({f}) }
@@ -1599,7 +1599,7 @@ Abbildung \ref{fig:cnf} auf Seite \pageref{fig:cnf} zeigt die Implementierung de
         if f[0] == '∨':
             g, h = f[1:]
             return { k1 | k2 for k1 in cnf(g) for k2 in cnf(h) }
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Berechnung der konjunktiven Normalform}
   \label{fig:cnf}
@@ -1627,14 +1627,14 @@ unter GitHub.
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{python3}
     def normalize (f):
         n1 = elimBiconditional(f)
         n2 = elimConditional(n1)
@@ -1647,7 +1647,7 @@ unter GitHub.
     
     def isTrivial(Clause):
         return any(('¬', p) in Clause for p in Clause)
-\end{Verbatim} 
+\end{minted} 
 \vspace*{-0.3cm}
   \caption{Normalisierung einer Formel}
   \label{fig:normalize}
@@ -2080,15 +2080,15 @@ sind.
 
 \begin{figure}[!ht]
 \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  firstnumber   = 1,
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm,
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm,
+              ]{python3}
     def complement(l):
         "Compute the complement of the literal l."
         if isinstance(l, str):  # l is a propositional variable
@@ -2110,16 +2110,19 @@ sind.
                }        
         
     def cutRule(C1, C2):
-        "Return the set of all clauses that can be deduced by the cut rule from c1 and c2."
+        '''
+        Return the set of all clauses that can be deduced with the cut rule 
+        from the clauses c1 and c2.
+        '''
         return { C1 - {l} | C2 - {complement(l)} for l in C1
-                                                 if complement(l) in C2
+                                                 if  complement(l) in C2
                }
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
 \caption{Hilfsprozeduren, die in Abbildung \ref{fig:Completeness.ipynb-2} genutzt werden}
 \label{fig:Completeness.ipynb-1}
 \end{figure}
-\pagebreak
+
 
 Abbildung \ref{fig:Completeness.ipynb-2} zeigt die Funktion \texttt{saturate}.  Diese Funktion erhält
 als Eingabe eine Menge \texttt{Clauses} von aus\-sagenlogischen Klauseln, die als Mengen von Literalen
@@ -2139,15 +2142,15 @@ definiert ist:
 \end{enumerate}
 \begin{figure}[!ht]
 \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  firstnumber   = last,
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm,
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = last,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm,
+              ]{python3}
     def saturate(Clauses):
         while True:
             Derived = { C for C1 in Clauses
@@ -2160,7 +2163,7 @@ definiert ist:
             if Derived == set():        # no new clauses found
                 return Clauses
             Clauses |= Derived
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
 \caption{Die Funktion \texttt{saturate}}
 \label{fig:Completeness.ipynb-2}
@@ -2212,15 +2215,15 @@ Zeile 20 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.
 
 \begin{figure}[!ht]
 \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  firstnumber   = last,
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm,
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = last,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm,
+              ]{python3}
     def findValuation(Clauses):
         "Given a set of Clauses, find an interpretation satisfying all of these clauses."
         Variables = collectVariables(Clauses)
@@ -2236,7 +2239,7 @@ Zeile 20 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.
             else:
                 Literals |= { ('¬', p) }
         return Literals
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
 \caption{Die Funktion \texttt{findValuation}}
 \label{fig:Completeness.ipynb-3}
@@ -2864,14 +2867,14 @@ Menge \texttt{Literals}.
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.2cm,
-                  xrightmargin  = 0.2cm
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.2cm,
+                xrightmargin  = 0.2cm
+              ]{python3}
     def solve(Clauses, Literals):
         S      = saturate(Clauses);
         empty  = frozenset()
@@ -2886,7 +2889,7 @@ Menge \texttt{Literals}.
         if Result != Falsum:
             return Result
         return solve(S | { frozenset({negL}) }, Literals | { l })
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Die Funktion \texttt{solve}}
   \label{fig:solve}
@@ -2935,14 +2938,14 @@ gezeigt.
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm
+              ]{python3}
     def saturate(Clauses):
         S     = Clauses.copy()
         Units = { C for C in S if len(C) == 1 }
@@ -2954,7 +2957,7 @@ gezeigt.
             S     = reduce(S, l)
             Units = { C for C in S if len(C) == 1 } - Used        
         return S
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Die Funktion \texttt{saturate}}
   \label{fig:saturate}
@@ -3004,20 +3007,20 @@ Die Implementierung setzt diese Definition unmittelbar um.
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
+\begin{minted}[ frame         = lines, 
                   framesep      = 0.3cm, 
-                  labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
+                  bgcolor       = sepia,
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
-                ]
+                ]{python3}
     def reduce(Clauses, l):
         lBar = complement(l)
         return   { C - { lBar } for C in Clauses if lBar in C }          \
                | { C for C in Clauses if lBar not in C and l not in C }  \
                | { frozenset({l}) }
-    \end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Die Funktion \texttt{reduce}}
   \label{fig:reduce}
@@ -3037,14 +3040,14 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
 \end{enumerate}
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm
-                  ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm
+              ]{python3}
     def selectLiteral(Clauses, Forbidden):
         Variables = { extractVariable(l) for C in Clauses for l in C } - Forbidden
         return arb(Variables)
@@ -3053,7 +3056,7 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
         "Return some member from the set S."
         for x in S:
             return x
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Die Funktionen \texttt{select} und \texttt{negateLiteral}}
   \label{fig:solve-aux}
@@ -3150,18 +3153,18 @@ $r$ und Spalte $c$ eine Dame befindet.
 
 \begin{figure}[!ht]
 \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  firstnumber   = 1,
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm,
+              ]{python3}
     def var(row, col):
         return 'Q' + str(row) + ',' + str(col) + ')'                  
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
 \caption{Die Funktion \texttt{var} Zur Berechnung der aussagenlogischen Variablen}
 \label{fig:var}
@@ -3302,20 +3305,20 @@ den Wert \texttt{True} hat.
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm
+              ]{python3}
     def atMostOne(S): 
         return { frozenset({('¬',p), ('¬', q)}) for p in S
-                                                for q in S 
-                                                if  p != q 
+                                                 for q in S 
+                                                 if  p != q 
                }
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Die Funktion \texttt{atMostOne}}
   \label{fig:atMostOne}
@@ -3340,17 +3343,17 @@ als Menge von Klauseln liefert.
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm
+              ]{python3}
     def atMostOneInRow(row, n):
         return atMostOne({ var(row, col) for col in range(1,n+1) })
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Die Funktion \texttt{atMostOneInRow}}
   \label{fig:atMostOneInRow}
@@ -3383,17 +3386,17 @@ Davis und Putnam arbeitet mit einer Menge von Klauseln.
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm
+              ]{python3}
     def oneInColumn(col, n):
         return { frozenset({ var(row, col) for row in range(1,n+1) }) }
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Die Funktion \texttt{oneInColumn}}
   \label{fig:oneInColumn}
@@ -3432,21 +3435,21 @@ Funktion \texttt{atMostOneInRisingDiagonal} mit.  Diese Funktion ist in Abbildun
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{python3}
     def atMostOneInRisingDiagonal(k, n):
         S = { var(row, col) for row in range(1, n+1)
                             for col in range(1, n+1) 
                             if  row + col == k 
             }
         return atMostOne(S)
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Die Funktion \texttt{atMostOneInUpperDiagonal}}
   \label{fig:atMostOneInUpperDiagonal}
@@ -3470,21 +3473,21 @@ Funktion \texttt{atMostOneInLowerDiagonal} mit. Diese Funktion ist in Abbildung
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+            ]{python3}
     def atMostOneInFallingDiagonal(k, n):
         S = { var(row, col) for row in range(1, n+1)
                             for col in range(1, n+1) 
                             if  row - col == k 
             }
         return atMostOne(S)
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Die Funktion \texttt{atMostOneInLowerDiagonal}}
   \label{fig:atMostOneInLowerDiagonal}
@@ -3511,21 +3514,21 @@ Klauseln um.
 
 \begin{figure}[!ht]
   \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.3cm,
-                  xrightmargin  = 0.3cm
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.3cm,
+                xrightmargin  = 0.3cm
+              ]{python3}
     def allClauses(n):
         All = [ atMostOneInRow(row, n)           for row in range(1, n+1)        ] \
             + [ atMostOneInFallingDiagonal(k, n) for k in range(3, (2*n-1)+1)    ] \
             + [ atMostOneInRisingDiagonal(k, n)  for k in range(-(n-2), (n-2)+1) ] \
             + [ oneInColumn(col, n)              for col in range(1, n+1)        ]
         return { clause for S in All for clause in S }
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
   \caption{Die Funktion \texttt{allClauses}}
   \label{fig:allClauses}
@@ -3551,15 +3554,15 @@ Das vollständige Programm finden Sie als Jupyter Notebook auf meiner Webseite u
 
 \begin{figure}[!ht]
 \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  firstnumber   = 1,
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm,
+              ]{python3}
     def queens(n):
         "Solve the n queens problem."
         Clauses  = allClauses(n)
@@ -3568,7 +3571,7 @@ Das vollständige Programm finden Sie als Jupyter Notebook auf meiner Webseite u
             printBoard(Solution, n)
         else:
             print(f'The problem is not solvable for {n} queens!')                  
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
 \caption{Die Funktion \texttt{queens}}
 \label{fig:solve:queens}
@@ -3577,14 +3580,14 @@ Das vollständige Programm finden Sie als Jupyter Notebook auf meiner Webseite u
 
 \begin{figure}[!ht]
 \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  labelposition = bottomline,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm,
+              ]{python3}
     def printBoard(I, n):
         if I == { frozenset() }:
             return
@@ -3606,7 +3609,7 @@ Das vollständige Programm finden Sie als Jupyter Notebook auf meiner Webseite u
         for col in range(1, n+1):
             line += "       |"
         print(line)
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
 \caption{Die Funktion $\texttt{printBoard}()$}
 \label{fig:printBoard}
