@@ -2669,6 +2669,9 @@ Beachten Sie, dass die Menge $\texttt{unitCut}(K,l)$ genauso viele Klauseln enth
 $K$.  Allerdings sind die Klauseln aus der Menge $K$, die das Literal $\komplement{l}$
 enthalten, verkleinert worden.   Alle anderen Klauseln aus $K$ bleiben unverändert.
 
+Eine Klauselmenge $K$ werden wir nur dann mit Hilfe des Ausdrucks $\texttt{unitCut}(K, l)$ vereinfachen, wenn 
+die Unit-Klausel $\{l\}$ ein Element der Menge $K$ ist.
+
 \subsection{Vereinfachung durch Subsumption}
 Das Prinzip der Subsumption demonstrieren wir zunächst an einem Beispiel.
 Wir betrachten \\[0.2cm]
@@ -2700,7 +2703,9 @@ $\texttt{subsume}(K, l) :=
 \\[0.2cm]
 In der obigen Definition muss $\{l\}$ in das Ergebnis eingefügt werden, weil die Menge
 \mbox{$\bigl\{ C \in K \mid l \not\in C \bigr\}$} die Unit-\-Klausel $\{l\}$ nicht enthält.  Die beiden Klausel-Mengen
-$\mathtt{subsume}(K,l)$ und $K$ sind genau dann äquivalent, wenn $\{l\} \in K$ gilt.
+$\mathtt{subsume}(K,l)$ und $K$ sind genau dann äquivalent, wenn $\{l\} \in K$ gilt.  
+Eine Klauselmenge $K$ werden wir daher nur dann mit Hilfe des Ausdrucks $\texttt{subsume}(K, l)$ vereinfachen, wenn 
+die Unit-Klausel $\{l\}$ in der Menge $K$ enthalten ist.
 
 \subsection{Vereinfachung durch Fallunterscheidung}
 Ein Kalkül, der nur mit Unit-Schnitten und Subsumption arbeitet, ist nicht 
@@ -2717,16 +2722,19 @@ Satz.
 \end{Satz}
 
 \noindent
-\textbf{Beweis}: 
-Ist $K$ erfüllbar durch eine
-Belegung $\I$, so gibt es für  $\I(p)$ zwei Möglichkeiten:  Falls $\I(p) = \texttt{True}$ ist, ist
-damit auch die Menge $K \cup \bigl\{\{p\}\bigr\}$ erfüllbar, andernfalls ist
-$K \cup \bigl\{\{\neg p\}\bigr\}$ erfüllbar. 
-
-Da $K$ sowohl eine Teilmenge von $K \cup \bigl\{\{p\}\bigr\}$ als auch von 
-$K \cup \bigl\{\{\neg p\}\bigr\}$ ist, ist klar, dass $K$ erfüllbar
-ist, wenn eine dieser Mengen erfüllbar sind.  
+\textbf{Beweis}:
+\begin{enumerate}
+\item[``$\Rightarrow$'':] 
+  Ist $K$ erfüllbar durch eine Belegung $\I$, so gibt es für  $\I(p)$ zwei Möglichkeiten, denn 
+  es ist entweder wahr oder falsch.  Falls $\I(p) = \texttt{True}$ ist, ist damit auch die Menge $K \cup
+  \bigl\{\{p\}\bigr\}$ erfüllbar, andernfalls ist 
+  $K \cup \bigl\{\{\neg p\}\bigr\}$ erfüllbar. 
+\item[``$\Leftarrow$'':] 
+  Da $K$ sowohl eine Teilmenge von $K \cup \bigl\{\{p\}\bigr\}$ als auch von 
+  $K \cup \bigl\{\{\neg p\}\bigr\}$ ist, ist klar, dass $K$ erfüllbar
+  ist, wenn eine dieser Mengen erfüllbar sind.  
 \qed
+\end{enumerate}
 
 Wir können nun eine Menge $K$ von Klauseln dadurch vereinfachen, dass wir eine
 aussagenlogische Variable $p$ wählen, die in $K$ vorkommt.
@@ -2738,12 +2746,13 @@ und untersuchen rekursiv ob $K_1$ erfüllbar ist.  Falls wir eine Lösung für $
 ist dies auch eine Lösung für die ursprüngliche Klausel-Menge $K$ und wir haben unser Ziel
 erreicht.
 Andernfalls untersuchen wir rekursiv ob $K_2$ erfüllbar ist.
-Falls wir nun eine Lösung finden, ist dies auch eine Lösung von $K$ und wenn wir weder
+Falls wir eine Lösung finden, ist dies auch eine Lösung von $K$.  Wenn wir weder
 für $K_1$ noch für $K_2$ eine Lösung finden, dann kann auch $K$ keine Lösung haben,
 denn jede Lösung $\mathcal{I}$ von $K$ muss die Variable $p$ entweder wahr oder falsch machen.
 Die rekursive Untersuchung von $K_1$ bzw.~$K_2$ ist leichter als die Untersuchung von $K$,
 weil wir ja in $K_1$ und $K_2$ mit den Unit-Klausel $\{p\}$ bzw.~$\{\neg p\}$
-sowohl Unit-Subsumptionen als auch Unit-Schnitte durchführen können.
+sowohl Unit-Subsumptionen als auch Unit-Schnitte durchführen können und dadurch diese Mengen vereinfacht
+werden. 
 
 
 \subsection{Der Algorithmus}
@@ -2754,7 +2763,7 @@ suchen  also eine Belegung $\I$, so dass gilt: \\[0.2cm]
 Das Verfahren von Davis und Putnam besteht nun aus den folgenden Schritten.
 \begin{enumerate}
 \item Führe alle Unit-Schnitte und Unit-Subsumptionen aus, die mit Klauseln aus $K$ möglich sind.
-\item Falls $K$ nun trivial ist, sind wir fertig.
+\item Falls $K$ jetzt trivial ist, sind wir fertig.
 \item Andernfalls wählen wir eine aussagenlogische Variable $p$, die in $K$ auftritt.
       \begin{enumerate}
       \item Jetzt versuchen  wir rekursiv  die Klausel-Menge \\[0.2cm]
@@ -2790,7 +2799,7 @@ logisch äquivalent sind, falls $\{l\} \in K$ gilt.
 \subsection{Ein Beispiel}
 Zur Veranschaulichung demonstrieren wir das Verfahren von Davis und Putnam an einem Beispiel.
 Die Menge $K$ sei wie folgt definiert: \\[0.2cm]
-\hspace*{0.3cm}
+\hspace*{-0.3cm}
  $K := \Big\{ \{p, q, s\},\; \{\neg p, r, \neg t\},\;  \{r, s\},\; \{\neg r, q, \neg p\}, 
                \{\neg s, p\},\; \{\neg p, \neg q, s, \neg r\},\; \{p, \neg q, s\},\; \{\neg r, \neg s\},\;
              \{\neg p, \neg s\} 
@@ -2849,34 +2858,34 @@ daher die aussagenlogische Variable $p$.
 \end{enumerate}
 Bei diesem Beispiel hatten wir Glück, denn wir mussten nur eine einzige Fallunterscheidung
 durchführen. Bei komplexeren Beispielen ist es häufig so, dass wir innerhalb einer Fallunterscheidung eine
-weitere Fallunterscheidungen durchführen müssen.
+oder mehrere weitere Fallunterscheidungen durchführen müssen.
 
 \subsection{Implementierung des Algorithmus von Davis und Putnam}
 Wir zeigen jetzt die Implementierung der Funktion 
 \href{https://github.com/karlstroetmann/Logic/blob/master/SetlX/davis-putnam.stlx}{\texttt{solve}}, 
 mit der die Frage, ob eine Menge von Klauseln erfüllbar ist, beantwortet werden kann. Die
 Implementierung ist in Abbildung \ref{fig:solve} auf Seite \pageref{fig:solve}
-gezeigt.  Die Funktion erhält zwei Argumente: Die Mengen \texttt{Clauses} und \texttt{Literals}.
-Hier ist \texttt{Clauses} eine Menge von Klauseln und \texttt{Literals} ist eine Menge von
-Literalen.  Falls die Menge \texttt{Clauses} erfüllbar ist, so liefert
+gezeigt.  Die Funktion erhält zwei Argumente: Die Mengen \texttt{Clauses} und \texttt{Variables}.
+Hier ist \texttt{Clauses} eine Menge von Klauseln und \texttt{Variables} ist eine Menge von
+Variablen.  Falls die Menge \texttt{Clauses} erfüllbar ist, so liefert
 der Aufruf 
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{solve(Clauses, Literals)} 
+\texttt{solve(Clauses, Variables)} 
 \\[0.2cm]
 eine Menge von Unit-Klauseln \texttt{Result}, so
 dass jede Belegung $\I$, die alle Unit-Klauseln aus \texttt{Result} erfüllt, auch alle Klauseln aus
 der Menge  $\texttt{Clauses}$ erfüllt.  Falls die Menge $\texttt{Clauses}$ nicht erfüllbar ist, liefert der Aufruf
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{solve(Clauses, Literals)} 
+\texttt{solve(Clauses, Variables)} 
 \\[0.2cm]
 als Ergebnis die Menge $\bigl\{ \{\} \bigr\}$ zurück, denn die leere Klausel repräsentiert die unerfüllbare Formel $\falsum$.
 
 Sie fragen sich vielleicht, wozu wir in der Funktion \texttt{solve} die Menge
-\texttt{Literals} brauchen.  Der Grund ist, dass wir uns bei den rekursiven Aufrufen
-merken müssen, welche Literale wir schon benutzt haben.  Diese Literale sammeln wir in der
-Menge \texttt{Literals}.
+\texttt{Variables} brauchen.  Der Grund ist, dass wir uns bei den rekursiven Aufrufen
+merken müssen, welche Variablen wir schon für Fallunterscheidungen benutzt haben.  Diese Variablen sammeln wir in der
+Menge \texttt{Variables}.
 
 
 \begin{figure}[!ht]
@@ -2889,20 +2898,20 @@ Menge \texttt{Literals}.
                 xleftmargin   = 0.2cm,
                 xrightmargin  = 0.2cm
               ]{python3}
-    def solve(Clauses, Literals):
+    def solve(Clauses, Variables):
         S      = saturate(Clauses);
         empty  = frozenset()
         Falsum = {empty}
-        if empty in S:
-            return Falsum
-        if all(len(C) == 1 for C in S):
+        if empty in S:                  # S is inconsistent
+            return Falsum               
+        if all(len(C) == 1 for C in S): # S is trivial
             return S
-        l      = selectLiteral(S, Literals)
-        negL   = complement(l)
-        Result = solve(S | { frozenset({l}) }, Literals | { l })
+        p      = selectVariable(S, Variables)
+        negP   = complement(p)
+        Result = solve(S | { frozenset({p}) }, Variables | { p })
         if Result != Falsum:
             return Result
-        return solve(S | { frozenset({negL}) }, Literals | { l })
+        return solve(S | { frozenset({negP}) }, Variables| { p })
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Die Funktion \texttt{solve}}
@@ -2921,20 +2930,20 @@ Die in Abbildung \ref{fig:solve} gezeigte Implementierung funktioniert wie folgt
 \item Dann testen wir in Zeile 7, ob bereits alle Klauseln $C$ aus der Menge
       \texttt{S} Unit-Klauseln sind.  Wenn dies so ist,
       dann ist die Menge \texttt{S} trivial und wir geben diese Menge als Ergebnis zurück.
-\item Andernfalls wählen wir in Zeile 9 ein Literal $\texttt{l}$ aus der Menge \texttt{S}, 
-      dass wir noch nicht benutzt haben.
+\item Andernfalls wählen wir in Zeile 9 eine Variable $\texttt{p}$, die in der Menge \texttt{S} vorkommt, 
+      die wir aber noch nicht benutzt haben.
       Wir untersuchen dann in Zeile 11 rekursiv, ob die Menge \\[0.2cm]
       \hspace*{1.3cm} 
-      $\texttt{S} \cup \bigl\{\{\texttt{l}\}\bigr\}$ 
+      $\texttt{S} \cup \bigl\{\{\texttt{p}\}\bigr\}$ 
       \\[0.2cm]
       lösbar ist.  Dabei gibt es zwei Fälle:
       \begin{enumerate}
       \item Falls diese Menge lösbar ist, geben wir die Lösung dieser Menge als Ergebnis zurück.
 
-      \item Sonst  prüfen wir rekursiv, ob die Menge 
+      \item Sonst prüfen wir rekursiv, ob die Menge 
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\texttt{S} \cup \Bigl\{ \bigl\{ \komplement{\texttt{l}} \bigr\} \Bigr\}$ 
+            $\texttt{S} \cup \Bigl\{ \bigl\{ \komplement{\texttt{p}} \bigr\} \Bigr\}$ 
             \\[0.2cm]
             lösbar ist.  Ist diese Menge lösbar, so ist diese Lösung auch eine
             Lösung der Menge $\texttt{Clauses}$ und wir geben diese Lösung zurück.  Ist die
@@ -2987,7 +2996,7 @@ Die Implementierung von \texttt{saturate} funktioniert wie folgt:
       Subsumptionen benutzt haben.
 \item Solange die Menge \texttt{Units} der Unit-Klauseln nicht leer ist, wählen wir in Zeile 6
       mit Hilfe der Funktion $\texttt{pop}$ eine beliebige Unit-Klausel \texttt{unit} aus der Menge
-      \texttt{Units} aus. 
+      \texttt{Units} aus und entfernen diese Unit-Klausel aus der Menge \texttt{Units}. 
 \item In Zeile 7 fügen wir die Klausel \texttt{unit} zu der Menge
       \texttt{Used} der benutzten Klausel hinzu.  
 \item In Zeile 8 extrahieren mit der Funktion \texttt{arb} das Literal \texttt{l} der Klausel
@@ -3047,8 +3056,8 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
 \item Die Funktion \texttt{selectLiteral} wählt eine beliebige Variable aus 
       einer gegeben Menge $\texttt{Clauses}$ von Klauseln aus, das außerdem nicht in der Menge
       \texttt{Forbidden} von den Variablen vorkommen darf, die bereits benutzt worden sind.
-      Dazu iterieren wir zunächst über alle Klauseln $C \in \texttt{Clauses}$ und dann über alle Literale $l$
-      der Klauseln $C$.  Aus diesen Literalen extrahieren wir die darin enthaltene Variable mit Hilfe der Funktion
+      Dazu iterieren wir zunächst über alle Klauseln $C$ aus der Menge $\texttt{Clauses}$ und dann über alle Literale $l$
+      der Klausel $C$.  Aus diesen Literalen extrahieren wir die darin enthaltene Variable mit Hilfe der Funktion
       \texttt{extractVariable}.  Anschließend wird eine beliebige Variable zurück gegeben.
 \item Die Funktion \texttt{arb} gibt ein nicht näher spezifiziertes Element einer Menge zurück.
 \end{enumerate}
@@ -3059,8 +3068,8 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
                 numbers       = left,
                 numbersep     = -0.2cm,
                 bgcolor       = sepia,
-                xleftmargin   = 0.8cm,
-                xrightmargin  = 0.8cm
+                xleftmargin   = 0.3cm,
+                xrightmargin  = 0.3cm
               ]{python3}
     def selectLiteral(Clauses, Forbidden):
         Variables = { extractVariable(l) for C in Clauses for l in C } - Forbidden
@@ -3582,14 +3591,15 @@ Das vollständige Programm finden Sie als Jupyter Notebook auf meiner Webseite u
         Clauses  = allClauses(n)
         Solution = dp.solve(Clauses, set())
         if Solution != { frozenset() }:
-            printBoard(Solution, n)
+            return Solution
         else:
-            print(f'The problem is not solvable for {n} queens!')                  
+            print(f'The problem is not solvable for {n} queens!')
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Funktion \texttt{queens}}
+\caption{Die Funktion \texttt{queens} zur Lösung des $n$-Damen-Problems.}
 \label{fig:solve:queens}
 \end{figure}
+
 
 
 \begin{figure}[!ht]
@@ -3602,30 +3612,20 @@ Das vollständige Programm finden Sie als Jupyter Notebook auf meiner Webseite u
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm,
               ]{python3}
-    def printBoard(I, n):
-        if I == { frozenset() }:
-            return
-        print("-" * (8*n+1))
+    import chess
+                
+    def show_solution(Solution, n):
+        board = chess.Board(None)  # create empty chess board
+        queen = chess.Piece(chess.QUEEN, True)
         for row in range(1, n+1):
-            printEmptyLine(n)
-            line = "|";
             for col in range(1, n+1):
-                if frozenset({ var(row, col) }) in I:
-                    line += "   Q   |"
-                else:
-                    line += "       |"
-            print(line)
-            printEmptyLine(n)
-            print("-" * (8*n+1))
-    
-    def printEmptyLine(n):
-        line = "|"
-        for col in range(1, n+1):
-            line += "       |"
-        print(line)
+                field_number = (row - 1) * 8 + col - 1
+                if frozenset({ var(row, col) }) in Solution:
+                    board.set_piece_at(field_number, queen)
+        display(board)        
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Funktion $\texttt{printBoard}()$}
+\caption{Die Funktion $\texttt{show\_solution}()$.}
 \label{fig:printBoard}
 \end{figure}
 
@@ -3635,29 +3635,17 @@ Die durch den Aufruf $\texttt{solve}(\textsl{Clauses}, \{\})$
 berechnete Menge \texttt{solution} enthält für jede der Variablen $\texttt{'Q(}r\texttt{,}c\texttt{)'}$
 entweder die Unit-Klausel $\{\texttt{'Q(}r\texttt{,}c\texttt{)'}\}$  (falls auf diesem Feld eine Dame steht) oder
 aber die Unit-Klausel  $\{ \texttt{('¬', 'Q(}r\texttt{,}c\texttt{)')}\}$ (falls das Feld leer bleibt).
-Eine graphische Darstellung einer berechneten Lösungen sehen Sie in Abbildung \ref{fig:queens-solution}.   
+Eine graphische Darstellung einer berechneten Lösungen sehen Sie in Abbildung \ref{fig:8-queens.pdf}.
+Diese graphische Darstellung habe ich mit Hilfe der Bibliothek
+\href{https://python-chess.readthedocs.io/en/latest/}{\texttt{python-chess}} und der Funktion
+\texttt{show\_solution}, die in Abbildung \ref{fig:printBoard} gezeigt ist, erzeugt.
 
 \begin{figure}[!ht]
   \centering
-\hspace*{0.0cm}
-\vbox{\offinterlineskip
-   \hrule height1pt
-   \hbox{\vrule width1pt\bigchess
-         \vbox{\hbox{0Z0L0Z0Z}
-               \hbox{Z0Z0Z0ZQ}
-               \hbox{QZ0Z0Z0Z}
-               \hbox{Z0L0Z0Z0}
-               \hbox{0Z0Z0L0Z}
-               \hbox{ZQZ0Z0Z0}
-               \hbox{0Z0Z0ZQZ}
-               \hbox{Z0Z0L0Z0}}%
-         \vrule width1pt}
-   \hrule height1pt}
-
-  \caption{Eine Lösung des 8-Damen-Problems}
-  \label{fig:queens-solution}
+  \framebox{\epsfig{file=Figures/8-queens.pdf, scale=0.8}} 
+  \caption{Eine Lösung des 8-Damen-Problems.}
+  \label{fig:8-queens.pdf}
 \end{figure}
-
 
 Das 8-Damen-Problem ist natürlich nur eine spielerische Anwendung der Aussagen-Logik.
 Trotzdem zeigt es die Leistungsfähigkeit des Algorithmus von Davis
@@ -3670,6 +3658,7 @@ Menge von Klauseln zurückführen lassen.  Dazu gehört zum Beispiel das Problem
 Stundenplan zu erstellen, der gewissen Nebenbedingungen genügt.  Verallgemeinerungen des
 Stundenplan-Problems werden in der Literatur als \blue{Scheduling-Probleme} bezeichnet.
 Die effiziente Lösung solcher Probleme ist Gegenstand der aktuellen Forschung.
+\pagebreak
 
 \section{Reflexion}
 \begin{enumerate}
@@ -3684,6 +3673,7 @@ Die effiziente Lösung solcher Probleme ist Gegenstand der aktuellen Forschung.
 \item Welche Eigenschaften hat der Beweis-Begriff $\vdash$?
 \item Wann ist eine Menge von Klauseln lösbar?
 \item Wie funktioniert das Verfahren von Davis und Putnam?
+\item Wie können Sie das 8-Damen-Problem als aussagenlogisches Problem formulieren?
 \end{enumerate}
 
 %\input{compact-barwise}
