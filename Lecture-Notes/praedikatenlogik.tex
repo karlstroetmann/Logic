@@ -4,15 +4,21 @@ Die \blue{Prädikatenlogik} untersucht zusätzlich auch die Struktur dieser elem
 Prädikatenlogik die folgenden zusätzlichen Begriffe eingeführt:
 \begin{enumerate}
 \item Als Bezeichnungen für Objekte werden \blue{Terme} verwendet.
-\item Diese Terme werden aus \blue{Variablen} und \blue{Funktions-Zeichen}
-      zusammengesetzt: 
+\item Diese Terme werden aus \blue{Objekt-Variablen} und \blue{Funktions-Zeichen}
+      zusammengesetzt.  In den folgenden Beispielen ist $x$ eine Objekt-Variable, während
+      \textsl{vater} und \textsl{mutter} einstellige Funktions-Zeichen sind. \textsl{issac} ist ein
+      nullstelliges Funktions-Zeichen:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\textsl{vater}(x),\quad \textsl{mutter}(\textsl{isaac}), \quad x+7, \quad \cdots$.
-\item Verschiedene Objekte werden durch \blue{Prädikats-Zeichen} in Relation gesetzt:
+      $\textsl{vater}(x),\quad \textsl{mutter}(\textsl{isaac})$.
+      \\[0.2cm]
+      Nullstellige Funktions-Zeichen werden im Folgenden auch als \blue{Konstanten} bezeichnet und an Stelle
+      von Objekt-Variablen reden wir kürzer nur von Variablen.
+\item Verschiedene Objekte werden durch \blue{Prädikats-Zeichen} in Relation gesetzt.  In den folgenden
+      Beispielen benutzen wir die Prädikats-Zeichen \textsl{istBruder} und $<$:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\textsl{istBruder}\bigl(\textsl{albert}, \textsl{vater}(\textsl{bruno})\bigr),\quad x+7 < x\cdot 7,\quad n \in \mathbb{N}, \quad \cdots$.
+      $\textsl{istBruder}\bigl(\textsl{albert}, \textsl{vater}(\textsl{bruno})\bigr),\quad x+7 < x\cdot 7$.
       \\[0.2cm]
       Die dabei entstehenden Formeln werden als \blue{atomare} Formeln bezeichnet.
 \item Atomare Formeln lassen sich durch aussagenlogische Junktoren verknüpfen:
@@ -27,8 +33,10 @@ Prädikatenlogik die folgenden zusätzlichen Begriffe eingeführt:
       $\forall x \in \mathbb{R}: \exists n \in \mathbb{N}: x < n$.
 \end{enumerate}
 Wir werden im nächsten Abschnitt die \href{https://de.wikipedia.org/wiki/Syntax}{Syntax} der
-prädikatenlogischen Formeln festlegen und uns dann im darauf folgenden Abschnitt mit der 
-\href{https://de.wikipedia.org/wiki/Semantik}{Semantik} dieser Formeln beschäftigen.
+prädikatenlogischen Formeln festlegen, wir werden also festlegen, welche Strings wir als aussagenlogische
+Formeln zulassen.  Im darauf folgenden Abschnitt beschäftigen wir uns mit der 
+\href{https://de.wikipedia.org/wiki/Semantik}{Semantik} dieser Formeln, dort spezifizieren wir also die
+Bedeutung der Formeln.
 
 \section{Syntax der Prädikatenlogik}
 Zunächst definieren wir den Begriff der \blue{Signatur}.  Inhaltlich ist das nichts anderes als eine 
@@ -60,15 +68,19 @@ einer Spezifikation der Stelligkeit dieser Zeichen.
 \noindent
 Als Bezeichner für Objekte verwenden wir Ausdrücke, die aus Variablen und
 Funktions-Zeichen aufgebaut sind.  Solche Ausdrücke nennen wir \blue{Terme}.  
-Formal werden diese wie folgt definiert.
+
 \begin{Definition}[Terme,  $\mathcal{T}_\Sigma$]
   Ist $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ eine Signatur, so definieren wir die Menge der \blue{$\Sigma$-Terme}
   \blue{$\mathcal{T}_\Sigma$} induktiv:
   \begin{enumerate}
-  \item Für jede Variable $x \in \mathcal{V}$ gilt $x \in \mathcal{T}_\Sigma$.
+  \item Für jede Variable $x \in \mathcal{V}$ gilt $x \in \mathcal{T}_\Sigma$.  Jede Variable ist also auch
+        ein Term.
   \item Ist $f \in \mathcal{F}$ ein n-stelliges Funktions-Zeichen und sind 
-        $t_1,\cdots,t_n \el \mathcal{T}_\Sigma$, so gilt auch \\[0.2cm]
-        \hspace*{1.3cm} $f(t_1,\cdots,t_n) \el \mathcal{T}_\Sigma$. \\[0.2cm]
+        $t_1,\cdots,t_n \el \mathcal{T}_\Sigma$, so gilt 
+        \\[0.2cm]
+        \hspace*{1.3cm} $f(t_1,\cdots,t_n) \el \mathcal{T}_\Sigma$,
+        \\[0.2cm]
+        der Ausdruck  $f(t_1,\cdots,t_n) \el \mathcal{T}_\Sigma$ ist also ein Term.
         Falls $c \in \mathcal{F}$ ein 0-stelliges Funktions-Zeichen ist, lassen wir auch die Schreibweise
         $c$ anstelle von $c()$ zu.  In diesem Fall nennen wir $c$ eine \blue{Konstante}.
         \eox
@@ -128,7 +140,7 @@ Formeln ausgesagt haben.  Die Frage, wann eine Formel als wahr oder falsch gelte
 wird erst im nächsten Abschnitt untersucht.
 \eox
 
-\noindent
+
 Bei der Definition der prädikatenlogischen Formeln ist es notwendig,
 zwischen sogenannten \blue{gebundenen} und \blue{freien} Variablen zu unterscheiden.
 Wir führen diese Begriffe zunächst informal mit Hilfe eines Beispiels aus der Analysis ein.
