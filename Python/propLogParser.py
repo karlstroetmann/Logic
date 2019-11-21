@@ -39,6 +39,7 @@ class LogicParser:
         self._tokens    = list(reversed(tokenize(s)))
         self._operators = []
         self._arguments = []
+        self._input     = s
         
     def parse(self):
         """Parse the token list and return a syntax tree."""
@@ -63,6 +64,8 @@ class LogicParser:
                 self._operators.append(next_op)
         while self._operators != []:
             self._pop_and_evaluate()
+        if len(self._arguments) != 1:
+            raise Exception(f'could not parse {self._input}')
         return self._arguments.pop()
 
     def _eval_before(self, stack_op, next_op):
