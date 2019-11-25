@@ -607,12 +607,15 @@ wir werden nie mit Sicherheit wissen, dass es keine ungeraden perfekten Zahlen g
 Der im letzten Abschnitt präsentierte Begriff einer prädikatenlogischen Struktur erscheint zunächst
 sehr abstrakt.  Wir wollen in diesem Abschnitt zeigen, dass sich dieser Begriff in einfacher Weise in
 \textsl{Python} implementieren lässt.  Dadurch gelingt es, diesen Begriff zu veranschaulichen.  Als konkretes
-Beispiel wollen wir Strukturen zu Gruppen-Theorie betrachten.  Wir gehen dazu in vier Schritten vor:
+Beispiel wollen wir Strukturen zu \href{https://en.wikipedia.org/wiki/Group_theory}{Gruppen-Theorie}
+betrachten.  Wir gehen dazu in vier Schritten vor: 
 \begin{enumerate}
-\item Zunächst definieren wir mathematisch, was wir unter einer \emph{Gruppe} verstehen.
+\item Zunächst definieren wir mathematisch, was wir unter einer
+      \href{https://en.wikipedia.org/wiki/Group_(mathematics)}{Gruppe} verstehen. 
 \item Anschließend diskutieren wir, wie wir die Formeln der Gruppen-Theorie in \textsl{Python} darstellen.
 \item Dann definieren wir eine Struktur, in der die Formeln der Gruppen-Theorie gelten.
-\item Schließlich zeigen wir, wie wir prädikaten-logische Formeln in \textsl{Python} auswerten können.
+\item Schließlich zeigen wir, wie wir prädikaten-logische Formeln in \textsl{Python} auswerten können und
+      führen dies am Beispiel der für die Gruppen-Theorie definierten Struktur vor.
 \end{enumerate}
 
 \subsection{Gruppen-Theorie}
@@ -625,13 +628,20 @@ definiert.  Dabei gilt:
 \begin{enumerate}
 \item $G$ ist eine Menge,
 \item $\mathrm{e}$ ist ein Element der Menge $G$ und
-\item $*:G \times G \rightarrow G$ ist eine binäre Funktion auf $G$.
+\item $*:G \times G \rightarrow G$ ist eine binäre Funktion auf $G$, die wir im Folgenden als
+      \blue{Multiplikation} bezeichnen.
 \item Zusätzlich müssen die folgenden Axiome gelten:
       \begin{enumerate}
       \item $\forall x: \mathrm{e} * x = x$,
+        
+            $\mathrm{e}$ ist bezüglich der Multiplikation ein \blue{links-neutrales} Element.
       \item $\forall x: \exists{y}: y * x = \mathrm{e}$,
-      \item $\forall x: \forall y: \forall z: (x * y) * z = x * (y * z)$.
-      \item Die Gruppe $\mathcal{G}$ ist eine \emph{kommutative} Gruppe genau dann, wenn zusätzlich das folgende Axiom gilt:
+
+            d.h.~für jedes $x \in G$ gibt es ein \blue{links-inverses} Element. 
+      \item $\forall x: \forall y: \forall z: (x * y) * z = x * (y * z)$,
+
+            d.h.~es gilt das \blue{Distributiv-Gesetz}.
+      \item Die Gruppe $\mathcal{G}$ ist eine \blue{kommutative} Gruppe genau dann, wenn zusätzlich das folgende Axiom gilt:
         
             $\forall x: \forall y: x * y = y * x$.
       \end{enumerate}
@@ -648,7 +658,7 @@ $.
 \\[0.2cm]
 Hierbei ist also ``$\mathrm{e}$'' ein 0-stelliges Funktions-Zeichen, ``$*$'' ist
 eine 2-stelliges Funktions-Zeichen und ``$=$'' ist ein 2-stelliges Prädikats-Zeichen.
-Wir werden für prädikaten-logische Formeln einen Parser verwenden, der keine binären Operatoren wie
+Wir werden für prädikaten-logische Formeln einen Parser verwenden, der keine binären Infix-Operatoren wie
 ``$*$'' oder ``$=$'' unterstützt.  Bei diesem Parser können Terme nur in der Form
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -663,13 +673,13 @@ $p(t_1,\cdots,t_n)$
 dargestellt, wobei $p$ eine Prädikats-Zeichen ist.  Variablen werden von den Funktions- und Prädikats-Zeichen
 dadurch unterschieden, dass Variablen mit einem kleinen Buchstaben beginnen, während Funktions- und
 Prädikats-Zeichen mit einem großen Buchstaben beginnen.  Um die Formeln der Gruppentheorie darstellen zu
-können, vereinbaren wir daher Folgendes:
+können, vereinbaren wir daher das Folgende:
 \begin{enumerate}
 \item Das neutrale Element $\mathrm{e}$ schreiben wir als $\texttt{E}()$.  
 \item Für den Operator $*$ verwenden wir das zweistellige Funktions-Zeichen $\texttt{Multiply}$.
       Damit wird der Ausdruck $x*y$ also als $\texttt{Multiply}(x, y)$ geschrieben.
 \item Das Gleichheits-Zeichen ``$=$'' repräsentieren wir durch das zweistellige Prädikats-Zeichen
-      $\texttt{Equals}$.  Damit schreibt sich die Formel $x = y$ dann als $\texttt{Equals}(x, y)$.
+      $\texttt{Equals}$.  Damit schreibt sich dann beispielsweise die Formel $x = y$ als $\texttt{Equals}(x, y)$.
 \end{enumerate}
 Abbildung \ref{fig:group-theory} zeigt die Formeln der Gruppen-Theorie als Strings.
 
@@ -681,8 +691,8 @@ Abbildung \ref{fig:group-theory} zeigt die Formeln der Gruppen-Theorie als Strin
                   labelposition = bottomline,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
+                  xleftmargin   = 0.3cm,
+                  xrightmargin  = 0.3cm,
                 ]
     G1 = '∀x:Equals(Multiply(E(),x),x)'                  
     G2 = '∀x:∃y:Equals(Multiply(x,y),E())'
@@ -1029,7 +1039,7 @@ abändern können.
 \end{figure}
 Mit dem in Abbildung \ref{fig:isGroup.ipynb} gezeigten Skript können wir nun überprüfen, ob die in
 \myfig{isGroup.ipynb} definierte Struktur eine Gruppe ist.  Wir erhalten die in Abbildung \ref{fig:isGroup.out}
-gezeigte Ausgabe uns können daher folgern, dass diese Struktur in der Tat eine kommutative Gruppe ist.
+gezeigte Ausgabe und können daher folgern, dass diese Struktur in der Tat eine kommutative Gruppe ist.
 
 \begin{figure}[!ht]
 \centering
@@ -1096,7 +1106,8 @@ müssten, unendlich groß.  \eox
       \\[0.2cm]
       \underline{nicht} allgemeingültig ist, indem Sie in \textsl{Python} eine geeignete
       prädikatenlogische Struktur $\mathcal{S}$ implementieren, in der diese Formel falsch ist.
-\item Überlegen Sie, wie viele verschiedene Strukturen mit $n$ Elementen es für die obige Formel gibt.
+\item Überlegen Sie, wie viele verschiedene Strukturen es für die Gruppen-Theorie gibt, wenn wir davon
+      ausgehen, dass das Universum aus genau $n$ Elementen besteht.
 \item Geben Sie eine \underline{erfüllbare} prädikatenlogische Formel $F$ an, die in einer prädikatenlogischen
       Struktur $\mathcal{S} = \pair(\mathcal{U},\mathcal{J})$ immer falsch ist, wenn das Universum $\mathcal{U}$ endlich ist.
 
@@ -1106,14 +1117,14 @@ müssten, unendlich groß.  \eox
 \end{enumerate}
 
 \section{Constraint Programing}
-It is time to see an application of first order logic. One of these applications is \blue{constraint programming}.  
+It is time to see a practical application of first order logic.  One of these practical applications is \blue{constraint programming}.  
 \href{https://en.wikipedia.org/wiki/Constraint_programming}{Constraint programming} is an example of the
 \blue{declarative programming} paradigm.  The idea is that 
-in order to solve a given problem, this problem is \blue{specified} and then this \blue{specification} is
+in order to solve a given problem, this problem is \blue{specified} and this \blue{specification} is
 given as input to a problem solver which will then compute a solution to the problem.  Hence, the task of the
-programmer is much easier than it normally is: Instead of implementing a program that solves a given problem,
-the programmer only has to specify the problem precisely, she does not have to specify an algorithm to find the
-solution.  Usually, the specification of a problem is much easier than the specification of an algorithm to solve the problem.  This approach works well for those problems
+programmer is much easier than it normally is: Instead of \blue{implementing} a program that solves a given problem,
+the programmer only has to \blue{specify} the problem precisely, she does not have to explicitely code an algorithm to find the
+solution.  Usually, the specification of a problem is much easier than the coding of an algorithm to solve the problem.  This approach works well for those problems
 that can be specified using first order logic.  The remainder of this section is structured as follows:
 \begin{enumerate}
 \item We first define \blue{constraint satisfaction problems}.
@@ -1211,29 +1222,29 @@ this example let us assume that we have only three colours available.  The quest
 possible to colour the different states in a way that no two neighbouring states share the same colour.  This
 problem can be formalized as a constraint satisfaction problem.  To this end we define:
 \begin{enumerate}
-\item $\texttt{Vars} := \{ \mathrm{WA}, \mathrm{NT}, \mathrm{SA}, \mathrm{Q}, \mathrm{NSW}, \mathrm{V}, \mathrm{T} \}$,
+\item $\texttt{Vars} := \{ \mathtt{WA}, \mathtt{NT}, \mathtt{SA}, \mathtt{Q}, \mathtt{NSW}, \mathtt{V}, \mathtt{T} \}$,
 \item $\texttt{Values} := \{ \texttt{red}, \texttt{green}, \texttt{blue} \}$,
 \item $\texttt{Constraints} := $ \\[0.1cm]
-      \hspace*{0.3cm}
-      $\bigl\{ \mathrm{WA} \not= \mathrm{NT}, \mathrm{WA} \not= \mathrm{SA},
-                 \mathrm{NT} \not= \mathrm{SA}, \mathrm{NT} \not= \mathrm{Q},
-                 \mathrm{SA} \not= \mathrm{Q},  \mathrm{SA} \not= \mathrm{NSW}, \mathrm{SA} \not= \mathrm{V}, 
-                 \mathrm{Q}  \not= \mathrm{NSW},
+      \hspace*{0.0cm}
+      $\bigl\{ \mathtt{WA} \not= \mathtt{NT}, \mathtt{WA} \not= \mathtt{SA},
+                 \mathtt{NT} \not= \mathtt{SA}, \mathtt{NT} \not= \mathtt{Q},
+                 \mathtt{SA} \not= \mathtt{Q},  \mathtt{SA} \not= \mathtt{NSW}, \mathtt{SA} \not= \mathtt{V}, 
+                 \mathtt{Q}  \not= \mathtt{NSW},
                  \mathtt{NSW}\not= \mathtt{V}, 
-                 \mathrm{V}  \not= \mathrm{T}
+                 \mathtt{V}  \not= \mathtt{T}
        \bigr\}
       $
 \end{enumerate}
 Then $\mathcal{P} := \langle \texttt{Vars}, \texttt{Values}, \texttt{Constraints} \rangle$ is a constraint satisfaction problem.  
 If we define the assignment $\mathcal{I}$ such that
 \begin{enumerate}
-\item $\mathcal{I}(\mathrm{WA}) = \texttt{blue}$,
-\item $\mathcal{I}(\mathrm{NT}) = \texttt{red}$,
-\item $\mathcal{I}(\mathrm{SA}) = \texttt{green}$,
-\item $\mathcal{I}(\mathrm{Q}) = \texttt{blue}$,
-\item $\mathcal{I}(\mathrm{NSW}) = \texttt{red}$,
-\item $\mathcal{I}(\mathrm{V}) = \texttt{blue}$,
-\item $\mathcal{I}(\mathrm{T}) = \texttt{red}$,
+\item $\mathcal{I}(\mathtt{WA}) = \texttt{blue}$,
+\item $\mathcal{I}(\mathtt{NT}) = \texttt{red}$,
+\item $\mathcal{I}(\mathtt{SA}) = \texttt{green}$,
+\item $\mathcal{I}(\mathtt{Q}) = \texttt{blue}$,
+\item $\mathcal{I}(\mathtt{NSW}) = \texttt{red}$,
+\item $\mathcal{I}(\mathtt{V}) = \texttt{blue}$,
+\item $\mathcal{I}(\mathtt{T}) = \texttt{red}$,
 \end{enumerate}
 then you can check that the assignment $\mathcal{I}$ is indeed a solution to the constraint satisfaction problem $\mathcal{P}$.
 
@@ -1353,7 +1364,7 @@ partial assignment is shown in \myFig{eight-queens-partial.txt}.
          \vrule width1pt}
    \hrule height1pt}
 
-  \caption{The partial assignment $\bigl\{ \texttt{Q}_1,4, \texttt{Q}_2,8, \texttt{Q}_3,1) \bigr\}$.}
+  \caption{The partial assignment $\bigl\{ \texttt{Q}_1 \mapsto 4, \texttt{Q}_2 \mapsto 8, \texttt{Q}_3 \mapsto 1) \bigr\}$.}
   \label{fig:eight-queens-partial.txt}
 \end{figure}
 
@@ -2569,7 +2580,7 @@ im Quelltext heruntergeladen werden.  Wir diskutieren zunächst \textsl{Prover9}
 \subsection{Der automatische Beweiser \textsl{Prover9}}
 \textsl{Prover9} ist ein Programm, das als Eingabe zwei Mengen von Formeln bekommt.  Die erste Menge von
 Formeln wird als Menge von \emph{Axiomen} interpretiert, die zweite Menge von Formeln sind die zu
-beweisenden \emph{Theoreme}, die aus den Axiomen gefolgert werden sollen.  Wollen wir beispielsweise zeigen,
+beweisenden \emph{Thereme}, die aus den Axiomen gefolgert werden sollen.  Wollen wir beispielsweise zeigen,
 dass in der Gruppen-Theorie aus der Existenz eines  links-inversen Elements auch die Existenz eines
 rechts-inversen Elements folgt und dass außerdem das links-neutrale Element auch rechts-neutral ist,
 so können wir zunächst die Gruppen-Theorie wie folgt axiomatisieren:
