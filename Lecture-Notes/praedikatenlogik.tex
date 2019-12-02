@@ -1543,8 +1543,9 @@ assignment that satisfies all constraints of the given $\texttt{CSP}$.
 \begin{enumerate}
 \item First, the augmented $\texttt{CSP}$ is split into its components.
 \item Next, if $\texttt{Assignment}$ is already a complete variable assignment, i.e.~if the dictionary
-      $\texttt{Assignment}$ has as many elements as there are variables, then it must be a solution of
-      the $\texttt{CSP}$ and, therefore, it is returned.
+      $\texttt{Assignment}$ has as many elements as there are variables, then the fact that
+      $\texttt{Assignment}$ is partially consistent implies that
+      it is a solution of the $\texttt{CSP}$ and, therefore, it is returned.
 \item Otherwise, we have to extend the partial $\texttt{Assignment}$.  In order to do so, we first have to
       select a variable $\texttt{var}$ that has not yet been assigned a value in $\texttt{Assignment}$ so far.
       We pick the first variable in the list \texttt{Variables} that is yet unassigned.
@@ -1615,8 +1616,8 @@ $\texttt{isConsistent}$ is to check, whether the extended assignment
 $\texttt{NA} \;\texttt{:=}\;\texttt{Assignment} \cup \{ \pair(\texttt{var}, \texttt{value}) \}$
 \\[0.2cm]
 that assigns $\texttt{value}$ to the variable $\texttt{var}$ is still partially consistent with $\texttt{Constraints}$. 
-To this end, the \texttt{for}-loop iterates over all $\texttt{Formula}$ in $\texttt{Constraints}$. 
-However, we only have to check those $\texttt{Formula}$ that contain the variable $\texttt{var}$ and,
+To this end, the \texttt{for}-loop iterates over all $\texttt{Formula}$s in $\texttt{Constraints}$. 
+However, we only have to check those $\texttt{Formula}$s that contain the variable $\texttt{var}$ and,
 furthermore, have the property that
 \\[0.2cm]
 \hspace*{1.3cm}
