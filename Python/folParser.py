@@ -24,11 +24,19 @@ def tokenize(s):
             result += [ operator ]
     return result
 
-def isVariable(s):
+def isVariable(s, Variables):
     """
     Check, whether the string s can be interpreted as a variable. 
     """
-    return re.fullmatch('[a-z][A-Za-z0-9]*', s)
+    if Variables == None:
+        return re.fullmatch('[a-z][A-Za-z0-9]*', s)
+    else:
+        if re.fullmatch('[a-z][A-Za-z0-9]*', s):
+            if s in Variables:
+                return True
+            else:
+                print(f'Syntax error: {s} is not declared as a variable!')
+                raise SyntaxError()
 
 def isFunction(s):
     """
@@ -45,11 +53,12 @@ class LogicParser:
     into nested tuples that are interpreted as syntax trees representing the 
     formulae.
     """
-    def __init__(self, s):
+    def __init__(self, s, Variables=None):
         "The constructor takes a string s that represents a formula."
         self._tokens    = list(reversed(tokenize(s)))
         self._operators = []
         self._arguments = []
+        self._variables = Variables
         
     def parse(self):
         """
@@ -58,7 +67,7 @@ class LogicParser:
         """
         while self._tokens != []:
             next_op = self._tokens.pop()
-            if isVariable(next_op):
+            if isVariable(next_op, self._variables):
                 self._arguments.append(next_op)
                 continue
             if isFunction(next_op):
