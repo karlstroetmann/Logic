@@ -38,7 +38,7 @@ def solve(E, σ):
             if occurs(s, t):
                 return None
             else:
-                apply(E, { s: t })
+                E = apply(E, { s: t })
                 σ = compose(σ, { s: t })
         elif isinstance(t, str): # t is a variable, but s is not
             E.add(('≐', t, s))
