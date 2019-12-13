@@ -3,7 +3,9 @@ This chapter contains a number of case studies designed to deepen our understand
 
 \section{Solving Equations via Fixed-Point Algorithms}
 \blue{Fixed-Point iterations} are very important, both in computer science and in mathematics.  As a first
-example, we show how to solve an equation via a fixed point iteration.  Suppose we want to solve the equation  
+example, we show how to solve an equation via a fixed point iteration.  
+\index{fixed point iteration}
+Suppose we want to solve the equation  
 \\[0.2cm]
 \hspace*{1.3cm} $x = \cos(x)$. \\[0.2cm]
 Here, $x$ is a real number that we seek to compute.  Figure \ref{fig:xEqualsCosX.pdf} on page
@@ -39,6 +41,7 @@ With the help of the
   \href{https://en.wikipedia.org/wiki/Differential_calculus}{differential calculus}.  This lecture is part of the
   second semester.
 }
+\index{Banach fixed-point theorem}
 it can be shown that this sequence converges to a solution of the equation $x = \cos(x)$, i.e.~if we define
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -144,11 +147,15 @@ This equation is equivalent to the quadratic equation $x^2 + x = 1$.  Note that 
 \hspace*{1.3cm}
 \texttt{lambda x: 1/(1+x)}.
 \\[0.2cm]
-This expression is called an \blue{anonymous function} since we haven't given a name to the function.  
+This expression is called an \blue{anonymous function} 
+\index{lambda expression, \texttt{lambda x: f(x)}}
+since we haven't given a name to the function.  
 
 \remarkEng
 The function \texttt{solve} is only able to solve the equation $f(x) = x$ if the function $f$ is a 
-\href{https://en.wikipedia.org/wiki/Contraction_mapping}{contraction mapping}.  A function 
+\href{https://en.wikipedia.org/wiki/Contraction_mapping}{contraction mapping} (Deutsch: \blue{kontrahierende Abbildung}). 
+\index{contraction mapping}
+  A function 
 $f:\mathbb{R} \rightarrow \mathbb{R}$
 is called a \blue{contraction mapping} iff 
 \\[0.2cm]
@@ -160,6 +167,7 @@ This notion will be discussed in more detail in the lecture on
 semester. \eox  
 
 \section{Case Study: Computation of Poker Probabilities}
+\index{poker}
 In this short section we are going to show how to compute probabilities for the
 \href{https://en.wikipedia.org/wiki/Texas_hold_%27em}{\textsl{Texas Hold'em}} variation of 
 \href{https://en.wikipedia.org/wiki/Poker}{poker}.   Texas Hold'em poker is played with a deck of 52
@@ -282,14 +290,17 @@ is about  $11.8\%$.  A \textsl{Jupyter} notebook showcasing this computation out
 The method to compute probabilities that has been sketched above only works if the sets that have to
 be computed are small enough to be retained in memory.  If this condition is
 not satisfied we can use the \href{https://en.wikipedia.org/wiki/Monte_Carlo_method}{\emph{Monte Carlo method}} 
+\index{Monte Carlo method} 
 to compute the probabilities instead.  This method will be discussed in the lecture on 
 \href{https://github.com/karlstroetmann/Algorithms/blob/master/Lecture-Notes/algorithms.pdf}{algorithms}.
 
 
 \section{Finding a Path in a Graph}
 In the following section, I will present an application that is more interesting since it is practically
-relevant.  In order to prepare for this, we will now discuss the problem of finding a \blue{path} in a
+relevant.  In order to prepare for this, we will now discuss the problem of finding a \blue{path} \index{path}
+in a
 \href{https://en.wikipedia.org/wiki/Directed_graph}{directed graph}. 
+\index{directed graph}
 Abstractly, a \emph{directed graph} consists of \blue{vertices} and \blue{edges} that connect these vertices.  In an application, the
 vertices could be towns and villages, while the edges would be interpreted as one-way streets connecting these
 villages.  To simplify matters, let us assume for now that the vertices are given as natural numbers.  As the
@@ -343,7 +354,7 @@ To put it differently,  the length of a path
 $[x_1,x_2,\cdots,x_n]$ is defined as the number of edges connecting the vertices and not as the
 number of vertices appearing on the path.
 
-Furthermore,  two vertices $a$ and $b$ of a graph are said to be \blue{connected} iff there exists a path
+Furthermore,  two vertices $a$ and $b$ of a graph are said to be \blue{connected} \index{connected} iff there exists a path
 \\[0.2cm]
 \hspace*{1.3cm}
 $[x_1,\cdots,x_n]$ \quad such that \quad $a = x_1$ \quad and \quad $b = x_n$.
@@ -354,7 +365,8 @@ Furthermore, we want to be able to compute the corresponding path connecting the
 
 \subsection{Computing the Transitive Closure of a Relation}
 We have already noted that a graph can be represented as the set of its edges and hence as a \blue{binary relation}.
-We have previously defined a \blue{binary relation} as a set of pairs.  We also need the notion of a \blue{relational product}:
+We have previously defined a \blue{binary relation} as a set of pairs.  We also need the notion of a
+\blue{relational product}: \index{relational product, $Q \circ R$}
 If $Q$ and $R$ are binary relations, then the \blue{relational product} $Q \circ R$ of $Q$ and $R$ is defined as
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -380,7 +392,9 @@ transitive if and only if the following holds:
 \hspace*{1.3cm}
 $\pair(x,y) \in T \wedge \pair(y, z) \in T \rightarrow \pair(x, z) \in T$ \quad for all $x,y,z$. 
 \\[0.2cm]
-Now the \blue{transitive closure} $R^+$ of a binary relation $R$ is the \blue{smallest} relation $T$ such that the following
+Now the \blue{transitive closure} $R^+$ 
+\index{transitive closure $R^+$}
+of a binary relation $R$ is the \blue{smallest} relation $T$ such that the following
 conditions hold:
 \begin{itemize}
 \item $R$ is a subset of $T$, i.e. we have $R \subseteq T$.
@@ -513,7 +527,7 @@ $
 \\[0.2cm]
 The sequence $(T_n)_{n\in\mathbb{N}}$ has another useful property:  It is 
 \blue{monotonically increasing}.  In general, a sequence of sets $(X_n)_{n\in\mathbb{N}}$ is called
-\blue{monotonically increasing} iff we have
+\blue{monotonically increasing} iff we have \index{monotonically increasing}
 \\[0.2cm]
 \hspace*{1.3cm}
 $\forall n \in \mathbb{N}: X_n \subseteq X_{n+1}$,
@@ -833,6 +847,7 @@ The algorithm described above is known as
 \end{figure}
 
 \subsection{The Wolf, the Goat, and the Cabbage}
+\index{wolf, goat, and cabbage}
 Next, we present an application of the theory developed so far.  We solve a problem that has puzzled
 the greatest agricultural economists for centuries.  The puzzle we want to solve is known as the 
 \href{http://jeux.lulu.pagesperso-orange.fr/html/anglais/loupChe/loupChe1.htm}{wolf-goat-cabbage puzzle}:  
@@ -1032,6 +1047,7 @@ that combines the statements shown so far.  The solution computed by this progra
 
 
 \section{Symbolic Differentiation}
+\index{symbolic differentiation}
 In this section we will develop a program that reads an arithmetic expression like the string
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1074,7 +1090,8 @@ The function call \texttt{diff(expr, var)} will then compute the derivative of \
 because we have:
 $$ \frac{\mathrm{d}\;}{\mathrm{d}x} \bigl( x \cdot \mathrm{e}^x \bigr) = 1 \cdot x + x \cdot \mathrm{e}^x $$
 It would be very tedious to \blue{represent} arithmetic expressions as strings.  Instead, we will represent
-arithmetic expressions as \blue{nested tuples}.  The notion of a \emph{nested tuple} is defined inductively:
+arithmetic expressions as \blue{nested tuples}.  \index{nested tuple}
+The notion of a \emph{nested tuple} is defined inductively:
 \begin{itemize}
 \item $\langle x_1, x_2, \cdots, x_n \rangle$ is a nested tuple if each of the components $x_i$ is either a
       number, a string, or is itself a nested tuple.
@@ -1084,7 +1101,9 @@ For example, the arithmetic expression ``\texttt{x*exp(x)}'' is represented as t
 \hspace*{1.3cm}
 $\bigl\langle\texttt{\symbol{34}}*\texttt{\symbol{34}}, \texttt{\symbol{34}}x\texttt{\symbol{34}}, \langle \texttt{\symbol{34}}\mathtt{exp}\texttt{\symbol{34}}, \texttt{\symbol{34}}x\texttt{\symbol{34}} \rangle\bigr\rangle$.
 \\[0.2cm]
-In order to be able to convert string into nested tuples, we need a \blue{parser}.  A parser is a program that
+In order to be able to convert string into nested tuples, we need a \blue{parser}.
+\index{parser}
+  A parser is a program that
 takes a string as input and transforms this string into a nested tuple, which is then returned as a result.
 I have implemented a parser in the file ``\texttt{exprParser.py}''.  The details of the implementation of this
 parser will be discussed in the lecture on

@@ -4,7 +4,7 @@ set theory are difficult to master for many students because the concepts introd
 are quite abstract.  Fortunately, there is a programming language that supports sets as a basic data type and
 thus enables us to experiment with set theory.  This is the programming language
 \href{https://en.wikipedia.org/wiki/Python_(programming_language)}{Python}, which has its own website at
-\href{http://www.python.org}{\texttt{python.org}}.
+\href{http://www.python.org}{\texttt{python.org}}. \index{python}
 By programming in \textsl{Python}, students can get acquainted with set theory in a playful manner.
 Furthermore, as many interesting problems have a straightforward solution as \textsl{Python} programs,
 students can appreciate the usefulness of abstract notions from set theory by programming in \textsl{Python}.
@@ -13,6 +13,7 @@ Furthermore, according to
 8 of the top 10 US universities teach \textsl{Python} in their introductory computer science courses.
 
 The easiest way to install python and its libraries is via \href{https://www.anaconda.com/download/}{Anaconda}.
+\index{Anaconda}
 On many computers, \textsl{Python} is already preinstalled.  Nevertheless, even on those systems it is easiest
 to use the \blue{Anaconda} distribution.  The reason is that Anaconda make it very easy to use different
 versions of python with different libraries.  In this lecture, we will be using the version 3.6 of \textsl{Python}.
@@ -87,6 +88,7 @@ then you already have installed these notebooks.  The following subsection conta
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Introduction.ipynb}{\texttt{Introduction.ipynb}}.
 You should download this notebook from my github page and try the examples on your own computer.  Of course,
 for this to work you first have to install \href{https://jupyter.org}{jupyter}.
+\index{jupyter notebook}
 
 \section{\texorpdfstring{An Introduction to
 \textsl{Python}}{An Introduction to Python}}\label{an-introduction-to-python}
@@ -233,7 +235,8 @@ followed by the value of the expression \(36 \cdot 37 / 2\) we can use the follo
 \end{Verbatim}
 
 In the expression ``36 * 37 // 2'' we have used the operator ``//'' in order
-to enforce \blue{integer division}. If we had used the operator ``/''
+to enforce \blue{integer division}.  \index{integer division, \texttt{//}}
+If we had used the operator ``/''
 instead, \textsl{Python} would have used \blue{floating point division}
 and therefore would have printed the floating point number 666.0 instead
 of the integer 666.
@@ -255,7 +258,9 @@ The following script reads a natural number \(n\) and computes the sum
 \item Next, the \blue{set} \texttt{s} is created such that 
       $$\texttt{s} = \{1, \cdots, n\}. $$  
       The set \texttt{s} is constructed using the function \texttt{range}.  A function call 
-      of the form $\texttt{range}(a, b + 1)$ returns a \blue{generator} that produces the natural numbers 
+      of the form $\texttt{range}(a, b + 1)$ returns a \blue{generator} 
+      \index{range, $\texttt{range}(a, b+1)$}
+      that produces the natural numbers 
       from $a$ to $b$.  By using this generator as an argument to the function \texttt{set}, a set is created 
       that contains all the natural number starting from $a$ upto and including $b$.
       The precise mechanics of \blue{generators} will be explained later.
@@ -296,9 +301,11 @@ that it satisfies the following two equations:
  Let us discuss the implementation of the function sum line by line:
 
 \begin{enumerate}
-\item The keyword \texttt{\PY{k}{def}} starts the \blue{definition} of the function. It is followed by the \blue{name}
+\item The keyword \texttt{\PY{k}{def}} \index{def, function definition} starts the \blue{definition} of the
+      function. 
+      It is followed by the \blue{name}
       of the function that is defined.  In this case, the function has the name \texttt{sum}.
-      The name is followed by the list of the \blue{parameters} of the function.  This list is enclosed in
+      The name is followed by the list of the \blue{parameters} \index{parameter} of the function.  This list is enclosed in
       parentheses. If there is more than one parameter, the parameters have to be separated by commas.
       Finally, there needs to be a colon at the end of the first line. 
 \item The \blue{body} of the function is indented.   \textbf{Contrary} to most other programming languages, 
@@ -524,8 +531,9 @@ In \textsl{Python}, this set is defined as follows:
 \{4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 24, 25, 27, 28, 30, 32, 35,
  36, 40, 42, 45, 48, 49, 50, 54, 56, 60, 63, 64, 70, 72, 80, 81, 90, 100\}
 \end{Verbatim}
-We can use this set to compute the set of \blue{prime numbers}. After
-all, the set of prime numbers is the set of all those natural numbers
+We can use this set to compute the set of \blue{prime numbers}. 
+\index{prime numbers, \\$\{ 2, 3, 5, 7, 11, 13, 17, 19, \cdots\}$}
+After all, the set of prime numbers is the set of all those natural numbers
 bigger than \(1\) that can not be written as a proper product, that is a
 number \(x\) is \blue{prime} if
 
@@ -570,6 +578,7 @@ set of all numbers dividing a given number \(p\) evenly:
 \end{Verbatim}
 
 \subsection{Computing the Power Set}\label{computing-the-power-set}
+\index{power set, \\ computing the power set in \textsl{Python}}
 Unfortunately, there is no operator to compute the power set \(2^M\) of
 a given set \(M\). Since the power set is needed frequently, we have to
 implement a function \texttt{power} to compute this set ourselves. The easiest
@@ -589,11 +598,13 @@ following recursive equations:
 But there is another problem: In \textsl{Python} we can't create a set
 that has elements that are sets themselves! The reason is that in
 \textsl{Python} sets are implemented via \blue{hash tables} and therefore
-the elements of a set need to be \blue{hashable}. (The notion of an
+the elements of a set need to be \blue{hashable}.  \index{hashable}
+(The notion of an
 element being \blue{hashable} will be discussed in more detail in the
-lecture on \blue{Algorithms}.) However, sets are \blue{mutable} and
-\blue{mutable} objects are not \blue{hashable}. Fortunately, there is a
+lecture on \blue{Algorithms}.) However, sets are \blue{mutable} \index{mutable}, i.e.~sets can be changed,
+and \blue{mutable} objects are not \blue{hashable}. Fortunately, there is a
 workaround: \textsl{Python} provides the data type of \blue{frozen sets}.
+\index{frozen set}
 These sets behave like sets but are lacking certain functions that modify sets and
 hence are \blue{immutable}. So if we use \blue{frozen sets} as elements of the
 power set, we can compute the power set of a given set. The function
@@ -659,6 +670,7 @@ looks like a set of sets.
             
 \subsection{Pairs and Cartesian
 Products}\label{pairs-and-cartesian-products}
+\index{pairs}
 In \textsl{Python}, pairs can be created by enclosing the components of
 the pair in parentheses. For example, to compute the pair
 \(\langle 1, 2 \rangle\) we can write:
@@ -699,6 +711,7 @@ follows:
 \end{Verbatim}
             
 \subsection{Tuples}\label{tuples}
+\index{tuple}
 The notion of a tuple is a generalization of the notion of a pair. For example, to compute the tuple
 \(\langle 1, 2, 3 \rangle\) we can use the following expression:
 
@@ -781,7 +794,8 @@ T3[-3] = 4
 {\color{outcolor}Out[{\color{outcolor}41}]:} (1, 2, 3, 4, 5, 6)
 \end{Verbatim}
             
-The \blue{slicing} operator extracts a subtuple from a given tuple. If
+The \blue{slicing} \index{slicing, $L[a:b]$}
+operator extracts a subtuple from a given tuple. If
 \(L\) is a tuple and \(a\) and \(b\) are natural numbers such that
 \(a \leq b\) and \(a,b \in \{0, \texttt{len}(L) \}\), then the syntax of
 the slicing operator is as follows: \[ L[a:b] \] The expression
@@ -817,6 +831,7 @@ Note that in the expression above the comma is not optional as the expression $(
 $x$. 
 
 \subsection{Lists}\label{lists}
+\index{list}
 Next, we discuss the data type of lists. Lists are a lot like tuples,
 but in contrast to tuples, lists are \blue{mutatable}, i.e.~we can
 change lists. To construct a list, we use square backets:
@@ -1055,6 +1070,7 @@ It's more than one.
 \end{Verbatim}
 \blue{Loops} can be used to iterate over sets, lists, tuples, or
 generators. The following example prints the numbers from 1 to 10.
+\index{loop} \index{for}
 
 \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}63}]:} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{11}\PY{p}{)}\PY{p}{:}
@@ -1075,6 +1091,7 @@ generators. The following example prints the numbers from 1 to 10.
 10
 \end{Verbatim}
 The same can be achieved with a \texttt{while} loop:
+\index{while}
 
 \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}64}]:} \PY{n}{x} \PY{o}{=} \PY{l+m+mi}{1}
@@ -1094,7 +1111,8 @@ The same can be achieved with a \texttt{while} loop:
 7
 \end{Verbatim}
 The following program computes the prime numbers according to an
-algorithm given by Eratosthenes.
+algorithm given by  \href{https://en.wikipedia.org/wiki/Eratosthenes}{(Eratosthenes of Cyrene, 276 BC -- 195/194 BC)}.
+\index{Eratosthenes of Cyrene}
 
 \begin{enumerate}
 \item We set $n$ equal to 100 as we want to compute the set all prime numbers less or equal that 100.
@@ -1140,7 +1158,7 @@ The algorithm given above can be improved by using the following observations:
       \sqrt{x}$.
       The function \texttt{ceil} is needed to cast the square root of $x$ to a natural number.  In
       order to use the functions \texttt{sqrt} and \texttt{ceil} we have to import them from the module
-      \texttt{math}.  This is done in line 1 of the program shown below.  
+      \texttt{math}.  \index{math, \texttt{import math}} This is done in line 1 of the program shown below.  
 \item When we iterate over $j$ in the inner loop, it is sufficient if we start with $j = i$ since all products
       of the form $i * j$ where $j < i$ have already been eliminated at the time when the multiples of $i$ had
       been eliminated. 
@@ -1191,7 +1209,7 @@ come to learn at school. A detailed listing of these functions can be
 found at
 \href{https://docs.python.org/3.7/library/math.html}{https://docs.python.org/3.7/library/math.html}. We just
 show the most important functions and constants. In order to make the module \texttt{math}
-available, we use the following \blue{\texttt{import} statement}:
+available, we use the following \blue{\texttt{import} statement}: \index{math, \texttt{import math}}
 
 \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}67}]:} \PY{k+kn}{import} \PY{n+nn}{math}
@@ -1256,7 +1274,8 @@ character '\texttt{a}' to the name of the function as seen below:
 \begin{Verbatim}[commandchars=\\\{\}]
 {\color{outcolor}Out[{\color{outcolor}74}]:} 0.7853981633974483
 \end{Verbatim} 
-\href{https://en.wikipedia.org/wiki/E_(mathematical_constant)}{Euler's number} \(e\) can be computed as follows:
+\href{https://en.wikipedia.org/wiki/E_(mathematical_constant)}{Euler's number} \(e\) \index{Euler's number}
+can be computed as follows:
 \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}75}]:} \PY{n}{math}\PY{o}{.}\PY{n}{e}
 \end{Verbatim}
@@ -1293,7 +1312,8 @@ function \texttt{sqrt}:
 
 \subsection{Selection Sort}
 In order to see a practical application of the concepts discussed so far, we present a sorting
-algorithm that is known as \href{https://en.wikipedia.org/wiki/Selection_sort}{\blue{selection sort}}.
+algorithm that is known as \href{https://en.wikipedia.org/wiki/Selection_sort}{\blue{selection sort}}
+(Deutsch: \blue{Sortieren durch Auswahl}).  \index{selection sort}
 This algorithm sorts a given list \texttt{L} and works as follows:
 \begin{enumerate}
 \item If \texttt{L} is empty, \texttt{sort(L)} is also empty:
@@ -1360,6 +1380,7 @@ i.e.~we have to prefix the name of the function that we want to call with the ba
 this function followed by a dot character.
 
 \section{Strings}
+\index{Strings}
 \textsl{Python} support \blue{strings}.  \href{https://en.wikipedia.org/wiki/String_(computer_science)}{Strings} are
 nothing more but sequences of characters.  In \textsl{Python}, these have to be 
 enclosed either in double quotes or in single quotes.  The operator ``\texttt{+}'' can be used to concatenate
@@ -1409,6 +1430,7 @@ then the expression \texttt{s[2:5]} returns the substring
 \texttt{\symbol{34}cde\symbol{34}}.
 
 \section{Computing with Unlimited Precision}
+\index{fractions, \\ \texttt{from fractions import Fraction}}
 \textsl{Python} provides the module fractions that implements
 \blue{rational numbers} through the function Fraction that is
 implemented in this module. We can load this function as follows:
@@ -1428,10 +1450,10 @@ the sum \(\frac{1}{2} + \frac{1}{3}\) as follows:
 \begin{Verbatim}[commandchars=\\\{\}]
 5/6
 \end{Verbatim}
-Let us compute Euler's number \(e\). The easiest way to compute \(e\) is
+Let us compute Euler's number \(e\). \index{Euler's number} The easiest way to compute \(e\) is
 as inifinite series. We have that
 \[ e = \sum\limits_{n=0}^\infty \frac{1}{n!} \] Here \(n!\) denotes the
-\blue{factorial} of \(n\), which is defined as follows:
+\blue{factorial} (Deutsch: \blue{Fakultät}) \index{factorial} of \(n\), which is defined as follows:
 \[ n! = 1 \cdot 2 \cdot 3 \cdot {\dots} \cdot n. \]
 \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}3}]:} \PY{k}{def} \PY{n+nf}{factorial}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{:}
@@ -1490,12 +1512,12 @@ And there we go. Ladies and gentlemen, lo and behold: Here are the first 100 dig
 \end{Verbatim}
 
 \section{Dictionaries}\label{dictionaries}
-
+\index{dictionary, \texttt{dict}}
     A \emph{binary relation} \(R\) is a subset of the cartesian product of
 two sets \(A\) and \(B\), i.e.~if \(R\) is a binary relation we have:
 \[ R \subseteq A \times B \] A binary relation
-\(R \subseteq A \times B\) is a \emph{functional} relation if and only if
-we have: \[ \forall x \in A: \forall y_1, y_2 \in B: \bigl(
+\(R \subseteq A \times B\) is a \emph{functional} relation \index{functional relation}
+if and only if we have: \[ \forall x \in A: \forall y_1, y_2 \in B: \bigl(
      \langle x, y_1\rangle \in R \wedge \langle x, y_2\rangle \in R
      \rightarrow y_1 = y_2
    \bigr)
