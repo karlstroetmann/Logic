@@ -888,7 +888,7 @@ zusammengefasst haben, denn die Berechnung der Variablen verläuft in diesen Fä
 \end{figure}
 
 Damit sind wir nun in der Lage, eine Funktion $\mathtt{tautology}(f)$ zu implementieren, die für eine gegebene
-aussagenlogische $f$ überprüft, ob $f$ eine Tautologie ist.  Diese in Abbildung \ref{fig:tautology.py} auf Seite \pageref{fig:tautology.py}
+aussagenlogische Formel $f$ überprüft, ob $f$ eine Tautologie ist.  Diese in Abbildung \ref{fig:tautology.py} auf Seite \pageref{fig:tautology.py}
 gezeigte Funktion arbeitet wie folgt:
 \begin{enumerate}
 \item Zunächst berechnen wir die Menge \texttt{P} der aussagenlogischen Variablen, die in $f$ auftreten.
@@ -915,10 +915,10 @@ gezeigte Funktion arbeitet wie folgt:
         "Check, whether the formula f is a tautology."
         P = collectVars(f)
         A = power.allSubsets(P)
-        if { evaluate(F, I) for I in A } == { True }:
+        if { evaluate(f, I) for I in A } == { True }:
             return True
         else:
-            return [I for I in A if not evaluate(F, I)][0]
+            return [I for I in A if not evaluate(f, I)][0]
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Überprüfung der Allgemeingültigkeit einer aussagenlogischen Formel}
