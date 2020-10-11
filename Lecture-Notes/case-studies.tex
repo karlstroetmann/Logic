@@ -209,7 +209,7 @@ possible flops:
 $\ds \frac{\;\mbox{number of flops containing a card with value $3$}\;}{\mbox{number of all possible flops}}$
 \\[0.2cm]
 The program
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/poker-triple.py}{poker-triple.py}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Poker.ipynb}{Poker.iypnb}
 shown in Figure \ref{fig:poker-triple.py} performs this computation.  We proceed to discuss this
 program line by line.
 
@@ -286,8 +286,7 @@ program line by line.
       the ratio of the number of flops containing a card with a value of 3 to the number of all possible flops.
 \end{enumerate}
 When we run the program we see that the probability of improving a \blue{pocket pair} on the flop to \blue{trips} or better
-is about  $11.8\%$.  A \textsl{Jupyter} notebook showcasing this computation outlined above can be fount at
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Poker.ipynb}{Poker.ipynb}.
+is about  $11.8\%$.  
 
 \remarkEng
 The method to compute probabilities that has been sketched above only works if the sets that have to
@@ -299,9 +298,7 @@ to compute the probabilities instead.  This method will be discussed in the lect
 
 
 \section{Finding a Path in a Graph}
-In the following section, I will present an application that is more interesting since it is practically
-relevant.  In order to prepare for this, we will now discuss the problem of finding a \blue{path} \index{path}
-in a
+We will now discuss the problem of finding a \blue{path} \index{path} in a
 \href{https://en.wikipedia.org/wiki/Directed_graph}{directed graph}. 
 \index{directed graph}
 Abstractly, a \emph{directed graph} consists of \blue{vertices} and \blue{edges} that connect these vertices.  In an application, the
@@ -365,219 +362,17 @@ $[x_1,\cdots,x_n]$ \quad such that \quad $a = x_1$ \quad and \quad $b = x_n$.
 The goal of this section is to develop an algorithm that checks whether two vertices $a$ and $b$ are connected.
 Furthermore, we want to be able to compute the corresponding path connecting the vertices $a$ and $b$.
 
-
-\subsection{Computing the Transitive Closure of a Relation}
-We have already noted that a graph can be represented as the set of its edges and hence as a \blue{binary relation}.
-We have previously defined a \blue{binary relation} as a set of pairs.  We also need the notion of a
-\blue{relational product}: \index{relational product, $Q \circ R$}
-If $Q$ and $R$ are binary relations, then the \blue{relational product} $Q \circ R$ of $Q$ and $R$ is defined as
-\\[0.2cm]
-\hspace*{1.3cm}
-$Q \circ R := \Bigl\{ \pair(x, z) \Bigm| \exists y:\bigl(\pair(x,y) \in Q \wedge \pair(y,z) \in R\bigr) \Bigr\}$.
-\\[0.2cm]
-Furthermore, for any $n \in \mathbb{N}^*$ we can define the $n$-th power $R^n$ of the relation $R$ by induction.
-\begin{description}
-\item[Base Case:] $n = 1$.
-
-             $R^1 := R$
-\item[Induction Step:] $n \mapsto n+1$ 
-
-             $R^{n+1} := R^n \circ R$.
-\end{description}
-The idea behind this definition is that if $\pair(x, z) \in R^n$, then there is a path of length $n$ that
-starts in $x$ and ends in $z$.
-
-In order to decide whether there is a path connecting two vertices we have to compute the 
-\href{https://en.wikipedia.org/wiki/Transitive_closure}{transitive closure} $R^+$ of a relation $R$.  
-To understand this notion, we first need to define the concept of \blue{transitivity}:  A relation $R$ is
-transitive if and only if the following holds:
-\\[0.2cm]
-\hspace*{1.3cm}
-$\pair(x,y) \in T \wedge \pair(y, z) \in T \rightarrow \pair(x, z) \in T$ \quad for all $x,y,z$. 
-\\[0.2cm]
-Now the \blue{transitive closure} $R^+$ 
-\index{transitive closure $R^+$}
-of a binary relation $R$ is the \blue{smallest} relation $T$ such that the following
-conditions hold:
-\begin{itemize}
-\item $R$ is a subset of $T$, i.e. we have $R \subseteq T$.
-\item $T$ is transitive.
-\end{itemize}
-The lecture on
-\href{https://github.com/karlstroetmann/Lineare-Algebra/blob/master/Skript/lineare-algebra.pdf}{Lineare Algebra} 
-gives a prove that the transitive closure $R^+$ of a binary relation can be computed as follows:
-\\[0.2cm]
-\hspace*{1.3cm}
-$R^+ = \bigcup\limits_{n=1}^{\infty} R^n = R^1 \cup R^2 \cup R^3 \cup \cdots$  
-\\[0.2cm]
-Initially, this formula might look intimidating as it suggests an infinite computation.
-Fortunately, it turns out that we do not have to compute the powers $R^n$ for every $n \in \mathbb{N}$.  Let me
-explain the reason that allows us to cut the computation short.  
-\begin{enumerate}
-\item $R$ is the set of direct connections between two vertices.
-\item $R^2$ is the same as $R \circ R$ and this relational product is defined as
-      \\[0.2cm]
-      \hspace*{1.3cm}
-       $R \circ R = \bigl\{ \pair(x,z) \bigm| \exists y \colon(\pair(x,y) \in R \wedge \pair(y,z)) \in R \bigr\}$.
-      \\[0.2cm]
-      Hence, $R \circ R$ contains those pairs $\pair(x,z)$ that are connected via one intermediate vertex $y$,
-      i.e.~there is a path of the form $x \mapsto y \mapsto z$ that connects $x$ and $z$.  This path
-      has length 2.  In general, we can show by induction on $n$ that $R^n$ connect those pairs that are
-      connected by a path of length $n$.  The induction step of this proof runs as follows:
-
-      $R^{n+1}$ is defined as $R^n \circ R$ and therefore we have
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $R^n \circ R = \{ \pair(x,z) \mid \exists y \colon \pair(x,y) \in R^n \wedge \pair(y,z) \in R \}$.
-      \\[0.2cm]
-      As $\pair(x,y) \in R^n$, the induction hypothesis guarantees that the vertices $x$ and $y$ are
-      connected by a path of length $n$.  Hence, this 
-      path has the form
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\underbrace{x \mapsto \cdots \mapsto y}_{\mbox{\scriptsize path of length $n$.}}$
-      \\[0.2cm]
-      Adding $z$ at the end of this path will produce the path
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\underbrace{\underbrace{x \mapsto \cdots \mapsto y}_{\mbox{\scriptsize path of length $n$.}} \mapsto z}_{\mbox{\scriptsize path of length $n+1$.}}$.
-      \\[0.2cm]
-      This path has a length of $n + 1$ and, furthermore, connects $x$ and $z$.  Hence $R^{n+1}$
-      contains those pairs $\pair(x, z)$ that are connected by a path of length $n+1$.
+\subsection{Breadth-First Search}
+We are now ready to present \blue{breadth-first search} \index{breadth-first search}.  This is an algorithm
+for finding a path in a given graph.  Figure \ref{fig:Breadth-First-Search.ipynb} on page
+\pageref{fig:Breadth-First-Search.ipynb} shows the function \texttt{search}.  This function uses three
+arguments:
+\begin{enumerate}[(a)]
+\item $R$ is a binary relation that is interpreted as a directed graph.
+\item \texttt{start} and \texttt{goal} are nodes in this graph.
 \end{enumerate}
-Now the important observation is the following. The set of all vertices is finite.  For the arguments sake, let
-us assume there are $k$ different vertices.  But then every path that has a length of $k$ or greater must
-contain at least one vertex that is visited more than once and hence this path is longer than necessary,
-i.e.~there is a shorter path that connects the same vertices.  Therefore, for a finite graph with $k$ vertices,
-the formula to compute the transitive closure can be simplified as follows:
-\\[0.2cm]
-\hspace*{1.3cm} 
-$\ds R^+ = \bigcup\limits_{i=1}^{k-1} R^i$.
-\\[0.2cm]
-While we could use this formula as its stands, it is more efficient to use a \blue{fixed-point iteration} instead.
-To this end, we prove that the transitive closure $R^+$ satisfies the following equation:
-\begin{equation}
-  \label{fixpunkt}
-  R^+ = R \cup R^+ \circ R. 
-\end{equation}
-The precedence of the operator $\circ$ 
-is higher than the precedence of the operator $\cup$.  Therefore, the expression $R \cup R^+ \circ R$ is
-equivalent to the expression $R \cup (R^+ \circ R)$.  In order to prove equation \ref{fixpunkt} we first note
-that the following  \blue{law of distributivity} holds:
-\\[0.2cm]
-\hspace*{1.3cm}
-$\ds (P \cup Q) \circ R = (P \circ R) \cup (Q \circ R)$.
-\\[0.2cm]
-(A proof of this equation can be found in my lecture notes on
-\href{https://github.com/karlstroetmann/Lineare-Algebra/blob/master/Skript/lineare-algebra.pdf}{linear algebra}
-on page 42.)  Using this law, we can prove equation \ref{fixpunkt} algebraically.  We have:
-\\[0.2cm]
-\hspace*{1.3cm}
-$
-\begin{array}{cll}
-    & R \cup R^+ \circ R \\[0.2cm]
-  = & R \cup \Bigl(\bigcup\limits_{i=1}^{\infty} R^i \Bigr) \circ R \\[0.4cm]
-  = & R \cup \bigl(R^1 \cup R^2 \cup R^3 \cup \cdots \bigr) \circ R \\[0.2cm]
-  = & R \cup \bigl(R^1 \circ R \cup R^2 \circ R \cup R^3 \circ R \cup \cdots \bigr) \\[0.2cm]
-  = & R \cup \bigl(R^2 \cup R^3 \cup  R^4 \cup \cdots \bigr)  \\[0.2cm]
-  = & R^1 \cup R^2 \cup R^3 \cup  R^4 \cup \cdots  \\[0.2cm]
-  = & \bigcup\limits_{i=1}^{\infty} R^i \\[0.4cm]
-  = & R^+.
-\end{array}
-$
-\\[0.2cm]
-Equation  \ref{fixpunkt} can now be used to compute $R^+$ via a fixed-point iteration.
-To this end, let us define a sequence of relations $(T_n)_{n \in \mathbb{N}}$ by induction on $n$:
-\begin{enumerate}
-\item[I.A.] $n = 0$: 
-
-            $T_0 = R$
-\item[I.S.] $n \mapsto n+1$:
-
-            $T_{n+1} = R \cup T_n \circ R $. 
-\end{enumerate}
-The relation  $T_n$ can be expressed via the relation $R$, we have
-\begin{enumerate}
-\item $T_0 = R$.
-\item $T_1 = R \cup T_0 \circ R = R \cup R \circ R = R^1 \cup R^2$.
-\item$\begin{array}[t]{lcl}
-       T_2  & = & R \cup T_1 \circ R \\
-            & = & R \cup (R^1 \cup R^2) \circ R \\
-            & = & R^1 \cup R^2 \cup R^3. \\
-       \end{array}
-      $
-\end{enumerate}
-In general, we can show by induction that
-\\[0.2cm]
-\hspace*{1.3cm}
-$\ds T_n = \bigcup\limits_{i=1}^{n+1} R^i$
-\\[0.2cm]
-holds for all $n \in \mathbb{N}$.  As $R^1 = R$, the base case $n=0$ of this proof is immediate from the definition of $T_0$.
-In the induction step we observe the following:
-\\[0.2cm]
-\hspace*{1.3cm}
-$
- \begin{array}{lcll}
-   T_{n+1} & = & \ds R \cup T_n \circ R & \mbox{(by definition)} \\[0.2cm]
-           & = & \ds R \cup \biggl(\bigcup\limits_{i=1}^{n+1} R^i\biggr) \circ R &
-                 \mbox{(by induction hypothesis)} \\[0.4cm]
-           & = & \ds R \cup \left(R \cup \cdots \cup R^{n+1}\right) \circ R \\[0.2cm] 
-           & = & \ds R^1 \cup R^2 \cup \cdots \cup R^{n+2}  &
-                 \mbox{(by the distributivity of $\circ$ over $\cup$)} \\[0.2cm]
-           & = & \ds \bigcup\limits_{i=1}^{n+2} R^i & \Box 
-   \end{array}
-$
-\\[0.2cm]
-The sequence $(T_n)_{n\in\mathbb{N}}$ has another useful property:  It is 
-\blue{monotonically increasing}.  In general, a sequence of sets $(X_n)_{n\in\mathbb{N}}$ is called
-\blue{monotonically increasing} iff we have \index{monotonically increasing}
-\\[0.2cm]
-\hspace*{1.3cm}
-$\forall n \in \mathbb{N}: X_n \subseteq X_{n+1}$,
-\\[0.2cm]
-i.e.~the sets $X_n$ get bigger with growing index $n$.
-The monotonicity of the sequence  $(T_n)_{n \in \mathbb{N}}$ is an immediate consequence of the equation
-\\[0.2cm]
-\hspace*{1.3cm}
-$\ds T_n = \bigcup\limits_{i=1}^{n+1} R^i$ 
-\\[0.2cm]
-because we have:
-\\[0.2cm]
-\hspace*{1.3cm}
-$
-\begin{array}[t]{llcl}
-                & \ds T_n \subseteq T_{n+1} \\[0.2cm]
-\Leftrightarrow & \ds \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{n+2} R^i \\[0.5cm]
-\Leftrightarrow & \ds \bigcup\limits_{i=1}^{n+1} R^i \subseteq \left(\bigcup\limits_{i=1}^{n+1} R^i\right) \cup R^{n+2} \\
-\end{array}
-$
-\\[0.2cm]
-If the relation  $R$ is finite, then the transitive closure $R^+$ is finite, too.  All of the sets $T_n$ 
-are subsets of $R^+$ because we have
-\\[0.2cm]
-\hspace*{1.3cm}
-$\ds T_n = \bigcup\limits_{i=1}^{n+1} R^i \subseteq \bigcup\limits_{i=1}^{\infty} R^i = R^+$ \quad for all $n \in \mathbb{N}$.
-\\[0.2cm]
-Hence the sets $T_n$ can not grow indefinitely.  Because of the monotonicity of the sequence 
-$(T_n)_{n\in\mathbb{N}}$ it follows that there exists an index  $k \in \mathbb{N}$ such that the sets $T_n$ do
-not grow any further once $n$ has reached $k$, i.e.~we have
-\\[0.2cm]
-\hspace*{1.3cm}
-$\ds \forall n \in \mathbb{N}:( n \geq k \rightarrow T_n = T_k)$.
-\\[0.2cm]
-But this implies that
-\\[0.2cm]
-\hspace*{1.3cm}
-$\ds T_n = \bigcup\limits_{i=1}^{n+1} R^i = \bigcup\limits_{i=1}^{\infty} R^i = R^+$ 
-\quad holds for all $n \geq k$.
-\\[0.2cm]
-Therefore, the algorithm for computing  $R^+$ iterates the equation 
-\\[0.2cm]
-\hspace*{1.3cm}
-$\ds T_{n+1} = R \cup T_n \circ R$
-\\[0.2cm]
-until the equation  $T_{n+1} = T_n$ is satisfied, since this implies that $T_n = R^+$.
-
+The function search returns a path leading from \texttt{start} to  \texttt{goal} if such a path exists.
+Otherwise it returns \texttt{None}.  We discuss the implementation of the function \texttt{search} line by line.
 
 \begin{figure}[!ht]
   \centering
@@ -589,265 +384,54 @@ until the equation  $T_{n+1} = T_n$ is satisfied, since this implies that $T_n =
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm,
               ]{python3}
-    def product(R1, R2):
-        'Compute the relational product of R1 and R2.'
-        return { (x, z) for (x, y1) in R1 for (y2, z) in R2 if y1 == y2 }
-    
-    def transClosure(R):
-        'Compute the transitive closure of the binary relation R.'
-        T = R
+    def search(R, start, goal):
+        Paths   = { (start,) }
+        Visited = { start }
         while True:
-            oldT = T
-            T    = product(R,T) | R
-            if T == oldT:
-                return T
-    
-    R = { (1,2), (2,3), (1,3), (2,4), (4,5) }
-    print( 'R  = ', R );
-    print( 'Computing the transitive closure of R:' );
-    T = transClosure(R);
-    print( 'R+ = ', T );
-\end{minted} 
-\vspace*{-0.3cm}
-\caption{Computing the transitive closure.}  
-\label{fig:transitive-closure.py}
-\end{figure} %\$
-
-\noindent
-The program 
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/transitive-closure.py}{\texttt{transitive-closure.py}}
-that is shown in Figure
-\ref{fig:transitive-closure.py} on page \pageref{fig:transitive-closure.py} shows an implementation of this idea.
-The program produces the following output:
-\begin{verbatim}
-    R  = {(1, 2), (1, 3), (4, 5), (2, 3), (2, 4)}
-    Computing the transitive closure of R:
-    R+ = {(1, 2), (1, 3), (4, 5), (1, 4), (1, 5), (2, 3), (2, 5), (2, 4)}
-\end{verbatim}
-The transitive closure $R^+$ of a relation $R$ has a very intuitive interpretation:
-It contains all pairs $\pair(x,y)$ such that there is a path leading from 
-$x$ to $y$.  
-The function $\texttt{product}(R_1, R_2)$ computes the relational product $R_1\circ R_2$ 
-according to the formula
-\\[0.2cm]
-\hspace*{1.3cm}
-$R_1 \circ R_2 = \Bigl\{ \langle x, z \rangle \Bigm| \exists y:\bigl(\pair(x,y) \in R_1 \wedge \pair(y,z) \in R_2\bigr) \Bigr\}$.
-
-
-\subsection{Computing the Paths}
-So far, given a graph represented by a relation $R$ and two vertices $x$ and $y$, we can only check
-whether there is a path leading from $x$ to $y$, but we cannot compute this path.  In this
-subsection we will extend the procedure \texttt{transClosure} so that it will also compute the
-corresponding path.  The main idea is to extend the notion of a relational product to the notion of
-a \blue{path product}, where a \blue{path product} is defined on sets of paths.  In order to do so,
-we introduce three functions for tuples.
-\begin{enumerate}
-\item Given a tuple $T$, the function $\texttt{first}(T)$ returns the first element of $T$: 
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\texttt{first}\bigl(\langle x_1,\cdots,x_m\rangle\bigr) = x_1$.
-\item Given a tuple $T$, the function $\texttt{last}(T)$ returns the last element of $T$: 
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\texttt{last}\bigl(\langle x_1,\cdots,x_m\rangle\bigl) = x_m$.
-\item If $S = \langle x_1, \cdots, x_m\rangle$ and $T = \langle y_1, \cdots, y_n \rangle$ are two tuples  such that
-      $\texttt{first}(T) = \texttt{last}(S)$, we define the \blue{join} $S \oplus T$ of $S$ and $T$ as \\[0.2cm]
-      \hspace*{1.3cm}
-      $S \oplus T = \langle x_1, \cdots, x_m, y_2, \cdots, y_n \rangle$.
-\end{enumerate}
-If $\mathcal{P}_1$ and $\mathcal{P}_2$ are sets of tuples representing paths, we define the \blue{path product} of
-$\mathcal{P}_1$ and $\mathcal{P}_2$ as follows: \\[0.2cm]
-\hspace*{1.3cm} 
-$\mathcal{P}_1 \bullet \mathcal{P}_2 = 
-\bigl\{\; T_1 \oplus T_2 \mid T_1 \in \mathcal{P}_1 \wedge T_2 \in \mathcal{P}_2 \wedge \texttt{last}(T_1) = \texttt{first}(T_2) \;\bigr\}
-$.
-
-\begin{figure}[!ht]
-  \centering
-\begin{minted}[ frame         = lines, 
-                framesep      = 0.3cm, 
-                numbers       = left,
-                numbersep     = -0.2cm,
-                bgcolor       = sepia,
-                xleftmargin   = 0.8cm,
-                xrightmargin  = 0.8cm,
-              ]{python3}
-    def findPaths(R):
-        P = R;
-        while True:
-            oldP = P
-            P    = R | pathProduct(P, R)
-            if P == oldP:
-                return P
-
-    def pathProduct(P, Q):
-        return { join(S, T) for S in P for T in Q if S[-1] == T[0] }
-    
-    def join(S, T):
-        return S + T[1:]
-    
-    R = { (1,2), (2,3), (1,3), (2,4), (4,5) }
-    print('R = ', R)
-    print('Computing all paths:' )
-    P = findPaths(R)
-    print('P = ', P)
-\end{minted} 
-\vspace*{-0.3cm}
-\caption{Computing all connections.}  \label{fig:path.py}
-\end{figure} %\$
-
-\begin{figure}[!ht]
-  \centering
-  \vspace*{-9cm}
-
-  \epsfig{file=Figures/graph-zykl,scale=0.5}
-  \vspace*{-1cm}
-
-  \caption{A graph with a cycle.}
-  \label{fig:graph-zykl}
-\end{figure}
-
-Using the notion of a \blue{path product} we are able to extend the program shown in Figure
-\ref{fig:transitive-closure.py} such that it computes all paths between two vertices.
-The resulting program
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/path.py}{\texttt{path.py}}
-is shown in Figure \ref{fig:path.py} on page \pageref{fig:path.py}.
-Unfortunately, the program does not work any more if the graph is \blue{cyclic}.  A graph is defined
-to be \blue{cyclic} if there is a path of length greater than $1$ that starts and ends at the same
-vertex.  This path is then called a \blue{cycle}.
-Figure \ref{fig:graph-zykl} on page \pageref{fig:graph-zykl} shows a cyclic graph.  This graph is
-cyclic because it contains the path
-\\[0.2cm]
-\hspace*{1.3cm}
-$\langle 1, 2, 4, 1 \rangle$
-\\[0.2cm]
-and this path is a cycle.
-The problem with this graph is that it contains an infinite number of paths that connect the vertex
-1 with the vertex 2: \\[0.2cm]
-\hspace*{1.3cm}
-$\langle 1, 2 \rangle$, $\langle 1, 2, 4, 1, 2 \rangle$, 
-$\langle 1, 2, 4, 1, 2, 4, 1, 2 \rangle$, 
-$\langle 1, 2, 4, 1, 2, 4, 1, 2, 4, 1, 2 \rangle$, $\cdots$
-\\[0.2cm]
-Of course, there is no point in computing a path that visits a vertex more than once as these paths
-contain cycles.  Our goal is to eliminate all those paths that contain cycles.
-
-
-\begin{figure}[!ht]
-  \centering
-\begin{minted}[ numbers       = left,
-                numbersep     = -0.2cm,
-                frame         = lines, 
-                framesep      = 0.3cm, 
-                bgcolor       = sepia,
-                xleftmargin   = 0.0cm,
-                xrightmargin  = 0.0cm,
-             ]{python3}
-    def pathProduct(P, Q):
-        return { join(S, T) for S in P for T in Q
-                            if S[-1] == T[0] and noCycle(S, T)
-               }
-    
-    def noCycle(T1, T2):
-        return len({ x for x in T1 } & { x for x in T2 }) == 1
-\end{minted} 
-\vspace*{-0.3cm}
-\caption{Computing the connections in a cyclic graph.}  
-\label{fig:path-cyclic.py}
-\end{figure} %\$
-
-Figure \ref{fig:path-cyclic.py} on page shows how the implementation of the function
-\texttt{pathProduct} has to be changed so that the resulting program
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/path-cyclic.py}{\texttt{path-cyclic.py}}
-works also for cyclic graphs. 
-\begin{enumerate}
-\item In line 2 and 3, we compute only those paths that are not cyclic.
-\item Line 6 defines a function \texttt{noCycle} that tests, whether the join  $\texttt{T1} \oplus \texttt{T2}$ is cyclic.  The join
-      of \texttt{T1} and \texttt{T2} is cyclic iff the tuples \texttt{T1} and \texttt{T2} have more
-      than one common element.  The tuples \texttt{T1} and \texttt{T2} will always have at least one common element, as we join
-      these tuples only if the last element of \texttt{T1} is equal to the first element of  \texttt{T2}.
-      If there would be an another vertex common to both \texttt{T1} and \texttt{T2}, then the path
-      $\texttt{T1} \oplus \texttt{T2}$ would be cyclic.
-\end{enumerate}
-
-In general, we are not really interested to compute all possible paths between two given vertices
-\texttt{x} and \texttt{y}.  Instead, we just want to compute the shortest path leading from \texttt{x} to \texttt{y}.
-Figure \ref{fig:find_path.py} on page \pageref{fig:find_path.py} shows the procedure \texttt{reachable}. 
-This procedure takes three arguments:
-\begin{enumerate}
-\item \texttt{start} and \texttt{goal} are vertices of a graph.
-\item \texttt{R} is a binary relation representing a directed graph.
-\end{enumerate}
-The call  \texttt{reachable(start, goal, R)} checks whether \texttt{start} and \texttt{goal} are connected and, furthermore,
-computes the shortest path from \texttt{start} to \texttt{goal}, provided such a path exists.
-The complete program can be found in the file
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/find\_path.py}{\texttt{find\_path.py}}.
-Next, we discuss the implementation of the procedure  \texttt{reachable}.
-\begin{enumerate}
-\item Line 2 initializes the set \texttt{P}.  After $n$ iterations, this set will contain all paths
-      that start with the vertex \texttt{start} and that have a length of at most $n$.
-
-      Initially, there is just the trivial path $\langle\texttt{start}\rangle$ that starts with vertex
-      \texttt{start} and has length $0$.
-\item Line 5 tries to extend all previously computed paths by one step.
-\item Line 6 selects all those paths from the set \texttt{P} that lead to the vertex \texttt{goal}.
-      These paths are stored in the set \texttt{Found}.
-\item Line 7 checks whether we have indeed found a path ending at \texttt{goal}.  This is the case if
-      the set \texttt{Found} is not empty.  
-      In this case, we return any of these paths.
-\item If we have not yet found the vertex \texttt{goal} and, furthermore, we have not been able to find
-      any new paths during this iteration,  the procedure returns in line 10.
-      As the \texttt{return} statement in line 11 does not return a value, the procedure will
-      instead return the value \texttt{None}.
-\end{enumerate}
-The procedure call \texttt{reachable(start,goal R)} will compute the \textbf{shortest} path connecting
-\texttt{start} and \texttt{goal} because it computes path with increasing length.  The first iteration
-computes all paths starting in vertex \texttt{start} that have a length of at most 1, the second iteration
-computes all paths starting in vertex \texttt{start} that have a length of at most 2, and in general the $n$-th
-iteration computes all paths starting in \texttt{start} that have a length of at most $n$.  Hence, if
-there is a path of length $n$, then this path will be found in the $n$-th iteration unless a shorter path has
-already been found in a previous iteration.  
-
-\remarkEng
-The algorithm described above is known as 
-\href{https://en.wikipedia.org/wiki/Breadth-first_search}{breadth first search}. \eox 
-
-\begin{figure}[!ht]
-  \centering
-\begin{minted}[ frame         = lines, 
-                framesep      = 0.3cm, 
-                numbers       = left,
-                numbersep     = -0.2cm,
-                bgcolor       = sepia,
-                xleftmargin   = 0.8cm,
-                xrightmargin  = 0.8cm,
-              ]{python3}
-    def reachable(start, goal, R):
-        P = { (start,) }
-        while True:
-            oldP  = P
-            P     = P | path_product(P, R)
-            Found = { T for T in P if T[-1] == goal }
-            if Found != set():
-                return Found.pop()
-            if P == oldP:
+            NewPaths = set()
+            for Path in Paths:
+                for (y, z) in R:
+                    if Path[-1] == y and z not in Visited:
+                        LongerPath = Path + (z,)
+                        if z == goal:
+                            return LongerPath
+                        NewPaths.add(LongerPath)
+                        Visited .add(z)
+            if NewPaths == set():
                 return
-                
-    def path_product(P, R):
-        return set( add(T1, T2) for T1 in P for T2 in R
-                             if T1[-1] == T2[0] and noCycle(T1, T2)
-                  )
-    
-    def noCycle(T1, T2):
-        return len(set(T1) & set(T2)) == 1
-    
-    def add(T, P):
-        return T + (P[-1],)
+            Paths = NewPaths
 \end{minted} 
 \vspace*{-0.3cm}
-\caption{Finding the shortest path between two vertices.}  
-\label{fig:find_path.py}
-\end{figure}
+\caption{Breadth-first search.}  \label{fig:Breadth-First-Search.ipynb}
+\end{figure} %\$
+
+
+\begin{enumerate}
+\item In line 2 we initialize the variable \texttt{Paths} to contain the path that starts in the node
+      \texttt{start} and has the length $0$.  After the $n$th iteration of the \texttt{while} loop in line 4,
+      the set \texttt{Paths} will contain all paths in the graph that start in node \texttt{start} and have a
+      length of $n$.
+\item In line 3 we initialize the set \texttt{Visited} to contain the state \texttt{start}.
+      Every time we discover a new node, it is added to the set \texttt{Visited}.
+      The reason is that we want all the paths stored in the set \texttt{Paths} to be shortest paths.
+      Therefore, we only add a new path to this set if the end point of this path has not yet been visited.
+\item Before the $n$th iteration of the \texttt{while} loop in line 4 all paths stored in
+      the set \texttt{Paths} have a length of $n-1$.  The purpose of the next iteration is to extend the paths to
+      a length of $n$.  Those paths that can not be extended are discarded.     
+\item \texttt{NewPaths} is the set of those paths that have been extended.  In the $n$th iteration,
+      all paths in this set will have a length of $n$.
+\item In line 6 to 8 we iterate over all paths discovered so far that end in the node $y$, where $\langle y, z\rangle$
+      is a pair in the relation $R$ and the node $z$ has not yet been visited.
+\item If we find such a path \texttt{Path} we extend it by appending the node $z$.
+\item If $z$ is equal to \texttt{goal} we have found a path from \texttt{start} to \texttt{goal} and return
+      this path.
+\item Otherwise, this new path is added to the set \texttt{NewPaths} and the node $z$ is added to the set
+      \texttt{Visited} to record the fact that we now have found a path leading to $z$.
+\item If we do not find any new path in a given iteration, then there is no path from \texttt{start} to
+      \texttt{goal} and the function returns.
+\item Otherwise, \texttt{Paths} is set to \texttt{NewPaths} and the loop repeats.
+\end{enumerate}
+
 
 \subsection{The Wolf, the Goat, and the Cabbage}
 \index{wolf, goat, and cabbage}
