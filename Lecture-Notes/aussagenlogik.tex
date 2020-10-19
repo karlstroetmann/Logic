@@ -1,7 +1,7 @@
 \chapter{Aussagenlogik}
 \section{Überblick}
 Die Aussagenlogik beschäftigt sich mit der Verknüpfung \blue{einfacher Aussagen} durch
-\blue{Junktoren}.  Dabei sind Junktoren Worte wie ``\blue{und}'', ``\blue{oder}'',
+\blue{Junktoren}.  Dabei sind Junktoren\index{Junktor} Worte wie ``\blue{und}'', ``\blue{oder}'',
 ``\blue{nicht}'', ``\blue{wenn $\cdots$, dann}'', und ``\blue{genau dann, wenn}''.  Unter
 \blue{einfachen Aussagen} verstehen wir Sätze, die 
 \begin{itemize}
@@ -14,9 +14,11 @@ Beispiele für einfache Aussagen sind
 \item ``\textsl{Es regnet.}''
 \item ``\textsl{Am Himmel ist ein Regenbogen.}''
 \end{enumerate}
-Einfache Aussagen dieser Art bezeichnen wir auch als \blue{atomare} Aussagen, weil sie sich nicht weiter in
+Einfache Aussagen dieser Art bezeichnen wir auch als \blue{atomare}\index{atomare Aussage} Aussagen, weil sie
+sich nicht weiter in 
 Teilaussagen zerlegen lassen.  Atomare Aussagen lassen sich mit Hilfe der eben angegebenen Junktoren zu 
-\blue{zusammengesetzten Aussagen} verknüpfen.  Ein Beispiel für eine zusammengesetzte Aussage wäre \\[0.2cm]
+\blue{zusammengesetzten Aussagen}\index{zusammengesetzte Aussagen} verknüpfen.  Ein Beispiel für eine
+zusammengesetzte Aussage wäre \\[0.2cm] 
 \hspace*{1.3cm} \textsl{\blue{Wenn} die Sonne scheint \blue{und} es regnet, \blue{dann} ist ein Regenbogen am Himmel.} 
 \hspace*{\fill} (1)
 \\[0.2cm]
@@ -64,14 +66,15 @@ Bestimmte aussagenlogische Formeln sind offenbar immer wahr, egal was
 $p \vee \neg p$
 \\[0.2cm]
 unabhängig von dem Wahrheitswert der Aussage $p$ immer wahr.  Eine aussagenlogische
-Formel, die immer wahr ist, bezeichnen wir als eine \blue{Tautologie}.  Andere
+Formel, die immer wahr ist, bezeichnen wir als eine \blue{Tautologie}\index{Tautologie}.  Andere
 aussagenlogische Formeln sind nie wahr, beispielsweise ist die Formel
 \\[0.2cm]
 \hspace*{1.3cm}
 $p \wedge \neg p$
 \\[0.2cm]
-immer falsch.  Eine Formel heißt \blue{erfüllbar}, wenn es wenigstens eine Möglichkeit
-gibt, dass die Formel wahr wird.  Im Rahmen der Vorlesung werden wir verschiedene Verfahren
+immer falsch.  Eine Formel heißt \blue{erfüllbar}\index{erfüllbar}, wenn es wenigstens eine Möglichkeit
+gibt, dass die Formel wahr wird, ansonsten heißt sie \blue{unerfüllbar}\index{unerfüllbar}  Im Rahmen der
+Vorlesung werden wir verschiedene Verfahren 
 entwickeln, mit denen es möglich ist zu entscheiden, ob eine aussagenlogische Formel eine
 Tautologie ist oder ob sie erfüllbar ist.  Solche Verfahren spielen
 in der Praxis eine wichtige Rolle.
@@ -119,8 +122,8 @@ Anwendungen.  Aus der großen Zahl der industriellen Anwendungen möchte ich ste
 
 \section{Formale Definition der aussagenlogischen Formeln}
 Wir behandeln zunächst die \blue{Syntax} der Aussagenlogik und besprechen anschließend die
-\blue{Semantik}.  Die \blue{Syntax} gibt an, wie Formeln geschrieben werden und wie sich Formeln zu
-\blue{Beweisen} verknüpfen lassen.  Die \blue{Semantik} befasst sich mit der \blue{Bedeutung} der Formeln.
+\blue{Semantik}.  Die \blue{Syntax}\index{Syntax} gibt an, wie Formeln geschrieben werden und wie sich Formeln zu
+\blue{Beweisen} verknüpfen lassen.  Die \blue{Semantik}\index{Semantik} befasst sich mit der \blue{Bedeutung} der Formeln.
 Nachdem wir die Semantik der aussagenlogischen Formeln mit Hilfe der Mengenlehre definiert haben, zeigen wir
 anschließend, wie sich diese Semantik in \textsl{Python} implementieren lässt.
 
@@ -129,7 +132,7 @@ In diesem Abschnitt legen wir fest, was aussagenlogische Formeln sind:  Dazu wer
 Formeln als Menge von Strings definieren, wobei die Strings in der Menge bestimmte Eigenschaften haben müssen,
 damit wir von aussagenlogischen Formeln sprechen können.
 
-Zunächst betrachten wir eine Menge $\mathcal{P}$ von sogenannten  \blue{Aussage-Variablen} als gegeben.
+Zunächst betrachten wir eine Menge $\mathcal{P}$ von sogenannten  \blue{Aussage-Variablen}\index{Aussage-Variablen} als gegeben.
 Typ\-ischerweise besteht $\mathcal{P}$ aus der Menge der kleinen lateinischen Buchstaben, die
 zusätzlich noch indiziert sein dürfen.  Beispielsweise werden wir
 \\[0.2cm]
@@ -142,11 +145,15 @@ $$
   \mathcal{A} := \mathcal{P} \cup \bigl\{ \verum, \falsum, \neg, \vee, \wedge,
    \rightarrow, \leftrightarrow, (, ) \bigr\}
 $$
-gebildet werden.  Wir definieren die Menge der \blue{aussagenlogischen Formeln} $\mathcal{F}$ durch Induktion:
+gebildet werden.  Wir definieren die Menge der
+\blue{aussagenlogischen Formeln}\index{aussagenlogische Formel}
+\index{$\mathcal{F}$: Menge der aussagenlogischen Formeln}
+$\mathcal{F}$ durch Induktion:
 \begin{enumerate}
 \item $\verum \in \mathcal{F}$ und $\falsum \in \mathcal{F}$.
 
-      Hier steht $\verum$ für die Formel, die immer wahr ist, während $\falsum$ für die 
+      Hier steht $\verum$ \index{$\verum$, Verum} für die Formel, die immer wahr ist, während $\falsum$
+      \index{$\falsum$, Falsum} für die 
       Formel steht, die immer falsch ist.  Die Formel $\verum$ trägt den Namen
       \blue{Verum}\footnote{Verum ist das lateinische Wort für ``wahr''.},  für $\falsum$ sagen wir  
       \blue{Falsum}\footnote{Falsum ist das lateinische Wort für ``falsch''.}.
@@ -155,17 +162,17 @@ gebildet werden.  Wir definieren die Menge der \blue{aussagenlogischen Formeln} 
       Jede aussagenlogische Variable ist also auch eine aussagenlogische Formel.
 \item Ist $f \in \mathcal{F}$, so gilt auch $\neg f \in \mathcal{F}$.
 
-      Die Formel $\neg f$ bezeichnen wir auch als die \blue{Negation} von $f$.
+      Die Formel $\neg f$ \index{$\neg f$} bezeichnen wir auch als die \blue{Negation}\index{Negation} von $f$.
 \item Sind $f_1, f_2 \in \mathcal{F}$, so gilt auch
       \begin{tabbing}
-        $(f_1 \vee f_2) \in \mathcal{F}$ \hspace*{0.5cm} \= (\textsl{gelesen}: \quad \= $f_1$ oder $f_2$ \hspace*{2.5cm} \=
-         auch: \blue{Disjunktion} von $f_1$ und $f_2$),            \\
-        $(f_1 \wedge f_2) \in \mathcal{F}$                 \> (\textsl{gelesen}:       \> $f_1$ und $f_2$ \>
-         auch: \blue{Konjunktion} von $f_1$ und $f_2$),            \\
-        $(f_1 \rightarrow f_2) \in \mathcal{F}$                \> (\textsl{gelesen}:       \> wenn $f_1$, dann $f_2$ \>
-         auch: \blue{Implikation} von $f_1$ und $f_2$),            \\
-        $(f_1 \leftrightarrow f_2) \in \mathcal{F}$                \> (\textsl{gelesen}:       \> $f_1$ genau dann, wenn $f_2$ \>
-         auch: \blue{Bikonditional} von $f_1$ und $f_2$).            
+        $(f_1 \vee f_2) \in \mathcal{F}$ \index{$\vee$, oder} \hspace*{0.5cm} \= (\textsl{gelesen}: \quad \= $f_1$ oder $f_2$ \hspace*{2.5cm} \=
+         auch: \blue{Disjunktion}\index{Disjunktion} von $f_1$ und $f_2$), \\
+        $(f_1 \wedge f_2) \in \mathcal{F}$ \index{$\wedge$, und} \> (\textsl{gelesen}: \> $f_1$ und $f_2$ \>
+         auch: \blue{Konjunktion}\index{Konjunktion} von $f_1$ und $f_2$), \\
+        $(f_1 \rightarrow f_2) \in \mathcal{F}$ \index{$\rightarrow$, wenn dann} \> (\textsl{gelesen}:       \> wenn $f_1$, dann $f_2$ \>
+         auch: \blue{Implikation}\index{Implikation} von $f_1$ und $f_2$), \\
+        $(f_1 \leftrightarrow f_2) \in \mathcal{F}$ \index{$\leftrightarrow$ genau dann, wenn} \> (\textsl{gelesen}:       \> $f_1$ genau dann, wenn $f_2$ \>
+         auch: \blue{Bikonditional}\index{Bikonditional} von $f_1$ und $f_2$).            
       \end{tabbing}
 \end{enumerate}
 Die Menge $\mathcal{F}$ der aussagenlogischen Formeln ist nun die kleinste Teilmenge der aus dem Alphabet $\mathcal{A}$
@@ -190,7 +197,8 @@ Um Klammern zu sparen, vereinbaren wir die folgenden Regeln:
       \\[0.2cm]
       \hspace*{1.3cm} $p \wedge q \wedge r$ \quad statt \quad $(p \wedge q) \wedge r$.
       \\[0.2cm]
-      Operatoren, die implizit nach \underline{links} geklammert werden, nennen wir \blue{links-assoziativ}.
+      Operatoren, die implizit nach \underline{links} geklammert werden, nennen wir
+      \blue{links-assoziativ}\index{links-assoziativ}. 
 
       \underline{\color{red}Beachten} Sie, dass wir für diese Vorlesung vereinbaren, dass die Junktoren
       $\wedge$ und $\vee$ dieselbe Bindungsstärke haben.  Das ist anders als in der Sprache \textsl{Python},
@@ -201,7 +209,8 @@ Um Klammern zu sparen, vereinbaren wir die folgenden Regeln:
       schreiben \\[0.2cm]
       \hspace*{1.3cm} $p \rightarrow q \rightarrow r$ \quad statt \quad $p \rightarrow (q \rightarrow r)$.
       \\[0.2cm]
-      Operatoren, die implizit nach rechts geklammert werden, nennen wir \blue{rechts-assoziativ}.
+      Operatoren, die implizit nach rechts geklammert werden, nennen wir
+      \blue{rechts-assoziativ}\index{rechts-assoziativ}. 
 \item Die Junktoren $\vee$ und $\wedge$ binden stärker als $\rightarrow$, wir schreiben
       also \\[0.2cm]
       \hspace*{1.3cm} $p \wedge q \rightarrow r$ \quad statt \quad $(p \wedge q) \rightarrow r$.
@@ -259,21 +268,22 @@ auftreten, verwechseln.  Um dieses Problem zu umgehen vereinbaren wir:
 
 
 \subsection{Semantik der aussagenlogischen Formeln}
-In diesem Abschnitt definieren wir die \blue{Semantik}, also die Bedeutung, aussagenlogischer Formeln.  Wir
+In diesem Abschnitt definieren wir die \blue{Semantik}\index{Semantik}, also die Bedeutung, aussagenlogischer Formeln.  Wir
 legen also die \blue{Interpretation} oder auch \blue{Bedeutung} dieser Formeln fest.  Dazu ordnen wir den
 aussagenlogischen Formeln \blue{Wahrheitswerte} zu.  Damit dies möglich ist, definieren wir
-zunächst die Menge $\mathbb{B}$ der Wahrheitswerte:  \\[0.2cm] 
+zunächst die Menge $\mathbb{B}$ der \blue{Wahrheitswerte}\index{Wahrheitswerte}:  \\[0.2cm] 
 \hspace*{1.3cm} $\mathbb{B} := \{ \texttt{True}, \texttt{False} \}$. \\[0.2cm]
 Damit können wir nun
 den Begriff einer \blue{aussagenlogischen Interpretation} festlegen.
 
 \begin{Definition}[Aussagenlogische Interpretation]
-  Eine \blue{aussagenlogische Interpretation} ist eine Funktion \\[0.2cm]
+  Eine \blue{aussagenlogische Interpretation}\index{aussagenlogische Interpretation $\mathcal{I}$}
+  \index{$\mathcal{I}$, aussagenlogische Interpretation} ist eine Funktion \\[0.2cm]
   \hspace*{1.3cm} $\mathcal{I}:\mathcal{P} \rightarrow \mathbb{B}$, \\[0.2cm]
   die jeder Aussage-Variablen $p\in \mathcal{P}$ einen Wahrheitswert $\mathcal{I}(p) \in \mathbb{B}$ zuordnet.
   \eox
 \end{Definition}
-Eine aussagenlogische Interpretation wird oft auch als \blue{Belegung} der
+Eine aussagenlogische Interpretation wird oft auch als \blue{Belegung}\index{Belegung} der
 Aussage-Variablen mit Wahr\-heits-Werten bezeichnet.  
 
 Eine aussagenlogische Interpretation $\mathcal{I}$ interpretiert die Aussage-Variablen.
@@ -285,14 +295,15 @@ Funktionen
 $\circneg$, $\circwedge$, $\circvee$, $\circright$ und $\circleftright$,
 mit deren Hilfe wir die aussagenlogischen Junktoren interpretieren können:
 \begin{enumerate}
-\item $\circneg: \mathbb{B} \rightarrow \mathbb{B}$
-\item $\circwedge: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$
-\item $\circvee: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$
-\item $\circright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$
-\item $\circleftright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$
+\item $\circneg: \mathbb{B} \rightarrow \mathbb{B}$ \index{$\circneg$}
+\item $\circwedge: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$ \index{$\circwedge$}
+\item $\circvee: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$ \index{$\circvee$}
+\item $\circright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$ \index{$\circright$}
+\item $\circleftright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$ \index{$\circleftright$}
 \end{enumerate}
 Wir könnten die Funktionen $\circneg$, $\circwedge$, $\circvee$, $\circright$ und $\circleftright$ am
-einfachsten durch die folgende Tabelle (Tabelle \ref{tab:aussagen-logik}) definieren:  
+einfachsten durch die folgende \blue{Wahrheits-Tafel} \index{Wahrheits-Tafel} (Tabelle
+\ref{tab:aussagen-logik}) definieren:   
 
 
 \begin{table}[!ht]
@@ -318,7 +329,7 @@ einfachsten durch die folgende Tabelle (Tabelle \ref{tab:aussagen-logik}) defini
 \end{table}
 Nun können wir den Wahrheits-Wert, den eine aussagenlogische Formel $f$ unter einer gegebenen
 aussagenlogischen Interpretation $\mathcal{I}$ annimmt, durch Induktion nach dem Aufbau
-der Formel $f$ definieren.  Wir werden diesen Wert mit $\widehat{\mathcal{I}}(f)$
+der Formel $f$ definieren.  Wir werden diesen Wert mit $\widehat{\mathcal{I}}(f)$ \index{$\widehat{\mathcal{I}}(f)$}
 bezeichnen.  Wir setzen:
 \begin{enumerate}
 \item $\widehat{\mathcal{I}}(\falsum) := \texttt{False}$.
@@ -419,6 +430,7 @@ fehleranfällig, um praktikabel zu sein.  Wir zeigen deshalb später, wie
 sich dieser Prozess mit Hilfe von \textsl{Python} automatisieren lässt.
 
 \subsection{Extensionale und intensionale Interpretationen der Aussagenlogik}
+\index{extensional} \index{intensional}
 Die Interpretation der aussagenlogischen Junktoren ist rein \blue{extensional}:
 Wenn wir den Wahrheitswert der Formel
 \\[0.2cm]
@@ -465,7 +477,8 @@ aussagenlogischen Formeln formal dadurch, dass wir eine Funktion
 \hspace*{1.3cm}
 $\textsl{rep}: \mathcal{F} \rightarrow \textsl{Python}$
 \\[0.2cm]
-definieren, die einer aussagenlogischen Formel $f$ ein geschachteltes Tupel $\textsl{rep}(f)$ zuordnet.  
+definieren, die einer aussagenlogischen Formel $f$ ein geschachteltes Tupel \index{geschachteltes Tupel}
+$\textsl{rep}(f)$ zuordnet.  
 \begin{enumerate}
 \item $\verum$ wird repräsentiert durch das Tupel \texttt{('$\top$',)}.
       Dies ist möglich, da \texttt{'$\top$'} ein Unicode-Zeichen ist und Python die Verwendung von
