@@ -470,23 +470,30 @@ In diesem Fall müssen wir uns also überlegen, wie wir eine
 aussagenlogische Formel in \textsl{Python} repräsentieren können, denn die Ergebniswerte
 \texttt{True} und \texttt{False} stehen ja als Wahrheitswerte unmittelbar zur Verfügung.
 Zusammengesetzte Daten-Strukturen können in \textsl{Python} am einfachsten als
-\blue{geschachtelte Tupel} dargestellt werden und das ist auch der Weg, den wir für die aussagenlogischen
-Formeln  beschreiten werden.  Wir definieren die Repräsentation von
-aussagenlogischen Formeln formal dadurch, dass wir eine Funktion
+\blue{geschachtelte Tupel}\index{geschachtelte Tupel} dargestellt werden und das ist auch der Weg, den wir für
+die aussagenlogischen Formeln beschreiten werden.  Ein geschachteltes Tupel ist dabei ein Tupel, dass
+sowohl Strings als auch geschachtelte Tupel enthalten kann.  Beispiels\-weise ist
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{('$\wedge$', ('$\neg$', 'p'), 'q')}
+\\[0.2cm]
+ein geschachteltes Tupel, das die aussagenlogische Formel $\neg p \wedge q$ repräsentiert.
+
+Wir legen die Repräsentation von aussagenlogischen Formeln nun formal dadurch fest, dass wir eine Funktion
 \\[0.2cm]
 \hspace*{1.3cm}
 $\textsl{rep}: \mathcal{F} \rightarrow \textsl{Python}$
 \\[0.2cm]
 definieren, die einer aussagenlogischen Formel $f$ ein geschachteltes Tupel \index{geschachteltes Tupel}
-$\textsl{rep}(f)$ zuordnet.  
+$\textsl{rep}(f)$ zuordnet.  Diese Funktion definieren wir durch Induktion nach der Formel $f$:
 \begin{enumerate}
 \item $\verum$ wird repräsentiert durch das Tupel \texttt{('$\top$',)}.
       Dies ist möglich, da \texttt{'$\top$'} ein Unicode-Zeichen ist und Python die Verwendung von
       Unicode-Zeichen in Strings erlaubt.  Wir können diesen String alternativ in \textsl{Python} 
       auch in der Form
       \texttt{'\symbol{92}N\{up tack\}'} schreiben, denn ``\texttt{up tack}'' ist der Name des
-      Unicode-Zeichens ``$\top$'' und ein Unicode Zeichen, das den Namen $n$ hat, kann in \textsl{Python}
-      als \texttt{'\symbol{92}N\{$n$\}'} geschrieben werden.  Also haben wir
+      Unicode-Zeichens ``$\top$'' und ein Unicode Zeichen, das den Namen $u$ hat, kann in \textsl{Python}
+      als \texttt{'\symbol{92}N\{$u$\}'} geschrieben werden.  Also haben wir
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{rep}(\verum) := \texttt{('$\top$',)}$.
@@ -497,15 +504,15 @@ $\textsl{rep}(f)$ zuordnet.
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{rep}(\falsum) := \texttt{'\symbol{92}N\{down tack\}'}$.
-\item Da aussagenlogische Variablen nichts anderes als Strings sind, können wir eine aussagenlogische Variable
+\item Da aussagenlogische Variablen nichts anderes als Strings sind, können wir eine aussagen\-logische Variable
       durch sich selbst repräsentieren:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{rep}(p) := p$ \quad für alle $p \in \mathcal{P}$.
-\item Ist $f$ eine aussagenlogische Formel, so repräsentieren wir die Negation $\neg f$ als verschachteltes Tupel,
+\item Ist $f$ eine aussagenlogische Formel, so repräsentieren wir die Negation $\neg f$ als geschachteltes Tupel,
       bei dem wir das Unicode-Zeichen \texttt{'$\neg$'} an die erste Stelle setzen und anschließend
       rekursiv die Formel $f$ in ihre \textsl{Python}-Repräsentierung umwandeln.
-      Der Name des Unicode-Zeichen ``$\neg$'' ist 
+      Der Name des Unicode-Zeichen \texttt{'$\neg$'} ist 
       ``\texttt{not sign}''.  Also haben wir
       \\[0.2cm]
       \hspace*{1.3cm} 
@@ -744,14 +751,14 @@ Wert \texttt{True}.  Formeln mit dieser Eigenschaft bezeichnen wir als \blue{Tau
 \begin{Definition}[Tautologie]
   Ist $f$ eine aussagenlogische Formel und gilt \\[0.2cm]
   \hspace*{1.3cm} $\mathcal{I}(f) = \texttt{True}$ \quad für jede aussagenlogische Interpretation $\mathcal{I}$, \\[0.2cm]
-  dann ist $f$ eine \blue{Tautologie}.  In diesem Fall schreiben wir \\[0.2cm]
-  \hspace*{1.3cm} $\models f$.
+  dann ist $f$ eine \blue{Tautologie}.\index{Tautologie}  In diesem Fall schreiben wir \\[0.2cm]
+  \hspace*{1.3cm} $\models f$.\index{$\models f$}
   \eox
 \end{Definition}
 
 \noindent
 Ist eine Formel $f$ eine Tautologie, so sagen wir auch, dass $f$
-\blue{allgemeingültig} ist.
+\blue{allgemeingültig} \index{allgemeingültig} ist.
 
 \noindent
 \textbf{Beispiele}:
@@ -771,7 +778,7 @@ ist.  Ziel dieses Kapitels ist daher die Entwicklung eines effizienteren Verfahr
 
 Die letzten beiden Beispiele in der obigen Aufzählung geben Anlass zu einer neuen Definition.
 \begin{Definition}[Äquivalent]
-  Zwei Formeln $f$ und $g$ heißen \blue{äquivalent} g.d.w.  \\[0.2cm]
+  Zwei Formeln $f$ und $g$ heißen \blue{äquivalent} \index{äquivalent} g.d.w.  \\[0.2cm]
   \hspace*{1.3cm} $\models f \leftrightarrow g$ 
   \\[0.1cm]
   gilt.
