@@ -1462,8 +1462,10 @@ spezifizieren wir ebenfalls durch rekursive Gleichungen:
       \hspace*{1.3cm}
       $\texttt{neg}\bigl(f_1 \vee f_2 \bigr) = \texttt{neg}(f_1) \wedge \texttt{neg}(f_2)$.
 \end{enumerate}
-Die in Abbildung \ref{fig:nnf} auf Seite \pageref{fig:nnf} gezeigten Funktionen setzen die oben diskutierten
+Die in den Abbildungen \ref{fig:nnf} und \ref{fig:neg} auf Seite \pageref{fig:nnf} und Seite \pageref{fig:neg} gezeigten Funktionen setzen die oben diskutierten
 Gleichungen unmittelbar um. 
+
+
 
 \begin{figure}[!ht]
   \centering
@@ -1492,7 +1494,23 @@ Gleichungen unmittelbar um.
         if f[0] == '∨':
             g, h = f[1:]
             return ('∨', nnf(g), nnf(h))
-    
+
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{Berechnung der Negations-Normalform: Die Funktion \texttt{nnf}.}
+  \label{fig:nnf}
+\end{figure}
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                  bgcolor       = sepia,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                ]{python3}
     def neg(f):
         "Compute the negation normal form of ¬f."
         if isinstance(f, str): 
@@ -1512,10 +1530,9 @@ Gleichungen unmittelbar um.
             return ('∧', neg(g), neg(h))
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Berechnung der Negations-Normalform}
-  \label{fig:nnf}
+  \caption{Berechnung der Negations-Normalform: Die Funktion \texttt{neg}.}
+  \label{fig:neg}
 \end{figure}
-\pagebreak
 
 
 Als letztes stellen wir die Funktionen vor, mit denen die Formeln, die bereits in
@@ -1791,7 +1808,7 @@ Klauseln umformen.  Andererseits haben die Formeln bei vielen in der Praxis auft
 Problemen ohnehin die Gestalt von Klauseln.  Daher stellen wir jetzt eine Schluss-Regel vor, in der
 sowohl die Prämissen als auch die Konklusion Klauseln sind.
      
-\begin{Definition}[Schnitt-Regel]
+\begin{Definition}[Schnitt-Regel]\index{Schnitt-Regel}
     Ist $p$ eine aussagenlogische Variable und sind $k_1$ und $k_2$ Mengen von Literalen,
     die wir als Klauseln interpretieren, so bezeichnen wir die folgende Schluss-Regel
     als die \blue{Schnitt-Regel}: 
@@ -2029,19 +2046,18 @@ werden später sehen, dass die Widerlegungs-Vollständigkeit für unsere Zwecke 
 Der Beweis der Widerlegungs-Vollständigkeit der Aussagenlogik benötigt den  Begriff der
 \blue{Erfüllbarkeit}, den wir jetzt formal einführen. 
 
-\begin{Definition}[Erfüllbarkeit]
+\begin{Definition}[Erfüllbarkeit] \index{erfüllbar}
   Es sei $M$ eine Menge von aussagenlogischen Formeln.
   Falls es eine aussagen\-logische Interpretation $\I$ gibt, die alle Formeln aus $M$ erfüllt, für die also
   \\[0.2cm]
   \hspace*{1.3cm}
   $\mathcal{I}(f) = \texttt{True}$ \quad für alle $f \in M$
   \\[0.2cm]
-  gilt, so nennen wir $M$ \blue{erfüllbar}. 
-
-  Weiter sagen wir, dass $M$ \blue{unerfüllbar} ist und schreiben 
+  gilt, so nennen wir $M$ \blue{erfüllbar}.  Weiter sagen wir, dass $M$ \blue{unerfüllbar}\index{unerfüllbar}
+  ist und schreiben 
   \\[0.2cm]
   \hspace*{1.3cm}
-  $\blue{M \models \falsum}$,
+  $\blue{M \models \falsum}$, \index{$M \models \falsum$}
   \\[0.2cm]
   wenn es keine aussagenlogische Interpretation $\I$ gibt, die gleichzeitig alle Formel aus $M$ erfüllt.
   Be\-zeichnen wir die Menge der aussagenlogischen Interpretationen mit
@@ -2055,7 +2071,7 @@ Der Beweis der Widerlegungs-Vollständigkeit der Aussagenlogik benötigt den  Be
 
 \remark 
 Ist $M = \{ f_1, \cdots, f_n \}$ eine Menge von aussagenlogischen Formeln, so können Sie sich leicht überlegen, dass
-$M$ genau dann nicht erfüllbar ist, wenn
+$M$ genau dann unerfüllbar ist, wenn
 \\[0.2cm]
 \hspace*{1.3cm}
 $\models f_1 \wedge \cdots \wedge f_n \rightarrow \falsum$
