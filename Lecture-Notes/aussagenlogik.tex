@@ -1419,7 +1419,7 @@ $\neg (f \wedge g) \leftrightarrow (\neg f \vee \neg g)$ \quad und \quad
 $\neg (f \vee g) \leftrightarrow (\neg f \wedge \neg g)$ 
 \\[0.2cm]
 angewendet.  Wir beschreiben die Umformung in Negations-Normalform durch 
-die folgenden Glei\-chungen:
+die folgenden Glei\-chungen: \index{\texttt{nnf}}
 \begin{enumerate}
 \item $\texttt{nnf}(p) = p$ \quad für alle $p \in \mathcal{P}$,
 \item $\texttt{nnf}(\verum) = \verum$,
@@ -1429,7 +1429,7 @@ die folgenden Glei\-chungen:
 \item $\texttt{nnf}(f_1 \vee f_2) = \texttt{nnf}(f_1) \vee \texttt{nnf}(f_2)$.
 \end{enumerate}
 Die Hilfsprozedur \texttt{neg}, die die Negations-Normalform von $\neg f$ berechnet,
-spezifizieren wir ebenfalls durch rekursive Gleichungen:
+spezifizieren wir ebenfalls durch rekursive Gleichungen: \index{\texttt{neg}}
 \begin{enumerate}
 \item $\texttt{neg}(p) = \texttt{nnf}(\neg p) = \neg p$ für alle Aussage-Variablen $p$.
 \item $\texttt{neg}(\verum) = \texttt{nnf}(\neg\verum) = \texttt{nnf}(\falsum) = \falsum$, 
@@ -1641,7 +1641,7 @@ Abbildung \ref{fig:cnf} auf Seite \pageref{fig:cnf} zeigt die Implementierung de
             return { k1 | k2 for k1 in cnf(g) for k2 in cnf(h) }
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Berechnung der konjunktiven Normalform}
+  \caption{Berechnung der konjunktiven Normalform. \index{\texttt{cnf}}}
   \label{fig:cnf}
 \end{figure}
 
@@ -2292,7 +2292,7 @@ Zeile 30 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.
         return Literals
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Funktion \texttt{findValuation}}
+\caption{Die Funktion \texttt{findValuation}.\index{\texttt{findValuation}}}
 \label{fig:Completeness.ipynb-3}
 \end{figure}
 
@@ -2572,10 +2572,11 @@ Belegung $\I$ zu berechnen, so dass
 gilt.  In diesem Fall sagen wir auch, dass die Belegung $\I$ eine \blue{Lösung} der
  Klausel-Menge $K$ ist.  Im letz\-ten Abschnitt haben wir bereits die Funktion \texttt{findValuation}
  kennengelernt, mit der wir eine solche Belegung berechnen könnten.
-Bedauerlicherweise ist diese Funktion für eine praktische Anwendung nicht effizient genug.
+Bedauerlicherweise ist diese Funktion für eine praktische Anwendung nicht effizient genug, denn der
+Rechenaufwand bei dieser Funktion hat immer die Größenordnung $2^{2\cdot n}$, wobei $n$ die Anzahl der Variablen ist.
 Wir werden daher in diesem Abschnitt ein Verfahren vorstellen, mit dem die Berechnung einer Lösung
 einer aussagenlogischen Klausel-Menge in vielen praktisch relevanten Fällen auch dann möglich ist, wenn die
-Menge der Klauseln $K$ groß ist.  Dieses Verfahren geht auf Davis und Putnam
+Anzahle der Variablen groß ist.  Dieses Verfahren geht auf Davis und Putnam
 \cite{davis:1960, davis:1962} zurück.  Verfeinerungen dieses Verfahrens werden beispielsweise
 eingesetzt, um die Korrektheit digitaler elektronischer Schaltungen nachzuweisen.  
 
@@ -2616,17 +2617,17 @@ und ist offenbar  ebenfalls unlösbar, denn eine Lösung $\I$ müsste die aussag
 wahr und falsch machen.  Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass für zwei Definitionen.
 
 \begin{Definition}[Unit-Klausel]
-  Eine Klausel $C$ heißt \blue{Unit-Klausel}, wenn $C$ nur aus einem Literal besteht.
+  Eine Klausel $C$ ist eine \blue{Unit-Klausel}\index{Unit-Klausel}, wenn $C$ nur aus einem Literal besteht.
   Es gilt dann entweder
   \\[0.2cm]
   \hspace*{1.3cm}
   $C = \{p\}$ \quad oder \quad $C = \{\neg p\}$ 
   \\[0.2cm]
-  für eine geeignete Aussage-Variable $p$. \eox
+  für eine Aussage-Variable $p$. \eox
 \end{Definition}
 
 \begin{Definition}[Triviale Klausel-Mengen]
-  Eine Klausel-Menge $K$ heißt \blue{trivial} wenn einer der beiden folgenden Fälle
+  Eine Klausel-Menge $K$ ist genau dann \blue{trivial}\index{triviale Klausel-Menge}, wenn einer der beiden folgenden Fälle
   vorliegt:
   \begin{enumerate}
   \item $K$ enthält die leere Klausel, es gilt also $\{\} \el K$.
@@ -2652,7 +2653,7 @@ wahr und falsch machen.  Wir nehmen die an den letzten drei Beispielen gemachten
                    \right.
         $
         \\[0.2cm]
-        Dann ist $\mathcal{I}$ eine \blue{Lösung} der Klausel-Menge $K$. \eox
+        Damit ist $\mathcal{I}$ dann eine \blue{Lösung}\index{Lösung} der Klausel-Menge $K$. \eox
   \end{enumerate}
 \end{Definition}
 
@@ -2691,11 +2692,11 @@ Dieser Fall liegt vor, wenn einer der beiden Klauseln nur aus einem Literal best
 und folglich eine \blue{Unit-Klausel} ist.  Da es unser Ziel ist, die Klausel-Mengen
 zu vereinfachen, lassen wir nur solche Anwendungen der Schnitt-Regel zu, bei denen
 eine der Klausel eine Unit-Klausel ist.  Solche Schnitte bezeichnen wir als
-\blue{Unit-Schnitte}.  Um alle mit einer gegebenen Unit-Klausel $\{l\}$ möglichen Schnitte
+\blue{Unit-Schnitte}.\index{Unit-Schnitt}  Um alle mit einer gegebenen Unit-Klausel $\{l\}$ möglichen Schnitte
 durchführen zu können, definieren wir eine Funktion
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{unitCut}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$
+$\texttt{unitCut}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$\index{\texttt{unitCut}}
 \\[0.2cm]
 so, dass für eine Klausel-Menge $K$ und ein Literal $l$ die Funktion
 $\texttt{unitCut}(K,l)$ die Klausel-Menge $K$ soweit wie möglich mit Unit-Schnitten mit der Klausel
@@ -2721,7 +2722,7 @@ $\{p\}$ erfüllt ist, ist automatisch auch $\{q, p, \neg r\}$ erfüllt.  Das lie
 \hspace*{1.3cm} $\models p \rightarrow q \vee p \vee \neg r$
 \\[0.2cm]
 gilt.  Allgemein sagen wir, dass eine Klausel $C$
- von einer Unit-Klausel $U$ \blue{subsumiert} wird, wenn
+ von einer Unit-Klausel $U$ \blue{subsumiert}\index{subsumiert} wird, wenn
 \\[0.2cm]
 \hspace*{1.3cm} $U \subseteq C$ \\[0.2cm]
 gilt.  Ist $K$ eine Klausel-Menge mit $C \in K$ und $U \in K$ und wird
@@ -2729,7 +2730,7 @@ $C$ durch $U$ subsumiert, so können wir die Menge $K$ durch Unit-Subsumption zu
 verkleinern, wir können also die Klausel $C$ aus $K$ löschen.  Dazu definieren wir eine Funktion
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{subsume}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$
+$\texttt{subsume}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$,\index{\texttt{subsume}}
 \\[0.2cm]
 die eine gegebene Klauselmenge $K$, welche die Unit-Klausel $\{l\}$ enthält, mittels Subsumption 
 dadurch vereinfacht, dass alle durch $\{l\}$ subsumierten Klauseln aus $K$ gelöscht werden.
@@ -2751,7 +2752,7 @@ Ein Kalkül, der nur mit Unit-Schnitten und Subsumption arbeitet, ist nicht
 widerlegungs-vollständig.  Wir brauchen 
 daher eine weitere Möglichkeit, Klausel-Mengen zu vereinfachen.
 Eine solche Möglichkeit bietet das Prinzip der
-\blue{Fallunterscheidung}.  Dieses Prinzip basiert auf dem folgenden
+\blue{Fallunterscheidung}.\index{Fallunterscheidung}  Dieses Prinzip basiert auf dem folgenden
 Satz.
 
 \begin{Satz}
@@ -2795,7 +2796,7 @@ werden.
 
 
 \subsection{Der Algorithmus}
-Wir können jetzt den Algorithmus von Davis und Putnam skizzieren.
+Wir können jetzt den Algorithmus von Davis und Putnam \index{Davis-Putnam Algorithmus} skizzieren.
 Gegeben sei eine Menge $K$ von Klauseln.  Gesucht ist dann eine Lösung von $K$.  Wir
 suchen  also eine Belegung $\I$, so dass gilt: \\[0.2cm]
 \hspace*{1.3cm} $\I(C) = \texttt{True}$ \quad für alle $C \in K$.\\[0.2cm]
@@ -2805,12 +2806,12 @@ Das Verfahren von Davis und Putnam besteht nun aus den folgenden Schritten.
 \item Falls $K$ jetzt trivial ist, sind wir fertig.
 \item Andernfalls wählen wir eine aussagenlogische Variable $p$, die in $K$ auftritt.
       \begin{enumerate}
-      \item Jetzt versuchen  wir rekursiv  die Klausel-Menge \\[0.2cm]
+      \item Jetzt versuchen  wir rekursiv,  die Klausel-Menge \\[0.2cm]
             \hspace*{1.3cm}  $K \cup \bigl\{\{p\}\bigr\}$ \\[0.2cm]
             zu lösen. Falls diese gelingt, haben wir eine Lösung von $K$.
-      \item Andernfalls versuchen wir  die Klausel-Menge \\[0.2cm]
+      \item Andernfalls versuchen wir,  die Klausel-Menge \\[0.2cm]
             \hspace*{1.3cm} $K \cup \bigl\{\{\neg p\}\bigr\}$ \\[0.2cm]
-            zu lösen.  Wenn auch dies fehlschlägt, ist $K$ unlösbar, andernfalls
+            zu lösen.  Wenn auch dies fehlschlägt, ist $K$ unlösbar.  Andernfalls
             haben wir eine Lösung von $K$.
       \end{enumerate}
 \end{enumerate}
@@ -2818,7 +2819,7 @@ Für die Implementierung ist es zweckmäßig, die beiden oben definierten Funkti
 $\texttt{subsume}()$ zu einer Funktion zusammen zu fassen.  Wir definieren daher die Funktion
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{reduce}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$
+$\texttt{reduce}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$\index{\texttt{reduce}}
 \\[0.2cm]
 wie folgt: 
 \\[0.2cm]
@@ -2910,7 +2911,7 @@ Variablen.  Falls die Menge \texttt{Clauses} erfüllbar ist, so liefert
 der Aufruf 
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{solve(Clauses, Variables)} 
+\texttt{solve(Clauses, Variables)} \index{\texttt{solve}}
 \\[0.2cm]
 eine Menge von Unit-Klauseln \texttt{Result}, so
 dass jede Belegung $\I$, die alle Unit-Klauseln aus \texttt{Result} erfüllt, auch alle Klauseln aus
@@ -2943,8 +2944,8 @@ Menge \texttt{Variables}.
         Falsum = {empty}
         if empty in S:                  # S is inconsistent
             return Falsum               
-        if all(len(C) == 1 for C in S): # S is trivial
-            return S
+        if all(len(C) == 1 for C in S): # S is trivial,
+            return S                    # hence it is a solution.
         p      = selectVariable(S, Variables)
         negP   = complement(p)
         Result = solve(S | { frozenset({p}) }, Variables | { p })
@@ -3021,14 +3022,15 @@ gezeigt.
         return S
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Die Funktion \texttt{saturate}}
+  \caption{Die Funktion \texttt{saturate}. \index{\texttt{saturate}}}
   \label{fig:saturate}
 \end{figure} 
 Die Implementierung von \texttt{saturate} funktioniert wie folgt: 
 \begin{enumerate}
 \item Zunächst kopieren wir die Menge \texttt{Clauses} in die Variable \texttt{S}.
       Dies ist notwendig, da wir die Menge \texttt{S} später verändern werden.  Die Funktion
-      \texttt{saturate} soll das Argument \texttt{Clauses} aber nicht verändern.
+      \texttt{saturate} soll das Argument \texttt{Clauses} aber nicht verändern und muss daher
+      eine Kopie der Menge \texttt{S} anlegen.
 \item Dann berechnen wir in Zeile 3 die Menge \texttt{Units} aller Unit-Klauseln.  
 \item Anschließend initialisieren wir in Zeile 4 die Menge \texttt{Used} als die leere Menge.
       In dieser Menge merken wir uns, welche Unit-Klauseln wir schon für Unit-Schnitte und
@@ -3084,7 +3086,7 @@ Die Implementierung setzt diese Definition unmittelbar um.
                | { frozenset({l}) }
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Die Funktion \texttt{reduce}}
+  \caption{Die Funktion \texttt{reduce}. \index{\texttt{reduce}}}
   \label{fig:reduce}
 \end{figure} 
 
@@ -3705,10 +3707,9 @@ Menge von Klauseln zurückführen lassen.  Dazu gehört zum Beispiel das Problem
 Stundenplan zu erstellen, der gewissen Nebenbedingungen genügt.  Verallgemeinerungen des
 Stundenplan-Problems werden in der Literatur als \blue{Scheduling-Probleme} bezeichnet.
 Die effiziente Lösung solcher Probleme ist Gegenstand der aktuellen Forschung.
-\pagebreak
 
 \section{Reflexion}
-\begin{enumerate}
+\begin{enumerate}[(a)]
 \item Wie haben wir die Menge der aussagenlogischen Formeln definiert?
 \item Wie ist die Semantik der aussagenlogischen Formeln festgelegt worden?
 \item Wie können wir aussagenlogische Formeln in \textsl{Python} darstellen?
