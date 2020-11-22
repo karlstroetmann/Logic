@@ -1,46 +1,58 @@
 \chapter{Prädikatenlogik}
 In der \blue{Aussagenlogik} haben wir die Verknüpfung von elementaren Aussagen mit \blue{Junktoren} untersucht.
-Die \blue{Prädikatenlogik} untersucht zusätzlich auch die Struktur dieser elementaren Aussagen.  Dazu werden in der
+Die \blue{Prädikatenlogik}\index{Prädikatenlogik} untersucht zusätzlich auch die Struktur dieser elementaren Aussagen.  Dazu werden in der
 Prädikatenlogik die folgenden zusätzlichen Begriffe eingeführt:
 \begin{enumerate}
 \item Als Bezeichnungen für Objekte werden \blue{Terme} verwendet.
 \item Diese Terme werden aus \blue{Objekt-Variablen} und \blue{Funktions-Zeichen}
-      zusammengesetzt.  In den folgenden Beispielen ist $x$ eine Objekt-Variable, während
-      \textsl{vater} und \textsl{mutter} einstellige Funktions-Zeichen sind. \textsl{issac} ist ein
-      nullstelliges Funktions-Zeichen:
+      zusammengesetzt.  In den folgenden Beispielen ist $x$ eine Objekt-Variable\index{Objekt-Variable}, während
+      \textsl{vater} und \textsl{mutter} einstellige Funktions-Zeichen\index{Funktions-Zeichen}
+      sind. \textsl{issac} ist ein nullstelliges Funktions-Zeichen:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{vater}(x),\quad \textsl{mutter}(\textsl{isaac})$.
       \\[0.2cm]
-      Nullstellige Funktions-Zeichen werden im Folgenden auch als \blue{Konstanten} bezeichnet und an Stelle
-      von Objekt-Variablen reden wir kürzer nur von Variablen.
-\item Verschiedene Objekte werden durch \blue{Prädikats-Zeichen} in Relation gesetzt.  In den folgenden
-      Beispielen benutzen wir die Prädikats-Zeichen \textsl{istBruder} und $<$:
+      Nullstellige Funktions-Zeichen werden im Folgenden auch als \blue{Konstanten}\index{Konstante} bezeichnet
+      und an Stelle von Objekt-Variablen reden wir kürzer nur von Variablen.
+\item Verschiedene Objekte werden durch \blue{Prädikats-Zeichen}\index{Prädikats-Zeichen} in Relation gesetzt.
+      In den folgenden Beispielen benutzen wir die Prädikats-Zeichen \textsl{istBruder} und $<$:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{istBruder}\bigl(\textsl{albert}, \textsl{vater}(\textsl{bruno})\bigr),\quad x+7 < x\cdot 7$.
       \\[0.2cm]
-      Die dabei entstehenden Formeln werden als \blue{atomare} Formeln bezeichnet.
+      Die dabei entstehenden Formeln werden als \blue{atomare Formeln} \index{atomare Formeln} bezeichnet.
 \item Atomare Formeln lassen sich durch aussagenlogische Junktoren verknüpfen:
       \\[0.2cm]
       \hspace*{1.3cm}
       $x > 1 \rightarrow x + 7 < x \cdot  7$.
-\item Schließlich werden \blue{Quantoren} eingeführt, um zwischen \blue{existentiell} und
+\item Schließlich werden \blue{Quantoren}\index{Quantoren} eingeführt, um zwischen \blue{existentiell} und
       \blue{universell} quantifizierten Variablen unterscheiden
       zu können:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\forall x \in \mathbb{R}: \exists n \in \mathbb{N}: x < n$.
 \end{enumerate}
-Wir werden im nächsten Abschnitt die \href{https://de.wikipedia.org/wiki/Syntax}{Syntax} der
-prädikatenlogischen Formeln festlegen, wir werden also festlegen, welche Strings wir als aussagenlogische
-Formeln zulassen.  Im darauf folgenden Abschnitt beschäftigen wir uns mit der 
-\href{https://de.wikipedia.org/wiki/Semantik}{Semantik} dieser Formeln, dort spezifizieren wir also die
-Bedeutung der Formeln.
+Dieses Kapitel ist wie folgt aufgebaut:
+\begin{enumerate}[(a)]
+\item Wir werden im nächsten Abschnitt die \href{https://de.wikipedia.org/wiki/Syntax}{Syntax} der
+      prädikatenlogischen Formeln festlegen, wir werden also festlegen, welche Strings wir als aussagenlogische
+      Formeln zulassen.
+\item Im darauf folgenden Abschnitt beschäftigen wir uns mit der
+      \href{https://de.wikipedia.org/wiki/Semantik}{Semantik} dieser Formeln, dort spezifizieren wir also die 
+      Bedeutung der Formeln. 
+\item Danach zeigen wir, wie sich die eingeführten Begriffe in \textsl{Python} implementieren lassen.
+\item Anschließend diskutieren wir als Anwendung der Prädikaten-Logik das \blue{Constraint Programming}.
+      Beim Constraint Programming wird ein gegebenes Problem durch prädikatenlogische Formeln beschrieben.
+      Zur Lösung des Problems wird dann ein sogenannter \blue{Constraint Solver} verwendet.
+\item Anschließend betrachten wir Normalformen prädikatenlogischer Formeln und zeigen, wie Formeln
+      in \blue{erfüllbarkeits-äquivalente} prädikatenlogische Klauseln umgewandelt werden können.
+\item Zum Abschluss des Kapitels diskutieren wir einen \blue{prädikatenlogischen Kalkül}, der die Grundlage
+      des automatischen Beweisens in der Prädikaten-Logik ist.
+\end{enumerate}
 
 \section{Syntax der Prädikatenlogik}
-Zunächst definieren wir den Begriff der \blue{Signatur}.  Inhaltlich ist das nichts anderes als eine 
-strukturierte Zusammenfassung von Variablen, Funktions- und Prädikats-Zeichen zusammen mit
+Zunächst definieren wir den Begriff der \blue{Signatur}\index{Signatur}. Inhaltlich ist das nichts anderes als
+eine strukturierte Zusammenfassung von Variablen, Funktions- und Prädikats-Zeichen zusammen mit
 einer Spezifikation der Stelligkeit dieser Zeichen.
  
 \begin{Definition}[Signatur]
@@ -48,11 +60,12 @@ einer Spezifikation der Stelligkeit dieser Zeichen.
   \hspace*{1.3cm} $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$, \\[0.2cm]
   für das Folgendes gilt: 
   \begin{enumerate}
-  \item $\mathcal{V}$ ist die Menge der \blue{Variablen}.
-  \item $\mathcal{F}$ ist die Menge der \blue{Funktions-Zeichen}.
-  \item $\mathcal{P}$ ist die Menge der \blue{Prädikats-Zeichen}.
+  \item $\mathcal{V}$ ist die Menge der \blue{Objekt-Variablen},\index{Objekt-Variablen} die wir der Kürze halber meist nur als
+        \blue{Variablen} be\-zeichnen.
+  \item $\mathcal{F}$ ist die Menge der \blue{Funktions-Zeichen}.\index{Funktions-Zeichen}
+  \item $\mathcal{P}$ ist die Menge der \blue{Prädikats-Zeichen}.\index{Prädikats-Zeichen}
   \item $\textsl{arity}$ ist eine Funktion, die jedem Funktions- und jedem Prädikats-Zeichen seine
-        \blue{Stelligkeit} zuordnet: \\[0.2cm]
+        \blue{Stelligkeit}\index{Stelligkeit} zuordnet: \\[0.2cm]
         \hspace*{1.3cm} $\textsl{arity}: \mathcal{F} \cup \mathcal{P} \rightarrow \mathbb{N}$. \\[0.2cm]
         Wir sagen, dass das Funktions- oder Prädikats-Zeichen $f$ ein
         $n$-stelliges Zeichen ist, falls $\textsl{arity}(f) = n$ gilt.
@@ -67,11 +80,11 @@ einer Spezifikation der Stelligkeit dieser Zeichen.
 
 \noindent
 Als Bezeichner für Objekte verwenden wir Ausdrücke, die aus Variablen und
-Funktions-Zeichen aufgebaut sind.  Solche Ausdrücke nennen wir \blue{Terme}.  
+Funktions-Zeichen aufgebaut sind.  Solche Ausdrücke nennen wir \blue{Terme}.\index{Terme}  
 
 \begin{Definition}[Terme,  $\mathcal{T}_\Sigma$]
   Ist $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ eine Signatur, so definieren wir die Menge der \blue{$\Sigma$-Terme}
-  \blue{$\mathcal{T}_\Sigma$} induktiv:
+  \blue{$\mathcal{T}_\Sigma$} \index{$\mathcal{T}_\Sigma$} induktiv:
   \begin{enumerate}
   \item Für jede Variable $x \in \mathcal{V}$ gilt $x \in \mathcal{T}_\Sigma$.  Jede Variable ist also auch
         ein Term.
@@ -82,7 +95,7 @@ Funktions-Zeichen aufgebaut sind.  Solche Ausdrücke nennen wir \blue{Terme}.
         \\[0.2cm]
         der Ausdruck  $f(t_1,\cdots,t_n) \el \mathcal{T}_\Sigma$ ist also ein Term.
         Falls $c \in \mathcal{F}$ ein 0-stelliges Funktions-Zeichen ist, lassen wir auch die Schreibweise
-        $c$ anstelle von $c()$ zu.  In diesem Fall nennen wir $c$ eine \blue{Konstante}.
+        $c$ anstelle von $c()$ zu.  In diesem Fall nennen wir $c$ eine \blue{Konstante}.\index{Konstante}
         \eox
   \end{enumerate}
 \end{Definition}
@@ -112,23 +125,25 @@ Dann können wir wie folgt $\Sigma_{\mathrm{arith}}$-Terme konstruieren:
       denn $\mathtt{+}(0,x) \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$, $1 \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$ und
       $*$ ist ein 2-stelliges Funktions-Zeichen.
 \end{enumerate}
-In der Praxis werden wir für bestimmte zweistellige Funktionen eine Infix-Schreibweise
-verwenden.  Diese ist dann als Abkürzung für die oben definierte Darstellung zu verstehen.
+In der Praxis werden wir für bestimmte zweistellige Funktionen eine \blue{Infix-Schreibweise}
+verwenden, d.h.~wir schreiben zweistellige Funktions-Zeichen zwischen ihren Argumenten.  Beispielsweise
+schreiben wir $x+y$ an Stelle von $+(x,y)$. Die Infix-Schreibweise ist dann als Abkürzung für die oben
+definierte Darstellung zu verstehen. 
 \eox
 
 
-Als nächstes definieren wir den Begriff der \blue{atomaren Formeln}.  Darunter verstehen wir
-solche Formeln, die man nicht in kleinere Formeln zerlegen kann: Atomare Formeln enthalten also
+Als nächstes definieren wir den Begriff der \blue{atomaren Formeln}.\index{Atomare Formeln}  Darunter verstehen
+wir solche Formeln, die man nicht in kleinere Formeln zerlegen kann: Atomare Formeln enthalten also
 weder Junktoren noch Quantoren. 
 \begin{Definition}[Atomare Formeln,  $\mathcal{A}_\Sigma$]
   Gegeben sei eine Signatur $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$. 
-  Die Menge der atomaren $\Sigma$-Formeln $\mathcal{A}_\Sigma$
+  Die Menge der atomaren $\Sigma$-Formeln $\mathcal{A}_\Sigma$ \index{$\mathcal{A}_\Sigma$}
   wird wie folgt definiert:  Ist $p \el \mathcal{P}$ ein $n$-stelliges Prädikats-Zeichen
   und sind $n$ $\Sigma$-Terme $t_1$, $\cdots$, $t_n$ gegeben, so ist
   $p(t_1,\cdots,t_n)$ eine \blue{atomaren $\Sigma$-Formel}: \\[0.2cm]
   \hspace*{1.3cm} $p(t_1,\cdots,t_n) \in \mathcal{A}_\Sigma$.  \\[0.2cm]
   Falls $p$ ein 0-stelliges Prädikats-Zeichen ist, dann schreiben wir auch $p$ anstelle von $p()$.
-  In diesem Fall nennen wir $p$ eine \blue{Aussage-Variable}.
+  In diesem Fall nennen wir $p$ eine \blue{Aussage-Variable}.\index{Aussage-Variable}
   \eox
 \end{Definition}
 
@@ -142,7 +157,8 @@ wird erst im nächsten Abschnitt untersucht.
 
 
 Bei der Definition der prädikatenlogischen Formeln ist es notwendig,
-zwischen sogenannten \blue{gebundenen} und \blue{freien} Variablen zu unterscheiden.
+zwischen sogenannten \blue{gebundenen}\index{gebundene Variable} und \blue{freien}
+Variablen \index{freie Variable} zu unterscheiden. 
 Wir führen diese Begriffe zunächst informal mit Hilfe eines Beispiels aus der Analysis ein.
 Wir betrachten die folgende Gleichung: \\[0.2cm]
 \hspace*{1.3cm}
@@ -189,6 +205,7 @@ Um diese Begriffe präzisieren zu können, definieren wir zunächst für einen
 $\Sigma$-Term $t$ die Menge der in $t$ enthaltenen Variablen.
 
 \begin{Definition}[$\var(t)$]
+  \index{$\var(t)$}
   Ist $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ eine Signatur und ist
   $t$ ein $\Sigma$-Term, so definieren wir die Menge \blue{$\var(t)$} der Variablen, die in $t$
     auftreten, durch Induktion nach dem Aufbau des Terms:
@@ -202,6 +219,8 @@ $\Sigma$-Term $t$ die Menge der in $t$ enthaltenen Variablen.
 
 \begin{Definition}[$\Sigma$-Formel,  $\mathbb{F}_\Sigma$, gebundene und freie Variablen, $\textsl{BV}(F)$,  $\textsl{FV}(F)$] 
 \label{praedikaten-formel} \hspace*{\fill} \\
+\index{$\Sigma$-Formel} \index{$\mathbb{F}_\Sigma$} \index{gebundene Variablen} \index{freie Variablen}
+\index{$\textsl{BV}(F)$}\index{$\textsl{FV}(F)$}
     Es sei $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ eine Signatur.
     Die Menge der {\color{blue}$\Sigma$-\emph{Formeln}} bezeichnen wir mit $\mathbb{F}_\Sigma$.
     Wir definieren diese Menge induktiv.
@@ -275,13 +294,6 @@ gleiche Quantoren zusammengefasst: Beispielsweise schreiben wir
 \hspace*{1.3cm}
 $\forall x, y \colon p(x, y)  \quad \mathrm{statt} \quad \forall x \colon ( \forall y \colon p(x,y))$.
 \\[0.2cm]
-Darüber hinaus legen wir fest, dass Quantoren stärker binden als die aussagenlogischen Junktoren.
-Damit können wir
-\\[0.2cm]
-\hspace*{1.3cm}
-$\forall x \colon p(x) \wedge G \quad \mathrm{statt} \quad \bigl(\forall x \colon p(x)\bigr) \wedge G$
-\\[0.2cm]
-schreiben.
 Außerdem vereinbaren wir, dass wir zweistellige Prädikats- und Funktions-Zeichen auch in Infix-Notation angeben
 dürfen.  Um eine eindeutige Lesbarkeit zu erhalten, müssen wir dann die Präzedenz der Funktions-Zeichen
 festlegen.  Wir schreiben beispielsweise \\[0.2cm]
@@ -289,7 +301,11 @@ festlegen.  Wir schreiben beispielsweise \\[0.2cm]
 Die Formel $(\exists x \colon \leq(\mathtt{+}(y, x),y))$ wird dann lesbarer als \\[0.2cm]
 \hspace*{1.3cm} $\exists x \colon y + x \leq y$ \\[0.2cm]
 geschrieben.  Außerdem finden Sie in der Literatur häufig Ausdrücke der Form
-$\forall x\el M: F$ oder $\exists x\el M: F$.  Hierbei handelt es sich um Abkürzungen, die durch
+\\[0.2cm]
+\hspace*{1.3cm}
+$\forall x\el M: F$ \quad oder \quad $\exists x\el M: F$.
+\\[0.2cm]
+Hierbei handelt es sich um Abkürzungen, die durch
 \\[0.2cm]
 \hspace*{1.3cm}
 $\ds \bigl(\forall x\el M: F\bigr) \stackrel{\mathrm{def}}{\Longleftrightarrow} \forall x: \bigl(x \el M \rightarrow F\bigr)$,
@@ -300,7 +316,7 @@ definiert sind.
 
 \section{Semantik der Prädikatenlogik \label{sec:semantik}}
 Als nächstes legen wir die Bedeutung der Formeln fest.  Dazu definieren wir 
-den Begriff einer \blue{$\Sigma$-Struktur}.  Eine solche Struktur legt fest, wie die
+den Begriff einer \blue{$\Sigma$-Struktur}. \index{$\Sigma$-Struktur}  Eine solche Struktur legt fest, wie die
 Funktions- und Prädikats-Zeichen der Signatur $\Sigma$ zu interpretieren sind.
 
 \begin{Definition}[Struktur]
@@ -310,9 +326,9 @@ Funktions- und Prädikats-Zeichen der Signatur $\Sigma$ zu interpretieren sind.
     Paar $\langle \mathcal{U}, \mathcal{J} \rangle$, so dass folgendes gilt:
     \begin{enumerate}
         \item $\mathcal{U}$ ist eine nicht-leere Menge. Diese Menge nennen wir auch das
-              \blue{Universum} der $\Sigma$-Struktur.  Dieses Universum enthält die Werte,
+              \blue{Universum} \index{Universum} der $\Sigma$-Struktur.  Dieses Universum enthält die Werte,
               die sich später bei der Auswertung der Terme ergeben werden.
-        \item $\mathcal{J}$ ist die \blue{Interpretation} der Funktions-- und Prädikats-Zeichen.
+        \item $\mathcal{J}$ ist die \blue{Interpretation} \index{Interpretation} der Funktions-- und Prädikats-Zeichen.
               Formal definieren wir $\mathcal{J}$ als eine Abbildung mit folgenden Eigenschaften:
         \begin{enumerate}
         \item Jedem Funktions-Zeichen $f \el \mathcal{F}$ mit $\textsl{arity}(f) = m$ wird
@@ -367,7 +383,7 @@ wie folgt festlegen:
 
 Falls wir Terme auswerten wollen, die Variablen enthalten, so müssen wir für diese
 Variablen irgendwelche Werte aus dem Universum einsetzen.  Welche Werte wir einsetzen, kann
-durch eine \blue{Variablen-Belegung} festgelegt werden.  Diesen Begriff definieren wir
+durch eine \blue{Variablen-Belegung}\index{Variablen-Belegung} festgelegt werden.  Diesen Begriff definieren wir
 nun.
 
 \begin{Definition}[Variablen-Belegung]
@@ -389,12 +405,13 @@ nun.
     \end{array}
     \right.$ \eox
 \end{Definition}
-\pagebreak
+
 
 \begin{Definition}[Semantik der Terme]
     Ist $\struct = \pair(\mathcal{U},\mathcal{J})$ eine $\Sigma$-Struktur und $\mathcal{I}$ eine $\struct$-Variablen-Belegung,
-    so definieren wir für jeden Term $t$ den \blue{Wert} \blue{$\struct(\mathcal{I}, t)$} durch Induktion über den Aufbau
-    von $t$:
+    so definieren wir für jeden Term $t$ den \blue{Wert} \blue{$\struct(\mathcal{I}, t)$}
+    \index{$\struct(\mathcal{I}, t)$} durch Induktion über
+    den Aufbau von $t$:
     \begin{enumerate}
     \item Für Variablen $x \in \mathcal{V}$ definieren wir: \\[0.2cm]
           \hspace*{1.3cm} $\struct(\mathcal{I}, x) := \mathcal{I}(x)$.
@@ -478,7 +495,7 @@ In Fortführung des obigen Beispiels gilt \\[0.2cm]
 \hspace*{1.3cm}  $\mathcal{Z}\bigl(\mathcal{I}, \forall \mathtt{x}: \mathrm{e} * x = x \bigr) = \mathtt{True}$.
 \eox
 
-\begin{Definition}[Allgemeingültig]
+\begin{Definition}[Allgemeingültig] \index{Allgemeingültig}
     Ist $F$ eine $\Sigma$-Formel, so dass für jede $\Sigma$-Struktur $\struct$ und für jede
     $\struct$-Variablen-Belegung $\mathcal{I}$ \\[0.2cm]
     \hspace*{1.3cm} $\struct(\mathcal{I}, F) = \mathtt{True}$ \\[0.2cm]
@@ -489,10 +506,10 @@ In Fortführung des obigen Beispiels gilt \\[0.2cm]
 
 Ist $F$ eine Formel für die $\FV(F) = \{\}$ ist, dann hängt der Wert $\struct(\mathcal{I}, F)$ 
 offenbar gar nicht von der Interpretation $\mathcal{I}$ ab.  Solche Formeln bezeichnen wir auch als 
-\blue{geschlossene} Formeln.   In diesem Fall schreiben wir kürzer  $\struct(F)$
+\blue{geschlossene} Formeln.\index{geschlossene Formel}   In diesem Fall schreiben wir kürzer  $\struct(F)$
 an Stelle von $\struct(\mathcal{I}, F)$.  Gilt dann zusätzlich $\struct(F) = \mathtt{True}$, 
-so sagen wir auch, dass $\struct$ ein \blue{Modell} von $F$ ist.  Wir schreiben dann \\[0.2cm]
-\hspace*{1.3cm} $\mathcal{S} \models F$.
+so sagen wir auch, dass $\struct$ ein \blue{Modell} \index{Modell} von $F$ ist.  Wir schreiben dann \\[0.2cm]
+\hspace*{1.3cm} $\mathcal{S} \models F$. \index{$\mathcal{S} \models F$}
 \vspace{0.1cm}
 
 Die Definition der Begriffe ``\blue{erfüllbar}'' und
@@ -502,7 +519,7 @@ feste Signatur $\Sigma$ als gegeben an.  Dadurch können wir in den folgenden De
 von Termen, Formeln, Strukturen, etc.~sprechen und meinen damit  $\Sigma$-Terme,
 $\Sigma$-Formeln und $\Sigma$-Strukturen.
 
-\begin{Definition}[Äquivalent]
+\begin{Definition}[Äquivalent] \index{äquivalent}
   Zwei Formeln $F$ und $G$, in denen die Variablen $x_1$, $\cdots$, $x_n$ frei auftreten, heißen
   \blue{äquivalent} g.d.w.  
   \\[0.2cm] 
@@ -523,15 +540,15 @@ Alle aussagenlogischen Äquivalenzen sind auch prädikatenlogische Äquivalenzen
 \eox
 
 \begin{Definition}[Erfüllbar]
-    Eine Menge $M \subseteq \mathbb{F}_\Sigma$ ist genau dann \blue{erfüllbar},
+    Eine Menge $M \subseteq \mathbb{F}_\Sigma$ ist genau dann \blue{erfüllbar},\index{erfüllbar}
     wenn es eine Struktur $\struct$ und eine Variablen-Belegung $\mathcal{I}$ gibt, so dass 
     \\[0.2cm]
     \hspace*{1.3cm}
     $\struct(\mathcal{I},F) = \mathtt{True}$ \quad für alle $F \in M$ 
     \\[0.2cm]
-    gilt.  Andernfalls heißt $M$ \blue{unerfüllbar} oder auch \blue{widersprüchlich}. 
+    gilt.  Andernfalls heißt $M$ \blue{unerfüllbar} oder auch \blue{widersprüchlich}.\index{widersprüchlich}
     Wir schreiben dafür auch \\[0.2cm]
-    \hspace*{1.3cm} $M \models \falsum$
+    \hspace*{1.3cm} $M \models \falsum$ \index{$M \models \falsum$}
     \eox
 \end{Definition}
 
@@ -619,7 +636,7 @@ betrachten.  Wir gehen dazu in vier Schritten vor:
 \end{enumerate}
 
 \subsection{Gruppen-Theorie}
-In der Mathematik wird eine Gruppe $\mathcal{G}$ als ein Tripel der Form
+In der Mathematik wird eine Gruppe $\mathcal{G}$ \index{Gruppe} als ein Tripel der Form
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{G} = \langle G, \mathrm{e}, * \rangle$
@@ -640,7 +657,7 @@ definiert.  Dabei gilt:
             d.h.~für jedes $x \in G$ gibt es ein \blue{links-inverses} Element. 
       \item $\forall x: \forall y: \forall z: (x * y) * z = x * (y * z)$,
 
-            d.h.~es gilt das \blue{Distributiv-Gesetz}.
+            d.h.~es gilt das \blue{Assoziativ-Gesetz}.
       \item Die Gruppe $\mathcal{G}$ ist eine \blue{kommutative} Gruppe genau dann, wenn zusätzlich das folgende Axiom gilt:
         
             $\forall x: \forall y: x * y = y * x$.
