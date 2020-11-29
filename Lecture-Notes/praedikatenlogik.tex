@@ -365,17 +365,16 @@ Die Signatur  $\Sigma_G$ der Gruppen-Theorie sei definiert als \\[0.2cm]
 \item $\mathcal{P} := \{ \mathtt{=} \}$
 \item $\textsl{arity} = \bigl\{ \pair(\mathrm{e},0), \pair(*,2), \pair(\mathtt{=},2)\bigr\}$
 \end{enumerate}
-Dann können wir eine $\Sigma_G$ Struktur $\mathcal{Z} = \langle \{a,
-b\},\mathcal{J}\rangle$ definieren, 
+Dann können wir eine $\Sigma_G$ Struktur $\mathcal{Z} = \langle \{0,1\},\mathcal{J}\rangle$ definieren, 
 indem wir die Interpretation $\mathcal{J}$ 
 wie folgt festlegen:
 \begin{enumerate}
-\item $\mathrm{e}^\mathcal{J} := a$,
-\item $*^\mathcal{J} := \Bigl\{ \bigl\langle\pair(a,a), a\bigr\rangle,
-                                   \bigl\langle\pair(a,b), b\bigr\rangle,
-                                   \bigl\langle\pair(b,a), b\bigr\rangle,
-                                   \bigl\langle\pair(b,b), a\bigr\rangle \Bigr\}$,
-\item $=^\mathcal{J} \;:=\; \bigl\{ \pair(a,a), \pair(b,b) \bigr\}$.
+\item $\mathrm{e}^\mathcal{J} := 0$,
+\item $*^\mathcal{J} := \Bigl\{ \bigl\langle\pair(0,0), 0\bigr\rangle,
+                                   \bigl\langle\pair(0,1), 1\bigr\rangle,
+                                   \bigl\langle\pair(1,0), 1\bigr\rangle,
+                                   \bigl\langle\pair(1,1), 0\bigr\rangle \Bigr\}$,
+\item $=^\mathcal{J} \;:=\; \bigl\{ \pair(0,0), \pair(1,1) \bigr\}$.
                                  
       Beachten Sie, dass wir bei der Interpretation des Gleichheits-Zeichens 
       keinen Spielraum haben! \eox
@@ -426,14 +425,14 @@ nun.
 Mit der oben definieren $\Sigma_G$-Struktur
 $\mathcal{Z}$ definieren wir eine $\mathcal{Z}$-Variablen-Belegung $\mathcal{I}$ durch
 \\[0.2cm]
-\hspace*{1.3cm} $\mathcal{I} := \bigl\{ \pair(x,a), \pair(y,b), \pair(z,a)\bigr\}$,
+\hspace*{1.3cm} $\mathcal{I} := \bigl\{ \pair(x,0), \pair(y,1), \pair(z,0)\bigr\}$,
 \\[0.2cm]
 es gilt also
 \\[0.2cm]
-\hspace*{1.3cm} $\mathcal{I}(\mathtt{x}) := a$, \quad $\mathcal{I}(\mathtt{y}) := b$, \quad und \quad $\mathcal{I}(\mathtt{z}) := a$.
+\hspace*{1.3cm} $\mathcal{I}(\mathtt{x}) := 0$, \quad $\mathcal{I}(\mathtt{y}) := 1$, \quad und \quad $\mathcal{I}(\mathtt{z}) := 0$.
 \\[0.2cm]
 Dann gilt  \\[0.2cm]
-\hspace*{1.3cm}  $\mathcal{Z}\bigl(\mathcal{I}, \mathtt{x} * \mathtt{y} \bigr) = b$. \eox
+\hspace*{1.3cm}  $\mathcal{Z}\bigl(\mathcal{I}, \mathtt{x} * \mathtt{y} \bigr) = 1$. \eox
 
 \begin{Definition}[Semantik der atomaren $\Sigma$-Formeln]
     Ist $\struct$ eine $\Sigma$-Struktur und $\mathcal{I}$ eine $\struct$-Variablen-Belegung,
@@ -645,8 +644,8 @@ definiert.  Dabei gilt:
 \begin{enumerate}
 \item $G$ ist eine Menge,
 \item $\mathrm{e}$ ist ein Element der Menge $G$ und
-\item $*:G \times G \rightarrow G$ ist eine binäre Funktion auf $G$, die wir im Folgenden als
-      \blue{Multiplikation} bezeichnen.
+\item $*:G \times G \rightarrow G$ ist eine binäre Funktion auf $G$, die wir im Folgenden als die
+      \blue{Multiplikation} der Gruppe be\-zeich\-nen.
 \item Zusätzlich müssen die folgenden Axiome gelten:
       \begin{enumerate}
       \item $\forall x: \mathrm{e} * x = x$,
@@ -784,8 +783,8 @@ geschachtelte Tupel überführen.  Das Ergebnis dieser Transformation ist in Abb
 \end{figure}
 
 \subsection{Darstellung prädikaten-logischer Strukturen in \textsl{Python}}
-Wir hatten bei der Definition der Semantik Prädikaten-Logik in Abschnitt \ref{sec:semantik} bereits eine
-Struktur $\mathcal{S}$ angegeben, deren Universum aus der Menge $\{ a, b \}$ besteht.  In \textsl{Python}
+Wir hatten bei der Definition der Semantik der Prädikaten-Logik in Abschnitt \ref{sec:semantik} bereits eine
+Struktur $\mathcal{S}$ angegeben, deren Universum aus der Menge $\{ 0, 1 \}$ besteht.  In \textsl{Python}
 können wir diese Struktur durch den in Abbildung \ref{fig:Group.ipynb} auf Seite \pageref{fig:Group.ipynb}
 gezeigten Code implementieren. 
 
@@ -799,15 +798,13 @@ gezeigten Code implementieren.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]{python3}
-    a = 0
-    b = 1
-    U = { a, b }  
-    NeutralElement = { (): a }
-    Product        = { (a, a): a,  (a, b): b,  (b, a): b,  (b, b): a }
-    Identity       = { (x, x) for x in U }
+    U = { 0, 1 }  
+    NeutralElement = { (): 0 }
+    Product        = { (0, 0): 0,  (0, 1): 1,  (1, 0): 1,  (1, 1): 0 }
+    Identity       = { (0, 0), (1, 1) }
     J = { "E": NeutralElement, "Multiply": Product, "Equals": Identity }
     S = (U, J)
-    I = { "x": a, "y": b, "z": a }
+    I = { "x": 0, "y": 1, "z": 0 }
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Implementierung einer Struktur zur Gruppen-Theorie}
@@ -815,37 +812,32 @@ gezeigten Code implementieren.
 \end{figure}
 
 \begin{enumerate}
-\item Zur Abkürzung haben wir in den Zeile 1 und 2 die Variablen $\texttt{a}$ und $\texttt{b}$
-      als die Strings \texttt{\symbol{34}a\symbol{34}} und \texttt{\symbol{34}b\symbol{34}}
-      definiert.  Dadurch können wir weiter unten die Interpretation des
-      Funktions-Zeichens ``$\texttt{Multiply}$'' einfacher angeben.
-\item Das in Zeile 3 definierte Universum $U$ besteht aus den beiden Strings \quoted{a} und \quoted{b}.
+\item Das in Zeile 1 definierte Universum $U$ besteht aus den beiden Zahlen $0$ und $1$.
       
-\item In Zeile 4 definieren wir die Interpretation des nullstelligen Funktions-Zeichens $\texttt{E}$
-      als das \textsl{Python}-Dictionary, das dem leeren Tupel das Objekt $\texttt{a}$ zuordnet.
-\item In Zeile 5 definieren wir eine Funktion $\texttt{Product}$ als \textsl{Python}-Dictionary.  Für
+\item In Zeile 2 definieren wir die Interpretation des nullstelligen Funktions-Zeichens $\texttt{E}$
+      als das \textsl{Python}-Dictionary, das dem leeren Tupel die Zahl $0$ zuordnet.
+\item In Zeile 3 definieren wir eine Funktion $\texttt{Product}$ als \textsl{Python}-Dictionary.  Für
       die so definierte Funktion gilt
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{Product}(\quoted{a},\quoted{a}) = \quoted{a}$, \quad
-      $\mathtt{Product}(\quoted{a},\quoted{b}) = \quoted{b}$, 
+      $\mathtt{Product}(0,0) = 0$, \quad
+      $\mathtt{Product}(0,1) = 1$, 
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{Product}(\quoted{b},\quoted{a}) = \quoted{b}$, \quad
-      $\mathtt{Product}(\quoted{b},\quoted{b}) = \quoted{a}$.
+      $\mathtt{Product}(1,0) = 1$, \quad
+      $\mathtt{Product}(1,1) = 0$.
       \\[0.2cm]  
       Diese Funktion verwenden wir später als die Interpretation $\texttt{Multiply}^\mathcal{J}$ des Funktions-Zeichens ``$\texttt{Multiply}$''.
-\item In Zeile 6 haben wir  die Interpretation $\texttt{Equals}^\mathcal{J}$ des
-      Prädikats-Zeichens ``$\texttt{Equals}$'' als Menge aller Paare der Form $(x, x)$ dargestellt, wobei $x$ ein beliebiges
-      Element des Universums ist.
+\item In Zeile 4 haben wir  die Interpretation $\texttt{Equals}^\mathcal{J}$ des
+      Prädikats-Zeichens ``$\texttt{Equals}$'' als die Menge $\{ \pair(0,0), \pair(1,1)\}$ definiert.
 \item In Zeile 7 fassen wir die Interpretationen der Funktions-Zeichen ``$\texttt{E}$'' und
       ``$\texttt{Multiply}$'' und des Prädikats-Zeichens ``$\texttt{Equals}$'' zu dem Dictionary $\texttt{J}$
       zusammen, so dass für ein Funktions- oder Prädikats-Zeichen $f$ die Interpretation $f^\mathcal{J}$ durch
       den Wert $\texttt{J}[f]$ gegeben ist. 
-\item Die Interpretation $\texttt{J}$ wird dann in Zeile 8 mit dem
+\item Die Interpretation $\texttt{J}$ wird dann in Zeile 6 mit dem
       Universum $\texttt{U}$ zu der Struktur $\texttt{S}$ zusammengefasst, die in \textsl{Python} einfach als
       Paar dargestellt wird.
-\item Schließlich zeigt Zeile 9, dass eine
+\item Schließlich zeigt Zeile 7, dass eine
       Variablen-Belegung ebenfalls als Dictionary dargestellt werden kann.  Die Schlüssel
       sind die Variablen, die Werte sind dann die Objekte aus dem Universum, auf welche die Variablen
       abgebildet werden.
@@ -866,11 +858,10 @@ gezeigten Code implementieren.
     def evalTerm(t, S, I):
         if isinstance(t, str):  # t is a variable
             return I[t]
-        J        = S[1]   # dictionary of interpretations
-        f        = t[0]   # function symbol
+        _, J     = S      # J is the dictionary of interpretations
+        f, *args = t      # function symbol and arguments
         fJ       = J[f]   # interpretation of function symbol
-        argTuple = t[1:]
-        argVals  = evalTermTuple(argTuple, S, I)
+        argVals  = evalTermTuple(args, S, I)
         return fJ[argVals]
         
     def evalTermTuple(Ts, S, I):
@@ -894,13 +885,13 @@ $t$ wird dabei in \textsl{Python} als geschachteltes Tupel dargestellt.
       ist.
 \item Sonst extrahieren wir in Zeile 4 das Dictionary $\mathcal{J}$, das die Interpretationen der Funktions- und
       Prädikats-Zeichen enthält, aus der Struktur $\mathcal{S}$.
-\item Das Funktions-Zeichen $f$ des Terms $t$ ist die erste Komponente des Tupels $t$.
+\item Das Funktions-Zeichen $f$ des Terms $t$ ist die erste Komponente des Tupels $t$,
+      die Argumente werden in der Liste \texttt{args} zusammen gefasst.
 \item Die Interpretation $f^\mathcal{J}$ dieses Funktions-Zeichens schlagen wir in Zeile 6 in dem Dictionary
       $\mathcal{J}$ nach.
-\item Die Argumente des Funktions-Zeichens $f$ sind die restlichen Komponenten des Tupels $t$.
-\item Das Tupel, das aus diesen Argumenten besteht, wird in Zeile 8 rekursiv ausgewertet.
+\item Das Tupel, das aus diesen Argumenten besteht, wird in Zeile 7 rekursiv ausgewertet.
       Als Ergebnis erhalten wir dabei ein Tupel von Werten.
-\item Dieses Tupel dient dann in Zeile 9 als Argument für das Dictionary $f^\mathcal{J}$.  Der in diesem
+\item Dieses Tupel dient dann in Zeile 8 als Argument für das Dictionary $f^\mathcal{J}$.  Der in diesem
       Dictionary für die Argumente abgelegte Wert ist das Ergebnis der Auswertung des Terms $t$.
 \end{enumerate}
 
@@ -916,11 +907,10 @@ $t$ wird dabei in \textsl{Python} als geschachteltes Tupel dargestellt.
                   xrightmargin  = 0.8cm,
                 ]{python3}
     def evalAtomic(a, S, I):
-        J        = S[1]  # dictionary of interpretations
-        p        = a[0]  # predicate symbol
+        _, J     = S     # J is the dictionary of interpretations
+        p, *args = a     # predicate symbol and arguments
         pJ       = J[p]  # interpretation of predicate symbol
-        argTuple = a[1:]
-        argVals  = evalTermTuple(argTuple, S, I)
+        argVals  = evalTermTuple(args, S, I)
         return argVals in pJ
 \end{minted}
 \vspace*{-0.3cm}
@@ -934,13 +924,18 @@ ist in Python als Tupel der Form
 \hspace*{1.3cm}
 $a = (p, t_1,\cdots,t_n)$.
 \\[0.2cm]
-dargestellt.  Das Prädikats-Zeichen ergibt sich daher als $a[0]$, während das Tupel der Argumente durch den
-Ausdruck $a[1:]$ gegeben ist.  Um zu überprüfen, ob die atomare Formel $a$ wahr ist, müssen wir überprüfen, ob
+dargestellt.  Wir können diese Tupel durch die Zuweisung
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{$p$, *args = $a$}
+\\[0.2cm]
+in seine Komponenten zerlegen.  \texttt{args} ist dann die Liste $[t_1,\cdots,t_n]$.
+Um zu überprüfen, ob die atomare Formel $a$ wahr ist, müssen wir überprüfen, ob
 \\[0.2cm]
 \hspace*{1.3cm}
 $\bigl(\texttt{evalTerm}(t_1,\mathcal{S}, \mathcal{I}), \cdots, \texttt{evalTerm}(t_n,\mathcal{S},\mathcal{I})\bigr)\in p^\mathcal{J}$
 \\[0.2cm]
-gilt.  Dieser Test wird in Zeile 7 von Abbildung durchgeführt. Der Rest der Implementierung der Funktion
+gilt.  Dieser Test wird in Zeile 6 durchgeführt. Der Rest der Implementierung der Funktion
 $\texttt{evalAtomic}$ ist analog zur Implementierung der Funktion $\texttt{evalTerm}$.
 
 
@@ -952,8 +947,8 @@ $\texttt{evalAtomic}$ ist analog zur Implementierung der Funktion $\texttt{evalT
                   bgcolor       = sepia,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
+                  xleftmargin   = -0.3cm,
+                  xrightmargin  = 0.0cm,
                   ]{python3}
     def evalFormula(F, S, I):
         U = S[0]  # universe
@@ -973,7 +968,7 @@ $\texttt{evalAtomic}$ ist analog zur Implementierung der Funktion $\texttt{evalT
         return evalAtomic(F, S, I)                   
 \end{minted}
 \vspace*{-0.3cm}
-\caption{}
+\caption{Die Funktion \texttt{evalFormula}.}
 \label{fig:evalFormula.ipynb}
 \end{figure}
 
@@ -1123,19 +1118,19 @@ müssten, unendlich groß.  \eox
       \underline{nicht} allgemeingültig ist, indem Sie in \textsl{Python} eine geeignete
       prädikatenlogische Struktur $\mathcal{S}$ implementieren, in der diese Formel falsch ist.
 \item Überlegen Sie, wie viele verschiedene Strukturen es für die Signatur der Gruppen-Theorie gibt, wenn wir davon
-      ausgehen, dass das Universum aus genau $n$ Elementen besteht.
+      ausgehen, dass das Universum die Form $\{1, \cdots, n\}$ hat.
 \item Geben Sie eine \underline{erfüllbare} prädikatenlogische Formel $F$ an, die in einer prädikatenlogischen
       Struktur $\mathcal{S} = \pair(\mathcal{U},\mathcal{J})$ immer falsch ist, wenn das Universum $\mathcal{U}$ endlich ist.
 
       \textbf{Hinweis}: Es sei $f:U \rightarrow U$ eine Funktion.  Überlegen Sie, wie die Aussagen
-      ``\emph{$f$ ist injektiv}'' und ``\emph{$f$ ist surjektiv}'' zusammen hängen.
+      ``\emph{$f$ ist injektiv}'' und ``\emph{$f$ ist surjektiv}'' zusammen hängen, wenn das Universum endlich ist.
       \exend  
 \end{enumerate}
 
 \section{Constraint Programing}
 It is time to see a practical application of first order logic.  One of these practical applications is \blue{constraint programming}.  
 \href{https://en.wikipedia.org/wiki/Constraint_programming}{Constraint programming} is an example of the
-\blue{declarative programming} paradigm.  The idea is that 
+\blue{declarative programming} \index{declarative programming} paradigm.  In declarative programming, the idea is that 
 in order to solve a given problem, this problem is \blue{specified} and this \blue{specification} is
 given as input to a problem solver which will then compute a solution to the problem.  Hence, the task of the
 programmer is much easier than it normally is: Instead of \blue{implementing} a program that solves a given problem,
@@ -1148,6 +1143,7 @@ that can be specified using first order logic.  The remainder of this section is
       As an example, we show how the eight queens puzzle can be formulated as a constraint satisfaction
       problem.  
 \item We discuss a simple constraint solver that is based on \blue{backtracking}.
+\item Then we show how some puzzles can be solved using constraint programming.
 \end{enumerate}
 
 \subsection{Constraint Satisfaction Problems}
@@ -1157,8 +1153,9 @@ consisting of a universe $\mathcal{U}$ and the interpretation $\mathcal{J}$ of t
 symbols used in these formulas is assumed to be understood from the context of the problem.  The goal is 
 to find a variable assignment such that the given formulas are evaluated as true.
 
-\begin{Definition}[CSP] \hspace*{\fill} \linebreak
-Formally, a \blue{constraint satisfaction problem} (abbreviated as \textsc{Csp}) is defined as a triple
+\begin{Definition}[CSP] \index{CSP} \hspace*{\fill} \linebreak
+Formally, a \blue{constraint satisfaction problem} \index{constraint satisfaction problem} (abbreviated as
+\textsc{Csp}) is defined as a triple 
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{P} := \langle \mathtt{Vars}, \mathtt{Values}, \mathtt{Constraints} \rangle$
@@ -1190,19 +1187,19 @@ a \blue{variable assignment} for $\mathcal{P}$ is a function
 \hspace*{1.3cm}
 $\mathcal{I}: \mathtt{Vars} \rightarrow \mathtt{Values}$.
 \\[0.2cm]
-A variable assignment $\mathcal{I}$ is a \blue{solution} of the \textsc{Csp} $\mathcal{P}$ 
+A variable assignment $\mathcal{I}$ is a \blue{solution} of the \textsc{Csp} $\mathcal{P}$ \index{solution of \textsc{Csp}}
 if, given the assignment $\mathcal{I}$, all constraints of $\mathcal{P}$ are satisfied, i.e.~we have
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{S}(\mathcal{I}, f) = \mathtt{True}$ \quad for all $f \in \mathtt{Constraints}$.
 \\[0.2cm]
-Finally, a \blue{partial variable assignment} $\mathcal{B}$ for $\mathcal{P}$ is a function
+Finally, a \blue{partial variable assignment} \index {partial variable assignment} $\mathcal{B}$ for $\mathcal{P}$ is a function
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{B}: \mathtt{Vars} \rightarrow \mathtt{Values} \cup \{ \Omega \}$ \quad where $\Omega$ denotes the undefined value.
 \\[0.2cm]
 Hence, a partial variable assignment does not assign values to all variables.  Instead, it assigns values only
-to a subset of the set $\mathtt{Vars}$.  The \blue{domain} $\mathtt{dom}(\mathcal{B})$ of a partial variable assignment $\mathcal{B}$ is the
+to a subset of the set $\mathtt{Vars}$.  The \blue{domain} $\mathtt{dom}(\mathcal{B})$ \index{domain} of a partial variable assignment $\mathcal{B}$ is the
 set of those variables that are assigned a value different from $\Omega$, i.e.~we define
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1219,7 +1216,8 @@ We proceed to illustrate the definitions given so far by presenting two examples
 \end{figure}
 
 \subsection{Example: Map Colouring}
-In \href{https://en.wikipedia.org/wiki/Four_color_theorem}{map colouring} a map showing different state
+In \href{https://en.wikipedia.org/wiki/Four_color_theorem}{map colouring} \index{map colouring} a map showing
+different state 
 borders is given and the task is to colour the different states such that no two states that have a common
 border share the same colour.  \myFig{australia.pdf} shows a map of Australia.  There are seven different
 states in Australia:
@@ -1265,6 +1263,7 @@ If we define the assignment $\mathcal{I}$ such that
 then you can check that the assignment $\mathcal{I}$ is indeed a solution to the constraint satisfaction problem $\mathcal{P}$.
 
 \subsection{Example: The Eight Queens Puzzle}
+\index{eight queens puzzle}
 The \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{eight queens problem} asks to put 8 queens onto a
 chessboard such that no queen can attack another queen.  In \href{https://en.wikipedia.org/wiki/Chess}{chess},
 a queen can attack all pieces that are either in the same row, the same column, or the same diagonal.  If we
@@ -1401,7 +1400,7 @@ partial assignment is shown in \myFig{eight-queens-partial.txt}.
                 xrightmargin  = 0.2cm,
               ]{python3}
     def queensCSP():
-        "Returns a CSP coding the 8 queens problem."
+        'Returns a CSP coding the 8 queens problem.'
         S            = range(1, 8+1)          # used as indices
         Variables    = [ f'Q{i}' for i in S ]
         Values       = { 1, 2, 3, 4, 5, 6, 7, 8 }
@@ -1456,7 +1455,7 @@ employs backtracking.  We discuss this program next.
     import extractVars as ev
                   
     def solve(CSP):
-        "Compute a solution for the given constraint satisfaction problem."
+        'Compute a solution for the given constraint satisfaction problem.'
         Variables, Values, Constraints = CSP
         CSP = (Variables,
                Values,
@@ -1522,10 +1521,10 @@ employs backtracking.  We discuss this program next.
                   xrightmargin  = 0.0cm,
                 ]{python3}          
     def backtrack_search(Assignment, CSP):
-        """
+        '''
         Given a partial variable assignment, this function tries to complete this 
         assignment towards a solution of the CSP.
-        """
+        '''
         (Variables, Values, Constraints) = CSP
         if len(Assignment) == len(Variables):
             return Assignment
@@ -1744,19 +1743,19 @@ Formel $f_2$ gilt:
 \hspace*{1.3cm}
 $\mathcal{S}_2 \models f_2$.
 \\[0.2cm]
-Dazu muss lediglich die Interpretation des Funktions-Zeichens $s$ so gewählt werden, dass
+Dazu muss die Interpretation des Funktions-Zeichens $s$ so gewählt werden, dass
 für jedes $x$ tatsächlich $p\bigl(x,s(x)\bigr)$ gilt.  Dies ist möglich, denn die Formel $f_1$ sagt ja aus, 
 dass wir zu jedem $x$ einen Wert $y$ finden, für den $p(x,y)$ gilt.   Die Funktion $s$ muss also lediglich zu 
 jedem $x$ dieses $y$ zurück geben. 
 
 
 
-\begin{Definition}[{\color{blue}Skolemisierung}]
+\begin{Definition}[{\color{blue}Skolemisierung}] \hspace*{\fill} \linebreak
   Es sei $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$
   eine Signatur.  Ferner sei $f$ eine geschlossene $\Sigma$-Formel der Form \\[0.2cm]
   \hspace*{1.3cm} 
   $f = \forall x_1, \cdots, x_n \colon \exists y \colon g$. \\[0.2cm]
-  Dann wählen wir ein \red{neues} $n$-stelliges Funktions-Zeichen $s$, d.h.~wir nehmen ein Zeichen $s$, dass in
+  Dann wählen wir ein \underline{\blue{neues}} $n$-stelliges Funktions-Zeichen $s$, d.h.~wir nehmen ein Zeichen $s$, dass in
   der Signatur $\Sigma$ nicht auftritt und erweitern die Signatur $\Sigma$ zu der Signatur \\[0.2cm]
   \hspace*{1.3cm} 
   $\Sigma' := \Bigl\langle \mathcal{V}, \mathcal{F} \cup \{s\}, \mathcal{P}, \textsl{arity} \cup \bigl\{\pair(s,n)\bigr\} \Bigr\rangle$, \\[0.2cm]
@@ -1789,7 +1788,7 @@ In welchem Sinne sind eine Formel $f$ und eine Formel $f'$, die aus $f$ durch ei
 Skolem\-isierungs-Schritt hervorgegangen sind, äquivalent?  Zur Beantwortung dieser Frage
 dient die folgende Definition. 
 
-\begin{Definition}[Erfüllbarkeits-Äquivalenz] \hspace*{1.1cm} 
+\begin{Definition}[Erfüllbarkeits-Äquivalenz] \hspace*{\fill} \linebreak
    Zwei geschlossene Formeln $f$ und $g$ heißen 
    \blue{erfüllbarkeits-äquivalent}
    falls $f$ und $g$ entweder beide erfüllbar oder beide unerfüllbar sind.
@@ -1837,7 +1836,7 @@ Formel der Gestalt \\[0.2cm]
 bei der $k$ eine Disjunktion prädikatenlogischer Literale ist,
 bezeichnen wir als \blue{prädikatenlogische Klausel}.  Ist $M$
 eine Menge von Formeln deren Erfüllbarkeit wir untersuchen wollen, so können wir nach dem
-bisher gezeigten $M$ immer in eine Menge prädikatenlogischer Klauseln umformen.
+bisher Gezeigten  $M$ immer in eine Menge prädikatenlogischer Klauseln umformen.
 Da  dann nur noch All-Quantoren vorkommen, können wir hier die  Notation noch vereinfachen,
 indem wir vereinbaren, dass alle Formeln implizit allquantifiziert sind, wir lassen also
 die All-Quantoren weg.
@@ -1859,7 +1858,7 @@ aus den Klauseln $k_1,\cdots,k_n$ einen Widerspruch herzuleiten: \\[0.2cm]
 Wenn dies gelingt, dann wissen wir, dass die Menge $\{k_1, \cdots, k_n\}$ unerfüllbar ist.
 Damit ist auch $\neg f$ unerfüllbar und also ist $f$ allgemeingültig.
 Damit wir aus den Klauseln $k_1,\cdots,k_n$ einen Widerspruch herleiten können,
-brauchen wir natürlich noch einen Kalkül, der mit prädikatenlogischen Klauseln arbeitet. 
+brauchen wir natürlich noch einen Kalkül $\vdash$, der mit prädikatenlogischen Klauseln arbeitet. 
 Einen solchen Kalkül werden wir im übernächsten Abschnitt vorstellen.
 
 Um das Verfahren näher zu erläutern demonstrieren wir es an einem Beispiel. 
@@ -1903,7 +1902,7 @@ $$
 \end{array}
 $$
 Da jetzt nur noch All-Quantoren auftreten, können wir diese auch noch weglassen,
-da wir ja vereinbart haben, dass alle freien Variablen implizit allquantifiziert sind.
+da wir ja ver\-einbart haben, dass alle freien Variablen implizit allquantifiziert sind.
 Damit können wir nun die prädikatenlogische Klausel-Normalform in Mengen-Schreibweise angeben, diese
 ist
 \\[0.2cm] 
