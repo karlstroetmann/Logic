@@ -691,11 +691,11 @@ dadurch unterschieden, dass Variablen mit einem kleinen Buchstaben beginnen, wä
 Prädikats-Zeichen mit einem großen Buchstaben beginnen.  Um die Formeln der Gruppentheorie darstellen zu
 können, vereinbaren wir daher das Folgende:
 \begin{enumerate}
-\item Das neutrale Element $\mathrm{e}$ schreiben wir als $\texttt{E}()$.  
-\item Für den Operator $*$ verwenden wir das zweistellige Funktions-Zeichen $\texttt{Multiply}$.
-      Damit wird der Ausdruck $x*y$ also als $\texttt{Multiply}(x, y)$ geschrieben.
+\item Das neutrale Element $\mathrm{e}$ schreiben wir als $\mytt{E}()$.  
+\item Für den Operator $*$ verwenden wir das zweistellige Funktions-Zeichen $\mytt{Multiply}$.
+      Damit wird der Ausdruck $x*y$ also als $\mytt{Multiply}(x, y)$ geschrieben.
 \item Das Gleichheits-Zeichen ``$=$'' repräsentieren wir durch das zweistellige Prädikats-Zeichen
-      $\texttt{Equals}$.  Damit schreibt sich dann beispielsweise die Formel $x = y$ als $\texttt{Equals}(x, y)$.
+      $\mytt{Equals}$.  Damit schreibt sich dann beispielsweise die Formel $x = y$ als $\mytt{Equals}(x, y)$.
 \end{enumerate}
 Abbildung \ref{fig:group-theory} zeigt die Formeln der Gruppen-Theorie als Strings.
 
@@ -720,7 +720,7 @@ Abbildung \ref{fig:group-theory} zeigt die Formeln der Gruppen-Theorie als Strin
 \label{fig:group-theory}
 \end{figure}
 
-Wir können die Formeln mit der in Abbildung \ref{fig:fol-parse.py} gezeigten Funktion $\texttt{parse}(s)$ in
+Wir können die Formeln mit der in Abbildung \ref{fig:fol-parse.py} gezeigten Funktion $\mytt{parse}(s)$ in
 geschachtelte Tupel überführen.  Das Ergebnis dieser Transformation ist in Abbildung
 \ref{fig:group-theory-tupel} zu sehen.
 
@@ -749,7 +749,7 @@ geschachtelte Tupel überführen.  Das Ergebnis dieser Transformation ist in Abb
     F4 = parse(G4)
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Funktion \texttt{parse}}
+\caption{Die Funktion \mytt{parse}}
 \label{fig:fol-parse.py}
 \end{figure}
 
@@ -814,9 +814,9 @@ gezeigten Code implementieren.
 \begin{enumerate}
 \item Das in Zeile 1 definierte Universum $U$ besteht aus den beiden Zahlen $0$ und $1$.
       
-\item In Zeile 2 definieren wir die Interpretation des nullstelligen Funktions-Zeichens $\texttt{E}$
+\item In Zeile 2 definieren wir die Interpretation des nullstelligen Funktions-Zeichens $\mytt{E}$
       als das \textsl{Python}-Dictionary, das dem leeren Tupel die Zahl $0$ zuordnet.
-\item In Zeile 3 definieren wir eine Funktion $\texttt{Product}$ als \textsl{Python}-Dictionary.  Für
+\item In Zeile 3 definieren wir eine Funktion $\mytt{Product}$ als \textsl{Python}-Dictionary.  Für
       die so definierte Funktion gilt
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -827,15 +827,15 @@ gezeigten Code implementieren.
       $\mathtt{Product}(1,0) = 1$, \quad
       $\mathtt{Product}(1,1) = 0$.
       \\[0.2cm]  
-      Diese Funktion verwenden wir später als die Interpretation $\texttt{Multiply}^\mathcal{J}$ des Funktions-Zeichens ``$\texttt{Multiply}$''.
-\item In Zeile 4 haben wir  die Interpretation $\texttt{Equals}^\mathcal{J}$ des
-      Prädikats-Zeichens ``$\texttt{Equals}$'' als die Menge $\{ \pair(0,0), \pair(1,1)\}$ definiert.
-\item In Zeile 7 fassen wir die Interpretationen der Funktions-Zeichen ``$\texttt{E}$'' und
-      ``$\texttt{Multiply}$'' und des Prädikats-Zeichens ``$\texttt{Equals}$'' zu dem Dictionary $\texttt{J}$
+      Diese Funktion verwenden wir später als die Interpretation $\mytt{Multiply}^\mathcal{J}$ des Funktions-Zeichens ``$\mytt{Multiply}$''.
+\item In Zeile 4 haben wir  die Interpretation $\mytt{Equals}^\mathcal{J}$ des
+      Prädikats-Zeichens ``$\mytt{Equals}$'' als die Menge $\{ \pair(0,0), \pair(1,1)\}$ definiert.
+\item In Zeile 7 fassen wir die Interpretationen der Funktions-Zeichen ``$\mytt{E}$'' und
+      ``$\mytt{Multiply}$'' und des Prädikats-Zeichens ``$\mytt{Equals}$'' zu dem Dictionary $\mytt{J}$
       zusammen, so dass für ein Funktions- oder Prädikats-Zeichen $f$ die Interpretation $f^\mathcal{J}$ durch
-      den Wert $\texttt{J}[f]$ gegeben ist. 
-\item Die Interpretation $\texttt{J}$ wird dann in Zeile 6 mit dem
-      Universum $\texttt{U}$ zu der Struktur $\texttt{S}$ zusammengefasst, die in \textsl{Python} einfach als
+      den Wert $\mytt{J}[f]$ gegeben ist. 
+\item Die Interpretation $\mytt{J}$ wird dann in Zeile 6 mit dem
+      Universum $\mytt{U}$ zu der Struktur $\mytt{S}$ zusammengefasst, die in \textsl{Python} einfach als
       Paar dargestellt wird.
 \item Schließlich zeigt Zeile 7, dass eine
       Variablen-Belegung ebenfalls als Dictionary dargestellt werden kann.  Die Schlüssel
@@ -875,7 +875,7 @@ gezeigten Code implementieren.
 
 Als nächstes überlegen wir uns, wie wir prädikatenlogische Terme in einer solchen Struktur
 auswerten können.  Abbildung \ref{fig:evalTerm.ipynb} zeigt die Implementierung der Prozedur
-$\texttt{evalTerm}(t, \mathcal{S}, \mathcal{I})$, der als Argumente ein prädikatenlogischer Term $t$, eine
+$\mytt{evalTerm}(t, \mathcal{S}, \mathcal{I})$, der als Argumente ein prädikatenlogischer Term $t$, eine
 prädikatenlogische Struktur $\mathcal{S}$ und eine Variablen-Belegung $\mathcal{I}$ übergeben werden.  Der Term
 $t$ wird dabei in \textsl{Python} als geschachteltes Tupel dargestellt.
 \begin{enumerate}
@@ -886,7 +886,7 @@ $t$ wird dabei in \textsl{Python} als geschachteltes Tupel dargestellt.
 \item Sonst extrahieren wir in Zeile 4 das Dictionary $\mathcal{J}$, das die Interpretationen der Funktions- und
       Prädikats-Zeichen enthält, aus der Struktur $\mathcal{S}$.
 \item Das Funktions-Zeichen $f$ des Terms $t$ ist die erste Komponente des Tupels $t$,
-      die Argumente werden in der Liste \texttt{args} zusammen gefasst.
+      die Argumente werden in der Liste \mytt{args} zusammen gefasst.
 \item Die Interpretation $f^\mathcal{J}$ dieses Funktions-Zeichens schlagen wir in Zeile 6 in dem Dictionary
       $\mathcal{J}$ nach.
 \item Das Tupel, das aus diesen Argumenten besteht, wird in Zeile 7 rekursiv ausgewertet.
@@ -927,16 +927,16 @@ $a = (p, t_1,\cdots,t_n)$.
 dargestellt.  Wir können diese Tupel durch die Zuweisung
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{$p$, *args = $a$}
+\mytt{$p$, *args = $a$}
 \\[0.2cm]
-in seine Komponenten zerlegen.  \texttt{args} ist dann die Liste $[t_1,\cdots,t_n]$.
+in seine Komponenten zerlegen.  \mytt{args} ist dann die Liste $[t_1,\cdots,t_n]$.
 Um zu überprüfen, ob die atomare Formel $a$ wahr ist, müssen wir überprüfen, ob
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bigl(\texttt{evalTerm}(t_1,\mathcal{S}, \mathcal{I}), \cdots, \texttt{evalTerm}(t_n,\mathcal{S},\mathcal{I})\bigr)\in p^\mathcal{J}$
+$\bigl(\mytt{evalTerm}(t_1,\mathcal{S}, \mathcal{I}), \cdots, \mytt{evalTerm}(t_n,\mathcal{S},\mathcal{I})\bigr)\in p^\mathcal{J}$
 \\[0.2cm]
 gilt.  Dieser Test wird in Zeile 6 durchgeführt. Der Rest der Implementierung der Funktion
-$\texttt{evalAtomic}$ ist analog zur Implementierung der Funktion $\texttt{evalTerm}$.
+$\mytt{evalAtomic}$ ist analog zur Implementierung der Funktion $\mytt{evalTerm}$.
 
 
 \begin{figure}[!ht]
@@ -968,12 +968,12 @@ $\texttt{evalAtomic}$ ist analog zur Implementierung der Funktion $\texttt{evalT
         return evalAtomic(F, S, I)                   
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Funktion \texttt{evalFormula}.}
+\caption{Die Funktion \mytt{evalFormula}.}
 \label{fig:evalFormula.ipynb}
 \end{figure}
 
 Abbildung \ref{fig:evalFormula.ipynb} auf Seite \pageref{fig:evalFormula.ipynb} zeigt die Implementierung der
-Funktion $\texttt{evalFormula}(F, \mathcal{S}, \mathcal{I})$, die als Argumente eine prädikatenlogische Formel
+Funktion $\mytt{evalFormula}(F, \mathcal{S}, \mathcal{I})$, die als Argumente eine prädikatenlogische Formel
 $F$, eine prädikatenlogische Struktur $\mathcal{S}$ und eine Variablen-Belegung $\mathcal{I}$ erhält und die
 als Ergebnis den Wert $\mathcal{S}(\mathcal{I}, F)$ berechnet.
 Die Auswertung der Formel $F$ erfolgt dabei analog zu der in Abbildung \ref{fig:evaluate.py} auf
@@ -982,7 +982,7 @@ Behandlung der Quantoren.  In den Zeilen 10, 11 und 12 behandeln wir die Auswert
 Ist $F$ eine Formel der Form $\forall x: G$, so wird die Formel $F$ durch das Tupel
 \\[0.2cm]
 \hspace*{1.3cm}
-$F = (\texttt{'∀'}, x, G)$
+$F = (\mytt{'∀'}, x, G)$
 \\[0.2cm]
 dargestellt.  Die Auswertung von $\forall x\colon G$ geschieht nach der Formel
 \\[0.2cm]
@@ -995,38 +995,38 @@ $\struct\bigl(\mathcal{I}, \forall x\colon G\bigr) \;:=\; \left\{
       \right.
 $
 \\[0.2cm]
-Um die Auswertung implementieren zu können, verwenden wir die Prozedur $\texttt{modify}()$, welche die
+Um die Auswertung implementieren zu können, verwenden wir die Prozedur $\mytt{modify}()$, welche die
 Variablen-Belegung $\mathcal{I}$ an der Stelle $x$ zu $c$ abändert, es gilt also
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{modify}(\mathcal{I},x,c) = \mathcal{I}[x/c]$. 
+$\mytt{modify}(\mathcal{I},x,c) = \mathcal{I}[x/c]$. 
 \\[0.2cm]
 Die Implementierung dieser Prozedur ist in \myfig{modify.ipynb} gezeigt.
  Bei der Auswertung eines All-Quantors können wir ausnutzen, dass die Sprache \textsl{Python}
-den Quantor ``$\forall$'' durch die Funktion \texttt{all} unterstützt.  Wir können also direkt testen, ob die 
+den Quantor ``$\forall$'' durch die Funktion \mytt{all} unterstützt.  Wir können also direkt testen, ob die 
 Formel für alle möglichen Werte $c$, die wir für die Variable $x$ einsetzen können,
 richtig ist.  Für eine Menge $S$ von Wahrheitswerten ist der Ausdruck
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{all}(S)$
+$\mytt{all}(S)$
 \\[0.2cm]
-genau dann wahr, wenn alle Elemente von $S$ den Wert \texttt{True} haben.
+genau dann wahr, wenn alle Elemente von $S$ den Wert \mytt{True} haben.
 Die Auswertung eines Existenz-Quantors ist analog zur Auswertung eines All-Quantors.
-Der einzige Unterschied besteht darin, dass wir statt der Funktion \texttt{all} die Funktion \texttt{any}
+Der einzige Unterschied besteht darin, dass wir statt der Funktion \mytt{all} die Funktion \mytt{any}
 verwenden.  Der Ausdruck
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{any}(S)$
+$\mytt{any}(S)$
 \\[0.2cm]
 ist für eine Menge von Wahrheitswerten $S$ genau dann wahr, wenn es wenigstens ein Element in der Menge $S$
-gibt, dass den Wert \texttt{True} hat.
+gibt, dass den Wert \mytt{True} hat.
 
-Bei der Implementierung der Prozedur $\texttt{modify}(\textsl{I},x,c)$, die als Ergebnis die Variablen-Belegung $\mathcal{I}[x/c]$ berechnet, nutzen wir aus, dass
+Bei der Implementierung der Prozedur $\mytt{modify}(\textsl{I},x,c)$, die als Ergebnis die Variablen-Belegung $\mathcal{I}[x/c]$ berechnet, nutzen wir aus, dass
 wir bei einer Funktion, die als Dictionary gespeichert ist, den Wert, der für ein Argument $x$ eingetragen ist,
 durch eine Zuweisung der Form 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{I}[x] \;\texttt{=}\; c$ 
+$\mathcal{I}[x] \;\mytt{=}\; c$ 
 \\[0.2cm]
 abändern können.
 
@@ -1046,7 +1046,7 @@ abändern können.
         return I
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Implementierung der Funktion \texttt{modify}.}
+\caption{Die Implementierung der Funktion \mytt{modify}.}
 \label{fig:modify.ipynb}
 \end{figure}
 Mit dem in Abbildung \ref{fig:isGroup.ipynb} gezeigten Skript können wir nun überprüfen, ob die in
@@ -1099,7 +1099,7 @@ gezeigte Ausgabe und können daher folgern, dass diese Struktur in der Tat eine 
 \textbf{Bemerkung}:  Das oben vorgestellte Programm finden sie als Jupyter Notebook auf GitHub unter der Adresse:
 \\[0.2cm]
 \hspace*{0.8cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/FOL-Evaluation.ipynb}{\texttt{https://github.com/karlstroetmann/Logic/blob/master/FOL-Evaluation.ipynb}}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/FOL-Evaluation.ipynb}{\mytt{https://github.com/karlstroetmann/Logic/blob/master/FOL-Evaluation.ipynb}}
 \\[0.2cm]
 Mit diesem Programm können wir überprüfen, ob eine
 prädikatenlogische Formel in einer vorgegebenen endlichen Struktur erfüllt ist. Wir können damit
@@ -1169,7 +1169,7 @@ where
       $\mathcal{S} = \langle \mathcal{U}, \mathcal{J} \rangle$ that is given implicitly, i.e.~we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{Values} = \mathcal{U}$.
+      $\mytt{Values} = \mathcal{U}$.
 \item $\mathtt{Constraints}$ is a set of formulas from \blue{first order logic}.  Each of these formulas is
       called a \blue{constraint} of $\mathcal{P}$.  \eox
 \end{enumerate}
@@ -1187,13 +1187,13 @@ a \blue{variable assignment} for $\mathcal{P}$ is a function
 \hspace*{1.3cm}
 $\mathcal{I}: \mathtt{Vars} \rightarrow \mathtt{Values}$.
 \\[0.2cm]
-A variable assignment $\mathcal{I}$ is a \blue{solution} of the \textsc{Csp} $\mathcal{P}$ \index{solution of \textsc{Csp}}
+A variable assignment $\mathcal{I}$ is a \blue{solution} of the \textsc{Csp} $\mathcal{P}$ \index{solution of a \textsc{Csp}}
 if, given the assignment $\mathcal{I}$, all constraints of $\mathcal{P}$ are satisfied, i.e.~we have
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{S}(\mathcal{I}, f) = \mathtt{True}$ \quad for all $f \in \mathtt{Constraints}$.
 \\[0.2cm]
-Finally, a \blue{partial variable assignment} \index {partial variable assignment} $\mathcal{B}$ for $\mathcal{P}$ is a function
+Finally, a \blue{partial variable assignment} \index{partial variable assignment} $\mathcal{B}$ for $\mathcal{P}$ is a function
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{B}: \mathtt{Vars} \rightarrow \mathtt{Values} \cup \{ \Omega \}$ \quad where $\Omega$ denotes the undefined value.
@@ -1236,9 +1236,9 @@ this example let us assume that we have only three colours available.  The quest
 possible to colour the different states in a way that no two neighbouring states share the same colour.  This
 problem can be formalized as a constraint satisfaction problem.  To this end we define:
 \begin{enumerate}
-\item $\texttt{Vars} := \{ \mathtt{WA}, \mathtt{NT}, \mathtt{SA}, \mathtt{Q}, \mathtt{NSW}, \mathtt{V}, \mathtt{T} \}$,
-\item $\texttt{Values} := \{ \texttt{red}, \texttt{green}, \texttt{blue} \}$,
-\item $\texttt{Constraints} := $ \\[0.1cm]
+\item $\mytt{Vars} := \{ \mathtt{WA}, \mathtt{NT}, \mathtt{SA}, \mathtt{Q}, \mathtt{NSW}, \mathtt{V}, \mathtt{T} \}$,
+\item $\mytt{Values} := \{ \mytt{red}, \mytt{green}, \mytt{blue} \}$,
+\item $\mytt{Constraints} := $ \\[0.1cm]
       \hspace*{0.0cm}
       $\bigl\{ \mathtt{WA} \not= \mathtt{NT}, \mathtt{WA} \not= \mathtt{SA},
                  \mathtt{NT} \not= \mathtt{SA}, \mathtt{NT} \not= \mathtt{Q},
@@ -1249,16 +1249,16 @@ problem can be formalized as a constraint satisfaction problem.  To this end we 
        \bigr\}
       $
 \end{enumerate}
-Then $\mathcal{P} := \langle \texttt{Vars}, \texttt{Values}, \texttt{Constraints} \rangle$ is a constraint satisfaction problem.  
+Then $\mathcal{P} := \langle \mytt{Vars}, \mytt{Values}, \mytt{Constraints} \rangle$ is a constraint satisfaction problem.  
 If we define the assignment $\mathcal{I}$ such that
 \begin{enumerate}
-\item $\mathcal{I}(\mathtt{WA}) = \texttt{blue}$,
-\item $\mathcal{I}(\mathtt{NT}) = \texttt{red}$,
-\item $\mathcal{I}(\mathtt{SA}) = \texttt{green}$,
-\item $\mathcal{I}(\mathtt{Q}) = \texttt{blue}$,
-\item $\mathcal{I}(\mathtt{NSW}) = \texttt{red}$,
-\item $\mathcal{I}(\mathtt{V}) = \texttt{blue}$,
-\item $\mathcal{I}(\mathtt{T}) = \texttt{red}$,
+\item $\mathcal{I}(\mathtt{WA}) = \mytt{blue}$,
+\item $\mathcal{I}(\mathtt{NT}) = \mytt{red}$,
+\item $\mathcal{I}(\mathtt{SA}) = \mytt{green}$,
+\item $\mathcal{I}(\mathtt{Q}) = \mytt{blue}$,
+\item $\mathcal{I}(\mathtt{NSW}) = \mytt{red}$,
+\item $\mathcal{I}(\mathtt{V}) = \mytt{blue}$,
+\item $\mathcal{I}(\mathtt{T}) = \mytt{red}$,
 \end{enumerate}
 then you can check that the assignment $\mathcal{I}$ is indeed a solution to the constraint satisfaction problem $\mathcal{P}$.
 
@@ -1274,13 +1274,13 @@ than 8 queens on the board.  Therefore, in order to model the eight queens probl
 problem, we will use the following set of variables:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{Vars} := \{ \texttt{Q}_1, \texttt{Q}_2, \texttt{Q}_3, \texttt{Q}_4, \texttt{Q}_5, \texttt{Q}_6, \texttt{Q}_7,\texttt{Q}_8 \}$,
+$\mytt{Vars} := \{ \mytt{Q}_1, \mytt{Q}_2, \mytt{Q}_3, \mytt{Q}_4, \mytt{Q}_5, \mytt{Q}_6, \mytt{Q}_7,\mytt{Q}_8 \}$,
 \\[0.2cm]
-where for $i \in \{1,\cdots,8\}$ the variable $\texttt{Q}_i$ specifies the column of the queen that is placed in
-row $i$.   As the columns run from one to eight, we define the set $\texttt{Values}$ as
+where for $i \in \{1,\cdots,8\}$ the variable $\mytt{Q}_i$ specifies the column of the queen that is placed in
+row $i$.   As the columns run from one to eight, we define the set $\mytt{Values}$ as
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{Values} := \{1,2,3,4,5,6,7,8\}$.
+$\mytt{Values} := \{1,2,3,4,5,6,7,8\}$.
 \\[0.2cm]
 Next, let us define the constraints.  There are two different types of constraints.
 \begin{enumerate}
@@ -1288,38 +1288,38 @@ Next, let us define the constraints.  There are two different types of constrain
       To capture these constraints, we define
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{SameRow} := \bigl\{ \texttt{Q}_i \not= \texttt{Q}_j \bigm| i \in \{1,\cdots,8\} \wedge j \in \{1,\cdots,8\} \wedge j < i \bigr\}$.
+      $\mytt{SameRow} := \bigl\{ \mytt{Q}_i \not= \mytt{Q}_j \bigm| i \in \{1,\cdots,8\} \wedge j \in \{1,\cdots,8\} \wedge j < i \bigr\}$.
       \\[0.2cm]
-      Here the condition $i < j$ ensures that, for example, we have the constraint $\texttt{Q}_2 \not= \texttt{Q}_1$
-      but not the constraint  $\texttt{Q}_1 \not= \texttt{Q}_2$, as the latter constraint would be redundant if
+      Here the condition $i < j$ ensures that, for example, we have the constraint $\mytt{Q}_2 \not= \mytt{Q}_1$
+      but not the constraint  $\mytt{Q}_1 \not= \mytt{Q}_2$, as the latter constraint would be redundant if
       the former constraint has already been established.
 \item We have constraints that express that no two queens positioned in different rows share the same 
       diagonal.  The queens in row $i$ and row $j$ share the same diagonal iff the equation
       \\[0.2cm]
       \hspace*{1.3cm}
-      $|i - j| = |\texttt{Q}_i - \texttt{Q}_j|$
+      $|i - j| = |\mytt{Q}_i - \mytt{Q}_j|$
       \\[0.2cm]
       holds.  The expression $|i-j|$ is the absolute value of the difference of the rows of the queens in row
-      $i$ and row $j$,  while the expression $|\texttt{Q}_i - \texttt{Q}_j|$ is the absolute value of the difference of the
+      $i$ and row $j$,  while the expression $|\mytt{Q}_i - \mytt{Q}_j|$ is the absolute value of the difference of the
       columns of these queens.  To capture these constraints, we define
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{SameDiagonal} := \bigl\{ |i  - j| \not= |\texttt{Q}_i - \texttt{Q}_j| \bigm| i \in \{1,\cdots,8\} \wedge j \in \{1,\cdots,8\} \wedge j < i \bigr\}$.
+      $\mytt{SameDiagonal} := \bigl\{ |i  - j| \not= |\mytt{Q}_i - \mytt{Q}_j| \bigm| i \in \{1,\cdots,8\} \wedge j \in \{1,\cdots,8\} \wedge j < i \bigr\}$.
 \end{enumerate}
 Then, the set of constraints is defined as 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{Constraints} := \texttt{SameRow} \cup \texttt{SameDiagonal}$
+$\mytt{Constraints} := \mytt{SameRow} \cup \mytt{SameDiagonal}$
 \\[0.2cm]
 and the eight queens problem can be stated as the constraint satisfaction problem
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{P} := \langle \texttt{Vars}, \texttt{Values}, \texttt{Constraints} \rangle$.
+$\mathcal{P} := \langle \mytt{Vars}, \mytt{Values}, \mytt{Constraints} \rangle$.
 \\[0.2cm]
 If we define the assignment $\mathcal{I}$ such that
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{I}(\texttt{Q}_1) := 4,\; \mathcal{I}(\texttt{Q}_2) := 8,\; \mathcal{I}(\texttt{Q}_3) := 1,\; \mathcal{I}(\texttt{Q}_4) := 2,\; \mathcal{I}(\texttt{Q}_5) := 6,\; \mathcal{I}(\texttt{Q}_6) := 2,\; \mathcal{I}(\texttt{Q}_7) := 7,\; \mathcal{I}(\texttt{Q}_8) := 5$,
+$\mathcal{I}(\mytt{Q}_1) := 4,\; \mathcal{I}(\mytt{Q}_2) := 8,\; \mathcal{I}(\mytt{Q}_3) := 1,\; \mathcal{I}(\mytt{Q}_4) := 2,\; \mathcal{I}(\mytt{Q}_5) := 6,\; \mathcal{I}(\mytt{Q}_6) := 2,\; \mathcal{I}(\mytt{Q}_7) := 7,\; \mathcal{I}(\mytt{Q}_8) := 5$,
 \\[0.2cm]
 then it is easy to see that this assignment is a solution of the eight queens problem.  This solution is shown
 in \myFig{eight-queens.txt}.
@@ -1350,16 +1350,16 @@ variable assignments as dictionaries.  For example, the variable assignment $\ma
 then be represented as the dictionary 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{I} = \bigl\{ \texttt{Q}_1:4,\, \texttt{Q}_2:8,\, \texttt{Q}_3:1,\, \texttt{Q}_4:3,\, 
-             \texttt{Q}_5:6,\, \texttt{Q}_6:2,\, \texttt{Q}_7:7,\, \texttt{Q}_8:5) 
+$\mathcal{I} = \bigl\{ \mytt{Q}_1:4,\, \mytt{Q}_2:8,\, \mytt{Q}_3:1,\, \mytt{Q}_4:3,\, 
+             \mytt{Q}_5:6,\, \mytt{Q}_6:2,\, \mytt{Q}_7:7,\, \mytt{Q}_8:5) 
      \bigr\}$.
 \\[0.2cm]
 If we define 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{B} := \bigl\{ \texttt{Q}_1:4,\, \texttt{Q}_2:8,\, \texttt{Q}_3:1) \bigr\}$,
+$\mathcal{B} := \bigl\{ \mytt{Q}_1:4,\, \mytt{Q}_2:8,\, \mytt{Q}_3:1) \bigr\}$,
 \\[0.2cm]
-then $\mathcal{B}$ is a partial assignment and $\texttt{dom}(\mathcal{B}) = \{ \texttt{Q}_1, \texttt{Q}_2, \texttt{Q}_3 \}$.  This
+then $\mathcal{B}$ is a partial assignment and $\mytt{dom}(\mathcal{B}) = \{ \mytt{Q}_1, \mytt{Q}_2, \mytt{Q}_3 \}$.  This
 partial assignment is shown in \myFig{eight-queens-partial.txt}.
 
 \begin{figure}[!ht]
@@ -1379,7 +1379,7 @@ partial assignment is shown in \myFig{eight-queens-partial.txt}.
          \vrule width1pt}
    \hrule height1pt}
 
-  \caption{The partial assignment $\bigl\{ \texttt{Q}_1 \mapsto 4, \texttt{Q}_2 \mapsto 8, \texttt{Q}_3 \mapsto 1) \bigr\}$.}
+  \caption{The partial assignment $\bigl\{ \mytt{Q}_1 \mapsto 4, \mytt{Q}_2 \mapsto 8, \mytt{Q}_3 \mapsto 1) \bigr\}$.}
   \label{fig:eight-queens-partial.txt}
 \end{figure}
 
@@ -1416,11 +1416,11 @@ partial assignment is shown in \myFig{eight-queens-partial.txt}.
 
 \subsection{A Backtracking Constraint Solver}
 One approach to solve a \textsc{Csp} that is both conceptually simple and reasonable efficient is
-\blue{backtracking}.  The idea is to try to build variable assignments incrementally:  We start with
+\blue{backtracking}.\index{backtracking}  The idea is to try to build variable assignments incrementally:  We start with
 an empty dictionary and pick a variable $x_1$ that needs to have a value assigned.  For this variable, we
 choose a value $v_1$ and assign it to this variable.  This yields the partial assignment $\{ x_1:v_1 \}$.
 Next, we evaluate all those constraints that mention only the variable $x_1$ and check whether these constraints
-are satisfied.  If any of these constraints is evaluated as \texttt{False}, we try to assign another value to
+are satisfied.  If any of these constraints is evaluated as \mytt{False}, we try to assign another value to
 $x_1$ until we find a value that satisfies all constraints that mention only $x_1$.
 
 In general, if we have a partial variable assignment $\mathcal{B}$ of the form
@@ -1473,38 +1473,38 @@ employs backtracking.  We discuss this program next.
 
 \begin{enumerate}
 \item As we need to determine the variables occurring in a given constraint, we import the module
-      \texttt{extractVar}.  This module implements a function $\texttt{extractVars}(f)$ that takes
+      \mytt{extractVar}.  This module implements a function $\mytt{extractVars}(f)$ that takes
       a formula $f$ written as a \textsl{Python} expression and returns the set of all variables occurring in
       $f$. 
 
-\item The procedure $\texttt{solve}$ takes a constraint satisfaction problem $\texttt{CSP}$ as input and tries
+\item The procedure $\mytt{solve}$ takes a constraint satisfaction problem $\mytt{CSP}$ as input and tries
       to find a solution.    
       \begin{enumerate}
-      \item First, in line 5 the $\texttt{CSP}$ is split into its three components.  However, the first
-            component $\texttt{Variables}$ does not have to be a set but rather can also be a list.
-            If $\texttt{Variables}$ is a list, then backtracking search will assign these variables 
+      \item First, in line 5 the $\mytt{CSP}$ is split into its three components.  However, the first
+            component $\mytt{Variables}$ does not have to be a set but rather can also be a list.
+            If $\mytt{Variables}$ is a list, then backtracking search will assign these variables 
             in the same order as they appear in this list.  This can improve the efficiency of backtracking
             significantly. 
-      \item Next, for every constraint $\texttt{f}$ of the given $\texttt{CSP}$, we compute the set of variables that
-            are used in $\texttt{f}$.  This is done using the procedure $\texttt{extractVars}$.
-            Of these variables we keep only those variables that also occur in the set $\texttt{Variables}$
+      \item Next, for every constraint $\mytt{f}$ of the given $\mytt{CSP}$, we compute the set of variables that
+            are used in $\mytt{f}$.  This is done using the procedure $\mytt{extractVars}$.
+            Of these variables we keep only those variables that also occur in the set $\mytt{Variables}$
             because we assume that any other \textsl{Python} variable occurring in a constraint $f$ has already
             a value assigned to it and can therefore be regarded as a constant.
 
-            The variables occurring in a constraint $\texttt{f}$ are then paired with the constraint $\texttt{f}$ and
-            the correspondingly modified data structure is stored in $\texttt{CSP}$ and is called an
+            The variables occurring in a constraint $\mytt{f}$ are then paired with the constraint $\mytt{f}$ and
+            the correspondingly modified data structure is stored in $\mytt{CSP}$ and is called an
             \blue{augmented \textsc{Csp}}.
 
-            The reason to compute and store these variables is efficiency: When we later check whether a constraint $\texttt{f}$
-            is satisfied for a partial variable assignment $\texttt{Assignment}$ where $\texttt{Assignment}$ is
-            stored as a dictionary, we only need to check the constraint $\texttt{f}$ iff all of the variables occurring
-            in $\texttt{f}$ are elements of the domain of $\texttt{Assignment}$.   It would be wasteful to compute
-            these variables every time.
-      \item Next, we call the function $\texttt{backtrack\_search}$ to compute a solution of $\texttt{CSP}$.
-            This function call is enclosed in a \texttt{try}-\texttt{except}-block.
-            The function $\texttt{backtrack\_search}$ either returns a solution or, if it is not able to
-            find a solution, it throws an exception of class \texttt{Backtrack}.  If this happens,
-            the \texttt{except} block silently discards this exception and the procedure \texttt{solve} returns
+            The reason to compute and store these sets of variables is efficiency: When we later check whether
+            a constraint $\mytt{f}$ is satisfied for a partial variable assignment $\mytt{Assignment}$ where $\mytt{Assignment}$ is
+            stored as a dictionary, we only need to check the constraint $\mytt{f}$ iff all of the variables occurring
+            in $\mytt{f}$ are elements of the domain of $\mytt{Assignment}$.   It would be wasteful to compute
+            these sets of all variables occurring in a given formula every time the formula is checked.
+      \item Next, we call the function $\mytt{backtrack\_search}$ to compute a solution of $\mytt{CSP}$.
+            This function call is enclosed in a \mytt{try}-\mytt{except}-block.
+            The function $\mytt{backtrack\_search}$ either returns a solution or, if it is not able to
+            find a solution, it throws an exception of class \mytt{Backtrack}.  If this happens,
+            the \mytt{except} block silently discards this exception and the procedure \mytt{solve} returns
             without a result.
    \end{enumerate}
  \end{enumerate}
@@ -1544,52 +1544,52 @@ employs backtracking.  We discuss this program next.
         pass
 \end{minted}
 \vspace*{-0.3cm}
-\caption{The function \texttt{backtrack\_search}}
+\caption{The function \mytt{backtrack\_search}}
 \label{fig:CSP-Solver.ipynb-backtrack_search}
 \end{figure}
 
-Next, we discuss the implementation of the procedure $\texttt{backtrack\_search}$ that is shown in
+Next, we discuss the implementation of the procedure $\mytt{backtrack\_search}$ that is shown in
 \myFig{CSP-Solver.ipynb-backtrack_search}.  This procedure receives a partial assignment 
-$\texttt{Assignment}$ as input together with an augmented $\texttt{CSP}$.  This partial assignment is
-\blue{consistent} with $\texttt{CSP}$:  If $\texttt{f}$ is a constraint of $\texttt{CSP}$ such that
-all the variables occurring in $\texttt{f}$ are assigned to in $\texttt{Assignment}$, then evaluating
-$\texttt{f}$ using $\texttt{Assignment}$ yields $\texttt{True}$.  Initially, this partial assignment is empty
+$\mytt{Assignment}$ as input together with an augmented $\mytt{CSP}$.  This partial assignment is
+\blue{consistent} with $\mytt{CSP}$:  If $\mytt{f}$ is a constraint of $\mytt{CSP}$ such that
+all the variables occurring in $\mytt{f}$ are assigned to in $\mytt{Assignment}$, then evaluating
+$\mytt{f}$ using $\mytt{Assignment}$ yields $\mytt{True}$.  Initially, this partial assignment is empty
 and hence trivially consistent.  The idea is to extend this partial assignment until it is a complete
-assignment that satisfies all constraints of the given $\texttt{CSP}$.
+assignment that satisfies all constraints of the given $\mytt{CSP}$.
 \begin{enumerate}
-\item First, the augmented $\texttt{CSP}$ is split into its components.
-\item Next, if $\texttt{Assignment}$ is already a complete variable assignment, i.e.~if the dictionary
-      $\texttt{Assignment}$ has as many elements as there are variables, then the fact that
-      $\texttt{Assignment}$ is partially consistent implies that
-      it is a solution of the $\texttt{CSP}$ and, therefore, it is returned.
-\item Otherwise, we have to extend the partial $\texttt{Assignment}$.  In order to do so, we first have to
-      select a variable $\texttt{var}$ that has not yet been assigned a value in $\texttt{Assignment}$ so far.
-      We pick the first variable in the list \texttt{Variables} that is yet unassigned.
-      This variable is called $\texttt{var}$.
-\item Next, we try to assign a $\texttt{value}$ to the selected variable $\texttt{var}$.  After assigning
-      a $\texttt{value}$ to $\texttt{var}$, we immediately check whether this assignment would be consistent
-      with the constraints using the procedure $\texttt{isConsistent}$.
-      If the partial $\texttt{Assignment}$ turns out to be consistent, the partial $\texttt{Assignment}$
-      is extended to the new partial assignment \texttt{NewAssign} that satisfies
+\item First, the augmented $\mytt{CSP}$ is split into its components.
+\item Next, if $\mytt{Assignment}$ is already a complete variable assignment, i.e.~if the dictionary
+      $\mytt{Assignment}$ has as many elements as there are variables, then the fact that
+      $\mytt{Assignment}$ is partially consistent implies that
+      it is a solution of the $\mytt{CSP}$ and, therefore, it is returned.
+\item Otherwise, we have to extend the partial $\mytt{Assignment}$.  In order to do so, we first have to
+      select a variable $\mytt{var}$ that has not yet been assigned a value in $\mytt{Assignment}$ so far.
+      We pick the first variable in the list \mytt{Variables} that is yet unassigned.
+      This variable is called $\mytt{var}$.
+\item Next, we try to assign a $\mytt{value}$ to the selected variable $\mytt{var}$.  After assigning
+      a $\mytt{value}$ to $\mytt{var}$, we immediately check whether this assignment would be consistent
+      with the constraints using the procedure $\mytt{isConsistent}$.
+      If the partial $\mytt{Assignment}$ turns out to be consistent, the partial $\mytt{Assignment}$
+      is extended to the new partial assignment \mytt{NewAssign} that satisfies
       \\[0.2cm]
       \hspace*{1.3cm}
-      \texttt{NewAssign[var] = value}
+      \mytt{NewAssign[var] = value}
       \\[0.2cm]
-      and that coincides with $\texttt{Assignment}$ for all variables different from $\texttt{var}$.
-      Then, the procedure $\texttt{backtrack\_search}$ is called recursively to complete this new partial assignment.
+      and that coincides with $\mytt{Assignment}$ for all variables different from $\mytt{var}$.
+      Then, the procedure $\mytt{backtrack\_search}$ is called recursively to complete this new partial assignment.
       If this is successful, the resulting assignment is a solution of the CSP and is returned.  Otherwise,
-      the recursive call of $\texttt{backtrack\_search}$ will instead raise an exception.  This exception is muted 
-      by the \texttt{try}-\texttt{except}-block that surrounds the recursive call to $\texttt{backtrack\_search}$.  In that case, the
-      \texttt{for}-loop generates a new possible $\texttt{value}$ that can be assigned to the variable
-      $\texttt{var}$.  If all possible values have been tried and none was successful, the \texttt{for}-loop
+      the recursive call of $\mytt{backtrack\_search}$ will instead raise an exception.  This exception is muted 
+      by the \mytt{try}-\mytt{except}-block that surrounds the recursive call to $\mytt{backtrack\_search}$.  In that case, the
+      \mytt{for}-loop generates a new possible $\mytt{value}$ that can be assigned to the variable
+      $\mytt{var}$.  If all possible values have been tried and none was successful, the \mytt{for}-loop
       ends and the statement
       \\[0.2cm]
       \hspace*{1.3cm}
-      \texttt{raise Backtrack()}
+      \mytt{raise Backtrack()}
       \\[0.2cm]
-      is executed.  This raises an exception that signals that the current partial $\texttt{Assignment}$ can
-      not be completed into a solution of the \texttt{CSP}.
-      This exception is caught by one of the \texttt{try}-\texttt{except}-blocks that have been encountered previously.
+      is executed.  This raises an exception that signals that the current partial $\mytt{Assignment}$ can
+      not be completed into a solution of the \mytt{CSP}.
+      This exception is caught by one of the \mytt{try}-\mytt{except}-blocks that have been encountered previously.
 \end{enumerate}
 
 
@@ -1612,58 +1612,60 @@ assignment that satisfies all constraints of the given $\texttt{CSP}$.
                   )
 \end{minted}
 \vspace*{-0.3cm}
-\caption{The procedure \texttt{isConsistent}}
+\caption{The procedure \mytt{isConsistent}}
 \label{fig:CSP-Solver.ipynb-isConsistent}
 \end{figure}
 
-We still need to discuss the implementation of the auxiliary procedure $\texttt{isConsistent}$
-shown in \myFig{CSP-Solver.ipynb-isConsistent}.  This procedure takes a variable $\texttt{var}$, a $\texttt{value}$, a partial 
-$\texttt{Assignment}$ and a set of $\texttt{Constraints}$.  It is assumed that $\texttt{Assignment}$ is
-\blue{partially consistent} with respect to the set $\texttt{Constraints}$, i.e.~for every formula $\texttt{f}$
-occurring in $\texttt{Constraints}$ such that
+We still need to discuss the implementation of the auxiliary procedure $\mytt{isConsistent}$
+shown in \myFig{CSP-Solver.ipynb-isConsistent}.  This procedure takes a variable $\mytt{var}$, a $\mytt{value}$, a partial 
+$\mytt{Assignment}$ and a set of $\mytt{Constraints}$.  It is assumed that $\mytt{Assignment}$ is
+\blue{partially consistent} with respect to the set $\mytt{Constraints}$, i.e.~for every formula $\mytt{f}$
+occurring in $\mytt{Constraints}$ such that
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{vars}(\texttt{f}) \subseteq \texttt{dom}(\texttt{Assignment})$
+$\mytt{vars}(\mytt{f}) \subseteq \mytt{dom}(\mytt{Assignment})$
 \\[0.2cm]
-holds, the formula $\texttt{f}$ evaluates to $\texttt{True}$ given the $\texttt{Assignment}$.  The purpose of
-$\texttt{isConsistent}$ is to check, whether the extended assignment
+holds, the formula $\mytt{f}$ evaluates to $\mytt{True}$ given the $\mytt{Assignment}$.  The purpose of
+$\mytt{isConsistent}$ is to check, whether the extended assignment
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{NA} \;\texttt{:=}\;\texttt{Assignment} \cup \{ \pair(\texttt{var}, \texttt{value}) \}$
+$\mytt{NA} \;\mytt{:=}\;\mytt{Assignment} \cup \{ \pair(\mytt{var}, \mytt{value}) \}$
 \\[0.2cm]
-that assigns $\texttt{value}$ to the variable $\texttt{var}$ is still partially consistent with $\texttt{Constraints}$. 
-To this end, the \texttt{for}-loop iterates over all $\texttt{Formula}$s in $\texttt{Constraints}$. 
-However, we only have to check those $\texttt{Formula}$s that contain the variable $\texttt{var}$ and,
+that assigns $\mytt{value}$ to the variable $\mytt{var}$ is still partially consistent with $\mytt{Constraints}$. 
+To this end, the \mytt{for}-loop iterates over all $\mytt{Formula}$s in $\mytt{Constraints}$. 
+However, we only have to check those $\mytt{Formula}$s that contain the variable $\mytt{var}$ and,
 furthermore, have the property that
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{Vars}(\texttt{Formula}) \subseteq \texttt{dom}(\texttt{NA})$,
+$\mytt{Vars}(\mytt{Formula}) \subseteq \mytt{dom}(\mytt{NA})$,
 \\[0.2cm]
-i.e.~all variables occurring in $\texttt{Formula}$ need to have a value assigned in
-$\texttt{NA}$.  The reasoning is as follows:
+i.e.~all variables occurring in $\mytt{Formula}$ need to have a value assigned in
+$\mytt{NA}$.  The reasoning is as follows:
 \begin{enumerate}
-\item If $\texttt{var}$ does not occur in $\texttt{Formula}$, then adding $\texttt{var}$ to
-      $\texttt{Assignment}$ cannot change the result of evaluating $\texttt{Formula}$ and as
-      $\texttt{Assignment}$ is assumed to be partially consistent with respect to $\texttt{Formula}$, 
-      $\texttt{NA}$ is also partially consistent with respect to $\texttt{Formula}$.
-\item If $\texttt{dom}(\texttt{NA}) \not\subseteq \texttt{Vars}(\texttt{Formula})$, then $\texttt{Formula}$ can not be evaluated anyway. 
+\item If $\mytt{var}$ does not occur in $\mytt{Formula}$, then adding $\mytt{var}$ to
+      $\mytt{Assignment}$ cannot change the result of evaluating $\mytt{Formula}$ and as
+      $\mytt{Assignment}$ is assumed to be partially consistent with respect to $\mytt{Formula}$, 
+      $\mytt{NA}$ is also partially consistent with respect to $\mytt{Formula}$.
+\item If $\mytt{dom}(\mytt{NA}) \not\subseteq \mytt{Vars}(\mytt{Formula})$, then $\mytt{Formula}$ can not be evaluated anyway. 
 \end{enumerate}
 If we use backtracking, we can solve the 8 queens problem in less than a second.
 For the eight queens puzzle the order in which variables are tried is not particularly important.  The reason
 is that all variables are connected to all other variables.  For other problems the ordering of the variables
 can be \red{very important}.  The general strategy is that variables that are strongly related to each other should
-be grouped together in the list $\texttt{Variables}$.
+be grouped together in the list $\mytt{Variables}$.
 
 
 
 \section{Normalformen für prädikatenlogische Formeln}
 Im nächsten Abschnitt gehen wir daran, einen Kalkül $\vdash$ für die
 Prädikaten-Logik zu definieren.  Genau wie im Falle der Aussagen-Logik wird dies wesentlich einfacher, wenn wir
-uns auf Formeln, die in einer \blue{Normalform}  vorliegen, beschränken.  Bei dieser Normalform handelt es sich
-nun um sogenannte \blue{prädikatenlogische Klauseln}.  Diese werden ähnlich definiert wie in der
-Aussagen-Logik:  Ein \blue{prädikatenlogisches Literal} ist eine atomare Formel oder die Negation einer
-atomaren Formel.  Eine prädikatenlogische Klausel ist dann eine Disjunktion prädikatenlogischer Literale.
-Wir zeigen in diesem Abschnitt, dass jede Formel-Menge $M$
+uns auf Formeln beschränken, die in einer \blue{Normalform}  vorliegen.  Bei dieser Normalform handelt es sich
+nun um sogenannte \blue{prädikatenlogische Klauseln}.\index{prädikatenlogische Klausel}  Diese werden ähnlich
+definiert wie in der 
+Aussagen-Logik:  Ein \blue{prädikatenlogisches Literal}\index{prädikatenlogisches Literal} ist eine atomare
+Formel oder die Negation einer 
+atomaren Formel.  Eine \blue{prädikatenlogische Klausel}\index{prädikatenlogische Klausel} ist dann eine
+Disjunktion prädikatenlogischer Literale.  Wir zeigen in diesem Abschnitt, dass jede Formel-Menge $M$
 so in eine Menge von prädikatenlogischen Klauseln $K$ transformiert werden kann, dass $M$ genau dann erfüllbar ist, wenn $K$
 erfüllbar ist.  Daher ist die Beschränkung auf prädikatenlogische Klauseln keine echte Einschränkung.  Zunächst geben wir einige
 Äquivalenzen an, mit deren Hilfe Quantoren manipuliert werden können. 
@@ -1690,8 +1692,8 @@ erfüllbar ist.  Daher ist die Beschränkung auf prädikatenlogische Klauseln ke
 
 Um die Äquivalenzen der letzten Gruppe anwenden zu können, kann es notwendig sein,
 gebundene Variablen umzubenennen. Ist $f$ eine prädikatenlogische Formel und sind $x$ und
-$y$ zwei Variablen, so bezeichnet $f[x/y]$ die Formel, die aus $f$ dadurch entsteht, dass
-jedes Auftreten der Variablen $x$ in $f$ durch $y$ ersetzt wird.  Beispielsweise gilt \\[0.2cm]
+$y$ zwei Variablen, wobei $y$ nicht in $f$ auftritt, so bezeichnet \blue{$f[x/y]$} die Formel, die aus $f$
+dadurch entsteht, dass jedes Auftreten der Variablen $x$ in $f$ durch $y$ ersetzt wird.  Beispielsweise gilt \\[0.2cm]
 \hspace*{1.3cm} $\bigl(\forall u : \exists v : p(u,v)\bigr)[u/z] = \forall z : \exists v : p(z,v)$
 \\[0.2cm]
 Damit können wir eine letzte Äquivalenz angeben: Ist $f$ eine prädikatenlogische Formel,
@@ -1701,17 +1703,18 @@ ist $x \in BV(f)$ und ist $y$ eine Variable, die in $f$ nicht auftritt, so gilt 
 
 Mit Hilfe der oben stehenden Äquivalenzen und der aussagenlogischen Äquivalenzen, die wir schon kennen, können
 wir eine Formel so umformen, dass die Quantoren nur noch außen stehen.  Eine solche Formel ist dann in
-\blue{pränexer Normalform}.  Wir führen das Verfahren an einem Beispiel vor: Wir zeigen, dass die Formel 
+\blue{pränexer Normalform}.\index{pränexer Normalform}  Wir führen das Verfahren an einem Beispiel vor: Wir
+zeigen, dass die Formel  
 \\[0.2cm]
 \hspace*{1.3cm}
-$\forall x\colon p(x) \rightarrow \exists x\colon p(x)$ 
+$\bigl(\forall x\colon p(x)\bigr) \rightarrow \bigl(\exists x\colon p(x)\bigr)$ 
 \\[0.2cm]
 allgemeingültig ist: 
 $$ 
 \begin{array}{ll}
-                 & \forall x\colon p(x) \rightarrow \exists x\colon p(x)  \\
- \Leftrightarrow & \neg \forall x\colon p(x) \vee \exists x\colon p(x)    \\
- \Leftrightarrow & \exists x\colon \neg p(x) \vee \exists x\colon p(x)    \\
+                 & \bigl(\forall x\colon p(x)\bigr) \rightarrow \bigl(\exists x\colon p(x)\bigr)  \\
+ \Leftrightarrow & \neg \bigl(\forall x\colon p(x)\bigr) \vee \bigl(\exists x\colon p(x)\bigr)    \\
+ \Leftrightarrow & \bigl(\exists x\colon \neg p(x)\bigr) \vee \bigl(\exists x\colon p(x)\bigr)    \\
  \Leftrightarrow & \exists x\colon \bigl(\neg p(x) \vee p(x)\bigr) \\
  \Leftrightarrow & \exists x\colon \verum                                                  \\
  \Leftrightarrow & \verum                                                  \\
@@ -1750,7 +1753,7 @@ jedem $x$ dieses $y$ zurück geben.
 
 
 
-\begin{Definition}[{\color{blue}Skolemisierung}] \hspace*{\fill} \linebreak
+\begin{Definition}[{\color{blue}Skolemisierung}]\index{Skolemisierung} \hspace*{\fill} \linebreak
   Es sei $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$
   eine Signatur.  Ferner sei $f$ eine geschlossene $\Sigma$-Formel der Form \\[0.2cm]
   \hspace*{1.3cm} 
@@ -1790,7 +1793,7 @@ dient die folgende Definition.
 
 \begin{Definition}[Erfüllbarkeits-Äquivalenz] \hspace*{\fill} \linebreak
    Zwei geschlossene Formeln $f$ und $g$ heißen 
-   \blue{erfüllbarkeits-äquivalent}
+   \blue{erfüllbarkeits-äquivalent}\index{erfüllbarkeits-äquivalent}
    falls $f$ und $g$ entweder beide erfüllbar oder beide unerfüllbar sind.
    Wenn $f$ und $g$ erfüllbarkeits-äquivalent sind, so schreiben wir \\[0.2cm]
    \hspace*{1.3cm} $f \approx_e g$.
@@ -1814,7 +1817,7 @@ Funktions-Zeichen wird als \blue{Skolemisierung} bezeichnet.  Haben wir eine For
 in pränexe Normalform gebracht und anschließend skolemisiert, so hat das Ergebnis die Gestalt\\[0.2cm]
 \hspace*{1.3cm} $\forall x_1, \cdots, x_n: g$ \\[0.2cm]
 und in der Formel $g$ treten keine Quantoren mehr auf.  Die Formel $g$ wird auch als die
-\blue{Matrix} der obigen Formel bezeichnet.  Wir können nun  $g$ mit Hilfe
+\blue{Matrix}\index{Matrix} der obigen Formel bezeichnet.  Wir können nun  $g$ mit Hilfe
 der uns aus dem letzten Kapitel bekannten aussagenlogischen
  Äquivalenzen in konjunktive Normalform bringen.  Wir haben dann eine
 Formel der Gestalt \\[0.2cm]
@@ -1830,13 +1833,13 @@ die resultierende Formel hat die Gestalt \\[0.2cm]
 \hspace*{1.3cm} 
 $\big(\forall x_1, \cdots, x_n: k_1\big) \wedge \cdots \wedge \big(\forall x_1, \cdots, x_n: k_m\big)$. \\[0.2cm]
 Ist eine Formel $F$ in der obigen
-Gestalt, so sagen wir, dass $F$ in \blue{prädikatenlogischer Klausel-Normalform} ist und eine
-Formel der Gestalt \\[0.2cm]
+Gestalt, so sagen wir, dass $F$ in \blue{prädikatenlogischer Klausel-Normalform}
+\index{prädikatenlogische Klausel-Normalform}  ist und eine Formel der Gestalt \\[0.2cm]
 \hspace*{1.3cm} $\forall x_1, \cdots, x_n: k$, \\[0.2cm]
 bei der $k$ eine Disjunktion prädikatenlogischer Literale ist,
-bezeichnen wir als \blue{prädikatenlogische Klausel}.  Ist $M$
+bezeichnen wir als \blue{prädikatenlogische Klausel}.  \index{prädikatenlogische Klausel} Ist $M$
 eine Menge von Formeln deren Erfüllbarkeit wir untersuchen wollen, so können wir nach dem
-bisher Gezeigten  $M$ immer in eine Menge prädikatenlogischer Klauseln umformen.
+bisher Gezeigten  $M$ immer in eine erfüllbarkeits-äquivalente Menge prädikatenlogischer Klauseln umformen.
 Da  dann nur noch All-Quantoren vorkommen, können wir hier die  Notation noch vereinfachen,
 indem wir vereinbaren, dass alle Formeln implizit allquantifiziert sind, wir lassen also
 die All-Quantoren weg.
@@ -1849,7 +1852,7 @@ gilt.  Wir wissen, dass \\[0.2cm]
 \hspace*{1.3cm} $\models f$ \quad g.d.w. \quad $\{\neg f\} \models \falsum$ \\[0.2cm]
 gilt, denn die Formel $f$ ist genau dann allgemeingültig, wenn es keine Struktur gibt, in
 der die Formel $\neg f$ erfüllbar ist. 
- Wir bilden daher zunächst $\neg f$ und formen $\neg f$ in prädikatenlogische
+ Wir bilden daher zunächst die Formel $\neg f$ und formen dann diese Formel in prädikatenlogische
 Klausel-Normalform um.  Wir erhalten Klauseln $k_1, \cdots, k_n$, so dass  \\[0.2cm]
 \hspace*{1.3cm} $\neg f \approx_e k_1 \wedge \cdots \wedge k_n$ \\[0.2cm]
 gilt.  Anschließend versuchen wir,
@@ -1940,7 +1943,7 @@ eingesetzt haben.  Wir haben diese Terme mit dem Ziel gewählt, später die Schn
 anwenden zu können.  In diesem Abschnitt zeigen wir nun ein Verfahren, mit dessen Hilfe
 wir die benötigten Terme ausrechnen können.
 Dazu benötigen wir zunächst den Begriff einer \blue{Substitution}.
-\begin{Definition}[Substitution]
+\begin{Definition}[Substitution]\index{Substitution}
     Es sei eine Signatur \\[0.2cm]
     \hspace*{1.3cm} $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ \\[0.2cm]
     gegeben.  Eine {\color{blue}$\Sigma$-Substitution} ist eine endliche Menge von Paaren der Form \\[0.2cm]
@@ -1958,7 +1961,7 @@ Dazu benötigen wir zunächst den Begriff einer \blue{Substitution}.
     Außerdem definieren wir den \blue{Domain} einer Substitution als \\[0.2cm]
     \hspace*{1.3cm} $\textsl{dom}(\sigma) := \{ x_1, \cdots, x_n\}$.
     \\[0.2cm]
-    Die Menge aller Substitutionen bezeichnen wir mit \blue{\textsl{Subst}}.
+    Die Menge aller Substitutionen bezeichnen wir mit \blue{\textsl{Subst}}.\index{Subst}
     \eox
 \end{Definition}
 
@@ -1969,7 +1972,8 @@ Vorkommen einer Variablen $x_i$ durch den zugehörigen Term $t_i$ ersetzt wird. 
 \begin{Definition}[Anwendung einer Substitution]
 \hspace*{\fill} \\
 Es sei $t$ ein Term und es sei $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$
-eine Substitution. Wir definieren die \blue{Anwendung} von $\sigma$ auf $t$ (Schreibweise \blue{$t\sigma$}) durch Induktion über
+eine Substitution. Wir definieren die \blue{Anwendung}\index{Anwending einer Substitution} von $\sigma$ auf $t$
+(Schreibweise \blue{$t\sigma$}) \index{$t\sigma$} durch Induktion über 
 den Aufbau von $t$: 
 \begin{enumerate}
 \item Falls $t$ eine Variable ist, gibt es zwei Fälle:
@@ -1992,7 +1996,7 @@ Wir definieren eine Substitution $\sigma$ durch \\[0.2cm]
 \hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto c,\; x_2 \mapsto f(d) \big]$. \\[0.2cm]
 In den folgenden drei Beispielen demonstrieren wir zunächst, wie eine Substitution
 auf einen Term angewendet werden kann.  Im vierten Beispiel wenden wir die Substitution
-dann auf eine Klausel an:
+dann auf eine Klausel in Mengen-Schreibweise an:
 \begin{enumerate}
 \item $x_3\sigma = x_3$,
 \item $f(x_2)\sigma = f\bigl(f(d)\bigr)$,
@@ -2003,11 +2007,11 @@ dann auf eine Klausel an:
 
 \noindent
 Als nächstes zeigen wir, wie  Substitutionen miteinander verknüpft werden können.
-\begin{Definition}[Komposition von Substitutionen] 
+\begin{Definition}[Komposition von Substitutionen] \index{Komposition von Substitutionen}
     Es seien\\[0.2cm]
     \hspace*{1.3cm}  $\sigma = \big[ x_1 \mapsto s_1, \cdots, x_m \mapsto s_m \big]$ \quad und \quad  $\tau = \big[ y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \big]$ \\[0.2cm]
     zwei Substitutionen mit $\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) = \{\}$. Dann definieren
-    wir die \blue{Komposition} $\sigma\tau$ von $\sigma$ und $\tau$ als \\[0.2cm]
+    wir die \blue{Komposition von Substitutionen} $\sigma\tau$ \index{$\sigma\tau$} von $\sigma$ und $\tau$ als \\[0.2cm]
     \hspace*{1.3cm} $\sigma\tau := \big[ x_1 \mapsto s_1\tau, \cdots, x_m \mapsto s_m\tau,\; y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \big]$
     \eox
 \end{Definition}
@@ -2033,15 +2037,15 @@ der folgende Satz gilt.
 Der Satz kann durch Induktion über den Aufbau des Termes $t$ bewiesen werden.
 
 
-\begin{Definition}[Syntaktische Gleichung]
+\begin{Definition}[Syntaktische Gleichung] \index{syntaktische Gleichung}
 Unter einer \blue{syntaktischen Gleichung} verstehen wir in diesem Abschnitt ein Konstrukt der Form
-$s \doteq t$, wobei einer der beiden folgenden Fälle vorliegen muss:
+$s \doteq t$, \index{$s \doteq t$} wobei einer der beiden folgenden Fälle vorliegen muss:
 \begin{enumerate}
 \item $s$ und $t$ sind Terme  oder
 \item $s$ und $t$ sind atomare Formeln.
 \end{enumerate}
 Weiter definieren wir ein \blue{syntaktisches Gleichungs-System} als eine Menge
-von syntaktischen Gleichungen.
+von syntaktischen Glei\-chun\-gen. \index{syntaktisches Gleichungs-System}
 \eox
 \end{Definition}
 
@@ -2051,10 +2055,11 @@ ja auch als spezielle Funktionen auffassen können, nämlich als solche
 Funktionen, die als Ergebnis einen Wahrheitswert aus der Menge  $\mathbb{B}$ zurück geben.
 
 \begin{Definition}[Unifikator]
-Eine Substitution $\sigma$ \blue{löst} eine syntaktische Gleichung $s \doteq t$ genau dann, wenn
+Eine Substitution $\sigma$ \blue{löst} \index{Lösung einer syntaktischen Gleichungen} eine syntaktische
+Gleichung $s \doteq t$ genau dann, wenn 
 $s\sigma = t\sigma$ ist, wenn also durch die Anwendung von $\sigma$ auf $s$ und $t$
 tatsächlich identische Objekte entstehen.  Ist $E$ ein syntaktisches Gleichungs-System, so 
-sagen wir, dass $\sigma$ ein \blue{Unifikator} von $E$ ist wenn $\sigma$ jede
+sagen wir, dass $\sigma$ ein \blue{Unifikator} \index{Unifikator} von $E$ ist wenn $\sigma$ jede
 syntaktische Gleichung in $E$ löst. 
 \eox
 \end{Definition}
@@ -2076,7 +2081,8 @@ Die Substitution $\sigma$ löst die obige syntaktische Gleichung, denn es gilt \
 
 Als nächstes entwickeln wir ein Verfahren, mit dessen Hilfe wir von einer vorgegebenen
 Menge $E$ von syntaktischen Gleichungen entscheiden können, ob es einen Unifikator $\sigma$ für $E$
-gibt.  Das Verfahren, das wir entwickeln werden, wurde von Martelli und Montanari veröffentlicht \cite{martelli:1982}. 
+gibt.  Das Verfahren, das wir entwickeln werden, wurde von Martelli und Montanari veröffentlicht
+\cite{martelli:1982}.\index{Verfahren von Martelli und Montanari}  
 Wir überlegen uns zunächst, in welchen Fällen wir eine syntaktischen Gleichung $s \doteq t$
 garantiert nicht lösen können.  Da gibt es zwei Möglichkeiten: Eine syntaktische Gleichung  \\[0.2cm]
 \hspace*{1.3cm} $f(s_1,\cdots,s_m) \doteq g(t_1,\cdots, t_n)$ \\[0.2cm]
@@ -2215,7 +2221,7 @@ die Prädikatenlogik einzuführen.  Zwar gibt es auch für den Fall, dass die Si
 Gleichheits-Zeichen enthält, einen vollständigen Kalkül.  Dieser ist allerdings deutlich
 aufwendiger als der Kalkül, den wir gleich einführen werden.
 
-\begin{Definition}[{\color{blue}Resolution}] 
+\begin{Definition}[{\color{blue}Resolution}] \index{Resolution} 
     Es gelte:
     \begin{enumerate}
     \item $k_1$ und $k_2$ sind prädikatenlogische Klauseln,
@@ -2235,7 +2241,7 @@ aufwendiger als der Kalkül, den wir gleich einführen werden.
      \eox
 \end{Definition}
 Die Resolutions-Regel ist eine Kombination aus der \blue{Substitutions-Regel} und der 
-Schnitt-Regel.  Die Substitutions-Regel hat die Form
+Schnitt-Regel.  Die Substitutions-Regel \index{Substitutions-Regel} hat die Form
 \\[0.2cm]
 \hspace*{1.3cm}
 $\schluss{k}{k\sigma}$. 
@@ -2277,7 +2283,7 @@ Wir stellen daher jetzt die
 ist.
 
 
-\begin{Definition}[{\color{blue}Faktorisierung}] Es gelte 
+\begin{Definition}[{\color{blue}Faktorisierung}] \index{Faktorisierung} Es gelte 
   \begin{enumerate}
   \item $k$ ist  eine prädikatenlogische Klausel,
   \item $p(s_1,\cdots,s_n)$ und $p(t_1,\cdots,t_n)$ sind atomare Formeln,
@@ -2317,11 +2323,11 @@ der Menge $M$ beweisen lässt.
 Ist $M$ eine Menge von prädikatenlogischen Klauseln und ist $k$ eine prädikatenlogische
 Klausel, die durch Anwendung der Resolutions-Regel und der Faktorisierungs-Regel aus $M$
 hergeleitet werden kann, so schreiben wir \\[0.2cm]
-\hspace*{1.3cm} $M \vdash k$.
+\hspace*{1.3cm} $M \vdash k$. \index{$M \vdash k$}
 \\[0.2cm]
-Dies wird als \blue{$M$ leitet $k$ her} gelesen.
+Dies wird als \blue{$M$ leitet $k$ her} \index{$M$ leitet $k$ her} gelesen.
 
-\begin{Definition}[Allabschluss]
+\begin{Definition}[Allabschluss] \index{Allabschluss}
   Ist $k$ eine prädikatenlogische Klausel und ist $\{x_1,\cdots,x_n\}$
   die Menge aller Variablen, die in $k$ auftreten, so definieren wir
   den \blue{Allabschluss}  $\forall(k)$  der Klausel k als \\[0.2cm]
@@ -2331,7 +2337,7 @@ Dies wird als \blue{$M$ leitet $k$ her} gelesen.
 \noindent
 Die für uns wesentlichen Eigenschaften des Beweis-Begriffs $M \vdash k$ werden in den folgenden
 beiden Sätzen zusammengefasst.
-\begin{Satz}[{\color{blue}Korrektheits-Satz}] \hspace*{\fill} \\
+\begin{Satz}[{\color{blue}Korrektheits-Satz}] \index{Korrektheits-Satz der Prädikatenlogik} \hspace*{\fill} \\
     Ist $M = \{k_1,\cdots,k_n\}$ eine Menge von Klauseln und gilt $M \vdash k$, so folgt \\[0.2cm]
     \hspace*{1.3cm} $\models \forall(k_1) \wedge \cdots \wedge \forall(k_n) \rightarrow \forall(k)$. \\[0.2cm]
     Falls also eine Klausel $k$ aus einer Menge $M$ hergeleitet werden kann,
@@ -2341,7 +2347,8 @@ beiden Sätzen zusammengefasst.
 \noindent
 Die Umkehrung des obigen Korrektheits-Satzes gilt nur für die leere Klausel.  Sie wurde 1965 von John
 A.~Robinson bewiesen \cite{robinson:1965}.
-\begin{Satz}[{\color{blue}Widerlegungs-Vollständigkeit} (Robinson, 1965)] \hspace*{\fill} \\
+\begin{Satz}[{\color{blue}Widerlegungs-Vollständigkeit} (Robinson, 1965)]
+  \index{Widerlegungs-Vollständigkeit des Resolutions-Kalküls} \hspace*{\fill} \\
   Ist $M = \{k_1,\cdots,k_n\}$ eine Menge von Klauseln und gilt 
   $\models \forall(k_1) \wedge \cdots \wedge \forall(k_n) \rightarrow \falsum$, so folgt \\[0.2cm]
   \hspace*{1.3cm} $M \vdash \{\}$.
@@ -2555,6 +2562,7 @@ Da wir im letzten Schritt die leere Klausel erhalten haben,  ist insgesamt $M \v
 \falsum$ 
 nachgewiesen worden und damit haben wir gezeigt, dass alle kommunistischen Drachen glücklich sind. 
 \eox
+\pagebreak
 
 \exercise
 Die von Bertrant Russell definierte \emph{Russell-Menge} $R$ ist
@@ -2576,7 +2584,7 @@ Gegeben seien folgende Axiome:
 Zeigen Sie, dass aus diesen Axiomen logisch die folgende Aussage folgt: \\[0.3cm]
 \hspace*{1.3cm} Alle Barbiere sind blond.
 
-\section{\textsl{Prover9} und \textsl{Mace4}}
+\section{\textsl{Prover9} und \textsl{Mace4}$^*$}
 Der im letzten Abschnitt beschriebene Kalkül lässt sich automatisieren und bildet die Grundlage moderner
 automatischer Beweiser.  Gleichzeitig lässt sich auch die Suche nach Gegenbeispielen automatisieren.
 Wir stellen in diesem Abschnitt zwei Systeme vor, die diesen Zwecken dienen.
@@ -2590,7 +2598,7 @@ entwickelt, stehen unter der \href{http://www.gnu.org/licenses/gpl.html}{GPL} (\
   Public Licence}) und können unter der Adresse 
 \\[0.2cm]
 \hspace*{1.3cm}
-\href{http://www.cs.unm.edu/~mccune/prover9/download/}{\texttt{http://www.cs.unm.edu/\symbol{126}mccune/prover9/download/}}
+\href{http://www.cs.unm.edu/~mccune/prover9/download/}{\mytt{http://www.cs.unm.edu/\symbol{126}mccune/prover9/download/}}
 \\[0.2cm]
 im Quelltext heruntergeladen werden.  Wir diskutieren zunächst \textsl{Prover9} und schauen uns anschließend
 \textsl{Mace4} an.
@@ -2614,23 +2622,23 @@ $\forall x: x \cdot e = x$ \quad und \quad $\forall x: \exists y: y \cdot x = e$
 \\[0.2cm]
 logisch folgen.  Wir können diese Formeln wie in Abbildung \ref{fig:group2.in} auf Seite
 \pageref{fig:group2.in} gezeigt für \textsl{Prover9} darstellen.
-Der Anfang der Axiome wird in dieser Datei durch ``\texttt{formulas(sos)}'' eingeleitet und durch
-das Schlüsselwort ``\texttt{end\_of\_list}'' beendet.  Zu beachten ist, dass sowohl die Schlüsselwörter als
-auch die einzelnen Formel jeweils durch einen Punkt ``\texttt{.}'' beendet werden.  Die Axiome in den Zeilen
+Der Anfang der Axiome wird in dieser Datei durch ``\mytt{formulas(sos)}'' eingeleitet und durch
+das Schlüsselwort ``\mytt{end\_of\_list}'' beendet.  Zu beachten ist, dass sowohl die Schlüsselwörter als
+auch die einzelnen Formel jeweils durch einen Punkt ``\mytt{.}'' beendet werden.  Die Axiome in den Zeilen
 2, 3, und 4 drücken aus, dass 
 \begin{enumerate}
-\item \texttt{e} ein links-neutrales Element ist,
+\item \mytt{e} ein links-neutrales Element ist,
 \item zu jedem Element $x$ ein links-inverses Element $y$ existiert und
 \item das Assoziativ-Gesetz gilt.
 \end{enumerate}
-Aus diesen Axiomen folgt, dass das \texttt{e} auch ein rechts-neutrales Element ist und dass außerdem zu
+Aus diesen Axiomen folgt, dass das \mytt{e} auch ein rechts-neutrales Element ist und dass außerdem zu
 jedem Element $x$ ein rechts-neutrales Element $y$ existiert.  Diese beiden  Formeln sind die zu beweisenden 
-\blue{Ziele} und werden in der Datei durch ``\texttt{formulas}(goal)'' markiert.
-Trägt die in Abbildung \ref{fig:group2.in} gezeigte Datei den Namen ``\texttt{group2.in}'', so können wir das
+\blue{Ziele} und werden in der Datei durch ``\mytt{formulas}(goal)'' markiert.
+Trägt die in Abbildung \ref{fig:group2.in} gezeigte Datei den Namen ``\mytt{group2.in}'', so können wir das
 Programm \textsl{Prover9} mit dem Befehl 
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{prover9 -f group2.in}
+\mytt{prover9 -f group2.in}
 \\[0.2cm]
 starten und erhalten als Ergebnis die Information, dass die beiden in Zeile 8 und 9 gezeigten Formeln
 tatsächlich aus den vorher angegebenen Axiomen folgen.  Ist eine Formel nicht beweisbar, so gibt es zwei Möglichkeiten:
@@ -2841,7 +2849,7 @@ Dieser Beweis war damals sogar der \href{http://www.nytimes.com/}{New York Times
 nachzulesen unter
 \\[0.2cm]
 \hspace*{1.3cm}
-\href{http://www.nytimes.com/library/cyber/week/1210math.html}{\texttt{http://www.nytimes.com/library/cyber/week/1210math.html}}.
+\href{http://www.nytimes.com/library/cyber/week/1210math.html}{\mytt{http://www.nytimes.com/library/cyber/week/1210math.html}}.
 \\[0.2cm]
 Dies zeigt, dass \href{https://en.wikipedia.org/wiki/Automated_theorem_proving}{automatische Theorem-Beweiser}
 durchaus nützliche Werkzeuge sein können.  Nichtsdestoweniger ist die Prädikatenlogik unentscheidbar und bisher
