@@ -7,5 +7,3 @@ def minSort(L):
 if __name__ == '__main__':
     L = [ 2, 13, 5, 13, 7, 2, 4 ]
     print('minSort(', L, ') = ', minSort(L), sep='')
-
-
