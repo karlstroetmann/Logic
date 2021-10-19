@@ -680,8 +680,12 @@ It would be very tedious to \blue{represent} arithmetic expressions as strings. 
 arithmetic expressions as \blue{nested tuples}.  \index{nested tuple}
 The notion of a \emph{nested tuple} is defined inductively:
 \begin{itemize}
-\item $\langle x_1, x_2, \cdots, x_n \rangle$ is a nested tuple if each of the components $x_i$ is either a
-      number, a string, or is itself a nested tuple.
+\item $\langle x_1, x_2, \cdots, x_n \rangle$ is a nested tuple if and only if
+      \begin{enumerate}[(a)]
+      \item $x_1$ is a string
+      \item For $i \in \{2,\cdots,n\}$  each of the components $x_i$ is either a
+            number, a string, or is itself a nested tuple.
+      \end{enumerate}
 \end{itemize}
 For example, the arithmetic expression ``\texttt{x*exp(x)}'' is represented as the nested tuple
 \\[0.2cm]
@@ -695,7 +699,7 @@ takes a string as input and transforms this string into a nested tuple, which is
 I have implemented a parser in the file ``\texttt{exprParser.py}''.  The details of the implementation of this
 parser will be discussed in the lecture on
 \href{https://github.com/karlstroetmann/Algorithms/blob/master/Lecture-Notes/algorithms.pdf}{algorithms} in the
-second semester..
+second semester.
 
 \noindent
 The function \texttt{diff} that is shown in Figure \ref{fig:diff.py} on page \pageref{fig:diff.py} is part
