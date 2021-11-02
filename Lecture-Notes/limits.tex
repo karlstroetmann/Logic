@@ -101,11 +101,11 @@ following definition.
 \begin{Definition}[Test Function] 
 A string $t$ is a \blue{test function with name $f$} 
 \index{test function}
-iff $t$ has the form \\[0.2cm]
+iff $t$ has the form {\em\\[0.2cm]
 \hspace*{1.3cm} \texttt{\symbol{34}\symbol{34}\symbol{34}}         \\
 \hspace*{1.3cm} \texttt{def $f$(x):} \\
 \hspace*{1.8cm} \textsl{body}        \\
-\hspace*{1.3cm} \texttt{\symbol{34}\symbol{34}\symbol{34}}         \\[0.2cm]
+\hspace*{1.3cm} \texttt{\symbol{34}\symbol{34}\symbol{34}}}         \\[0.2cm]
 and, furthermore, the string $t$ can be parsed as a \textsl{Python} function, that is the evaluation of
 the expression
 \\[0.2cm]
@@ -124,28 +124,31 @@ $\mathtt{name}(t) = f$. \hspace*{\fill} $\Box$
 \begin{enumerate}
 \item We define the string $s_1$ as follows:
       \begin{verbatim}
-      '''def simple(x): 
-             return 0
-      '''
+      """
+      def simple(x): 
+          return 0
+      """
       \end{verbatim}
       \vspace*{-0.8cm}
 
       Then $s_1$ is a test function with the name \texttt{simple}.
 \item We define the string $s_2$ as
       \begin{verbatim}
-      '''def loop(x): 
-             while True: 
-                 x = x + 1
-      '''
+      """
+      def loop(x): 
+          while True: 
+              x = x + 1
+      """
       \end{verbatim}
       \vspace*{-0.8cm}
 
       Then $s_2$ is a test function with the name \texttt{loop}. 
 \item We define the string $s_3$ as
       \begin{verbatim}
-      '''def hugo(x):
-             return ++x
-      '''
+      """
+      def hugo(x):
+          return ++x
+      """
       \end{verbatim}
       \vspace*{-0.8cm}
 
@@ -168,17 +171,17 @@ then we write
  $n(a_1, \cdots, a_k) \leadsto r$ 
 \\[0.2cm]
 iff the evaluation of the expression $n(a_1, \cdots, a_k)$ yields the result $r$.  If we are not
-concerned with the result $r$ but only want to state that the evaluation terminates eventually,
+concerned with the result $r$ but only want to state that the evaluation \blue{terminates} eventually,
 then we will write
 \\[0.2cm]
 \hspace*{1.3cm} $n(a_1, \cdots, a_k) \,\downarrow$ \\[0.3cm]
 and read this notation as ``\emph{evaluation of $n(a_1, \cdots, a_k)$ terminates}''.
-If the evaluation of the expression $n(a_1, \cdots, a_k)$ does \underline{not} terminate, this is
+If the evaluation of the expression $n(a_1, \cdots, a_k)$ does \underline{not} \blue{terminate}, this is
 written as \\[0.2cm]
 \hspace*{1.3cm}
  $n(a_1, \cdots, a_k) \,\uparrow$. 
 \\[0.2cm]
-This notation is read as ``\emph{evaluation of $n(a_1, \cdots, a_k)$ diverges}''.
+This notation is read as ``\emph{evaluation of $n(a_1, \cdots, a_k)$ \blue{diverges}}''.
 \hspace*{\fill} $\Box$
 \end{Notation}
 
@@ -247,12 +250,13 @@ satisfying the specification given above exists and let us define the string
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm,
               ]{python3}  
-    turing = """def alan(x):
-                    result = stops(x, x)
-                    if result == 1:
-                        while True:
-                            print("... looping ...")
-                    return result
+    turing = """
+             def alan(x):
+                 result = stops(x, x)
+                 if result == 1:
+                     while True:
+                         print("... looping ...")
+                 return result
              """ 
 \end{minted}
   \vspace*{-0.3cm}
@@ -314,7 +318,7 @@ Let us consider these cases in turn.
       \hspace*{1.3cm}
       $\mathtt{alan}(\textsl{turing}) \downarrow$, 
       \\[0.2cm]
-      i.e.~the evaluation of $\mathtt{alan}(\textsl{turing}) \downarrow$ should terminate.
+      i.e.~the evaluation of $\mathtt{alan}(\textsl{turing})$ should terminate.
       
       Again, let us check in detail whether this is true.  
       \begin{enumerate}
@@ -440,7 +444,7 @@ We are now ready to state the \blue{equivalence problem}.  A \textsl{Python} fun
 \emph{equivalence problem} \index{equivalence problem} if it is defined as
 \\[0.2cm]
 \hspace*{1.3cm} \texttt{def equal(p1, p2, a):}               \\
-\hspace*{1.8cm} \textsl{body}                                \\[0.2cm]
+\hspace*{2.1cm} \textsl{body}                                \\[0.2cm]
 and, furthermore, it satisfies the following specification:
 \begin{enumerate}
 \item $p_1 \not\in T\!F \;\vee\; p_2 \not\in T\!F \quad\Leftrightarrow\quad \mathtt{equal}(p_1, p_2, a) \leadsto 2$.
@@ -535,6 +539,7 @@ this area.  The article
 \href{http://en.wikipedia.org/wiki/Automated_theorem_proving}{\emph{automatic theorem proving}} and
 \href{http://en.wikipedia.org/wiki/Ramsey_theory}{\emph{Ramsey theory}} they are quite out of the
 scope of this lecture.
+\pagebreak
 
 \section{Chapter Review}
 You should be able to solve the following exercises.
@@ -558,10 +563,8 @@ classic text.  In this book, the topic of undecidability is discussed in chapter
 
 The exposition in these books is based on
 \href{https://en.wikipedia.org/wiki/Turing_machine}{Turing machines} and is therefore more formal than the
-exposition given here.  This increased formality seems necessary to prove that, for example, it is undecidable
+exposition given here.  This increased formality is necessary to prove that, for example, it is undecidable
 whether two \href{https://en.wikipedia.org/wiki/Context-free_grammar}{context free grammars} are equivalent.
-
-
 
 
 
