@@ -28,7 +28,7 @@ Die Aussage ist aus den drei atomaren Aussagen ``\textsl{Die Sonne scheint.}'', 
 Die Aussagenlogik untersucht, wie sich der Wahrheitswert zusammengesetzter Aussagen
 aus dem Wahrheitswert der einzelnen Teilaussagen berechnen lässt.  Darauf
 aufbauend wird dann gefragt, in welcher Art und Weise wir aus gegebenen Aussagen neue 
-Aussagen logisch folgern können.
+Aussagen folgern können.
 
 Um die Struktur komplexerer Aussagen übersichtlich darstellen zu können, führen wir in der Aussagenlogik zunächst sogenannte
 \blue{Aussage-Variablen} \index{Aussage-Variablen} ein.  Diese Variablen sind Namen, die für atomare Aussagen stehen.
@@ -80,9 +80,40 @@ entwickeln, mit denen es möglich ist zu entscheiden, ob eine aussagenlogische F
 Tautologie ist oder ob sie erfüllbar ist.  Solche Verfahren spielen
 in der Praxis eine wichtige Rolle.
 
+Der Rest dieses Kapitels ist wir folgt strukturiert:
+\begin{enumerate}
+\item Wir diskutieren Anwendungen der Aussagenlogik.
+\item Danach definieren wir formal, wie aussagenlogische Formeln aufgebaut sind.
+  
+      Formal sprechen wir in diesem Zusammenhang von der \blue{Syntax} aussagenlogische Formeln.
+\item Anschließend diskutieren wir die Auswertung aussagenlogischer Formeln.
+      Wir legen also fest, welchen Wahrheitswert eine aussagenlogische Formel unter einer gegebenen Belegung
+      annimmt.  Wir zeigen in diesem Zusammenhang auch, wie die Auswertung aussagenlogischer Formeln sich in
+      \textsl{Python}  implementieren lässt.
+
+      Hier sprechen wir von der \blue{Semantik} der aussagenlogischen Formeln.
+\item Danach führen wir die Begriffe der \blue{Tautologie} und der \blue{Erfüllbarkeit} einer aussagenlogischen
+      Formel formal ein.
+      \begin{enumerate}
+      \item Eine aussagenlogische Formel ist eine \blue{Tautologie} genau dann, wenn Sie unter jeder möglichen
+            Interpretation der aussagenlogischen Variablen wahr ist.
+      \item Eine aussagenlogischen Formel ist \blue{erfüllbar} genau dann, wenn es eine Interpretation ihrer
+            aussagenlogischen Variablen gibt, unter der die Formel wahr wird.
+      \end{enumerate}
+\item Wir diskutieren, wie sich aussagenlogische Formeln algebraisch umformen lassen und diskutieren
+      in diesem Zusammenhang den Begriff der \blue{konjunktiven Normalform}.  Formeln, die in konjunktiver
+      Normalform vorliegen, lassen sich auf dem Rechner leichter verarbeiten.
+\item Anschließend diskutieren wir den \blue{Herleitungs-Begriff}.  Dabei geht es darum, aus Formeln,
+      die als Axiome vorgegebenen sind, neue Formeln herzuleiten.
+\item Schließlich stellen wir das Verfahren von \blue{Davis und Putnam} vor.  Mit diesem Verfahren lässt sich
+      überprüfen, ob eine aussagenlogische Formel erfüllbar ist.  Als Anwendung zeigen wir, wie das
+      8-Damen-Problem mit Hilfe des Verfahrens von Davis und Putnam gelöst werden kann.
+\end{enumerate}
+
 \section{Anwendungen der Aussagenlogik}
-Die Aussagenlogik bildet nicht nur die Grundlage für die Prädikatenlogik, sondern sie hat auch wichtige prak\-tische
-Anwendungen.  Aus der großen Zahl der industriellen Anwendungen möchte ich stellvertretend vier Beispiele nennen:
+Die Aussagenlogik bildet nicht nur die Grundlage für die Prädikatenlogik, die wir im nächsten Kapitel
+diskutieren werden, sondern sie hat auch wichtige prak\-tische Anwendungen.  Aus der großen Zahl der
+industriellen Anwendungen möchte ich stellvertretend vier Beispiele nennen: 
 \begin{enumerate}
 \item Analyse und Design \blue{digitaler Schaltungen}.
 
@@ -168,13 +199,13 @@ $\mathcal{F}$ durch Induktion:
 \item Sind $f_1, f_2 \in \mathcal{F}$, so gilt auch
       \begin{tabbing}
         $(f_1 \vee f_2) \in \mathcal{F}$ \index{$\vee$, oder} \hspace*{0.5cm} \= (\textsl{gelesen}: \quad \= $f_1$ oder $f_2$ \hspace*{2.5cm} \=
-         auch: \blue{Disjunktion}\index{Disjunktion} von $f_1$ und $f_2$), \\
+         auch: \blue{Disjunktion}\index{Disjunktion}\quad\= von $f_1$ und $f_2$), \\
         $(f_1 \wedge f_2) \in \mathcal{F}$ \index{$\wedge$, und} \> (\textsl{gelesen}: \> $f_1$ und $f_2$ \>
-         auch: \blue{Konjunktion}\index{Konjunktion} von $f_1$ und $f_2$), \\
+         auch: \blue{Konjunktion}\index{Konjunktion}\> von $f_1$ und $f_2$), \\
         $(f_1 \rightarrow f_2) \in \mathcal{F}$ \index{$\rightarrow$, wenn dann} \> (\textsl{gelesen}:       \> wenn $f_1$, dann $f_2$ \>
-         auch: \blue{Implikation}\index{Implikation} von $f_1$ und $f_2$), \\
+         auch: \blue{Implikation}\index{Implikation}\> von $f_1$ und $f_2$), \\
         $(f_1 \leftrightarrow f_2) \in \mathcal{F}$ \index{$\leftrightarrow$ genau dann, wenn} \> (\textsl{gelesen}:       \> $f_1$ genau dann, wenn $f_2$ \>
-         auch: \blue{Bikonditional}\index{Bikonditional} von $f_1$ und $f_2$).            
+         auch: \blue{Bikonditional}\index{Bikonditional}\> von $f_1$ und $f_2$).            
       \end{tabbing}
 \end{enumerate}
 Die Menge $\mathcal{F}$ der aussagenlogischen Formeln ist nun die kleinste Teilmenge der aus dem Alphabet $\mathcal{A}$
@@ -246,18 +277,18 @@ auftreten, verwechseln.  Um dieses Problem zu umgehen vereinbaren wir:
       ``\blue{nicht}'' als ``$\neg$''  geschrieben.
   
       Bei den Beweisen, die wir über aussagenlogische Formeln führen,
-      verwenden wir stattdessen das Symbol ``$!$''.
+      schreiben wir den Junktor statt dessen als das Wort ``nicht''.
 
 \item Innerhalb einer aussagenlogischen Formel wird der Junktor  
       ``\blue{und}'' als ``$\wedge$''  geschrieben.
   
       Bei den Beweisen, die wir über aussagenlogische Formeln führen,
-      verwenden wir stattdessen das Symbol ``$\&$''.
+      verwenden wir stattdessen das Wort ``und''.
 \item Innerhalb einer aussagenlogischen Formel wird der Junktor  
       ``\blue{oder}'' als ``$\vee$''  geschrieben.
   
       Bei den Beweisen, die wir über aussagenlogische Formeln führen,
-      verwenden wir stattdessen das Symbol ``$|$''.
+      verwenden wir stattdessen das Wort ``oder''.
 \item Innerhalb einer aussagenlogischen Formel wird der Junktor  
       ``\blue{wenn $\cdots$,  dann}'' als ``$\rightarrow$''  geschrieben.
   
@@ -458,7 +489,7 @@ Mathematik und die Informatik aber als ausreichend erwiesen hat.
 Es gibt durchaus auch andere Logiken, in denen die Interpretation des Operators ``$\rightarrow$'' von der
 hier gegebenen Definition abweicht.  Solche Logiken werden als
 \href{https://en.wikipedia.org/wiki/Intensional_logic}{intensionale Logiken} bezeichnet.  Diese Logiken spielen
-zwar auch in der Informatik eine Rolle, aber da die Untersuchung intensionaler Logiken wesentlich
+zwar in der Informatik auch eine Rolle, aber da die Untersuchung intensionaler Logiken wesentlich
 aufwändiger ist als die Untersuchung der extensionalen Logik, werden wir uns auf die Analyse letzterer beschränken.
 
 \subsection{Implementierung in \textsl{Python}} 
@@ -568,8 +599,7 @@ Interpretation ${\cal I}$ berechnet. Die Funktion
 ist in Abbildung \ref{fig:evaluate.py} auf Seite \pageref{fig:evaluate.py} gezeigt.
 Die Funktion \texttt{evaluate} erwartet zwei Argumente:
 \begin{enumerate}
-\item Das erste Argument $F$ ist eine aussagenlogische Formel, die als verschachteltes Tupel dargestellt
-      wird.
+\item Das erste Argument $F$ ist eine aussagenlogische Formel, die als geschachteltes Tupel dargestellt wird.
 \item Das zweite Argument $I$ ist eine aussagenlogische Interpretation, die als Menge von aussagenlogischen Variablen
       dargestellt wird.  Für eine aussagenlogische Variable mit dem Namen $p$ können wir den Wert,
       der dieser Variablen durch $I$ zugeordnet wird, mittels des Ausdrucks ``$p \;\mathtt{in}\; I$'' berechnen.
@@ -592,10 +622,10 @@ Die Funktion \texttt{evaluate} erwartet zwei Argumente:
         if F[0] == '⊤': return True
         if F[0] == '⊥': return False
         if F[0] == '¬': return not evaluate(F[1], I)
-        if F[0] == '∧': return evaluate(F[1], I) and evaluate(F[2], I)
-        if F[0] == '∨': return evaluate(F[1], I) or evaluate(F[2], I)
-        if F[0] == '→': return not evaluate(F[1], I) or evaluate(F[2], I)
-        if F[0] == '↔': return evaluate(F[1], I) == evaluate(F[2], I)
+        if F[0] == '∧': return     evaluate(F[1], I) and evaluate(F[2], I)
+        if F[0] == '∨': return     evaluate(F[1], I) or  evaluate(F[2], I)
+        if F[0] == '→': return not evaluate(F[1], I) or  evaluate(F[2], I)
+        if F[0] == '↔': return     evaluate(F[1], I) ==  evaluate(F[2], I)
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Auswertung einer aussagenlogischen Formel}
