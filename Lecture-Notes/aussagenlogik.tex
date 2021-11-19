@@ -1286,18 +1286,14 @@ die das Verhalten der Funktion $\texttt{elimBiconditional}$ beschreiben:
       ``$\leftrightarrow$'' rekursiv aus der Formel $g$ und negieren die resultierende Formel: \\[0.2cm]
       \hspace*{1.3cm} 
       $\texttt{elimBiconditional}(\neg g) = \neg \texttt{elimBiconditional}(g)$.
-\item Im Falle $f = g_1 \wedge g_2$ eliminieren wir rekursiv den Junktor
-      ``$\leftrightarrow$'' aus den Formeln $g_1$ und $g_2$: \\[0.2cm]
-      \hspace*{1.3cm} 
-      $\texttt{elimBiconditional}(g_1 \wedge g_2) = \texttt{elimBiconditional}(g_1) \wedge \texttt{elimBiconditional}(g_2)$.
-\item Im Falle $f = g_1 \vee g_2$ eliminieren wir den Junktor
-      ``$\leftrightarrow$'' aus den Formeln $g_1$ und $g_2$: \\[0.2cm]
-      \hspace*{1.3cm} 
-      $\texttt{elimBiconditional}(g_1 \vee g_2) = \texttt{elimBiconditional}(g_1) \vee \texttt{elimBiconditional}(g_2)$.
-\item Im Falle $f = g_1 \rightarrow g_2$ eliminieren wir den Junktor
-      ``$\leftrightarrow$'' aus den Formeln $g_1$ und $g_2$: \\[0.2cm]
-      \hspace*{1.3cm} 
-      $\texttt{elimBiconditional}(g_1 \rightarrow g_2) = \texttt{elimBiconditional}(g_1) \rightarrow \texttt{elimBiconditional}(g_2)$.
+\item In den Fällen $f = g_1 \wedge g_2$,  $f = g_1 \vee g_2$ und $f = g_1 \rightarrow g_2$ eliminieren wir
+      rekursiv den Junktor ``$\leftrightarrow$'' aus den Formeln $g_1$ und $g_2$ und setzen dann die Formel
+      wieder zusammen: 
+      \begin{enumerate}
+      \item $\texttt{elimBiconditional}(g_1 \wedge g_2) = \texttt{elimBiconditional}(g_1) \wedge \texttt{elimBiconditional}(g_2)$.
+      \item $\texttt{elimBiconditional}(g_1 \vee g_2) = \texttt{elimBiconditional}(g_1) \vee \texttt{elimBiconditional}(g_2)$.
+      \item $\texttt{elimBiconditional}(g_1 \rightarrow g_2) = \texttt{elimBiconditional}(g_1) \rightarrow \texttt{elimBiconditional}(g_2)$.
+      \end{enumerate}
 \item Hat $f$ die Form $f = g_1 \leftrightarrow g_2$, so benutzen wir die
       Äquivalenz \\[0.2cm]
       \hspace*{1.3cm} 
@@ -1332,9 +1328,7 @@ die das Verhalten der Funktion $\texttt{elimBiconditional}$ beschreiben:
             ge   = elimBiconditional(g)
             he   = elimBiconditional(h)
             return ('∧', ('→', ge, he), ('→', he, ge))
-        if f[0] == '⊤':
-            return f
-        if f[0] == '⊥':
+        if f[0] == '⊤' or f[0] == '⊥':
             return f
         if f[0] == '¬':
             g  = f[1]
@@ -1358,10 +1352,16 @@ Funktion
 \item In Zeile 3 prüft der Funktions-Aufruf $\texttt{isinstance}(f, \mathtt{str})$, ob $f$ ein String ist.  In diesem Fall
       muss $f$ eine aussagenlogische Variable sein, denn alle anderen aussagenlogischen Formeln werden als
       geschachtelte Listen dargestellt.  Daher wird $f$ in diesem Fall unverändert zurück gegeben.
-\item In Zeile 10 und 12 behandeln wir die Fälle, dass $f$ gleich dem Verum oder dem Falsum ist.
+\item In Zeile 5 überprüfen wir den Fall, dass $f$ die Form $g \leftrightarrow h$ hat.
+      In diesem Fall eliminieren wir den Junktor ``$\leftrightarrow$'' aus $g$ und $h$ durch einen rekursiven
+      Aufruf der Funktion \texttt{elimBiconditional}.  Anschließend benutzen wir die Äquivalenz
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $(g \leftrightarrow h) \leftrightarrow (g \rightarrow h) \wedge (h \rightarrow g)$.
+\item In Zeile 10 behandeln wir die Fälle, dass $f$ gleich dem Verum oder dem Falsum ist.
       Hier ist zu beachten, dass diese Formeln ebenfalls als geschachtelte Tupel dargestellt werden,
       Verum wird beispielsweise als das Tuple \texttt{('⊤',)} dargestellt, während Falsum von uns in
-      \textsl{Python} durch das Tuple \texttt{('⊥',)} repräsentiert wird.  Auch in diesem Fall wird $f$
+      \textsl{Python} durch das Tuple \texttt{('⊥',)} repräsentiert wird.  In diesem Fall wird $f$
       unverändert zurück gegeben.
 \item In Zeile 14 betrachten wir den Fall, dass $f$ eine Negation ist.  Dann hat $f$ die Form
       \\[0.2cm]
@@ -1377,7 +1377,7 @@ Funktion
       In diesen Fällen muss der Junktor ``$\leftrightarrow$'' rekursiv aus den Teilformeln $g$ und $h$ entfernt
       werden. 
 \end{enumerate}
-
+\FloatBarrier
 
 Als nächstes betrachten wir die Funktion zur Elimination des Junktors ``$\rightarrow$''. 
 Abbildung
@@ -1387,7 +1387,8 @@ Implementierung der Funktion
 Die der Implementierung zu Grunde liegende Idee ist dieselbe wie bei der Elimination des
 Junktors ``$\leftrightarrow$''.  Der einzige Unterschied besteht darin, dass wir jetzt die
 Äquivalenz \\[0.2cm]
-\hspace*{1.3cm} $(G_1 \rightarrow G_2) \leftrightarrow (\neg G_1 \vee G_2)$ \\[0.2cm]
+\hspace*{1.3cm}
+$(g \rightarrow h) \leftrightarrow (\neg g \vee h)$ \\[0.2cm]
 benutzen.  Außerdem können wir bei der Implementierung dieser Funktion voraussetzen, dass der Junktor ``$\leftrightarrow$''
 bereits aus der aussagenlogischen Formel \texttt{F}, die als Argument übergeben wird, eliminiert worden ist.
 Dadurch entfällt bei der Implementierung ein Fall. 
@@ -1406,9 +1407,7 @@ Dadurch entfällt bei der Implementierung ein Fall.
         "Eliminate the logical operator '→' from f."
         if isinstance(f, str): 
             return f
-        if f[0] == '⊤':
-            return f
-        if f[0] == '⊥':
+        if f[0] == '⊤' or f[0] == '⊥':
             return f
         if f[0] == '→':
             g, h = f[1:]
@@ -1458,6 +1457,39 @@ die folgenden Glei\-chungen: \index{\texttt{nnf}}
 \item $\texttt{nnf}(f_1 \wedge f_2) = \texttt{nnf}(f_1) \wedge \texttt{nnf}(f_2)$,
 \item $\texttt{nnf}(f_1 \vee f_2) = \texttt{nnf}(f_1) \vee \texttt{nnf}(f_2)$.
 \end{enumerate}
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                  bgcolor       = sepia,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                ]{python3}
+    def nnf(f):
+        "Compute the negation normal form of f."
+        if isinstance(f, str): 
+            return f
+        if f[0] == '⊤' or f[0] == '⊥':
+            return f
+        if f[0] == '¬':
+            g = f[1]
+            return neg(g)
+        if f[0] == '∧':
+            g, h = f[1:]
+            return ('∧', nnf(g), nnf(h))
+        if f[0] == '∨':
+            g, h = f[1:]
+            return ('∨', nnf(g), nnf(h))
+
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{Berechnung der Negations-Normalform: Die Funktion \texttt{nnf}.}
+  \label{fig:nnf}
+\end{figure}
+
 Die Hilfsprozedur \texttt{neg}, die die Negations-Normalform von $\neg f$ berechnet,
 spezifizieren wir ebenfalls durch rekursive Gleichungen: \index{\texttt{neg}}
 \begin{enumerate}
@@ -1494,42 +1526,6 @@ spezifizieren wir ebenfalls durch rekursive Gleichungen: \index{\texttt{neg}}
 \end{enumerate}
 Die in den Abbildungen \ref{fig:nnf} und \ref{fig:neg} auf Seite \pageref{fig:nnf} und Seite \pageref{fig:neg} gezeigten Funktionen setzen die oben diskutierten
 Gleichungen unmittelbar um. 
-
-
-
-\begin{figure}[!ht]
-  \centering
-\begin{minted}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm,
-                  bgcolor       = sepia,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                ]{python3}
-    def nnf(f):
-        "Compute the negation normal form of f."
-        if isinstance(f, str): 
-            return f
-        if f[0] == '⊤':
-            return f
-        if f[0] == '⊥':
-            return f
-        if f[0] == '¬':
-            g = f[1]
-            return neg(g)
-        if f[0] == '∧':
-            g, h = f[1:]
-            return ('∧', nnf(g), nnf(h))
-        if f[0] == '∨':
-            g, h = f[1:]
-            return ('∨', nnf(g), nnf(h))
-
-\end{minted}
-\vspace*{-0.3cm}
-  \caption{Berechnung der Negations-Normalform: Die Funktion \texttt{nnf}.}
-  \label{fig:nnf}
-\end{figure}
 
 \begin{figure}[!ht]
   \centering
@@ -1591,7 +1587,7 @@ rekursiv.
       \\[0.2cm]
       \hspace*{1.3cm}
       $\texttt{cnf}(\verum) := \bigl\{\bigr\}$.      
-\item Wir hatten früher gesehen, dass die leere Menge von \emph{Literalen} als $\falsum$ interpretiert werden kann.
+\item Wir hatten ebenfalls gesehen, dass die leere Menge von \emph{Literalen} als $\falsum$ interpretiert werden kann.
       Daher gilt:
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -1634,15 +1630,15 @@ rekursiv.
       $$
       Berücksichtigen wir noch, dass Klauseln in der Mengen-Schreibweise als Mengen von
       Literalen aufgefasst werden, die implizit disjunktiv verknüpft werden, so können wir
-      für $k_i \vee l_j$ auch $k_i \cup l_j$ schreiben.  
-      Insgesamt erhalten wir damit 
+      für $k_i \vee l_j$ auch $k_i \cup l_j$ schreiben.  Wir sehen, dass jede Klausel aus $\texttt{cnf}(g)$
+      mit jeder Klausel aus $\texttt{cnf}(g)$ vereinigt wird.  Insgesamt erhalten wir damit 
       \\[0.2cm]
       \hspace*{1.3cm} 
       $\texttt{cnf}(g \vee h) = \bigl\{ k \cup l \mid k \in \texttt{cnf}(g) \;\wedge\; l \in \texttt{cnf}(h) \bigr\}$.
 \end{enumerate}
 Abbildung \ref{fig:cnf} auf Seite \pageref{fig:cnf} zeigt die Implementierung der Funktion
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/CNF.ipynb}{\texttt{cnf}}.
-(Der Name \texttt{cnf} ist die Abkürzung von \emph{\underline{c}onjunctive \underline{n}ormal \underline{f}orm}.)
+(Der Name \texttt{cnf} ist die Abkürzung von \blue{\underline{c}onjunctive \underline{n}ormal \underline{f}orm}.)
 
 \begin{figure}[!ht]
   \centering
@@ -1727,7 +1723,7 @@ unter GitHub.
 Berechnen Sie die konjunktiven Normalformen der folgenden aussagenlogischen Formeln und geben Sie Ihr Ergebnis
 in Mengenschreibweise an.  Überprüfen Sie Ihr Ergebnis mit Hilfe des Jupyter-Notebooks 
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/CNF.ipynb}{CNF.ipynb}.
-\begin{enumerate}
+\begin{enumerate}[(a)]
 \item $p \vee q \rightarrow r$,
 \item $p \vee q \leftrightarrow r$,
 \item $(p \rightarrow q) \leftrightarrow (\neg p \rightarrow \neg q)$,
