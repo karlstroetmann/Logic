@@ -1778,7 +1778,7 @@ ist es, die zu beweisende Formel mit Hilfe von \blue{Schluss-Regeln} aus vorgege
 festgelegt. 
 \begin{Definition}[Schluss-Regel]
     Eine aussagenlogische \blue{Schluss-Regel} ist eine Paar der Form  $\bigl\langle \langle f_1, f_2 \rangle, k \bigr\rangle$.
-    dabei ist  $\langle f_1, f_2 \rangle$ ein Paar von aussagenlogischen Formeln und $k$ ist eine
+    Dabei ist  $\langle f_1, f_2 \rangle$ ein Paar von aussagenlogischen Formeln und $k$ ist eine
     einzelne aussagenlogische Formel.  
     Die beiden Formeln $f_1$ und $f_2$ bezeichnen wir als
     \blue{Prämissen}, die Formel $k$ heißt die \blue{Konklusion} der Schluss-Regel.
@@ -1786,7 +1786,7 @@ festgelegt.
     schreiben wir dies als: 
     \\[0.3cm]
     \hspace*{1.3cm}      
-    $\schluss{f_1 \quad f_2}{k}$.
+    $\schluss{f_1 \qquad f_2}{k}$.
     \\[0.3cm]
     Wir lesen diese Schluss-Regel wie folgt: 
     ``\textsl{Aus $f_1$ und $f_2$ kann auf\, $k$ geschlossen werden.}''
@@ -1819,7 +1819,7 @@ Sinne \blue{korrekt} sein.
 
 \begin{Definition}[Korrekte Schluss-Regel]
   Eine Schluss-Regel der Form \\[0.2cm]
-  \hspace*{1.3cm} $\schluss{f_1 \quad f_2}{k}$ \\[0.2cm]
+  \hspace*{1.3cm} $\schluss{f_1 \qquad f_2}{k}$ \\[0.2cm]
   ist genau dann \blue{korrekt}, wenn 
   $\models f_1 \wedge f_2 \rightarrow k$ gilt. \eox
 \end{Definition}
@@ -2029,7 +2029,7 @@ Die Relation $\vdash$ hat zwei wichtige Eigenschaften:
             sein muss.  Daraus folgt aber sofort
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(g \vee h) = \texttt{True}$.  ${\color{green}\surd}$
+            $\mathcal{I}(g \vee h) = \texttt{True}$.  $\green{\surd}$
       \item Fall: $\mathcal{I}(p) = \texttt{False}$.
 
             Nun folgt aus $\mathcal{I}(g \vee p) = \texttt{True}$, dass
@@ -2040,21 +2040,15 @@ Die Relation $\vdash$ hat zwei wichtige Eigenschaften:
             gelten muss.  Also gilt auch in diesem Fall
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(g \vee h) = \texttt{True}$.  ${\color{green}\surd}$ 
+            $\mathcal{I}(g \vee h) = \texttt{True}$.  $\green{\surd}$ 
             \qed
       \end{enumerate}
 \end{enumerate}
 
 \noindent
 Die Umkehrung dieses Satzes gilt nur in abgeschwächter Form und zwar dann, wenn $k$
-die leere Klausel ist, die ja dem Falsum entspricht.
-
-\begin{Satz}[\blue{Widerlegungs-Vollständigkeit}] \label{widerlegungs-vollstaendig}
-  Ist  $M = \{k_1, \cdots, k_n \}$ eine Menge von Klauseln,
-  so haben wir: \\[0.1cm]
-  \hspace*{1.3cm} 
-  Wenn $\models k_1 \wedge \cdots \wedge k_n \rightarrow \falsum$ gilt, dann gilt auch  $M \vdash \{\}$.
-\end{Satz}
+die leere Klausel ist, die ja dem Falsum entspricht.  Wir sagen daher, dass die Schnitt-Regel
+\blue{widerlegungs-vollständig} ist.
 
 \remark
 Es gibt alternative Definitionen des Herleitungs-Begriffs, die nicht nur \blue{widerlegungs-vollständig} sondern
@@ -2069,8 +2063,8 @@ werden später sehen, dass die Widerlegungs-Vollständigkeit für unsere Zwecke 
 \eox
 
 \subsection{Beweis der Widerlegungs-Vollständigkeit}
-Der Beweis der Widerlegungs-Vollständigkeit der Aussagenlogik benötigt den  Begriff der
-\blue{Erfüllbarkeit}, den wir jetzt formal einführen. 
+Um den Satz von der Widerlegungs-Vollständigkeit der Aussagenlogik kompakt formulieren zu können, benötigen wir
+den Begriff der \blue{Erfüllbarkeit}, den wir jetzt formal einführen. 
 
 \begin{Definition}[Erfüllbarkeit] \index{erfüllbar}
   Es sei $M$ eine Menge von aussagenlogischen Formeln.
@@ -2091,7 +2085,7 @@ Der Beweis der Widerlegungs-Vollständigkeit der Aussagenlogik benötigt den  Be
   \\[0.2cm]
   \hspace*{1.3cm}
   $\blue{M \models \falsum}$ \quad g.d.w. \quad 
-  $\forall \I \in \textsc{Ali}: \exists g \in M: \I(g) = \texttt{False}$.   
+  $\forall \I \in \textsc{Ali}: \exists C \in M: \I(C) = \texttt{False}$.   
   \eox
 \end{Definition}
 
@@ -2104,6 +2098,167 @@ $\models f_1 \wedge \cdots \wedge f_n \rightarrow \falsum$
 \\[0.2cm]
 gilt. \eox
 
+\begin{Definition}[Saturierte Klausel-Mengen]
+  Eine Menge $M$ von Klauseln ist \blue{saturiert} \index{saturiert} wenn jede Klausel, die sich aus zwei
+  Klauseln $C_1,C_2 \in M$ mit Hilfe der Schnitt-Regel ableiten lässt, bereits selbst wieder ein Element der
+  Menge $M$ ist.
+\end{Definition}
+
+\remark
+Ist $M$ eine endlichen Menge von Klauseln, so können wir $M$ zu einer saturierten Menge von Klauseln
+$\overline{M}$ erweitern, indem wir $\overline{M}$ als die Menge $M$ initialisieren und dann solange die
+Schnitt-Regel auf Klauseln aus $\overline{M}$ anwenden und zu der Menge $\overline{M}$ hinzufügen, wie dies möglich
+ist. Da es zu einer gegebenen endlichen Menge von aussagenlogischen Variablen nur eine beschränkte Menge von
+Klauseln gibt, die wir aus diesen Variablen bilden können, muss dieses Verfahren mit einer saturierten Menge
+abbrechen. \eox
+
+\begin{Satz}[\blue{Widerlegungs-Vollständigkeit}] \label{widerlegungs-vollstaendig}
+  Ist  $M$ eine Menge von Klauseln,
+  so haben wir:
+  \\[0.2cm]
+  \hspace*{1.3cm} 
+  Wenn $M \models \falsum$ ist, dann gilt auch  $M \vdash \{\}$.
+\end{Satz}
+
+\noindent
+\textbf{Beweis}:  Wir führen den Beweis durch
+Kontraposition.  Wir nehmen an, dass $M$ eine endliche Menge von Klauseln ist, aus der sich die leere Klausel
+nicht herleiten lässt.  Wir zeigen, dass es dann eine aussagenlogische Belegung $\mathcal{I}$ gibt, unter der
+alle Klauseln aus $M$ wahr werden.
+
+Nach der obigen Bemerkung können wir annehmen, dass $M$ bereits saturiert ist. Es sei 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{ p_1, \cdots, p_N \}$
+\\[0.2cm]
+die Menge aller aussagenlogischen Variablen, die in Klauseln aus $M$ auftreten.  Für alle $k=0,1,\cdots,N$
+definieren wir nun eine aussagenlogische Belegung $\mathcal{I}_k$ durch Induktion nach $k$.  Die
+aussagenlogischen Belegungen haben für alle $k=0,1,\cdots,N$ die Eigenschaft, dass für jede Klausel $C \in M$,
+die nur die Variablen $p_1,\cdots,p_k$ enthält,
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I}_k(C) = \mathtt{True}$ \hspace*{\fill} $(*)$
+\\[0.2cm]
+gilt.  Außerdem definiert die aussagenlogische Belegung $\mathcal{I}_k$ nur Werte für die Variablen $p_1,\cdots,p_k$.
+\begin{enumerate}
+\item[I.A.:] $k=0$.
+ 
+  Wir definieren $\mathcal{I}_0$ als die leere aussagenlogische Belegung, die keiner
+  Variablen einen Wert zuweist.  Um $(*)$ nachzuweisen müssen wir zeigen, dass für jede Klausel $C \in M$, die
+  keine aussagenlogische Variable enthält, $\mathcal{I}_0(C) = \mathtt{True}$ gilt.  Die einzige Klausel, die
+  keine Variable enthält, ist die leere Klausel.  Da wir vorausgesetzt haben, dass nicht $M \vdash \falsum$
+  gilt, kann $M$ die leere Klausel nicht enthalten.  Also ist nichts zu zeigen.
+\item[I.S.:] $k \mapsto k+1$.
+
+  Nach IV ist $\mathcal{I}_k$ bereits definiert.  Wir setzen zunächst
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\mathcal{I}_{k+1}(p_i) := \mathcal{I}_k(p_i)$ \quad für alle $i=1,\cdots,k$
+  \\[0.2cm]
+  und müssen nun noch $\mathcal{I}_{k+1}(p_{k+1})$ definieren.  Dies geschieht über eine Fallunterscheidung.
+  \begin{enumerate}
+  \item Es gibt eine Klausel
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $C \cup \{p_{k+1}\} \in \overline{M}$,
+    \\[0.2cm]
+    so dass $C$ höchstens die Variablen $p_1,\cdots,p_k$ enthält und außerdem $\mathcal{I}_k(C) = \mathtt{False}$
+    ist.  Dann setzen wir
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $\mathcal{I}_{k+1}(p_{k+1}) := \mathtt{True}$,
+    \\[0.2cm]    
+    denn sonst würde ja insgesamt $\mathcal{I}_{k+1}\bigl(C \cup \{p_{k+1}\}\bigr) = \mathtt{False}$ gelten. 
+
+    Wir müssen nun zeigen, dass für jede Klausel $D \in \overline{M}$, die nur die Variablen
+    $p_1,\cdots,p_k,p_{k+1}$ die Aussage $\mathcal{I}_{k+1}(D) = \mathtt{True}$ gilt.  Hier gibt es drei
+    Möglichkeiten:
+    \begin{enumerate}[1.]
+    \item Fall: $\mathtt{var}(D) \subseteq \{p_1,\cdots,p_k\}$
+
+          Dann gilt die Behauptung nach IV, denn auf diesen Variablen stimmen die Belegungen
+          $\mathcal{I}_{k+1}$ und $\mathcal{I}_k$ überein.
+    \item Fall: $p_{k+1} \in D$.
+          
+          Da wir $\mathcal{I}_{k+1}(p_{k+1})$ als $\texttt{True}$ definiert haben, gilt $\mathcal{I}_{k+1}(D) = \mathtt{True}$.
+    \item Fall: $(\neg p_{k+1}) \in D$.
+
+          Dann hat $D$ also die Form
+          \\[0.2cm]
+          \hspace*{1.3cm}
+          $D = E \cup \{ \neg p_{k+1} \}$.
+          \\[0.2cm]
+          An dieser Stelle benötigen wir nun die Tatsache, dass $\overline{M}$ saturiert ist.  Wir wenden die
+          Schnitt-Regel auf die Klauseln $C \cup \{ p_{k+1} \}$ und $E \cup \{ \neg p_{k+1} \}$ an:
+          \\[0.2cm]
+          \hspace*{1.3cm}
+          $C \cup \{ p_{k+1} \},\quad E \cup \{ \neg p_{k+1} \} \quad\vdash\quad C \cup E$
+          \\[0.2cm]
+          Da $\overline{M}$ saturiert ist, gilt $C\cup E \in \overline{M}$.  $C \cup E$ enthält nur die
+          Variablen $p_1,\cdots, p_k$.  Nach IV gilt also
+          \\[0.2cm]
+          \hspace*{1.3cm}
+          $\mathcal{I}_{k+1}(C \cup E) = \mathcal{I}_{k}(C \cup E) = \mathtt{True}$.
+          \\[0.2cm]
+          Da $\mathcal{I}_k(C) = \mathtt{False}$ ist, muss $\mathcal{I}_k(E) = \mathtt{True}$ gelten.  Damit
+          haben wir
+          \\[0.2cm]
+          \hspace*{1.3cm}
+          $
+          \begin{array}[t]{lcl}
+            \mathcal{I}_{k+1}(D) & = & \mathcal{I}_{k+1}\bigl(E \cup \{ \neg p_{k+1} \bigr\}) \\
+                                & = & \mathcal{I}_k(E) \;\circvee\;\; \mathcal{I}_{k+1}(\neg p_{k+1}) \\
+                                & = & \mathtt{True} \;\circvee\;\; \mathtt{False} = \mathtt{True}
+          \end{array}
+          $
+          \\[0.2cm]
+          und das war zu zeigen.
+    \end{enumerate}
+  \item Es gibt keine Klausel
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $C \cup \{p_{k+1}\} \in \overline{M}$,
+    \\[0.2cm]
+    so dass $C$ höchstens die Variablen $p_1,\cdots,p_k$ enthält und außerdem $\mathcal{I}_k(C) = \mathtt{False}$
+    ist.  Dann setzen wir
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $\mathcal{I}_{k+1}(p_{k+1}) := \mathtt{False}$.
+    \\[0.2cm]    
+    In diesem Fall gibt es für Klauseln $C \in \overline{M}$ drei Fälle:
+    \begin{enumerate}[1.]
+    \item $C$ enthält die Variable $p_{k+1}$ nicht.
+      
+          In diesem Fall gilt nach IV bereits $\mathcal{I}_{k+1} = \mathtt{True}$.        
+    \item $C = D \cup \{ p_{k+1} \}$.
+
+          In diesem Fall muss nach der Fallunterscheidung von Fall (b) $\mathcal{I}_k(D) = \mathtt{True}$
+          gelten und daraus folgt sofort, dass auch $\mathcal{I}_{k+1}(C) = \mathtt{True}$ ist.
+    \item $C = D \cup \{ \neg p_{k+1} \}$.
+
+          In diesem Fall gilt nach Definition von $\mathcal{I}$, dass $\mathcal{I}_{k+1}(p_{k+1}) = \mathtt{False}$
+          ist und daraus folgt sofort dass $\mathcal{I}_{k+1}(\neg p_{k+1}) = \mathtt{True}$, was
+          $\mathtt{i}_{k+1}(C) = \mathtt{True}$ zur Folge hat.
+    \end{enumerate}
+    Insgesamt haben wir auch im Induktions-Schritt gezeigt, dass die aussagenlogische Belegungen
+    $\mathcal{I}_{k+1}$ alle Klauseln $C \in \overline{M}$ wahr macht.  Wir definieren nun die aussagenlogische
+    Belegungen $\mathcal{I}$ als $\mathcal{I} = \mathcal{I}_N$.  Da die Klauseln aus $M$ nur die Variablen
+    $p_1, \cdots, p_N$ enthalten, ist damit klar, dass $\mathcal{I}$ alle Klauseln aus $M$ wahr macht und das
+    war zu zeigen. \qed
+  \end{enumerate}
+\end{enumerate}
+
+\subsection{Konstruktive Interpretation des Beweises der Widerlegungs-Vollständigkeit}
+In diesem Abschnitt implementieren wir ein Programm, mit dessen Hilfe sich für eine Klausel-Menge $M$, aus der
+sich die leere Klausel-Menge nicht herleiten lässt, eine aussagenlogische Belegung $\mathcal{I}$ berechnen
+lässt, die alle Klauseln aus $M$ war macht.  Dieses Programm ist in den 
+Abbildungen \ref{fig:Completeness.ipynb-1}, \ref{fig:Completeness.ipynb-2} und
+\ref{fig:Completeness.ipynb-3} auf den folgenden Seiten gezeigt.  Sie finden dieses Programm unter der Adresse
+\\[0.2cm]
+\hspace*{0.8cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Completeness.ipynb}{\texttt{https://github.com/karlstroetmann/Logic/blob/master/Python/Completeness.ipynb}}
+\\[0.2cm]
+im Netz.
 
 \begin{figure}[!ht]
 \centering
@@ -2150,14 +2305,7 @@ gilt. \eox
 \label{fig:Completeness.ipynb-1}
 \end{figure}
 
-Wir führen den Beweis der Widerlegungs-Vollständigkeit mit Hilfe eines Programms, das in den
-Abbildungen \ref{fig:Completeness.ipynb-1}, \ref{fig:Completeness.ipynb-2} und
-\ref{fig:Completeness.ipynb-3} auf den folgenden Seiten gezeigt ist.  Sie finden dieses Programm unter der Adresse
-\\[0.2cm]
-\hspace*{0.8cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Completeness.ipynb}{\texttt{https://github.com/karlstroetmann/Logic/blob/master/Python/Completeness.ipynb}}
-\\[0.2cm]
-im Netz.  Die Grundidee
+Die Grundidee
 bei diesem Programm besteht darin, dass wir versuchen, aus einer gegebenen Menge $M$ von Klauseln
 \underline{alle} Klauseln herzuleiten, die mit der Schnitt-Regel aus $M$ herleitbar sind.  Wenn wir dabei auch
 die leere Klausel herleiten, dann ist $M$ aufgrund der Korrektheit der Schnitt-Regel offenbar
@@ -2232,9 +2380,9 @@ Abbildung \ref{fig:Completeness.ipynb-2} zeigt die Funktion \texttt{saturate}.  
 als Eingabe eine Menge \texttt{Clauses} von aus\-sagenlogischen Klauseln, die als Mengen von Literalen
 dargestellt werden.  Aufgabe der Funktion ist es, alle Klauseln herzuleiten, die mit Hilfe der
 Schnitt-Regel auf direktem oder indirekten Wege aus der Menge \texttt{Clauses} hergeleitet werden
-können.  Genauer sagen wir, dass die Menge $S$ der Klauseln, die von der Funktion \texttt{saturate}
-zurück gegeben wird, unter Anwendung der Schnitt-Regel \blue{saturiert} ist, was formal wie folgt
-definiert ist:
+können.  Genauer gesagt ist die Menge $S$ der Klauseln, die von der Funktion \texttt{saturate}
+zurück gegeben wird, unter Anwendung der Schnitt-Regel \blue{saturiert}, es gilt also:
+
 \begin{enumerate}
 \item Falls $S$ die leere Klausel $\{\}$ enthält, dann ist $S$ saturiert.
 \item Andernfalls muss \texttt{Clauses} eine Teilmenge von $S$ sein und es muss zusätzlich Folgendes
@@ -2322,6 +2470,8 @@ Zeile 30 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.
 \label{fig:Completeness.ipynb-3}
 \end{figure}
 
+\FloatBarrier
+
 Als nächstes diskutieren wir die Implementierung der Funktion \texttt{findValuation}, die in
 Abbildung \ref{fig:Completeness.ipynb-3} gezeigt ist.  Diese Funktion erhält als Eingabe eine Menge
 \texttt{Clauses} von Klauseln.  Falls diese Menge widersprüchlich ist, soll die Funktion
@@ -2389,206 +2539,174 @@ Im Detail arbeitet die Funktion \texttt{findValuation} wie folgt.
       $\texttt{p}$ in die Menge \texttt{Literals} ein.  Andernfalls wird das Literal $\neg p$ zu der Menge
       \texttt{Literals} hinzugefügt.
 \end{enumerate}
-Der entscheidende Punkt ist nun der Nachweis, dass die Funktion \texttt{findValuation} in dem Falle,
-dass in Zeile 46 nicht der Wert \texttt{False} zurück gegeben wird, eine aussagenlogische Belegung $\I$ berechnet, bei der
-alle Klauseln aus der Menge \texttt{Clauses} den Wert \texttt{True} erhalten.  Um diesen Nachweis zu
-erbringen, nummerieren wie die aussagenlogischen Variablen, die in der Menge \texttt{Clauses}
-auftreten, in derselben Reihenfolge durch, in der diese Variablen in der \texttt{for}-Schleife in Zeile
-48 betrachtet werden.  Wir bezeichnen diese Variablen als
-\\[0.2cm]
-\hspace*{1.3cm}
- $p_1, p_2, p_3, \cdots, p_k$
-\\[0.2cm]
-und zeigen durch Induktion nach $n$, dass nach $n$ Durchläufen der Schleife für jede Klausel $D \in \texttt{Clauses}$, 
-in der nur die Variablen $p_1$, $\cdots$, $p_n$ vorkommen, 
-\\[0.2cm]
-\hspace*{1.3cm}
-$\I(D) = \texttt{True}$
-\\[0.2cm]
-gilt.
-\begin{enumerate}
-\item[I.A.:] $n = 1$.
+Die Definition der Funktion \texttt{findValuation} setzt die induktive Definition der Belegungen
+$\mathcal{I}_k$ um, die wir im Beweis der Widerlegungs-Vollständigkeit angegeben haben.
 
-             In diesem Fall muss entweder
-             \\[0.2cm]
-             \hspace*{1.3cm}
-             $D = \{ p \}$ \quad oder \quad $D = \{ \neg p \}$
-             \\[0.2cm]
-             gelten.  An dieser Stelle brauchen wir eine Fallunterscheidung.
-             \begin{enumerate}
-             \item $D = \{ p \}$.
+% Der entscheidende Punkt ist nun der Nachweis, dass die Funktion \texttt{findValuation} in dem Falle,
+% dass in Zeile 46 nicht der Wert \texttt{False} zurück gegeben wird, eine aussagenlogische Belegung $\I$ berechnet, bei der
+% alle Klauseln aus der Menge \texttt{Clauses} den Wert \texttt{True} erhalten.  Um diesen Nachweis zu
+% erbringen, nummerieren wie die aussagenlogischen Variablen, die in der Menge \texttt{Clauses}
+% auftreten, in derselben Reihenfolge durch, in der diese Variablen in der \texttt{for}-Schleife in Zeile
+% 48 betrachtet werden.  Wir bezeichnen diese Variablen als
+% \\[0.2cm]
+% \hspace*{1.3cm}
+%  $p_1, p_2, p_3, \cdots, p_k$
+% \\[0.2cm]
+% und zeigen durch Induktion nach $n$, dass nach $n$ Durchläufen der Schleife für jede Klausel $D \in \texttt{Clauses}$, 
+% in der nur die Variablen $p_1$, $\cdots$, $p_n$ vorkommen, 
+% \\[0.2cm]
+% \hspace*{1.3cm}
+% $\I(D) = \texttt{True}$
+% \\[0.2cm]
+% gilt.
+% \begin{enumerate}
+% \item[I.A.:] $n = 1$.
 
-                   Daraus folgt aber sofort
-                   \\[0.2cm]
-                   \hspace*{1.3cm}
-                   $D \backslash \{p\} = \{\} \subseteq \{\komplement{l} \mid l \in \texttt{Literals} \}$.
-                   \\[0.2cm]
-                   Also ist die Bedingung in Zeile 50 erfüllt und wir haben $\texttt{p} \in
-                   \texttt{Literals}$.
-                   Damit gilt $\I(p) = \texttt{True}$ nach Definition von $\I$.
-             \item $D = \{ \neg p \}$.
+%              In diesem Fall muss entweder
+%              \\[0.2cm]
+%              \hspace*{1.3cm}
+%              $D = \{ p \}$ \quad oder \quad $D = \{ \neg p \}$
+%              \\[0.2cm]
+%              gelten.  An dieser Stelle brauchen wir eine Fallunterscheidung.
+%              \begin{enumerate}
+%              \item $D = \{ p \}$.
 
-                   Würde es jetzt eine Klausel $E = \{ p\} \in \texttt{Clauses}$ geben, so könnten
-                   wir aus den beiden Klauseln $D$ und $E$ sofort die leere Klausel $\{\}$
-                   herleiten und die Funktion \texttt{findValuation} würde in Zeile 46 den Wert
-                   \texttt{False} zurück geben.  Da wir aber vorausgesetzt haben, dass dies nicht
-                   passiert, kann es keine solche Klausel $E$ geben.  Damit ist die Bedingung in
-                   Zeile 49 falsch und folglich gilt $\neg p \in \texttt{Literals}$.
-                   Nach Definition von $\I$ folgt dann $\I(\neg p) = \texttt{True}$.
-             \end{enumerate}
-             Damit haben wir in jedem Fall $\I(D) = \texttt{True}$.   
-\item[I.S.:] $n \mapsto n+1$.
+%                    Daraus folgt aber sofort
+%                    \\[0.2cm]
+%                    \hspace*{1.3cm}
+%                    $D \backslash \{p\} = \{\} \subseteq \{\komplement{l} \mid l \in \texttt{Literals} \}$.
+%                    \\[0.2cm]
+%                    Also ist die Bedingung in Zeile 50 erfüllt und wir haben $\texttt{p} \in
+%                    \texttt{Literals}$.
+%                    Damit gilt $\I(p) = \texttt{True}$ nach Definition von $\I$.
+%              \item $D = \{ \neg p \}$.
 
-             Wir setzen nun voraus, dass die Behauptung vor dem $(n\!+\!1)$-ten Durchlauf der
-             \texttt{for}-Schleife gilt und haben zu zeigen, dass die Behauptung dann auch nach
-             diesem Durchlauf erfüllt ist.  Sei dazu $D$ eine Klausel, in der nur die Variablen
-             $p_1$, $\cdots$, $p_n$, $p_{n+1}$ vorkommen.  Die Klausel ist dann eine Teilmenge einer
-             Menge der Form
-             \\[0.2cm]
-             \hspace*{1.3cm}
-             $\{ l_1, \cdots, l_n, l_{n+1} \}$, \quad wobei $l_i \in \{ p_i, \neg p_i \}$ für alle
-             $i \in \{1,\cdots, n+1\}$ gilt.
-             \\[0.2cm]
-             Nun gibt es mehrere Möglichkeiten, die wir getrennt untersuchen.
-             \begin{enumerate}
-             \item Es gibt ein $i \in \{1,\cdots,n\}$, so dass $l_i \in D$ und  $\I(l_i) =
-               \texttt{True}$ ist.  
+%                    Würde es jetzt eine Klausel $E = \{ p\} \in \texttt{Clauses}$ geben, so könnten
+%                    wir aus den beiden Klauseln $D$ und $E$ sofort die leere Klausel $\{\}$
+%                    herleiten und die Funktion \texttt{findValuation} würde in Zeile 46 den Wert
+%                    \texttt{False} zurück geben.  Da wir aber vorausgesetzt haben, dass dies nicht
+%                    passiert, kann es keine solche Klausel $E$ geben.  Damit ist die Bedingung in
+%                    Zeile 49 falsch und folglich gilt $\neg p \in \texttt{Literals}$.
+%                    Nach Definition von $\I$ folgt dann $\I(\neg p) = \texttt{True}$.
+%              \end{enumerate}
+%              Damit haben wir in jedem Fall $\I(D) = \texttt{True}$.   
+% \item[I.S.:] $n \mapsto n+1$.
 
-                   Da eine Klausel als Disjunktion ihrer Literale aufgefasst wird, gilt dann auch
-                   $\I(D) = \texttt{True}$ unabhängig davon, ob $\I(p_{n+1})$ den Wert \texttt{True} oder
-                   \texttt{False} hat.
-             \item Für alle $i \in \{1,\cdots,n\}$ mit $l_i \in D$ gilt $\I(l_i) = \texttt{False}$ und es gilt $l_{n+1} = p_{n+1}$.
+%              Wir setzen nun voraus, dass die Behauptung vor dem $(n\!+\!1)$-ten Durchlauf der
+%              \texttt{for}-Schleife gilt und haben zu zeigen, dass die Behauptung dann auch nach
+%              diesem Durchlauf erfüllt ist.  Sei dazu $D$ eine Klausel, in der nur die Variablen
+%              $p_1$, $\cdots$, $p_n$, $p_{n+1}$ vorkommen.  Die Klausel ist dann eine Teilmenge einer
+%              Menge der Form
+%              \\[0.2cm]
+%              \hspace*{1.3cm}
+%              $\{ l_1, \cdots, l_n, l_{n+1} \}$, \quad wobei $l_i \in \{ p_i, \neg p_i \}$ für alle
+%              $i \in \{1,\cdots, n+1\}$ gilt.
+%              \\[0.2cm]
+%              Nun gibt es mehrere Möglichkeiten, die wir getrennt untersuchen.
+%              \begin{enumerate}
+%              \item Es gibt ein $i \in \{1,\cdots,n\}$, so dass $l_i \in D$ und  $\I(l_i) =
+%                \texttt{True}$ ist.  
+
+%                    Da eine Klausel als Disjunktion ihrer Literale aufgefasst wird, gilt dann auch
+%                    $\I(D) = \texttt{True}$ unabhängig davon, ob $\I(p_{n+1})$ den Wert \texttt{True} oder
+%                    \texttt{False} hat.
+%              \item Für alle $i \in \{1,\cdots,n\}$ mit $l_i \in D$ gilt $\I(l_i) = \texttt{False}$ und es gilt $l_{n+1} = p_{n+1}$.
                    
-                   Dann gilt für die Klausel $D$ gerade die Bedingung
-                   \\[0.2cm]
-                   \hspace*{1.3cm}
-                   $C \backslash \{ p_{n+1} \} \subseteq \bigl\{ \komplement{l_1}, \cdots, \komplement{l_n} \bigr\}$
-                   \quad und \quad $p_{n+1} \in C$
-                   \\[0.2cm]
-                   und daher wird in Zeile 47 der Funktion \texttt{findValuation} das Literal $p_{n+1}$ 
-                   zu der Menge \texttt{Literals} hinzugefügt.  Nach Definition der Belegung $\I$, 
-                   die von der Funktion \texttt{findValuation} zurück gegeben wird, heißt dies
-                   gerade, dass 
-                   \\[0.2cm]
-                   \hspace*{1.3cm}
-                   $\I(p_{n+1}) = \texttt{True}$
-                   \\[0.2cm]
-                   ist und dann gilt natürlich auch $\I(D) = \texttt{True}$.
-             \item Für alle $i \in \{1,\cdots,n\}$ mit $l_i \in D$ gilt $\I(l_i) = \texttt{False}$ und es gilt $l_{n+1} = \neg p_{n+1}$.
+%                    Dann gilt für die Klausel $D$ gerade die Bedingung
+%                    \\[0.2cm]
+%                    \hspace*{1.3cm}
+%                    $C \backslash \{ p_{n+1} \} \subseteq \bigl\{ \komplement{l_1}, \cdots, \komplement{l_n} \bigr\}$
+%                    \quad und \quad $p_{n+1} \in C$
+%                    \\[0.2cm]
+%                    und daher wird in Zeile 47 der Funktion \texttt{findValuation} das Literal $p_{n+1}$ 
+%                    zu der Menge \texttt{Literals} hinzugefügt.  Nach Definition der Belegung $\I$, 
+%                    die von der Funktion \texttt{findValuation} zurück gegeben wird, heißt dies
+%                    gerade, dass 
+%                    \\[0.2cm]
+%                    \hspace*{1.3cm}
+%                    $\I(p_{n+1}) = \texttt{True}$
+%                    \\[0.2cm]
+%                    ist und dann gilt natürlich auch $\I(D) = \texttt{True}$.
+%              \item Für alle $i \in \{1,\cdots,n\}$ mit $l_i \in D$ gilt $\I(l_i) = \texttt{False}$ und es gilt $l_{n+1} = \neg p_{n+1}$.
 
-                   An dieser Stelle ist eine weitere Fall-Unterscheidung notwendig.
-                   \begin{enumerate}
-                   \item Es gibt eine weitere Klausel $C$ in der Menge \texttt{Clauses}, so dass
-                         \\[0.2cm]
-                         \hspace*{1.3cm}
-                         $C \backslash \{ p_{n+1} \} \subseteq \bigl\{ \komplement{l_1}, \cdots,
-                         \komplement{l_n} \bigr\}$ \quad und \quad $p_{n+1} \in C$
-                         \\[0.2cm]
-                         gilt.  Hier sieht es zunächst so aus, als ob wir ein Problem hätten, denn
-                         in diesem Fall würde um die Klausel $C$ wahr zu machen das Literal $p_{n+1}$ zur Menge
-                         \texttt{Literals} hinzugefügt und damit wäre zunächst $\I(p_{n+1}) = \texttt{True}$ 
-                         und damit $\I(\neg p_{n+1}) = \texttt{False}$, woraus insgesamt 
-                         $\I(D) = \texttt{False}$ folgern würde.  In diesem Fall würden sich
-                         die Klauseln $C$ und $D$  in der Form
-                         \\[0.2cm]
-                         \hspace*{1.3cm}
-                         $C = C' \cup \{p_{n+1}\}$, \quad $D = D' \cup \{ \neg p_{n+1} \}$
-                         \\[0.2cm]
-                         schreiben lassen, wobei 
-                         \\[0.2cm]
-                         \hspace*{1.3cm}
-                         $C' \subseteq \Bigl\{ \komplement{l} \mid l \in \texttt{Literals} \Bigr\}$  \quad und \quad
-                         $D' \subseteq \Bigl\{ \komplement{l} \mid l \in \texttt{Literals} \Bigr\}$
-                         \\[0.2cm]
-                         gelten würde.  Daraus würde sowohl
-                         \\[0.2cm]
-                         \hspace*{1.3cm}
-                         $\I(C') = \texttt{False}$ \quad als auch \quad $\I(D') = \texttt{False}$
-                         \\[0.2cm]
-                         folgen und das würde auch
-                         \\[0.2cm]
-                         \hspace*{1.3cm}
-                         $\I(C' \cup D') = \texttt{False}$ \hspace*{\fill} $(*)$
-                         \\[0.2cm]
-                         implizieren.
-                         Die entscheidende Beobachtung ist nun, dass die Klausel $C' \cup D'$ mit
-                         Hilfe der Schnitt-Regel aus den beiden Klauseln
-                         \\[0.2cm]
-                         \hspace*{1.3cm}
-                         $C = C' \cup \{p_{n+1}\}$, \quad $D = D' \cup \{ \neg p_{n+1} \}$, 
-                         \\[0.2cm]
-                         gefolgert werden kann.  Das heißt dann aber, dass die Klausel $C' \cup D'$ ein
-                         Element der Menge \texttt{Clauses} sein muss, denn die Menge
-                         \texttt{Clauses} ist ja saturiert!  Da die Klausel $C' \cup D'$ außerdem
-                         nur die aussagenlogischen Variablen $p_1, \cdots, p_n$ enthält, gilt nach
-                         Induktions-Voraussetzung 
-                         \\[0.2cm]
-                         \hspace*{1.3cm}
-                         $\I(C' \cup D') = \texttt{True}$.
-                         \\[0.2cm]
-                         Dies steht aber im Widerspruch zu $(*)$.  Dieser Widerspruch zeigt, dass 
-                         es keine Klausel $C \in \texttt{Clauses}$ mit 
-                         \\[0.2cm]
-                         \hspace*{1.3cm}
-                         $C \subseteq \bigl\{ \komplement{l} \mid l \in \texttt{Literals} \bigr\} \cup
-                         \{p_{n+1}\}$ 
-                         \quad und \quad $p_{n+1} \in C$
-                         \\[0.2cm]
-                         geben kann und damit tritt der hier untersuchte Fall gar nicht auf. 
-                   \item Es gibt \underline{keine} Klausel $C$ in der Menge \texttt{Clauses}, so dass
-                         \\[0.2cm]
-                         \hspace*{1.3cm}
-                         $C \subseteq \bigl\{ \komplement{l} \mid l \in \texttt{Literals} \bigr\} \cup \{p_{n+1}\}$ 
-                         \quad und \quad $p_{n+1} \in C$
-                         \\[0.2cm]
-                         gilt.  In diesem Fall wird das Literal $\neg p_{n+1}$ zur Menge \texttt{Literals}
-                         hinzugefügt und damit gilt zunächst $\I(p_{n+1}) = \texttt{False}$ und folglich
-                         $\I(\neg p_{n+1}) = \texttt{True}$, woraus schließlich $\I(D) = \texttt{True}$ folgt.
-                   \end{enumerate}
-                   Wir sehen, dass der erste Fall der vorherigen Fall-Unterscheidung nicht
-                   auftritt und dass im zweiten Fall $\I(D) = \texttt{True}$ gilt, womit wir insgesamt 
-                   $\I(D) = \texttt{True}$ gezeigt haben.  Damit ist der Induktions-Schritt
-                   abgeschlossen.
-             \end{enumerate}
-             Da jede Klausel $C \in \texttt{Clauses}$ nur eine endliche Anzahl von Variablen
-             enthält, haben wir insgesamt gezeigt, dass für alle diese Klauseln 
-             $\I(C) = \texttt{True}$ gilt. \qed
-\end{enumerate}
-
-\noindent
-\textbf{Beweis der Widerlegungs-Vollständigkeit der Schnitt-Regel:}
-Wir haben nun alles Material zusammen um zeigen zu können, dass die Schnitt-Regel
-widerlegungs-vollständig ist.  Wir nehmen also an, dass $M$ eine endliche Menge von Klauseln ist,  die nicht
-erfüllbar ist, was wir als
-\\[0.2cm]
-\hspace*{1.3cm}
-$M \models \falsum$ 
-\\[0.2cm]
-schreiben.  Wir rufen die Funktion \texttt{findValuation} mit dieser Menge $M$ als Argument auf.
-Jetzt gibt es zwei Möglichkeiten:
-\begin{enumerate}
-\item Fall: Die Funktion \texttt{findValuation} liefert als Ergebnis \texttt{False}.  Nach
-      Konstruktion der Funktionen \texttt{findValuation} \texttt{saturate} tritt dieser Fall nur
-      ein, wenn sich die leere Klausel $\{\}$ aus den Klauseln der Menge $M$ mit Hilfe der
-      Schnitt-Regel herleiten lässt.  Dann haben wir also
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $M \vdash \{\}$,
-      \\[0.2cm]
-      was zu zeigen war.
-\item Fall: Die Funktion \texttt{findValuation} liefert als Ergebnis eine aussagenlogische Belegung
-      $\I$.  Bei der Diskussion der Funktion \texttt{findValuation} haben wir gezeigt, dass für
-      alle Klauseln $D \in \texttt{Clauses}$
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\I(D) = \texttt{True}$
-      \\[0.2cm]
-      gilt.  Die Menge $M$ ist aber eine Teilmenge der Menge \texttt{Clauses} und damit sehen wir, dass die
-      Menge $M$ erfüllbar ist.  Dies steht im Widerspruch zu $M \models \falsum$ und folglich kann der
-      zweite Fall nicht auftreten. 
-\end{enumerate}
-Folglich liefert die Funktion \texttt{findValuation} für eine unerfüllbare Menge von Klauseln immer
-das Ergebnis \texttt{False}, was impliziert, dass $M \vdash \{\}$ gilt.  \qed
+%                    An dieser Stelle ist eine weitere Fall-Unterscheidung notwendig.
+%                    \begin{enumerate}
+%                    \item Es gibt eine weitere Klausel $C$ in der Menge \texttt{Clauses}, so dass
+%                          \\[0.2cm]
+%                          \hspace*{1.3cm}
+%                          $C \backslash \{ p_{n+1} \} \subseteq \bigl\{ \komplement{l_1}, \cdots,
+%                          \komplement{l_n} \bigr\}$ \quad und \quad $p_{n+1} \in C$
+%                          \\[0.2cm]
+%                          gilt.  Hier sieht es zunächst so aus, als ob wir ein Problem hätten, denn
+%                          in diesem Fall würde um die Klausel $C$ wahr zu machen das Literal $p_{n+1}$ zur Menge
+%                          \texttt{Literals} hinzugefügt und damit wäre zunächst $\I(p_{n+1}) = \texttt{True}$ 
+%                          und damit $\I(\neg p_{n+1}) = \texttt{False}$, woraus insgesamt 
+%                          $\I(D) = \texttt{False}$ folgern würde.  In diesem Fall würden sich
+%                          die Klauseln $C$ und $D$  in der Form
+%                          \\[0.2cm]
+%                          \hspace*{1.3cm}
+%                          $C = C' \cup \{p_{n+1}\}$, \quad $D = D' \cup \{ \neg p_{n+1} \}$
+%                          \\[0.2cm]
+%                          schreiben lassen, wobei 
+%                          \\[0.2cm]
+%                          \hspace*{1.3cm}
+%                          $C' \subseteq \Bigl\{ \komplement{l} \mid l \in \texttt{Literals} \Bigr\}$  \quad und \quad
+%                          $D' \subseteq \Bigl\{ \komplement{l} \mid l \in \texttt{Literals} \Bigr\}$
+%                          \\[0.2cm]
+%                          gelten würde.  Daraus würde sowohl
+%                          \\[0.2cm]
+%                          \hspace*{1.3cm}
+%                          $\I(C') = \texttt{False}$ \quad als auch \quad $\I(D') = \texttt{False}$
+%                          \\[0.2cm]
+%                          folgen und das würde auch
+%                          \\[0.2cm]
+%                          \hspace*{1.3cm}
+%                          $\I(C' \cup D') = \texttt{False}$ \hspace*{\fill} $(*)$
+%                          \\[0.2cm]
+%                          implizieren.
+%                          Die entscheidende Beobachtung ist nun, dass die Klausel $C' \cup D'$ mit
+%                          Hilfe der Schnitt-Regel aus den beiden Klauseln
+%                          \\[0.2cm]
+%                          \hspace*{1.3cm}
+%                          $C = C' \cup \{p_{n+1}\}$, \quad $D = D' \cup \{ \neg p_{n+1} \}$, 
+%                          \\[0.2cm]
+%                          gefolgert werden kann.  Das heißt dann aber, dass die Klausel $C' \cup D'$ ein
+%                          Element der Menge \texttt{Clauses} sein muss, denn die Menge
+%                          \texttt{Clauses} ist ja saturiert!  Da die Klausel $C' \cup D'$ außerdem
+%                          nur die aussagenlogischen Variablen $p_1, \cdots, p_n$ enthält, gilt nach
+%                          Induktions-Voraussetzung 
+%                          \\[0.2cm]
+%                          \hspace*{1.3cm}
+%                          $\I(C' \cup D') = \texttt{True}$.
+%                          \\[0.2cm]
+%                          Dies steht aber im Widerspruch zu $(*)$.  Dieser Widerspruch zeigt, dass 
+%                          es keine Klausel $C \in \texttt{Clauses}$ mit 
+%                          \\[0.2cm]
+%                          \hspace*{1.3cm}
+%                          $C \subseteq \bigl\{ \komplement{l} \mid l \in \texttt{Literals} \bigr\} \cup
+%                          \{p_{n+1}\}$ 
+%                          \quad und \quad $p_{n+1} \in C$
+%                          \\[0.2cm]
+%                          geben kann und damit tritt der hier untersuchte Fall gar nicht auf. 
+%                    \item Es gibt \underline{keine} Klausel $C$ in der Menge \texttt{Clauses}, so dass
+%                          \\[0.2cm]
+%                          \hspace*{1.3cm}
+%                          $C \subseteq \bigl\{ \komplement{l} \mid l \in \texttt{Literals} \bigr\} \cup \{p_{n+1}\}$ 
+%                          \quad und \quad $p_{n+1} \in C$
+%                          \\[0.2cm]
+%                          gilt.  In diesem Fall wird das Literal $\neg p_{n+1}$ zur Menge \texttt{Literals}
+%                          hinzugefügt und damit gilt zunächst $\I(p_{n+1}) = \texttt{False}$ und folglich
+%                          $\I(\neg p_{n+1}) = \texttt{True}$, woraus schließlich $\I(D) = \texttt{True}$ folgt.
+%                    \end{enumerate}
+%                    Wir sehen, dass der erste Fall der vorherigen Fall-Unterscheidung nicht
+%                    auftritt und dass im zweiten Fall $\I(D) = \texttt{True}$ gilt, womit wir insgesamt 
+%                    $\I(D) = \texttt{True}$ gezeigt haben.  Damit ist der Induktions-Schritt
+%                    abgeschlossen.
+%              \end{enumerate}
+%              Da jede Klausel $C \in \texttt{Clauses}$ nur eine endliche Anzahl von Variablen
+%              enthält, haben wir insgesamt gezeigt, dass für alle diese Klauseln 
+%              $\I(C) = \texttt{True}$ gilt. \qed
+% \end{enumerate}
 
 \section{Das Verfahren von Davis und Putnam}
 In der Praxis stellt sich oft die Aufgabe, für eine gegebene Menge von Klauseln $K$ eine aussagenlogische
@@ -2653,8 +2771,8 @@ wahr und falsch machen.  Wir nehmen die an den letzten drei Beispielen gemachten
 \end{Definition}
 
 \begin{Definition}[Triviale Klausel-Mengen]
-  Eine Klausel-Menge $K$ ist genau dann \blue{trivial}\index{triviale Klausel-Menge}, wenn einer der beiden folgenden Fälle
-  vorliegt:
+  Eine Klausel-Menge $K$ ist genau dann eine \blue{einfache Klausel-Menge}\index{einfache Klausel-Menge}, wenn
+  einer der beiden folgenden Fälle vorliegt:
   \begin{enumerate}
   \item $K$ enthält die leere Klausel, es gilt also $\{\} \el K$.
 
@@ -2683,18 +2801,9 @@ wahr und falsch machen.  Wir nehmen die an den letzten drei Beispielen gemachten
   \end{enumerate}
 \end{Definition}
 
-\remark
-Beachten Sie, dass wir in dieser Vorlesung das Wort \blue{trivial} an zwei verschiedenen Stellen in
-unterschiedlicher Bedeutung benutzen:
-\begin{enumerate}
-\item Einerseits haben wir den Begriff der \blue{trivialen Klausel} definiert:  Eine Klausel ist genau dann trivial,
-      wenn sie eine Tautologie ist.
-\item Andererseits haben wir gerade den Begriff der \blue{trivialen Klausel-Menge} definiert.  \eox
-\end{enumerate}
-
-Wie können wir nun eine Menge von Klauseln so vereinfachen, dass die Menge schließlich nur
-noch aus Unit-Klauseln besteht?  Es gibt drei
-Möglichkeiten, Klauselmengen zu vereinfachen:
+Wie können wir nun eine gegebene Klausel-Menge in eine einfache Klausel-Menge umwandeln?
+Es gibt drei Möglichkeiten, Klauselmengen zu vereinfachen.  Die erste der beiden Möglichkeiten kennen wir
+schon, die anderen beiden Möglichkeiten werden wir später näher erläutern.
 \begin{enumerate}
 \item \blue{Schnitt-Regel},
 \item \blue{Subsumption} und
@@ -2712,7 +2821,7 @@ Klausel $C_1 \cup \{p\}$ insgesamt $m+1$ Literale und enthält die Klausel
 $\bigl\{\neg p\} \cup C_2$ insgesamt $n+1$ Literale, so kann die Konklusion $C_1 \cup C_2$ 
 bis zu $m + n$ Literale enthalten.  Natürlich können es auch weniger Literale 
 sein, und zwar dann, wenn es Literale gibt, die sowohl in $C_1$ als auch in $C_2$
-auftreten.  Oft ist $m + n$ größer als $m + 1$ und als $n + 1$.  Die
+auftreten.  Oft ist $m + n$ aber sowohl größer als $m + 1$ als auch größer als $n + 1$.  Die
 Klauseln wachsen nur dann sicher nicht, wenn  $n = 0$ oder $m = 0$ ist.
 Dieser Fall liegt vor, wenn einer der beiden Klauseln nur aus einem Literal besteht
 und folglich eine \blue{Unit-Klausel} ist.  Da es unser Ziel ist, die Klausel-Mengen
@@ -2732,7 +2841,7 @@ $\{l\}$ vereinfacht:
 $\texttt{unitCut}(K,l) = \Bigl\{ C \backslash \bigl\{ \komplement{l} \bigr\} \;\Big|\; C \in K \Bigr\}$.
 \\[0.2cm]
 Beachten Sie, dass die Menge $\texttt{unitCut}(K,l)$ genauso viele Klauseln enthält wie die Menge
-$K$.  Allerdings sind die Klauseln aus der Menge $K$, die das Literal $\komplement{l}$
+$K$.  Allerdings sind diejenigen Klauseln aus der Menge $K$, die das Literal $\komplement{l}$
 enthalten, verkleinert worden.   Alle anderen Klauseln aus $K$ bleiben unverändert.
 
 Eine Klauselmenge $K$ werden wir nur dann mit Hilfe des Ausdrucks $\texttt{unitCut}(K, l)$ vereinfachen, wenn 
@@ -2792,9 +2901,10 @@ Satz.
 \begin{enumerate}
 \item[``$\Rightarrow$'':] 
   Ist $K$ erfüllbar durch eine Belegung $\I$, so gibt es für  $\I(p)$ zwei Möglichkeiten, denn 
-  es ist entweder wahr oder falsch.  Falls $\I(p) = \texttt{True}$ ist, ist damit auch die Menge $K \cup
-  \bigl\{\{p\}\bigr\}$ erfüllbar, andernfalls ist 
-  $K \cup \bigl\{\{\neg p\}\bigr\}$ erfüllbar. 
+  $\mathcal{I}(p)$ ist entweder wahr oder falsch.  Falls $\I(p) = \texttt{True}$ ist, ist damit auch die Menge $K \cup
+  \bigl\{\{p\}\bigr\}$ erfüllbar,
+  andernfalls ist $K \cup \bigl\{\{\neg p\}\bigr\}$
+  erfüllbar. 
 \item[``$\Leftarrow$'':] 
   Da $K$ sowohl eine Teilmenge von $K \cup \bigl\{\{p\}\bigr\}$ als auch von 
   $K \cup \bigl\{\{\neg p\}\bigr\}$ ist, ist klar, dass $K$ erfüllbar
