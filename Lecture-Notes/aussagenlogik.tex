@@ -2085,7 +2085,12 @@ den Begriff der \blue{Erfüllbarkeit}, den wir jetzt formal einführen.
   \\[0.2cm]
   \hspace*{1.3cm}
   $\blue{M \models \falsum}$ \quad g.d.w. \quad 
-  $\forall \I \in \textsc{Ali}: \exists C \in M: \I(C) = \texttt{False}$.   
+  $\forall \I \in \textsc{Ali}: \exists C \in M: \I(C) = \texttt{False}$.
+  \\[0.2cm]
+  Falls eine Menge $M$ von aussagenlogischen Formeln erfüllbar ist, schreiben wir auch
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\blue{M \not\models \falsum}$.
   \eox
 \end{Definition}
 
@@ -2123,7 +2128,8 @@ abbrechen. \eox
 \noindent
 \textbf{Beweis}:  Wir führen den Beweis durch
 Kontraposition.  Wir nehmen an, dass $M$ eine endliche Menge von Klauseln ist, aus der sich die leere Klausel
-nicht herleiten lässt.  Wir zeigen, dass es dann eine aussagenlogische Belegung $\mathcal{I}$ gibt, unter der
+nicht herleiten lässt.  Dies schreiben wir als $M \not\,\vdash \falsum$.
+Wir zeigen, dass es dann eine aussagenlogische Belegung $\mathcal{I}$ gibt, unter der
 alle Klauseln aus $M$ wahr werden.
 
 Nach der obigen Bemerkung können wir annehmen, dass $M$ bereits saturiert ist. Es sei 
@@ -2146,7 +2152,7 @@ gilt.  Außerdem definiert die aussagenlogische Belegung $\mathcal{I}_k$ nur Wer
   Wir definieren $\mathcal{I}_0$ als die leere aussagenlogische Belegung, die keiner
   Variablen einen Wert zuweist.  Um $(*)$ nachzuweisen müssen wir zeigen, dass für jede Klausel $C \in M$, die
   keine aussagenlogische Variable enthält, $\mathcal{I}_0(C) = \mathtt{True}$ gilt.  Die einzige Klausel, die
-  keine Variable enthält, ist die leere Klausel.  Da wir vorausgesetzt haben, dass nicht $M \vdash \falsum$
+  keine Variable enthält, ist die leere Klausel.  Da wir vorausgesetzt haben, dass  $M \not\,\vdash \falsum$
   gilt, kann $M$ die leere Klausel nicht enthalten.  Also ist nichts zu zeigen.
 \item[I.S.:] $k \mapsto k+1$.
 
@@ -2714,10 +2720,10 @@ Belegung $\I$ zu berechnen, so dass
 \\[0.2cm]
 \hspace*{1.3cm} $\texttt{evaluate}(C,\I) = \texttt{True}$ \quad für alle $C\in K$ \\[0.2cm]
 gilt.  In diesem Fall sagen wir auch, dass die Belegung $\I$ eine \blue{Lösung} der
- Klausel-Menge $K$ ist.  Im letz\-ten Abschnitt haben wir bereits die Funktion \texttt{findValuation}
- kennengelernt, mit der wir eine solche Belegung berechnen könnten.
-Bedauerlicherweise ist diese Funktion für eine praktische Anwendung nicht effizient genug, denn der
-Rechenaufwand bei dieser Funktion hat immer die Größenordnung $2^{2\cdot n}$, wobei $n$ die Anzahl der Variablen ist.
+Klausel-Menge $K$ ist.  Im letz\-ten Abschnitt haben wir bereits die Funktion \texttt{findValuation}
+kennengelernt, mit der wir eine solche Belegung berechnen könnten.
+Bedauerlicherweise ist diese Funktion für eine praktische Anwendung nicht effizient genug, denn das Saturieren
+einer Klausel-Menge ist im Allgemeinen sehr aufwendig.
 Wir werden daher in diesem Abschnitt ein Verfahren vorstellen, mit dem die Berechnung einer Lösung
 einer aussagenlogischen Klausel-Menge in vielen praktisch relevanten Fällen auch dann möglich ist, wenn die
 Anzahle der Variablen groß ist.  Dieses Verfahren geht auf Davis und Putnam
@@ -2777,7 +2783,7 @@ wahr und falsch machen.  Wir nehmen die an den letzten drei Beispielen gemachten
   \item $K$ enthält die leere Klausel, es gilt also $\{\} \el K$.
 
         In diesem Fall ist $K$ offensichtlich unlösbar.
-  \item $K$ enthält nur Unit-Klauseln mit \underline{\red{verschiedenen}} Aussage-Variablen. d.h. es kann nicht
+  \item $K$ enthält nur Unit-Klauseln mit \underline{\red{verschiedenen}} Aussage-Variablen, d.h.~es kann nicht
         sein, dass es eine aussagenlogische Variable $p$ gibt, so dass $K$ sowohl die Klausel $\{p\}$, als auch die
         Klausel $\{\neg p \}$ enthält.  Bezeichnen wir die Menge der aussagenlogischen Variablen mit $\mathcal{P}$,
         so schreibt sich diese Bedingung als 
