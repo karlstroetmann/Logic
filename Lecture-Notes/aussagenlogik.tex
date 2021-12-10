@@ -1544,7 +1544,7 @@ Gleichungen unmittelbar um.
         if f[0] == '⊤':
             return ('⊥',)
         if f[0] == '⊥':
-            return ('⊤')
+            return ('⊤',)
         if f[0] == '¬':
             g = f[1]
             return nnf(g)
@@ -3293,19 +3293,19 @@ Die Klausel-Menge $M$ sei wie folgt gegeben: \\[0.2cm]
 
 
 \section{Das 8-Damen-Problem}
-In diesem Abschnitt zeigen wir, wie bestimmte kombinatorische Problem als aussagenlogische Probleme formuliert
-werden können.  Diese können dann anschließend mit dem Algorithmus von Davis und Putnam gelöst werden.  Als
+In diesem Abschnitt zeigen wir, wie bestimmte kombinatorische Probleme als aussagenlogische Fragestellungen
+formuliert werden können.  Diese können dann anschließend mit dem Algorithmus von Davis und Putnam gelöst werden.  Als
 konkretes Beispiel betrachten wir das \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{8-Damen-Problem}.  
 Dabei geht es darum, 8 Damen so auf einem Schach-Brett aufzustellen, dass keine Dame eine andere Dame schlagen kann.
 Beim \href{https://en.wikipedia.org/wiki/Chess}{Schach-Spiel} kann eine Dame dann eine andere Figur schlagen,
 wenn diese Figur entweder 
 \begin{itemize}
-\item in derselben Zeile,
+\item in derselben Reihe,
 \item in derselben Spalte  oder
 \item in derselben Diagonale
 \end{itemize}
 wie die Dame steht.  Abbildung \ref{fig:queens-problem} auf Seite \pageref{fig:queens-problem}
-zeigt ein Schachbrett, in dem sich in der dritten Zeile in der vierten Spalte
+zeigt ein Schachbrett, in dem sich in der dritten Reihe in der vierten Spalte
 eine Dame befindet.  Diese Dame kann auf alle die Felder ziehen, die mit Pfeilen markierte
 sind, und kann damit Figuren, die sich auf diesen Feldern befinden, schlagen.
 
@@ -3345,15 +3345,15 @@ positionierten Damen aussagenlogisch repräsentieren können.  Eine Möglichkeit
 für jedes Feld eine aussagenlogische Variable einzuführen.  Diese Variable drückt
 aus, dass auf dem entsprechenden Feld eine Dame steht.  Wir ordnen diesen Variablen wie
 folgt Namen zu:  Die Variable, die das $j$-te Feld in der $i$-ten
-Zeile bezeichnet, stellen wir durch den String
+Reihe bezeichnet, stellen wir durch den String
 \\[0.2cm]
 \hspace*{1.3cm}
- $\texttt{'Q(}i\texttt{,}j\texttt{)'}$ \quad mit $i,j \in \{1, \cdots, 8\}$ 
+ $\texttt{'Q<}i\texttt{,}j\texttt{>'}$ \quad mit $i,j \in \{1, \cdots, 8\}$ 
 \\[0.2cm]
-dar.   Wir nummerieren die Zeilen dabei von oben beginnend von 1 bis 8 durch, während die
+dar.   Wir nummerieren die Reihen dabei von oben beginnend von 1 bis 8 durch, während die
 Spalten von links nach rechts numeriert werden.  Abbildung \ref{fig:queens-assign} auf
 Seite \pageref{fig:queens-assign} zeigt die Zuordnung der Variablen zu den Feldern.  Die in Abbildung
-\ref{fig:var} gezeigte Funktion $\texttt{var}(r,c)$ berechnet die Variable, die ausdrückt, dass sich in Zeile
+\ref{fig:var} gezeigte Funktion $\texttt{var}(r,c)$ berechnet die Variable, die ausdrückt, dass sich in Reihe
 $r$ und Spalte $c$ eine Dame befindet.
 
 
@@ -3369,7 +3369,7 @@ $r$ und Spalte $c$ eine Dame befindet.
                 xrightmargin  = 0.8cm,
               ]{python3}
     def var(row, col):
-        return 'Q' + str(row) + ',' + str(col) + ')'                  
+        return 'Q<' + str(row) + ',' + str(col) + '>'
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Die Funktion \texttt{var} Zur Berechnung der aussagenlogischen Variablen}
@@ -3401,70 +3401,70 @@ $r$ und Spalte $c$ eine Dame befindet.
 %%\}
 %%  }
 
-\put(1.20,8.45){{ Q(1,1) }}
-\put(2.20,8.45){{ Q(1,2) }}
-\put(3.20,8.45){{ Q(1,3) }}
-\put(4.20,8.45){{ Q(1,4) }}
-\put(5.20,8.45){{ Q(1,5) }}
-\put(6.20,8.45){{ Q(1,6) }}
-\put(7.20,8.45){{ Q(1,7) }}
-\put(8.20,8.45){{ Q(1,8) }}
-\put(1.20,7.45){{ Q(2,1) }}
-\put(2.20,7.45){{ Q(2,2) }}
-\put(3.20,7.45){{ Q(2,3) }}
-\put(4.20,7.45){{ Q(2,4) }}
-\put(5.20,7.45){{ Q(2,5) }}
-\put(6.20,7.45){{ Q(2,6) }}
-\put(7.20,7.45){{ Q(2,7) }}
-\put(8.20,7.45){{ Q(2,8) }}
-\put(1.20,6.45){{ Q(3,1) }}
-\put(2.20,6.45){{ Q(3,2) }}
-\put(3.20,6.45){{ Q(3,3) }}
-\put(4.20,6.45){{ Q(3,4) }}
-\put(5.20,6.45){{ Q(3,5) }}
-\put(6.20,6.45){{ Q(3,6) }}
-\put(7.20,6.45){{ Q(3,7) }}
-\put(8.20,6.45){{ Q(3,8) }}
-\put(1.20,5.45){{ Q(4,1) }}
-\put(2.20,5.45){{ Q(4,2) }}
-\put(3.20,5.45){{ Q(4,3) }}
-\put(4.20,5.45){{ Q(4,4) }}
-\put(5.20,5.45){{ Q(4,5) }}
-\put(6.20,5.45){{ Q(4,6) }}
-\put(7.20,5.45){{ Q(4,7) }}
-\put(8.20,5.45){{ Q(4,8) }}
-\put(1.20,4.45){{ Q(5,1) }}
-\put(2.20,4.45){{ Q(5,2) }}
-\put(3.20,4.45){{ Q(5,3) }}
-\put(4.20,4.45){{ Q(5,4) }}
-\put(5.20,4.45){{ Q(5,5) }}
-\put(6.20,4.45){{ Q(5,6) }}
-\put(7.20,4.45){{ Q(5,7) }}
-\put(8.20,4.45){{ Q(5,8) }}
-\put(1.20,3.45){{ Q(6,1) }}
-\put(2.20,3.45){{ Q(6,2) }}
-\put(3.20,3.45){{ Q(6,3) }}
-\put(4.20,3.45){{ Q(6,4) }}
-\put(5.20,3.45){{ Q(6,5) }}
-\put(6.20,3.45){{ Q(6,6) }}
-\put(7.20,3.45){{ Q(6,7) }}
-\put(8.20,3.45){{ Q(6,8) }}
-\put(1.20,2.45){{ Q(7,1) }}
-\put(2.20,2.45){{ Q(7,2) }}
-\put(3.20,2.45){{ Q(7,3) }}
-\put(4.20,2.45){{ Q(7,4) }}
-\put(5.20,2.45){{ Q(7,5) }}
-\put(6.20,2.45){{ Q(7,6) }}
-\put(7.20,2.45){{ Q(7,7) }}
-\put(8.20,2.45){{ Q(7,8) }}
-\put(1.20,1.45){{ Q(8,1) }}
-\put(2.20,1.45){{ Q(8,2) }}
-\put(3.20,1.45){{ Q(8,3) }}
-\put(4.20,1.45){{ Q(8,4) }}
-\put(5.20,1.45){{ Q(8,5) }}
-\put(6.20,1.45){{ Q(8,6) }}
-\put(7.20,1.45){{ Q(8,7) }}
-\put(8.20,1.45){{ Q(8,8) }}
+\put(1.20,8.45){{ Q<1,1> }}
+\put(2.20,8.45){{ Q<1,2> }}
+\put(3.20,8.45){{ Q<1,3> }}
+\put(4.20,8.45){{ Q<1,4> }}
+\put(5.20,8.45){{ Q<1,5> }}
+\put(6.20,8.45){{ Q<1,6> }}
+\put(7.20,8.45){{ Q<1,7> }}
+\put(8.20,8.45){{ Q<1,8> }}
+\put(1.20,7.45){{ Q<2,1> }}
+\put(2.20,7.45){{ Q<2,2> }}
+\put(3.20,7.45){{ Q<2,3> }}
+\put(4.20,7.45){{ Q<2,4> }}
+\put(5.20,7.45){{ Q<2,5> }}
+\put(6.20,7.45){{ Q<2,6> }}
+\put(7.20,7.45){{ Q<2,7> }}
+\put(8.20,7.45){{ Q<2,8> }}
+\put(1.20,6.45){{ Q<3,1> }}
+\put(2.20,6.45){{ Q<3,2> }}
+\put(3.20,6.45){{ Q<3,3> }}
+\put(4.20,6.45){{ Q<3,4> }}
+\put(5.20,6.45){{ Q<3,5> }}
+\put(6.20,6.45){{ Q<3,6> }}
+\put(7.20,6.45){{ Q<3,7> }}
+\put(8.20,6.45){{ Q<3,8> }}
+\put(1.20,5.45){{ Q<4,1> }}
+\put(2.20,5.45){{ Q<4,2> }}
+\put(3.20,5.45){{ Q<4,3> }}
+\put(4.20,5.45){{ Q<4,4> }}
+\put(5.20,5.45){{ Q<4,5> }}
+\put(6.20,5.45){{ Q<4,6> }}
+\put(7.20,5.45){{ Q<4,7> }}
+\put(8.20,5.45){{ Q<4,8> }}
+\put(1.20,4.45){{ Q<5,1> }}
+\put(2.20,4.45){{ Q<5,2> }}
+\put(3.20,4.45){{ Q<5,3> }}
+\put(4.20,4.45){{ Q<5,4> }}
+\put(5.20,4.45){{ Q<5,5> }}
+\put(6.20,4.45){{ Q<5,6> }}
+\put(7.20,4.45){{ Q<5,7> }}
+\put(8.20,4.45){{ Q<5,8> }}
+\put(1.20,3.45){{ Q<6,1> }}
+\put(2.20,3.45){{ Q<6,2> }}
+\put(3.20,3.45){{ Q<6,3> }}
+\put(4.20,3.45){{ Q<6,4> }}
+\put(5.20,3.45){{ Q<6,5> }}
+\put(6.20,3.45){{ Q<6,6> }}
+\put(7.20,3.45){{ Q<6,7> }}
+\put(8.20,3.45){{ Q<6,8> }}
+\put(1.20,2.45){{ Q<7,1> }}
+\put(2.20,2.45){{ Q<7,2> }}
+\put(3.20,2.45){{ Q<7,3> }}
+\put(4.20,2.45){{ Q<7,4> }}
+\put(5.20,2.45){{ Q<7,5> }}
+\put(6.20,2.45){{ Q<7,6> }}
+\put(7.20,2.45){{ Q<7,7> }}
+\put(8.20,2.45){{ Q<7,8> }}
+\put(1.20,1.45){{ Q<8,1> }}
+\put(2.20,1.45){{ Q<8,2> }}
+\put(3.20,1.45){{ Q<8,3> }}
+\put(4.20,1.45){{ Q<8,4> }}
+\put(5.20,1.45){{ Q<8,5> }}
+\put(6.20,1.45){{ Q<8,6> }}
+\put(7.20,1.45){{ Q<8,7> }}
+\put(8.20,1.45){{ Q<8,8> }}
 
 \end{picture}
 \vspace*{-1.0cm}
@@ -3476,7 +3476,7 @@ Als nächstes überlegen wir uns, wie wir die einzelnen Bedingungen des 8-Damen-
 als aussagenlogische
 Formeln kodieren können.  Letztlich lassen sich alle Aussagen der Form
 \begin{itemize}
-\item ``in einer Zeile steht höchstens eine Dame'', 
+\item ``in einer Reihe steht höchstens eine Dame'', 
 \item ``in einer Spalte steht höchstens eine Dame'', oder 
 \item ``in einer Diagonale steht höchstens eine Dame'' 
 \end{itemize}
@@ -3534,11 +3534,11 @@ Mit Hilfe der Funktion \texttt{atMostOne} können wir nun die Funktion
 \texttt{atMostOneInRow} implementieren.  Der Aufruf \\[0.2cm]
 \hspace*{1.3cm} 
 \texttt{atMostOneInRow(row, n)} \\[0.2cm]
-berechnet für eine gegebene Zeile \texttt{row} bei einer Brettgröße von \texttt{n} eine Formel,
-die ausdrückt, dass in der Zeile \texttt{row} höchstens eine Dame steht.
+berechnet für eine gegebene Reihe \texttt{row} bei einer Brettgröße von \texttt{n} eine Formel,
+die ausdrückt, dass in der Reihe \texttt{row} höchstens eine Dame steht.
 Abbildung \ref{fig:atMostOneInRow} zeigt die
 Funktion \texttt{atMostOneInRow}: Wir sammeln alle Variablen der durch \texttt{row}
-spezifizierten Zeile
+spezifizierten Reihe
 in der Menge 
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -3569,20 +3569,20 @@ Als nächstes berechnen wir eine Formel die aussagt, dass \blue{mindestens} eine
 Spalte steht.  Für die erste Spalte hätte diese Formel die Form 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{Q}(1,1) \vee \texttt{Q}(2,1) \vee \texttt{Q}(3,1) \vee \texttt{Q}(4,1) \vee \texttt{Q}(5,1) \vee
-\texttt{Q}(6,1) \vee \texttt{Q}(7,1) \vee \texttt{Q}(8,1)$
+$\texttt{Q<1,1>} \vee \texttt{Q<2,1>} \vee \texttt{Q<3,1>} \vee \texttt{Q<4,1>} \vee \texttt{Q<5,1>} \vee
+\texttt{Q<6,1>} \vee \texttt{Q<7,1>} \vee \texttt{Q<8,1>}$
 \\[0.2cm]
 und wenn allgemein eine Spalte $c$ mit $c \in \{1,\cdots,8\}$ gegeben ist, lautet die Formel
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{Q}(1,c) \vee \texttt{Q}(2,c) \vee \texttt{Q}(3,c) \vee \texttt{Q}(4,c) \vee \texttt{Q}(5,c) \vee
-\texttt{Q}(6,c) \vee \texttt{Q}(7,c) \vee \texttt{Q}(8,c)$.
+$\texttt{Q<1,c>} \vee \texttt{Q<2,c>} \vee \texttt{Q<3,c>} \vee \texttt{Q<4,c>} \vee \texttt{Q<5,c>} \vee
+\texttt{Q<6,c>} \vee \texttt{Q<7,c>} \vee \texttt{Q<8,c>}$.
 \\[0.2cm]
 Schreiben wir diese Formel in der Mengenschreibweise als Menge von Klauseln, so erhalten wir
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bigl\{ \{\texttt{Q}(1,c) , \texttt{Q}(2,c) , \texttt{Q}(3,c) , \texttt{Q}(4,c) , \texttt{Q}(5,c) ,
-\texttt{Q}(6,c) , \texttt{Q}(7,c) , \texttt{Q}(8,c) \}\bigr\}$.
+$\bigl\{ \{\texttt{Q<1,c>} , \texttt{Q<2,c>} , \texttt{Q<3,c>} , \texttt{Q<4,c>} , \texttt{Q<5,c>} ,
+\texttt{Q<6,c>} , \texttt{Q<7,c>} , \texttt{Q<8,c>} \}\bigr\}$.
 \\[0.2cm]
 Abbildung \ref{fig:oneInColumn} zeigt eine \textsl{Python}-Funktion, die für eine gegebene Spalte
 \texttt{col} und eine gegebene Brettgröße \texttt{n} die entsprechende Klausel-Menge berechnet.
@@ -3610,24 +3610,24 @@ Davis und Putnam arbeitet mit einer Menge von Klauseln.
 
 An dieser Stelle erwarten Sie vielleicht, dass wir noch Formeln angeben die
 ausdrücken, dass in einer gegebenen Spalte höchstens eine Dame steht und dass in jeder
-Zeile mindestens eine Dame steht.
+Reihe mindestens eine Dame steht.
 Solche Formeln sind aber unnötig, denn wenn wir wissen, dass in jeder Spalte mindestens
 eine Dame steht, so wissen wir bereits, dass auf dem Brett mindestens 8 Damen stehen.
-Wenn wir nun zusätzlich wissen, dass in jeder Zeile höchstens eine Dame steht, so ist
+Wenn wir nun zusätzlich wissen, dass in jeder Reihe höchstens eine Dame steht, so ist
 automatisch klar, dass höchstens 8 Damen auf dem Brett stehen.  Damit stehen also insgesamt genau
 8 Damen auf dem Brett.  Dann kann aber in jeder Spalte nur höchstens eine Dame stehen, denn sonst hätten wir
-mehr als 8 Damen auf dem Brett und genauso muss in jeder Zeile mindestens eine Dame stehen, denn sonst würden
+mehr als 8 Damen auf dem Brett und genauso muss in jeder Reihe mindestens eine Dame stehen, denn sonst würden
 wir in der Summe nicht auf 8 Damen kommen. 
 
 Als nächstes überlegen wir uns, wie wir die Variablen, die auf derselben \blue{Diagonale}
 stehen, charakterisieren können.  Es gibt grundsätzlich zwei verschiedene Arten von
-Diagonalen: \blue{Absteigende} Diagonalen und \blue{aufsteigende} Diagonalen.  Wir betrachten zunächst
+Diagonalen: \blue{Absteigende} Diagonalen und \blue{aufsteigende} Diagonalen.  Wir be\-trach\-ten zunächst
 die aufsteigenden Diagonalen.  Die längste aufsteigende Diagonale, wir sagen dazu auch
 \blue{Hauptdiagonale}, besteht im Fall eines $8 \times 8$-Bretts aus den
 Variablen \\[0.2cm]
 \hspace*{1.3cm} 
-$\texttt{Q}(8,1),\; \texttt{Q}(7,2),\; \texttt{Q}(6,3),\; \texttt{Q}(5,4),\; \texttt{Q}(4,5),\; \texttt{Q}(3,6),\; 
- \texttt{Q}(2,7),\; \texttt{Q}(1,8)$. 
+$\texttt{Q<8,1>},\; \texttt{Q<7,2>},\; \texttt{Q<6,3>},\; \texttt{Q<5,4>},\; \texttt{Q<4,5>},\; \texttt{Q<3,6>},\; 
+ \texttt{Q<2,7>},\; \texttt{Q<1,8>}$. 
 \\[0.2cm]
 Die Indizes $r$ und $c$ der Variablen $\texttt{Q}(r,c)$ erfüllen offenbar
 die Gleichung \\[0.2cm]
@@ -3665,8 +3665,8 @@ Um zu sehen, wie die Variablen einer fallenden Diagonale
 charakterisiert werden können, betrachten wir die fallende Hauptdiagonale, die aus den
 Variablen \\[0.2cm]
 \hspace*{1.3cm} 
-$\texttt{Q}(1,1),\; \texttt{Q}(2,2),\; \texttt{Q}(3,3),\; \texttt{Q}(4,4),\; \texttt{Q}(5,5),\; 
- \texttt{Q}(6,6),\; \texttt{Q}(7,7),\; \texttt{Q}(8,8)$ 
+$\texttt{Q<1,1>},\; \texttt{Q<2,2>},\; \texttt{Q<3,3>},\; \texttt{Q<4,4>},\; \texttt{Q<5,5>},\; 
+ \texttt{Q<6,6>},\; \texttt{Q<7,7>},\; \texttt{Q<8,8>}$ 
 \\[0.2cm]
 besteht. Die Indizes  $r$ und $c$ dieser Variablen erfüllen offenbar
 die Gleichung \\[0.2cm]
@@ -3707,7 +3707,7 @@ Der Aufruf \\[0.2cm]
 rechnet für ein Schach-Brett der Größe $n$ eine Menge von Klauseln aus, die
 genau dann erfüllt sind, wenn auf dem Schach-Brett
 \begin{enumerate}
-\item in jeder Zeile höchstens eine Dame steht (Zeile 2),
+\item in jeder Reihe höchstens eine Dame steht (Zeile 2),
 \item in jeder absteigenden Diagonale höchstens eine Dame steht (Zeile 3),
 \item in jeder aufsteigenden Diagonale höchstens eine Dame steht (Zeile 4) und
 \item in jeder Spalte mindestens eine Dame steht (Zeile 5).
@@ -3815,9 +3815,9 @@ Das vollständige Programm finden Sie als Jupyter Notebook auf meiner Webseite u
 
 
 Die durch den Aufruf $\texttt{solve}(\textsl{Clauses}, \{\})$ 
-berechnete Menge \texttt{solution} enthält für jede der Variablen $\texttt{'Q(}r\texttt{,}c\texttt{)'}$
-entweder die Unit-Klausel $\{\texttt{'Q(}r\texttt{,}c\texttt{)'}\}$  (falls auf diesem Feld eine Dame steht) oder
-aber die Unit-Klausel  $\{ \texttt{('¬', 'Q(}r\texttt{,}c\texttt{)')}\}$ (falls das Feld leer bleibt).
+berechnete Menge \texttt{solution} enthält für jede der Variablen $\texttt{'Q<}r\texttt{,}c\texttt{>'}$
+entweder die Unit-Klausel $\{\texttt{'Q<}r\texttt{,}c\texttt{>'}\}$  (falls auf diesem Feld eine Dame steht) oder
+aber die Unit-Klausel  $\{ \texttt{('¬', 'Q<}r\texttt{,}c\texttt{>')}\}$ (falls das Feld leer bleibt).
 Eine graphische Darstellung einer berechneten Lösungen sehen Sie in Abbildung \ref{fig:8-queens.pdf}.
 Diese graphische Darstellung habe ich mit Hilfe der Bibliothek
 \href{https://python-chess.readthedocs.io/en/latest/}{\texttt{python-chess}} und der Funktion
