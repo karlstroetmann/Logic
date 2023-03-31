@@ -1,5 +1,5 @@
-\chapter{Proving the Correctness of an Algorithm$^*$}
-In this chapter we will show two different methods that can be used to prove the correctness of \textsl{Python}
+\chapter{Correctness Proofs}
+In this chapter we will show two different methods that can be used to prove the correctness of a \textsl{Python}
 function.
 \begin{enumerate}[(a)]
 \item The method of \blue{computational induction} can be used to verify the correctness of a \textsl{Python}
@@ -234,14 +234,14 @@ We will introduce this method via a simple example.  Consider the program shown 
                   codes         = {\catcode`_=8\catcode`$=3},
                   commandchars  = \\\{\},
                 ]
-    \green{def} \blue{power}(x$_1$, y$_1$):
-        r$_1$ = 1
-        \green{while} y$_n$ > 0:
-            \green{if} y$_n$ % 2 == 1:
-                r$_{n+1}$ = r$_n$ * x$_n$
-            x$_{n+1}$ = x$_n$ * x$_n$
-            y$_{n+1}$ = y$_n$ // 2
-        \green{return} r$_N$
+    \colorbox{sepia}{\green{def} \blue{power}(x$_1$, y$_1$):}
+    \colorbox{sepia}{    r$_1$ = 1}
+    \colorbox{sepia}{    \green{while} y$_n$ > 0:}
+    \colorbox{sepia}{        \green{if} y$_n$ % 2 == 1:}
+    \colorbox{sepia}{            r$_{n+1}$ = r$_n$ * x$_n$}
+    \colorbox{sepia}{        x$_{n+1}$ = x$_n$ * x$_n$}
+    \colorbox{sepia}{        y$_{n+1}$ = y$_n$ // 2}
+    \colorbox{sepia}{    \green{return} r$_N$}
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{An annotated programm to compute powers.}
@@ -250,12 +250,12 @@ We will introduce this method via a simple example.  Consider the program shown 
 
 The main difference between a mathematical formula and a program is that in a formula all
 occurrences of a variable refer to the same value.   This is different in a program because the
-variables change their values dynamically.  In order to deal with this property of program variables
-we have to be able to distinguish the different occurrences of a variable.  To this end,  we 
+variables change their values dynamically.  In order to deal with this property of program variables,
+we have to be able to distinguish the different occurrences of a given variable.  To this end,  we 
 \blue{index} the program variables. 
-When doing this we have to be aware of the fact that the same occurrence of a program variable can
+When doing this, we have to be aware of the fact that the same occurrence of a program variable can
 still denote different values if the variable occurs inside  a loop.  In this case we have to index
-the variables in a way that the index includes a counter that counts the number of loop iterations.
+the variables in a way such that the index includes a counter that counts the number of loop iterations.
 For concreteness, consider the  program shown in 
 Figure \ref{fig:power-iterative-annotated.stlx}.  
 Here, in line 5 the variable \mytt{r} has the index $n$ on the right side of the assignment,
@@ -271,7 +271,7 @@ $ a := x_1, \quad b := y_1$.
 We will show that the \mytt{while} loop satisfies the \blue{invariant}
 \begin{equation}
   \label{eq:powerInv}
-   r_n \cdot x_n^{y_n} = a^b.
+  \ds r_n \cdot x_n^{y_n} = a^b.
 \end{equation}
 This claim is proven by induction on the number of loop iterations.
 \begin{enumerate}
@@ -283,7 +283,7 @@ This claim is proven by induction on the number of loop iterations.
             $r_n \cdot x_n^{y_n} = r_1 \cdot x_1^{y_1} = 1 \cdot a^{b} = a^b$.
 \item[I.S.:] $n \mapsto n + 1$.
 
-            We proof proceeds by a case distinction with respect to the expression $y \mmod 2$:
+            We proof proceeds by a case distinction with respect to the expression $y_n \mmod 2$:
             \begin{enumerate}
             \item $y_n \mmod 2 = 1$.
 
@@ -323,15 +323,20 @@ $$
 \end{array}
 $$
 \\[0.2cm]
-This shows $r_N = a^b$ and since it is obvious that the \mytt{while} loop terminates, we have proven that
+This shows $r_N = a^b$.  The \mytt{while} loop terminates because we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$y_{n+1} = y_n \dv 2 < y_n$ \quad as long as \quad $y_n > 0$
+\\[0.2cm]
+and therefore $y_n$ must eventually become $0$.  Thus we have proven that
 $\mytt{power}(a,b) =a^b$ holds. \qed
 
-\exercise
+\exerciseEng
 Use the method of symbolic program execution to prove the correctness of the implementation of the
 \href{https://en.wikipedia.org/wiki/Euclidean_algorithm}{Euclidean algorithm} that is shown in Figure
 \ref{fig:gcd.stlx} on page \pageref{fig:gcd.stlx}.  During the proof 
 you should make use of the fact that for all positive natural numbers $x$ and $y$ the function $\mytt{ggt}$
-that computes the greatest common divisor of $m$ and $n$ satisfies the equation
+that computes the greatest common divisor of $x$ and $x$ satisfies the equation
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mytt{ggt}(x, y) = \mytt{ggt}(x \,\mytt{\%}\, y, y)$.
@@ -342,7 +347,9 @@ Furthermore, the invariant of the \mytt{while} loop is
 $\mytt{ggt}(x_n, y_n) = \mytt{ggt}(a, b)$ \quad where $a := x_1$ and $b := y_1$.
 \\[0.2cm]
 Using this invariant you should be able to prove that $\mytt{gcd}(a, b) = \mytt{ggt}(a, b)$ for all
-$a, b \in \mathbb{N}$ such that $a > 0$.
+$a, b \in \mathbb{N}$ such that $a > 0$.  Note that in order to carry out the proof you have to distinguish
+between the mathematical function \mytt{ggt} that computes the greatest common divisor and the \textsl{Python}
+function \mytt{gcd} that is implemented in Figure \ref{fig:gcd.stlx}.
 \eox
 
 \begin{figure}[!ht]
@@ -367,7 +374,6 @@ $a, b \in \mathbb{N}$ such that $a > 0$.
 \caption{The Euclidean algorithm.}
 \label{fig:gcd.stlx}
 \end{figure}
-\pagebreak
 
 \section{Check Your Understanding}
 \begin{enumerate}[(a)]

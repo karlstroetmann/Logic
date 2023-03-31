@@ -1,218 +1,213 @@
-\chapter{Aussagenlogik}
-\section{Überblick}
-Die Aussagenlogik beschäftigt sich mit der Verknüpfung \blue{einfacher Aussagen} durch
-\blue{Junktoren}.  Dabei sind Junktoren\index{Junktor} Worte wie ``\blue{und}'', ``\blue{oder}'',
-``\blue{nicht}'', ``\blue{wenn $\cdots$, dann}'', und ``\blue{genau dann, wenn}''.  Unter
-\blue{einfachen Aussagen} verstehen wir Sätze, die 
+\chapter{Propositional Calculus}
+\section{Introduction}
+\href{https://en.wikipedia.org/wiki/Propositional_calculus}{Propositional calculus}
+(also known as \blue{propositional logic}) deals with the connection of \blue{propositions}
+(a.k.a. \blue{simple statements}) through 
+\blue{logical connectives}.  Here, logical connectives are words like ``\blue{and}'', ``\blue{or}'',
+``\blue{not}'', ``\blue{if $\cdots$, then}'', and ``\blue{exactly if}''.  A
+\blue{proposition} is a sentence  that 
 \begin{itemize}
-\item einen Tatbestand ausdrücken, der entweder wahr oder falsch ist und 
-\item selber keine Junktoren enthalten.
+\item expresses a fact that is either true or false and
+\item that does not contain any logical connectives.
 \end{itemize}
-Beispiele für einfache Aussagen sind
+Examples of propositions are the following:
 \begin{enumerate}
-\item ``\textsl{Die Sonne scheint.}''
-\item ``\textsl{Es regnet.}''
-\item ``\textsl{Am Himmel ist ein Regenbogen.}''
+\item ``\textsl{The sun is shining}''
+\item ``\textsl{It is raining.}''
+\item ``\textsl{There is a rainbow in the sky.}''
 \end{enumerate}
-Einfache Aussagen dieser Art bezeichnen wir auch als \blue{atomare}\index{atomare Aussage} Aussagen, weil sie
-sich nicht weiter in 
-Teilaussagen zerlegen lassen.  Atomare Aussagen lassen sich mit Hilfe der eben angegebenen Junktoren zu 
-\blue{zusammengesetzten Aussagen}\index{zusammengesetzte Aussagen} verknüpfen.  Ein Beispiel für eine
-zusammengesetzte Aussage wäre \\[0.2cm] 
-\hspace*{1.3cm} \textsl{\blue{Wenn} die Sonne scheint \blue{und} es regnet, \blue{dann} ist ein Regenbogen am Himmel.} 
+We also refer to propositions as \blue{atomic} statements because they 
+cannot be further decomposed into propositions.  Propositions can be combined by means of logical connectives
+into \blue{composite statements}\index{composite statements}.  An example for a
+composite statement would be
+\\[0.2cm] 
+\hspace*{1.3cm}
+\textsl{\blue{If} the sun is shining \blue{and} it is raining, \blue{then} there is a rainbow in the sky.} 
 \hspace*{\fill} (1)
 \\[0.2cm]
-Die Aussage ist aus den drei atomaren Aussagen ``\textsl{Die Sonne scheint.}'', ``\textsl{Es regnet.}'', und
-``\textsl{Am Himmel ist ein Regenbogen.}'' mit Hilfe der Junktoren ``\textsl{und}'' und
-``\textsl{wenn $\cdots$, dann}'' zusammen gesetzt worden.
-Die Aussagenlogik untersucht, wie sich der Wahrheitswert zusammengesetzter Aussagen
-aus dem Wahrheitswert der einzelnen Teilaussagen berechnen lässt.  Darauf
-aufbauend wird dann gefragt, in welcher Art und Weise wir aus gegebenen Aussagen neue 
-Aussagen folgern können.
+This statement is composed of the three atomic propositions
+\begin{itemize}
+\item ``\textsl{The sun is shining.}'', 
+\item ``\textsl{It is raining.}'', and
+\item ``\textsl{There is a rainbow in the sky.}''
+\end{itemize}
+using the logical connectives ``\textsl{and}'' and ``\textsl{if $\cdots$, then}''.
+Propositional calculus investigates how the truth value of composite statements is
+calculated from the truth values of the propositions.  Furthermore, it investigates
+how new statements can be derived from given statements. 
 
-Um die Struktur komplexerer Aussagen übersichtlich darstellen zu können, führen wir in der Aussagenlogik zunächst sogenannte
-\blue{Aussage-Variablen} \index{Aussage-Variablen} ein.  Diese Variablen sind Namen, die für atomare Aussagen stehen.
-Zusätzlich führen wir für die Junktoren \index{Junktor}
-``\blue{nicht}'', ``\blue{und}'', ``\blue{oder}'', ``\blue{wenn, $\cdots$ dann}'', und 
-``\blue{genau dann, wenn}'' die Symbole ``\blue{$\neg$}'', ``\blue{$\wedge$}'', ``\blue{$\vee$}'',
-``\blue{$\rightarrow$}'' und ``\blue{$\leftrightarrow$}'' als Abkürzungen ein: 
+In order to analyze the structure of complex statements we introduce \blue{propositional variables}
+\index{propositional variables}.
+These propositional variables are just names that denote propositions.
+Furthermore, we introduce mathematical operators for the logical connectives
+``\blue{not}'', ``\blue{and}'', ``\blue{or}'', ``\blue{if, $\cdots$ then}'', and 
+``\blue{if and only if}''.
 \begin{enumerate}
-\item $\neg a$ \index{$\neg a$}\quad\quad\ steht für \quad \blue{nicht} $a$ 
+\item $\neg a$ \index{$\neg a$}\quad\quad\ is read as \quad \blue{not} $a$ 
       \vspace*{-0.2cm}
 
-\item $a \wedge b$ \index{$a \wedge b$}\,\quad\ steht für \quad $a$ \blue{und} $b$
+\item $a \wedge b$ \index{$a \wedge b$}\,\quad\ is read as \quad $a$ \blue{and} $b$
       \vspace*{-0.2cm}
 
-\item $a \vee b$ \index{$a \vee b$}\,\quad\ steht für \quad $a$ \blue{oder} $b$
+\item $a \vee b$ \index{$a \vee b$}\,\quad\ is read as \quad $a$ \blue{or} $b$
       \vspace*{-0.2cm}
 
-\item $a \rightarrow b$ \index{$a \rightarrow b$}  \quad steht für \quad \blue{wenn} $a$, \blue{dann} $b$
+\item $a \rightarrow b$ \index{$a \rightarrow b$}  \quad is read as \quad \blue{if} $a$, \blue{then} $b$
       \vspace*{-0.2cm}
 
-\item $a \leftrightarrow b$ \index{$a \leftrightarrow b$} \quad steht für \quad  $a$ \blue{genau dann, wenn} $b$
+\item $a \leftrightarrow b$ \index{$a \leftrightarrow b$} \quad is read as \quad  $a$ \blue{if and only if} $b$
 \end{enumerate}
-Aussagenlogische Formeln werden aus Aussage-Variablen mit Hilfe von Junktoren aufgebaut
-und können beliebig komplex sein.  Die Aussage (1) können wir mit Hilfe der Junktoren kürzer als
+\blue{Propositional formulas} are built from propositional variables using the propositional operators shown
+above and can have an arbitrary complexity.
+Using propositional operators, the statement (1) can be written as follows:
  \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{SonneScheint} \wedge \texttt{EsRegnet} \rightarrow \texttt{Regenbogen}$ 
+$\texttt{sunny} \wedge \texttt{raining} \rightarrow \texttt{rainBow}$.
 \\[0.2cm]
-schreiben.  Hier haben wir $\texttt{SonneScheint}$, $\texttt{EsRegnet}$ und $\texttt{Regenbogen}$
-als Aussage-Variablen verwendet.  Durch die Benutzung der Junktoren wird die logische Struktur der Aussage
-klarer. 
-Bestimmte aussagenlogische Formeln sind offenbar immer wahr, egal was
- wir für die einzelnen Teilaussagen einsetzen.  Beispielsweise ist eine Formel der Art
+Here, we have used  $\texttt{sunny}$, $\texttt{rainy}$ and $\texttt{rainBow}$ as propositional variables.
+
+Some propositional formulas are always true, no matter how the propositional variables are interpreted,
+For example, the propositional formula 
 \\[0.2cm]
 \hspace*{1.3cm}
 $p \vee \neg p$
 \\[0.2cm]
-unabhängig von dem Wahrheitswert der Aussage $p$ immer wahr.  Eine aussagenlogische
-Formel, die immer wahr ist, bezeichnen wir als eine \blue{Tautologie}\index{Tautologie}.  Andere
-aussagenlogische Formeln sind nie wahr, beispielsweise ist die Formel
+is always true, it does not matter whether the proposition denoted by $p$ is true or false.  A propositional
+formula that is always true is known as a  \blue{tautology}\index{tautology}.  There are also propositional
+formulas that are never true.  For example, the propositional formula
 \\[0.2cm]
 \hspace*{1.3cm}
 $p \wedge \neg p$
 \\[0.2cm]
-immer falsch.  Eine Formel heißt \blue{erfüllbar}\index{erfüllbar}, wenn es wenigstens eine Möglichkeit
-gibt, dass die Formel wahr wird, ansonsten heißt sie \blue{unerfüllbar}\index{unerfüllbar}  Im Rahmen der
-Vorlesung werden wir verschiedene Verfahren 
-entwickeln, mit denen es möglich ist zu entscheiden, ob eine aussagenlogische Formel eine
-Tautologie ist oder ob sie erfüllbar ist.  Solche Verfahren spielen
-in der Praxis eine wichtige Rolle.
+is always false.  A propositional formula is called \blue{satisfiable}\index{satisfiable}, if there is at least
+one way to assign truth values to the variables such that the formula is true.  Otherwise the formula is called
+\blue{unsatisfiable}\index{unsatisfiable}.  In this lecture we will discuss a number of different algorithms to
+check whether a formula is satisfiable.  These algorithms are very important in a number of industrial
+applications.  For example, a very important application is the design of digital circuits.
+Furthermore, a number of puzzles can be translated into propositional formulas and finding a solution to these
+puzzles amounts to checking the satisfiable of these formulas.  For example, we will solve the
+\href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{eight queens puzzle} in this way.
 
-Der Rest dieses Kapitels ist wir folgt strukturiert:
+The rest of this chapter is structured as follows:
+
 \begin{enumerate}
-\item Wir diskutieren Anwendungen der Aussagenlogik.
-\item Danach definieren wir formal, wie aussagenlogische Formeln aufgebaut sind.
-  
-      Formal sprechen wir in diesem Zusammenhang von der \blue{Syntax} aussagenlogische Formeln.
-\item Anschließend diskutieren wir die Auswertung aussagenlogischer Formeln.
-      Wir legen also fest, welchen Wahrheitswert eine aussagenlogische Formel unter einer gegebenen Belegung
-      annimmt.  Wir zeigen in diesem Zusammenhang auch, wie die Auswertung aussagenlogischer Formeln sich in
-      \textsl{Python}  implementieren lässt.
+\item We list several applications of propositional logic.
+\item We define the notion of propositional formulas, i.e.~we define the set of strings that are
+      propositional formulas.
 
-      Hier sprechen wir von der \blue{Semantik} der aussagenlogischen Formeln.
-\item Danach führen wir die Begriffe der \blue{Tautologie} und der \blue{Erfüllbarkeit} einer aussagenlogischen
-      Formel formal ein.
-      \begin{enumerate}
-      \item Eine aussagenlogische Formel ist eine \blue{Tautologie} genau dann, wenn Sie unter jeder möglichen
-            Interpretation der aussagenlogischen Variablen wahr ist.
-      \item Eine aussagenlogischen Formel ist \blue{erfüllbar} genau dann, wenn es eine Interpretation ihrer
-            aussagenlogischen Variablen gibt, unter der die Formel wahr wird.
-      \end{enumerate}
-\item Wir diskutieren, wie sich aussagenlogische Formeln algebraisch umformen lassen und diskutieren
-      in diesem Zusammenhang den Begriff der \blue{konjunktiven Normalform}.  Formeln, die in konjunktiver
-      Normalform vorliegen, lassen sich auf dem Rechner leichter verarbeiten.
-\item Anschließend diskutieren wir den \blue{Herleitungs-Begriff}.  Dabei geht es darum, aus Formeln,
-      die als Axiome vorgegebenen sind, neue Formeln herzuleiten.
-\item Schließlich stellen wir das Verfahren von \blue{Davis und Putnam} vor.  Mit diesem Verfahren lässt sich
-      überprüfen, ob eine aussagenlogische Formel erfüllbar ist.  Als Anwendung zeigen wir, wie das
-      8-Damen-Problem mit Hilfe des Verfahrens von Davis und Putnam gelöst werden kann.
+      This is known as the \blue{syntax} of propositional formulas.
+\item Next we discuss the \blue{evaluation} of propositional formulas and implement the evaluation in \textsl{Python}.
+
+      This is known as the \blue{semantics} of propositional formulas.
+\item Next, we formally define the notions \blue{tautology} and  \blue{satisfiability} for propositional formulas.   
+\item We discuss algebraic manipulations of propositional formulas and introduce the notion of
+      a  \blue{conjunctive normal form}.
+
+      Some algorithms discussed later require that the propositional formulas have conjunctive normal form.
+\item Next we discuss the concept of a  \blue{logical derivation}.  The purpose of a logical derivation is to
+      derive new formulas from a given set of formulas.
+\item Finally we discuss the algorithm of \blue{Davis and Putnam} for checking the satisfiability of a set of
+      propositional formulas.  As an application, we solve the eight queens puzzle with this algorithm.
 \end{enumerate}
 
-\section{Anwendungen der Aussagenlogik}
-Die Aussagenlogik bildet nicht nur die Grundlage für die Prädikatenlogik, die wir im nächsten Kapitel
-diskutieren werden, sondern sie hat auch wichtige prak\-tische Anwendungen.  Aus der großen Zahl der
-industriellen Anwendungen möchte ich stellvertretend vier Beispiele nennen: 
+\section{Applications of Propositional Logic}
+Propositional logic is not only the basis of first order logic, but it also has important practical
+applications.  As there are many different applications of propositional logic, I will only list those
+applications which I have seen myself during the years when I did work in industry.
 \begin{enumerate}
-\item Analyse und Design \blue{digitaler Schaltungen}.
+\item Analysis and design of electronic circuits.
 
-      Komplexe digitale Schaltungen bestehen heute aus Milliarden von logischen Gattern.\footnote{Die Seite 
+      Modern digital circuits are comprised of hundreds of millions of logical gates.\footnote{The web page
       \href{https://en.wikipedia.org/wiki/Transistor_count}{\texttt{https://en.wikipedia.org/wiki/Transistor\_count}}
-      gibt einen Überblick über die Komplexität moderner Prozessoren.}
-      Ein Gatter ist dabei, aus logischer Sicht betrachtet, ein Baustein, der einen
-      der logischen Junktoren wie ``\blue{und}'', ``\blue{oder}'', ``\blue{nicht}'',
-      etc.~auf elektronischer Ebene repräsentiert. 
-  
-      Die Komplexität solcher Schaltungen wäre ohne den Einsatz
-      rechnergestützter Verfahren zur Verifikation nicht mehr beherrschbar.  Die
-      dabei eingesetzten Verfahren sind Anwendungen der Aussagenlogik. 
+      gives an overview of the complexity of modern processors.}
+      A logical gate  is a building block, that represents a logical connective such as ``\blue{and}'',
+      ``\blue{or}'', ``\blue{not}'' as an electronic circuit.
 
-      Eine ganz konkrete Anwendung ist der Schaltungs-Vergleich.  Hier werden zwei
-      digitale Schaltungen als aussagenlogische Formeln dargestellt.
-      Anschließend wird versucht, mit aussagenlogischen Mitteln die Äquivalenz dieser
-      Formeln zu zeigen. Software-Werkzeuge, die für die Verifikation digitaler
-      Schaltungen eingesetzt werden, kosten zum Teil mehr als $100\,000\,\symbol{36}$.
-      Die Firma Magma bietet beispielsweise den \blue{Equivalence-Checker}
-      \href{https://www.eetimes.com/document.asp?doc_id=1217672}{Quartz Formal} zum Preis
-      von $150\,000\,
-      \symbol{36}$ pro Lizenz an.  Eine solche Lizenz ist dann drei Jahre lang gültig.
-\item Erstellung von \blue{Verschlussplänen} für die Weichen und Signale von Bahnhöfen.
+      The complexity of modern digital circuits would be unmanageable without
+      the use of computer-aided verification methods.  The methods used are applications of propositional logic. 
+      A very concrete application is \blue{circuit comparison}.  Here two
+      digital circuits are represented as propositional formulas.
+      Afterwards it is tried to show the equivalence of these formulas by means of propositional logic.
+      Software tools, which are used for the verification of digital
+      circuits sometimes cost more than $100\,000\,\symbol{36}$.
+      For example, the company Magma offers the \blue{equivalence checker}
+      \href{https://www.eetimes.com/document.asp?doc_id=1217672}{Quartz Formal} at a price
+      of $150\,000\,
+      \symbol{36}$ per license.  Such a license is then valid for three years.
 
-      Bei einem größeren Bahnhof gibt es einige hundert Weichen und Signale, die ständig
-      neu eingestellt werden müssen, um für die Züge sogenannte \blue{Fahrstraßen} zu
-      realisieren.  Verschiedene Fahrstraßen dürfen sich aus Sicherheitsgründen nicht kreuzen.  
-      Die einzelnen Fahrstraßen werden durch sogenannte \blue{Verschlusspläne} beschrieben.
-      Die Korrektheit solcher Verschlusspläne kann durch aussagenlogische Formeln ausgedrückt werden.
-\item Eine Reihe \blue{kombinatorischer Puzzles} lassen sich als aussagenlogische Formeln
-      kodieren und können dann mit Hilfe aussagenlogischer Methoden gelöst werden.  Als ein
-      Beispiel werden wir in der Vorlesung das 
-      \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{8-Damen-Problem} behandeln.  Dabei
-      geht es um die Frage, ob 8 Damen so auf einem Schachbrett angeordnet werden können, dass
-      keine der Damen eine andere Dame bedroht.
+
+\item Controlling the signals and switches of railroad stations.
+
+      At a larger railway station, there are several hundred switches and signals that have to be 
+      re\-adjusted constantly to provide routes for the trains.
+      For safety reasons, different routes must not cross each other.  
+      The individual routes are described by so-called \blue{closure plans}.
+      The correctness of these closure plans can be analyzed via propositional formulas.
+\item A number of \blue{puzzles} can be coded as propositional formulas and can then be solved with the
+      algorithm of Davis and Putnam.
+      For example, we will discuss the 
+      \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{eight queens puzzle} in this lecture.
+      This puzzle asks to place eight queens on a chess board such that no two queens can attack each other.
 \end{enumerate}
 
-\section{Formale Definition der aussagenlogischen Formeln}
-Wir behandeln zunächst die \blue{Syntax} der Aussagenlogik und besprechen anschließend die
-\blue{Semantik}.  Die \blue{Syntax}\index{Syntax} gibt an, wie Formeln geschrieben werden und wie sich Formeln zu
-\blue{Beweisen} verknüpfen lassen.  Die \blue{Semantik}\index{Semantik} befasst sich mit der \blue{Bedeutung} der Formeln.
-Nachdem wir die Semantik der aussagenlogischen Formeln mit Hilfe der Mengenlehre definiert haben, zeigen wir
-anschließend, wie sich diese Semantik in \textsl{Python} implementieren lässt.
+\section{The Formal Definition of Propositional Formulas}
+In this section we first cover the \blue{syntax} of propositional formulas.  After that, we discuss their
+\blue{semantics}. The  \blue{syntax}\index{syntax} defines the way in which we represent formulas as strings
+and how we can combine formulas into a \blue{proof}.  The  \blue{semantics}\index{semantics} of propositional
+logic is concerned with the  \blue{meaning} of propositional formulas.
+We will first define the semantics of propositional logic with the help of set theory.
+Then, we implement this semantics in \textsl{Python}.
 
-\subsection{Syntax der aussagenlogischen Formeln}
-In diesem Abschnitt legen wir fest, was aussagenlogische Formeln sind:  Dazu werden wir aussagenlogische
-Formeln als Menge von Strings definieren, wobei die Strings in der Menge bestimmte Eigenschaften haben müssen,
-damit wir von aussagenlogischen Formeln sprechen können.
-
-Zunächst betrachten wir eine Menge $\mathcal{P}$ \index{$\mathcal{P}$, Menge der Aussage-Variablen} von
-sogenannten  \blue{Aussage-Variablen}\index{Aussage-Variablen} als gegeben. 
-Typ\-ischerweise besteht $\mathcal{P}$ aus der Menge der kleinen lateinischen Buchstaben, die
-zusätzlich noch indiziert sein dürfen.  Beispielsweise werden wir
+\subsection{The Syntax of Propositional Formulas}
+We define propositional formulas as strings.  To this end we assume a set  $\mathcal{P}$ \index{$\mathcal{P}$, set of propositional variables} 
+of so called \blue{propositional variables}\index{propositional variables} as given. 
+Typically, $\mathcal{P}$ is the set of all lower case Latin characters, which additionally may be indexed.
+For example, we will use 
 \\[0.2cm]
 \hspace*{1.3cm}
 $p$, $q$, $r$, $p_1$, $p_2$, $p_3$
 \\[0.2cm]
-als Aussage-Variablen verwenden.
-Aussagenlogische Formeln sind dann Wörter, die aus dem Alphabet
+as propositional variables.  Then, propositional formulas are strings that are formed from the alphabet
 $$ 
   \mathcal{A} := \mathcal{P} \cup \bigl\{ \verum, \falsum, \neg, \vee, \wedge,
-   \rightarrow, \leftrightarrow, (, ) \bigr\}
+   \rightarrow, \leftrightarrow, (, ) \bigr\}.
 $$
-gebildet werden.  Wir definieren die Menge der
-\blue{aussagenlogischen Formeln}\index{aussagenlogische Formel}
-\index{$\mathcal{F}$: Menge der aussagenlogischen Formeln}
-$\mathcal{F}$ durch Induktion:
+We define the set $\mathcal{F}$ of 
+\blue{propositional formulas}\index{propositional formulas}
+\index{$\mathcal{F}$: set of propositional formulas}
+by induction:
 \begin{enumerate}
-\item $\verum \in \mathcal{F}$ und $\falsum \in \mathcal{F}$.
+\item $\verum \in \mathcal{F}$ and $\falsum \in \mathcal{F}$.
 
-      Hier steht $\verum$ \index{$\verum$, Verum} \index{Verum} für die Formel, die immer wahr ist, während $\falsum$
-      \index{$\falsum$, Falsum} \index{Falsum} für die 
-      Formel steht, die immer falsch ist.  Die Formel $\verum$ trägt den Namen
-      \blue{Verum}\footnote{Verum ist das lateinische Wort für ``wahr''.},  für $\falsum$ sagen wir  
-      \blue{Falsum}\footnote{Falsum ist das lateinische Wort für ``falsch''.}.
-\item Ist $p \in \mathcal{P}$, so gilt auch $p \in \mathcal{F}$.
+      Here $\verum$ \index{$\verum$, Verum} \index{Verum} denotes the formula that is always true, while $\falsum$
+      \index{$\falsum$, Falsum} \index{Falsum} denotes the formula that is always false.
+      The formula $\verum$ is called
+      \blue{verum}\footnote{Verum is the Latin word for ``true''.},  while $\falsum$ is called
+      \blue{Falsum}\footnote{Falsum is the Latin word for ``false''.}.
+\item If $p \in \mathcal{P}$, then  $p \in \mathcal{F}$.
 
-      Jede aussagenlogische Variable ist also auch eine aussagenlogische Formel.
-\item Ist $f \in \mathcal{F}$, so gilt auch $\neg f \in \mathcal{F}$.
+      Every propositional variable is also a propositional formula.
+\item If $f \in \mathcal{F}$, then  $\neg f \in \mathcal{F}$.
 
-      Die Formel $\neg f$ \index{$\neg f$} bezeichnen wir auch als die \blue{Negation}\index{Negation} von $f$.
-\item Sind $f_1, f_2 \in \mathcal{F}$, so gilt auch
+      The formula  $\neg f$ \index{$\neg f$} (read: \blue{not $f$}) is called the \blue{negation}\index{negation} of $f$.
+\item If $f_1, f_2 \in \mathcal{F}$, then we also have
       \begin{tabbing}
-        $(f_1 \vee f_2) \in \mathcal{F}$ \index{$\vee$, oder} \hspace*{0.5cm} \= (\textsl{gelesen}: \quad \= $f_1$ oder $f_2$ \hspace*{2.5cm} \=
-         auch: \blue{Disjunktion}\index{Disjunktion}\quad\= von $f_1$ und $f_2$), \\
-        $(f_1 \wedge f_2) \in \mathcal{F}$ \index{$\wedge$, und} \> (\textsl{gelesen}: \> $f_1$ und $f_2$ \>
-         auch: \blue{Konjunktion}\index{Konjunktion}\> von $f_1$ und $f_2$), \\
-        $(f_1 \rightarrow f_2) \in \mathcal{F}$ \index{$\rightarrow$, wenn dann} \> (\textsl{gelesen}:       \> wenn $f_1$, dann $f_2$ \>
-         auch: \blue{Implikation}\index{Implikation}\> von $f_1$ und $f_2$), \\
-        $(f_1 \leftrightarrow f_2) \in \mathcal{F}$ \index{$\leftrightarrow$ genau dann, wenn} \> (\textsl{gelesen}:       \> $f_1$ genau dann, wenn $f_2$ \>
-         auch: \blue{Bikonditional}\index{Bikonditional}\> von $f_1$ und $f_2$).            
+        $(f_1 \vee f_2) \in \mathcal{F}$ \index{$\vee$, or} \hspace*{0.5cm} \= (\textsl{read}: \quad \= $f_1$ or $f_2$ \hspace*{2.3cm} \=
+         also: \blue{disjunction}\index{disjunction}\qquad\= of $f_1$ and $f_2$), \\
+        $(f_1 \wedge f_2) \in \mathcal{F}$ \index{$\wedge$, and} \> (\textsl{read}: \> $f_1$ and $f_2$ \>
+         also: \blue{conjunction}\index{conjunction}\> of $f_1$ and $f_2$), \\
+        $(f_1 \rightarrow f_2) \in \mathcal{F}$ \index{$\rightarrow$, if $\cdots$, then} \> (\textsl{read}:       \> if $f_1$, then $f_2$ \>
+         also: \blue{implication}\index{implication}\> of $f_1$ and $f_2$), \\
+        $(f_1 \leftrightarrow f_2) \in \mathcal{F}$ \index{$\leftrightarrow$ if and only iff} \>
+        (\textsl{read}:       \> $f_1$ if and only if $f_2$ \>
+        also: \blue{biconditional}\index{biconditional}\> of $f_1$ and $f_2$).            
       \end{tabbing}
 \end{enumerate}
-Die Menge $\mathcal{F}$ der aussagenlogischen Formeln ist nun die kleinste Teilmenge der aus dem Alphabet $\mathcal{A}$
-gebildeten Wörter, welche die oben aufgelisteten Abschluss-Eigenschaften hat.
+The set  $\mathcal{F}$ of propositional formulas is the smallest set of those strings formed from the characters
+in the alphabet $\mathcal{A}$ that has the closure properties given above.
 
-\example 
-Es sei $\mathcal{P} := \{ p, q, r \}$. Dann gilt:
+\exampleEng 
+Assume that $\mathcal{P} := \{ p, q, r \}$. Then we have the following:
 \begin{enumerate}
 \item $p \in \mathcal{F}$,
 \item $(p \wedge q) \in \mathcal{F}$,
@@ -220,113 +215,94 @@ Es sei $\mathcal{P} := \{ p, q, r \}$. Dann gilt:
 \end{enumerate}
 
 \noindent
-Um Klammern zu sparen, vereinbaren wir die folgenden Regeln:
+In order to save parentheses we agree on the following rules:
 \begin{enumerate}
-\item Äußere Klammern werden weggelassen, wir schreiben also beispielsweise \\[0.2cm]
-      \hspace*{1.3cm} $p \wedge q$ \quad statt \quad $(p \wedge q)$.
-\item Der Junktor $\neg$ bindet stärker als alle anderen Junktoren.
-\item Die Junktoren  $\vee$ und $\wedge$ werden implizit links geklammert, d.h.~wir
-      schreiben 
+\item Outermost parentheses are dropped.  Therefore, we write \\[0.2cm]
+      \hspace*{1.3cm} $p \wedge q$ \quad instead of \quad $(p \wedge q)$.
+\item The negation operator $\neg$ has a higher precedence than all other operators. 
+\item The operators  $\vee$ and $\wedge$ associate to the left.  Therefore, we write 
       \\[0.2cm]
-      \hspace*{1.3cm} $p \wedge q \wedge r$ \quad statt \quad $(p \wedge q) \wedge r$.
-      \\[0.2cm]
-      Operatoren, die implizit nach \underline{links} geklammert werden, nennen wir
-      \blue{links-assoziativ}\index{links-assoziativ}. 
+      \hspace*{1.3cm} $p \wedge q \wedge r$ \quad instead of \quad $(p \wedge q) \wedge r$.
 
-      \underline{\color{red}Beachten} Sie, dass wir für diese Vorlesung vereinbaren, dass die Junktoren
-      $\wedge$ und $\vee$ dieselbe Bindungsstärke haben.  Das ist anders als in der Sprache \textsl{Python},
-      denn dort bindet der Operator ``\texttt{and}'' stärker als der Operator ``\texttt{or}''.
-      In den Sprachen \texttt{C} und \textsl{Java} bindet der Operator ``\texttt{\&\&}'' ebenfalls stärker als
-      der Operator ``\texttt{||}''. 
-\item Der Junktor $\rightarrow$ wird implizit \underline{rechts} geklammert, d.h.~wir
-      schreiben \\[0.2cm]
-      \hspace*{1.3cm} $p \rightarrow q \rightarrow r$ \quad statt \quad $p \rightarrow (q \rightarrow r)$.
-      \\[0.2cm]
-      Operatoren, die implizit nach rechts geklammert werden, nennen wir
-      \blue{rechts-assoziativ}\index{rechts-assoziativ}. 
-\item Die Junktoren $\vee$ und $\wedge$ binden stärker als $\rightarrow$, wir schreiben
-      also \\[0.2cm]
-      \hspace*{1.3cm} $p \wedge q \rightarrow r$ \quad statt \quad $(p \wedge q) \rightarrow r$.
-\item Der Junktor $\rightarrow$ bindet stärker als $\leftrightarrow$, wir schreiben
-      also \\[0.2cm]
-      \hspace*{1.3cm} $p \rightarrow q \leftrightarrow r$ \quad statt \quad $(p \rightarrow q) \leftrightarrow
+      \underline{\color{red}Note} that in this lecture the logical operators 
+      $\wedge$ and $\vee$ have the \underline{same} precedence.  This is different from the programming
+      language  \textsl{Python}.  In \textsl{Python} the operator ``\texttt{and}'' has a higher precedence than
+      the  operator ``\texttt{or}''.
+      
+      In the programming languages  \texttt{C} and \textsl{Java} the  operator ``\texttt{\&\&}'' has a higher
+      precedence than the  operator ``\texttt{||}''. 
+\item The operator $\rightarrow$ is \underline{ri}g\underline{ht associative}, i.e.~we write \\[0.2cm]
+      \hspace*{1.3cm} $p \rightarrow q \rightarrow r$ \quad instead of \quad $p \rightarrow (q \rightarrow r)$.
+\item The operators  $\vee$ and $\wedge$ have a higher precedence than the operator $\rightarrow$.  Therefore,
+      we write \\[0.2cm]
+      \hspace*{1.3cm} $p \wedge q \rightarrow r$ \quad instead of \quad $(p \wedge q) \rightarrow r$.
+\item The operator $\rightarrow$ has a higher precedence than the operator $\leftrightarrow$.  Therefore, we write \\[0.2cm]
+      \hspace*{1.3cm} $p \rightarrow q \leftrightarrow r$ \quad instead of \quad $(p \rightarrow q) \leftrightarrow
       r$.
-\item Beachten Sie, dass der Junktor $\leftrightarrow$ weder rechts- noch links-assoziativ ist.  Daher ist ein
-      Ausdruck der Form
+\item You should note that the operator $\leftrightarrow$ neither associates to the left nor to the right.
+      Therefore, the expression
       \\[0.2cm]
       \hspace*{1.3cm}
       $p \leftrightarrow q \leftrightarrow r$
       \\[0.2cm]
-      \underline{\red{undefiniert}} und muss geklammert werden.  Wenn Sie eine solche Formel in einem Buch sehen, ist dies
-      in der Regel als Abkürzung für die Formel
+      is \underline{\red{ill-defined}} and has to be parenthesised.  If you encounter this type of expression
+      in a book it is usually meant as an abbreviation for the expression
       \\[0.2cm]
       \hspace*{1.3cm}
-      $(p \leftrightarrow q) \wedge (q \leftrightarrow r)$
+      $(p \leftrightarrow q) \wedge (q \leftrightarrow r)$.
       \\[0.2cm]
-      zu verstehen.  Wir werden diese Form der Abkürzung aber nicht verwenden.
+      We will not use this kind of abbreviation.
 \end{enumerate}
 
-\remark
-Wir werden im Rest dieser Vorlesung eine Reihe von Beweisen führen, bei denen es darum geht,
-mathematische Aussagen über Formeln nachzuweisen.  Bei diesen Beweisen werden wir natürlich
-ebenfalls aussagenlogische Junktoren verwenden.  Dabei entsteht dann die Gefahr, dass wir die Junktoren,
-die wir in unseren Beweisen verwenden, mit den Junktoren, die in den aussagenlogischen Formeln
-auftreten, verwechseln.  Um dieses Problem zu umgehen vereinbaren wir:
+\remarkEng
+Later, we will conduct a series of proofs that prove mathematical statements about formulas.
+In these proofs we will make use of propositional connectives.  In order to distinguish these connectives from
+the connectives of propositional logic we agree on the following:
 \begin{enumerate}
-\item Innerhalb einer aussagenlogischen Formel wird der Junktor  
-      ``\blue{nicht}'' als ``$\neg$''  geschrieben.
+\item Inside a propositional formula, the propositional connective
+      ``\blue{not}'' is written as ``$\neg$''.
   
-      Bei den Beweisen, die wir über aussagenlogische Formeln führen,
-      schreiben wir den Junktor statt dessen als das Wort ``nicht''.
-
-\item Innerhalb einer aussagenlogischen Formel wird der Junktor  
-      ``\blue{und}'' als ``$\wedge$''  geschrieben.
+      When we prove a statement about propositional formulas, we use the word ``\texttt{not}'' instead.
+\item Inside a propositional formula, the propositional connective
+      ``\blue{and}'' is written as ``$\wedge$''.
   
-      Bei den Beweisen, die wir über aussagenlogische Formeln führen,
-      verwenden wir stattdessen das Wort ``und''.
-\item Innerhalb einer aussagenlogischen Formel wird der Junktor  
-      ``\blue{oder}'' als ``$\vee$''  geschrieben.
+      When we prove a statement about propositional formulas, we use the word ``\texttt{and}'' instead.
+\item Inside a propositional formula, the propositional connective
+      ``\blue{or}'' is written as ``$\vee$''.
   
-      Bei den Beweisen, die wir über aussagenlogische Formeln führen,
-      verwenden wir stattdessen das Wort ``oder''.
-\item Innerhalb einer aussagenlogischen Formel wird der Junktor  
-      ``\blue{wenn $\cdots$,  dann}'' als ``$\rightarrow$''  geschrieben.
+      When we prove a statement about propositional formulas, we use the word ``\texttt{or}'' instead.
+\item Inside a propositional formula, the propositional connective
+      ``\blue{if $\cdots$, then}'' is written as ``$\rightarrow$''.
   
-      Bei den Beweisen, die wir über aussagenlogische Formeln führen,
-      verwenden wir stattdessen das Symbol ``$\Rightarrow$''.
-\item Analog wird der Junktor ``\blue{genau dann, wenn}'' innerhalb einer aussagenlogischen Formel als
-      ``$\leftrightarrow$'' geschrieben, aber wenn wir diesen Junktor als Teil eines Beweises verwenden,
-      schreiben wir stattdessen ``$\Leftrightarrow$''. \eox      
+      When we prove a statement about propositional formulas, we use the symbol ``$\Rightarrow$'' instead.
+\item Inside a propositional formula, the propositional connective
+      ``\blue{if and only if}'' is written as ``$\leftrightarrow$''.
+  
+      When we prove a statement about propositional formulas, we use the symbol ``$\Leftrightarrow$'' instead.
+      \eox
 \end{enumerate}
 
-
-\subsection{Semantik der aussagenlogischen Formeln}
-In diesem Abschnitt definieren wir die \blue{Semantik}\index{Semantik}, also die Bedeutung, aussagenlogischer Formeln.  Wir
-legen also die \blue{Interpretation} oder auch \blue{Bedeutung} dieser Formeln fest.  Dazu ordnen wir den
-aussagenlogischen Formeln \blue{Wahrheitswerte} zu.  Damit dies möglich ist, definieren wir
-zunächst die Menge $\mathbb{B}$ der \blue{Wahrheitswerte}\index{Wahrheitswerte}:  \\[0.2cm] 
+\subsection{Semantics of Propositional Formulas}
+In this section we define the \blue{meaning} a.k.a.~the \blue{semantics}\index{semantics} of propositional
+formulas.  To this end we assign truth values to propositional formulas.  First, we define the set 
+$\mathbb{B}$ \index{$\mathcal{B} = \{ \texttt{True}, \texttt{False} \}$} of \blue{truth values}\index{truth values}:  \\[0.2cm] 
 \hspace*{1.3cm} $\mathbb{B} := \{ \texttt{True}, \texttt{False} \}$. \\[0.2cm]
-Damit können wir nun
-den Begriff einer \blue{aussagenlogischen Interpretation} festlegen.
+Next, we define the notion of a \blue{propositional valuation}.
 
-\begin{Definition}[Aussagenlogische Interpretation]
-  Eine \blue{aussagenlogische Interpretation}\index{aussagenlogische Interpretation $\mathcal{I}$}
-  \index{$\mathcal{I}$, aussagenlogische Interpretation} ist eine Funktion \\[0.2cm]
+\begin{Definition}[Propositional Valuation]
+  A \blue{propositional valuation}\index{propositional valuation $\mathcal{I}$}
+  \index{$\mathcal{I}$, propositional valuation} is a function \\[0.2cm]
   \hspace*{1.3cm} $\mathcal{I}:\mathcal{P} \rightarrow \mathbb{B}$, \\[0.2cm]
-  die jeder Aussage-Variablen $p\in \mathcal{P}$ einen Wahrheitswert $\mathcal{I}(p) \in \mathbb{B}$ zuordnet.
+  that maps the propositional variables  $p\in \mathcal{P}$ to truth values $\mathcal{I}(p) \in \mathbb{B}$.
   \eox
 \end{Definition}
-Eine aussagenlogische Interpretation wird oft auch als \blue{Belegung}\index{Belegung} der
-Aussage-Variablen mit Wahr\-heits-Werten bezeichnet.  
 
-Eine aussagenlogische Interpretation $\mathcal{I}$ interpretiert die Aussage-Variablen.
-Um nicht nur Variablen sondern auch aussagenlogische Formeln interpretieren zu können, 
-benötigen wir eine
-Interpretation der Junktoren ``$\neg$'', ``$\wedge$'', ``$\vee$'', ``$\rightarrow$'' und
-``$\leftrightarrow$''.  Zu diesem Zweck definieren wir auf der Menge $\mathbb{B}$ der Wahr\-heits-Werte
-Funktionen
-$\circneg$, $\circwedge$, $\circvee$, $\circright$ und $\circleftright$,
-mit deren Hilfe wir die aussagenlogischen Junktoren interpretieren können:
+A propositional valuation $\mathcal{I}$ maps only the propositional variables to truth values.
+In order to map propositional formulas to truth values we need to interpret the propositional operators 
+``$\neg$'', ``$\wedge$'', ``$\vee$'', ``$\rightarrow$'', and
+``$\leftrightarrow$'' as functions on the set $\mathcal{B}$.  To this end we define the functions
+$\circneg$, $\circwedge$, $\circvee$, $\circright$, and $\circleftright$.
+These functions have the following signatures:
 \begin{enumerate}
 \item $\circneg: \mathbb{B} \rightarrow \mathbb{B}$ \index{$\circneg$}
 \item $\circwedge: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$ \index{$\circwedge$}
@@ -334,9 +310,9 @@ mit deren Hilfe wir die aussagenlogischen Junktoren interpretieren können:
 \item $\circright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$ \index{$\circright$}
 \item $\circleftright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$ \index{$\circleftright$}
 \end{enumerate}
-Wir könnten die Funktionen $\circneg$, $\circwedge$, $\circvee$, $\circright$ und $\circleftright$ am
-einfachsten durch die folgende \blue{Wahrheits-Tafel} \index{Wahrheits-Tafel} (Tabelle
-\ref{tab:aussagen-logik}) definieren:   
+We will use these functions as the valuations of the propositional operators.
+It is easiest to define the functions $\circneg$, $\circwedge$, $\circvee$, $\circright$, and $\circleftright$
+via the following \blue{truth table} \index{truth table} (Table \ref{tab:aussagen-logik}):   
 
 
 \begin{table}[!ht]
@@ -357,37 +333,45 @@ einfachsten durch die folgende \blue{Wahrheits-Tafel} \index{Wahrheits-Tafel} (T
    \texttt{False} & \texttt{False}  & \texttt{True}   & \texttt{False} & \texttt{False} & \texttt{True}     & \texttt{True}  \\
 \hline
   \end{tabular}}
-  \caption{Interpretation der Junktoren}
+  \caption{Interpretation of the propositional operators.}
   \label{tab:aussagen-logik}
 \end{table}
-Nun können wir den Wahrheits-Wert, den eine aussagenlogische Formel $f$ unter einer gegebenen
-aussagenlogischen Interpretation $\mathcal{I}$ annimmt, durch Induktion nach dem Aufbau
-der Formel $f$ definieren.  Wir werden diesen Wert mit $\widehat{\mathcal{I}}(f)$ \index{$\widehat{\mathcal{I}}(f)$}
-bezeichnen.  Wir setzen:
+Then the truth value of a propositional formula $f$ under a given propositional valuation $\mathcal{I}$ is
+defined via induction of $f$.  We will denote the truth value as
+$\widehat{\mathcal{I}}(f)$ \index{$\widehat{\mathcal{I}}(f)$}.  We have
 \begin{enumerate}
 \item $\widehat{\mathcal{I}}(\falsum) := \texttt{False}$.
 \item $\widehat{\mathcal{I}}(\verum) := \texttt{True}$.
-\item $\widehat{\mathcal{I}}(p) := \mathcal{I}(p)$ für alle $p \in \mathcal{P}$.
-\item $\widehat{\mathcal{I}}(\neg f) := \circneg\;\bigl(\widehat{\mathcal{I}}(f)\bigr)$ für alle $f \in \mathcal{F}$.
+\item $\widehat{\mathcal{I}}(p) := \mathcal{I}(p)$ for all $p \in \mathcal{P}$.
+\item $\widehat{\mathcal{I}}(\neg f) := \circneg\;\bigl(\widehat{\mathcal{I}}(f)\bigr)$ for all $f \in \mathcal{F}$.
 \item $\widehat{\mathcal{I}}(f \wedge g) := \circwedge\;\bigl(\widehat{\mathcal{I}}(f), \widehat{\mathcal{I}}(g)\bigr)$ 
-      für alle $f, g \in \mathcal{F}$.
+      for all $f, g \in \mathcal{F}$.
 \item $\widehat{\mathcal{I}}(f \vee g) := \circvee\;\bigl(\widehat{\mathcal{I}}(f), \widehat{\mathcal{I}}(g)\bigr)$ 
-      für alle $f, g \in \mathcal{F}$.
+      for all $f, g \in \mathcal{F}$.
 \item $\widehat{\mathcal{I}}(f \rightarrow g) := \circright\;\bigl(\widehat{\mathcal{I}}(f), \widehat{\mathcal{I}}(g)\bigr)$ 
-      für alle $f, g \in \mathcal{F}$.
+      for all $f, g \in \mathcal{F}$.
 \item $\widehat{\mathcal{I}}(f \leftrightarrow g) := \circleftright\;\bigl(\widehat{\mathcal{I}}(f), \widehat{\mathcal{I}}(g)\bigr)$ 
-      für alle $f, g \in \mathcal{F}$.
+      for all $f, g \in \mathcal{F}$.
 \end{enumerate}
-Um die Schreibweise nicht übermäßig kompliziert werden zu lassen, unterscheiden wir in
-Zukunft nicht  mehr zwischen der Funktion $\widehat{\mathcal{I}}$ und der Funktion $\mathcal{I}$, wir werden das Hütchen über dem
-$\mathcal{I}$ also weglassen.
+In order to simplify the notation we will not distinguish between the function
+\\[0.2cm]
+\hspace*{1.3cm}
+$\widehat{\mathcal{I}}: \mathcal{F} \rightarrow \mathbb{B}$
+\\[0.2cm]
+that is defined on all propositional formulas and the function
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I}: \mathcal{P} \rightarrow \mathbb{B}$.
+\\[0.2cm]
+Hence, from here on we will write $\mathcal{I}(f)$ instead of $\widehat{\mathcal{I}}(f)$.
 
 \noindent
-\textbf{Beispiel}: Wir zeigen, wie sich der Wahrheits-Wert der Formel
+\textbf{Example}: We show how to compute the truth value of the formula
 $$  (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $$
-für die aussagenlogische Interpretation $\mathcal{I}$, die durch 
-$\mathcal{I}(p) = \texttt{True}$ und $\mathcal{I}(q) = \texttt{False}$ definiert ist,
-berechnen lässt: 
+for the propositional valuation
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I} := \{ p \mapsto \mathtt{True}, q \mapsto \mathtt{False} \}$.
 \\[0.2cm]
 \hspace*{1.3cm}
 $
@@ -401,19 +385,13 @@ $
   \end{array}
 $ \eox
 \\[0.2cm]
-Beachten Sie, dass wir bei der Berechnung gerade soviele Teile der Formel ausgewertet
-haben, wie notwendig waren, um den Wert der Formel zu bestimmen.  Trotzdem ist die
-eben durchgeführte Rechnung für die Praxis zu umständlich.  Stattdessen wird der Wert
-einer Formel direkt mit Hilfe der Tabelle \ref{tab:aussagen-logik} auf Seite
-\pageref{tab:aussagen-logik} berechnet.  Wir zeigen exemplarisch, wie wir den
-Wahrheits-Wert der Formel
+Note that we did just evaluate some parts of the formula.  The reason is that as soon as we know that the first
+argument of $\circright$ is \texttt{False} the value of the corresponding formula can already be determined.
+Nevertheless, this approach is too cumbersome.  Instead, we will evaluate a formula directly via the table
+\ref{tab:aussagen-logik} on page \pageref{tab:aussagen-logik}.  For example, to evaluate
 $$  (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $$
-für beliebige Belegungen $\mathcal{I}$ über diese Tabelle berechnen können.
- Um nun die Wahrheitswerte 
-dieser Formel unter einer gegebenen Belegung der Aussage-Variablen bestimmen zu können,
- bauen wir eine  Tabelle auf, die für jede in der Formel
-auftretende Teilformel eine Spalte enthält.  Tabelle \ref{tab:tautologie} auf Seite
-\pageref{tab:tautologie} zeigt die entstehende Tabelle.
+for any propositional valuation we can use the table \ref{tab:tautologie} on page
+\pageref{tab:tautologie}.  This table contains a column for every subformula of the given formula.
 \begin{table}[!ht]
   \centering
 \framebox{
@@ -435,18 +413,22 @@ auftretende Teilformel eine Spalte enthält.  Tabelle \ref{tab:tautologie} auf S
   \caption{Berechnung der Wahrheitswerte von $(p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q$}
   \label{tab:tautologie}
 \end{table}
-
-Betrachten wir die letzte Spalte der Tabelle, so sehen wir, dass dort immer der Wert
-\texttt{True} auftritt.  Also liefert die Auswertung der Formel
+If we take a look at the last column of this table we observe that this column only contains the value
+\texttt{True}.  Therefore, the evaluation of 
+\\[0.2cm]
+\hspace*{1.3cm}
 $(p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $
-für jede aussagenlogische Belegung $\mathcal{I}$ den Wert \texttt{True}.  
-Eine Formel, die immer wahr ist, wird als \href{https://en.wikipedia.org/wiki/Tautology_(logic)}{Tautologie} bezeichnet.
+\\[0.2cm]
+yields $\mathtt{True}$ for every propositional valuation $\mathcal{I}$.  
+A formula that evaluates as \texttt{True} for every propositional valuation $\mathcal{I}$ is called a
+\href{https://en.wikipedia.org/wiki/Tautology_(logic)}{tautology}.
 
-Wir erläutern die Aufstellung dieser Tabelle anhand der zweiten Zeile.  In dieser Zeile sind zunächst die
-aussagenlogischen Variablen $p$ auf \texttt{True} und $q$ auf \texttt{False} gesetzt.  Bezeichnen wir die
-aussagenlogische Interpretation mit $\mathcal{I}$, so gilt also\\[0.2cm]
-\hspace*{1.3cm} $\mathcal{I}(p) = \texttt{True}$ und $\mathcal{I}(q) = \texttt{False}$. \\[0.2cm]
-Damit erhalten wir folgende Rechnung:
+We discuss the construction of this table by means of the second row.
+In this row, the variable $p$ takes the value  \texttt{True}, while $q$ has the value \texttt{False}.  Hence we
+have
+\\[0.2cm]
+\hspace*{1.3cm} $\mathcal{I}(p) = \texttt{True}$ and $\mathcal{I}(q) = \texttt{False}$. \\[0.2cm]
+Then we have the following:
 \begin{enumerate}
 \item $\mathcal{I}(\neg p) = \circneg\,(\mathcal{I}(p)) = \circneg\,( \texttt{True}) = \texttt{False}$
 \item $\mathcal{I}(p \rightarrow q) = \circright\,(\mathcal{I}(p), \mathcal{I}(q)) = \circright\,(\texttt{True}, \texttt{False}) = \texttt{False}$
@@ -458,41 +440,10 @@ Damit erhalten wir folgende Rechnung:
       \circright\bigl( \mathcal{I}(p \rightarrow q),  \mathcal{I}((\neg p \rightarrow q) \rightarrow q)\bigr) = 
        \circright\,( \texttt{False},  \texttt{False} ) = \texttt{True}$
 \end{enumerate}
-Für komplexe Formeln ist die Auswertung von Hand viel zu mühsam und
-fehleranfällig, um praktikabel zu sein.  Wir zeigen deshalb später, wie
-sich dieser Prozess mit Hilfe von \textsl{Python} automatisieren lässt.
+For complex formulas this manual evaluation is too cumbersome and error prone.
+Therefore, we will implement this evaluation in  \textsl{Python}.
 
-\subsection{Extensionale und intensionale Interpretationen der Aussagenlogik}
-\index{extensional} \index{intensional}
-Die Interpretation der aussagenlogischen Junktoren ist rein \blue{extensional}:
-Wenn wir den Wahrheitswert der Formel
-\\[0.2cm]
-\hspace*{1.3cm}
-$\mathcal{I}(f \rightarrow g)$ 
-\\[0.2cm]
-berechnen wollen, so müssen wir die Details der Teilformeln $f$ und $g$ nicht kennen, es reicht,
-wenn wir die Werte $\mathcal{I}(f)$ und $\mathcal{I}(g)$ kennen.   Das ist problematisch,
-denn in der Umgangssprache hat der Junktor
-``\textsl{wenn $\cdots$, dann}'' auch eine \blue{kausale} Bedeutung.  
-
-Obwohl der folgende Satz mit der extensionalen Implikation 
-\\[0.2cm]
-\hspace*{1.3cm}
-``\textsl{Wenn $3 \cdot 3 = 8$, dann schneit es.}''
-\\[0.2cm]
-als wahr interpretiert wird, erscheint er in ausgesprochener Form sinnlos.
-
-Insofern ist die extensionale Interpretation des sprachlichen Junktors
-``\textsl{wenn $\cdots$, dann}'' nur eine \blue{Approximation} der umgangssprachlichen Interpretation, die sich für die
-Mathematik und die Informatik aber als ausreichend erwiesen hat.
-
-Es gibt durchaus auch andere Logiken, in denen die Interpretation des Operators ``$\rightarrow$'' von der
-hier gegebenen Definition abweicht.  Solche Logiken werden als
-\href{https://en.wikipedia.org/wiki/Intensional_logic}{intensionale Logiken} bezeichnet.  Diese Logiken spielen
-zwar in der Informatik auch eine Rolle, aber da die Untersuchung intensionaler Logiken wesentlich
-aufwändiger ist als die Untersuchung der extensionalen Logik, werden wir uns auf die Analyse letzterer beschränken.
-
-\subsection{Implementierung in \textsl{Python}} 
+\subsection{Implementation} 
 Um die bisher eingeführten Begriffe nicht zu abstrakt werden zu lassen,
 entwickeln wir in \textsl{Python} ein Programm, mit dessen Hilfe sich Formeln
 auswerten lassen.  
