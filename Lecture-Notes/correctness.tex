@@ -146,11 +146,120 @@ by computational induction.
   \label{fig:div_mod}
 \end{figure} 
 
-\exerciseEng
-Prove that the function \mytt{div\_mod} that is shown in Figure \ref{fig:gcd} satisfies the specification
+
+\exampleEng
+The function \mytt{div\_mod} that is shown in Figure \ref{fig:div_mod} satisfies the specification
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{div\_mod}(m, n) = (q, r) \rangle \rightarrow m = q \cdot n + r \;\wedge\; r < n$. \eox
+$\mytt{div\_mod}(m, n) = (q, r)  \rightarrow m = q \cdot n + r \;\wedge\; r < n$. \eox
+
+
+
+\proof
+Assume that $m,n \in \mathbb{N}$, where $n > 0$.  Furthermore, assume
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bar{q}, \bar{r} = \mytt{div\_mod}$.
+\\[0.2cm] 
+In order to prove the correctness of \mytt{div\_mod}, we have to show two formulas:
+\begin{align}
+m = \bar{q} \cdot n + \bar{r} \label{divmod1} \\
+\bar{r} < n \label{divmod2}
+\end{align}
+Since \mytt{div\_mod} is defined recursively, the proof of these formulas is done by computational induction.
+\begin{enumerate}
+\item[B.C.:] $m < n$
+
+  In this case we have $\bar{q} = 0$ and $\bar{r} = m$.
+  In order to prove (\ref{divmod1}) we note that 
+  \begin{align*}
+                    & m = \bar{q} \cdot n + \bar{r} \\
+    \Leftrightarrow\quad & m = 0 \cdot n + m \quad \green{\surd}
+  \end{align*}
+  To prove (\ref{divmod2}) we note that
+  \begin{align*}
+                         & \bar{r} < n \\
+    \Leftrightarrow\quad & m < n \quad\green{\surd}
+  \end{align*}
+  Here $m < n$ is true because this condition is the assumption of the base case.
+\item[I.S.:] $m \dv 2 \mapsto m$
+
+  By induction hypotheses we know that our claim is true for the recursive invocation of \mytt{div\_mod} in
+  line 4.  Therefore we have the following:
+  \begin{align}
+    m \dv 2 = q \cdot n + r \label{divmod3} \\
+    r < n                   \label{divmod4}
+  \end{align}
+  In order to complete the induction step we have to perform a case distinction that is analogous to the test
+  of the second \texttt{if}-statement in the implementation of \mytt{div\_mod}.
+  \begin{enumerate}
+  \item $2 \cdot r + m \mmod 2 < n$
+
+    In this case we have $\bar{q} = 2 \cdot q$ and $\bar{r} = 2 \cdot r + m \mmod 2$.
+    In order to prove (\ref{divmod1}) we note the following:
+    \begin{align}
+                           &  m = \bar{q} \cdot n + \bar{r} \\
+      \Leftrightarrow\quad & m = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2 \label{divmod5}
+    \end{align}
+    We will derive equation (\ref{divmod5}) from equation (\ref{divmod3}).  To this end, we multiply equation
+    (\ref{divmod3}) by $2$.  This yields:
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $2 \cdot m \dv 2 = 2 \cdot q \cdot n + 2 \cdot r$.
+    \\[0.2cm]
+    If we add $m \mmod 2$ to this equation we get
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $2 \cdot m \dv 2 + m \mmod 2 = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2$.
+    \\[0.2cm]
+    As we have $2 \cdot m \dv 2 + m \mmod 2 = m$ the last equation can be simplified to
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $m = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2$.
+    \\[0.2cm]
+    However, this is just equation (\ref{divmod5}) which we had to prove. \mycheck
+
+    Next, we show that $\bar{r} < n$.  This is equivalent to
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $2 \cdot r + m \mmod 2 < n$.
+    \\[0.2cm]
+    However, this inequation is the condition of this case of the case distinction and is therefore valid. \mycheck
+  \item $2 \cdot r + m \mmod 2 \geq n$
+
+    In this case we have $\bar{q} = 2 \cdot q + 1$ and $\bar{r} = 2 \cdot r + m \mmod 2 - n$.
+    We start with the proof of (\ref{divmod1}).
+    \begin{align*}
+                           & m = \bar{q} \cdot n + \bar{r} \\
+      \Leftrightarrow\quad & m = (2 \cdot q + 1) \cdot n + 2 \cdot r + m \mmod 2 - n \\
+      \Leftrightarrow\quad & m = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2 
+    \end{align*}
+    This last equation follows from equation (\ref{divmod3}) as follows:
+    \begin{align*}
+                       & m \dv 2 = q \cdot n + r \\
+      \Rightarrow\quad & 2 \cdot m \dv 2 = 2 \cdot q \cdot n + 2 \cdot r \\
+      \Rightarrow\quad & 2 \cdot m \dv 2 + m \mmod 2 = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2 \\
+      \Rightarrow\quad & m = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2 
+    \end{align*}
+
+    Next, we show that $\bar{r} < n$. This is equivalent to
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $2 \cdot r + m \mmod 2 - n < n$
+    \\[0.2cm]
+    From (\ref{divmod4}) we know that
+    \begin{align*}
+                       & r < n \\
+      \Rightarrow\quad & r + 1 \leq n \\
+      \Rightarrow\quad & 2 \cdot r + 2 \leq 2 \cdot n \\
+      \Rightarrow\quad & 2 \cdot r + m \mmod 2 + 1 \leq 2 \cdot n \quad \mbox{since $m \mmod 2 \leq 1$} \\
+      \Rightarrow\quad & 2 \cdot r + m \mmod 2 < 2 \cdot n \\
+      \Rightarrow\quad & 2 \cdot r + m \mmod 2 - n < n \green{\surd}
+    \end{align*}
+  \end{enumerate}
+\item[T.:] As $m \dv 2 < m$ for all $m > 0$ and $n > 0$ it is obvious that we will eventually have
+  $m  < n$. But then the function \mytt{div\_mod} terminates.
+\end{enumerate}
 
 \begin{figure}[!h]
   \centering
@@ -163,16 +272,16 @@ $\mytt{div\_mod}(m, n) = (q, r) \rangle \rightarrow m = q \cdot n + r \;\wedge\;
                 xrightmargin  = 0.8cm
                 ]{python3}
     def gcd(x, y):
-        while y != 0:
-            x, y = y, x % y
-        return x
+        if y == 0:
+            return x
+        return gcd(y, x % y)
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \mytt{gcd}.}
   \label{fig:gcd}
-\end{figure} 
+\end{figure}
 
-\exerciseEng
+\exercise
 Prove that the function \mytt{gcd} that is shown in Figure \ref{fig:gcd} computes the greatest common divisor
 of its arguments. \eox
 
@@ -199,6 +308,9 @@ of its arguments. \eox
   \caption{The function \mytt{isqrt}.}
   \label{fig:isqrt}
 \end{figure} 
+
+
+
 
 \exerciseEng
 The \blue{integer square root} of a natural number $n$ is defined as 
