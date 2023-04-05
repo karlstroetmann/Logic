@@ -159,7 +159,7 @@ $\mytt{div\_mod}(m, n) = (q, r)  \rightarrow m = q \cdot n + r \;\wedge\; r < n$
 Assume that $m,n \in \mathbb{N}$, where $n > 0$.  Furthermore, assume
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bar{q}, \bar{r} = \mytt{div\_mod}$.
+$\bar{q}, \bar{r} = \mytt{div\_mod}(m, n)$.
 \\[0.2cm] 
 In order to prove the correctness of \mytt{div\_mod}, we have to show two formulas:
 \begin{align}
@@ -186,10 +186,10 @@ Since \mytt{div\_mod} is defined recursively, the proof of these formulas is don
 
   By induction hypotheses we know that our claim is true for the recursive invocation of \mytt{div\_mod} in
   line 4.  Therefore we have the following:
-  \begin{align}
-    m \dv 2 = q \cdot n + r \label{divmod3} \\
-    r < n                   \label{divmod4}
-  \end{align}
+  \begin{eqnarray}
+    m \dv 2 &\!=\! & q \cdot n + r \label{divmod3} \\
+          r &\!<\! & n             \label{divmod4}
+  \end{eqnarray}
   In order to complete the induction step we have to perform a case distinction that is analogous to the test
   of the second \texttt{if}-statement in the implementation of \mytt{div\_mod}.
   \begin{enumerate}
@@ -257,7 +257,7 @@ Since \mytt{div\_mod} is defined recursively, the proof of these formulas is don
       \Rightarrow\quad & 2 \cdot r + m \mmod 2 - n < n \green{\surd}
     \end{align*}
   \end{enumerate}
-\item[T.:] As $m \dv 2 < m$ for all $m > 0$ and $n > 0$ it is obvious that we will eventually have
+\item[T.:] As $m \dv 2 < m$ for all $m \geq n$ and $n > 0$ it is obvious that we will eventually have
   $m  < n$. But then the function \mytt{div\_mod} terminates.
 \end{enumerate}
 
