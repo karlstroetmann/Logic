@@ -39,7 +39,7 @@ how new statements can be derived from given statements.
 In order to analyze the structure of complex statements we introduce \blue{propositional variables}
 \index{propositional variables}.
 These propositional variables are just names that denote propositions.
-Furthermore, we introduce mathematical operators for the logical connectives
+Furthermore, we introduce symbols serving as mathematical operators for the logical connectives
 ``\blue{not}'', ``\blue{and}'', ``\blue{or}'', ``\blue{if, $\cdots$ then}'', and 
 ``\blue{if and only if}''.
 \begin{enumerate}
@@ -96,18 +96,18 @@ The rest of this chapter is structured as follows:
       propositional formulas.
 
       This is known as the \blue{syntax} of propositional formulas.
-\item Next we discuss the \blue{evaluation} of propositional formulas and implement the evaluation in \textsl{Python}.
+\item Next, we discuss the \blue{evaluation} of propositional formulas and implement the evaluation in \textsl{Python}.
 
       This is known as the \blue{semantics} of propositional formulas.
-\item Next, we formally define the notions \blue{tautology} and  \blue{satisfiability} for propositional formulas.   
-\item We discuss algebraic manipulations of propositional formulas and introduce the notion of
-      a  \blue{conjunctive normal form}.
+\item Then we formally define the notions \blue{tautology} and \blue{satisfiability} for propositional formulas.   
+\item We discuss algebraic manipulations of propositional formulas and introduce the 
+      \blue{conjunctive normal form}.
 
       Some algorithms discussed later require that the propositional formulas have conjunctive normal form.
-\item Next we discuss the concept of a  \blue{logical derivation}.  The purpose of a logical derivation is to
+\item After that we discuss the concept of a \blue{logical derivation}.  The purpose of a logical derivation is to
       derive new formulas from a given set of formulas.
-\item Finally we discuss the algorithm of \blue{Davis and Putnam} for checking the satisfiability of a set of
-      propositional formulas.  As an application, we solve the eight queens puzzle with this algorithm.
+\item Finally, we discuss the algorithm of \blue{Davis and Putnam} for checking the satisfiability of a set of
+      propositional formulas.  As an application, we solve the eight queens puzzle using this algorithm.
 \end{enumerate}
 
 \section{Applications of Propositional Logic}
@@ -138,8 +138,8 @@ applications which I have seen myself during the years when I did work in indust
 
 \item Controlling the signals and switches of railroad stations.
 
-      At a larger railway station, there are several hundred switches and signals that have to be 
-      re\-adjusted constantly to provide routes for the trains.
+      At a large railway station, there are several hundred switches and signals that have to be 
+      reset all the time to provide routes for the trains.
       For safety reasons, different routes must not cross each other.  
       The individual routes are described by so-called \blue{closure plans}.
       The correctness of these closure plans can be analyzed via propositional formulas.
@@ -182,8 +182,10 @@ by induction:
       Here $\verum$ \index{$\verum$, Verum} \index{Verum} denotes the formula that is always true, while $\falsum$
       \index{$\falsum$, Falsum} \index{Falsum} denotes the formula that is always false.
       The formula $\verum$ is called
-      \blue{verum}\footnote{Verum is the Latin word for ``true''.},  while $\falsum$ is called
-      \blue{Falsum}\footnote{Falsum is the Latin word for ``false''.}.
+      ``\blue{verum}''\footnote{``\href{https://translate.google.com/?sl=la&tl=en&text=falsum&op=translate&hl=en}{Verum}''
+        is the Latin word for ``true''.},  while $\falsum$ is called 
+      ``\blue{falsum}''\footnote{``\href{https://translate.google.com/?sl=la&tl=en&text=falsum&op=translate&hl=en}{Falsum}''
+        is the Latin word for ``false''}.  
 \item If $p \in \mathcal{P}$, then  $p \in \mathcal{F}$.
 
       Every propositional variable is also a propositional formula.
@@ -223,14 +225,13 @@ In order to save parentheses we agree on the following rules:
 \item The operators  $\vee$ and $\wedge$ associate to the left.  Therefore, we write 
       \\[0.2cm]
       \hspace*{1.3cm} $p \wedge q \wedge r$ \quad instead of \quad $(p \wedge q) \wedge r$.
-
-      \underline{\color{red}Note} that in this lecture the logical operators 
+\item \underline{\textbf{\red{In this lecture}}} the logical operators 
       $\wedge$ and $\vee$ have the \underline{same} precedence.  This is different from the programming
       language  \textsl{Python}.  In \textsl{Python} the operator ``\texttt{and}'' has a higher precedence than
       the  operator ``\texttt{or}''.
       
-      In the programming languages  \texttt{C} and \textsl{Java} the  operator ``\texttt{\&\&}'' has a higher
-      precedence than the  operator ``\texttt{||}''. 
+      In the programming languages  \texttt{C} and \textsl{Java} the operator ``\texttt{\&\&}'' also has a higher
+      precedence than the operator ``\texttt{||}''. 
 \item The operator $\rightarrow$ is \underline{ri}g\underline{ht associative}, i.e.~we write \\[0.2cm]
       \hspace*{1.3cm} $p \rightarrow q \rightarrow r$ \quad instead of \quad $p \rightarrow (q \rightarrow r)$.
 \item The operators  $\vee$ and $\wedge$ have a higher precedence than the operator $\rightarrow$.  Therefore,
@@ -245,7 +246,7 @@ In order to save parentheses we agree on the following rules:
       \hspace*{1.3cm}
       $p \leftrightarrow q \leftrightarrow r$
       \\[0.2cm]
-      is \underline{\red{ill-defined}} and has to be parenthesised.  If you encounter this type of expression
+      is \underline{\textbf{\red{ill-defined}}} and has to be parenthesised.  If you encounter this type of expression
       in a book it is usually meant as an abbreviation for the expression
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -444,116 +445,115 @@ For complex formulas this manual evaluation is too cumbersome and error prone.
 Therefore, we will implement the evaluation of propositional formulas in \textsl{Python}.
 
 \subsection{Implementation} 
-Um die bisher eingeführten Begriffe nicht zu abstrakt werden zu lassen,
-entwickeln wir in \textsl{Python} ein Programm, mit dessen Hilfe sich Formeln
-auswerten lassen.  
-Jedes Mal, wenn wir ein Programm zur Berechnung irgendwelcher Werte entwickeln wollen,
-müssen wir uns als erstes fragen, wie wir die Argumente der zu implementierenden Funktion und die
-Ergebnisse dieser Funktion in der verwendeten Programmier-Sprache darstellen können.
-In diesem Fall müssen wir uns also überlegen, wie wir eine
-aussagenlogische Formel in \textsl{Python} repräsentieren können, denn die Ergebniswerte
-\texttt{True} und \texttt{False} stehen ja als Wahrheitswerte unmittelbar zur Verfügung.
-Zusammengesetzte Daten-Strukturen können in \textsl{Python} am einfachsten als
-\blue{geschachtelte Tupel}\index{geschachtelte Tupel} dargestellt werden und das ist auch der Weg, den wir für
-die aussagenlogischen Formeln beschreiten werden.  Ein geschachteltes Tupel ist dabei ein Tupel, dass
-sowohl Strings als auch geschachtelte Tupel enthalten kann.  Beispiels\-weise ist
+In this section we develop a \textsl{Python} program that can evaluate propositional formulas.
+Every time when we develop a program to compute something useful we have to decide which data structures are
+most appropriate to represent the information that is to be processed by the program.  In this case we want to
+process propositional formulas.  Therefore, we have to decide how to represent propositional formulas in
+\textsl{Python}.  One obvious possibility would be to use strings.  However, this would be a bad choice as it
+would then be difficult to access the parts of a given formula.  It is far more suitable to represent
+propositional formulas as \blue{nested tuples}.  A nested tuple is a tuple that contains both strings and
+nested tuples.  For example,
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{('$\wedge$', ('$\neg$', 'p'), 'q')}
 \\[0.2cm]
-ein geschachteltes Tupel, das die aussagenlogische Formel $\neg p \wedge q$ repräsentiert.
+is a nested tuple that represents the propositional formula $\neg p \wedge q$.
 
-Wir legen die Repräsentation von aussagenlogischen Formeln nun formal dadurch fest, dass wir eine Funktion
+Formally, the representation of propositional formulas is defined by a function 
 \\[0.2cm]
 \hspace*{1.3cm}
 $\textsl{rep}: \mathcal{F} \rightarrow \textsl{Python}$
 \\[0.2cm]
-definieren, die einer aussagenlogischen Formel $f$ ein geschachteltes Tupel \index{geschachteltes Tupel}
-$\textsl{rep}(f)$ zuordnet.  Diese Funktion definieren wir durch Induktion nach der Formel $f$:
+that maps a propositional formula $f$ to the corresponding nested tuple \index{nested tuple}
+$\textsl{rep}(f)$.  We define $\textsl{rep}(f)$ inductively by induction on $f$.
 \begin{enumerate}
-\item $\verum$ wird repräsentiert durch das Tupel \texttt{('$\top$',)}.
-      Dies ist möglich, da \texttt{'$\top$'} ein Unicode-Zeichen ist und Python die Verwendung von
-      Unicode-Zeichen in Strings erlaubt.  Wir können diesen String alternativ in \textsl{Python} 
-      auch in der Form
-      \texttt{'\symbol{92}N\{up tack\}'} schreiben, denn ``\texttt{up tack}'' ist der Name des
-      Unicode-Zeichens ``$\top$'' und ein Unicode Zeichen, das den Namen $u$ hat, kann in \textsl{Python}
-      als \texttt{'\symbol{92}N\{$u$\}'} geschrieben werden.  Also haben wir
+\item $\verum$ is represented as the tuple \texttt{('$\top$',)}.
+  
+      This is possible because \texttt{'$\top$'} is a unicode symbol and \textsl{Python} supports the use of unicode
+      symbols in strings.   Alternatively, in \textsl{Python} the string \texttt{'$\top$'} can be written as
+      \texttt{'\symbol{92}N\{up tack\}'} since ``\texttt{up tack}'' is the name of the unicode symbol
+      ``$\top$'' and any unicode symbol that has the name  $u$ can be written 
+      as \texttt{'\symbol{92}N\{$u$\}'} in \textsl{Python}.  Therefore, we have
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{rep}(\verum) := \texttt{('\symbol{92}N\{up tack\}',)}$.
-\item $\falsum$  wird repräsentiert durch das Tupel \texttt{('$\falsum$',)}.
-      Das Unicode-Zeichen \texttt{'$\falsum$'} trägt den Namen \linebreak
-      ``\texttt{down tack}''.
-      Also haben wir
+\item $\falsum$  is represented as the tuple \texttt{('$\falsum$',)}.
+      
+      The unicode symbol \texttt{'$\falsum$'} has the name ``\texttt{down tack}''.
+      Therefore, we have
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{rep}(\falsum) := \texttt{('\symbol{92}N\{down tack\}',)}$.
-\item Da aussagenlogische Variablen nichts anderes als Strings sind, können wir eine aussagen\-logische Variable
-      durch sich selbst repräsentieren:
+\item Since propositional variables are strings we can represents these variables by themselves:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\textsl{rep}(p) := p$ \quad für alle $p \in \mathcal{P}$.
-\item Ist $f$ eine aussagenlogische Formel, so repräsentieren wir die Negation $\neg f$ als geschachteltes Tupel,
-      bei dem wir das Unicode-Zeichen \texttt{'$\neg$'} an die erste Stelle setzen und anschließend
-      rekursiv die Formel $f$ in ihre \textsl{Python}-Repräsentierung umwandeln.
-      Der Name des Unicode-Zeichen \texttt{'$\neg$'} ist 
-      ``\texttt{not sign}''.  Also haben wir
+      $\textsl{rep}(p) := p$ \quad for all $p \in \mathcal{P}$.
+\item If $f$ is a propositional formula, the  negation $\neg f$ is represented as a pair where
+      we put the unicode symbol \texttt{'$\neg$'} at the first position, while the representation of $f$ is put
+      at the second position.  As the name of the unicode symbol \texttt{'$\neg$'} is
+      ``\texttt{not sign}'' we have
       \\[0.2cm]
       \hspace*{1.3cm} 
       $\textsl{rep}(\neg f) := \bigl(\texttt{'$\neg$'}, \textsl{rep}(f)\bigr)$.
-\item Sind $f_1$ und $f_2$ aussagenlogische Formeln, so repräsentieren wir $f_1 \wedge f_2$ mit
-      Hilfe des Unicode-Zeichens  \texttt{'$\wedge$'}, das den Namen 
-      ``\texttt{logical and}'' hat:
+\item If $f_1$ and $f_2$ are propositional formulas, we represent $f_1 \wedge f_2$ with the help of the
+      unicode symbol \texttt{'$\wedge$'}.  This symbol has the name ``\texttt{logical and}''.  Hence we have
       \\[0.2cm]
       \hspace*{1.3cm} 
       $\textsl{rep}(f \wedge g) := \bigl(\texttt{'$\wedge$'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
-\item Sind $f_1$ und $f_2$ aussagenlogische Formeln, so repräsentieren wir $f_1 \vee f_2$ mit
-      Hilfe des Unicode-Zeichens  \texttt{'$\vee$'}, das den Namen ``\texttt{logical or}'' hat:
+\item If $f_1$ and $f_2$ are propositional formulas, we represent $f_1 \vee f_2$ with the help of the unicode symbol
+      \texttt{'$\vee$'}. This symbol has the name ``\texttt{logical or}''.  Hence we have
       \\[0.2cm]
       \hspace*{1.3cm} 
       $\textsl{rep}(f \vee g) := \bigl(\texttt{'$\vee$'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
-\item Sind $f_1$ und $f_2$ aussagenlogische Formeln, so repräsentieren wir $f_1 \rightarrow f_2$ mit
-      Hilfe des Unicode-Zeichens  \texttt{'$\rightarrow$'}, das den Namen ``\texttt{rightwards arrow}'' hat:
+\item If $f_1$ and $f_2$ are propositional formulas, we represent $f_1 \rightarrow f_2$ with the help of the
+      unicode symbol \texttt{'$\rightarrow$'}.  This symbol has the name ``\texttt{rightwards arrow}''.
+      Hence we have
       \\[0.2cm]
       \hspace*{1.3cm} 
       $\textsl{rep}(f \rightarrow g) := \bigl(\texttt{'$\rightarrow$'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
-\item Sind $f_1$ und $f_2$ aussagenlogische Formeln, so repräsentieren wir $f_1 \leftrightarrow f_2$ mit
-      Hilfe des Unicode-Zeichens  \texttt{'$\leftrightarrow$'}, das den Namen ``\texttt{left right arrow}'' hat:
+\item If $f_1$ and $f_2$ are propositional formulas, we represent $f_1 \leftrightarrow f_2$ with the help of
+      the unicode symbol \texttt{'$\leftrightarrow$'}.  This symbol has the name ``\texttt{left right arrow}''.
+      Hence we have
       \\[0.2cm]
       \hspace*{1.3cm} 
       $\textsl{rep}(f \leftrightarrow g) := \bigl(\texttt{'$\leftrightarrow$'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
 \end{enumerate}
-Bei der Wahl der Repräsentation, mit der wir eine Formel in \textsl{Python} repäsentieren,
-sind wir weitgehend frei.  Wir hätten oben sicher auch eine andere Repräsentation
-verwenden können.  Eine gute Repräsentation sollte einerseits möglichst \blue{intuitiv} sein, andererseits ist
-es auch wichtig, dass die Repräsentation für die zu entwickelnden Algorithmen \blue{adäquat}
-ist.  Im Wesentlichen heißt dies, dass es einerseits einfach sein sollte, auf
-die Komponenten einer Formel zuzugreifen, andererseits sollte es auch leicht sein,
-die entsprechende Repräsentation zu erzeugen.
+When choosing the representation of a formula in \textsl{Python} we have a lot of freedom.
+We could as well have represented formulas as objects of different classes.  A good representation should have
+the following properties:
+\begin{enumerate}
+\item It should be intuitive, i.e.~we do not want to use any obscure encoding.
+\item It should be adequate.
+  \begin{enumerate}[(a)]
+  \item It should be easy to recognize whether a formula is a propositional variable, a negation, a
+        conjunction, etc.
+  \item It should be easy to access the components of a formula.
+  \item Given a formula $f$, it should be easy to generate the representation of $f$.
+  \end{enumerate}
+\item It should be memory efficient.
+\end{enumerate}
 
-Als nächstes geben wir an, wie wir eine \blue{aussagenlogische Interpretation} in \textsl{Python}
-darstellen.  Eine aussagenlogische Interpretation ist eine Funktion 
+A \blue{propositional valuation} is a function  
 \\[0.2cm]
 \hspace*{1.3cm} ${\cal I}: {\cal P} \rightarrow \mathbb{B}$ \\[0.2cm]
-von der Menge der Aussage-Variablen ${\cal P}$ in die Menge der Wahrheitswerte 
-$\mathbb{B}$.  Eine Möglichkeit eine solche aussagenlogische Interpretation darzustellen besteht
-darin,  dass wir die Menge aller aussagenlogischen Variablen angeben, die unter der aussagenlogischen
-Interpretation $\mathcal{I}$ den Wert \texttt{True} annehmen:
+mapping the set of propositional variables ${\cal P}$ into the set of truth values
+$\mathbb{B} = \bigl\{ \mathtt{True}, \mathtt{False} \bigr\}$.
+We represent a propositional valuation $\mathcal{I}$ as the set of all propositional variables that are mapped
+to \texttt{True} by $\mathcal{I}$:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\textsl{rep}(\mathcal{I}) := \bigl\{ x \in \mathcal{P} \mid \mathcal{I}(x) = \texttt{True} \bigr\}$.
 \\[0.2cm]
-Damit können wir jetzt eine einfache Funktion implementieren, die den Wahrheitswert
-einer aussagenlogischen Formel $f$ unter einer gegebenen aussagenlogischen
-Interpretation ${\cal I}$ berechnet. Die Funktion
-\texttt{evaluate}
-ist in Abbildung \ref{fig:evaluate.py} auf Seite \pageref{fig:evaluate.py} gezeigt.
-Die Funktion \texttt{evaluate} erwartet zwei Argumente:
+This enables us to implement a simple function that evaluates a propositional formula $f$ with a given
+propositional valuation $\mathcal{I}$.
+The \textsl{Python} function \mytt{evaluate} is shown in Figure \ref{fig:evaluate.py} on page
+\pageref{fig:evaluate.py}. 
+The function \texttt{evaluate} takes two arguments.
 \begin{enumerate}
-\item Das erste Argument $F$ ist eine aussagenlogische Formel, die als geschachteltes Tupel dargestellt wird.
-\item Das zweite Argument $I$ ist eine aussagenlogische Interpretation, die als Menge von aussagenlogischen Variablen
-      dargestellt wird.  Für eine aussagenlogische Variable mit dem Namen $p$ können wir den Wert,
-      der dieser Variablen durch $I$ zugeordnet wird, mittels des Ausdrucks ``$p \;\mathtt{in}\; I$'' berechnen.
+\item The first argument $F$ is a propositional formula that is represented as a nested tuple.
+\item The second argument $I$ is a propositional evaluation.  This evaluation is represented as a set of
+      propositional variables. Given a propositional variables $p$, the value of $\mathcal{I}(p)$ is computed
+      by the expression  ``$p \;\mathtt{in}\; I$''.
 \end{enumerate}
 
 \begin{figure}[!ht]
@@ -565,59 +565,58 @@ Die Funktion \texttt{evaluate} erwartet zwei Argumente:
                 numbersep     = -0.2cm,
                 xleftmargin   = 0.3cm,
                 xrightmargin  = 0.3cm
-               ]{python3}
+                ]{python3}
     def evaluate(F, I):
-        "Evaluate the propositional formula F using the interpretation I"
-        if isinstance(F, str): # F is a propositional variable
-            return F in I
-        if F[0] == '⊤': return True
-        if F[0] == '⊥': return False
-        if F[0] == '¬': return not evaluate(F[1], I)
-        if F[0] == '∧': return     evaluate(F[1], I) and evaluate(F[2], I)
-        if F[0] == '∨': return     evaluate(F[1], I) or  evaluate(F[2], I)
-        if F[0] == '→': return not evaluate(F[1], I) or  evaluate(F[2], I)
-        if F[0] == '↔': return     evaluate(F[1], I) ==  evaluate(F[2], I)
+        match F:
+            case p if isinstance(p, str): 
+                return p in I
+            case ('⊤', ):     return True
+            case ('⊥', ):     return False
+            case ('¬', G):    return not evaluate(G, I)
+            case ('∧', G, H): return     evaluate(G, I) and evaluate(H, I)
+            case ('∨', G, H): return     evaluate(G, I) or  evaluate(H, I)
+            case ('→', G, H): return not evaluate(G, I) or  evaluate(H, I)
+            case ('↔', G, H): return     evaluate(G, I) ==  evaluate(H, I)
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Auswertung einer aussagenlogischen Formel}
+  \caption{Evaluation of a propositional formula.}
   \label{fig:evaluate.py}
 \end{figure} 
 
 \noindent
-Wir diskutieren jetzt die Implementierung der Funktion \texttt{evaluate()} Zeile für
-Zeile:
+Next, we discuss the implementation of the function \texttt{evaluate()}.
 \begin{enumerate}
-\item In Zeile 3 betrachten wir den Fall, dass das Argument $F$ eine aussagenlogische
-      Variable repräsentiert.  Dies erkennen wir daran, dass $F$ ein String ist.
-      Die vordefinierte Funktion \texttt{isinstance} führt diese Überprüfung durch.
-
-      In diesem Fall müssen wir wissen, ob die Variable $F$ ein Element der Menge $I$ ist, denn genau dann
-      wird $F$ als wahr interpretiert.
-\item Falls die Formel $F$ den Wert $\verum$ hat, so ist das Ergebnis der Auswertung unabhängig von der
-      aussagenlogischen Interpretation $I$ immer \texttt{True}. 
-      Um zu erkennen, ob $F$ die Formel $\verum$ repräsentiert, betrachten wir die erste Komponente
-      des Tupels $F$ und überprüfen also, ob $F[0]$ das Zeichen \texttt{'$\verum$'} ist.
-\item Falls die Formel $F$ den Wert $\falsum$ hat, so ist das Ergebnis der
-      Auswertung unabhängig von der aussagenlogischen Interpretation $I$ immer \texttt{False}.
-\item In Zeile 7 betrachten wir den Fall, dass $F$ die Form $\neg G$  hat.
-      In diesem Fall werten wir erst $G$ unter der Belegung $I$ aus und negieren dann das Ergebnis.
-\item In Zeile 8 betrachten wir den Fall, dass $F$ die Form 
-      $G_1 \wedge G_2$ hat.
-      In diesem Fall werten wir zunächst $G_1$ und $G_2$ unter der Belegung $I$ 
-      aus und verknüpfen  das Ergebnis mit dem Operator ``\texttt{and}''.
-\item In Zeile 9 betrachten wir den Fall, dass $F$ die Formel $G_1 \vee G_2$ repräsentiert.
-      In diesem Fall werten wir zunächst $G_1$ und $G_2$ unter der Belegung $I$ 
-      aus und verknüpfen  das Ergebnis mit dem Operator ``\texttt{or}''.
-\item In Zeile 10 betrachten wir den Fall, dass $F$ die Form $G_1 \rightarrow G_2$ hat.
-      In diesem Fall werten wir zunächst $G_1$ und $G_2$ unter der Belegung $I$ 
-      aus und nutzen dann aus, dass die Formeln
+\item We make use of the \texttt{match} statement, which is new in \textsl{Python} $3.10$.
+      This new control structure is explained in the tutorial ``PEP 636: Structural Pattern Matching''
+      available at
       \\[0.2cm]
       \hspace*{1.3cm}
-      $G_1 \rightarrow G_2$ \quad und \quad $\neg G_1 \vee G_2$
+      \href{https://peps.python.org/pep-0636/}{https://peps.python.org/pep-0636/}.
+\item Line 3 deals with the case that the argument $F$ is a propositional variable.  We can recognize this by
+      the fact that $F$ is a string, which we can check with the predefined function
+      \texttt{isinstance}.
+
+      In this case we have to check whether the variable $p$ is an element of the set $I$, because $p$ is
+      interpreted as \texttt{True} if and only if $p \in I$.
+\item If $F$ is $\verum$, then evaluating $F$ always yields \texttt{True}.
+\item If $F$ is $\falsum$, then evaluating $F$ always yields \texttt{False}. 
+\item If $F$ has the form $\neg G$, we recursively evaluate $G$ given the evaluation $I$ and negate the result.
+\item If $F$ has the form $G \wedge H$, we recursively evaluate
+      $G$ and $H$ using $I$.  The results are then combined with the \textsl{Python} operator
+      ``\texttt{and}''.
+\item If $F$ has the form $G \vee H$, we recursively evaluate
+      $G$ and $H$ using $I$.  The results are then combined with the \textsl{Python} operator
+      ``\texttt{or}''.
+\item If $F$ has the form $G \rightarrow H$, we recursively evaluate
+      $G$ and $H$ using $I$.  Then we exploit the fact that the two formulas    
       \\[0.2cm]
-      äquivalent sind.
-\item In Zeile 11 führen wir die Auswertung einer Formel $F \leftrightarrow G$ darauf zurück, dass diese
-      Formel genau dann wahr ist, wenn $F$ und $G$ den selben Wahrheitswert haben.
+      \hspace*{1.3cm}
+      $G \rightarrow H$ \quad und \quad $\neg G \vee H$
+      \\[0.2cm]
+      are equivalent.
+\item If $F$ has the form $G \leftrightarrow H$, we recursively evaluate
+      $G$ and $H$ using $I$.  Then we exploit the fact that the formula $G \leftrightarrow H$ is true if and
+      only if $G$ and $H$ have the same truth value.
 \end{enumerate}
 
 \subsection{Eine Anwendung}
@@ -658,7 +657,7 @@ Belegung den oder die Täter.  Eine Belegung entspricht dabei 1-zu-1 der Menge d
 Da es zu zeitraubend ist, alle Belegungen von Hand auszuprobieren,
 schreiben wir besser ein Programm, das die notwendigen Berechnungen für uns durchführt.
 Abbildung \ref{fig:Usual-Suspects.ipynb} zeigt das Programm
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Usual-Suspects.ipynb}{\texttt{Usual-Suspects.ipynb}}.
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Usual-Suspects.ipynb}{\texttt{Usual-Suspects.ipynb}}.
 Wir diskutieren dieses Programm nun Zeile für Zeile.
 
 \begin{figure}[!ht]
