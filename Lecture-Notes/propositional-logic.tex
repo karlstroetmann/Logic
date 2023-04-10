@@ -619,46 +619,49 @@ Next, we discuss the implementation of the function \texttt{evaluate()}.
       only if $G$ and $H$ have the same truth value.
 \end{enumerate}
 
-\subsection{Eine Anwendung}
-Wir betrachten eine spielerische Anwendung der Aussagenlogik.  Inspektor Watson wird zu
-einem Juweliergeschäft gerufen, in das eingebrochen worden ist.
-In der unmittelbaren Umgebung werden drei Verdächtige Aaron, Bernard und Caine festgenommen.
-Die Auswertung der Akten ergibt folgendes:
+\subsection{An Application}
+Next, we showcase a playful application of propositional logic.  Inspector Watson is called to investigate a
+burglary at a jewelry store.  Three suspects have been detained in the vicinity of the jewelry store.
+Their names are Aaron, Bernard, and Cain.  The evaluation of the files reveals the following facts.
 \begin{enumerate}
-\item Einer der drei Verdächtigen muss die Tat begangen haben: \\[0.2cm]
+\item \green{At least one of these suspects must have been involved in the crime.}
+
+      If the propositional variable $a$ is interpreted as claiming that Aaron is guilty, while $b$ and $c$
+      stand for the guilt of Bernard and Cain, then this statement is captured by the following formula: 
+      \\[0.2cm]
       \hspace*{1.3cm} 
       $f_1 := a \vee b \vee c$.
-\item Wenn Aaron schuldig ist, so hat er genau einen Komplizen. 
-
-      Diese Aussage zerlegen wir zunächst in zwei Teilaussagen:
+\item \green{If Aaron is guilty, then he has exactly one accomplice.}
+      
+      To formalize this statement, we decompose it into two statements.
       \begin{enumerate}
-      \item Wenn Aaron schuldig ist, dann hat er mindestens einen Komplizen: \\[0.2cm]
+      \item If Aaron is guilty, then he has at least one accomplice. \\[0.2cm]
             \hspace*{1.3cm} $f_2 := a \rightarrow b \vee c$ 
-      \item Wenn Aaron schuldig ist, dann hat er höchstens einen Komplizen: \\[0.2cm]
+      \item If Aaron is guilty, then he has at most one accomplice. \\[0.2cm]
            \hspace*{1.3cm} $f_3 := a \rightarrow \neg (b \wedge c)$
       \end{enumerate}
-\item Wenn Bernard unschuldig ist, dann ist auch Caine unschuldig: \\[0.2cm]
+\item \green{If Bernard is innocent, the Cain is innocent too.} \\[0.2cm]
       \hspace*{1.3cm} $f_4 :=  \neg b \rightarrow \neg c$ 
-\item Wenn genau zwei schuldig sind, dann ist Caine einer von ihnen.
+\item \green{If exactly two of the suspects are guilty, then Cain is one of them.}
 
-      Es ist nicht leicht zu sehen, wie sich diese Aussage aussagenlogisch
-      formulieren lässt.  Wir behelfen uns mit einem Trick und überlegen uns, wann die
-      obige Aussage falsch ist.  Wir sehen, die Aussage ist dann falsch,
-      wenn Caine nicht schuldig ist und wenn gleichzeitig Aaron und Bernard schuldig sind.
-      Damit lautet die Formalisierung der obigen Aussage: \\[0.2cm]
+      It is not straightforward to translate this statement into a propositional formula.
+      One trick we can try is to negate the statement and then try to translate the negation.
+      Now the statement given above is wrong if Cain is innocent but both Aaron and Bernard are guilty.
+      Therefore we can translate this statement as follows: \\[0.2cm]
       \hspace*{1.3cm} $f_5 := \neg ( \neg c  \wedge a \wedge b )$ 
-\item Wenn Caine unschuldig ist, ist Aaron schuldig. \\[0.2cm]
+\item \green{If Cain is innocent, then Aaron is guilty.} 
+
+      This translates into the following formula:\\[0.2cm]
       \hspace*{1.3cm} $f_6 := \neg c \rightarrow a$
 \end{enumerate}
-Wir haben nun eine Menge $F = \{ f_1, f_2, f_3, f_4, f_5, f_6 \}$ von Formeln.
-Wir fragen uns nun, für welche Belegungen $\mathcal{I}$ alle Formeln aus der Menge $F$ wahr werden.
-Wenn es genau eine Belegung gibt, für die dies der Fall ist, dann liefert uns die
-Belegung den oder die Täter.  Eine Belegung entspricht dabei 1-zu-1 der Menge der Täter.
-Da es zu zeitraubend ist, alle Belegungen von Hand auszuprobieren,
-schreiben wir besser ein Programm, das die notwendigen Berechnungen für uns durchführt.
-Abbildung \ref{fig:Usual-Suspects.ipynb} zeigt das Programm
+We now have a set $F = \{ f_1, f_2, f_3, f_4, f_5, f_6 \}$ of propositional formulas.
+The question then is to find all propositional valuations $\mathcal{I}$ that evaluate all formulas from $F$ as
+\texttt{True}.  If there is exactly one such propositional valuation, then this valuation gives us the culprits.
+As it is too time consuming to try all possible valuations by hand we will write a program that performs the
+required computations.
+Figure \ref{fig:Usual-Suspects.ipynb} shows the program
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Usual-Suspects.ipynb}{\texttt{Usual-Suspects.ipynb}}.
-Wir diskutieren dieses Programm nun Zeile für Zeile.
+We discuss this program next.
 
 \begin{figure}[!ht]
   \centering
@@ -677,16 +680,16 @@ Wir diskutieren dieses Programm nun Zeile für Zeile.
         return plp.LogicParser(s).parse()
     
     P = { 'a', 'b', 'c' }
-    # Aaron, Bernard, or Caine is guilty.
+    # Aaron, Bernard, or Cain is guilty.
     f1 = 'a ∨ b ∨ c'
     # If Aaron is guilty, he has exactly one accomplice.
     f2 = 'a → b ∨ c'
     f3 = 'a → ¬(b ∧ c)'
-    # If Bernard is innocent, then Caine is innocent, too.
+    # If Bernard is innocent, then Cain is innocent, too.
     f4 = '¬b → ¬c'
-    # If exactly two are guilty, then Caine is one of them.
+    # If exactly two of the suspects are guilty, then Cain is one of them.
     f5 = '¬(¬c ∧ a ∧ b)'
-    # If Caine is innocent, then Aaron is guilty.
+    # If Cain is innocent, then Aaron is guilty.
     f6 = '¬c → a'
     Fs = { f1, f2, f3, f4, f5, f6 };
     Fs = { transform(f) for f in Fs }
@@ -697,33 +700,39 @@ Wir diskutieren dieses Programm nun Zeile für Zeile.
     print({ I for I in power(P) if allTrue(Fs, I) })
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Programm zur Aufklärung des Einbruchs}
+  \caption{A program to investigate the burglary.}
   \label{fig:Usual-Suspects.ipynb}
 \end{figure}
 
 \begin{enumerate}
-\item Da wir die aussagenlogischen Formeln als Strings eingeben, unsere Funktion \texttt{evaluate} aber
-      geschachtelte Tupel verarbeitet, importieren wir zunächst den Parser für aussagenlogische Formeln
-      und definieren außerdem die Funktion \texttt{transform}, die eine aussagenlogische Formel, die als
-      String vorliegt, in ein geschachteltes Tupel umwandelt.
-\item In Zeile 7 definieren wir die Menge $P$ der aussagenlogischen Variablen.  Wir benutzen \texttt{a} als
-      Abkürzung dafür, dass Aaron schuldig ist, \texttt{b} steht für Bernard und \texttt{c} ist wahr, wenn
-      Caine schuldig ist. 
-\item In den Zeilen 7 -- 17 definieren wir die Formeln $f_1$, $\cdots$, $f_6$.
-\item \texttt{Fs} ist die Menge aller Formeln.
-\item Die Formeln werden in Zeile 20 in geschachtelte Tupel transformiert.
-\item Die Funktion $\texttt{allTrue}(Fs, I)$ bekommt als Eingabe eine Menge von aussagenlogischen Formeln $Fs$
-      und eine aussagenlogische Belegung $I$, die als Teilmenge von $P$ dargestellt wird.  Falls alle Formeln
-      $f$ aus der Menge $Fs$ unter der Belegung $I$ wahr sind, gibt diese Funktion als Ergebnis \texttt{True} zurück.
-\item In Zeile 25 berechnen wir alle Belegungen, für die alle Formeln wahr werden.
+\item We input propositional formulas as strings.  However, the function \texttt{evaluate} needs nested tuples
+      as input.  Therefore, we first import our parser for propositional formulas.
+\item Next, we define the function \texttt{transform}.  This function takes a propositional formula that is
+      represented as a string and transforms it into a nested tuple.
+\item Line 7 defines the set $P$ of propositional variables.  We use the propositional variable \texttt{a} to
+      express that Aaron is guilty, \texttt{b} is short for Bernard is guilty and \texttt{c} is true if and
+      only if Cain is guilty. 
+\item Next, we define the propositional formulas $f_1$, $\cdots$, $f_6$.
+\item \texttt{Fs} is the set of all propositional formulas.
+\item In line 20 these formulas are transformed into nested tuples.
+\item The function $\texttt{allTrue}(Fs, I)$ takes two inputs.
+      \begin{enumerate}[(a)]
+      \item \texttt{Fs} is a set of propositional formulas that are represented as nested tuples.
+      \item \texttt{I} is a propositional evaluation that is represented as a set of propositional variables.
+            Hence \texttt{I} is a subset of \texttt{P}
+      \end{enumerate}
+      If all propositional formulas $f$ from the set \texttt{Fs} evaluate as \texttt{True} given the evaluation
+      \texttt{I}, then \texttt{allTrue} returns the result \texttt{True}, otherwise \texttt{False} is returned.
+\item Line 25 computes the set of all propositional variables that render all formulas from \texttt{Fs} true.
+      The function \texttt{power} takes a set $M$ and returns the power set of $M$, i.e.~it returns the set $2^M$.
 \end{enumerate}
-Lassen wir das Programm laufen, so sehen wir, dass es nur eine einzige Belegung gibt, bei der alle Formeln wahr
-werden.  Dies ist die Belegung
-\begin{verbatim}
-    {'b', 'c'}.
-\end{verbatim}
-Damit ist das Problem eindeutig lösbar und Bernard und Caine sind schuldig.
-
+When we run this program we see that there is just a single propositional valuation $I$ such that all formulas
+from \texttt{Fs} are rendered \texttt{True} under $I$.  This propositional valuation has the form
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{\{'b', 'c'\}.}
+\\[0.2cm]
+Thus, the given problem is solvable and both Bernard and Cain are guilty, while Aaron is innocent.
 
 \section{Tautologien}
 Die Tabelle in Abbildung \ref{tab:tautologie} zeigt, dass die Formel
@@ -877,13 +886,12 @@ zusammengefasst haben, denn die Berechnung der Variablen verläuft in diesen Fä
               ]{python3}
     def collectVars(f):
         "Collect all propositional variables occurring in the formula f."
-        if isinstance(f, str):
-            return { f }
-        if f[0] in ['⊤', '⊥']:
-            return set()
-        if f[0] == '¬':
-            return collectVars(f[1])
-        return collectVars(f[1]) | collectVars(f[2]) 
+        match f:
+            case p if isinstance(p, str): return { p }
+            case ('⊤', ):   return set()
+            case ('⊥', ):   return set()
+            case ('¬', g):  return collectVars(g)
+            case (_, g, h): return collectVars(g) | collectVars(h) 
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Überprüfung der Allgemeingültigkeit einer aussagenlogischen Formel}
