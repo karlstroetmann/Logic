@@ -261,6 +261,68 @@ Since \mytt{div\_mod} is defined recursively, the proof of these formulas is don
   $m  < n$. But then the function \mytt{div\_mod} terminates.
 \end{enumerate}
 
+Before we can tackle the next exercise, we need to prove the following lemma.
+\begin{Lemma}[Euclid]
+  Assume $a, b \in \mathbb{N}$ such that $b > 0$.  Then we have
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\mathtt{gcd}(a, b) = \mathtt{gcd}(b, a \mmod b)$.
+\end{Lemma}
+
+\proof
+The function $\mathtt{cd}(a, b)$ computes the set of common divisors of $a$ and $b$ and is therefore defined as
+\\[0.2cm]
+\hspace*{1.3cm}
+ $\mathtt{cd}(a, b) := \bigl\{ t \in \mathbb{N} \mid a \mmod t = 0 \wedge b \mmod t = 0 \bigr\}$.
+ \\[0.2cm]
+The function \texttt{gcd} is related to the function \texttt{cd} by the equation
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{gcd}(a, b) = \max\bigl(\mathtt{cd}(a, b)\bigr)$.
+\\[0.2cm]
+Hence it is sufficient if we can show that
+\\[0.2cm]
+\hspace*{1.3cm}
+  $\mathtt{cd}(a, b) = \mathtt{cd}(b, a \mmod b)$.
+\\[0.2cm]
+This is an equation between two sets and therefore is equivalent to showing that both
+\\[0.2cm]
+\hspace*{1.3cm}
+  $\mathtt{cd}(a, b) \subseteq \mathtt{cd}(b, a \mmod b)$ \quad and \quad $\mathtt{cd}(b, a \mmod b) \subseteq \mathtt{cd}(a, b)$
+\\[0.2cm]
+holds.  We show these two statements separately.
+\begin{enumerate}
+\item We show that $\mathtt{cd}(a, b) \subseteq \mathtt{cd}(b, a \mmod b)$.
+
+      Assume $t \in \mathtt{cd}(a, b)$.  Then there are $u, v \in \mathbb{N}$ such that
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $a = t \cdot u$ \quad and \quad $b = t \cdot v$.
+      \\[0.2cm]
+      Since $a = q \cdot b + a \mmod b$ where $q = a \dv b$ we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $a \mmod b = a - q \cdot b = t \cdot u - q \cdot t \cdot v = t \cdot (u - q \cdot v)$.
+      \\[0.2cm]
+      This shows that $t$ divides $a \mmod b$. Since $t$ also divides $b$ we therefore have
+      $t \in \mathtt{cd}(b, a \mmod b)$. \green{$\surd$}
+\item We show that $\mathtt{cd}(b, a \mmod b) \subseteq \mathtt{cd}(a, b)$.
+
+      Assume $t \in \mathtt{cd}(b, a \mmod b)$.  Then there are $u, v \in \mathbb{N}$ such that
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $b = t \cdot u$ \quad and \quad $a \mmod b = t \cdot v$.
+      \\[0.2cm]
+      Since $a = q \cdot b + a \mmod b$ where $q = a \dv b$ we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $a = q \cdot t \cdot u + t \cdot v = t \cdot (q \cdot u + v)$.
+      \\[0.2cm]
+      This shows that $t$ divides $a$. Since $t$ also divides $b$ we therefore have
+      $t \in \mathtt{cd}(a, b)$. \green{$\surd$}
+\end{enumerate}
+This concludes the proof. \qed
+
 \begin{figure}[!h]
   \centering
 \begin{minted}[ frame         = lines, 
@@ -271,18 +333,18 @@ Since \mytt{div\_mod} is defined recursively, the proof of these formulas is don
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
                 ]{python3}
-    def gcd(x, y):
+    def ggt(x, y):
         if y == 0:
             return x
-        return gcd(y, x % y)
+        return ggt(y, x % y)
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{The function \mytt{gcd}.}
+  \caption{The function \mytt{ggt}.}
   \label{fig:gcd}
 \end{figure}
 
-\exercise
-Prove that the function \mytt{gcd} that is shown in Figure \ref{fig:gcd} computes the greatest common divisor
+\exerciseEng
+Prove that the function \mytt{ggt} that is shown in Figure \ref{fig:gcd} computes the greatest common divisor
 of its arguments. \eox
 
 \begin{figure}[!h]
