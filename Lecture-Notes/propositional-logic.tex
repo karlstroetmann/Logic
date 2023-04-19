@@ -734,25 +734,24 @@ from \texttt{Fs} are rendered \texttt{True} under $I$.  This propositional valua
 \\[0.2cm]
 Thus, the given problem is solvable and both Bernard and Cain are guilty, while Aaron is innocent.
 
-\section{Tautologien}
-Die Tabelle in Abbildung \ref{tab:tautologie} zeigt, dass die Formel
+\section{Tautologies}
+Table \ref{tab:tautologie} on page \pageref{tab:tautologie} shows that the formula
 $$  (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $$
-für jede aussagenlogische Interpretation wahr ist, denn in der letzten Spalte dieser Tabelle steht immer der
-Wert \texttt{True}.  Formeln mit dieser Eigenschaft bezeichnen wir als \blue{Tautologie}.
-\begin{Definition}[Tautologie]
-  Ist $f$ eine aussagenlogische Formel und gilt \\[0.2cm]
-  \hspace*{1.3cm} $\mathcal{I}(f) = \texttt{True}$ \quad für jede aussagenlogische Interpretation $\mathcal{I}$, \\[0.2cm]
-  dann ist $f$ eine \blue{Tautologie}.\index{Tautologie}  In diesem Fall schreiben wir \\[0.2cm]
+is true for every propositional valuation $\mathcal{I}$.  This property gives rise to a definition.
+
+\begin{Definition}[Tautology]
+  If $f$ is a propositional formula and we have  \\[0.2cm]
+  \hspace*{1.3cm} $\mathcal{I}(f) = \texttt{True}$ \quad for every propositional valuation $\mathcal{I}$, \\[0.2cm]
+  then $f$ is a  \blue{tautology}.\index{tautology}  This is written as \\[0.2cm]
   \hspace*{1.3cm} $\models f$.\index{$\models f$}
   \eox
 \end{Definition}
 
 \noindent
-Ist eine Formel $f$ eine Tautologie, so sagen wir auch, dass $f$
-\blue{allgemeingültig} \index{allgemeingültig} ist.
+If $f$ is a tautology, then we say that $f$ is \blue{universally valid} \index{universally valid} ist.
 
 \noindent
-\textbf{Beispiele}:
+\textbf{Examples}:
 \begin{enumerate}
 \item $\models p \vee \neg p$
 \item $\models p \rightarrow p$
@@ -761,45 +760,44 @@ Ist eine Formel $f$ eine Tautologie, so sagen wir auch, dass $f$
 \item $\models (p \rightarrow \falsum) \;\leftrightarrow\; \neg p$
 \item $\models p \wedge q \;\leftrightarrow\; q \wedge p$
 \end{enumerate}
-Wir können die Tatsache, dass es sich bei diesen Formeln um Tautologien handelt, durch
-eine Tabelle nachweisen, die analog zu der auf Seite \pageref{tab:tautologie} gezeigten
-Tabelle \ref{tab:tautologie} aufgebaut ist.  Dieses Verfahren ist zwar konzeptuell sehr
-einfach, allerdings zu ineffizient, wenn die Anzahl der aussagenlogischen Variablen groß
-ist.  Ziel dieses Kapitels ist daher die Entwicklung eines effizienteren Verfahren.
+One way to prove that a formula is universally valid is to construct a table that is analog 
+to Table \ref{tab:tautologie} that is shown on page \pageref{tab:tautologie}.
+Conceptually, this method is straightforward.  However, if the formula in question contains $n$
+propositional variables, then the corresponding table has $2^n$ rows.  Hence for values of $n$ that are greater
+than twenty this method is hopelessly inefficient.  Therefore, our goal in the rest of this chapter is to develop
+a method that can often deal with hundreds of propositional variables.
 
-Die letzten beiden Beispiele in der obigen Aufzählung geben Anlass zu einer neuen Definition.
-\begin{Definition}[Äquivalent]
-  Zwei Formeln $f$ und $g$ heißen \blue{äquivalent} \index{äquivalent} g.d.w.  \\[0.2cm]
-  \hspace*{1.3cm} $\models f \leftrightarrow g$ 
-  \\[0.1cm]
-  gilt.
+The last two examples give rise to a new definition.
+
+\begin{Definition}[Equivalent]
+  Two formulas $f$ and $g$ are \blue{equivalent} \index{equivalent} if and only if  \\[0.2cm]
+  \hspace*{1.3cm} $\models f \leftrightarrow g$.   
   \eox
 \end{Definition}
 
 \noindent
-\textbf{Beispiele}:  Es gelten die folgenden Äquivalenzen: \\[0.3cm]
+\textbf{Examples}:  We have the following equivalences: \\[0.3cm]
 \hspace*{0.3cm} 
 $\begin{array}{lll}
 \models \neg \falsum \leftrightarrow \verum & \models \neg \verum \leftrightarrow \falsum &  \\[0.2cm]
- \models p \vee   \neg p \leftrightarrow \verum & \models p \wedge \neg p \leftrightarrow \falsum & \mbox{\blue{Tertium-non-Datur}} \\[0.2cm]
- \models p \vee   \falsum \leftrightarrow p & \models p \wedge \verum  \leftrightarrow p & \mbox{\blue{Neutrales Element}}\\[0.2cm]
+ \models p \vee   \neg p \leftrightarrow \verum & \models p \wedge \neg p \leftrightarrow \falsum & \mbox{\blue{tertium-non-datur}} \\[0.2cm]
+ \models p \vee   \falsum \leftrightarrow p & \models p \wedge \verum  \leftrightarrow p & \mbox{\blue{identity element}}\\[0.2cm]
  \models p \vee   \verum  \leftrightarrow \verum & \models p \wedge \falsum \leftrightarrow \falsum &  \\[0.2cm]
- \models p \wedge p \leftrightarrow p  & \models p \vee p \leftrightarrow p &  \mbox{\blue{Idempotenz}}\index{Idempotenz} \\[0.2cm]
- \models p \wedge q \leftrightarrow q \wedge p & \models p \vee   q \leftrightarrow q \vee p & \mbox{\blue{Kommutativität}}\index{Kommutativität} \\[0.2cm]
+ \models p \wedge p \leftrightarrow p  & \models p \vee p \leftrightarrow p &  \mbox{\blue{idempotent}}\index{idempotent} \\[0.2cm]
+ \models p \wedge q \leftrightarrow q \wedge p & \models p \vee   q \leftrightarrow q \vee p & \mbox{\blue{commutative}}\index{commutative} \\[0.2cm]
  \models (p \wedge q) \wedge r \leftrightarrow p \wedge (q \wedge r) & \models (p \vee   q) \vee r \leftrightarrow p \vee   (q \vee r)  &
- \mbox{\blue{Assoziativität}}\index{Assoziativität} \\[0.2cm]
- \models \neg \neg p \leftrightarrow p & & \mbox{Elimination von $\neg \neg$} \\[0.2cm]
- \models p \wedge (p \vee q)   \leftrightarrow p & \models p \vee   (p \wedge q) \leftrightarrow p &  \mbox{\blue{Absorption}}\index{Absorption} \\[0.2cm]
+ \mbox{\blue{Assoziativität}}\index{associative} \\[0.2cm]
+ \models \neg \neg p \leftrightarrow p & & \mbox{elimination of $\neg \neg$} \\[0.2cm]
+ \models p \wedge (p \vee q)   \leftrightarrow p & \models p \vee   (p \wedge q) \leftrightarrow p &  \mbox{\blue{absorption}}\index{absorption} \\[0.2cm]
  \models p \wedge (q \vee r)   \leftrightarrow (p \wedge q) \vee   (p \wedge r) & 
- \models p \vee   (q \wedge r) \leftrightarrow (p \vee q)   \wedge (p \vee   r) & \mbox{\blue{Distributivität}}\index{Distributivität} \\[0.2cm]
+ \models p \vee   (q \wedge r) \leftrightarrow (p \vee q)   \wedge (p \vee   r) & \mbox{\blue{distributive}}\index{distributive} \\[0.2cm]
  \models \neg (p \wedge q) \leftrightarrow  \neg p \vee   \neg q &  \models \neg (p \vee   q) \leftrightarrow  \neg p \wedge \neg q &
- \mbox{\blue{DeMorgan'sche Regeln}}\index{DeMorgan'sche Regeln}  \\[0.2cm]
- \models (p \rightarrow q) \leftrightarrow \neg p \vee q & &  \mbox{Elimination von $\rightarrow$} \\[0.2cm]
- \models (p \leftrightarrow q) \leftrightarrow (\neg p \vee q) \wedge (\neg q \vee p) & & \mbox{Elimination von $\leftrightarrow$}
+ \mbox{\blue{DeMorgan'sche Regeln}}\index{DeMorgan rules}  \\[0.2cm]
+ \models (p \rightarrow q) \leftrightarrow \neg p \vee q & &  \mbox{elimination of $\rightarrow$} \\[0.2cm]
+ \models (p \leftrightarrow q) \leftrightarrow (\neg p \vee q) \wedge (\neg q \vee p) & & \mbox{elimination of $\leftrightarrow$}
 \end{array}$ \\[0.3cm]
-Wir können diese Äquivalenzen nachweisen, indem wir in einer Tabelle sämtliche Belegungen
-durchprobieren.  Eine solche Tabelle heißt auch \blue{Wahrheits-Tafel}.\index{Wahrheits-Tafel}
-Wir demonstrieren dieses Verfahren anhand der ersten DeMorgan'schen Regel.
+We can prove these equivalences using a table.  We demonstrate this method for the first of DeMorgan's rules.
+
 \begin{table}[!ht]
   \centering
 \framebox{
@@ -820,48 +818,33 @@ Wir demonstrieren dieses Verfahren anhand der ersten DeMorgan'schen Regel.
   \caption{Nachweis der ersten DeMorgan'schen Regel}
   \label{tab:deMorgan}
 \end{table}
-Wir erkennen, dass in Abbildung \ref{tab:deMorgan} in den letzten beiden Spalten in jeder Zeile dieselben Werte
-stehen.  Daher sind die Formeln, die zu diesen Spalten gehören, äquivalent.
+We see that the last two columns in Table \ref{tab:deMorgan} on page \pageref{tab:deMorgan} have the same
+entries.  Hence the formulas corresponding to these entries are equivalent.
 
-\subsection{Testen der Allgemeingültigkeit in \textsl{Python}}
-\noindent
- Die manuelle Überprüfung der Frage, ob eine gegebene Formel $f$ eine Tautologie ist, 
-läuft auf die Erstellung umfangreicher Wahrheitstafeln heraus.   Solche Wahrheitstafeln
-von Hand zu erstellen ist viel zu zeitaufwendig. 
-Wir wollen daher nun ein \textsl{Python}-Programm entwickeln, mit dessen Hilfe wir die
-obige Frage automatisch beantworten können.   Die Grundidee ist, dass wir die zu untersuchende
-Formel für alle möglichen Belegungen auswerten und überprüfen, ob sich bei der Auswertung
-jedes Mal der Wert \texttt{True} ergibt.  Dazu müssen wir zunächst einen Weg finden, alle
-möglichen Belegungen einer Formel zu berechnen.  Wir haben früher schon gesehen, dass
-Belegungen $\mathcal{I}$ zu Teilmengen $M$ der Menge der aussagenlogischen Variablen
-$\mathcal{P}$ korrespondieren, denn für jedes $M \subseteq \mathcal{P}$ können wir eine
-aussagenlogische Belegung $\mathcal{I}(M)$ wie folgt definieren:
+\subsection{\textsl{Python} Implementation}
+Constructing a truth table is far to tedious to do it a by hand if the formula in question has more than a few
+variables.  Hence we develop a \textsl{Python} program that is able to decide whether a given propositional
+formula $f$ is a tautology.  The idea is that the program evaluates $f$ for all possible propositional
+interpretations.  Hence we have to compute the set of all propositional interpretations for a given set of
+propositional variables.  We have already seen that the propositional interpretations are in a 1-to-1
+correspondence with the subsets of the set $\mathcal{P}$ of all propositional variables because we can
+represent a propositional interpretation $\mathcal{I}$ as the set of all propositional variables that evaluate
+as \texttt{True}:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{I}(M)(p) := \left\{
-\begin{array}[c]{ll}
-  \texttt{True}  & \mbox{falls $p \in M$;} \\
-  \texttt{False} & \mbox{falls $p \notin M$.}
-\end{array}
-\right.
-$
+$\bigl\{ q \in \mathcal{P} \mid \mathcal{I}(q) = \mathtt{True} \bigr\}$.
 \\[0.2cm]
-Wir stellen daher eine aussagenlogische Belegung durch die Menge $M_\mathcal{I}$ der aussagenlogischen Variablen
-$x$ dar, für die $\mathcal{I}(x)$ den Wert \texttt{True} hat.  Bei gegebener aussagenlogischer Belegung
-$\mathcal{I}$ können wir die Menge $M_\mathcal{I}$ wie folgt definieren:
+If we have a propositional formula $f$ and want to check whether $f$ is a tautology, we first have to determine
+the set of propositional variables occurring in $f$.
+To this end we define a function
 \\[0.2cm]
 \hspace*{1.3cm}
-$M_\mathcal{I} := \bigl\{ p \in \mathcal{P} \mid \mathcal{I}(p) = \texttt{True} \bigr\}$.
+$\texttt{collectVars}: \mathcal{F} \rightarrow 2^{\mathcal{P}}$
 \\[0.2cm]
-Damit können wir nun eine Funktion implementieren, die für eine gegebene aussagenlogische Formel $f$
-testet, ob $f$ eine Tautologie ist.  Hierzu müssen wir zunächst die Menge 
-$\mathcal{P}$ der
-aussagenlogischen Variablen bestimmen, die in $f$ auftreten.  Abstrakt definieren wir dazu eine Funktion 
-$\mathtt{collectVars}(f)$, welche die Menge aller aussagenlogischen Variablen berechnet, die in einer
-aussagenlogischen Formel $f$ auftreten.  Diese Funktion ist durch die folgenden rekursiven Gleichugen 
-spezifiziert:
+such that $\mathtt{collectVars}(f)$ is the set of propositional variables occurring in $f$.  This function can
+be defined recursively.
 \begin{enumerate}
-\item $\mathtt{collectVars}(p) = \{ p \}$ \quad für alle aussagenlogischen Variablen $p$.
+\item $\mathtt{collectVars}(p) = \{ p \}$ \quad for all propositional variables $p$.
 \item $\mathtt{collectVars}(\verum) = \{\}$.
 \item $\mathtt{collectVars}(\falsum) = \{\}$.
 \item $\mathtt{collectVars}(\neg f) := \mathtt{collectVars}(f)$.
@@ -870,9 +853,8 @@ spezifiziert:
 \item $\mathtt{collectVars}(f \rightarrow g) := \mathtt{collectVars}(f) \cup \mathtt{collectVars}(g)$.
 \item $\mathtt{collectVars}(f \leftrightarrow g) := \mathtt{collectVars}(f) \cup \mathtt{collectVars}(g)$.
 \end{enumerate}
-Die in Abbildung \ref{fig:tautology.py-collectVars} auf Seite \pageref{fig:tautology.py-collectVars} zeigt,
-dass wir diese Gleichungen unmittelbar in \textsl{Python} umsetzen können, wobei wir die letzten vier Fälle
-zusammengefasst haben, denn die Berechnung der Variablen verläuft in diesen Fällen analog.
+Figure \ref{fig:tautology.py-collectVars} on page \pageref{fig:tautology.py-collectVars} shows how to implement
+this definition.  Note that we have been able to combine the last four cases.
 
 \begin{figure}[!ht]
   \centering
@@ -898,18 +880,21 @@ zusammengefasst haben, denn die Berechnung der Variablen verläuft in diesen Fä
   \label{fig:tautology.py-collectVars}
 \end{figure}
 
-Damit sind wir nun in der Lage, eine Funktion $\mathtt{tautology}(f)$ zu implementieren, die für eine gegebene
-aussagenlogische Formel $f$ überprüft, ob $f$ eine Tautologie ist.  Diese in Abbildung \ref{fig:tautology.py} auf Seite \pageref{fig:tautology.py}
-gezeigte Funktion arbeitet wie folgt:
+Now we are able to implement the function 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{tautology}: \mathcal{F} \rightarrow \mathbb{B}$
+\\[0.2cm]
+that takes a formula $f$ and returns \texttt{True} if and only if $\models f$ holds.
+Figure \ref{fig:tautology.py} on page \pageref{fig:tautology.py}
+shows the implementation.
 \begin{enumerate}
-\item Zunächst berechnen wir in Zeile 3 die Menge \texttt{P} der aussagenlogischen Variablen, die in $f$ auftreten.
-\item Sodann berechnen wir mit Hilfe der in dem Modul $\mathtt{power}$ definierten Funktion
-      $\mathtt{allSubsets}$ die Liste \texttt{A} aller Teilmengen von \texttt{P}.  Jede als Menge dargestellte
-      aussagenlogische Belegung \texttt{I} ist ein Element dieser Liste.
-\item Anschließend prüfen wir für j\underline{ede} mögliche Belegung \texttt{I}, ob die Auswertung der Formel $f$ für die
-      Belegung \texttt{I} den Wert \texttt{True} ergibt und geben gegebenenfalls \texttt{True} zurück.
-\item Andernfalls geben wir die erste Belegung \texttt{I} zurück, für welche die Formel $f$ den Wert
-      \texttt{False} hat.
+\item First, we compute the set $P$ of all propositional variables occurring in $f$.
+\item Next, the function $\mathtt{allSubsets}$ computes a list containing all subsets of the set $P$.
+      Every propositional interpretation  $\mathcal{I}$ is contained in this list.
+\item Then we try to find a propositional interpretation $\mathcal{I}$ such that $\mathcal{I}(f)$
+      \texttt{False}.  In this case $\mathcal{I}$ is returned. 
+\item Otherwise $f$ is a tautology and we return \texttt{True}.
 \end{enumerate}
 
 \begin{figure}[!ht]
@@ -925,159 +910,107 @@ gezeigte Funktion arbeitet wie folgt:
     def tautology(f):
         "Check, whether the formula f is a tautology."
         P = collectVars(f)
-        A = power.allSubsets(P)
-        if { evaluate(f, I) for I in A } == { True }:
-            return True
-        else:
-            return [I for I in A if not evaluate(f, I)][0]
+        for I in power.allSubsets(P):
+            if not evaluate(f, I):
+                return I
+        return True
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Überprüfung der Allgemeingültigkeit einer aussagenlogischen Formel}
+  \caption{Checking that $f$ is a tautology.}
   \label{fig:tautology.py}
 \end{figure}
 
-\subsection{Nachweis der Allgemeingültigkeit durch Äquivalenz-Umformungen}
-Wollen wir nachweisen, dass eine Formel eine Tautologie ist, können wir uns prinzipiell
-immer einer Wahrheits-Tafel bedienen. 
-Aber diese Methode hat einen Haken: Kommen in der Formel $n$
-verschiedene Aussage-Variablen vor, so hat die Tabelle $2^n$ Zeilen.  Beispielsweise hat
-die Tabelle zum Nachweis eines der Distributiv-Gesetze bereits 
-$8$ Zeilen, da hier 3 verschiedene Variablen auftreten.
-Das gleiche Problem tritt auch in der im letzten Abschnitt diskutierten Funktion
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/tautology.py}{\texttt{tautology}} auf,
-denn dort berechnen wir die Potenz-Menge der Menge aller aussagenlogischen Variablen, die in der dort
-vorgegebenen aussagenlogischen Formel \texttt{F} auftreten.  Auch hier gilt:  Treten in der Formel \texttt{F}
-insgesamt $n$ verschiedene aussagenlogische Variablen auf, so hat die Potenz-Menge $2^n$ verschiedene Elemente
-und daher ist dieses Programm für solche Formeln, in denen viele verschiedenen Variablen auftreten, unbrauchbar.
-
-Eine andere Möglichkeit nachzuweisen, dass eine Formel eine Tautologie ist, ergibt sich dadurch, dass wir
-die Formel mit Hilfe der im letzten Abschnitt aufgeführten Äquivalenzen \blue{vereinfachen}.  Wenn es gelingt,
-eine Formel $F$ unter Verwendung 
-dieser Äquivalenzen zu $\verum$ zu vereinfachen, dann ist gezeigt, dass $F$ eine Tautologie ist.  
-Wir demonstrieren das Verfahren zunächst an einem Beispiel. 
-Mit Hilfe einer Wahrheits-Tafel hatten wir schon gezeigt, dass die Formel \\[0.2cm]
-\hspace*{1.3cm} $(p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q$ \\[0.2cm]
-eine Tautologie ist.  Wir zeigen nun, wie wir diesen Tatbestand auch durch eine Kette von
-Äquivalenz-Umformungen einsehen können:\\[0.2cm]
-\hspace*{1.3cm} 
-$ 
-\begin{array}[c]{lcr}
-                 & (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q  & \quad(\mbox{Elimination von $\rightarrow$}) \\    
- \Leftrightarrow & (\neg p \vee q) \rightarrow (\neg p \rightarrow q) \rightarrow q    & \quad(\mbox{Elimination von $\rightarrow$})\\     
- \Leftrightarrow & (\neg p \vee q) \rightarrow (\neg \neg p \vee q) \rightarrow q      & \quad(\mbox{Elimination der Doppelnegation})\\    
- \Leftrightarrow & (\neg p \vee q) \rightarrow (p \vee q) \rightarrow q                & \quad(\mbox{Elimination von $\rightarrow$})\\     
- \Leftrightarrow & \neg(\neg p \vee q) \vee ((p \vee q) \rightarrow q)                 & \quad(\mbox{DeMorgan})\\                          
- \Leftrightarrow & (\neg\neg p \wedge \neg q) \vee ((p \vee q) \rightarrow q)          & \quad(\mbox{Elimination der Doppelnegation})\\    
- \Leftrightarrow & (p \wedge \neg q) \vee ((p \vee q) \rightarrow q)                   & \quad(\mbox{Elimination von $\rightarrow$})\\     
- \Leftrightarrow & (p \wedge \neg q) \vee (\neg(p \vee q) \vee q)                      & \quad(\mbox{DeMorgan})\\                          
- \Leftrightarrow & (p \wedge \neg q) \vee ((\neg p \wedge \neg q) \vee q)              & \quad(\mbox{Distributivität}) \\
- \Leftrightarrow & (p \wedge \neg q) \vee ((\neg p \vee q) \wedge (\neg q \vee q))     & \quad(\mbox{Tertium-non-Datur})\\               
- \Leftrightarrow & (p \wedge \neg q) \vee ((\neg p \vee q) \wedge \verum)                & \quad(\mbox{Neutrales Element})\\                 
- \Leftrightarrow & (p \wedge \neg q) \vee (\neg p \vee q)                              & \quad(\mbox{Distributivität})\\                   
- \Leftrightarrow & (p \vee (\neg p \vee q)) \wedge (\neg q \vee (\neg p \vee q))       & \quad(\mbox{Assoziativität}) \\                   
- \Leftrightarrow & ((p \vee \neg p) \vee q) \wedge (\neg q \vee (\neg p \vee q))       & \quad(\mbox{Tertium-non-Datur})\\               
- \Leftrightarrow & (\verum \vee q) \wedge (\neg q \vee (\neg p \vee q))                  & \quad(\mbox{Neutrales Element}) \\                
- \Leftrightarrow & \verum \wedge (\neg q \vee (\neg p \vee q))                           & \quad(\mbox{Neutrales Element}) \\                
- \Leftrightarrow & \neg q \vee (\neg p \vee q)                                         & \quad(\mbox{Assoziativität})\\                    
- \Leftrightarrow & (\neg q \vee \neg p) \vee q                                         & \quad(\mbox{Kommutativität})\\                    
- \Leftrightarrow & (\neg p \vee \neg q) \vee q                                         & \quad(\mbox{Assoziativität})\\                    
- \Leftrightarrow & \neg p \vee (\neg q  \vee q)                                        & \quad(\mbox{Tertium-non-Datur})\\               
- \Leftrightarrow & \neg p \vee \verum                                                   \\                
- \Leftrightarrow & \verum \\
-\end{array}
-$
-
-Die Umformungen in dem obigen Beweis sind nach einem bestimmten System durchgeführt worden.  Um dieses System
-präzise formulieren zu können, benötigen wir noch einige Definitionen.
+\section{Conjunctive Normal Form}
+The following section discusses algebraic manipulations of propositional formulas.  Concretely, we will define
+the notion of a \emph{conjunctive normal form} and show how a propositional formula can be turned into
+conjunctive normal form.  The Davis-Putnam algorithm that is discussed later requires us to put the given
+formulas into conjunctive normal form.
 
 \begin{Definition}[Literal]
-  Eine aussagenlogische Formel $f$ heißt \blue{Literal}\index{Literal} g.d.w. einer der folgenden Fälle vorliegt:
+  A propositional formula $f$ is a \blue{Literal}\index{literal} if and only if we have one of the following cases: 
   \begin{enumerate}
-  \item $f = \verum$ oder $f = \falsum$.
-  \item $f = p$, wobei $p$ eine aussagenlogische Variable ist.
+  \item $f = \verum$ or $f = \falsum$.
+  \item $f = p$, where $p$ is a propositional variable.
 
-        In diesem Fall sprechen wir von einem \blue{positiven} Literal.\index{positives Literal}
-  \item $f = \neg p$, wobei $p$ eine aussagenlogische Variable ist. 
+        In this case $f$ is a \blue{positive} literal.\index{positive literal}
+  \item $f = \neg p$, where $p$ is a propositional variable. 
 
-        In diesem Fall sprechen wir von einem \blue{negativen} Literal.\index{negatives Literal}
+        In this case $f$ is a \blue{negative} literal.\index{negatives literal}
   \end{enumerate}
-  Die Menge aller Literale bezeichnen wir mit $\blue{\mathcal{L}}$.\index{$\mathcal{L}$, Menge der Literale}  \eox
+  The set of all literals is denoted as  $\blue{\mathcal{L}}$.\index{$\mathcal{L}$, set of all literals}  \eox
 \end{Definition}
 
-Später werden wird noch den Begriff des \blue{Komplements}\index{Komplement} eines Literals benötigen.
-Ist $l$ ein Literal, so wird das Komplement von $l$ mit $\komplement{l}$
-bezeichnet.  Das Komplement wird durch Fall-Unterscheidung definiert:
+If  $l$ is a literal, then the \blue{complement}\index{complement} $l$ of is denoted as $\komplement{l}$.
+It is defined by a case distinction.
 \begin{enumerate}
-\item $\komplement{\verum} = \falsum$ \quad und \quad $\komplement{\falsum} = \verum$. 
-\item $\komplement{p} := \neg p$, \quad falls $p \in \mathcal{P}$.
-\item $\komplement{\neg p} := p$, \quad falls $p \in \mathcal{P}$.
+\item $\komplement{\verum} = \falsum$ \quad and \quad $\komplement{\falsum} = \verum$. 
+\item $\komplement{p} := \neg p$, \quad if $p \in \mathcal{P}$.
+\item $\komplement{\neg p} := p$, \quad if $p \in \mathcal{P}$.
 \end{enumerate}
-Wir sehen, dass das Komplement $\komplement{l}$ eines Literals $l$ äquivalent zur
-Negation von $l$ ist, wir haben also
+The complement $\komplement{l}$ of a literal $l$ is equivalent to the negation of $l$, we have
 \\[0.2cm]
 \hspace*{1.3cm}
 $\models \komplement{l} \leftrightarrow \neg l$.
+\\[0.2cm]
+However, the complement of a literal $l$ is also a literal, while the negation of a literal is in general not a
+literal. For example, if $p$ is a propositional variable, then the complement of $\neg p$ is $p$, while the
+negation of $\neg p$ is $\neg \neg p$ and this is not a literal.
 
-\begin{Definition}[Klausel]
-  Eine aussagenlogische Formel $K$ ist eine \blue{Klausel}\index{Klausel} wenn $K$ die Form \\[0.2cm]
+\begin{Definition}[Clause]
+  A propositional formula $K$ is a \blue{clause}\index{clause} when it has the form \\[0.2cm]
   \hspace*{1.3cm} $K = l_1 \vee \cdots \vee l_r$ \\[0.2cm]
-  hat, wobei $l_i$ für alle $i=1,\cdots,r$ ein Literal ist.  Eine Klausel ist also eine
-  Disjunktion von Literalen. 
-  Die Menge aller Klauseln bezeichnen wir mit $\blue{\mathcal{K}}$.\index{$\mathcal{K}$ Menge der Klauseln}
+  where $l_i$ is a literal for all $i=1,\cdots,r$.  Hence a clause is a disjunction of literals.
+  The set of all clauses is denoted as  $\blue{\mathcal{K}}$.\index{$\mathcal{K}$ set of all clauses}
   \eox
 \end{Definition}
 
-Oft werden Klauseln auch einfach als \blue{Mengen} von Literalen betrachtet.  
-Durch diese Sichtweise abstrahieren wir von der Reihenfolge und der Anzahl des Auftretens
-der Literale in der Disjunktion.  Dies ist möglich aufgrund der Assoziativität, Kommutativität und
-Idempotenz des Junktors ``$\vee$''.  Für die Klausel $l_1 \vee \cdots \vee l_r$ schreiben
-wir also in Zukunft auch 
+Often, a clause is seen as a \blue{set} of its literals.  Interpreting a clause as a set of its literals
+abstracts from both the order and the number of the occurrences of its literals.
+This is possible because the operator ``$\vee$'' is associative, commutative, and idempotent.  
+Hence the clause  $l_1 \vee \cdots \vee l_r$ will be written as the set
 \\[0.2cm]
 \hspace*{1.3cm} $\{ l_1, \cdots, l_r \}$.
 \\[0.2cm]
-Diese Art, eine Klausel als Menge ihrer Literale darzustellen, bezeichnen wir als
-\blue{Mengen-Schreibweise}.\index{Mengen-Schreibweise}  
-Das folgende Beispiel illustriert die Nützlichkeit der Mengen-Schreibweise von Klauseln.
-Wir betrachten die beiden Klauseln
+This notation is called the \blue{set notation} for clauses.\index{set notation}  
+The following example shows how the set notation is beneficial.  We take the clauses
 \\[0.2cm]
 \hspace*{1.3cm}
-$p \vee (q \vee \neg r) \vee p$ \quad und \quad $\neg r \vee q \vee (\neg r \vee p)$. 
+$p \vee (q \vee \neg r) \vee p$ \quad and \quad $\neg r \vee q \vee (\neg r \vee p)$. 
 \\[0.2cm]
-Die beiden Klauseln sind zwar äquivalent, aber rein syntaktisch sind die Formeln verschieden.
-Überführen wir die beiden Klauseln in Mengen-Schreibweise, so erhalten wir
-\\[0.2cm]
-\hspace*{1.3cm}
-$\{p, q, \neg r \}$ \quad und \quad $\{ \neg r, q, p \}$. 
-\\[0.2cm]
-In einer Menge kommt jedes Element höchstens einmal vor und die Reihenfolge, in der die
-Elemente auftreten, spielt auch keine Rolle.  Daher sind die beiden obigen Mengen gleich!
-Durch die Tatsache, dass Mengen von der Reihenfolge und der Anzahl der Elemente
-abstrahieren, implementiert die Mengen-Schreibweise die Assoziativität, Kommutativität und
-Idempotenz der Disjunktion.  Über\-tragen wir nun die  aussagenlogische Äquivalenz
+Although these clauses are equivalent, they are not syntactically identical.  However, if we transform these
+clauses into set notation, we get
 \\[0.2cm]
 \hspace*{1.3cm}
-$l_1 \vee \cdots \vee l_r \vee \falsum \leftrightarrow l_1 \vee \cdots \vee l_r$
+$\{p, q, \neg r \}$ \quad and \quad $\{ \neg r, q, p \}$. 
 \\[0.2cm]
-in Mengen-Schreibweise, so erhalten wir
-\\[0.2cm]
-\hspace*{1.3cm}
-$\{ l_1, \cdots, l_r, \falsum \} \leftrightarrow \{ l_1, \cdots, l_r \}$.
-\\[0.2cm]
-Dies zeigt, dass wir das Element $\falsum$ in einer Klausel getrost weglassen können.
-Betrachten wir die letzten Äquivalenz für den Fall, dass $r=0$ ist, so haben wir
+In a set every element occurs at most once.  Furthermore, the order of the elements does not matter.
+Hence the sets given above are the same!
+
+Let us now transfer the propositional equivalence
 \\[0.2cm]
 \hspace*{1.3cm}
-$\{\falsum \} \leftrightarrow \{\}$.
+$l_1 \vee \cdots \vee l_r \vee \falsum \;\Leftrightarrow\; l_1 \vee \cdots \vee l_r$
 \\[0.2cm]
-Damit sehen wir, dass die leere Menge von Literalen als $\falsum$ zu interpretieren ist.
+into set notation.  We get
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{ l_1, \cdots, l_r, \falsum \} \;\Leftrightarrow\; \{ l_1, \cdots, l_r \}$.
+\\[0.2cm]
+This shows, that the element $\falsum$ can be discarded from a clause.  If we write this equivalence for $r=0$,
+we get
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{\falsum \} \Leftrightarrow \{\}$.
+\\[0.2cm]
+Hence the empty set of literals is to be interpreted as $\falsum$.
 
 \begin{Definition}
-  Eine Klausel $K$ ist \blue{trivial},\index{trivial} wenn einer der beiden folgenden Fälle vorliegt:
+  A clause $K$ is \blue{trivial},\index{trivial} if and only if one of the following cases occurs:
   \begin{enumerate}
   \item $\verum \in K$.
-  \item Es existiert eine Variable $p \in \mathcal{P}$, so dass sowohl $p \in K$ als auch $\neg p \in K$ gilt.
+  \item There is a variable  $p \in \mathcal{P}$, such that we have both $p \in K$ as well as $\neg p \in K$.
 
-        In diesem Fall bezeichnen wir $p$ und $\neg p$ als \blue{komplementäre Literale}.\index{komplementäre Literale}
+        In this case $p$ and $\neg p$ are called  \blue{complementary literals}.\index{complementary literals}
         \eox
 \end{enumerate}
 \end{Definition}
@@ -1680,7 +1613,7 @@ unter GitHub.
 \exercise
 Berechnen Sie die konjunktiven Normalformen der folgenden aussagenlogischen Formeln und geben Sie Ihr Ergebnis
 in Mengenschreibweise an.  Überprüfen Sie Ihr Ergebnis mit Hilfe des Jupyter-Notebooks 
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/CNF.ipynb}{CNF.ipynb}.
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/CNF.ipynb}{CNF.ipynb}.
 \begin{enumerate}[(a)]
 \item $p \vee q \rightarrow r$,
 \item $p \vee q \leftrightarrow r$,
@@ -3829,5 +3762,4 @@ Die effiziente Lösung solcher Probleme ist Gegenstand der aktuellen Forschung.
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "logic"
-%%% ispell-local-dictionary: "deutsch8"
 %%% End: 
