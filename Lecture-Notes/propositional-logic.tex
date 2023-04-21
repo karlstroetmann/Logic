@@ -1786,9 +1786,8 @@ $$
 
 \begin{Definition}[Herleitungs-Begriff, $\vdash$]
     Es sei $M$ eine Menge von Klauseln  und $f$ sei eine einzelne Klausel.  
-    Die Formeln aus $M$ bezeichnen wir als unsere \blue{Prämissen}, die Formel
-    $f$ heißt \blue{Konklusion}.  Unser Ziel ist es, mit den Prämissen aus $M$
-    die Konklusion $f$ zu \blue{beweisen}.  Dazu definieren wir induktiv die Relation \\[0.2cm]
+    Die Formeln aus $M$ bezeichnen wir als unsere \blue{Axiome}.  Unser Ziel ist es, mit den Axiomen aus $M$
+    die Formel $f$ \blue{herzuleiten}.  Dazu definieren wir induktiv die Relation \\[0.2cm]
     \hspace*{1.3cm}
     $\blue{M \vdash f}$. \\[0.2cm]
     Wir lesen ``$M \vdash f$'' als ``$M$ \blue{leitet} $f$ \blue{her}''.  Die induktive Definition ist
@@ -1994,7 +1993,7 @@ $\models f_1 \wedge \cdots \wedge f_n \rightarrow \falsum$
 \\[0.2cm]
 gilt. \eox
 
-\begin{Definition}[Saturierte Klausel-Mengen]
+\begin{Definition}[Saturierte Klausel-Mengen] \hspace*{\fill} \linebreak
   Eine Menge $M$ von Klauseln ist \blue{saturiert} \index{saturiert} wenn jede Klausel, die sich aus zwei
   Klauseln $C_1,C_2 \in M$ mit Hilfe der Schnitt-Regel ableiten lässt, bereits selbst wieder ein Element der
   Menge $M$ ist.
@@ -2005,8 +2004,8 @@ Ist $M$ eine endlichen Menge von Klauseln, so können wir $M$ zu einer saturiert
 $\overline{M}$ erweitern, indem wir $\overline{M}$ als die Menge $M$ initialisieren und dann solange die
 Schnitt-Regel auf Klauseln aus $\overline{M}$ anwenden und zu der Menge $\overline{M}$ hinzufügen, wie dies möglich
 ist. Da es zu einer gegebenen endlichen Menge von aussagenlogischen Variablen nur eine beschränkte Menge von
-Klauseln gibt, die wir aus diesen Variablen bilden können, muss dieses Verfahren mit einer saturierten Menge
-abbrechen. \eox
+Klauseln gibt, die wir aus diesen Variablen bilden können, muss dieses Verfahren abbrechen und die Menge der
+Formeln, die wir dann erhalten, ist saturiert. \eox
 
 \begin{Satz}[\blue{Widerlegungs-Vollständigkeit}] \label{widerlegungs-vollstaendig}
   Ist  $M$ eine Menge von Klauseln,
@@ -2018,19 +2017,31 @@ abbrechen. \eox
 
 \noindent
 \textbf{Beweis}:  Wir führen den Beweis durch
-Kontraposition.  Wir nehmen an, dass $M$ eine endliche Menge von Klauseln ist, aus der sich die leere Klausel
-nicht herleiten lässt.  Dies schreiben wir als $M \not\,\vdash \falsum$.
-Wir zeigen, dass es dann eine aussagenlogische Belegung $\mathcal{I}$ gibt, unter der
-alle Klauseln aus $M$ wahr werden.
+Kontraposition.  Wir nehmen an, dass $M$ eine endliche Menge von Klauseln ist,
+\begin{enumerate}[(a)]
+\item die einerseits zwar unerfüllbar ist, es gilt also
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\models \falsum$,
+\item aus der sich andererseits aber die leere Klausel nicht herleiten lässt, was wir als 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $M \not\,\vdash \{\}$
+      \\[0.2cm]
+      shreiben.
+\end{enumerate}
+Wir werden zeigen, dass es dann eine aussagenlogische Belegung $\mathcal{I}$ gibt, unter der alle Klauseln aus
+$M$ wahr werden, was der Unerfüllbarkeit von $M$ widerspricht.
 
-Nach der obigen Bemerkung können wir annehmen, dass $M$ bereits saturiert ist. Es sei 
+Nach der obigen Bemerkung können wir die Menge $M$ saturieren und erhalten dann die saturierte Menge
+$\overline{M}$.  Es sei  
 \\[0.2cm]
 \hspace*{1.3cm}
 $\{ p_1, \cdots, p_N \}$
 \\[0.2cm]
 die Menge aller aussagenlogischen Variablen, die in Klauseln aus $M$ auftreten.  Für alle $k=0,1,\cdots,N$
 definieren wir nun eine aussagenlogische Belegung $\mathcal{I}_k$ durch Induktion nach $k$.  Die
-aussagenlogischen Belegungen haben für alle $k=0,1,\cdots,N$ die Eigenschaft, dass für jede Klausel $C \in M$,
+aussagenlogischen Belegungen haben für alle $k=0,1,\cdots,N$ die Eigenschaft, dass für jede Klausel $C \in \overline{M}$,
 die nur die Variablen $p_1,\cdots,p_k$ enthält,
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -2041,10 +2052,10 @@ gilt.  Außerdem definiert die aussagenlogische Belegung $\mathcal{I}_k$ nur Wer
 \item[I.A.:] $k=0$.
  
   Wir definieren $\mathcal{I}_0$ als die leere aussagenlogische Belegung, die keiner
-  Variablen einen Wert zuweist.  Um $(*)$ nachzuweisen müssen wir zeigen, dass für jede Klausel $C \in M$, die
+  Variablen einen Wert zuweist.  Um $(*)$ nachzuweisen müssen wir zeigen, dass für jede Klausel $C \in \overline{M}$, die
   keine aussagenlogische Variable enthält, $\mathcal{I}_0(C) = \mathtt{True}$ gilt.  Die einzige Klausel, die
-  keine Variable enthält, ist die leere Klausel.  Da wir vorausgesetzt haben, dass  $M \not\,\vdash \falsum$
-  gilt, kann $M$ die leere Klausel nicht enthalten.  Also ist nichts zu zeigen.
+  keine Variable enthält, ist die leere Klausel.  Da wir vorausgesetzt haben, dass  $M \not\,\vdash \{\}$
+  gilt, kann $\overline{M}$ die leere Klausel nicht enthalten.  Also ist nichts zu zeigen.
 \item[I.S.:] $k \mapsto k+1$.
 
   Nach IV ist $\mathcal{I}_k$ bereits definiert.  Wir setzen zunächst
@@ -2139,9 +2150,10 @@ gilt.  Außerdem definiert die aussagenlogische Belegung $\mathcal{I}_k$ nur Wer
     \end{enumerate}
     Insgesamt haben wir auch im Induktions-Schritt gezeigt, dass die aussagenlogische Belegungen
     $\mathcal{I}_{k+1}$ alle Klauseln $C \in \overline{M}$ wahr macht.  Wir definieren nun die aussagenlogische
-    Belegungen $\mathcal{I}$ als $\mathcal{I} = \mathcal{I}_N$.  Da die Klauseln aus $M$ nur die Variablen
-    $p_1, \cdots, p_N$ enthalten, ist damit klar, dass $\mathcal{I}$ alle Klauseln aus $M$ wahr macht und das
-    war zu zeigen. \qed
+    Belegungen $\mathcal{I}$ als $\mathcal{I} = \mathcal{I}_N$.  Da die Klauseln aus $\overline{M}$ nur die Variablen
+    $p_1, \cdots, p_N$ enthalten, ist damit klar, dass $\mathcal{I}$ alle Klauseln aus $\overline{M}$ wahr
+    macht.  Da $M \subseteq \overline{M}$, macht $\mathcal{I}$ damit auch alle Klauseln aus $M$ war, was zum
+    Widerspruch mit der Voraussetzung $M \models \falsum$ führt. \qed
   \end{enumerate}
 \end{enumerate}
 
@@ -2153,7 +2165,7 @@ Abbildungen \ref{fig:Completeness.ipynb-1}, \ref{fig:Completeness.ipynb-2} und
 \ref{fig:Completeness.ipynb-3} auf den folgenden Seiten gezeigt.  Sie finden dieses Programm unter der Adresse
 \\[0.2cm]
 \hspace*{0.8cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Completeness.ipynb}{\texttt{https://github.com/karlstroetmann/Logic/blob/master/Python/Completeness.ipynb}}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Completeness.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Completeness.ipynb}}
 \\[0.2cm]
 im Netz.
 
