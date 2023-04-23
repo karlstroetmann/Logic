@@ -2023,7 +2023,7 @@ Kontraposition.  Wir nehmen an, dass $M$ eine endliche Menge von Klauseln ist,
       \\[0.2cm]
       \hspace*{1.3cm}
       $\models \falsum$,
-\item aus der sich andererseits aber die leere Klausel nicht herleiten lässt, was wir als 
+\item aus der sich aber andererseits die leere Klausel nicht herleiten lässt, was wir als 
       \\[0.2cm]
       \hspace*{1.3cm}
       $M \not\,\vdash \{\}$
@@ -2039,15 +2039,19 @@ $\overline{M}$.  Es sei
 \hspace*{1.3cm}
 $\{ p_1, \cdots, p_N \}$
 \\[0.2cm]
-die Menge aller aussagenlogischen Variablen, die in Klauseln aus $M$ auftreten.  Für alle $k=0,1,\cdots,N$
+die Menge aller aussagenlogischen Variablen, die in Klauseln aus $M$ auftreten.  Im folgenden bezeichnen wir
+die Menge der aussagenlogischen Variablen, die in einer Klausel $C$ auftreten, mit $\mathtt{var}(C)$.
+Für alle $k=0,1,\cdots,N$
 definieren wir nun eine aussagenlogische Belegung $\mathcal{I}_k$ durch Induktion nach $k$.  Die
 aussagenlogischen Belegungen haben für alle $k=0,1,\cdots,N$ die Eigenschaft, dass für jede Klausel $C \in \overline{M}$,
 die nur die Variablen $p_1,\cdots,p_k$ enthält,
+$\mathcal{I}_k(C) = \mathtt{True}$ gilt.  Als Formel schreibt sich dies wie folgt:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{I}_k(C) = \mathtt{True}$ \hspace*{\fill} $(*)$
+$\forall C \in \overline{M}:\Bigl(\mathtt{var}(C) \subseteq \{p_1, \cdots, p_k\} \Rightarrow \mathcal{I}_k(C) = \mathtt{True}\Bigl)$.
 \\[0.2cm]
-gilt.  Außerdem definiert die aussagenlogische Belegung $\mathcal{I}_k$ nur Werte für die Variablen $p_1,\cdots,p_k$.
+Außerdem definiert die aussagenlogische Belegung $\mathcal{I}_k$ nur Werte für die Variablen
+$p_1,\cdots,p_k$.
 \begin{enumerate}
 \item[I.A.:] $k=0$.
  
@@ -2145,14 +2149,13 @@ gilt.  Außerdem definiert die aussagenlogische Belegung $\mathcal{I}_k$ nur Wer
     \item $C = D \cup \{ \neg p_{k+1} \}$.
 
           In diesem Fall gilt nach Definition von $\mathcal{I}$, dass $\mathcal{I}_{k+1}(p_{k+1}) = \mathtt{False}$
-          ist und daraus folgt sofort dass $\mathcal{I}_{k+1}(\neg p_{k+1}) = \mathtt{True}$, was
-          $\mathtt{i}_{k+1}(C) = \mathtt{True}$ zur Folge hat.
+          ist und daraus folgt sofort, dass $\mathcal{I}_{k+1}(\neg p_{k+1}) = \mathtt{True}$ ist, was
+          $\mathcal{I}_{k+1}(C) = \mathtt{True}$ zur Folge hat.
     \end{enumerate}
-    Insgesamt haben wir auch im Induktions-Schritt gezeigt, dass die aussagenlogische Belegungen
-    $\mathcal{I}_{k+1}$ alle Klauseln $C \in \overline{M}$ wahr macht.  Wir definieren nun die aussagenlogische
-    Belegungen $\mathcal{I}$ als $\mathcal{I} = \mathcal{I}_N$.  Da die Klauseln aus $\overline{M}$ nur die Variablen
-    $p_1, \cdots, p_N$ enthalten, ist damit klar, dass $\mathcal{I}$ alle Klauseln aus $\overline{M}$ wahr
-    macht.  Da $M \subseteq \overline{M}$, macht $\mathcal{I}$ damit auch alle Klauseln aus $M$ war, was zum
+    Durch die Induktion haben wir damit gezeigt, dass die aussagenlogische Belegungen
+    $\mathcal{I}_{N}$ alle Klauseln $C \in \overline{M}$ wahr macht, denn in $\overline{M}$ kommen ja nur die
+    aussagenlogischen Variablen $p_1$, $\cdots$, $p_N$ vor.
+    Da $M \subseteq \overline{M}$, macht $\mathcal{I}_{N}$ damit auch alle Klauseln aus $M$ war, was zum
     Widerspruch mit der Voraussetzung $M \models \falsum$ führt. \qed
   \end{enumerate}
 \end{enumerate}
@@ -2165,7 +2168,7 @@ Abbildungen \ref{fig:Completeness.ipynb-1}, \ref{fig:Completeness.ipynb-2} und
 \ref{fig:Completeness.ipynb-3} auf den folgenden Seiten gezeigt.  Sie finden dieses Programm unter der Adresse
 \\[0.2cm]
 \hspace*{0.8cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Completeness.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Completeness.ipynb}}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Completeness.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Completeness.ipynb}}
 \\[0.2cm]
 im Netz.
 
@@ -2182,17 +2185,15 @@ im Netz.
               ]{python3}
     def complement(l):
         "Compute the complement of the literal l."
-        if isinstance(l, str):  # l is a propositional variable
-            return ('¬', l)
-        else:                   # l = ('¬', 'p')
-        return l[1]
+        match l:
+            case p if isinstance(p, str):  return ('¬', p)
+            case ('¬', p):                 return p
 
-    def extractVariable(l):
+     def extractVariable(l):
         "Extract the variable of the literal l."
-        if isinstance(l, str):  # l is a propositional variable
-            return l
-        else:                   # l = ('¬', 'p')
-            return l[1]
+        match l:
+            case p if isinstance(p, str): return p           
+            case ('¬', p):                return p
     
     def collectVariables(M):
         "Return the set of all variables occurring in M."
@@ -2231,11 +2232,11 @@ sind.
       Falls $l$ die Form $\neg p$ mit einer aussagenlogischen Variablen $p$ hat, so gilt $\komplement{\neg p} =
       p$.
 \item Die Funktion \texttt{extractVariable} extrahiert die aussagenlogische Variable, die in einem Literal $l$
-      enthalten ist.  Die Implementierung verläuft analog zur Implementierung der Funktion
+      enthalten ist.  Die Implementierung verläuft analog zu der Implementierung der Funktion \linebreak
       \texttt{complement} über eine Fallunterscheidung, bei der wir berücksichtigen, dass $l$ entweder die Form
       $p$ oder die Form $\neg p$ hat, wobei $p$ die zu extrahierende aussagenlogische Variable ist.
 \item Die Funktion \texttt{collectVars} erhält als Argument eine Menge $M$ von Klauseln, wobei die
-      einzelnen Klauseln  \mbox{$C \!\in\! M$} als Mengen von Literalen dargestellt werden.  Aufgabe der
+      einzelnen Klauseln  \mbox{$C \!\in\! M$} als Mengen von Literalen dargestellt werden.  Die Aufgabe der
       Funktion \texttt{collectVars} ist es, die Menge aller aussagenlogischen Variablen zu
       berechnen, die in einer der Klauseln $C$ aus $M$ vorkommen.  Bei der Implementierung iterieren
       wir zunächst über die Klauseln $C$ der Menge $M$ und dann für jede Klausel $C$ über die in $C$
@@ -2308,29 +2309,29 @@ Wir erläutern nun die Implementierung der Funktion \texttt{saturate}.
 \item Die \texttt{while}-Schleife, die in Zeile 30 beginnt, hat die Aufgabe, die Schnitt-Regel
       so lange wie möglich anzuwenden, um mit Hilfe der Schnitt-Regel neue Klauseln aus den gegebenen
       Klauseln herzuleiten.  Da die Bedingung dieser Schleife den Wert \texttt{True} hat, kann diese
-      Schleife nur durch die Ausführung einer der beiden \texttt{return}-Befehle in Zeile 36 bzw.~Zeile 39
+      Schleife nur durch die Ausführung einer der beiden \texttt{return}-Befehle in Zeile 34 bzw.~Zeile 37
       abgebrochen werden. 
-\item In Zeile 31 wird die Menge \texttt{Derived} als die Menge der Klauseln definiert, die mit Hilfe der
+\item In Zeile 29 wird die Menge \texttt{Derived} als die Menge der Klauseln definiert, die mit Hilfe der
       Schnitt-Regel aus zwei der Klauseln in der Menge \texttt{Clauses} gefolgert werden können.
 \item Falls die Menge \texttt{Derived} die leere Klausel enthält, dann ist die Menge
       \texttt{Clauses} widersprüchlich und die Funktion \texttt{saturate} gibt als Ergebnis die
       Menge $\bigl\{ \{\} \bigr\}$ zurück, wobei die innere Menge als \texttt{frozenset} dargestellt werden
       muss.  Beachten Sie, dass die Menge $\bigl\{ \{\} \bigr\}$ dem Falsum entspricht.
-\item Andernfalls ziehen wir in Zeile 37 von der Menge \texttt{Derived} zunächst die Klauseln
+\item Andernfalls ziehen wir in Zeile 35 von der Menge \texttt{Derived} zunächst die Klauseln
       ab, die schon in der Menge \texttt{Clauses} vorhanden waren, denn es geht uns darum
       festzustellen, ob wir im letzten Schritt tatsächlich 
       \underline{neue} Klauseln gefunden haben, oder ob alle Klauseln, die wir im letzten Schritt in Zeile 31
       hergeleitet haben, schon vorher bekannt waren.
-\item Falls wir nun in Zeile 38 feststellen, dass wir keine neuen Klauseln hergeleitet haben,
+\item Falls wir nun in Zeile 36 feststellen, dass wir keine neuen Klauseln hergeleitet haben,
       dann ist die Menge \texttt{Clauses} \blue{saturiert} und wir geben diese Menge in Zeile 39 zurück.
-\item Andernfalls fügen wir in Zeile 40 die Klauseln, die wir neu gefunden haben, zu der Menge
+\item Andernfalls fügen wir in Zeile 38 die Klauseln, die wir neu gefunden haben, zu der Menge
       \texttt{Clauses} hinzu und setzen die \texttt{while}-Schleife fort.
 \end{enumerate}
 An dieser Stelle müssen wir uns überlegen, dass die \texttt{while}-Schleife tatsächlich irgendwann
 abbricht.  Das hat zwei Gründe:  
 \begin{enumerate}
 \item In jeder Iteration der Schleife wird die Anzahl der Elemente der Menge \texttt{Clauses}
-      mindestens um Eins erhöht, denn wir wissen ja, dass die Menge \texttt{Derived}, die wir in Zeile 40 zur
+      mindestens um Eins erhöht, denn wir wissen ja, dass die Menge \texttt{Derived}, die wir in Zeile 38 zur
       Menge \texttt{Clauses} hinzufügen, einerseits nicht leer ist und andererseits auch nur solche
       Klauseln enthält, die nicht bereits in \texttt{Clauses} auftreten.
 \item Die Menge \texttt{Clauses}, mit der wir ursprünglich starten, enthält eine bestimmte Anzahl $n$
@@ -2344,7 +2345,7 @@ abbricht.  Das hat zwei Gründe:
       \texttt{Clauses} auftreten können.  
 \end{enumerate}
 Aus den beiden oben angegebenen Gründen können wir schließen, dass die \texttt{while}-Schleife in
-Zeile 30 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.
+Zeile 28 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.
 
 
 \begin{figure}[!ht]
@@ -2388,11 +2389,11 @@ das Ergebnis \texttt{False} zurück geben.  Andernfalls soll eine aussagenlogisc
 unter der alle Klauseln aus der Menge \texttt{Clauses} erfüllt sind.
 Im Detail arbeitet die Funktion \texttt{findValuation} wie folgt.
 \begin{enumerate}
-\item Zunächst berechnen wir in Zeile 43 die Menge aller aussagenlogischen Variablen, die in der Menge
+\item Zunächst berechnen wir in Zeile 41 die Menge aller aussagenlogischen Variablen, die in der Menge
       \texttt{Clauses} auftreten.  Wir benötigen diese Menge, denn in der
       aussagenlogischen Interpretation, die wir als Ergebnis zurück geben wollen, müssen 
       wir diese Variablen auf die Menge $\{ \texttt{True}, \texttt{False} \}$ abbilden.       
-\item In Zeile 44 saturieren wir die Menge \texttt{Clauses} und berechnen alle Klauseln, die aus der
+\item In Zeile 42 saturieren wir die Menge \texttt{Clauses} und berechnen alle Klauseln, die aus der
       ursprünglich gegebenen Menge von Klauseln mit Hilfe der Schnitt-Regel hergeleitet werden
       können.  Hier können zwei Fälle auftreten:
       \begin{enumerate}
@@ -2407,7 +2408,7 @@ Im Detail arbeitet die Funktion \texttt{findValuation} wie folgt.
             die gesuchte Belegung $\I$ die aussagenlogische
             Variable \texttt{p} zu \texttt{True} auswertet.  Andernfalls nehmen wir an Stelle von \texttt{p} das
             Literal $\neg \texttt{p}$ in der Menge \texttt{Literals} auf.  Als Ergebnis geben wir daher in
-            Zeile 55 die Menge \texttt{Literals} zurück.  Die gesuchte aussagenlogische Belegung
+            Zeile 53 die Menge \texttt{Literals} zurück.  Die gesuchte aussagenlogische Belegung
             $\mathcal{I}$ kann dann gemäß der Formel  
             \\[0.2cm]
             \hspace*{1.3cm}
@@ -2630,7 +2631,7 @@ einer Klausel-Menge ist im Allgemeinen sehr aufwendig.
 Wir werden daher in diesem Abschnitt ein Verfahren vorstellen, mit dem die Berechnung einer Lösung
 einer aussagenlogischen Klausel-Menge in vielen praktisch relevanten Fällen auch dann möglich ist, wenn die
 Anzahle der Variablen groß ist.  Dieses Verfahren geht auf Davis und Putnam
-\cite{davis:1960, davis:1962} zurück.  Verfeinerungen dieses Verfahrens werden beispielsweise
+\cite{davis:1960, davis:1962} zurück.  Verfeinerungen dieses Verfahrens \cite{moskewicz:2001} werden beispielsweise
 eingesetzt, um die Korrektheit digitaler elektronischer Schaltungen nachzuweisen.  
 
 Um das Verfahren zu motivieren, überlegen wir zunächst, bei welcher Form der Klausel-Menge $K$
@@ -3174,7 +3175,7 @@ Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
 Die oben dargestellte Version des Verfahrens von Davis und Putnam lässt sich in vielerlei
 Hinsicht verbessern.  Aus Zeitgründen können wir auf solche Verbesserungen nicht
 weiter eingehen. Der interessierte Leser sei hier auf die folgende Arbeit von Moskewicz
-et.al.~\cite{moskewicz01}  verwiesen: 
+et.al.~\cite{moskewicz:2001}  verwiesen: 
 \\[0.2cm]
 \hspace*{1.3cm} \textsl{Chaff: Engineering an Efficient SAT Solver} \\
 \hspace*{1.3cm} von \blue{M. Moskewicz, C. Madigan, Y. Zhao, L. Zhang, S. Malik} 
