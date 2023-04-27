@@ -2681,21 +2681,22 @@ wahr und falsch machen.  Wir nehmen die an den letzten drei Beispielen gemachten
 \end{Definition}
 
 \begin{Definition}[Triviale Klausel-Mengen]
-  Eine Klausel-Menge $K$ ist genau dann eine \blue{einfache Klausel-Menge}\index{einfache Klausel-Menge}, wenn
+  Eine Klausel-Menge $K$ ist genau dann eine \blue{triviale Klausel-Menge}\index{triviale Klausel-Menge}, wenn
   einer der beiden folgenden Fälle vorliegt:
   \begin{enumerate}
   \item $K$ enthält die leere Klausel, es gilt also $\{\} \el K$.
 
         In diesem Fall ist $K$ offensichtlich unlösbar.
-  \item $K$ enthält nur Unit-Klauseln mit \underline{\red{verschiedenen}} Aussage-Variablen, d.h.~es kann nicht
-        sein, dass es eine aussagenlogische Variable $p$ gibt, so dass $K$ sowohl die Klausel $\{p\}$, als auch die
-        Klausel $\{\neg p \}$ enthält.  Bezeichnen wir die Menge der aussagenlogischen Variablen mit $\mathcal{P}$,
+  \item $K$ enthält nur Unit-Klauseln mit \underline{\red{verschiedenen}} Aussage-Variablen.
+        Bezeichnen wir die Menge der aussagenlogischen Variablen mit $\mathcal{P}$,
         so schreibt sich diese Bedingung als 
-        \\[0.3cm]
-        \hspace*{1.3cm}
-        $\bigl(\forall C \el K: \texttt{card}(C) = 1\bigr) \;\wedge\;
-         \forall p \el \mathcal{P}: \neg\bigl( \{p\} \in K \wedge \{\neg p\} \in K\bigr)$.
-        \\[0.3cm]
+        \begin{enumerate}[(a)]
+        \item $\texttt{card}(C) = 1$ \quad für alle $C \in K$ \quad und
+        \item Es gibt kein $p\in\mathcal{P}$, so dass gilt: 
+              \\[0.2cm]
+              \hspace*{1.3cm}
+              $\{p\} \in K$ \quad und \quad $\{\neg p\} \in K\bigr)$.
+        \end{enumerate}
         In diesem Fall können wir die aussagenlogische Belegung $\I$ wie folgt definieren:
         \\[0.2cm]
         \hspace*{1.3cm}
@@ -2711,7 +2712,7 @@ wahr und falsch machen.  Wir nehmen die an den letzten drei Beispielen gemachten
   \end{enumerate}
 \end{Definition}
 
-Wie können wir nun eine gegebene Klausel-Menge in eine einfache Klausel-Menge umwandeln?
+Wie können wir nun eine gegebene Klausel-Menge in eine triviale Klausel-Menge umwandeln?
 Es gibt drei Möglichkeiten, Klauselmengen zu vereinfachen.  Die erste der beiden Möglichkeiten kennen wir
 schon, die anderen beiden Möglichkeiten werden wir später näher erläutern.
 \begin{enumerate}
@@ -2795,10 +2796,9 @@ die Unit-Klausel $\{l\}$ in der Menge $K$ enthalten ist.
 \subsection{Vereinfachung durch Fallunterscheidung}
 Ein Kalkül, der nur mit Unit-Schnitten und Subsumption arbeitet, ist nicht 
 widerlegungs-vollständig.  Wir brauchen 
-daher eine weitere Möglichkeit, Klausel-Mengen zu vereinfachen.
-Eine solche Möglichkeit bietet das Prinzip der
-\blue{Fallunterscheidung}.\index{Fallunterscheidung}  Dieses Prinzip basiert auf dem folgenden
-Satz.
+daher eine weitere Verfahren, Klausel-Mengen zu vereinfachen.
+Eine solches Vereinfachen ist die \blue{Fallunterscheidung}.\index{Fallunterscheidung}  Dieses Prinzip basiert
+auf dem folgenden Satz.
 
 \begin{Satz}
   Ist $K$ eine Menge von Klauseln und ist $p$ eine aussagenlogische Variable, 
@@ -2849,14 +2849,26 @@ suchen  also eine Belegung $\I$, so dass gilt: \\[0.2cm]
 Das Verfahren von Davis und Putnam besteht nun aus den folgenden Schritten.
 \begin{enumerate}
 \item Führe alle Unit-Schnitte und Unit-Subsumptionen aus, die mit Klauseln aus $K$ möglich sind.
-\item Falls $K$ jetzt trivial ist, sind wir fertig.
-\item Andernfalls wählen wir eine aussagenlogische Variable $p$, die in $K$ auftritt.
+\item Falls $K$ jetzt trivial ist, endet das Verfahren.
+     \begin{enumerate}
+     \item Wenn $\{\} \in K$ ist, dann ist $K$ unlösbar.
+     \item Andernfalls ist die aussagenlogische Interpretation 
+           \\[0.2cm]
+           \hspace*{1.3cm}
+           $\mathcal{I} := \bigl\{ p \mapsto \mathtt{True}  \mid p \in \mathcal{P} \wedge \{p\}\in K\bigr\} \cup
+                           \bigl\{ p \mapsto \mathtt{False} \mid p \in \mathcal{P} \wedge \{\neg p\}\in K\bigr\}  $
+           \\[0.2cm]
+           eine Lösung von $K$.     
+     \end{enumerate}
+\item Falls $K$ nicht trivial ist, wählen wir eine aussagenlogische Variable $p$, die in $K$ auftritt.
       \begin{enumerate}
       \item Jetzt versuchen  wir rekursiv,  die Klausel-Menge \\[0.2cm]
             \hspace*{1.3cm}  $K \cup \bigl\{\{p\}\bigr\}$ \\[0.2cm]
             zu lösen. Falls diese gelingt, haben wir eine Lösung von $K$.
-      \item Andernfalls versuchen wir,  die Klausel-Menge \\[0.2cm]
-            \hspace*{1.3cm} $K \cup \bigl\{\{\neg p\}\bigr\}$ \\[0.2cm]
+      \item Falls $K \cup \bigl\{\{p\}\bigr\}$ nicht lösbar ist, versuchen wir stattdessen, die Klausel-Menge
+            \\[0.2cm] 
+            \hspace*{1.3cm} $K \cup \bigl\{\{\neg p\}\bigr\}$
+            \\[0.2cm]
             zu lösen.  Wenn auch dies fehlschlägt, ist $K$ unlösbar.  Andernfalls
             haben wir eine Lösung von $K$.
       \end{enumerate}
@@ -2881,6 +2893,9 @@ die mit $l$ nichts zu tun haben, weil weder $l \in C$ noch $\komplement{l} \in C
 gilt.  Außerdem fügen wir noch die Unit-Klausel $\{l\}$ hinzu.
 Dadurch erreichen wir, dass die beiden Mengen $K$ und $\texttt{reduce}(K,l)$
 logisch äquivalent sind, falls $\{l\} \in K$ gilt.
+
+Falls $\{l\} \in K$ ist, dann sind die Mengen $K$ und $\mathtt{reduce}(K, l)$ äquivalent.
+Wir werden daher $K$ nur dann durch $\mathtt{reduce}(K, l)$ ersetzen, wenn $\{l\} \in K$ ist.
 
 \subsection{Ein Beispiel}
 Zur Veranschaulichung demonstrieren wir das Verfahren von Davis und Putnam an einem Beispiel.
