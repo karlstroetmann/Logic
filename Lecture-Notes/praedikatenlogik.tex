@@ -1,6 +1,6 @@
 \chapter{Prädikatenlogik}
-In der \blue{Aussagenlogik} haben wir die Verknüpfung von elementaren Aussagen mit \blue{Junktoren} untersucht.
-Die \blue{Prädikatenlogik}\index{Prädikatenlogik} untersucht zusätzlich auch die Struktur dieser elementaren Aussagen.  Dazu werden in der
+In der \blue{Aussagenlogik} haben wir die Verknüpfung von atomaren Aussagen mit \blue{Junktoren} untersucht.
+Die \blue{Prädikatenlogik}\index{Prädikatenlogik} untersucht zusätzlich auch die Struktur dieser atomaren Aussagen.  Dazu werden in der
 Prädikatenlogik die folgenden zusätzlichen Begriffe eingeführt:
 \begin{enumerate}
 \item Als Bezeichnungen für Objekte werden \blue{Terme} verwendet.
@@ -38,16 +38,18 @@ Dieses Kapitel ist wie folgt aufgebaut:
       prädikatenlogischen Formeln festlegen, wir werden also festlegen, welche Strings wir als aussagenlogische
       Formeln zulassen.
 \item Im darauf folgenden Abschnitt beschäftigen wir uns mit der
-      \href{https://de.wikipedia.org/wiki/Semantik}{Semantik} dieser Formeln, dort spezifizieren wir also die 
+      \href{https://de.wikipedia.org/wiki/Semantik}{Semantik} dieser Formeln, dort spe\-zifizieren wir also die 
       Bedeutung der Formeln. 
 \item Danach zeigen wir, wie sich die eingeführten Begriffe in \textsl{Python} implementieren lassen.
 \item Anschließend diskutieren wir als Anwendung der Prädikaten-Logik das \blue{Constraint Programming}.
       Beim Constraint Programming wird ein gegebenes Problem durch prädikatenlogische Formeln beschrieben.
       Zur Lösung des Problems wird dann ein sogenannter \blue{Constraint Solver} verwendet.
-\item Anschließend betrachten wir Normalformen prädikatenlogischer Formeln und zeigen, wie Formeln
+\item Weiter betrachten wir Normalformen prädikatenlogischer Formeln und zeigen, wie Formeln
       in \blue{erfüllbarkeits-äquivalente} prädikatenlogische Klauseln umgewandelt werden können.
-\item Zum Abschluss des Kapitels diskutieren wir einen \blue{prädikatenlogischen Kalkül}, der die Grundlage
+\item Außerdem diskutieren wir einen \blue{prädikatenlogischen Kalkül}, der die Grundlage
       des automatischen Beweisens in der Prädikaten-Logik ist.
+\item Zum Abschluss des Kapitels diskutieren wir den automatischen Theorem-Beweiser \textsl{Prover9}, sowie das
+      Werkzeug \textsl{Mace4}, mit dem die Erfüllbarkeit von Formeln überprüft werden kann.
 \end{enumerate}
 
 \section{Syntax der Prädikatenlogik}
@@ -106,8 +108,8 @@ Es sei
 \item $\mathcal{V} := \{ x, y, z \}$ die Menge der Variablen,
 \item $\mathcal{F} := \{ 0, 1, \mathtt{+}, \mathtt{-}, * \}$ die Menge der Funktions-Zeichen,
 \item $\mathcal{P} := \{\mathtt{=}, \leq\}$ die Menge der Prädikats-Zeichen,
-\item $\textsl{arity} := \bigl\{ \pair(0,0), \pair(1,0), \pair(\mathtt{+},2), \pair(\mathtt{-},2),
-  \pair(*,2), \pair(=,2), \pair(\leq,2) \bigr\}$, \\[0.2cm]
+\item $\textsl{arity} := \bigl\{ 0 \mapsto 0, 1 \mapsto 0, \mathtt{+} \mapsto 2, \mathtt{-} \mapsto 2,
+                                 * \mapsto 2, = \;\mapsto 2, \leq\; \mapsto 2 \bigr\}$, \\[0.2cm]
       gibt die Stelligkeit der Funktions- und Prädikats-Zeichen an und
 \item $\Sigma_\mathrm{arith} := \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$
       sei eine Signatur.
@@ -128,7 +130,8 @@ Dann können wir wie folgt $\Sigma_{\mathrm{arith}}$-Terme konstruieren:
 In der Praxis werden wir für bestimmte zweistellige Funktionen eine \blue{Infix-Schreibweise}
 verwenden, d.h.~wir schreiben zweistellige Funktions-Zeichen zwischen ihren Argumenten.  Beispielsweise
 schreiben wir $x+y$ an Stelle von $+(x,y)$. Die Infix-Schreibweise ist dann als Abkürzung für die oben
-definierte Darstellung zu verstehen. 
+definierte Darstellung zu verstehen.  Dies funktioniert natürlich nur, wenn wir für die einzelnen Operatoren
+auch Bindungsstärken festlegen. 
 \eox
 
 
@@ -218,10 +221,10 @@ $\Sigma$-Term $t$ die Menge der in $t$ enthaltenen Variablen.
 
 
 \begin{Definition}[$\Sigma$-Formel,  $\mathbb{F}_\Sigma$, gebundene und freie Variablen, $\textsl{BV}(F)$,  $\textsl{FV}(F)$] 
-\label{praedikaten-formel} \hspace*{\fill} \\
-\index{$\Sigma$-Formel} \index{$\mathbb{F}_\Sigma$} \index{gebundene Variablen} \index{freie Variablen}
-\index{$\textsl{BV}(F)$}\index{$\textsl{FV}(F)$}
-    Es sei $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ eine Signatur.
+\label{praedikaten-formel} \hspace*{\fill} 
+\index{$\Sigma$-Formel} \index{$\mathbb{F}_\Sigma$}\index{gebundene Variablen}\index{freie
+  Variablen}\index{$\textsl{BV}(F)$}\index{$\textsl{FV}(F)$} \\
+Es sei $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ eine Signatur.
     Die Menge der {\color{blue}$\Sigma$-\emph{Formeln}} bezeichnen wir mit $\mathbb{F}_\Sigma$.
     Wir definieren diese Menge induktiv.
     Gleichzeitig definieren wir für jede Formel $F\el \mathbb{F}_\Sigma$ die Menge $\textsl{BV}(F)$ der in $F$ 
@@ -287,7 +290,7 @@ Die Menge der gebundenen Variablen ist $\{x\}$, die Menge der freien Variablen i
 $\{ y \}$. \eox
 
 Wenn wir Formeln immer in der oben definierten Präfix-Notation anschreiben würden, dann würde die Lesbarkeit unverhältnismäßig leiden. 
-Zur Abkürzung vereinbaren wir, dass in der Prädikatenlogik dieselben Regeln zur Klammer-Ersparnis
+Zur Abkürzung vereinbaren wir, dass in der Prä\-dikatenlogik dieselben Regeln zur Klammer-Ersparnis
 gelten sollen,  die wir schon in der Aussagenlogik verwendet haben.  Zusätzlich werden
 gleiche Quantoren zusammengefasst: Beispielsweise schreiben wir  
 \\[0.2cm]
