@@ -3154,16 +3154,27 @@ Die Implementierung setzt diese Definition unmittelbar um.
 Die Implementierung des Algorithmus von Davis und Putnam benutzt außer den bisher diskutierten Funktionen
 noch zwei weitere Hilfsprozeduren, deren Implementierung in 
 Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
-\begin{enumerate}
-\item Die Funktion \texttt{selectLiteral} wählt ein Literal aus 
-      einer gegeben Menge $\texttt{Clauses}$ von Klauseln aus, dessen Variable außerdem nicht in der Menge
-      \texttt{Forbidden} von den Variablen vorkommen darf, die bereits benutzt worden sind.
-      Dazu iterieren wir zunächst über alle Klauseln $C$ aus der Menge $\texttt{Clauses}$ und dann über alle Literale $l$
-      der Klausel $C$.  Aus diesen Literalen extrahieren wir die darin enthaltene Variable mit Hilfe der Funktion
-      \texttt{extractVariable}.  Anschließend wird das Literal zurück gegeben, für welches der Wert der
-      \blue{Jereslow-Wang-Heuristik} \cite{jereslow:1990} maximal ist.
-\item Die Funktion \texttt{arb} gibt ein nicht näher spezifiziertes Element einer Menge zurück.
-\end{enumerate}
+
+Die Funktion \texttt{selectLiteral} wählt ein Literal aus 
+einer gegeben Menge $\texttt{Clauses}$ von Klauseln aus, dessen Variable außerdem nicht in der Menge
+\texttt{Forbidden} von den Variablen vorkommen darf, die bereits benutzt worden sind.
+Dazu iterieren wir zunächst über alle Klauseln $C$ aus der Menge $\texttt{Clauses}$ und dann über alle Literale $l$
+der Klausel $C$.  Aus diesen Literalen extrahieren wir die darin enthaltene Variable mit Hilfe der Funktion
+\texttt{extractVariable}.  Anschließend wird das Literal zurück gegeben, für welches der Wert der
+\blue{Jereslow-Wang-Heuristik} \index{Jereslow-Wang-Heuristik} \cite{jereslow:1990} maximal ist.  Für eine Menge von Klauseln $K$ und ein
+Literal $l$ definieren wir die Jereslow-Wang-Heuristik $\texttt{jw}(l)$ dabei wie folgt:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds\mathtt{jw}(l) := \sum\limits_{\{C \in K \,\mid\, l \in C\}} \frac{1}{2^{|C|}}$
+\\[0.2cm]
+Hier bezeichnet $|C|$ die Anzahl der Literale, die in der Klausel $C$ auftreten.  Die Idee ist hier, dass wir
+ein Literal $l$ auswählen wollen, das in möglichst vielen Klauseln vorkommt, denn diese Klauseln werden dann
+durch das Literal subsumiert.  Hier ist es aber wichtiger, solche Klauseln zu subsumieren, die möglichst wenig
+Literale enthalten, denn diese Klauseln sind schwieriger zu erfüllen.  Das liegt daran, dass eine Klausel
+bereits erfüllt ist, wenn auch nur ein einziges Literal aus der Klausel erfüllt wird.  Je mehr Literale die
+Klausel enthält, um so leichter ist es also, diese Klausel zu erfüllen.
+
+
 \begin{figure}[!ht]
   \centering
 \begin{minted}[ frame         = lines, 
