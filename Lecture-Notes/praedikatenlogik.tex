@@ -1155,7 +1155,9 @@ that can be specified using first order logic.  The remainder of this section is
 
 \subsection{Constraint Satisfaction Problems}
 Conceptually, a constraint satisfaction problem is given by a set of first order logic formulas that contain a
-number of free variables.  Furthermore, a structure $\mathcal{S} = \langle \mathcal{U}, \mathcal{J}\rangle $
+number of free variables.  Furthermore, a first order logic structure $\mathcal{S} = \langle \mathcal{U},
+\mathcal{J}\rangle $
+(later abbreviated as \blue{\textsc{Fol} structure})
 consisting of a universe $\mathcal{U}$ and the interpretation $\mathcal{J}$ of the function and predicate 
 symbols used in these formulas is assumed to be understood from the context of the problem.  The goal is 
 to find a variable assignment such that the given formulas are evaluated as true.
@@ -1172,7 +1174,7 @@ where
 \item $\mathtt{Vars}$ is a set of strings which serve as \blue{variables},
 \item $\mathtt{Values}$ is a set of \blue{values} that can be assigned to the variables in $\mathtt{Vars}$.
 
-      This set of values is assumed to be identical to the universe of the \blue{first order structure}
+      This set of values is assumed to be identical to the universe of the \blue{\textsc{Fol} structure}
       $\mathcal{S} = \langle \mathcal{U}, \mathcal{J} \rangle$ that is given implicitly, i.e.~we have
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -1239,40 +1241,53 @@ states in Australia:
 \end{enumerate}
 Figure \ref{fig:australia.pdf} would certainly look better if different states had been coloured with different
 colours.  For the purpose of 
-this example let us assume that we have only three colours available.  The question then is whether it is 
+this example let us assume that we have only the three colours \red{red}, \green{green}, and \blue{blue} 
+available.  The question then is whether it is  
 possible to colour the different states in a way that no two neighbouring states share the same colour.  This
 problem can be formalized as a constraint satisfaction problem.  To this end we define:
 \begin{enumerate}
 \item $\mytt{Vars} := \{ \mathtt{WA}, \mathtt{NT}, \mathtt{SA}, \mathtt{Q}, \mathtt{NSW}, \mathtt{V}, \mathtt{T} \}$,
 \item $\mytt{Values} := \{ \mytt{red}, \mytt{green}, \mytt{blue} \}$,
 \item $\mytt{Constraints} := $ \\[0.1cm]
-      \hspace*{0.0cm}
+      \hspace*{1.3cm}
       $\bigl\{ \mathtt{WA} \not= \mathtt{NT}, \mathtt{WA} \not= \mathtt{SA},
                  \mathtt{NT} \not= \mathtt{SA}, \mathtt{NT} \not= \mathtt{Q},
                  \mathtt{SA} \not= \mathtt{Q},  \mathtt{SA} \not= \mathtt{NSW}, \mathtt{SA} \not= \mathtt{V}, 
                  \mathtt{Q}  \not= \mathtt{NSW},
-                 \mathtt{NSW}\not= \mathtt{V}, 
-                 \mathtt{V}  \not= \mathtt{T}
+                 \mathtt{NSW}\not= \mathtt{V}
        \bigr\}
-      $
+       $.
+       \\[0.1cm]
+       The constraints do not mention the variable \texttt{T} for Tasmania, as Tasmania does not share a common
+       border with any of the other states.
 \end{enumerate}
 Then $\mathcal{P} := \langle \mytt{Vars}, \mytt{Values}, \mytt{Constraints} \rangle$ is a constraint satisfaction problem.  
 If we define the assignment $\mathcal{I}$ such that
 \begin{enumerate}
-\item $\mathcal{I}(\mathtt{WA}) = \mytt{blue}$,
-\item $\mathcal{I}(\mathtt{NT}) = \mytt{red}$,
+\item $\mathcal{I}(\mathtt{WA}) = \mytt{red}$,
+\item $\mathcal{I}(\mathtt{NT}) = \mytt{blue}$,
 \item $\mathcal{I}(\mathtt{SA}) = \mytt{green}$,
-\item $\mathcal{I}(\mathtt{Q}) = \mytt{blue}$,
-\item $\mathcal{I}(\mathtt{NSW}) = \mytt{red}$,
-\item $\mathcal{I}(\mathtt{V}) = \mytt{blue}$,
-\item $\mathcal{I}(\mathtt{T}) = \mytt{red}$,
+\item $\mathcal{I}(\mathtt{Q}) = \mytt{red}$,
+\item $\mathcal{I}(\mathtt{NSW}) = \mytt{blue}$,
+\item $\mathcal{I}(\mathtt{V}) = \mytt{red}$,
+\item $\mathcal{I}(\mathtt{T}) = \mytt{green}$,
 \end{enumerate}
 then you can check that the assignment $\mathcal{I}$ is indeed a solution to the constraint satisfaction problem $\mathcal{P}$.
+Figure \ref{fig:australia-solution.png} on page \pageref{fig:australia-solution.png} shows this solution.
+
+\begin{figure}[!ht]
+  \centering
+  \framebox{\epsfig{file=Figures/australia.png,scale=0.6}} 
+  \caption{A map coloring for Australia.}
+  \label{fig:australia-solution.png}
+\end{figure}
+
 
 \subsection{Example: The Eight Queens Puzzle}
 \index{eight queens puzzle}
 The \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{eight queens problem} asks to put 8 queens onto a
-chessboard such that no queen can attack another queen.  In \href{https://en.wikipedia.org/wiki/Chess}{chess},
+chessboard such that no queen can attack another queen.  We have already discussed this problem in the previous
+chapter.  Let us recapitulate: In \href{https://en.wikipedia.org/wiki/Chess}{chess},
 a queen can attack all pieces that are either in the same row, the same column, or the same diagonal.  If we
 want to put 8 queens on a chessboard such that no two queens can attack each other, we have to put exactly one
 queen in every row:  If we would put more than one queen in a row, the queens in that row can attack each other.
@@ -1326,7 +1341,11 @@ $\mathcal{P} := \langle \mytt{Vars}, \mytt{Values}, \mytt{Constraints} \rangle$.
 If we define the assignment $\mathcal{I}$ such that
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{I}(\mytt{Q}_1) := 4,\; \mathcal{I}(\mytt{Q}_2) := 8,\; \mathcal{I}(\mytt{Q}_3) := 1,\; \mathcal{I}(\mytt{Q}_4) := 2,\; \mathcal{I}(\mytt{Q}_5) := 6,\; \mathcal{I}(\mytt{Q}_6) := 2,\; \mathcal{I}(\mytt{Q}_7) := 7,\; \mathcal{I}(\mytt{Q}_8) := 5$,
+$\mathcal{I}(\mytt{Q}_1) := 4,\; \mathcal{I}(\mytt{Q}_2) := 8,\; \mathcal{I}(\mytt{Q}_3) := 1,\;
+\mathcal{I}(\mytt{Q}_4) := 2,\; \mathcal{I}(\mytt{Q}_5) := 6,\; \mathcal{I}(\mytt{Q}_6) := 2$,
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{I}(\mytt{Q}_7) := 7,\; \mathcal{I}(\mytt{Q}_8) := 5$,
 \\[0.2cm]
 then it is easy to see that this assignment is a solution of the eight queens problem.  This solution is shown
 in \myFig{eight-queens.txt}.
