@@ -1478,19 +1478,23 @@ employs backtracking.  We discuss this program next.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                   ]{python3}
-    import extractVars as ev
+    import ast
+                  
+    def collect_variables(expr): 
+        tree = ast.parse(expr)
+        return { node.id for node in ast.walk(tree) 
+                         if  isinstance(node, ast.Name) 
+                         if  node.id not in dir(__builtins__)
+               }
                   
     def solve(CSP):
         'Compute a solution for the given constraint satisfaction problem.'
         Variables, Values, Constraints = CSP
         CSP = (Variables,
                Values,
-               [(f, ev.extractVars(f) & set(Variables)) for f in Constraints]
+               [(f, collect_variables(f) & set(Variables)) for f in Constraints]
               )
-        try:
-            return backtrack_search({}, CSP)
-        except Backtrack:
-            return  # no solution found
+        return backtrack_search({}, CSP)
 \end{minted}
 \vspace*{-0.3cm}
 \caption{A backtracking \textsc{Csp} solver}
@@ -1499,20 +1503,20 @@ employs backtracking.  We discuss this program next.
 
 \begin{enumerate}
 \item As we need to determine the variables occurring in a given constraint, we import the module
-      \mytt{extractVar}.  This module implements a function $\mytt{extractVars}(f)$ that takes
-      a formula $f$ written as a \textsl{Python} expression and returns the set of all variables occurring in
-      $f$. 
-
+      \mytt{ast}.  This module implements the function $\mytt{parse}(e)$ that takes
+      a \textsl{Python} expression $e$.  This expression is parsed and the resulting syntax tree is returned.
+\item The function $\mytt{collect\_variables}(\mytt{expr})$ takes a \textsl{Python} expression as its input.
+      It returns the set of variable names occurring in this expression.
 \item The procedure $\mytt{solve}$ takes a constraint satisfaction problem $\mytt{CSP}$ as input and tries
       to find a solution.    
       \begin{enumerate}
-      \item First, in line 5 the $\mytt{CSP}$ is split into its three components.  However, the first
+      \item First, in line 11 the $\mytt{CSP}$ is split into its three components.  However, the first
             component $\mytt{Variables}$ does not have to be a set but rather can also be a list.
             If $\mytt{Variables}$ is a list, then backtracking search will assign these variables 
             in the same order as they appear in this list.  This can improve the efficiency of backtracking
-            significantly. 
+            tremendously. 
       \item Next, for every constraint $\mytt{f}$ of the given $\mytt{CSP}$, we compute the set of variables that
-            are used in $\mytt{f}$.  This is done using the procedure $\mytt{extractVars}$.
+            are used in $\mytt{f}$.  This is done using the procedure $\mytt{collect\_variables}$.
             Of these variables we keep only those variables that also occur in the set $\mytt{Variables}$
             because we assume that any other \textsl{Python} variable occurring in a constraint $f$ has already
             a value assigned to it and can therefore be regarded as a constant.
@@ -1527,11 +1531,6 @@ employs backtracking.  We discuss this program next.
             in $\mytt{f}$ are elements of the domain of $\mytt{Assignment}$.   It would be wasteful to compute
             these sets of all variables occurring in a given formula every time the formula is checked.
       \item Next, we call the function $\mytt{backtrack\_search}$ to compute a solution of $\mytt{CSP}$.
-            This function call is enclosed in a \mytt{try}-\mytt{except}-block.
-            The function $\mytt{backtrack\_search}$ either returns a solution or, if it is not able to
-            find a solution, it throws an exception of class \mytt{Backtrack}.  If this happens,
-            the \mytt{except} block silently discards this exception and the procedure \mytt{solve} returns
-            without a result.
    \end{enumerate}
  \end{enumerate}
 
@@ -1546,28 +1545,23 @@ employs backtracking.  We discuss this program next.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]{python3}          
-    def backtrack_search(Assignment, CSP):
-        '''
-        Given a partial variable assignment, this function tries to complete this 
-        assignment towards a solution of the CSP.
-        '''
-        (Variables, Values, Constraints) = CSP
-        if len(Assignment) == len(Variables):
-            return Assignment
-        var = [x for x in Variables if x not in Assignment][0]
-        for value in Values:
-            try:
-                if isConsistent(var, value, Assignment, Constraints):
-                    NewAssign      = Assignment.copy()
-                    NewAssign[var] = value
-                    return backtrack_search(NewAssign, CSP)
-            except Backtrack:
-                continue
-        # all values have been tried without success, no solution has been found
-        raise Backtrack()
-    
-    class Backtrack(Exception):
-        pass
+def backtrack_search(Assignment, CSP):
+    '''
+    Given a partial variable assignment, this function tries to 
+    complete this assignment towards a solution of the CSP.
+    '''
+    Variables, Values, Constraints = CSP
+    if len(Assignment) == len(Variables): 
+        return Assignment
+    var = [x for x in Variables if x not in Assignment][0]
+    for value in Values:
+        if isConsistent(var, value, Assignment, Constraints):
+            NewAssign      = Assignment.copy()
+            NewAssign[var] = value
+            Solution = backtrack_search(NewAssign, CSP)
+            if Solution != None:
+                return Solution
+    return None 
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \mytt{backtrack\_search}}
@@ -1603,19 +1597,10 @@ assignment that satisfies all constraints of the given $\mytt{CSP}$.
       \\[0.2cm]
       and that coincides with $\mytt{Assignment}$ for all variables different from $\mytt{var}$.
       Then, the procedure $\mytt{backtrack\_search}$ is called recursively to complete this new partial assignment.
-      If this is successful, the resulting assignment is a solution of the CSP and is returned.  Otherwise,
-      the recursive call of $\mytt{backtrack\_search}$ will instead raise an exception.  This exception is muted 
-      by the \mytt{try}-\mytt{except}-block that surrounds the recursive call to $\mytt{backtrack\_search}$.  In that case, the
-      \mytt{for}-loop generates a new possible $\mytt{value}$ that can be assigned to the variable
-      $\mytt{var}$.  If all possible values have been tried and none was successful, the \mytt{for}-loop
-      ends and the statement
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \mytt{raise Backtrack()}
-      \\[0.2cm]
-      is executed.  This raises an exception that signals that the current partial $\mytt{Assignment}$ can
-      not be completed into a solution of the \mytt{CSP}.
-      This exception is caught by one of the \mytt{try}-\mytt{except}-blocks that have been encountered previously.
+      If this is successful, the resulting assignment is a solution of the CSP and is returned.  Otherwise the
+      \texttt{for}-loop in line 10 tries the next $\mytt{value}$.
+      If all possible values have been tried and none was successful, the \texttt{for}-loop
+      ends and the function returns $\mytt{None}$.
 \end{enumerate}
 
 
