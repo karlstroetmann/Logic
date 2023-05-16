@@ -1665,6 +1665,186 @@ is that all variables are connected to all other variables.  For other problems 
 can be \red{very important}.  The general strategy is that variables that are strongly related to each other should
 be grouped together in the list $\mytt{Variables}$.
 
+\section{Solving Search Problems by Constraint Programming}
+In this section we show how we can formulate certain \blue{search problems} as \mytt{CSP}s.
+We will explain our method by solving the
+\href{https://en.wikipedia.org/wiki/Missionaries_and_cannibals_problem}{missionaries and cannibals problem},
+which is explained in the following:
+Three missionaries and three infidels have to cross a river in order to get to a church where the infidels can
+be baptized.  According to ancient catholic mythology, baptizing the infidels is necessary to save them from
+the eternal tortures of hell fire. In order to cross the river, the missionaries and infidels have a small boat
+available that can take at most two passengers. If at any moments at any shore there are more infidels than
+missionaries, then the missionaries have a problem, since the infidels have a diet that is rather unhealthy for
+the missionaries. 
+
+In order to solve this problem via constraint programming, we first introduce the notion of a
+\blue{symbolic transition system}.
+
+\begin{Definition}[Symbolic Transition System]
+  A symbolic transition system is a 6-tuple
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\mathcal{T} = \langle \mathtt{Vars}, \mathtt{Values}, \mathtt{Start}, \mathtt{Goal}, \mathtt{Invariant}, \mathtt{Transition} \rangle$
+  \\[0.2cm]
+  such that:
+  \begin{enumerate}[(a)]
+  \item \texttt{Vars} is a set of variables.
+
+        These variables are strings.  For every variable $x \in \texttt{Vars}$ there is a \blue{primed}
+        variable $x'$ which does not occur in \texttt{Vars}.  The set of these primed Variables is denoted as
+        $\mathtt{Vars}'$.   
+  \item \texttt{Values} is a set of values that these variables can take.
+  \item \texttt{Start}, \texttt{Goal}, and \texttt{Invariant} are \textsc{Fol} formulas such that all free
+        variables occurring in these formulas are elements from the set \texttt{Vars}.
+  \item \texttt{Transition} is a \textsc{Fol} formula.  The free variables of this formula are elements of
+        the set $\texttt{Vars} \cup \mathtt{Vars}'$, i.e.~they are either variables from the set \texttt{Vars}
+        or they are primed variables from the set $\mathtt{Vars}'$.  The primed variables refer to the values
+        of the variables after the transition.
+  \end{enumerate}
+\end{Definition}
+Every \blue{state} of a transition system is a mapping of the variable to values.
+The idea is that that formula \texttt{Start} describes the start state of our search problem, \texttt{Goal}
+describes the state that we want to reach, while \texttt{Invariant} is a formula that must be true initially
+and that remains after every transition of our system.  The formula \texttt{Transition} describes how the
+variables in the transition system change during a transition.
+
+In order to clarify this definition we show the \emph{missionaries and cannibals} problem can be formulated as
+a symbolic transition system.
+\begin{enumerate}[(a)]
+\item $\texttt{Vars} := \{ \mathtt{M}, \mathtt{C}, \mathtt{B} \}$.
+
+      \texttt{M} is the number of missionaries on the western shore, \texttt{C} is the number of infidels on
+      that shore, while \texttt{B} is the number of boats.
+\item $\mathtt{Values} := \{ 0, 1, 2, 3 \}$.
+\item $\texttt{Start} := (\mathtt{M} = 3 \wedge \mathtt{C} = 3 \wedge \mathtt{B} = 1 \}$.
+\item $\texttt{Goal}  := (\mathtt{M} = 0, \mathtt{C} = 0 \}$.
+\item $\texttt{Invariant} := (\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = C \}$,
+
+      since there is no problem when all missionaries are on the same shore or when the number of missionaries
+      is the same as the number of infidels on one shore, because then these numbers have to agree on the
+      other shore as well.
+\item $\texttt{Transition} :=
+      \begin{array}[t]{l}
+        0 \leq \mathtt{B} \leq 1 \;\wedge\; \mathtt{B}' = 1 - \mathtt{B}  \;\wedge\; \\[0.2cm]
+        \bigl(\mathtt{B} = 1 \;\rightarrow\; 1 \leq \mathtt{M} - \mathtt{M}'  + \mathtt{C} - \mathtt{C}' \leq 2 \;\wedge\;
+        \mathtt{M}' \leq \mathtt{M} \;\wedge\; \mathtt{C}' \leq \mathtt{C}\bigr) \\[0.2cm]
+        \bigl(\mathtt{B} = 0 \;\rightarrow\; 1 \leq \mathtt{M}' - \mathtt{M}  + \mathtt{C}' - \mathtt{C} \leq 2 \;\wedge\;
+                \mathtt{M}' \geq \mathtt{M} \;\wedge\; \mathtt{C}' \geq \mathtt{C}\bigr) 
+      \end{array}
+      $
+
+      Let us explain the details of this formula:
+      \begin{itemize}
+      \item $0 \leq \mathtt{B} \leq 1$
+
+            expresses the fact that there is just one boat.  This boat is either on the western shore or on the
+            eastern shore.
+      \item $\mathtt{B}' = 1 - \mathtt{B}$
+
+            If the boat is initially on the western shore, i.e. $\texttt{B} = 1$, it will be on the eastern
+            shore afterwards, i.e. we will then have $\texttt{B}' = 0$.  If, instead, the boat is initially on
+            the eastern shore, i.e. $\texttt{B} = 0$, it will be on the western
+            shore afterwards, i.e. we will then have $\texttt{B}' = 1$.
+      \item $\mathtt{B} = 1 \;\rightarrow\; 1 \leq \mathtt{M} - \mathtt{M}'  + \mathtt{C} - \mathtt{C}' \leq 2 \;\wedge\;
+             \mathtt{M}' \leq \mathtt{M} \;\wedge\; \mathtt{C}' \leq \mathtt{C}$
+
+
+            If the boat is initially on the western shore, then afterwards the number of missionaries and
+            infidels will decrease, as they leave for the eastern shore.  Then $\texttt{M} - \texttt{M}'$
+            is the number of missionaries on the boat, while $\texttt{C} - \texttt{C}'$ is the number of
+            infidels.  The sum of these numbers has to be between $1$ and $2$ because the boat can not travel
+            empty and can take at most two passengers.
+            
+      \item $\mathtt{B} = 0 \;\rightarrow\; 1 \leq \mathtt{M}' - \mathtt{M}  + \mathtt{C}' - \mathtt{C} \leq 2 \;\wedge\;
+            \mathtt{M}' \geq \mathtt{M} \;\wedge\; \mathtt{C}' \geq \mathtt{C}$
+
+            This formula describes the transition from the eastern shore to the western shore.
+      \end{itemize}
+\end{enumerate}
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+                 commandchars  = \\\{\},
+                 codes         = {\catcode`$=3\catcode`^=7}
+               ] 
+    def start(M, C, B):
+        return M == 3 and C == 3 and B == 1
+    
+    def goal(M, C):
+        return M == 0 and C == 0
+    
+    def invariant(M, C):
+        return M == 0 or M == 3 or M == C
+    
+    def transition(M$\alpha$, C$\alpha$, B$\alpha$, M$\beta$, C$\beta$, B$\beta$):
+        if not (0 <= B$\alpha$ <= 1 and B$\beta$ == 1 - B$\alpha$):
+            return False
+        if B$\alpha$ == 1:
+            return 1 <= M$\alpha$ - M$\beta$ + C$\alpha$ - C$\beta$ <= 2 and M$\beta$ <= M$\alpha$ and C$\beta$ <= C$\alpha$
+        else:
+            return 1 <= M$\beta$ - M$\alpha$ + C$\beta$ - C$\alpha$ <= 2 and M$\beta$ >= M$\alpha$ and C$\beta$ >= C$\alpha$
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Coding the \emph{missionaries and cannibals problem} as a symbolic transition system.}
+\label{fig:Missionaries-STS.ipynb}
+\end{figure}
+
+%$
+Figure \ref{fig:Missionaries-STS.ipynb} shows how the \emph{missionaries and cannibals problem} can be
+represented as a symbolic transition system in \textsl{Python}.  Since varibale cannot be primed in
+\textsl{Python} we use the convention that we append the character $\alpha$ to the names of the original
+variables from the set \texttt{Vars}, while we append $\beta$ to these names to get the primed versions of the
+corresponding variable.
+
+Figure \ref{fig:Missionaries-STS.ipynb-2} shows how we can turn the symbolic transition system into a \textsc{Csp}.
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                bgcolor       = sepia,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm,
+              ]{python3}
+    def flatten(LoL):
+        return [x for L in LoL for x in L]
+                    
+    def missionaries_CSP(n):
+        "Returns a CSP encoding the problem."
+        Lists        = [[f'M{i}', f'C{i}', f'B{i}'] for i in range(n+1)]
+        Variables    = flatten(Lists)
+        Values       = { 0, 1, 2, 3 }
+        Constraints  = { 'start(M0, C0, B0)'     }  # start state
+        Constraints |= { f'goal(M{n}, C{n})' }  # goal state
+        for i in range(n):
+            Constraints.add(f'invariant(M{i}, C{i})')
+            Constraints.add(f'transition(M{i}, C{i}, B{i}, M{i+1}, C{i+1}, B{i+1})')
+        return Variables, Values, Constraints
+
+    def find_solution():
+        n = 1
+        while True:
+            print(n)
+            CSP = missionaries_CSP(n)
+            Solution = solve(CSP)
+            if Solution != None:
+                return n, Solution
+            n += 2
+\end{minted}
+\vspace*{-0.3cm}
+\caption{Turning the symbolic transition system into a \textsc{Csp}.}
+\label{fig:Missionaries-STS.ipynb-2}
+\end{figure}
 
 
 \section{Normalformen für prädikatenlogische Formeln}
