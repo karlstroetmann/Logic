@@ -1703,10 +1703,10 @@ In order to solve this problem via constraint programming, we first introduce th
   \end{enumerate}
 \end{Definition}
 Every \blue{state} of a transition system is a mapping of the variable to values.
-The idea is that that formula \texttt{Start} describes the start state of our search problem, \texttt{Goal}
+The idea is that that the formula \texttt{Start} describes the start state of our search problem, \texttt{Goal}
 describes the state that we want to reach, while \texttt{Invariant} is a formula that must be true initially
-and that remains after every transition of our system.  The formula \texttt{Transition} describes how the
-variables in the transition system change during a transition.
+and that has to remain true after every transition of our system.  The formula \texttt{Transition} describes how the
+variables in the transition system can change during a transition.
 
 In order to clarify this definition we show the \emph{missionaries and cannibals} problem can be formulated as
 a symbolic transition system.
@@ -1720,9 +1720,9 @@ a symbolic transition system.
 \item $\texttt{Goal}  := (\mathtt{M} = 0, \mathtt{C} = 0 \}$.
 \item $\texttt{Invariant} := (\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = C \}$,
 
-      since there is no problem when all missionaries are on the same shore or when the number of missionaries
-      is the same as the number of infidels on one shore, because then these numbers have to agree on the
-      other shore as well.
+      since there is no problem when all missionaries are either on the western shore or on the eastern shore
+      or when the number of missionaries is the same as the number of infidels on the western shore, because
+      then these numbers have to agree on the eastern shore as well.
 \item $\texttt{Transition} :=
       \begin{array}[t]{l}
         0 \leq \mathtt{B} \leq 1 \;\wedge\; \mathtt{B}' = 1 - \mathtt{B}  \;\wedge\; \\[0.2cm]
@@ -1738,7 +1738,7 @@ a symbolic transition system.
       \item $0 \leq \mathtt{B} \leq 1$
 
             expresses the fact that there is just one boat.  This boat is either on the western shore or on the
-            eastern shore.
+            eastern shore.  If it it on the western shore, $\mathtt{B} = 1$, otherwise $\mathtt{B} = 0$. 
       \item $\mathtt{B}' = 1 - \mathtt{B}$
 
             If the boat is initially on the western shore, i.e. $\texttt{B} = 1$, it will be on the eastern
