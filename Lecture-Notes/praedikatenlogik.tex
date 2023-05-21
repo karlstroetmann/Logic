@@ -1692,23 +1692,31 @@ In order to solve this problem via constraint programming, we first introduce th
 
         These variables are strings.  For every variable $x \in \texttt{Vars}$ there is a \blue{primed}
         variable $x'$ which does not occur in \texttt{Vars}.  The set of these primed Variables is denoted as
-        $\mathtt{Vars}'$.   
+        $\mathtt{Vars}'$.
   \item \texttt{Values} is a set of values that these variables can take.
   \item \texttt{Start}, \texttt{Goal}, and \texttt{Invariant} are \textsc{Fol} formulas such that all free
-        variables occurring in these formulas are elements from the set \texttt{Vars}.
+         variables occurring in these formulas are elements from the set \texttt{Vars}.
+         \begin{itemize}
+         \item \texttt{Start} describes the initial state of the transition system.
+         \item \texttt{Goal} describes a state that should be reached by the transition system.
+         \item \texttt{Invariant} is a formula that has to be true for every state of the transition system.
+         \end{itemize}
   \item \texttt{Transition} is a \textsc{Fol} formula.  The free variables of this formula are elements of
         the set $\texttt{Vars} \cup \mathtt{Vars}'$, i.e.~they are either variables from the set \texttt{Vars}
-        or they are primed variables from the set $\mathtt{Vars}'$.  The primed variables refer to the values
-        of the variables after the transition.
+        or they are primed variables from the set $\mathtt{Vars}'$.
+
+        The formula \texttt{Transition} describes how the variables in the transition system change during a
+        state transition.  The primed variables refer to the values of the original variables after the
+        state transition.
   \end{enumerate}
 \end{Definition}
 Every \blue{state} of a transition system is a mapping of the variable to values.
 The idea is that that the formula \texttt{Start} describes the start state of our search problem, \texttt{Goal}
 describes the state that we want to reach, while \texttt{Invariant} is a formula that must be true initially
-and that has to remain true after every transition of our system.  The formula \texttt{Transition} describes how the
-variables in the transition system can change during a transition.
+and that has to remain true after every transition of our system.
 
-In order to clarify this definition we show the \emph{missionaries and cannibals} problem can be formulated as
+
+In order to clarify this definition we show how the \emph{missionaries and cannibals} problem can be formulated as
 a symbolic transition system.
 \begin{enumerate}[(a)]
 \item $\texttt{Vars} := \{ \mathtt{M}, \mathtt{C}, \mathtt{B} \}$.
@@ -1716,19 +1724,19 @@ a symbolic transition system.
       \texttt{M} is the number of missionaries on the western shore, \texttt{C} is the number of infidels on
       that shore, while \texttt{B} is the number of boats.
 \item $\mathtt{Values} := \{ 0, 1, 2, 3 \}$.
-\item $\texttt{Start} := (\mathtt{M} = 3 \wedge \mathtt{C} = 3 \wedge \mathtt{B} = 1 \}$.
-\item $\texttt{Goal}  := (\mathtt{M} = 0, \mathtt{C} = 0 \}$.
-\item $\texttt{Invariant} := (\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = C \}$,
+\item $\texttt{Start} := (\mathtt{M} = 3 \wedge \mathtt{C} = 3 \wedge \mathtt{B} = 1)$.
+\item $\texttt{Goal}  := (\mathtt{M} = 0 \wedge \mathtt{C} = 0)$.
+\item $\texttt{Invariant} := (\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = C)$,
 
       since there is no problem when all missionaries are either on the western shore or on the eastern shore
       or when the number of missionaries is the same as the number of infidels on the western shore, because
       then these numbers have to agree on the eastern shore as well.
 \item $\texttt{Transition} :=
-      \begin{array}[t]{l}
-        0 \leq \mathtt{B} \leq 1 \;\wedge\; \mathtt{B}' = 1 - \mathtt{B}  \;\wedge\; \\[0.2cm]
-        \bigl(\mathtt{B} = 1 \;\rightarrow\; 1 \leq \mathtt{M} - \mathtt{M}'  + \mathtt{C} - \mathtt{C}' \leq 2 \;\wedge\;
+      \begin{array}[t]{cl}
+         & 0 \leq \mathtt{B} \leq 1 \;\wedge\; \mathtt{B}' = 1 - \mathtt{B}   \\[0.2cm]
+        \wedge & \bigl(\mathtt{B} = 1 \;\rightarrow\; 1 \leq \mathtt{M} - \mathtt{M}'  + \mathtt{C} - \mathtt{C}' \leq 2 \;\wedge\;
         \mathtt{M}' \leq \mathtt{M} \;\wedge\; \mathtt{C}' \leq \mathtt{C}\bigr) \\[0.2cm]
-        \bigl(\mathtt{B} = 0 \;\rightarrow\; 1 \leq \mathtt{M}' - \mathtt{M}  + \mathtt{C}' - \mathtt{C} \leq 2 \;\wedge\;
+        \wedge & \bigl(\mathtt{B} = 0 \;\rightarrow\; 1 \leq \mathtt{M}' - \mathtt{M}  + \mathtt{C}' - \mathtt{C} \leq 2 \;\wedge\;
                 \mathtt{M}' \geq \mathtt{M} \;\wedge\; \mathtt{C}' \geq \mathtt{C}\bigr) 
       \end{array}
       $
@@ -1744,13 +1752,13 @@ a symbolic transition system.
             If the boat is initially on the western shore, i.e. $\texttt{B} = 1$, it will be on the eastern
             shore afterwards, i.e. we will then have $\texttt{B}' = 0$.  If, instead, the boat is initially on
             the eastern shore, i.e. $\texttt{B} = 0$, it will be on the western
-            shore afterwards, i.e. we will then have $\texttt{B}' = 1$.
+            shore afterwards and then we have $\texttt{B}' = 1$.
       \item $\mathtt{B} = 1 \;\rightarrow\; 1 \leq \mathtt{M} - \mathtt{M}'  + \mathtt{C} - \mathtt{C}' \leq 2 \;\wedge\;
              \mathtt{M}' \leq \mathtt{M} \;\wedge\; \mathtt{C}' \leq \mathtt{C}$
 
 
             If the boat is initially on the western shore, then afterwards the number of missionaries and
-            infidels will decrease, as they leave for the eastern shore.  Then $\texttt{M} - \texttt{M}'$
+            infidels will decrease, as they leave for the eastern shore.  In this case $\texttt{M} - \texttt{M}'$
             is the number of missionaries on the boat, while $\texttt{C} - \texttt{C}'$ is the number of
             infidels.  The sum of these numbers has to be between $1$ and $2$ because the boat can not travel
             empty and can take at most two passengers.
@@ -1758,7 +1766,8 @@ a symbolic transition system.
       \item $\mathtt{B} = 0 \;\rightarrow\; 1 \leq \mathtt{M}' - \mathtt{M}  + \mathtt{C}' - \mathtt{C} \leq 2 \;\wedge\;
             \mathtt{M}' \geq \mathtt{M} \;\wedge\; \mathtt{C}' \geq \mathtt{C}$
 
-            This formula describes the transition from the eastern shore to the western shore.
+            This formula describes the transition from the eastern shore to the western shore and is analogous
+            to the previous formula.
       \end{itemize}
 \end{enumerate}
 
@@ -1798,12 +1807,12 @@ a symbolic transition system.
 
 %$
 Figure \ref{fig:Missionaries-STS.ipynb} shows how the \emph{missionaries and cannibals problem} can be
-represented as a symbolic transition system in \textsl{Python}.  Since varibale cannot be primed in
-\textsl{Python} we use the convention that we append the character $\alpha$ to the names of the original
+represented as a symbolic transition system in \textsl{Python}.  In the function \texttt{transition} 
+we use the following convention: Since variables cannot be primed in
+\textsl{Python} we append the character $\alpha$ to the names of the original
 variables from the set \texttt{Vars}, while we append $\beta$ to these names to get the primed versions of the
 corresponding variable.
 
-Figure \ref{fig:Missionaries-STS.ipynb-2} shows how we can turn the symbolic transition system into a \textsc{Csp}.
 
 \begin{figure}[!ht]
 \centering
@@ -1846,6 +1855,240 @@ Figure \ref{fig:Missionaries-STS.ipynb-2} shows how we can turn the symbolic tra
 \label{fig:Missionaries-STS.ipynb-2}
 \end{figure}
 
+Figure \ref{fig:Missionaries-STS.ipynb-2} shows how we can turn the symbolic transition system into a
+\textsc{Csp}.
+\begin{enumerate}
+\item The function $\texttt{flatten}(\texttt{LoL})$ receives a list $\texttt{LoL}$ of lists as its argument.
+       This list has the form
+       \\[0.2cm]
+       \hspace*{1.3cm}
+       $\texttt{LoL} = [L_1, \cdots, L_k]$
+       \\[0.2cm]
+       where the $L_i$ are lists for $i=1,\cdots,k$.
+       
+       It returns the list
+       \\[0.2cm]
+       \hspace*{1.3cm}
+       $L_1 + \cdots + L_k$,
+       \\[0.2cm]
+       i.e.~it appends these lists and returns the result.
+\item The function $\mathtt{missionaries\_CSP}(n)$ receives a natural number $n$ as its argument.
+       It returns a \textsc{Csp} that has a solution if there is a solution of the \emph{missionaries and cannibals}
+       problem that crosses the river exactly $n$ times.  It uses the variables
+       \\[0.2cm]
+       \hspace*{1.3cm}
+       $\mathtt{M}_i$, $\mathtt{C}_i$, and $\mathtt{B}_i$, where $i=0,\cdots,n$.
+       \\[0.2cm]
+       $\mathtt{M}_i$ is the number of missionaries on the western shore after the boat has crossed the river
+       $i$ times. The variables $\mathtt{C}_i$ and $\texttt{B}_i$ denote the number of infidels and boats
+       respectively.
+
+       Line 12 ensures that the invariant of the transition system is valid after every crossing of the boat.
+       Line 13 describes the mechanics of the crossing.
+\item The function \texttt{find\_solution} tries to find a natural number $n$ such that problem can be solved
+       with $n$ crossings. As the number off crossings has to be odd, we increment $n$ by two.
+\end{enumerate}
+
+
+\section{Z3}
+We conclude this chapter with a discussion of the solver
+\href{https://www.microsoft.com/en-us/research/project/z3-3/}{Z3}.  
+Z3 implements most of the state-of-the-art constraint solving algorithms and is exceptionally powerful.  We
+introduce Z3 via a series of examples.
+
+\subsection{A Simple Text Problem}
+The following is a simple text problem from my old $8^{\textrm{th}}$ grade math book.
+\textsl{
+  \begin{itemize}
+  \item I have as many brothers as I have sisters.
+  \item My sister has twice as many brothers as she has sisters.
+  \item How many children does my father have?
+  \end{itemize}}
+\noindent
+However, in order to solve this puzzle we need two additional assumptions.
+\begin{enumerate}
+\item My father has no illegitimate children.
+\item All of my fathers children identify themselves as either male or female.
+\end{enumerate}
+Strangely, in my old math book these assumptions are not mentioned.
+
+We can now infer the number of children.
+If we denote the number of \blue{boys} with the variable $b$ and the number of \blue{girls} with
+$g$, the problem statements are equivalent to the following two equations:
+\begin{enumerate}[(a)]
+\item $b - 1 = g$.
+\item $2 \cdot (g - 1) = b$.
+\end{enumerate}
+Before we can start to solve this problem, we have to install \texttt{Z3} via \texttt{pip} using the following
+commands in the shell:  
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{pip install z3}
+\\
+\hspace*{1.3cm}
+\texttt{pip install z3-solver}
+
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}             
+    import z3
+    
+    boys  = z3.Int('boys')
+    girls = z3.Int('girls')
+    
+    S = z3.Solver()
+    
+    S.add(boys - 1 == girls)
+    S.add(2 * (girls - 1) == boys)
+    S.check()
+    Solution = S.model()
+    
+    b = Solution[boys ].as_long()
+    g = Solution[girls].as_long()
+    
+    print(f'My father has {b + g} children.')
+\end{minted}
+\vspace*{-0.3cm}
+\caption{Solving a simple text problem.}
+\label{fig:Brothers-and-Sisters.ipynb}
+\end{figure}
+
+\noindent
+Figure \ref{fig:Brothers-and-Sisters.ipynb} on page \pageref{fig:Brothers-and-Sisters.ipynb} shows how we can
+solve the given problem using the \textsl{Python}
+interface of Z3.
+\begin{enumerate}
+\item In line 1 we import the module \texttt{z3} so that we can use the Python \textsc{Api} of Z3.
+      The documentation of this \textsc{Api} is available at the following address:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \href{https://ericpony.github.io/z3py-tutorial/guide-examples.htm}{https://ericpony.github.io/z3py-tutorial/guide-examples.htm}
+\item Lines 3 and 4 creates the \texttt{Z3} variables \mytt{boys} and \mytt{girls} as integer valued variables.
+      The function \mytt{Int} takes one argument, which has to be a string.  This string is the name of the
+      variable.  We store these variables in Python variables of the same name.  It would be possible to use
+      different names for the Python variables, but that would be very confusing.
+\item Line 6 creates an object of the class \texttt{Solver}.  This is the constraint solver provided by
+      \texttt{Z3}.
+\item Lines 8 and 9 add the constraints expressing that the number of girls is one less than the number of boys
+      and that my sister has twice as many brothers as she has sisters as constraints to the solver
+      \texttt{S}.
+\item In line 10 the method \mytt{check} examines whether the given set of constraints is satisfiable.
+      In general, this method returns one of the following results:
+      \begin{enumerate}[(a)]
+      \item \mytt{sat} is returned if the problem is solvable, (\mytt{sat} is short for \emph{satisfiable})
+      \item \mytt{unsat} is returned if the problem is unsolvable,
+      \item \mytt{unknown} is returned if \texttt{Z3} is not powerful enough to solve the given problem.
+      \end{enumerate}
+\item Since in our case the method \mytt{check} returns \texttt{sat}, we can extract the solution that is
+      computed via the method \mytt{model} in line 11.  
+\item In order to extract the values that have been computed by \texttt{Z3} for the variables \mytt{boys} and
+      \mytt{girls}, we can use dictionary syntax and write \mytt{Solution[boys]} and
+      \mytt{Solution[girls]} to extract these values.  However, these values are not stored as integers but
+      rather as objects of the class \mytt{IntNumRef}, which is some internal class of \texttt{Z3} to store
+      integers.  This class provides the method \mytt{as\_long} that converts its argument into an integer number.
+\end{enumerate}
+\pagebreak
+
+\exerciseEng
+Solve the following text problem using \texttt{Z3}.
+\textsl{
+  \begin{enumerate}[(a)]
+  \item A Japanese deli offers both
+        \href{https://www.discovermagazine.com/health/hearty-penguin-steaks-the-old-school-explorers-salve-for-scurvy}{penguins}
+        and \href{http://fancytoast.blogspot.com/2007/04/parrot-three-ways.html}{parrots}.  
+  \item A parrot and a penguin together cost 666 bucks.
+  \item The penguin costs 600 bucks more than the parrot.  
+  \item \textbf{What is the price of the parrot?}
+  \end{enumerate}}
+  You may assume that the prizes of these delicacies are integer valued. 
+\eox
+
+\exerciseEng
+Solve the following text problem using \texttt{Z3}.
+\textsl{
+  \begin{enumerate}[(a)]
+  \item  A train travels at a uniform speed for 360 miles.  
+  \item  The train would have taken 48 minutes less to travel the same distance 
+         if it had been faster by 5 miles per hour.
+  \item \textbf{Find the speed of the train!}  
+  \end{enumerate}}
+\noindent
+\textbf{Hints:}
+\begin{enumerate}[(a)]
+\item As the speed is a real number you should declare this variable via the \texttt{Z3} function \texttt{Real} instead of using
+      the function \texttt{Int}.
+\item 48 minutes are four fifth of an hour.  The fraction $\ds\frac{4}{5}$ can be represented in \texttt{Z3} by the expression
+      \texttt{Q(4, 5)}.
+\item When you formulate the information given above, you will get a system of \textbf{non-linear} equations,
+      which is equivalent to a quadratic equation.  This quadratic equation has two different solutions.
+      One of these solutions is negative.  In order to exclude the negative solution you need to add a
+      constraint stating that the speed of the train has to be greater than zero.
+\item The solution will be some real number which is represented internally as an object of type
+      \texttt{RatNumRef}.  If \texttt{o} is an object of this type, then this object can be converted to a
+      string as follows:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{o.as\_decimal(17)}
+      \\[0.2cm]
+      Here, \texttt{17} is the number of digits following the decimal point.
+      This string can be then converted to a float by using the function \texttt{float}. \eox
+\end{enumerate}
+
+
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{||c|c|c||c|c|c||c|c|c||}
+    \hline
+    \hline
+      & 3 & 9 &   &   &   &   &   & 7 \\
+    \hline
+      &   &   & 7 &   &   & 4 & 9 & 2 \\
+    \hline
+      &   &   &   & 6 & 5 &   & 8 & 3 \\
+    \hline
+    \hline
+      &   &   & 6 &   & 3 & 2 & 7 &   \\
+    \hline
+      &   &   &   & 4 &   & 8 &   &   \\
+    \hline
+    5 & 6 &   &   &   &   &   &   &   \\
+    \hline
+    \hline
+      &   & 5 & 2 &   & 9 &   &   & 1 \\
+    \hline
+      & 2 & 1 &   &   &   &   & 4 &   \\
+    \hline
+    7 &   &   &   &   &   & 5 &   &   \\
+    \hline
+    \hline
+  \end{tabular}
+  \caption{A super hard sudoku from the magazine ``Zeit Online''.}
+  \label{tab:sudoku}
+\end{table}
+
+\exerciseEng
+\index{sudoku}
+Table \ref{tab:sudoku} on page \pageref{tab:sudoku} shows a \href{https://en.wikipedia.org/wiki/Sudoku}{sudoku}
+that I have taken from the
+\href{http://sudoku.zeit.de/cgi-bin/sudoku/sudoku_kd_app_2016.pl?action=level&kd_nr=24091123601092&year=2018&month=03&day=23&level=-c+5}{Zeit Online}
+magazine.
+Solve this Sudoku using \texttt{Z3}.  I have written a frame for you to use that can be found at
+\\[0.2cm]
+\hspace*{1.3cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Sudoku-Z3-Frame.ipynb}{https://github.com/karlstroetmann/Logic/blob/master/\\
+      \hspace*{2.6cm}  
+          Python/Chapter-5/Sudoku-Z3-Frame.ipynb}
+    \eox
 
 \section{Normalformen für prädikatenlogische Formeln}
 Im nächsten Abschnitt gehen wir daran, einen Kalkül $\vdash$ für die
