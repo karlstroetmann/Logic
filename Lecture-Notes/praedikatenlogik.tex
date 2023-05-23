@@ -1711,7 +1711,7 @@ In order to solve this problem via constraint programming, we first introduce th
   \end{enumerate}
 \end{Definition}
 Every \blue{state} of a transition system is a mapping of the variable to values.
-The idea is that that the formula \texttt{Start} describes the start state of our search problem, \texttt{Goal}
+The idea is that the formula \texttt{Start} describes the start state of our search problem, \texttt{Goal}
 describes the state that we want to reach, while \texttt{Invariant} is a formula that must be true initially
 and that has to remain true after every transition of our system.
 
@@ -1725,15 +1725,17 @@ a symbolic transition system.
       that shore, while \texttt{B} is the number of boats.
 \item $\mathtt{Values} := \{ 0, 1, 2, 3 \}$.
 \item $\texttt{Start} := (\mathtt{M} = 3 \wedge \mathtt{C} = 3 \wedge \mathtt{B} = 1)$.
-\item $\texttt{Goal}  := (\mathtt{M} = 0 \wedge \mathtt{C} = 0)$.
-\item $\texttt{Invariant} := (\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = C)$,
+\item $\texttt{Goal}  := (\mathtt{M} = 0 \wedge \mathtt{C} = 0 \wedge B = 0)$.
+\item $\texttt{Invariant} := \bigl((\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = C) \;\wedge\; \mathtt{B} \leq 1\bigr)$,
 
       since there is no problem when all missionaries are either on the western shore or on the eastern shore
       or when the number of missionaries is the same as the number of infidels on the western shore, because
       then these numbers have to agree on the eastern shore as well.
+
+      Furthermore, there is just one boat.
 \item $\texttt{Transition} :=
       \begin{array}[t]{cl}
-         & 0 \leq \mathtt{B} \leq 1 \;\wedge\; \mathtt{B}' = 1 - \mathtt{B}   \\[0.2cm]
+         &  \mathtt{B}' = 1 - \mathtt{B}   \\[0.2cm]
         \wedge & \bigl(\mathtt{B} = 1 \;\rightarrow\; 1 \leq \mathtt{M} - \mathtt{M}'  + \mathtt{C} - \mathtt{C}' \leq 2 \;\wedge\;
         \mathtt{M}' \leq \mathtt{M} \;\wedge\; \mathtt{C}' \leq \mathtt{C}\bigr) \\[0.2cm]
         \wedge & \bigl(\mathtt{B} = 0 \;\rightarrow\; 1 \leq \mathtt{M}' - \mathtt{M}  + \mathtt{C}' - \mathtt{C} \leq 2 \;\wedge\;
@@ -1743,10 +1745,6 @@ a symbolic transition system.
 
       Let us explain the details of this formula:
       \begin{itemize}
-      \item $0 \leq \mathtt{B} \leq 1$
-
-            expresses the fact that there is just one boat.  This boat is either on the western shore or on the
-            eastern shore.  If it it on the western shore, $\mathtt{B} = 1$, otherwise $\mathtt{B} = 0$. 
       \item $\mathtt{B}' = 1 - \mathtt{B}$
 
             If the boat is initially on the western shore, i.e. $\texttt{B} = 1$, it will be on the eastern
@@ -1786,14 +1784,14 @@ a symbolic transition system.
     def start(M, C, B):
         return M == 3 and C == 3 and B == 1
     
-    def goal(M, C):
-        return M == 0 and C == 0
+    def goal(M, C, B):
+        return M == 0 and C == 0 and B == 0
     
-    def invariant(M, C):
-        return M == 0 or M == 3 or M == C
+    def invariant(M, C, B):
+        return (M == 0 or M == 3 or M == C) and B <= 1
     
     def transition(M$\alpha$, C$\alpha$, B$\alpha$, M$\beta$, C$\beta$, B$\beta$):
-        if not (0 <= B$\alpha$ <= 1 and B$\beta$ == 1 - B$\alpha$):
+        if not (B$\beta$ == 1 - B$\alpha$):
             return False
         if B$\alpha$ == 1:
             return 1 <= M$\alpha$ - M$\beta$ + C$\alpha$ - C$\beta$ <= 2 and M$\beta$ <= M$\alpha$ and C$\beta$ <= C$\alpha$
@@ -1833,13 +1831,13 @@ corresponding variable.
         Lists        = [[f'M{i}', f'C{i}', f'B{i}'] for i in range(n+1)]
         Variables    = flatten(Lists)
         Values       = { 0, 1, 2, 3 }
-        Constraints  = { 'start(M0, C0, B0)'     }  # start state
-        Constraints |= { f'goal(M{n}, C{n})' }  # goal state
+        Constraints  = {  'start(M0, C0, B0)'      }  # start state
+        Constraints |= { f'goal(M{n}, C{n}, B{n})' }  # goal state
         for i in range(n):
-            Constraints.add(f'invariant(M{i}, C{i})')
+            Constraints.add(f'invariant(M{i}, C{i}, B{i})')
             Constraints.add(f'transition(M{i}, C{i}, B{i}, M{i+1}, C{i+1}, B{i+1})')
         return Variables, Values, Constraints
-
+        
     def find_solution():
         n = 1
         while True:
