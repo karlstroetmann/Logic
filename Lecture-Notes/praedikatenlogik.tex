@@ -2034,7 +2034,7 @@ Solve the following text problem using \texttt{Z3}.
 \subsection{The Knight's Tour}
 In this subsection we will solve the puzzle \href{https://en.wikipedia.org/wiki/Knight%27s_tour}{The Knight's Tour} 
 using \texttt{Z3}.  This puzzle asks whether it is possible for a knight to visit all 64 squares of a chess board
-in 63 moves.  The tour starts in one of the corners of the board.  
+in 63 moves.  We will start the tour in the upper left corner of the board.  
 
 In order to model this puzzle as a constraint satisfaction problem we first have to decide on the variables
 that we want to use. The idea is to have 64 variables that describe the position of the knight after its
@@ -2046,7 +2046,6 @@ $\mathtt{R}_i$ and $\mathtt{C}_i$ \quad for $i \in \{0, 1, \cdots, 63\}$.
 \\[0.2cm]
 Here $\mathtt{R}_i$ denotes the row of the knight after its $i^{\mathrm{th}}$ move, while $\mathtt{C}_i$
 denotes the corresponding column.  
-
 Next, we have to formulate the constraints.  In this case, there are two kinds of constraints:
 \begin{enumerate}
 \item We have to specify that the move from the position $\langle \mathtt{R}_i, \mathtt{C}_i \rangle$
@@ -2099,40 +2098,31 @@ Next, we have to formulate the constraints.  In this case, there are two kinds o
     def row(i): return f'R{i}'
     def col(i): return f'C{i}'
     
-    def all_variables():
-        Variables = set()
-        for i in range(63+1):
-            Variables.add(row(i)); Variables.add(col(i))
-        return Variables
-    
-    def is_knight_move(i):
-        r  = row(i)
-        c  = col(i)
-        rX = row(i+1)
-        cX = col(i+1)
+    def is_knight_move(row, col, rowX, colX):
         Formulas = set()
         for delta_r, delta_c in [(1, 2), (2, 1)]:
-            Formulas.add(f'z3.And({rX} == {r} + {delta_r}, {cX} == {c} + {delta_c})')
-            Formulas.add(f'z3.And({rX} == {r} + {delta_r}, {cX} + {delta_c} == {c})')
-            Formulas.add(f'z3.And({rX} + {delta_r} == {r}, {cX} == {c} + {delta_c})')
-            Formulas.add(f'z3.And({rX} + {delta_r} == {r}, {cX} + {delta_c} == {c})') 
-        return 'z3.Or(' + ', '.join(Formulas) + ')'
-    
-    def all_different():
+            Formulas.add(z3.And(rowX == row + delta_r, colX == col + delta_c))
+            Formulas.add(z3.And(rowX == row + delta_r, colX + delta_c == col))
+            Formulas.add(z3.And(rowX + delta_r == row, colX == col + delta_c))
+            Formulas.add(z3.And(rowX + delta_r == row, colX + delta_c == col)) 
+        return z3.Or(*Formulas)
+            
+    def all_different(Rows, Cols):
         Result = set()
         for i in range(62+1):
             for j in range (i+1, 63+1):
-                Result.add(f'z3.Or({row(i)} != {row(j)}, {col(i)} != {col(j)})')
-        return Result    
-
-    def all_constraints():
-        Constraints = all_different()
-        Constraints.add(f'{row(0 )} == 0')
-        Constraints.add(f'{col(0 )} == 0')
+                Result.add(z3.Or(Rows[i] != Rows[j], Cols[i] != Cols[j]))
+        return Result
+            
+    def all_constraints(Rows, Cols):
+        Constraints = all_different(Rows, Cols)
+        Constraints.add(Rows[0] == 0)
+        Constraints.add(Cols[0] == 0)
+        for i in range(62+1):
+            Constraints.add(is_knight_move(Rows[i], Cols[i], Rows[i+1], Cols[i+1]))
         for i in range(63+1):
-            Constraints.add(is_knight_move(i))
-        for i in range(63+1):
-            Constraints.add(f'{row(i)} >= 0'); Constraints.add(f'{col(i)} >= 0')
+            Constraints.add(Rows[i] >= 0) 
+            Constraints.add(Cols[i] >= 0) 
         return Constraints
 \end{minted}
 \vspace*{-0.3cm}
@@ -2146,23 +2136,56 @@ Figure \ref{fig:Knight's Tour with Z3.ipynb-1} shows how we can formulate the pu
 \begin{enumerate}
 \item In line 1 we import the library \texttt{z3}.
  
-\item It is not convenient to declare all of the 128 variables $\mathrm{R}_i$ and $\mathtt{C}_i$ for $i=0,1,\cdots,63$
-      explicitly.  Instead, we will write a function that creates and declares these variables.  To implement
-      this function, we define the auxiliary functions \texttt{row} and \texttt{col} in line 2 and 3.
+\item We define the auxiliary functions \texttt{row} and \texttt{col} in line 3 and 4.
       Given a natural number $i$, the expression $\mathtt{row}(i)$ returns the string $\texttt{'R}i\texttt{'}$
       and  $\mathtt{col}(i)$ returns the string  $\texttt{'C}i\texttt{'}$.  These strings in turn represent the
       variables $\mathtt{R}_i$ and $\mathtt{C}_i$.
-\item The function \texttt{all\_variables} returns a set of all variable names.
-\item The function \texttt{is\_knight\_move} checks whether the move from position 
+\item The function \texttt{is\_knight\_move} takes four parameters:
+      \begin{enumerate}
+      \item \texttt{row} is a \texttt{Z3} variable that specifies the row of the position of the knight before
+            the move. 
+      \item \texttt{col} is a \texttt{Z3} variable that specifies the column of the position of the knight
+            before the move. 
+      \item \texttt{rowX} is a \texttt{Z3} variable that specifies the row of the position of the knight after
+            the move. 
+      \item \texttt{colX} is a \texttt{Z3} variable that specifies the column of the position of the knight
+            after the move. 
+      \end{enumerate}
+      The function checks whether the move from position 
       $\langle \mathtt{R}_i, \mathtt{C}_i \rangle$ to the position $\langle \mathtt{R}_{i+1}, \mathtt{C}_{i+1} \rangle$
-      is a legal move for a knight.
-\item The function \texttt{all\_different} computes a set of formulas that state that the positions
-      $\langle \mathtt{R}_i, \mathtt{C}_i \rangle$ for $i=0,,1\cdots, 63$ are all different from each other.
+      is a legal move for a knight.  In line 13 we use the fact that the function \texttt{z3.Or}
+      can take any number of arguments.  If \texttt{Formulas} is the set 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{Formulas} = \{f_1, \cdots, f_n\}$,
+      \\[0.2cm]
+      then the notation \texttt{z3.Or(*Formulas)} is expanded into the call
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{z3.Or}(f_1, \cdots, f_n)$,
+      \\[0.2cm]
+      which computes the logical disjunction
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $f_1 \vee \cdots \vee f_n$.
+\item The function \texttt{all\_different} takes two parameters:
+      \begin{enumerate}[(a)]
+      \item \texttt{Rows} is a list of \texttt{Z3} variables. The \texttt{Z3} variable \texttt{Rows[i]}
+            specifies the row of the position of the knight after the $i^{\textrm{th}}$ move. 
+      \item \texttt{Cols} is a list of \texttt{Z3} variables. The \texttt{Z3} variable \texttt{Cols[i]}
+            specifies the column of the position of the knight after the $i^{\textrm{th}}$ move. 
+      \end{enumerate}
+      The function computes a set of formulas that state that the positions
+      $\langle \mathtt{R}_i, \mathtt{C}_i \rangle$ for $i=0,1\cdots, 63$ are all different from each other.
+      Note that the position $\langle \mathtt{R}_i, \mathtt{C}_i \rangle$ is different from the position
+      $\langle \mathtt{R}_j, \mathtt{C}_j \rangle$ iff $R_i$ is different from $R_j$ or $C_i$ is different from
+      $C_j$. 
 \item The function \texttt{all\_constraints} computes the set of all constraints.
+      The parameters for this function are the same as those for the function \texttt{all\_different}.
       In addition to the constraints already discussed this function specifies that the knight starts
-      its tour at the leftmost topmost corner of the board.
+      its tour at the upper left corner of the board.
 
-      Additionally there are constraints that the variables $\mathtt{R}_i$ and $\mathtt{C}_i$ are all
+      Furthermore, there are constraints that the variables $\mathtt{R}_i$ and $\mathtt{C}_i$ are all
       non-negative.  These constraints are needed as we will model the variables with bit vectors of length 4.
       These bit vectors store integers in
       \href{https://en.wikipedia.org/wiki/Two%27s_complement}{two's complement} representation.
@@ -2184,19 +2207,18 @@ Figure \ref{fig:Knight's Tour with Z3.ipynb-1} shows how we can formulate the pu
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
                ]{python3}
-    def solve(Constraints, Variables):
-        Environment = {}
-        exec('import z3', Environment)
-        for v in Variables:
-            exec(f'{v} = z3.BitVec(f"{v}", 4)', Environment)
-        s = z3.Solver()
-        for c in Constraints:
-            s.add(eval(c, Environment))
-        result = str(s.check())
+    def solve():
+        Rows = [z3.BitVec(row(i), 4) for i in range(63+1)]
+        Cols = [z3.BitVec(col(i), 4) for i in range(63+1)]
+        Constraints = all_constraints(Rows, Cols)
+        S = z3.Solver()
+        S.add(Constraints)
+        result = str(S.check())
         if result == 'sat':
-            m = s.model()
-            S = { v: m[eval(v, Environment)] for v in Variables }
-            return S
+            Model    = S.model()
+            Solution = (  { row(i): Model[Rows[i]] for i in range(63+1) } 
+                        | { col(i): Model[Cols[i]] for i in range(63+1) })
+            return Solution
         elif result == 'unsat':
             print('The problem is not solvable.')
         else:
@@ -2206,35 +2228,36 @@ Figure \ref{fig:Knight's Tour with Z3.ipynb-1} shows how we can formulate the pu
 \caption{The function \texttt{solve}.}
 \label{fig:Knight's Tour with Z3.ipynb-2}
 \end{figure}
+
+\begin{figure}[!ht]
+  \centering
+  \framebox{\epsfig{file=Figures/knights-problem.png, scale=0.5}} 
+  \caption{A solution of the knight's problem.}
+  \label{fig:knights-problem.png}
+\end{figure}
+
 Finally, the function \texttt{solve} that is shown in Figure \ref{fig:Knight's Tour with Z3.ipynb-2} on page
-\pageref{fig:Knight's Tour with Z3.ipynb-2} can be used to solve the puzzle.  This function takes two
-arguments:
-\begin{enumerate}[(a)]
-\item \texttt{Constraints} is a set of strings that are interpreted as \texttt{Z3} constraints.
-\item \texttt{Variables} is a set of strings that are interpreted as variables.
-\end{enumerate}
-The purpose of the function \texttt{solve} is to find a solution of the given \textsc{Csp}.
+\pageref{fig:Knight's Tour with Z3.ipynb-2} can be used to solve the puzzle.
+The purpose of the function \texttt{solve} is to construct a \textsc{Csp} encoding the puzzle and to find a
+solution of this \textsc{Csp} unsing \texttt{Z3}.
 If successful, it returns a dictionary that maps every variable name to the corresponding value of the solution
 that has been found.
 \begin{enumerate}
-\item In line 2 we define the dictionary \texttt{Environment}  which will serve as the local environment for
-      the functions \texttt{exec} and \texttt{eval} below.
-\item We import the package \texttt{z3} into this environment in line 3.
-\item Then we declare in line 5 that the strings from the set \texttt{Variable} represent \texttt{Z3} bit-vector
-      variables of length $4$.   
-\item We create a solver object in line 6 and add the constraints to this solver in the following two lines.
-
-      The constraints \texttt{c} in the set \texttt{Constraints} are just strings.  
+\item In line 2 and 3 we create the \texttt{Z3} variables that specify the positions of the knight after its
+      $i^{\mathrm{th}}$ move.  $\texttt{Rows}[i]$ specifies the row of the knight after the its
+      $i^{\mathrm{th}}$ move, while $\texttt{Cols}[i]$ specifies the column.
+\item We compute the set of all constraints in line 4.   
+\item We create a solver object in line 5 and add the constraints to this solver in the following line.
 \item The function \texttt{check} tries to build a model satisfying the constraints, while the function
       \texttt{model} extracts this model if it exists.
-\item Finally, in line 12 we create a dictionary that maps all of our variables to the corresponding values that
-      are found in the model.  Note that we have to turn the variable names, that are stored as strings in the set
-      \texttt{Variables}, into objects that represent the corresponding \texttt{Z3} variables using the
-      function \texttt{eval}.
-
+\item Finally, in line 10 and 11 we create a dictionary that maps all of our variables to the corresponding
+      values that are found in the model.  Note that $\texttt{row}(i)$ returns the name of the
+      \texttt{Z3} variable $\texttt{Rows}[i]$ and similarly $\mathtt{col}(i)$ returns the name of the
+      \texttt{Z3} variable $\texttt{Cols}[i]$.
       This dictionary is then returned.
 \end{enumerate}
-
+Figure \ref{fig:knights-problem.png} on page \pageref{fig:knights-problem.png} shows a solution that has been
+computed by the program discussed above.
 
 
 \begin{table}[h]
@@ -2267,7 +2290,7 @@ that has been found.
   \caption{A super hard sudoku from the magazine ``Zeit Online''.}
   \label{tab:sudoku}
 \end{table}
-\pagebreak
+
 
 \exerciseEng
 \index{sudoku}
