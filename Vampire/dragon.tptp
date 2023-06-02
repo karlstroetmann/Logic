@@ -1,0 +1,16 @@
+% We try to prove that all communist dragons are happy.
+
+% A dragon is happy if all its children can fly.
+fof(a1, axiom, ! [D] : ((! [C] : child(C, D) => canFly(D)) => happy(D))).
+
+% Red dragons can fly.
+fof(a2, axiom, ! [X] : (red(D) => canFly(D))).
+
+% The children of communist dragons are communists.
+fof(a3, axiom, ! [D,C] : (child(C, D) & communist(D) => communist(C))).
+
+% Communist dragons are red.
+fof(a4, axiom, ! [D] : (communist(D) => red(C))).
+
+% Communist dragons are happy.
+fof(commute, conjecture, ! [X] : communist(D) => happy(D)).

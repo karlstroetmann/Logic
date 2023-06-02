@@ -1,0 +1,47 @@
+% Someone who lives in Dreadbury Mansion killed Aunt Agatha. Agatha, the butler,
+% and Charles live in Dreadbury Mansion, and are the only people who live
+% therein. A killer always hates his victim, and is never richer than his
+% victim. Charles hates no one that Aunt Agatha hates. Agatha hates everyone
+% except the butler. The butler hates everyone not richer than Aunt Agatha. The
+% butler hates everyone Aunt Agatha hates. No one hates everyone. Agatha is not
+% the butler. 
+
+% Someone who lives in Dreadbury Mansion killed Aunt Agatha.
+fof(a1, axiom, ?[X] : (lives_at_dreadbury(X) & killed(X, agatha))).
+
+% Agatha, the butler, and Charles live in Dreadbury Mansion, and are the only
+% people who live therein.
+fof(a2, axiom, ![X] : (lives_at_dreadbury(X) <=> (X = agatha | X = butler | X = charles))).
+
+% A killer always hates his victim.
+fof(a3, axiom, ![X, Y]: (killed(X, Y) => hates(X, Y))).
+
+% A killer is never richer than his victim.
+fof(a4, axiom, ![X, Y]:  (killed(X, Y) => ~richer(X, Y))).
+
+% Charles hates no one that Aunt Agatha hates.
+fof(a5, axiom, ![X]: (hates(agatha, X) => ~hates(charles, X))).
+
+% Agatha hates everyone except the butler.
+fof(a6, axiom, ![X]: (hates(agatha, X) <=> X != butler)).
+
+% The butler hates everyone not richer than Aunt Agatha.
+fof(a7, axiom, ![X]: (~richer(X, agatha) => hates(butler, X))).
+
+% The butler hates everyone Aunt Agatha hates.
+fof(a8, axiom, ![X]: (hates(agatha, X) => hates(butler, X))).
+
+%  No one hates everyone.
+fof(a9, axiom, ![X]: ?[Y]: ~hates(X, Y)).
+
+% Agatha is not the butler.
+fof(a0, axiom, agatha != butler).
+
+% Nobody is richer than himself.
+fof(r0, axiom, ![X]: ~richer(X, X)).
+% If X is richer than Y, then Y can't be richer than X.
+fof(r1, axiom, ![X, Y]: (richer(X, Y) => ~richer(Y, X))).
+% If X is richer than Y and Y is richer than Z, than X is also richer than Z.
+fof(r2, axiom, ![X, Y, Z]: (richer(X, Y) & richer(Y, Z) => richer(X, Z))).
+
+fof(c, conjecture, killed(agatha, agatha)).
