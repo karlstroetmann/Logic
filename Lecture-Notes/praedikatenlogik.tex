@@ -3248,6 +3248,233 @@ Gegeben seien folgende Axiome:
 Zeigen Sie, dass aus diesen Axiomen logisch die folgende Aussage folgt: \\[0.3cm]
 \hspace*{1.3cm} Alle Barbiere sind blond.
 
+\section{Vampire}
+The logical calculus described in the last section can be automated and forms the basis of modern
+automatic provers.  This section presents the theorem prover \href{https://vprover.github.io}{Vampire}
+\cite{kovacs:2013}.  We introduce this theorem prover via a small example from group theory.
+
+\subsection{Proving Theorems in Group Theory}
+A \blue{group} is a triple $\mathcal{G} = \langle G, \mathrm{e}, \circ \rightarrow$
+such that
+\begin{enumerate}
+\item $G$ is a set.
+\item $\mathrm{e}$ is an element of $G$.
+\item $\circ$ is a binary operation on $G$, i.e.~we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\circ: G \times G \rightarrow G$.
+\item Furthermore, the following axioms hold:
+      \begin{enumerate}[(a)]
+      \item $\forall x: e \circ x = x$, \hspace*{\fill} ($\mathrm{e}$ is a \blue{left identity})
+      \item $\forall x: \exists y: y \circ x = \mathrm{e}$, \hspace*{\fill} (every element has a \blue{left inverse}) 
+      \item $\forall x: \forall y: \forall z: (x \circ y) \circ z = x \circ (y \circ z)$. \hspace*{\fill} ($\circ$ is \blue{associative})
+      \end{enumerate}
+\end{enumerate}
+It is a well known fact that the given axioms imply the following:
+\begin{enumerate}
+\item The element $\mathrm{e}$ is also a \blue{right identity}, i.e.~we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x: x \circ \mathrm{e} = x$.
+\item Every element has a \blue{right inverse}, i.e.~we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x: \exists y: x \circ y = e$.
+\end{enumerate}
+We will show both with the help of \textsl{Vampire}.  Figure \ref{fig:group-right-identity.tptp} on page
+\pageref{fig:group-right-identity.tptp} shows the input file for \textsl{Vampire} that is used to prove that
+the left identity element $\mathrm{e}$ is also a right identity.  We discuss this file line by line.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    fof(identity, axiom, ! [X] : mult(e,X) = X).
+    fof(inverse,  axiom, ! [X] : ? [Y] : mult(Y, X) = e).
+    fof(assoc,    axiom, ! [X,Y,Z] : mult(mult(X, Y), Z) = mult(X, mult(Y, Z))).
+    
+    fof(left_e, conjecture, ! [X] : mult(X, e) = X).
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Prove that the left identity is also a right identity.}
+\label{fig:group-right-identity.tptp}
+\end{figure}
+
+\begin{enumerate}
+\item Line 1 states the axiom $\forall x: \mathrm{e} \circ x = x$.  Every formula is written in the form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{fof}(\textsl{name}, \textsl{type}, \textsl{formula} \texttt{).}
+      \begin{itemize}
+      \item \textsl{name} is a string giving the name of the formula.  This name can be freely chosen,
+            but should contain only letters, digits, and underscores.  Furthermore, it should start with a letter.
+      \item \textsl{type} is either the string ``\texttt{axiom}'' or the string ``\texttt{conjecture}''.
+            Every file must hold exactly one conjecture.  The conjecture is the formula that is to be proven from the
+            axioms.
+      \item \textsl{formula} is \textsc{Fol} formula.  The precise syntax of formulas will be described below.
+      \end{itemize}
+\item Line 2 states the axiom $\forall x: \exists y: y \circ x = \mathrm{e}$.
+\item Line 3 states the axiom $\forall x: \forall y: \forall z: (x \circ y) \circ z = x \circ (y \circ z)$.
+\item Line 5 states the conjecture $\forall x: x \circ \mathrm{e} = x$.  The keyword \texttt{conjecture}
+      signifies that we want to prove this formula.  
+\end{enumerate}
+In order to understand the syntax of \textsl{Vampire} formulas we first have to note that all variables start
+with a capital letter, while function symbols and predicate symbols start with a lower case letter.  As
+\textsl{Vampire} does not support binary operators, we had to introduce the function symbol \texttt{mult} to
+represent the operator $\circ$.  Therefore, the term $\mathtt{mult}(x, y)$ is interpreted as $x \circ y$.
+Instead of \texttt{mult} we could have chosen any other name.  Furthermore, \textsl{Vampire} uses the following
+operators:
+\begin{enumerate}[(a)]
+\item \texttt{!\;[X]}$:F$ is interpreted as $\forall x: F$.
+\item \texttt{?\;[X]}$:F$ is interpreted as $\exists x:F$.
+\item \texttt{\$true} is interpreted as $\verum$.
+\item \texttt{\$false} is interpreted as $\falsum$.
+\item \texttt{\symbol{126}}$F$ is interpreted as $\neg F$.
+\item $F\;$\texttt{\&}$\;G$ is interpreted as $F \wedge G$.
+\item $F\;$\texttt{|}$\;G$ is interpreted as $F \vee G$.
+\item $F\;$\texttt{=>}$\;G$ is interpreted as $F \rightarrow G$.
+\item $F\;$\texttt{<=>}$\;G$ is interpreted as $F \leftrightarrow G$.
+\end{enumerate}
+When the text shown in Figure \ref{fig:group-right-identity.tptp} is stored in a file with the name \texttt{group.tptp},
+then we can invoke \textsl{Vampire} with the following command
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{vampire group.tptp}
+\\[0.2cm]
+This will produce the output shown in Figure \ref{fig:group-right-identity.output}.  If we want to prove that
+the left inverse is also a right inverse we can simply change the last line in Figure
+\ref{fig:group-right-identity.tptp} to
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{fof(left\_inverse, conjecture, ![X]: ?[Y]: mult(X, Y) = e).}
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    vampire group-right-identity.tptp
+    % Running in auto input_syntax mode. Trying TPTP
+    % Refutation found. Thanks to Tanya!
+    % SZS status Theorem for group-right-identity
+    % SZS output start Proof for group-right-identity
+    1. ! [X0] : mult(e,X0) = X0 [input]
+    2. ! [X0] : ? [X1] : e = mult(X1,X0) [input]
+    3. ! [X0,X1,X2] : mult(mult(X0,X1),X2) = mult(X0,mult(X1,X2)) [input]
+    4. ! [X0] : mult(X0,e) = X0 [input]
+    5. ~! [X0] : mult(X0,e) = X0 [negated conjecture 4]
+    6. ? [X0] : mult(X0,e) != X0 [ennf transformation 5]
+    7. ! [X0] : (? [X1] : e = mult(X1,X0) => e = mult(sK0(X0),X0)) [choice axiom]
+    8. ! [X0] : e = mult(sK0(X0),X0) [skolemisation 2,7]
+    9. ? [X0] : mult(X0,e) != X0 => sK1 != mult(sK1,e) [choice axiom]
+    10. sK1 != mult(sK1,e) [skolemisation 6,9]
+    11. mult(e,X0) = X0 [cnf transformation 1]
+    12. e = mult(sK0(X0),X0) [cnf transformation 8]
+    13. mult(mult(X0,X1),X2) = mult(X0,mult(X1,X2)) [cnf transformation 3]
+    14. sK1 != mult(sK1,e) [cnf transformation 10]
+    16. mult(sK0(X2),mult(X2,X3)) = mult(e,X3) [superposition 13,12]
+    18. mult(sK0(X2),mult(X2,X3)) = X3 [forward demodulation 16,11]
+    22. mult(sK0(sK0(X1)),e) = X1 [superposition 18,12]
+    24. mult(X5,X6) = mult(sK0(sK0(X5)),X6) [superposition 18,18]
+    35. mult(X3,e) = X3 [superposition 24,22]
+    55. sK1 != sK1 [superposition 14,35]
+    56. $false [trivial inequality removal 55]
+    % SZS output end Proof for group-right-identity
+    % ------------------------------
+    % Version: Vampire 4.7 (commit )
+    % Termination reason: Refutation
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Vampire proof that the left identity is a right identity.}
+\label{fig:group-right-identity.output} %$
+\end{figure}
+
+\exerciseEng
+Using \textsl{Vampire} show that in every group the left inverse is unique. \eox
+
+\subsection{Who killed Agatha?}
+Next, we solve the following puzzle.
+
+\fcolorbox{blue}{yellow}{
+  \begin{minipage}[t]{450pt}
+ \blue{Someone who lives in Dreadbury Mansion killed Aunt Agatha. Agatha, the butler,
+ and Charles live in Dreadbury Mansion, and are the only people who live
+ therein. A killer always hates his victim, and is never richer than his
+ victim. Charles hates no one that Aunt Agatha hates. Agatha hates everyone
+ except the butler. The butler hates everyone not richer than Aunt Agatha. The
+ butler hates everyone Aunt Agatha hates. No one hates everyone. Agatha is not
+ the butler.}
+\end{minipage}
+}
+
+\noindent
+The question then is: Who killed Agatha?  As there are only three possibilities, we try to prove the following
+conjectures one by one:
+\begin{enumerate}
+\item Charles killed Agatha.
+\item The butler killed Agatha.
+\item Agatha killed herself.
+\end{enumerate}
+Figure \ref{fig:who-killed-agatha.tptp} on page \pageref{fig:who-killed-agatha.tptp} shows the axioms
+and the conjecture of the last proof attempt.  The first two proof attempts fail, but the last one is
+successful.  Hence we must conclude that Agatha committed suicide. 
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    % Someone who lives in Dreadbury Mansion killed Aunt Agatha.
+    fof(a1, axiom, ?[X] : (lives_at_dreadbury(X) & killed(X, agatha))).
+    % Agatha, the butler, and Charles live in Dreadbury Mansion, and are 
+    % the only people who live therein.
+    fof(a2, axiom, ![X] : (lives_at_dreadbury(X) <=>
+                           (X = agatha | X = butler | X = charles))).
+    % A killer always hates his victim.
+    fof(a3, axiom, ![X, Y]: (killed(X, Y) => hates(X, Y))).
+    % A killer is never richer than his victim.
+    fof(a4, axiom, ![X, Y]:  (killed(X, Y) => ~richer(X, Y))).
+    % Charles hates no one that Aunt Agatha hates.
+    fof(a5, axiom, ![X]: (hates(agatha, X) => ~hates(charles, X))).
+    % Agatha hates everyone except the butler.
+    fof(a6, axiom, ![X]: (hates(agatha, X) <=> X != butler)).
+    % The butler hates everyone not richer than Aunt Agatha.
+    fof(a7, axiom, ![X]: (~richer(X, agatha) => hates(butler, X))).
+    % The butler hates everyone Aunt Agatha hates.
+    fof(a8, axiom, ![X]: (hates(agatha, X) => hates(butler, X))).
+    %  No one hates everyone.
+    fof(a9, axiom, ![X]: ?[Y]: ~hates(X, Y)).
+    % Agatha is not the butler.
+    fof(a0, axiom, agatha != butler).
+
+    fof(c, conjecture, killed(agatha, agatha)).
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Who killed Agatha?}
+\label{fig:who-killed-agatha.tptp}
+\end{figure}
+
+
 \section{\textsl{Prover9} und \textsl{Mace4}$^*$}
 Der im letzten Abschnitt beschriebene Kalkül lässt sich automatisieren und bildet die Grundlage moderner
 automatischer Beweiser.  Gleichzeitig lässt sich auch die Suche nach Gegenbeispielen automatisieren.
