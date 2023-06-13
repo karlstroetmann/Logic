@@ -3253,7 +3253,7 @@ automatic provers.  This section presents the theorem prover \href{https://vprov
 \cite{kovacs:2013}.  We introduce this theorem prover via a small example from group theory.
 
 \subsection{Proving Theorems in Group Theory}
-A \blue{group} is a triple $\mathcal{G} = \langle G, \mathrm{e}, \circ \rightarrow$
+A \blue{group} is a triple $\mathcal{G} = \langle G, \mathrm{e}, \circ \rangle$
 such that
 \begin{enumerate}
 \item $G$ is a set.
@@ -3280,7 +3280,7 @@ It is a well known fact that the given axioms imply the following:
       \hspace*{1.3cm}
       $\forall x: \exists y: x \circ y = e$.
 \end{enumerate}
-We will show both with the help of \textsl{Vampire}.  Figure \ref{fig:group-right-identity.tptp} on page
+We will show both these claims with the help of \textsl{Vampire}.  Figure \ref{fig:group-right-identity.tptp} on page
 \pageref{fig:group-right-identity.tptp} shows the input file for \textsl{Vampire} that is used to prove that
 the left identity element $\mathrm{e}$ is also a right identity.  We discuss this file line by line.
 
@@ -3299,7 +3299,7 @@ the left identity element $\mathrm{e}$ is also a right identity.  We discuss thi
     fof(inverse,  axiom, ! [X] : ? [Y] : mult(Y, X) = e).
     fof(assoc,    axiom, ! [X,Y,Z] : mult(mult(X, Y), Z) = mult(X, mult(Y, Z))).
     
-    fof(left_e, conjecture, ! [X] : mult(X, e) = X).
+    fof(right, conjecture, ! [X] : mult(X, e) = X).
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{Prove that the left identity is also a right identity.}
@@ -3315,7 +3315,7 @@ the left identity element $\mathrm{e}$ is also a right identity.  We discuss thi
       \item \textsl{name} is a string giving the name of the formula.  This name can be freely chosen,
             but should contain only letters, digits, and underscores.  Furthermore, it should start with a letter.
       \item \textsl{type} is either the string ``\texttt{axiom}'' or the string ``\texttt{conjecture}''.
-            Every file must hold exactly one conjecture.  The conjecture is the formula that is to be proven from the
+            Every file must hold exactly one conjecture.  The conjecture is the formula that has to be proven from the
             axioms.
       \item \textsl{formula} is \textsc{Fol} formula.  The precise syntax of formulas will be described below.
       \end{itemize}
@@ -3352,7 +3352,7 @@ the left inverse is also a right inverse we can simply change the last line in F
 \ref{fig:group-right-identity.tptp} to
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{fof(left\_inverse, conjecture, ![X]: ?[Y]: mult(X, Y) = e).}
+\texttt{fof(right, conjecture, ![X]: ?[Y]: mult(X, Y) = e).}
 
 
 \begin{figure}[!ht]
@@ -3403,7 +3403,7 @@ the left inverse is also a right inverse we can simply change the last line in F
 \end{figure}
 
 \exerciseEng
-Using \textsl{Vampire} show that in every group the left inverse is unique. \eox
+Use \textsl{Vampire} to show that in every group the left inverse is unique. \eox
 
 \subsection{Who killed Agatha?}
 Next, we solve the following puzzle.
