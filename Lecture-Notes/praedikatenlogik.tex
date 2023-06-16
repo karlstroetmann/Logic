@@ -1310,7 +1310,7 @@ Next, let us define the constraints.  There are two different types of constrain
       To capture these constraints, we define
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mytt{SameRow} := \bigl\{ \mytt{Q}_i \not= \mytt{Q}_j \bigm| i \in \{1,\cdots,8\} \wedge j \in \{1,\cdots,8\} \wedge j < i \bigr\}$.
+      $\mytt{SameColumn} := \bigl\{ \mytt{Q}_i \not= \mytt{Q}_j \bigm| i \in \{1,\cdots,8\} \wedge j \in \{1,\cdots,8\} \wedge j < i \bigr\}$.
       \\[0.2cm]
       Here the condition $i < j$ ensures that, for example, we have the constraint $\mytt{Q}_2 \not= \mytt{Q}_1$
       but not the constraint  $\mytt{Q}_1 \not= \mytt{Q}_2$, as the latter constraint would be redundant if
@@ -1331,7 +1331,7 @@ Next, let us define the constraints.  There are two different types of constrain
 Then, the set of constraints is defined as 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{Constraints} := \mytt{SameRow} \cup \mytt{SameDiagonal}$
+$\mytt{Constraints} := \mytt{SameColumn} \cup \mytt{SameDiagonal}$
 \\[0.2cm]
 and the eight queens problem can be stated as the constraint satisfaction problem
 \\[0.2cm]
@@ -1430,9 +1430,9 @@ partial assignment is shown in \myFig{eight-queens-partial.txt}.
         S            = range(1, 8+1)          # used as indices
         Variables    = [ f'Q{i}' for i in S ]
         Values       = { 1, 2, 3, 4, 5, 6, 7, 8 }
-        SameRow      = { f'Q{i} != Q{j}' for i in S for j in S if i < j }
+        SameColumn   = { f'Q{i} != Q{j}' for i in S for j in S if i < j }
         SameDiagonal = { f'abs(Q{i}-Q{j}) != {j-i}' for i in S for j in S if i < j }
-        return (Variables, Values, SameRow | SameDiagonal)
+        return (Variables, Values, SameColumn | SameDiagonal)
 \end{minted}
 \vspace*{-0.3cm}
 \caption{\textsl{Python} code to create the CSP representing the eight queens puzzle.}
