@@ -393,8 +393,13 @@ In the last chapter we have seen how to prove the correctness of a recursive fun
 of computational induction is not applicable.  Therefore, this section introduces the method of
 \blue{symbolic execution}. \index{symbolic execution}  Using this method it is possible to verify the
 correctness of programs that are implemented in an iterative fashion using loops. 
-We will introduce this method via a simple example.  Consider the program shown in Figure
-\ref{fig:power-iterative-annotated.stlx}. 
+We will introduce this method via two  examples.
+
+\subsection{Iterative Squaring}
+In the previous section we have implemented a recursive version of \blue{iterative squaring} and verified its
+correctness via \blue{computational induction}.  In this section we implement an iterative version of
+\blue{iterative squaring} and verify its correctness via \blue{symbolic execution}.
+Consider the program shown in Figure \ref{fig:power-iterative-annotated.stlx}. 
 
 \begin{figure}[!h]
 \centering
@@ -504,6 +509,137 @@ $y_{n+1} = y_n \dv 2 < y_n$ \quad as long as \quad $y_n > 0$
 \\[0.2cm]
 and therefore $y_n$ must eventually become $0$.  Thus we have proven that
 $\mytt{power}(a,b) =a^b$ holds. \qed
+\pagebreak
+
+\subsection{Integer Square Root}
+We continue with another example that demonstrates the method of \blue{symbolic execution}.
+Figure \ref{fig:Integer-Square-Root-Iterative.ipynb} shows a function that is able to compute the
+\blue{integer square root} of its argument $a$ as long as $a$ is less than $2^{64}$, i.e.~if $a$ is represented as an unsigned
+number, then it can be represented with 64 bits.  In the implementation of the function \texttt{root} we have
+already indexed the variables.  Note that there is no 
+need to index the variable \texttt{a} since this variable is never updated.  To prove the correctness of this
+program, we first 
+have to establish invariants for the variables $p_n$ and $r_n$.  In order to be able to formulate the invariant
+for the variable \texttt{r}, we have to understand that the function \texttt{root} computes the integer square
+root of its argument \texttt{a} bit by bit starting at the most significant bit.  Let us denote the
+mathematical function that computes the integer square root of a number $a$ with \texttt{isqrt}.  If we
+represent $\mathtt{isqrt}(a)$ in the binary system, we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds \mathtt{isqrt}(a) = \sum\limits_{i=0}^{31} b_i \cdot 2^i$, \quad where $b_i \in \{0,1\}$.
+\\[0.2cm]
+In order to compute $\mathtt{isqrt}(a)$ we start with the last bit $b_{31}$.  If the square of $2^{31}$ is less
+than $a$, then $b_{31} = 1$.  Otherwise we have $b_{31} = 0$.  Assume now that we have already computed the
+bits $b_{32-1}$, $b_{32-2}$, $\cdots$, $b_{32-(n-1)}$.  In order to compute $b_{32-n}$ we have to check whether
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds\left(\ds\sum\limits_{i=32-(n-1)}^{31} b_i \cdot 2^i + 2^{32-n}\right)^2 \leq a$.
+\\[0.2cm]
+If it is, then  $b_{32-n} = 1$, else $b_{32-n} = 0$.
+With this in mind, we can state the invariants that hold when the \texttt{while} loop in line 4 is entered:
+\begin{enumerate}
+\item $\ds p_n = 2^{32 - n}$ \quad for $n=1,\cdots,32$ and $p_{33} = 0$.
+\item $\ds r_n = \sum\limits_{i=32-(n-1)}^{31} b_i \cdot 2^i$ \quad where the $b_i$ are the bits of
+      $\mathtt{isqrt}(a)$ in the binary representation.
+\end{enumerate}
+
+\begin{figure}[!h]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 1.3cm,
+                  xrightmargin  = 1.3cm,
+                  codes         = {\catcode`_=8\catcode`$=3},
+                  commandchars  = \\\{\},
+                ]
+    \colorbox{sepia}{\green{def} \blue{root}(a):}
+    \colorbox{sepia}{    r$_1$ = 0}
+    \colorbox{sepia}{    p$_1$ = 2 ** 31}
+    \colorbox{sepia}{    \green{while} p$_n$ >= 0:}
+    \colorbox{sepia}{        \green{if} a >= (r$_n$ + p$_n$) ** 2:}
+    \colorbox{sepia}{            r$_{n+1}$ = r$_n$ + p$_n$}
+    \colorbox{sepia}{        p$_{n+1}$ = p$_n$ // 2}
+    \colorbox{sepia}{    \green{return} r$_N$}
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{An annotated programm to compute powers.}
+\label{fig:Integer-Square-Root-Iterative.ipynb}
+\end{figure} % $
+
+We proceed to prove the first invariant by induction.  
+\begin{enumerate}
+\item[B.C.:] $n = 1$
+
+             $p_1 = 2^{31} = 2^{32-1}$. 
+ \item[I.S.:] $n \mapsto n + 1$
+
+   $p_{n+1} = p_n \;\mathtt{/\!/}\; 2 \;\stackrel{IV}{=}\; 2^{32-n} \;\mathtt{/\!/}\; 2 \;=\; 2^{32-n-1} \;=\; 2^{32-(n+1)}$.
+
+   This holds as long as $n+1 \leq 32$.  Since we have $p_{32} = 2^{32-32} = 2^0 = 1$ it follows that
+   \\[0.2cm]
+   \hspace*{1.3cm}
+   $p_{33} \;=\; p_{32} \;\mathtt{/\!/}\; 2 = 1 \;\mathtt{/\!/}\; 2 = 0$.
+   \\[0.2cm]
+   This shows that the body of the \texttt{while} loop is executed $32$ times.  This was to be expected, as
+   each execution of this loop computes one bit of the result.
+\end{enumerate}
+We proceed to prove the second invariant by induction.
+\begin{enumerate}
+\item[B.C.:] $n = 1$
+
+  We have $r_1 = 0$ and also $\sum\limits_{i=33-1}^{31} b_i \cdot 2^i = \sum\limits_{i=32}^{31} b_i \cdot 2^i =  0$,
+  since the last sum is empty.
+\item[I.S.:] $n \mapsto n+1$
+
+  Now we need a case distinction with respect to the test $a \geq (r_n + p_n)^2$.
+  \begin{enumerate}
+  \item $a \geq (r_n + p_n)^2$.
+
+    In this case we have that $r_n + p_n \leq \mathtt{isqrt}(a)$ and since $p_n = 2^{32-n}$ this shows that
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $r_n + 2^{32-n} \leq \mathtt{isqrt}(a)$.
+    \\[0.2cm]
+    This implies that $b_{32-n} = 1$.  Therefore we have
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $
+    \begin{array}[t]{lcl}
+      r_{n+1} & = & r_n + p_n \\[0.2cm] 
+              & \stackrel{IV}{=} & \sum\limits_{i=33-n}^{31} b_i \cdot 2^i + 2^{32-n} \\[0.5cm]
+              & = & \sum\limits_{i=33-n}^{31} b_i \cdot 2^i + b_{32-n} \cdot 2^{32-n} \\[0.5cm]
+              & = & \sum\limits_{i=33-(n+1)}^{31} b_i \cdot 2^i 
+    \end{array}
+    $
+  \item $a < (r_n + p_n)^2$. 
+
+    In this case we have that $r_n + p_n > \mathtt{isqrt}(a)$ and since $p_n = 2^{32-n}$ this shows that
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $r_n + 2^{32-n} > \mathtt{isqrt}(a)$.
+    \\[0.2cm]
+    This implies that $b_{32-n} = 0$.  Therefore we have
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $
+    \begin{array}[t]{lcl}
+      r_{n+1} & = & r_n  \\[0.2cm] 
+              & \stackrel{IV}{=} & \sum\limits_{i=33-n}^{31} b_i \cdot 2^i + 0 \\[0.5cm]
+              & \stackrel{IV}{=} & \sum\limits_{i=33-n}^{31} b_i \cdot 2^i + 0 \cdot 2^{32-n} \\[0.5cm]
+              & = & \sum\limits_{i=33-n}^{31} b_i \cdot 2^i + b_{32-n} \cdot 2^{32-n} \\[0.5cm]
+              & = & \sum\limits_{i=33-(n+1)}^{31} b_i \cdot 2^i 
+    \end{array}
+    $
+  \end{enumerate}
+\end{enumerate}
+Since the program terminates when $n=33$ we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds \mathtt{root}(a) = r_N = r_{33} = \sum\limits_{i=33-33}^{31} b_i \cdot 2^i = \sum\limits_{i=0}^{31} b_i \cdot 2^i = \mathtt{isqrt}(a)$. \qed
+
 
 \exerciseEng
 Use the method of symbolic program execution to prove the correctness of the implementation of the
