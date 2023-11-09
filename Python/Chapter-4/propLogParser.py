@@ -1,6 +1,6 @@
 import re
 
-def tokenize(s):
+def tokenize(s: str) -> list[str]:
     """
     Transform the string s into a list of tokens.  The string s
     is supposed to represent a formula from propositional logic.
@@ -21,11 +21,14 @@ def tokenize(s):
             result += [ operator ]
     return result
 
-def isPropVar(s):
+def isPropVar(s: str) -> bool:
     """
     Check, whether the string s can be interpreted as a propositional variable. 
     """
-    return re.fullmatch('[A-Za-z][A-Za-z0-9<>,]*', s)
+    if re.fullmatch('[A-Za-z][A-Za-z0-9<>,]*', s):
+        return True
+    else:
+        return False
 
 class LogicParser:
     """
@@ -34,7 +37,7 @@ class LogicParser:
     into nested tuples that are interpreted as syntax trees representing the 
     formulae.
     """
-    def __init__(self, s):
+    def __init__(self, s: str) -> None:
         "The constructor takes a string s that represents a formula."
         self._tokens    = list(reversed(tokenize(s)))
         self._operators = []
