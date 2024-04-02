@@ -413,14 +413,14 @@ Consider the program shown in Figure \ref{fig:power-iterative-annotated.stlx}.
                   codes         = {\catcode`_=8\catcode`$=3},
                   commandchars  = \\\{\},
                 ]
-    \colorbox{sepia}{\green{def} \blue{power}(x$_1$, y$_1$):}
-    \colorbox{sepia}{    r$_1$ = 1}
+    \colorbox{sepia}{\green{def} \blue{power}(x$_0$, y$_0$):}
+    \colorbox{sepia}{    r$_0$ = 1}
     \colorbox{sepia}{    \green{while} y$_n$ > 0:}
     \colorbox{sepia}{        \green{if} y$_n$ % 2 == 1:}
     \colorbox{sepia}{            r$_{n+1}$ = r$_n$ * x$_n$}
     \colorbox{sepia}{        x$_{n+1}$ = x$_n$ * x$_n$}
     \colorbox{sepia}{        y$_{n+1}$ = y$_n$ // 2}
-    \colorbox{sepia}{    \green{return} r$_N$}
+    \colorbox{sepia}{    \green{return} r$_{N}$}
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{An annotated programm to compute powers.}
@@ -445,21 +445,21 @@ $\mytt{r}_N$ in line 8, where $N$ denotes the total number of times that the tes
 We show the correctness of the given program next.  Let us define
 \\[0.2cm]
 \hspace*{1.3cm}
-$ a := x_1, \quad b := y_1$.
+$ a := x_0, \quad b := y_0$.
 \\[0.2cm]
-We will show that the \mytt{while} loop satisfies the \blue{invariant}
+We will show that, provided $a \geq 1$, the \mytt{while} loop satisfies the \blue{invariant}
 \begin{equation}
   \label{eq:powerInv}
   \ds r_n \cdot x_n^{y_n} = a^b.
 \end{equation}
 This claim is proven by induction on the number of loop iterations.
 \begin{enumerate}
-\item[B.C.:] $n=1$.
+\item[B.C.:] $n=0$.
 
-            Since we have $r_1 = 1$, $x_1 = a$, and $y_1 = b$ we have 
+            Since we have $r_0 = 1$, $x_0 = a$, and $y_0 = b$ we have 
             \\[0.2cm]
             \hspace*{1.3cm}
-            $r_n \cdot x_n^{y_n} = r_1 \cdot x_1^{y_1} = 1 \cdot a^{b} = a^b$.
+            $r_n \cdot x_n^{y_n} = r_0 \cdot x_0^{y_0} = 1 \cdot a^{b} = a^b$.
 \item[I.S.:] $n \mapsto n + 1$.
 
             We proof proceeds by a case distinction with respect to the expression $y_n \mmod 2$:
@@ -494,15 +494,17 @@ terminates, we must have $y_N = 0$.  If $n=N$, then equation (\ref{eq:powerInv})
 \\[0.2cm]
 \hspace*{1.3cm}
 $$
-\begin{array}[t]{cl}
+\begin{array}[t]{cll}
                  & r_N \cdot x_N^{y_N} = a^b \\
 \Leftrightarrow  & r_N \cdot x_N^{0}  = a^b \\
-\Leftrightarrow  & r_N \cdot 1       = a^b \\
+\Leftrightarrow  & r_N \cdot 1       = a^b  & \mbox{because $x_N \not= 0$} \\
 \Leftrightarrow  & r_N               = a^b
 \end{array}
 $$
 \\[0.2cm]
-This shows $r_N = a^b$.  The \mytt{while} loop terminates because we have
+In the step from the second line to the third line we have used the fact that, since $x_0 \not= 0$, we also
+have that $x_n \not= 0$ for all $n \in \{0,1, \cdots, N\}$ and therefore $x_N^0 = 1$.  Hence we have shown that $r_N = a^b$.  The
+\mytt{while} loop terminates because we have 
 \\[0.2cm]
 \hspace*{1.3cm}
 $y_{n+1} = y_n \dv 2 < y_n$ \quad as long as \quad $y_n > 0$
