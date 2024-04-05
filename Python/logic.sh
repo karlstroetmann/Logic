@@ -1,4 +1,3 @@
-
 conda create -n logic python=3.12 jupyter notebook
 conda activate logic
 conda install -c anaconda matplotlib graphviz
