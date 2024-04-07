@@ -438,8 +438,8 @@ the variables in a way such that the index includes a counter that counts the nu
 For concreteness, consider the  program shown in 
 Figure \ref{fig:power-iterative-annotated.stlx}.  
 Here, in line 5 the variable \mytt{r} has the index $n$ on the right side of the assignment,
-while it has the index $r_{n+1}$ on the left side of the assignment in line 5.  The index $n$ denotes 
-the number of times that the test \mytt{y$_n$ > 0} of the \mytt{while} loop has been executed.
+while it has the index $n+1$ on the left side of the assignment in line 5.  The index $n$ denotes 
+the number of times that the test \mytt{y > 0} of the \mytt{while} loop has been executed.
 After the \texttt{while}-loop finishes, the variable $\mytt{r}$ is indexed as
 $\mytt{r}_N$ in line 8, where $N$ denotes the total number of times that the test \mytt{y > 0} has been executed.
 We show the correctness of the given program next.  Let us define
@@ -523,7 +523,7 @@ need to index the variable \texttt{a} since this variable is never updated.  To 
 program, we first 
 have to establish invariants for the variables $p_n$ and $r_n$.  In order to be able to formulate the invariant
 for the variable \texttt{r}, we have to understand that the function \texttt{root} computes the integer square
-root of its argument \texttt{a} bit by bit starting at the most significant bit.  Let us denote the
+root of its argument $a$ bit by bit starting at the most significant bit.  Let us denote the
 mathematical function that computes the integer square root of a number $a$ with \texttt{isqrt}.  If we
 represent $\mathtt{isqrt}(a)$ in the binary system, we have
 \\[0.2cm]
@@ -535,7 +535,7 @@ than $a$, then $b_{31} = 1$.  Otherwise we have $b_{31} = 0$.  Assume now that w
 bits $b_{32-1}$, $b_{32-2}$, $\cdots$, $b_{32-(n-1)}$.  In order to compute $b_{32-n}$ we have to check whether
 \\[0.2cm]
 \hspace*{1.3cm}
-$\ds\left(\ds\sum\limits_{i=32-(n-1)}^{31} b_i \cdot 2^i + 2^{32-n}\right)^2 \leq a$.
+$\ds\left(\ds 2^{32-n} + \sum\limits_{i=32-(n-1)}^{31} b_i \cdot 2^i \right)^2 \leq a$.
 \\[0.2cm]
 If it is, then  $b_{32-n} = 1$, else $b_{32-n} = 0$.
 With this in mind, we can state the invariants that hold when the \texttt{while} loop in line 4 is entered:
@@ -576,7 +576,7 @@ We proceed to prove the first invariant by induction.
 \item[B.C.:] $n = 1$
 
              $p_1 = 2^{31} = 2^{32-1}$. 
- \item[I.S.:] $n \mapsto n + 1$
+\item[I.S.:] $n \mapsto n + 1$
 
    $p_{n+1} = p_n \;\mathtt{/\!/}\; 2 \;\stackrel{IV}{=}\; 2^{32-n} \;\mathtt{/\!/}\; 2 \;=\; 2^{32-n-1} \;=\; 2^{32-(n+1)}$.
 
@@ -686,6 +686,8 @@ function \mytt{gcd} that is implemented in Figure \ref{fig:gcd.stlx}.
 \caption{The Euclidean algorithm.}
 \label{fig:gcd.stlx}
 \end{figure}
+
+\pagebreak
 
 \section{Check Your Understanding}
 \begin{enumerate}[(a)]
