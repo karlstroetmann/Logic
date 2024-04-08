@@ -69,7 +69,7 @@ $\texttt{sunny} \wedge \texttt{raining} \rightarrow \texttt{rainBow}$.
 \\[0.2cm]
 Here, we have used  $\texttt{sunny}$, $\texttt{rainy}$ and $\texttt{rainBow}$ as propositional variables.
 
-Some propositional formulas are always true, no matter how the propositional variables are interpreted,
+Some propositional formulas are always true, no matter how the propositional variables are interpreted.
 For example, the propositional formula 
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -190,7 +190,7 @@ by induction:
       ``\blue{verum}''\footnote{``\href{https://translate.google.com/?sl=la&tl=en&text=falsum&op=translate&hl=en}{Verum}''
         is the Latin word for ``true''.},  while $\falsum$ is called 
       ``\blue{falsum}''\footnote{``\href{https://translate.google.com/?sl=la&tl=en&text=falsum&op=translate&hl=en}{Falsum}''
-        is the Latin word for ``false''}.  
+        is the Latin word for ``false''.}.  
 \item If $p \in \mathcal{P}$, then  $p \in \mathcal{F}$.
 
       Every propositional variable is also a propositional formula.
@@ -237,7 +237,7 @@ In order to save parentheses we agree on the following rules:
       
       In the programming languages  \texttt{C} and \textsl{Java} the operator ``\texttt{\&\&}'' also has a higher
       precedence than the operator ``\texttt{||}''. 
-\item The operator $\rightarrow$ is \underline{ri}g\underline{ht associative}, i.e.~we write \\[0.2cm]
+\item The operator $\rightarrow$ is \underline{\red{ri}}\red{g}\underline{\red{ht associative}}, i.e.~we write \\[0.2cm]
       \hspace*{1.3cm} $p \rightarrow q \rightarrow r$ \quad instead of \quad $p \rightarrow (q \rightarrow r)$.
 \item The operators  $\vee$ and $\wedge$ have a higher precedence than the operator $\rightarrow$.  Therefore,
       we write \\[0.2cm]
@@ -392,62 +392,9 @@ $
 $ \eox
 \\[0.2cm]
 Note that we did just evaluate some parts of the formula.  The reason is that as soon as we know that the first
-argument of $\circright$ is \texttt{False} the value of the corresponding formula can already be determined.
-Nevertheless, this approach is too cumbersome.  Instead, we will evaluate a formula directly via the table
-\ref{tab:aussagen-logik} on page \pageref{tab:aussagen-logik}.  For example, to evaluate
-$$  (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $$
-for any propositional valuation we can use the table \ref{tab:tautologie} on page
-\pageref{tab:tautologie}.  This table contains a column for every subformula of the given formula.
-\begin{table}[!ht]
-  \centering
-\framebox{
-  \begin{tabular}{|l|l|l|l|l|l|l|}
-\hline
-   $p$ & $q$ & $\neg p$ & $p \rightarrow q$ & $\neg p \rightarrow q$ & $(\neg p \rightarrow q) \rightarrow q$ & $ (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q$
-   \\
-\hline
-\hline
-   \texttt{True}  & \texttt{True}  & \texttt{False} & \texttt{True}  & \texttt{True}  & \texttt{True}     & \texttt{True}  \\
-\hline
-   \texttt{True}  & \texttt{False} & \texttt{False} & \texttt{False}  & \texttt{True} & \texttt{False}    & \texttt{True}  \\
-\hline
-   \texttt{False} & \texttt{True}  & \texttt{True}  & \texttt{True}  & \texttt{True} & \texttt{True}     & \texttt{True} \\
-\hline
-   \texttt{False} & \texttt{False} & \texttt{True}  & \texttt{True} & \texttt{False} & \texttt{True}     & \texttt{True}  \\
-\hline
-  \end{tabular}}
-  \caption{Berechnung der Wahrheitswerte von $(p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q$}
-  \label{tab:tautologie}
-\end{table}
-If we take a look at the last column of this table we observe that this column only contains the value
-\texttt{True}.  Therefore, the evaluation of 
-\\[0.2cm]
-\hspace*{1.3cm}
-$(p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $
-\\[0.2cm]
-yields $\mathtt{True}$ for every propositional valuation $\mathcal{I}$.  
-A formula that evaluates as \texttt{True} for every propositional valuation $\mathcal{I}$ is called a
-\href{https://en.wikipedia.org/wiki/Tautology_(logic)}{tautology}.
-
-We discuss the construction of this table by means of the second row.
-In this row, the variable $p$ takes the value  \texttt{True}, while $q$ has the value \texttt{False}.  Hence we
-have
-\\[0.2cm]
-\hspace*{1.3cm} $\mathcal{I}(p) = \texttt{True}$ and $\mathcal{I}(q) = \texttt{False}$. \\[0.2cm]
-Then we have the following:
-\begin{enumerate}
-\item $\mathcal{I}(\neg p) = \circneg\,(\mathcal{I}(p)) = \circneg\,( \texttt{True}) = \texttt{False}$
-\item $\mathcal{I}(p \rightarrow q) = \circright\,(\mathcal{I}(p), \mathcal{I}(q)) = \circright\,(\texttt{True}, \texttt{False}) = \texttt{False}$
-\item $\mathcal{I}(\neg p \rightarrow q) = \circright\bigl( \mathcal{I}(\neg p), \mathcal{I}(q)\bigr) = \circright(\texttt{False}, \texttt{False}) = \texttt{True}$
-\item $\mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) = 
-          \circright\bigl( \mathcal{I}(\neg p \rightarrow q), \mathcal{I}(q) \bigr) = 
-          \circright( \texttt{True}, \texttt{False} ) = \texttt{False}$
-\item $\mathcal{I}\bigl((p \rightarrow q) \rightarrow  (\neg p \rightarrow q) \rightarrow q\bigr) = 
-      \circright\bigl( \mathcal{I}(p \rightarrow q),  \mathcal{I}((\neg p \rightarrow q) \rightarrow q)\bigr) = 
-       \circright\,( \texttt{False},  \texttt{False} ) = \texttt{True}$
-\end{enumerate}
-For complex formulas this manual evaluation is too cumbersome and error prone.
-Therefore, we will implement the evaluation of propositional formulas in \textsl{Python}.
+argument of $\circright$ is \texttt{False} the value of the corresponding formula is already determined.
+Nevertheless, this approach is too cumbersome.  In practice, we do not evaluate large propositional formulas
+ourselves.  Instead, we will next implement a \textsl{Python} program that evaluates these formulas for us.
 
 \subsection{Implementation} 
 In this section we develop a \textsl{Python} program that can evaluate propositional formulas.
