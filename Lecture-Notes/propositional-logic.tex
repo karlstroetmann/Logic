@@ -538,7 +538,7 @@ The function \texttt{evaluate} takes two arguments.
 \noindent
 Next, we discuss the implementation of the function \texttt{evaluate()}.
 \begin{enumerate}
-\item We make use of the \texttt{match} statement, which is new in \textsl{Python} $3.10$.
+\item We make use of the \texttt{match} statement, which is available since \textsl{Python} $3.10$.
       This new control structure is explained in the tutorial ``PEP 636: Structural Pattern Matching''
       available at
       \\[0.2cm]
@@ -612,7 +612,7 @@ The question then is to find all propositional valuations $\mathcal{I}$ that eva
 As it is too time consuming to try all possible valuations by hand we will write a program that performs the
 required computations.
 Figure \ref{fig:Usual-Suspects.ipynb} shows the program
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Usual-Suspects.ipynb}{\texttt{Usual-Suspects.ipynb}}.
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/02-Usual-Suspects.ipynb}{\texttt{02-Usual-Suspects.ipynb}}.
 We discuss this program next.
 
 \begin{figure}[!ht]
@@ -625,11 +625,11 @@ We discuss this program next.
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
               ]{python3}
-    import propLogParser as plp
+    %run Propositional-Logic-Parser.ipynb
 
-    def transform(s):
-        "transform the string s into a nested tuple"
-        return plp.LogicParser(s).parse()
+    def parse(s):
+        parser = LogicParser(s) 
+        return parser.parse()   
     
     P = { 'a', 'b', 'c' }
     # Aaron, Bernard, or Cain is guilty.
@@ -644,7 +644,7 @@ We discuss this program next.
     # If Cain is innocent, then Aaron is guilty.
     f6 = '¬c → a'
     Fs = { f1, f2, f3, f4, f5, f6 };
-    Fs = { transform(f) for f in Fs }
+    Fs = { parse(f) for f in Fs }
 
     def allTrue(Fs, I):
         return all({evaluate(f, I) for f in Fs})
@@ -687,7 +687,7 @@ from \texttt{Fs} are rendered \texttt{True} under $I$.  This propositional valua
 Thus, the given problem is solvable and both Bernard and Cain are guilty, while Aaron is innocent.
 
 \section{Tautologies}
-Table \ref{tab:tautologie} on page \pageref{tab:tautologie} shows that the formula
+Using the program to evaluate a propositional formula we can see that the formula
 $$  (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $$
 is true for every propositional valuation $\mathcal{I}$.  This property gives rise to a definition.
 
@@ -712,14 +712,12 @@ If $f$ is a tautology, then we say that $f$ is \blue{universally valid} \index{u
 \item $\models (p \rightarrow \falsum) \;\leftrightarrow\; \neg p$
 \item $\models p \wedge q \;\leftrightarrow\; q \wedge p$
 \end{enumerate}
-One way to prove that a formula is universally valid is to construct a table that is analog 
-to Table \ref{tab:tautologie} that is shown on page \pageref{tab:tautologie}.
-Conceptually, this method is straightforward.  However, if the formula in question contains $n$
-propositional variables, then the corresponding table has $2^n$ rows.  Hence for values of $n$ that are greater
-than twenty this method is hopelessly inefficient.  Therefore, our goal in the rest of this chapter is to develop
+One way to prove that a formula $F$ is universally valid is to evaluate it for every possible valuation.
+However, if there are $n$ propositional variables occurring in $f$, then there are $2^n$ different possible
+valuations. 
+Hence for values of $n$ that are greater than twenty this method is hopelessly inefficient.  Therefore, our
+goal in the rest of this chapter is to develop 
 a method that can often deal with hundreds of propositional variables.
-
-The last two examples give rise to a new definition.
 
 \begin{Definition}[Equivalent]
   Two formulas $f$ and $g$ are \blue{equivalent} \index{equivalent} if and only if  \\[0.2cm]
@@ -748,34 +746,9 @@ $\begin{array}{lll}
  \models (p \rightarrow q) \leftrightarrow \neg p \vee q & &  \mbox{elimination of $\rightarrow$} \\[0.2cm]
  \models (p \leftrightarrow q) \leftrightarrow (\neg p \vee q) \wedge (\neg q \vee p) & & \mbox{elimination of $\leftrightarrow$}
 \end{array}$ \\[0.3cm]
-We can prove these equivalences using a table.  We demonstrate this method for the first of DeMorgan's rules.
-
-\begin{table}[!ht]
-  \centering
-\framebox{
-  \begin{tabular}{|l|l|l|l|l|l|l|}
-\hline
-   $p$            & $q$            &  $\neg p$      &  $\neg q$    & $p \wedge q$   & $\neg (p \wedge q)$ & $\neg p \vee \neg q$ \\
-\hline
-\hline
-   \texttt{True}  & \texttt{True}  & \texttt{False} & \texttt{False}  & \texttt{True}  & \texttt{False}  & \texttt{False}  \\
-\hline
-   \texttt{True}  & \texttt{False} & \texttt{False} & \texttt{True}  & \texttt{False} & \texttt{True}    & \texttt{True}  \\
-\hline
-   \texttt{False} & \texttt{True}  & \texttt{True}  & \texttt{False}  & \texttt{False} & \texttt{True}     & \texttt{True} \\
-\hline
-   \texttt{False} & \texttt{False} & \texttt{True}  & \texttt{True} & \texttt{False} & \texttt{True}     & \texttt{True}  \\
-\hline
-  \end{tabular}}
-  \caption{Nachweis der ersten DeMorgan'schen Regel}
-  \label{tab:deMorgan}
-\end{table}
-We see that the last two columns in Table \ref{tab:deMorgan} on page \pageref{tab:deMorgan} have the same
-entries.  Hence the formulas corresponding to these entries are equivalent.
 
 \subsection{\textsl{Python} Implementation}
-Constructing a truth table is far to tedious to do it a by hand if the formula in question has more than a few
-variables.  Hence we develop a \textsl{Python} program that is able to decide whether a given propositional
+In this section we develop a \textsl{Python} program that is able to decide whether a given propositional
 formula $f$ is a tautology.  The idea is that the program evaluates $f$ for all possible propositional
 interpretations.  Hence we have to compute the set of all propositional interpretations for a given set of
 propositional variables.  We have already seen that the propositional interpretations are in a 1-to-1
