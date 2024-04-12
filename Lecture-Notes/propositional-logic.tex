@@ -579,7 +579,7 @@ Their names are Aaron, Bernard, and Cain.  The evaluation of the files reveals t
 \item \green{At least one of these suspects must have been involved in the crime.}
 
       If the propositional variable $a$ is interpreted as claiming that Aaron is guilty, while $b$ and $c$
-      stand for the guilt of Bernard and Cain, then this statement is captured by the following formula: 
+      stand for the guilt of Bernard and Cain respectively, then this statement is captured by the following formula: 
       \\[0.2cm]
       \hspace*{1.3cm} 
       $f_1 := a \vee b \vee c$.
@@ -715,7 +715,7 @@ If $f$ is a tautology, then we say that $f$ is \blue{universally valid} \index{u
 One way to prove that a formula $F$ is universally valid is to evaluate it for every possible valuation.
 However, if there are $n$ propositional variables occurring in $f$, then there are $2^n$ different possible
 valuations. 
-Hence for values of $n$ that are greater than twenty this method is hopelessly inefficient.  Therefore, our
+Hence for values of $n$ that are greater than fourty this method is hopelessly inefficient.  Therefore, our
 goal in the rest of this chapter is to develop 
 a method that can often deal with hundreds of propositional variables.
 
@@ -847,12 +847,12 @@ shows the implementation.
 
 \section{Conjunctive Normal Form}
 The following section discusses algebraic manipulations of propositional formulas.  Concretely, we will define
-the notion of a \emph{conjunctive normal form} and show how a propositional formula can be turned into
+the notion of a \blue{conjunctive normal form} and show how a propositional formula can be turned into
 conjunctive normal form.  The Davis-Putnam algorithm that is discussed later requires us to put the given
 formulas into conjunctive normal form.
 
 \begin{Definition}[Literal]
-  A propositional formula $f$ is a \blue{Literal}\index{literal} if and only if we have one of the following cases: 
+  A propositional formula $f$ is a \blue{literal}\index{literal} if and only if we have one of the following cases: 
   \begin{enumerate}
   \item $f = \verum$ or $f = \falsum$.
   \item $f = p$, where $p$ is a propositional variable.
@@ -940,97 +940,95 @@ Hence the empty set of literals is to be interpreted as $\falsum$.
 \end{enumerate}
 \end{Definition}
 
-\begin{Satz} \label{satz:trivial}
-  Eine Klausel $K$ ist genau dann eine Tautologie, wenn sie trivial ist.
-\end{Satz}
-\textbf{Beweis}:  Wir nehmen zunächst an, dass die Klausel $K$ trivial ist.
-Falls nun $\verum \el K$ ist, dann gilt wegen der Gültigkeit der Äquivalenz 
+\begin{Proposition} \label{satz:trivial}
+  A clause $K$ is a tautology if and only if it is trivial.
+\end{Proposition}
+\textbf{Proof}:  We first assume that the clause $K$ is trivial.
+If $\verum \el K$, then because of the validity of the equivalence 
 $f \vee \verum \leftrightarrow \verum$
-offenbar $K \leftrightarrow \verum$.   Ist $p$ eine Aussage-Variable, so dass
-sowohl $p \el K$ als auch $\neg p \el K$ gilt, dann folgt aufgrund der Äquivalenz $p \vee
-\neg p \leftrightarrow \verum$ sofort $K \leftrightarrow \verum$.
+obviously $K \leftrightarrow \verum$.   If $p$ is a propositional variable, so that
+both $p \el K$ and $\neg p \el K$ are valid, then due to the equivalence $p \vee
+\neg p \leftrightarrow \verum$ we immediately have $K \leftrightarrow \verum$.
 
-Wir nehmen nun an, dass die Klausel $K$ eine Tautologie ist.  Wir führen den Beweis
-indirekt und nehmen an, dass $K$ nicht trivial ist.  Damit gilt  $\verum \notin K$ und
-$K$ kann auch keine komplementären Literale enthalten.  Damit hat $K$ dann die Form
+Next we assume that the clause $K$ is a tautology.  We carry out the proof
+indirectly and assume that $K$ is non-trivial.  This means that $\verum \notin K$ and
+$K$ cannot contain any complementary literals.  Thus $K$ must have the form
 \\[0.2cm]
 \hspace*{1.3cm} 
-$K = \{ \neg p_1, \cdots, \neg p_m, q_1, \cdots, q_n \}$ \quad mit $p_i
-\not= q_j$ für alle $i \in \{ 1,\cdots,m\}$ und $j \in \{1, \cdots, n\}$.
+$K = \{ \neg p_1, \cdots, \neg p_m, q_1, \cdots, q_n \}$ \quad with $p_i
+\not= q_j$ for all $i \in \{ 1,\cdots,m\}$ and $j \in \{1, \cdots, n\}$.
 \\[0.2cm]
-Dann könnten wir eine Interpretation $\mathcal{I}$ wie folgt definieren:
+Then we can define an propositional valuation $\mathcal{I}$ as follows:
 \begin{enumerate}
-\item $\mathcal{I}(p_i) = \texttt{True}$ für alle $i = 1, \cdots, m$ und
-\item $\mathcal{I}(q_j) = \texttt{False}$ für alle $j = 1, \cdots, n$,
+\item $\mathcal{I}(p_i) = \texttt{True}$ for all $i = 1, \cdots, m$ and
+\item $\mathcal{I}(q_j) = \texttt{False}$ for all $j = 1, \cdots, n$,
 \end{enumerate}
-Mit dieser Interpretation würde offenbar $\mathcal{I}(K) = \texttt{False}$ gelten und damit könnte $K$ keine
-Tautologie sein.  Also ist die Annahme, dass $K$ nicht trivial ist, falsch.
+We have $\mathcal{I}(K) = \texttt{False}$ with this valuation and therefore $K$ isn't a tautology.  So the
+assumption that $K$ is not trivial is false. 
 \hspace*{\fill}  $\Box$
 
-\begin{Definition}[Konjunktive Normalform]  
-  Eine Formel $F$ ist in \blue{konjunktiver Normalform}\index{konjunktive Normalform} (kurz KNF)\index{KNF}
-  genau dann, wenn $F$ eine Konjunktion von Klauseln ist, wenn also gilt \\[0.2cm]
+\begin{Definition}[Conjunctive Normal Form]  
+  A formula $F$ is in \blue{conjunctive normal form}\index{conjunctive normal form} (short CNF)\index{CNF}
+  if and only if $F$ is a conjunction of clauses, i.e. if \\[0.2cm]
   \hspace*{1.3cm} $F = K_1 \wedge \cdots \wedge K_n$, \\[0.2cm]
-  wobei die $K_i$ für alle $i=1,\cdots,n$ Klauseln sind. \eox
+  where the $K_i$ are clauses for all $i=1,\cdots,n$. \eox
 \end{Definition}
 
 \noindent
-Aus der Definition der KNF folgt sofort:
-\begin{Korollar} \label{korollar:knf}
-  Ist $F = K_1 \wedge \cdots \wedge K_n$ in konjunktiver Normalform, so gilt\\[0.2cm]
-  \hspace*{1.3cm} $\models F$ \quad genau dann, wenn \quad $\models K_i$ \quad für alle $i=1,\cdots,n$. \qed
+The following is an immediately corollary of the definition of a CNF.
+\begin{Korollar} \label{corollary:knf}
+  If $F = K_1 \wedge \cdots \wedge K_n$ is in conjunctive normal form, then\\[0.2cm]
+  \hspace*{1.3cm} $\models F$ \quad if and only if \quad $\models K_i$ \quad for all $i=1,\cdots,n$. \qed
 \end{Korollar}
 
-Damit können wir für eine Formel $F = K_1 \wedge \cdots \wedge K_n$ in konjunktiver
-Normalform leicht entscheiden, ob $F$ eine Tautologie ist, denn $F$ ist genau dann eine
-Tautologie, wenn alle Klauseln $K_i$ trivial sind.
+Thus, for a formula $F = K_1 \wedge \cdots \wedge K_n$ in conjunctive normal form, we can easily decide whether
+$F$ is a tautology, because $F$ is a tautology iff all clauses $K_i$ are trivial.
 \vspace*{0.2cm}
 
-Da für die Konjunktion analog zur Disjunktion das Assoziativ-, Kommutativ- und Idempotenz-Gesetz
-gilt, ist es zweckmäßig, auch für Formeln in konjunktiver Normalform wie folgt eine
-\blue{Mengen-Schreibweise}\index{Mengen-Schreibweise für Formeln in KNF} einzuführen:  Ist die Formel
+Since the associative, commutative and idempotent law applies to a conjunction in the same way as to a
+disjunction it is beneficial to also use a
+\blue{set notation}\index{set notation for formulas in CNF}:  If the formula
 \\[0.2cm]
 \hspace*{1.3cm}
 $F = K_1 \wedge \cdots \wedge K_n$
 \\[0.2cm]
-in konjunktiver Normalform, so repräsentieren wir diese
-Formel  durch die Menge ihrer Klauseln und schreiben \\[0.2cm]
+is in conjunctive normal form, we represent this formula
+by the set of its clauses and write \\[0.2cm]
 \hspace*{1.3cm} 
 $F = \{ K_1, \cdots, K_n \}$. 
 \\[0.2cm]
-Hierbei werden auch die Klauseln ihrerseits in Mengen-Schreibweise angegeben.
-Wir geben ein Beispiel:  Sind $p$, $q$ und $r$ Aussage-Variablen, so ist die Formel
+The clauses themselves are also specified in set notation.
+We provide an example: If $p$, $q$ and $r$ are propositional variables, the formula 
 \\[0.2cm]
 \hspace*{1.3cm}
 $(p \vee q \vee \neg r) \wedge (q \vee \neg r \vee p \vee q)\wedge (\neg r \vee p \vee \neg q)$
 \\[0.2cm]
-in konjunktiver Normalform.  In Mengen-Schreibweise wird daraus
+is in conjunctive normal form.  In set notation, this becomes
 \\[0.2cm]
 \hspace*{1.3cm}
 $\bigl\{ \{p, q, \neg r \},\, \{ p, \neg q, \neg r \} \bigr\}$.
 \\[0.2cm]
-Wir stellen nun ein Verfahren vor, mit dem sich jede Formel $F$ in KNF transformieren lässt.  Nach
-dem oben Gesagten können wir dann leicht entscheiden, ob $F$ eine Tautologie ist.
+We now present a method that can be used to transform any formula $F$ into CNF.  As we have seen above, we can
+then easily decide whether $F$ is a tautology. 
 \begin{enumerate}
-\item Eliminiere alle Vorkommen des Junktors ``$\leftrightarrow$'' mit Hilfe der Äquivalenz \\[0.2cm]
+\item Eliminate all occurrences of the junction ``$\leftrightarrow$'' using the equivalence \\[0.2cm]
       \hspace*{1.3cm} 
       $(F \leftrightarrow G) \leftrightarrow (F \rightarrow G) \wedge (G \rightarrow F)$.
-\item Eliminiere alle Vorkommen des Junktors ``$\rightarrow$'' mit Hilfe der Äquivalenz \\[0.2cm]
+\item Eliminate all occurrences of the junction ``$\rightarrow$'' using the equivalence \\[0.2cm]
       \hspace*{1.3cm} 
       $(F \rightarrow G) \leftrightarrow \neg F \vee G$.
-\item Schiebe die Negationszeichen soweit es geht nach innen.  Verwende dazu die folgenden Äquivalenzen:
+\item Move the negation signs inwards as far as possible.  Use the following equivalences:
       \begin{enumerate}
       \item $\neg \falsum \leftrightarrow \verum$
       \item $\neg \verum \leftrightarrow \falsum$
       \item $\neg \neg F \leftrightarrow F$
-      \item $\neg (F \wedge G) \leftrightarrow  \neg F \vee \neg G$ 
-      \item $\neg (F \vee   G) \leftrightarrow  \neg F \wedge \neg G$ 
+      \item $\neg (F \wedge G) \leftrightarrow \neg F \vee \neg G$ 
+      \item $\neg (F \vee G) \leftrightarrow \neg F \wedge \neg G$ 
       \end{enumerate}
-      In dem Ergebnis, das wir nach diesem Schritt erhalten, stehen die Negationszeichen
-      nur noch unmittelbar vor den aussagenlogischen Variablen.  Formeln mit dieser
-      Eigenschaft bezeichnen wir auch als Formeln in \blue{Negations-Normalform}.\index{Negations-Normalform}
-\item Stehen in der Formel jetzt ``$\vee$''-Junktoren über ``$\wedge$''-Junktoren, so können wir durch
-      \blue{Ausmultiplizieren},\index{Ausmultiplizieren} sprich Verwendung des Distributiv-Gesetzes \\[0.2cm]
+      In the result that we obtain after this step, the negation signs
+      occurs only immediately before propositional variables.  Formulas with this
+      property are also referred to as formulas in \blue{negation-normal-form}.\index{negation-normal-form}
+\item If the formula contains ``$\vee$'' junctors on top of ``$\wedge$'' junctors, we use the distributive law \\[0.2cm]
       \hspace*{1.3cm} 
       $
       \begin{array}{cl}
@@ -1040,37 +1038,35 @@ dem oben Gesagten können wir dann leicht entscheiden, ob $F$ eine Tautologie is
       \end{array}
       $
       \\[0.2cm]
-      den Junktor ``$\vee$'' nach innen schieben.
-\item In einem letzten Schritt überführen wir die Formel nun in Mengen-Schreibweise, indem
-      wir zunächst die Disjunktionen aller Literale als Mengen zusammenfassen und anschließend
-      alle so entstandenen Klauseln wieder in einer Menge zusammen fassen.
+      to move the disjunction ``$\vee$'' inwards.
+\item In the final step we convert the formula into set notation.
 \end{enumerate}
-Hier sollten wir noch bemerken, dass die Formel beim Ausmultiplizieren stark anwachsen kann.
-Das liegt daran, dass die Formel $F$ auf der rechten Seite der Äquivalenz 
-$F \vee (G \wedge H) \leftrightarrow (F \vee G) \wedge (F \vee H)$ zweimal auftritt, während sie
-links nur einmal vorkommt. 
+We should note that the formula can grow considerably when using the distributive law.
+This is because the formula $F$ on the right-hand side of the equivalence 
+$F \vee (G \wedge H) \leftrightarrow (F \vee G) \wedge (F \vee H)$ occurs twice, while it occurs
+only occurs once on the left. 
 
-Wir demonstrieren das Verfahren am Beispiel der Formel\\[0.2cm]
+We demonstrate the procedure using the example of the formula\\[0.2cm]
 \hspace*{1.3cm} $(p \rightarrow q) \rightarrow (\neg p \rightarrow \neg q)$.
 \begin{enumerate}
-\item Da die Formel den Junktor ``$\leftrightarrow$'' nicht enthält,
-      ist im ersten Schritt nichts zu tun.
-\item Die Elimination des Junktors ``$\rightarrow$'' liefert \\[0.2cm]
+\item Since the formula does not contain the operator ``$\leftrightarrow$''
+      there is nothing to do in the first step.
+\item The elimination of the operator ``$\rightarrow$'' yields \\[0.2cm]
       \hspace*{1.3cm} $\neg (\neg p \vee q) \vee (\neg \neg p \vee \neg q)$.
-\item Die Umrechnung auf Negations-Normalform ergibt \\[0.2cm]
+\item The conversion to negation normal form results in \\[0.2cm]
       \hspace*{1.3cm} $(p \wedge \neg q) \vee (p \vee \neg q)$.
-\item Durch ``Ausmultiplizieren'' erhalten wir \\[0.2cm]
+\item By using the distributive law we get \\[0.2cm]
       \hspace*{1.3cm} $\bigl(p \vee (p \vee \neg q)\bigr) \wedge \bigl(\neg q \vee (p \vee \neg q)\bigr)$.
-\item Die Überführung in die Mengen-Schreibweise ergibt zunächst als Klauseln die beiden Mengen \\[0.2cm]
-      \hspace*{1.3cm} $\{p, p, \neg q\}$ \quad und \quad $\{\neg q,  p,  \neg q\}$. \\[0.2cm]
-      Da die Reihenfolge der Elemente einer Menge aber unwichtig ist und außerdem eine Menge
-      jedes Element nur einmal enthält, stellen wir fest, dass diese beiden Klauseln gleich sind.
-      Fassen wir jetzt die Klauseln noch in einer Menge zusammen, so erhalten wir \\[0.2cm]
+\item The conversion to set notation yields the following clauses \\[0.2cm] 
+      \hspace*{1.3cm} $\{p, p, \neg q\}$ \quad and \quad $\{\neg q, p, \neg q\}$. \\[0.2cm]
+      However, since the order of the elements of a set is unimportant and, moreover, a set
+      contains each element only once, we realize that these two clauses are the same.
+      Therefore, if we combine these clauses into a set, we get \\[0.2cm]
       \hspace*{1.3cm} $\bigl\{ \{p, \neg q\} \bigr\}$. \\[0.2cm]
-      Beachten Sie, dass sich die Formel durch die Überführung in 
-      Mengen-Schreibweise noch einmal deutlich vereinfacht hat.
+      Note that the formula is significantly simplified by converting it into set
+      notation.
 \end{enumerate}
-Damit ist die Formel in KNF überführt.
+The formula is now converted to CNF.
 
 \subsection{Berechnung der konjunktiven Normalform in \textsl{Python}}
 Wir geben nun eine Reihe von Funktionen an, mit deren Hilfe sich eine gegebene
