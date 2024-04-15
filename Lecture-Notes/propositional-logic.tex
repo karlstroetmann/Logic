@@ -763,6 +763,23 @@ $\begin{array}{lll}
  \models (p \rightarrow q) \leftrightarrow \neg p \vee q & &  \mbox{elimination of $\rightarrow$} \\[0.2cm]
  \models (p \leftrightarrow q) \leftrightarrow (\neg p \vee q) \wedge (\neg q \vee p) & & \mbox{elimination of $\leftrightarrow$}
 \end{array}$ \\[0.3cm]
+\noindent
+\textbf{Notation}:  If the formulas $f$ and $g$ are equivalent, we can write this as 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\models f \leftrightarrow g$.
+\\[0.2cm]
+However, since this notation is rather clumsy, we will denote this fact as $f \Leftrightarrow g$ instead.
+Furthermore, in this context we use \emph{chaining} for the operator ``$\Leftrightarrow$'', that is we write
+\\[0.2cm]
+\hspace*{1.3cm}
+$f \Leftrightarrow g \Leftrightarrow h$
+\\[0.2cm]
+to denote the fact that we have both
+\\[0.2cm]
+\hspace*{1.3cm}
+$\models f \leftrightarrow g$ \quad and \quad  $\models g \leftrightarrow h$. \eox
+
 
 \subsection{\textsl{Python} Implementation}
 In this section we develop a \textsl{Python} program that is able to decide whether a given propositional
@@ -963,11 +980,11 @@ Hence the empty set of literals is to be interpreted as $\falsum$.
   A clause $K$ is a tautology if and only if it is trivial.
 \end{Proposition}
 \textbf{Proof}:  We first assume that the clause $K$ is trivial.
-If $\verum \el K$, then because of the validity of the equivalence 
-$f \vee \verum \leftrightarrow \verum$
-obviously $K \leftrightarrow \verum$.   If $p$ is a propositional variable, so that
+If $\verum \el K$, then because we have
+$f \vee \verum \Leftrightarrow \verum$
+obviously $K \Leftrightarrow \verum$.   If $p$ is a propositional variable, so that
 both $p \el K$ and $\neg p \el K$ are valid, then due to the equivalence $p \vee
-\neg p \leftrightarrow \verum$ we immediately have $K \leftrightarrow \verum$.
+\neg p \Leftrightarrow \verum$ we immediately have $K \Leftrightarrow \verum$.
 
 Next we assume that the clause $K$ is a tautology.  We carry out the proof
 indirectly and assume that $K$ is non-trivial.  This means that $\verum \notin K$ and
@@ -995,10 +1012,10 @@ assumption that $K$ is not trivial is false.
 
 \noindent
 The following is an immediately corollary of the definition of a CNF.
-\begin{Korollar} \label{corollary:knf}
+\begin{Corollary} \label{corollary:knf}
   If $F = K_1 \wedge \cdots \wedge K_n$ is in conjunctive normal form, then\\[0.2cm]
   \hspace*{1.3cm} $\models F$ \quad if and only if \quad $\models K_i$ \quad for all $i=1,\cdots,n$. \qed
-\end{Korollar}
+\end{Corollary}
 
 Thus, for a formula $F = K_1 \wedge \cdots \wedge K_n$ in conjunctive normal form, we can easily decide whether
 $F$ is a tautology, because $F$ is a tautology iff all clauses $K_i$ are trivial.
@@ -1032,17 +1049,17 @@ then easily decide whether $F$ is a tautology.
 \begin{enumerate}
 \item Eliminate all occurrences of the junction ``$\leftrightarrow$'' using the equivalence \\[0.2cm]
       \hspace*{1.3cm} 
-      $(F \leftrightarrow G) \leftrightarrow (F \rightarrow G) \wedge (G \rightarrow F)$.
+      $(F \leftrightarrow G) \Leftrightarrow (F \rightarrow G) \wedge (G \rightarrow F)$.
 \item Eliminate all occurrences of the junction ``$\rightarrow$'' using the equivalence \\[0.2cm]
       \hspace*{1.3cm} 
-      $(F \rightarrow G) \leftrightarrow \neg F \vee G$.
+      $(F \rightarrow G) \Leftrightarrow \neg F \vee G$.
 \item Move the negation signs inwards as far as possible.  Use the following equivalences:
       \begin{enumerate}
-      \item $\neg \falsum \leftrightarrow \verum$
-      \item $\neg \verum \leftrightarrow \falsum$
-      \item $\neg \neg F \leftrightarrow F$
-      \item $\neg (F \wedge G) \leftrightarrow \neg F \vee \neg G$ 
-      \item $\neg (F \vee G) \leftrightarrow \neg F \wedge \neg G$ 
+      \item $\neg \falsum \Leftrightarrow \verum$
+      \item $\neg \verum \Leftrightarrow \falsum$
+      \item $\neg \neg F \Leftrightarrow F$
+      \item $\neg (F \wedge G) \Leftrightarrow \neg F \vee \neg G$ 
+      \item $\neg (F \vee G) \Leftrightarrow \neg F \wedge \neg G$ 
       \end{enumerate}
       In the result that we obtain after this step, the negation signs
       occurs only immediately before propositional variables.  Formulas with this
@@ -1052,7 +1069,7 @@ then easily decide whether $F$ is a tautology.
       $
       \begin{array}{cl}
                       & (F_1 \wedge \cdots \wedge F_m) \vee (G_1 \wedge \cdots \wedge G_n) \\[0.2cm]
-      \leftrightarrow & (F_1 \vee G_1) \wedge \cdots \wedge (F_1 \vee G_n) \;\wedge \;\cdots\; \wedge\;
+      \Leftrightarrow & (F_1 \vee G_1) \wedge \cdots \wedge (F_1 \vee G_n) \;\wedge \;\cdots\; \wedge\;
                         (F_m \vee G_1) \wedge \cdots \wedge (F_m \vee G_n)
       \end{array}
       $
@@ -1061,9 +1078,8 @@ then easily decide whether $F$ is a tautology.
 \item In the final step we convert the formula into set notation.
 \end{enumerate}
 We should note that the formula can grow considerably when using the distributive law.
-This is because the formula $F$ on the right-hand side of the equivalence 
-$F \vee (G \wedge H) \leftrightarrow (F \vee G) \wedge (F \vee H)$ occurs twice, while it occurs
-only occurs once on the left. 
+This is because the formula $F$ occurs twice on the right-hand side of the equivalence 
+$F \vee (G \wedge H) \leftrightarrow (F \vee G) \wedge (F \vee H)$, while it occurs only occurs once on the left. 
 
 We demonstrate the procedure using the example of the formula\\[0.2cm]
 \hspace*{1.3cm} $(p \rightarrow q) \rightarrow (\neg p \rightarrow \neg q)$.
@@ -1087,56 +1103,58 @@ We demonstrate the procedure using the example of the formula\\[0.2cm]
 \end{enumerate}
 The formula is now converted to CNF.
 
-\subsection{Berechnung der konjunktiven Normalform in \textsl{Python}}
-Wir geben nun eine Reihe von Funktionen an, mit deren Hilfe sich eine gegebene
-Formel $f$ in konjunktive Normalform überführen lässt.  Diese Funktionen sind Teil des Jupyter Notebooks
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/CNF.ipynb}{CNF.ipynb}.
-Wir beginnen mit der
-Funktion 
+\subsection{Computing the Conjunctive Normal Form in \textsl{Python}}
+Next, we specify anumber of functions that can be used to convert a given formula
+formula $f$ into conjunctive normal form.  These functions are part of the Jupyter notebook
+\\[0.2cm]
+\hspace*{1.3cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/04-CNF.ipynb}{Python/Chapter-4/04-CNF.ipynb}.
+\\[0.2cm]
+We start with the
+function 
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{elimBiconditional}: \mathcal{F} \rightarrow \mathcal{F}$
 \\[0.2cm]
-welche die Aufgabe hat, eine vorgegebene aussagenlogische Formel $f$ in eine äquivalente Formel
-umzuformen, die den Junktor ``$\leftrightarrow$'' nicht mehr enthält.  Die Funktion
-$\texttt{elimBiconditional}(f)$ wird durch Induktion über den Aufbau der aussagenlogischen Formel $f$ definiert.
-Dazu stellen wir zunächst rekursive Gleichungen auf,
-die das Verhalten der Funktion $\texttt{elimBiconditional}$ beschreiben:
+which has the task of transforming a given propositional formula $f$ into an equivalent formula
+which no longer contains the operator ``$\leftrightarrow$''.  The function
+$\texttt{elimBiconditional}(f)$ is defined by induction with respect to the propositional formula $f$.
+In order to present this inductive defined, we set up recursive equations
+that describe the behavior of the function $\texttt{elimBiconditional}$:
 \begin{enumerate}
-\item Wenn $f$ eine
-      Aussage-Variable $p$ ist, so ist nichts zu tun:
+\item If $f$ is a propositional variable $p$, there is nothing to do:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{elimBiconditional}(p) = p$ \quad für alle $p \in \mathcal{P}$.
-\item Die Fälle, in denen $f$ gleich dem Verum oder dem Falsum ist, sind ebenfalls trivial:
+      $\texttt{elimBiconditional}(p) = p$ \quad for all $p \in \mathcal{P}$.
+\item The cases in which $f$ is equal to Verum or  Falsum are also trivial:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{elimBiconditional}(\verum) = \verum$ \quad und \quad
+      $\texttt{elimBiconditional}(\verum) = \verum$ \quad and \quad
       $\texttt{elimBiconditional}(\falsum) = \falsum$.
-\item Hat $f$ die Form $f = \neg g$, so eliminieren wir den Junktor
-      ``$\leftrightarrow$'' rekursiv aus der Formel $g$ und negieren die resultierende Formel: \\[0.2cm]
+\item If $f$ has the form $f = \neg g$, we eliminate the operator
+      ``$\leftrightarrow$'' recursively from the formula $g$ and negate the resulting formula: \\[0.2cm]
       \hspace*{1.3cm} 
       $\texttt{elimBiconditional}(\neg g) = \neg \texttt{elimBiconditional}(g)$.
-\item In den Fällen $f = g_1 \wedge g_2$,  $f = g_1 \vee g_2$ und $f = g_1 \rightarrow g_2$ eliminieren wir
-      rekursiv den Junktor ``$\leftrightarrow$'' aus den Formeln $g_1$ und $g_2$ und setzen dann die Formel
-      wieder zusammen: 
+\item In the cases $f = g_1 \wedge g_2$, $f = g_1 \vee g_2$ and $f = g_1 \rightarrow g_2$ we 
+      recursively eliminate the operator ``$\leftrightarrow$'' from the formulas $g_1$ and $g_2$ and then reassemble the formula
+      together again: 
       \begin{enumerate}
       \item $\texttt{elimBiconditional}(g_1 \wedge g_2) = \texttt{elimBiconditional}(g_1) \wedge \texttt{elimBiconditional}(g_2)$.
       \item $\texttt{elimBiconditional}(g_1 \vee g_2) = \texttt{elimBiconditional}(g_1) \vee \texttt{elimBiconditional}(g_2)$.
       \item $\texttt{elimBiconditional}(g_1 \rightarrow g_2) = \texttt{elimBiconditional}(g_1) \rightarrow \texttt{elimBiconditional}(g_2)$.
       \end{enumerate}
-\item Hat $f$ die Form $f = g_1 \leftrightarrow g_2$, so benutzen wir die
-      Äquivalenz \\[0.2cm]
+\item If $f$ has the form $f = g_1 \leftrightarrow g_2$, we use the
+      equivalence \\[0.2cm]
       \hspace*{1.3cm} 
-      $(g_1 \leftrightarrow g_2) \leftrightarrow \bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr)$.
+      $(g_1 \Leftrightarrow g_2) \leftrightarrow \bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr)$.
       \\[0.2cm]
-      Das führt auf die Gleichung:
+      This leads to the equation:
       \\[0.2cm]
       \hspace*{1.3cm} 
       $\texttt{elimBiconditional}(g_1 \leftrightarrow g_2) = \texttt{elimBiconditional}\bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr)$. 
       \\[0.2cm]
-      Der Aufruf der Funktion \texttt{elimBiconditional} auf der rechten Seite der Gleichung ist notwendig,
-      denn der Junktor ``$\leftrightarrow$'' kann ja noch in $g_1$ und $g_2$ auftreten.
+      It is necessary to call the function \texttt{elimBiconditional} on the right-hand side of the equation,
+      because the operator ``$\leftrightarrow$'' can still occur in $g_1$ and $g_2$.
 \end{enumerate}
 
 
@@ -1150,136 +1168,122 @@ die das Verhalten der Funktion $\texttt{elimBiconditional}$ beschreiben:
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
               ]{python3}
-    def elimBiconditional(f):
-        "Eliminate the logical operator '↔' from the formula f."
-        if isinstance(f, str):   # This case covers variables.
-            return f
-        if f[0] == '↔':
-            g, h = f[1:]
-            ge   = elimBiconditional(g)
-            he   = elimBiconditional(h)
-            return ('∧', ('→', ge, he), ('→', he, ge))
-        if f[0] == '⊤' or f[0] == '⊥':
-            return f
-        if f[0] == '¬':
-            g  = f[1]
-            ge = elimBiconditional(g)
-            return ('¬', ge)
-        else:
-            op, g, h = f
-            ge       = elimBiconditional(g)
-            he       = elimBiconditional(h)
-            return (op, ge, he)
+    def eliminateBiconditional(f):
+        match f:
+            case p if isinstance(p, str):   # This case covers variables.
+                return p
+            case ('↔', g, h):
+                return eliminateBiconditional( ('∧', ('→', g, h), ('→', h, g)) )
+            case ('⊤', ) | ('⊥', ):
+                return f
+            case ('¬', g):
+                return ('¬', eliminateBiconditional(g))
+            case (op, g, h):   # This case covers '→', '∧', and '∨'.
+                return (op, eliminateBiconditional(g), eliminateBiconditional(h))
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Elimination von $\leftrightarrow$}
+  \caption{Elimination of $\leftrightarrow$}
   \label{fig:elimBiconditional}
 \end{figure} 
-Abbildung
-\ref{fig:elimBiconditional} auf Seite \pageref{fig:elimBiconditional} zeigt die Implementierung der
-Funktion 
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/CNF.ipynb}{\texttt{elimBiconditional}}.
+
+Figure \ref{fig:elimBiconditional} on page \pageref{fig:elimBiconditional} shows the implementation of the
+function \texttt{elimBiconditional}.
 \begin{enumerate}
-\item In Zeile 3 prüft der Funktions-Aufruf $\texttt{isinstance}(f, \mathtt{str})$, ob $f$ ein String ist.  In diesem Fall
-      muss $f$ eine aussagenlogische Variable sein, denn alle anderen aussagenlogischen Formeln werden als
-      geschachtelte Listen dargestellt.  Daher wird $f$ in diesem Fall unverändert zurück gegeben.
-\item In Zeile 5 überprüfen wir den Fall, dass $f$ die Form $g \leftrightarrow h$ hat.
-      In diesem Fall eliminieren wir den Junktor ``$\leftrightarrow$'' aus $g$ und $h$ durch einen rekursiven
-      Aufruf der Funktion \texttt{elimBiconditional}.  Anschließend benutzen wir die Äquivalenz
+\item In line 3, the function call $\texttt{isinstance}(p, \mathtt{str})$ checks whether $p$ is a string.  In this case
+      $f$ must be a propositional variable, because all other propositional formulas are represented as nested lists.
+      Therefore, $f$ is returned unchanged in this case.
+\item In line 5 we check the case that $f$ has the form $g \leftrightarrow h$.
+      In this case, we use the equivalence
       \\[0.2cm]
       \hspace*{1.3cm}
-      $(g \leftrightarrow h) \leftrightarrow (g \rightarrow h) \wedge (h \rightarrow g)$.
-\item In Zeile 10 behandeln wir die Fälle, dass $f$ gleich dem Verum oder dem Falsum ist.
-      Hier ist zu beachten, dass diese Formeln ebenfalls als geschachtelte Tupel dargestellt werden,
-      Verum wird beispielsweise als das Tuple \texttt{('⊤',)} dargestellt, während Falsum von uns in
-      \textsl{Python} durch das Tuple \texttt{('⊥',)} repräsentiert wird.  In diesem Fall wird $f$
-      unverändert zurück gegeben.
-\item In Zeile 14 betrachten wir den Fall, dass $f$ eine Negation ist.  Dann hat $f$ die Form
+      $(g \leftrightarrow h) \Leftrightarrow (g \rightarrow h) \wedge (h \rightarrow g)$.
+      \\[0.2cm]
+      Furthermore, we have to eliminate the operator ``$\leftrightarrow$'' from $g$ and $h$ by recursively calling the function
+      function \texttt{elimBiconditional}.
+\item In line 5 we deal with the cases where $f$ is equal to Verum or Falsum.
+      Note that these formulas are also represented as nested tuples.
+      For example, verum is represented as the tuple \texttt{('⊤',)}, while falsum is represented in
+      \textsl{Python} by the tuple \texttt{('⊥',)}.  In this case, $f$
+      is returned unchanged.
+\item In line 9, we consider the case where $f$ is a negation.  Then $f$ has the form
       \\[0.2cm]
       \hspace*{1.3cm}
       \texttt{('¬', $g$)}  
       \\[0.2cm]
-      und wir müssen den Junktor ``$\leftrightarrow$'' rekursiv aus $g$ entfernen.
-\item In den jetzt noch verbleibenden Fällen hat $f$ die Form
+      and we have to recursively remove the operator ``$\leftrightarrow$'' from $g$.
+\item In the remaining cases, $f$ has the form
       \\[0.2cm]
       \hspace*{1.3cm}
-      \texttt{('$o$', $g$, $h$)}  \quad mit $o \in \{\rightarrow, \wedge, \vee\}$.
+      \texttt{('$o$', $g$, $h$)}  \quad with $o \in \{\rightarrow, \wedge, \vee\}$.
       \\[0.2cm]
-      In diesen Fällen muss der Junktor ``$\leftrightarrow$'' rekursiv aus den Teilformeln $g$ und $h$ entfernt
-      werden. 
+      In these cases, the operator ``$\leftrightarrow$'' has to be removed recursively from the subformulas $g$ and $h$. 
 \end{enumerate}
 \FloatBarrier
 
-Als nächstes betrachten wir die Funktion zur Elimination des Junktors ``$\rightarrow$''. 
-Abbildung
-\ref{fig:eliminate-folgt} auf Seite \pageref{fig:eliminate-folgt} zeigt die
-Implementierung der Funktion
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/CNF.ipynb}{\texttt{elimFolgt}}.
-Die der Implementierung zu Grunde liegende Idee ist dieselbe wie bei der Elimination des
-Junktors ``$\leftrightarrow$''.  Der einzige Unterschied besteht darin, dass wir jetzt die
-Äquivalenz \\[0.2cm]
+Next, we look at the function for eliminating the ``$\rightarrow$'' operator. 
+Figure
+\ref{fig:eliminate-folgt} on page \pageref{fig:eliminate-folgt} shows the
+implementation of the function
+\texttt{eliminateConditional}.
+The underlying idea of the implementation is the same as for the elimination of the
+operator ``$\leftrightarrow$''.  The only difference is that we now use the
+equivalence \\[0.2cm]
 \hspace*{1.3cm}
-$(g \rightarrow h) \leftrightarrow (\neg g \vee h)$ \\[0.2cm]
-benutzen.  Außerdem können wir bei der Implementierung dieser Funktion voraussetzen, dass der Junktor ``$\leftrightarrow$''
-bereits aus der aussagenlogischen Formel \texttt{F}, die als Argument übergeben wird, eliminiert worden ist.
-Dadurch entfällt bei der Implementierung ein Fall. 
+$(g \rightarrow h) \Leftrightarrow (\neg g \vee h)$. \\[0.2cm]
+Furthermore, when implementing this function, we can assume that the operator ``$\leftrightarrow$''
+has already been eliminated from the propositional formula \texttt{f}, which is passed as an argument.
+This eliminates one case in the implementation. 
+
+
 
 \begin{figure}[!ht]
   \centering
 \begin{minted}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  bgcolor       = sepia,
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm
-                ]{python3}
-    def elimConditional(f):
-        "Eliminate the logical operator '→' from f."
-        if isinstance(f, str): 
-            return f
-        if f[0] == '⊤' or f[0] == '⊥':
-            return f
-        if f[0] == '→':
-            g, h = f[1:]
-            ge   = elimConditional(g)
-            he   = elimConditional(h)
-            return ('∨', ('¬', ge), he)
-        if f[0] == '¬':
-            g  = f[1]
-            ge = elimConditional(g)
-            return ('¬', ge)
-        else:
-            op, g, h = f
-            ge       = elimConditional(g)
-            he       = elimConditional(h)
-            return (op, ge, he)
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{python3}
+    def eliminateConditional(f: Formula) -> Formula:
+        'Eliminate the logical operator "→" from f.'
+        match f:
+            case p if isinstance(p, str): 
+                return p
+            case ('⊤', ) | ('⊥', ):
+                return f
+            case ('→', g, h): 
+                return eliminateConditional(('∨', ('¬', g), h))
+            case ('¬', g):
+                return ('¬', eliminateConditional(g))
+            case (op, g, h):      # This case covers '∧' and '∨'.
+                return (op, eliminateConditional(g), eliminateConditional(h))
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Elimination von $\rightarrow$}
+  \caption{Elimination of $\rightarrow$}
   \label{fig:eliminate-folgt}
 \end{figure}
- 
-Als nächstes zeigen wir die Funktionen zur Berechnung der Negations-Normalform.
-Abbildung
-\ref{fig:nnf} auf Seite \pageref{fig:nnf} zeigt die Implementierung der Funktionen
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/CNF.ipynb}{\texttt{nnf}} und
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/CNF.ipynb}{\texttt{neg}},
-die sich wechselseitig aufrufen.  Dabei berechnet \texttt{nnf($f$)} die Negations-Normalform von $f$, während  
-\texttt{neg($f$)} die Negations-Normalform von $\neg f$ berechnet,  es gilt also
+\pagebreak
+Next, we present the functions for calculating the negation normal form.
+Figure
+\ref{fig:nnf} on page \pageref{fig:nnf} shows the implementation of the functions
+\texttt{nnf} and \texttt{neg},
+which call each other.  Here, \texttt{nnf($f$)} calculates the negation normal form of $f$, while  
+\texttt{neg($f$)} calculates the negation normal form of $\neg f$, so the following holds
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{neg}(\texttt{F}) = \texttt{nnf}(\neg \texttt{f})$.
+$\texttt{neg}(\texttt{f}) = \texttt{nnf}(\neg \texttt{f})$.
 \\[0.2cm]
- Die eigentliche Arbeit wird dabei in der
-Funktion \texttt{neg} erledigt, denn dort werden die beiden DeMorgan'schen Gesetze 
+ The actual work is done in the
+function \texttt{neg}, because this is where DeMorgan's laws 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\neg (f \wedge g) \leftrightarrow (\neg f \vee \neg g)$ \quad und \quad 
-$\neg (f \vee g) \leftrightarrow (\neg f \wedge \neg g)$ 
+$\neg (f \wedge g) \Leftrightarrow (\neg f \vee \neg g)$ \quad and \quad 
+$\neg (f \vee g) \Leftrightarrow (\neg f \wedge \neg g)$ 
 \\[0.2cm]
-angewendet.  Wir beschreiben die Umformung in Negations-Normalform durch 
-die folgenden Glei\-chungen: \index{\texttt{nnf}}
+are applied.  We describe the transformation into negation normal form by 
+the following equations: \index{\texttt{nnf}}
 \begin{enumerate}
 \item $\texttt{nnf}(p) = p$ \quad für alle $p \in \mathcal{P}$,
 \item $\texttt{nnf}(\verum) = \verum$,
@@ -1299,30 +1303,29 @@ die folgenden Glei\-chungen: \index{\texttt{nnf}}
                   numbers       = left,
                   numbersep     = -0.2cm,
                 ]{python3}
-    def nnf(f):
-        "Compute the negation normal form of f."
-        if isinstance(f, str): 
-            return f
-        if f[0] == '⊤' or f[0] == '⊥':
-            return f
-        if f[0] == '¬':
-            g = f[1]
-            return neg(g)
-        if f[0] == '∧':
-            g, h = f[1:]
-            return ('∧', nnf(g), nnf(h))
-        if f[0] == '∨':
-            g, h = f[1:]
-            return ('∨', nnf(g), nnf(h))
+    def nnf(f: Formula) -> Formula:
+        match f:
+            case p if isinstance(p, str): return p
+            case ('⊤', ) | ('⊥', ):      return f
+            case ('¬', g):                return neg(g)
+            case (op, g, h):               return (op, nnf(g), nnf(h))
 
+    def neg(f: Formula) -> Formula:
+        match f:
+            case p if isinstance(p, str): return ('¬', p)
+            case ('⊤', ):     return ('⊥', )
+            case ('⊥', ):     return ('⊤', )
+            case ('¬', g):    return nnf(g)
+            case ('∧', g, h): return ('∨', neg(g), neg(h))
+            case ('∨', g, h): return ('∧', neg(g), neg(h))
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Berechnung der Negations-Normalform: Die Funktion \texttt{nnf}.}
+  \caption{Computing the negation normal form.}
   \label{fig:nnf}
 \end{figure}
 
-Die Hilfsprozedur \texttt{neg}, die die Negations-Normalform von $\neg f$ berechnet,
-spezifizieren wir ebenfalls durch rekursive Gleichungen: \index{\texttt{neg}}
+The auxiliary procedure \texttt{neg}, which calculates the negation normal form of $\neg f$,
+is also specified by recursive equations: \index{\texttt{neg}}
 \begin{enumerate}
 \item $\texttt{neg}(p) = \texttt{nnf}(\neg p) = \neg p$ für alle Aussage-Variablen $p$.
 \item $\texttt{neg}(\verum) = \texttt{nnf}(\neg\verum) = \texttt{nnf}(\falsum) = \falsum$, 
@@ -1337,7 +1340,7 @@ spezifizieren wir ebenfalls durch rekursive Gleichungen: \index{\texttt{neg}}
        \end{array}
       $
 
-      Also haben wir:
+      Hence we have:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\texttt{neg}\bigl(f_1 \wedge f_2 \bigr) = \texttt{neg}(f_1) \vee \texttt{neg}(f_2)$.
@@ -1350,126 +1353,87 @@ spezifizieren wir ebenfalls durch rekursive Gleichungen: \index{\texttt{neg}}
        \end{array}
       $
 
-      Also haben wir: 
+      Therefore we have: 
       \\[0.2cm]
       \hspace*{1.3cm}
       $\texttt{neg}\bigl(f_1 \vee f_2 \bigr) = \texttt{neg}(f_1) \wedge \texttt{neg}(f_2)$.
 \end{enumerate}
-Die in den Abbildungen \ref{fig:nnf} und \ref{fig:neg} auf Seite \pageref{fig:nnf} und Seite \pageref{fig:neg} gezeigten Funktionen setzen die oben diskutierten
-Gleichungen unmittelbar um. 
 
-\begin{figure}[!ht]
-  \centering
-\begin{minted}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm,
-                  bgcolor       = sepia,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                ]{python3}
-    def neg(f):
-        "Compute the negation normal form of ¬f."
-        if isinstance(f, str): 
-            return ('¬', f)
-        if f[0] == '⊤':
-            return ('⊥',)
-        if f[0] == '⊥':
-            return ('⊤',)
-        if f[0] == '¬':
-            g = f[1]
-            return nnf(g)
-        if f[0] == '∧':
-            g, h = f[1:]
-            return ('∨', neg(g), neg(h))
-        if f[0] == '∨':
-            g, h = f[1:]
-            return ('∧', neg(g), neg(h))
-\end{minted}
-\vspace*{-0.3cm}
-  \caption{Berechnung der Negations-Normalform: Die Funktion \texttt{neg}.}
-  \label{fig:neg}
-\end{figure}
-
-
-Als letztes stellen wir die Funktionen vor, mit denen die Formeln, die bereits in
-Negations-Normalform sind, ausmultipliziert und dadurch in konjunktive
-Normalform gebracht werden.  Gleichzeitig werden  die zu normalisierenden Formeln dabei
-in die Mengen-Schreibweise transformiert, d.h.~die Formeln werden als Mengen von Mengen 
-von Literalen dargestellt.  Dabei interpretieren wir eine Menge von Literalen als
-Disjunktion der Literale und eine Menge von Klauseln interpretieren wir als Konjunktion
-der Klauseln.  Mathematisch ist unser Ziel also, eine Funktion
+Finally, we present the function \texttt{cnf} that allows us to transform a propositional formula $f$
+from negation normal form into conjunctive normal form.
+Furthermore, \texttt{cnf} converts the resulting formula
+into set notation, i.e.~the formulas are represented as sets of sets of literals. 
+of literals.  We interpret a set of literals as a
+disjunction of the literals and a set of clauses is interpreted as a conjunction
+of the clauses.  Mathematically, our goal is therefore to find a function
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{cnf}: \texttt{NNF} \rightarrow \texttt{KNF}$
 \\[0.2cm]
-zu definieren, so dass $\texttt{cnf}(f)$ für eine Formel $f$, die in Negations-Normalform vorliegt, eine Menge von Klauseln als
-Ergebnis zurück gibt, deren Konjunktion zu $f$ äquivalent ist.  Die Definition von $\texttt{cnf}(f)$ erfolgt
-rekursiv.
+so that $\texttt{cnf}(f)$ for a formula $f$, which is in negation normal form, returns a set of clauses as a result whose conjunction
+is equivalent to $f$.  The definition of $\texttt{cnf}(f)$ is given recursively.
 \begin{enumerate}
-\item Falls $f$ eine aussagenlogische Variable ist, geben wir als Ergebnis eine Menge zurück, die genau eine
-      Klausel enthält.  Diese Klausel ist selbst wieder eine Menge von Literalen, die als einziges Literal die
-      aussagenlogische Variable $f$ enthält:
+\item If $f$ is a propositional variable, we return as result a set that contains exactly one
+      clause.  This clause is itself a set of literals, the only literal of which is the
+      propositional variable $f$:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{cnf}(f) := \bigl\{\{f\}\bigr\}$ \quad falls $f \in \mathcal{P}$.
-\item Wir hatten früher gesehen, dass die leere Menge von \emph{Klauseln} als $\verum$ interpretiert werden kann.
-      Daher gilt:
+      $\texttt{cnf}(f) := \bigl\{\{f\}\bigr\}$ \quad if $f \in \mathcal{P}$.
+\item We saw earlier that the empty set of \emph{clauses} can be interpreted as $\verum$.
+      Therefore:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\texttt{cnf}(\verum) := \bigl\{\bigr\}$.      
-\item Wir hatten ebenfalls gesehen, dass die leere Menge von \emph{Literalen} als $\falsum$ interpretiert werden kann.
-      Daher gilt:
+\item We had also seen that the empty set of \emph{literals} can be interpreted as $\falsum$.
+      Therefore:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\texttt{cnf}(\falsum) := \bigl\{\{\}\bigr\}$.      
-\item Falls $f$ eine Negation ist, dann muss gelten
+\item If $f$ is a negation, then the following holds:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $f = \neg p$ \quad mit $p \in \mathcal{P}$,
+      $f = \neg p$ \quad with $p \in \mathcal{P}$,
       \\[0.2cm]
-      denn $f$ ist ja in Negations-Normalform und in einer solchen Formel kann der Negations-Operator nur auf
-      eine aussagenlogische Variable angewendet werden.  Daher ist $f$ ein Literal und wir geben als Ergebnis
-      eine Menge zurück, die genau eine Klausel enthält.  Diese Klausel ist selbst wieder eine Menge von
-      Literalen, die als einziges Literal die Formel $f$ enthält:
+      because $f$ is in negation normal form and in such a formula the negation operator can only be applied to
+      a propositional variable.  Therefore, $f$ is a literal and we return as a result
+      a set that contains exactly one clause.  This clause is itself a set of
+      literals, which contains the formula $f$ as the only literal:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{cnf}(\neg p) := \bigl\{\{\neg p\}\bigr\}$ \quad falls $p \in \mathcal{P}$.
-\item Falls $f$ eine Konjunktion ist und also $f = g \wedge h$ gilt,  dann können wir die 
-      zunächst die Formeln $g$ und $h$ in KNF transformieren.  Dabei erhalten wir dann Mengen von Klauseln 
-      $\texttt{cnf}(g)$ und $\texttt{cnf}(h)$.  Da wir eine Menge von Klauseln als Konjunktion der in der Menge
-      enthaltenen Klauseln interpretieren, reicht es aus,  
-      die Vereinigung der Mengen $\texttt{cnf}(f)$ und $\texttt{cnf}(g)$ zu bilden,
-      wir haben also \\[0.2cm]
-      \hspace*{1.3cm} $\texttt{cnf}(g \wedge h) = \texttt{cnf}(g) \cup  \texttt{cnf}(h)$.
-\item Falls $f = g \vee h$ ist, transformieren wir zunächst $g$ und $h$ in KNF.
-      Dabei erhalten wir \\[0.2cm]
+      $\texttt{cnf}(\neg p) := \bigl\{\{\neg p\}\bigr\}$ \quad if $p \in \mathcal{P}$.
+\item If $f$ is a conjunction and therefore $f = g \wedge h$, then we 
+      first transform the formulas $g$ and $h$ into CNF.  We then obtain sets of clauses 
+      $\texttt{cnf}(g)$ and $\texttt{cnf}(h)$.  Since we interpret a set of clauses as a conjunction of the clauses contained in the set,
+      it is sufficient to form the union of the sets $\texttt{cnf}(f)$ and $\texttt{cnf}(g)$,
+      so we have \\[0.2cm]
+      \hspace*{1.3cm} $\texttt{cnf}(g \wedge h) = \texttt{cnf}(g) \cup \texttt{cnf}(h)$.
+\item If $f = g \vee h$, we first transform $g$ and $h$ into CNF.
+      This gives us \\[0.2cm]
       \hspace*{1.3cm} 
-      $\texttt{cnf}(g) = \{ g_1, \cdots, g_m \}$ \quad und \quad
+      $\texttt{cnf}(g) = \{ g_1, \cdots, g_m \}$ \quad and \quad
       $\texttt{cnf}(h) = \{ h_1, \cdots, h_n \}$. \\[0.2cm]
-      Dabei sind die $g_i$ und die $h_j$ Klauseln.  Um nun die KNF von $g \vee h$ zu
-      bilden, rechnen wir wie folgt: 
+      The formulas $g_i$ and the $h_j$ are clauses.  In order to  form the CNF of $g \vee h$
+      we proceed as follows: 
       $$
       \begin{array}[c]{ll}
-        & g \vee h  \\[0.2cm]
+        & g \vee h \\[0.2cm]
       \Leftrightarrow & (k_1 \wedge \cdots \wedge k_m) \vee (l_1 \wedge \cdots \wedge l_n) \\[0.2cm]
       \Leftrightarrow & (k_1 \vee l_1) \quad \wedge \quad \cdots \quad \wedge \quad (k_m \vee l_1) \quad \wedge \\ 
-                      & \qquad \vdots     \hspace*{4cm} \vdots                \\
+                      & \qquad \vdots \hspace*{4cm} \vdots \\
                       & (k_1 \vee l_n) \quad \wedge \quad \cdots \quad \wedge \quad (k_m \vee l_n) \\[0.2cm] 
       \Leftrightarrow & \bigl\{ k_i \vee l_j : i \in \{ 1, \cdots, m\}, j \in \{ 1, \cdots, n \} \bigr\} \\ 
       \end{array}
       $$
-      Berücksichtigen wir noch, dass Klauseln in der Mengen-Schreibweise als Mengen von
-      Literalen aufgefasst werden, die implizit disjunktiv verknüpft werden, so können wir
-      für $k_i \vee l_j$ auch $k_i \cup l_j$ schreiben.  Wir sehen, dass jede Klausel aus $\texttt{cnf}(g)$
-      mit jeder Klausel aus $\texttt{cnf}(g)$ vereinigt wird.  Insgesamt erhalten wir damit 
+      If we take into account that clauses in the set notation are understood as sets of
+      literals that are implicitly linked disjunctively, then we can also write
+      $k_i \vee l_j$ as the union $k_i \cup l_j$.   Therefore, we obtain 
       \\[0.2cm]
       \hspace*{1.3cm} 
       $\texttt{cnf}(g \vee h) = \bigl\{ k \cup l \mid k \in \texttt{cnf}(g) \;\wedge\; l \in \texttt{cnf}(h) \bigr\}$.
 \end{enumerate}
-Abbildung \ref{fig:cnf} auf Seite \pageref{fig:cnf} zeigt die Implementierung der Funktion
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/CNF.ipynb}{\texttt{cnf}}.
-(Der Name \texttt{cnf} ist die Abkürzung von \blue{\underline{c}onjunctive \underline{n}ormal \underline{f}orm}.)
+Figure \ref{fig:cnf} on page \pageref{fig:cnf} shows the implementation of the function
+\texttt{cnf}.
+(The name \texttt{cnf} is the abbreviation of \blue{\underline{c}onjunctive \underline{n}ormal \underline{f}orm}).
 
 \begin{figure}[!ht]
   \centering
@@ -1481,46 +1445,48 @@ Abbildung \ref{fig:cnf} auf Seite \pageref{fig:cnf} zeigt die Implementierung de
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
                 ]{python3}
-    def cnf(f):
-        if isinstance(f, str): 
-            return { frozenset({f}) }
-        if f[0] == '⊤':
-            return set()
-        if f[0] == '⊥':
-            return { frozenset() }
-        if f[0] == '¬':
-            return { frozenset({f}) }
-        if f[0] == '∧':
-            g, h = f[1:]
-            return cnf(g) | cnf(h)
-        if f[0] == '∨':
-            g, h = f[1:]
-            return { k1 | k2 for k1 in cnf(g) for k2 in cnf(h) }
+    def cnf(f: Formula) -> CNF:
+        match f:
+            case p if isinstance(p, str):         
+                return { frozenset({p}) }
+            case ('⊤', ):
+                return set()
+            case ('⊥', ):
+                return { frozenset() }
+            case ('¬', p):
+                return { frozenset({ ('¬', p) }) }
+            case ('∧', g, h):
+                return cnf(g) | cnf(h)
+            case ('∨', g, h):
+                return { k1 | k2 for k1 in cnf(g) for k2 in cnf(h) }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Berechnung der konjunktiven Normalform. \index{\texttt{cnf}}}
   \label{fig:cnf}
 \end{figure}
-
-Zum Abschluss zeigen wir in Abbildung \ref{fig:normalize} auf Seite \pageref{fig:normalize}
-wie die einzelnen Funktionen zusammenspielen.
+Lastly, we show in figure \ref{fig:normalize} on page \pageref{fig:normalize}
+how the functions that have been shown above interact.
 \begin{enumerate}
-\item Die Funktion \texttt{normalize} eliminiert zunächst die Junktoren ``$\leftrightarrow$''
-      mit Hilfe der Funktion \texttt{elimBiconditional}.
-\item Anschließend wird der Junktor  ``$\rightarrow$'' mit Hilfe der Funktion \texttt{elimConditional}
-      ersetzt.      
-\item Der Aufruf von \texttt{nnf} bringt die Formel in Negations-Normalform.
-\item Die Negations-Normalform wird nun mit Hilfe der Funktion \texttt{cnf} in konjunktive Normalform gebracht,
-      wobei gleichzeitig die Formel in Mengen-Schreibweise überführt wird.  
-\item Schließlich entfernt die Funktion \texttt{simplify} alle Klauseln aus der Menge \texttt{N4}, die trivial
-      sind.
-\item Die Funktion \texttt{isTrivial} überprüft, ob eine Klausel $C$, die in Mengen-Schreibweise vorliegt,
-      sowohl eine Variable $p$ als auch die Negation $\neg p$ dieser Variablen enthält, denn dann ist diese
-      Klausel zu $\verum$ äquivalent und kann weggelassen werden.
+\item The function \texttt{normalize} first eliminates the operators ``$\leftrightarrow$''
+       with the help of the function \linebreak
+      \texttt{eliminateBiconditional}.
+\item The operator ``$\rightarrow$'' is then replaced with the help of the function
+      \texttt{eliminateConditional}.
+\item Calling \texttt{nnf} converts the formula to negation-normal form.
+\item The negation normal form is now converted to conjunctive normal form using the function \texttt{cnf},
+      whereby the formula is simultaneously converted to set notation.  
+\item Finally, the function \texttt{simplify} removes all clauses from the set \texttt{N4} that are trivial.
+\item The function \texttt{isTrivial} checks whether a clause $C$, which is in set notation,
+      contains both a variable $p$ and the negation $\neg p$ of this variable, because then this
+      clause is equivalent to $\verum$ and can be omitted.
 \end{enumerate}
-Das vollständige Programm zur Berechnung der konjunktiven Normalform finden Sie als die Datei
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/04-CNF.ipynb}{\texttt{04-CNF.ipynb}} 
-unter GitHub.
+The complete program for calculating the conjunctive normal form can be found as the file
+\\[0.2cm]
+\hspace*{1.3cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/04-CNF.ipynb}{\texttt{Python/Chapter-4/04-CNF.ipynb}} 
+\\[0.2cm]
+on my \href{https://github.com/karlstroetmann/Logic}{GitHub repository}.
+
 
 \begin{figure}[!ht]
   \centering
@@ -1546,14 +1512,13 @@ unter GitHub.
         return any(('¬', p) in Clause for p in Clause)
 \end{minted} 
 \vspace*{-0.3cm}
-  \caption{Normalisierung einer Formel}
+  \caption{Normalizing a Formula.}
   \label{fig:normalize}
 \end{figure}
 
-\exercise
-Berechnen Sie die konjunktiven Normalformen der folgenden aussagenlogischen Formeln und geben Sie Ihr Ergebnis
-in Mengenschreibweise an.  Überprüfen Sie Ihr Ergebnis mit Hilfe des Jupyter-Notebooks
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/04-CNF.ipynb}{\texttt{04-CNF.ipynb}} 
+\exerciseEng
+Calculate the conjunctive normal forms of the following propositional logic formulae and state your result
+in set notation.
 \begin{enumerate}[(a)]
 \item $p \vee q \rightarrow r$,
 \item $p \vee q \leftrightarrow r$,
