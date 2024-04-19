@@ -1517,8 +1517,7 @@ on my \href{https://github.com/karlstroetmann/Logic}{GitHub repository}.
 \end{figure}
 
 \exerciseEng
-Calculate the conjunctive normal forms of the following propositional logic formulae and state your result
-in set notation.
+Calculate the conjunctive normal forms of the following formulae and state your result in set notation.
 \begin{enumerate}[(a)]
 \item $p \vee q \rightarrow r$,
 \item $p \vee q \leftrightarrow r$,
@@ -1527,76 +1526,71 @@ in set notation.
 \item $\neg r \wedge (q \vee p \rightarrow r) \rightarrow \neg q \wedge \neg p$.
 \end{enumerate}
 
-
-\section{Der Herleitungs-Begriff}
-Ist $\{f_1,\cdots,f_n\}$ eine Menge von Formeln, und $g$ eine weitere Formel, so
-können wir uns fragen, ob  die  Formel $g$ aus $f_1$, $\cdots$, $f_n$ \blue{folgt}, ob
-also 
+\section{The Concept of a Derivation}
+If $\{f_1,\cdots,f_n\}$ is a set of formulas and $g$ is another formula, then
+we might ask whether the formula $g$ is a \textcolor{blue}{logical consequence} of the formulas $f_1$,
+$\cdots$, $f_n$, i.e.~whether
 \\[0.2cm]
 \hspace*{1.3cm}
-$\ds \models f_1 \wedge \cdots \wedge f_n \rightarrow g$
+$\models f_1 \wedge \cdots \wedge f_n \rightarrow g$
 \\[0.2cm]
-gilt.
-Es gibt verschiedene Möglichkeiten, diese Frage zu beantworten.  Ein Verfahren kennen wir
-schon: Zunächst überführen wir die Formel  $f_1 \wedge \cdots \wedge f_n \rightarrow g$ in
-konjunktive Normalform.  Wir erhalten dann eine Menge
-$\{k_1,\cdots,k_m\}$ von Klauseln, deren Konjunktion zu der  Formel
+holds.
+There are various ways to answer this question.  We already know one method:
+First, we transform the formula $f_1 \wedge \cdots \wedge f_n \rightarrow g$ into
+conjunctive normal form.  Thereby we obtain a set of clauses
+$\{k_1,\cdots,k_m\}$, whose conjunction is equivalent to the formula
 \\[0.2cm]
 \hspace*{1.3cm}
 $f_1 \wedge \cdots \wedge f_n \rightarrow g$
-\\[0.2cm] 
-äquivalent ist.  Diese Formel ist nun genau dann eine Tautologie, wenn
-jede der Klauseln $k_1$, $\cdots$, $k_m$ trivial ist.  
+\\[0.2cm]
+This formula is a tautology if and only if each of the clauses $k_1$, $\cdots$, $k_m$ is trivial.
 
-Das oben dargestellte Verfahren ist aber sehr aufwendig.  Wir zeigen dies anhand eines
-Beispiels und wenden das Verfahren
-an, um zu entscheiden, ob $p \rightarrow r$ aus den beiden Formeln $p \rightarrow q$ und
-$q \rightarrow r$ folgt.   Wir bilden also die konjunktive Normalform der Formel 
+However, the above method is quite inefficient. We demonstrate this with an
+example and apply the method
+to decide whether $p \rightarrow r$ follows from the two formulas $p \rightarrow q$ and
+$q \rightarrow r$. We compute the conjunctive normal form of the formula
 \\[0.2cm]
 \hspace*{1.3cm}
 $h := (p \rightarrow q) \wedge (q \rightarrow r) \rightarrow p \rightarrow r$
 \\[0.2cm]
-und erhalten nach mühsamer Rechnung
+and after a laborious calculation, we obtain
 \\[0.2cm]
 \hspace*{1.3cm}
-$\ds (p \vee \neg p \vee r \vee \neg r) \wedge (\neg q \vee \neg p \vee r \vee \neg r) \wedge
+$(p \vee \neg p \vee r \vee \neg r) \wedge (\neg q \vee \neg p \vee r \vee \neg r) \wedge
      (\neg q \vee \neg p \vee q \vee r) \wedge (p \vee \neg p \vee q \vee r).
 $
 \\[0.2cm]
-Zwar können wir jetzt sehen, dass die Formel $h$ eine Tautologie ist, aber angesichts der
-Tatsache, dass wir mit bloßem Auge sehen, dass  $p \rightarrow r$ aus den Formeln $p \rightarrow q$ und
-$q \rightarrow r$ folgt, ist die Rechnung  doch  sehr aufwendig.
+Although we can now see that the formula $h$ is a tautology, given the
+fact that we can see with the naked eye that $p \rightarrow r$ follows from the formulas $p \rightarrow q$ and
+$q \rightarrow r$, this calculation is far too inefficient.
 
-Wir stellen daher nun eine weiteres Verfahren vor, mit dessen Hilfe wir entscheiden
-können, ob eine Formel aus einer gegebenen Menge von Formeln folgt.  Die Idee bei diesem Verfahren
-ist es, die zu beweisende Formel mit Hilfe von \blue{Schluss-Regeln} aus vorgegebenen Formeln 
-\blue{herzuleiten}.  Das Konzept einer Schluss-Regel wird in der nun folgenden Definition
-festgelegt. 
-\begin{Definition}[Schluss-Regel]
-    Eine aussagenlogische \blue{Schluss-Regel} ist eine Paar der Form  $\bigl\langle \langle f_1, f_2 \rangle, k \bigr\rangle$.
-    Dabei ist  $\langle f_1, f_2 \rangle$ ein Paar von aussagenlogischen Formeln und $k$ ist eine
-    einzelne aussagenlogische Formel.  
-    Die beiden Formeln $f_1$ und $f_2$ bezeichnen wir als
-    \blue{Prämissen}, die Formel $k$ heißt die \blue{Konklusion} der Schluss-Regel.
-    Ist das Paar $\bigl\langle \langle f_1, f_2 \rangle, k \bigr\rangle$ eine Schluss-Regel, so
-    schreiben wir dies als: 
+Therefore, we now present another method that can help us decide
+whether a formula follows from a given set of formulas. The idea of this method
+is to \textcolor{blue}{derive} the formula to be proved using \textcolor{blue}{inference rules} from the
+given formulas. The concept of an inference rule is based on the following definition. 
+\begin{Definition}[Inference Rule] \hspace*{\fill} \linebreak
+    A propositional \textcolor{blue}{inference rule} is a pair of the form  $\bigl\langle \langle f_1, f_2 \rangle, k \bigr\rangle$.
+    Here, $\langle f_1, f_2 \rangle$ is a pair of propositional formulas, and $k$ is a
+    single propositional formula.  
+    The formulas $f_1$ and $f_2$ are referred to as
+    \textcolor{blue}{premises}, and the formula $k$ is called the \textcolor{blue}{conclusion} of the inference rule.
+    If the pair $\bigl\langle \langle f_1, f_2 \rangle, k \bigr\rangle$ is an inference rule, then this is written as: 
     \\[0.3cm]
     \hspace*{1.3cm}      
     $\schluss{f_1 \qquad f_2}{k}$.
     \\[0.3cm]
-    Wir lesen diese Schluss-Regel wie folgt: 
-    ``\textsl{Aus $f_1$ und $f_2$ kann auf\, $k$ geschlossen werden.}''
+    We read this inference rule as: 
+    ``\textsl{From $f_1$ and $f_2$ we  conclude $k$.}''
     \eox
 \end{Definition}
-\vspace*{0.3cm}
 
 \noindent
-\textbf{Beispiele} für Schluss-Regeln: 
+\textbf{Examples} of inference rules:
 \\[0.2cm]
 \hspace*{1.3cm}            
 \begin{tabular}[t]{|c|c|c|}
 \hline
-\rule{0pt}{15pt} \href{https://en.wikipedia.org/wiki/Modus_ponens}{Modus Ponens} & \href{https://en.wikipedia.org/wiki/Modus_tollens}{Modus Tollens} & \blue{Unfug} \\[0.3cm]
+\rule{0pt}{15pt} \href{https://en.wikipedia.org/wiki/Modus_ponens}{Modus Ponens} & \href{https://en.wikipedia.org/wiki/Modus_tollens}{Modus Tollens} & \textcolor{blue}{Nonsense} \\[0.3cm]
 \hline
 $
 \rule[-15pt]{0pt}{40pt}\schluss{f \quad\quad f \rightarrow g}{g}$ &
@@ -1607,59 +1601,61 @@ $\schluss{\neg f \quad\quad f \rightarrow g}{\neg g}$ \\[0.3cm]
 \\[0.3cm]
 
 \noindent
-Die Definition der Schluss-Regel schränkt zunächst die Formeln, die als Prämissen
-bzw.~Konklusion verwendet werden können, nicht weiter ein.  Es ist aber sicher nicht
-sinnvoll, beliebige Schluss-Regeln zuzulassen.  Wollen wir Schluss-Regeln in Beweisen
-verwenden, so sollten die Schluss-Regeln in dem in der folgenden Definition erklärten
-Sinne \blue{korrekt} sein.
+Initially, the definition of the notion of an inference rule does not limit the formulas that can be used as premises
+or conclusion. However, it is certainly not useful to allow arbitrary inference rules. If we want to use
+inference rules in proofs, they should be \textcolor{blue}{correct} in the sense explained in the following definition.
 
-\begin{Definition}[Korrekte Schluss-Regel]
-  Eine Schluss-Regel der Form \\[0.2cm]
+\begin{Definition}[Correct Inference Rule]
+  An inference rule of the form \\[0.2cm]
   \hspace*{1.3cm} $\schluss{f_1 \qquad f_2}{k}$ \\[0.2cm]
-  ist genau dann \blue{korrekt}, wenn 
-  $\models f_1 \wedge f_2 \rightarrow k$ gilt. \eox
-\end{Definition}
-Mit dieser Definition sehen wir, dass 
-die oben als ``\blue{Modus Ponens}'' und ``\blue{Modus  Tollens}'' bezeichneten
-Schluss-Regeln korrekt sind, während die als  ``\blue{Unfug}'' bezeichnete
-Schluss-Regel nicht korrekt ist.
+  is \textcolor{blue}{correct} if and only if 
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\models f_1 \wedge f_2 \rightarrow k$. \eox
+  \\[0.2cm]
 
-Im Folgenden gehen wir davon aus, dass alle Formeln Klauseln sind.  Einerseits ist dies
-keine echte Einschränkung, denn wir können ja jede Formel in eine äquivalente Menge von
-Klauseln umformen.  Andererseits haben die Formeln bei vielen in der Praxis auftretenden aussagenlogischen
-Problemen ohnehin die Gestalt von Klauseln.  Daher stellen wir jetzt eine Schluss-Regel vor, in der
-sowohl die Prämissen als auch die Konklusion Klauseln sind.
+
+\end{Definition}
+With this definition, we see that
+the rules of inference referred to above as ``\textcolor{blue}{Modus Ponens}'' and ``\textcolor{blue}{Modus Tollens}''
+are correct, while the one called ``\textcolor{blue}{Nonsense}''
+is not correct.
+
+From now on, we assume that all formulas are clauses. On one hand, this is
+not a real restriction, as we can transform any formula into an equivalent set of
+clauses. On the other hand, the formulas in many practical propositional
+logic problems are already in the form of clauses. Therefore, we now present an inference rule where
+both the premises and the conclusion are clauses.
      
-\begin{Definition}[Schnitt-Regel]\index{Schnitt-Regel}
-    Ist $p$ eine aussagenlogische Variable und sind $k_1$ und $k_2$ Mengen von Literalen,
-    die wir als Klauseln interpretieren, so bezeichnen wir die folgende Schluss-Regel
-    als die \blue{Schnitt-Regel}: 
+\begin{Definition}[Cut Rule]\index{Cut Rule}
+    If $p$ is a propositional variable and $k_1$ and $k_2$ are sets of literals,
+    which we interpret as clauses, then we refer to the following inference rule
+    as the \textcolor{blue}{cut rule}: 
     \\[0.2cm]
     \hspace*{1.3cm}
     $\ds \schluss{ k_1 \cup \{p\} \quad \{\neg p\} \cup k_2 }{k_1 \cup k_2}$. 
     \eox
 \end{Definition}
 
-\noindent
-Die Schnitt-Regel ist sehr allgemein.  Setzen wir in der obigen Definition für $k_1 = \{\}$ und  $k_2 = \{q\}$ 
-ein, so erhalten wir die folgende Regel als Spezialfall: \\[0.2cm]
+The cut rule is very general. If we set $k_1 = \{\}$ and $k_2 = \{q\}$ in the definition above,
+we obtain the following rule as a special case: \\[0.2cm]
 \hspace*{1.3cm} $\schluss{\{\} \cup \{p\} \quad\quad \{\neg p\} \cup \{ q \} }{ \{\} \cup \{q\} }$ \\[0.2cm]
-Interpretieren wir nun die Mengen von Literalen als Disjunktionen, so haben wir: \\[0.2cm]
+Interpreting the sets of literals as disjunctions, we have: \\[0.2cm]
 \hspace*{1.3cm}  $\schluss{p \quad\quad \neg p \vee q }{ q }$ \\[0.2cm]
-Wenn wir jetzt noch berücksichtigen, dass die Formel $\neg p \vee q$ äquivalent zu der
-Formel $p \rightarrow q$ ist, dann ist das nichts anderes als \blue{Modus Ponens}.  
-Die Regel \blue{Modus Tollens} ist ebenfalls ein Spezialfall der Schnitt-Regel.  Wir
-erhalten diese Regel, wenn wir in der Schnitt-Regel $k_1 = \{ \neg q \}$ und $k_2 = \{\}$ setzen.
+Taking into account that the formula $\neg p \vee q$ is equivalent to the
+formula $p \rightarrow q$, this instance of the cut rule is none other than \textcolor{blue}{Modus Ponens}.
+The rule \textcolor{blue}{Modus Tollens} is also a special case of the cut rule. We
+obtain this rule if we set $k_1 = \{ \neg q \}$ and $k_2 = \{\}$ in the cut rule.
 
-\begin{Satz}
-  Die Schnitt-Regel ist korrekt.
-\end{Satz}
-\textbf{Beweis}:  Wir müssen zeigen, dass
+\begin{Theorem}
+  The cut rule is correct.
+\end{Theorem}
+\textbf{Proof}: We need to show that
 \\[0.2cm]
 \hspace*{1.3cm}
 $\models (k_1 \vee p) \wedge (\neg p \vee k_2) \rightarrow k_1 \vee k_2$
 \\[0.2cm]
-gilt.  Dazu überführen wir die obige Formel in konjunktive Normalform:
+holds. To do this, we convert the above formula into conjunctive normal form:
 $$
 \begin{array}{ll}
   & (k_1 \vee p) \wedge (\neg p \vee k_2) \rightarrow k_1 \vee k_2  \\[0.2cm]
@@ -1688,340 +1684,358 @@ $$
 $$
 
 
-
-\begin{Definition}[Herleitungs-Begriff, $\vdash$]
-    Es sei $M$ eine Menge von Klauseln  und $f$ sei eine einzelne Klausel.  
-    Die Formeln aus $M$ bezeichnen wir als unsere \blue{Axiome}.  Unser Ziel ist es, mit den Axiomen aus $M$
-    die Formel $f$ \blue{herzuleiten}.  Dazu definieren wir induktiv die Relation \\[0.2cm]
+\begin{Definition}[Derivation, $\vdash$] \hspace*{\fill} \linebreak
+    Let $M$ be a set of clauses and $f$ a single clause.  
+    The formulas from $M$ are referred to as our \textcolor{blue}{axioms}. Our goal is to \textcolor{blue}{derive} the formula $f$ using the axioms from $M$.
+    For this, we define the relation \\[0.2cm]
     \hspace*{1.3cm}
     $\blue{M \vdash f}$. \\[0.2cm]
-    Wir lesen ``$M \vdash f$'' als ``$M$ \blue{leitet} $f$ \blue{her}''.  Die induktive Definition ist
-    wie folgt:
+    We read ``$M \vdash f$'' as ``$M$ \textcolor{blue}{derives} $f$''. The inductive definition is as follows:
     \begin{enumerate}
-    \item Aus einer Menge $M$ von Annahmen kann jede der Annahmen hergeleitet werden: \\[0.2cm]
-          \hspace*{1.3cm} 
-          Falls $f \el M$ ist, dann gilt  $M \vdash f$.
-    \item Sind $k_1 \cup \{p\}$ und $\{ \neg p \} \cup k_2$ Klauseln, die aus $M$
-          hergeleitet werden können, so kann mit der Schnitt-Regel auch die Klausel $k_1 \cup k_2$ aus $M$
-          hergeleitet werden: \\[0.2cm]
-          \hspace*{1.3cm} 
-          Falls sowohl $M \vdash k_1 \cup \{p\}$ als auch $M \vdash \{ \neg p \} \cup k_2$
-          gilt, dann gilt auch $M \vdash k_1 \cup k_2$.
+    \item From a set $M$ of assumptions, any of the assumptions can be derived: \\[0.2cm]
+          \hspace*{0.3cm} 
+          If \quad $f \in M$, \quad then \quad $M \vdash f$.
+    \item If $k_1 \cup \{p\}$ and $\{ \neg p \} \cup k_2$ are clauses that can be derived from $M$,
+          then using the cut rule, the clause $k_1 \cup k_2$ can also be derived from $M$: \\[0.2cm]
+          \hspace*{0.3cm} 
+          If both \quad $M \vdash k_1 \cup \{p\}$ \quad and \quad $M \vdash \{ \neg p \} \cup k_2$ \quad
+          hold, then \quad $M \vdash k_1 \cup k_2$ \quad holds, too.
     \eox
     \end{enumerate}
 \end{Definition}
 
-
-
 \noindent
-\textbf{Beispiel}:  Um den Beweis-Begriff zu veranschaulichen geben wir ein Beispiel und
-zeigen 
-\[ \bigl\{\; \{\neg p, q\},\; \{ \neg q, \neg p \},\; \{ \neg q, p \},\; \{ q, p \}\; \bigr\} \vdash \falsum.
+\textbf{Example}: To illustrate the concept of a derivation, we provide an example and
+show
+\[ \bigl\{\; \{\neg p, q\},\; \{ \neg q, \neg p \},\; \{ \neg q, p \},\; \{ q, p \}\; \bigr\} \vdash \bot.
 \]
-Gleichzeitig zeigen wir anhand des Beispiels, wie wir Beweise zu Papier bringen:
+At the same time, we demonstrate through this example how proofs are presented on paper:
 \begin{enumerate}
-\item Aus $\{\neg p, q \}$ und $\{ \neg q, \neg p \}$ folgt mit der Schnitt-Regel   
-      $\{ \neg p, \neg p \}$.   Wegen $\{ \neg p, \neg p \} = \{ \neg p \}$
-      schreiben wir dies als 
+\item From $\{\neg p, q \}$ and $\{ \neg q, \neg p \}$ it follows by the cut rule that   
+      $\{ \neg p, \neg p \}$ holds. Since $\{ \neg p, \neg p \} = \{ \neg p \}$,
+      we write this as 
       \[ \{\neg p, q \}, \{ \neg q, \neg p \} \;\vdash\; \{ \neg p \}. \]
-      \remark
-      Dieses Beispiel zeigt, dass die Klausel $k_1 \cup k_2$ durchaus auch weniger
-      Elemente enthalten kann als die Summe $\mathtt{card}(k_1) + \mathtt{card}(k_2)$.  Dieser
-      Fall tritt genau dann ein, wenn es Literale gibt, die sowohl in $k_1$ als auch in
-      $k_2$ vorkommen.
+      \remarkEng
+      This example shows that the clause $k_1 \cup k_2$ might contain fewer
+      elements than the sum $\mathtt{card}(k_1) + \mathtt{card}(k_2)$. This
+      situation occurs when there are literals that appear in both $k_1$ and $k_2$.
 \item $\{\neg q, \neg p \},\; \{ p, \neg q \} \;\vdash\; \{ \neg q \}$. 
 \item $\{ p, q \},\; \{ \neg q \} \;\vdash\; \{ p \}$. 
 \item $\{ \neg p \},\; \{ p \} \;\vdash\; \{\}$. 
 \end{enumerate}
-Als weiteres Beipiel zeigen wir nun, dass $p \rightarrow r$ aus $p \rightarrow q$ und $q \rightarrow r$ 
-folgt.  Dazu überführen wir zunächst alle Formeln in Klauseln: 
+
+As another example, we  demonstrate that $p \rightarrow r$ follows from $p \rightarrow q$ and $q \rightarrow r$.
+First, we convert all formulas into clauses:
 \[ \texttt{cnf}(p \rightarrow q) = \bigl\{ \{ \neg p, q \} \bigr\}, \quad
    \texttt{cnf}(q \rightarrow r) = \bigl\{ \{ \neg q, r \} \bigr\}, \quad 
    \texttt{cnf}(p \rightarrow r) = \bigl\{ \{ \neg p, r \} \bigr\}.
 \]
-Wir haben also $M = \bigl\{\, \{ \neg p, q \},\; \{ \neg q, r \}\,\bigr\}$ und müssen zeigen, dass
+Thus, we have $M = \bigl\{\, \{ \neg p, q \},\; \{ \neg q, r \}\,\bigr\}$ and must show that
 \[ M \vdash  \{ \neg p, r \} \]
-gilt.  Der Beweis besteht aus einer einzigen Anwendung der Schnitt-Regel: 
+holds. The proof consists of a single application of the Cut Rule:
 \\[0.2cm]
 \hspace*{1.3cm}
 $ \{ \neg p, q \},\; \{ \neg q, r \} \;\vdash\; \{ \neg p, r \}$.  \eox
 
-\subsection{Eigenschaften des Herleitungs-Begriffs}
-Die Relation $\vdash$ hat zwei wichtige Eigenschaften:
+\subsection{Properties of the Concept of a Formal Derivation}
+The relation $\vdash$ has two important properties:
 
-\begin{Satz}[\blue{Korrektheit}]
-  Ist $\{k_1, \cdots, k_n \}$ eine Menge von Klauseln und $k$ eine einzelne Klausel,
-  so haben wir:
+\begin{Theorem}[\textcolor{blue}{Correctness}]
+  If $\{k_1, \cdots, k_n \}$ is a set of clauses and $k$ is a single clause,
+  then:
   \\[0.2cm]
-  \hspace*{3.3cm} Wenn $\{k_1, \cdots, k_n \} \vdash k$ gilt, dann gilt auch $\models k_1 \wedge \cdots \wedge
-  k_n \rightarrow k$.
+  \hspace*{3.3cm} If $\{k_1, \cdots, k_n \} \vdash k$ holds, then $\models k_1 \wedge \cdots \wedge
+  k_n \rightarrow k$ also holds.
   \\[0.2cm]
-  Mit anderen Worten: Wenn wir eine Klausel $k$ mit Hilfe der Annahmen $k_1$, $\cdots$, $k_n$ beweisen können,
-  dann folgt die Klausel $k$ logisch aus diesen Annahmen.
-\end{Satz}
+  In other words: If we can prove a clause $k$ using the assumptions $k_1$, $\cdots$, $k_n$,
+  then the clause $k$ logically follows from these assumptions.
+\end{Theorem}
 
 \noindent
-\textbf{Beweis}:  Der Beweis des Korrektheits-Satzes verläuft durch eine Induktion nach der Definition der Relation $\vdash$. 
+\textbf{Proof}: The proof of the correctness theorem proceeds by induction on the definition of the relation $\vdash$.
 \begin{enumerate}
-\item Fall: Es gilt $\{ k_1, \cdots, k_n \} \vdash k$, weil $k \in \{ k_1, \cdots, k_n \}$ ist.  
-      Dann gibt es also ein $i \in \{1,\cdots,n\}$, so dass $k = k_i$ ist.  In diesem Fall
-      müssen wir
+\item Case: It holds that $\{ k_1, \cdots, k_n \} \vdash k$ because $k \in \{ k_1, \cdots, k_n \}$.  
+      Then there exists an $i \in \{1,\cdots,n\}$ such that $k = k_i$.  In this case,
+      we need to show
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\ds\models k_1 \wedge \cdots \wedge k_i \wedge \cdots \wedge k_n \rightarrow k_i$
+      $\models k_1 \wedge \cdots \wedge k_i \wedge \cdots \wedge k_n \rightarrow k_i$
       \\[0.2cm]
-      zeigen, was offensichtlich ist.
-\item Fall: Es gilt $\{ k_1, \cdots, k_n \} \vdash k$, weil es eine aussagenlogische
-      Variable $p$ und Klauseln $g$ und $h$ gibt, so dass 
+      which is obvious.
+\item Case: It holds that $\{ k_1, \cdots, k_n \} \vdash k$ because there is a propositional
+      variable $p$ and clauses $g$ and $h$ such that 
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\{ k_1, \cdots, k_n \} \vdash g \cup \{ p \} \quad \mathrm{und} \quad
+      $\{ k_1, \cdots, k_n \} \vdash g \cup \{ p \} \quad \mathrm{and} \quad
          \{ k_1, \cdots, k_n \} \vdash h \cup \{ \neg p \}
       $
       \\[0.2cm]
-      gilt und daraus haben wir mit der Schnitt-Regel auf
+      hold and from this we have concluded using the cut rule that
       \\[0.2cm]
       \hspace*{1.3cm}
       $\{ k_1, \cdots, k_n \} \vdash g \cup h$
       \\[0.2cm]
-      geschlossen, wobei $k = g \cup h$ gilt.  Wir müssen nun zeigen, dass 
+      where $k = g \cup h$.  We have to show that 
       \\[0.2cm]
       \hspace*{1.3cm}
       $\models k_1 \wedge \cdots \wedge k_n \rightarrow g \vee h$
       \\[0.2cm]
-      gilt.  Es sei also $\mathcal{I}$ eine aussagenlogische Interpretation, so dass
+      holds.  Let $\mathcal{I}$ be a propositional interpretation such that
       \\[0.2cm]
       \hspace*{1.3cm}
       $\mathcal{I}(k_1 \wedge \cdots \wedge k_n) = \texttt{True}$  
       \\[0.2cm]
-      ist. Dann müssen wir zeigen, dass 
+      Then we need to show that we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathcal{I}(g) = \texttt{True}$ \quad oder \quad $\mathcal{I}(h) = \texttt{True}$
+      $\mathcal{I}(g) = \texttt{True}$ \quad or \quad $\mathcal{I}(h) = \texttt{True}$.
       \\[0.2cm]
-      ist.  Nach Induktions-Voraussetzung wissen wir
+      By the induction hypothesis, we know
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\models k_1 \wedge \cdots \wedge k_n \rightarrow g \vee p \quad \mathrm{und} \quad 
+      $\models k_1 \wedge \cdots \wedge k_n \rightarrow g \vee p \quad \mathrm{and} \quad 
          \models k_1 \wedge \cdots \wedge k_n \rightarrow h \vee \neg p
       $.
       \\[0.2cm]
-      Wegen $\mathcal{I}(k_1 \wedge \cdots \wedge k_n) = \texttt{True}$ folgt dann
+      Since $\mathcal{I}(k_1 \wedge \cdots \wedge k_n) = \texttt{True}$, it follows that
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathcal{I}(g \vee p) = \texttt{True}$ \quad und \quad $\mathcal{I}(h \vee \neg p) = \texttt{True}$.
+      $\mathcal{I}(g \vee p) = \texttt{True}$ \quad and \quad $\mathcal{I}(h \vee \neg p) = \texttt{True}$.
       \\[0.2cm]
-      Nun gibt es zwei Fälle:
+      Now there are two cases:
       \begin{enumerate}
-      \item Fall: $\mathcal{I}(p) = \texttt{True}$.
+      \item Case: $\mathcal{I}(p) = \texttt{True}$.
 
-            Dann ist $\mathcal{I}(\neg p) = \texttt{False}$ und daher folgt aus der Tatsache, dass 
-            $\mathcal{I}(h \vee \neg p) = \texttt{True}$ ist, dass
+            Then $\mathcal{I}(\neg p) = \texttt{False}$ and hence from the fact that 
+            $\mathcal{I}(h \vee \neg p) = \texttt{True}$, we must have
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(h) = \texttt{True}$
+            $\mathcal{I}(h) = \texttt{True}$.
             \\[0.2cm]
-            sein muss.  Daraus folgt aber sofort
+            This immediately implies
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(g \vee h) = \texttt{True}$.  $\green{\surd}$
-      \item Fall: $\mathcal{I}(p) = \texttt{False}$.
+            $\mathcal{I}(g \vee h) = \texttt{True}$.  $\color{green}{\surd}$
+      \item Case: $\mathcal{I}(p) = \texttt{False}$.
 
-            Nun folgt aus $\mathcal{I}(g \vee p) = \texttt{True}$, dass
+            Since $\mathcal{I}(g \vee p) = \texttt{True}$ we must have
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(g) = \texttt{True}$
+            $\mathcal{I}(g) = \texttt{True}$.
             \\[0.2cm]
-            gelten muss.  Also gilt auch in diesem Fall
+            Thus, we also have
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(g \vee h) = \texttt{True}$.  $\green{\surd}$ 
+            $\mathcal{I}(g \vee h) = \texttt{True}$.  $\color{green}{\surd}$ 
             \qed
       \end{enumerate}
 \end{enumerate}
 
 \noindent
-Die Umkehrung dieses Satzes gilt nur in abgeschwächter Form und zwar dann, wenn $k$
-die leere Klausel ist, die ja dem Falsum entspricht.  Wir sagen daher, dass die Schnitt-Regel
-\blue{widerlegungs-vollständig} ist.
+The converse of this theorem only holds in a weakened form, specifically when $k$
+is the empty clause, which corresponds to Falsum. Therefore, we say that the cut rule
+is \textcolor{blue}{refutation-complete}.
 
-\remark
-Es gibt alternative Definitionen des Herleitungs-Begriffs, die nicht nur \blue{widerlegungs-vollständig} sondern
-tatsächlich \blue{vollständig} sind, d.h.~immer wenn $\models f_1 \wedge \cdots \wedge f_n \rightarrow g$ gilt,
-dann folgt auch
-\\[0.2cm]
-\hspace*{1.3cm}
-$\{ f_1, \cdots, f_n \} \vdash g$.
-\\[0.2cm]  
-Diese Herleitungs-Begriffe sind allerdings wesentlich komplexer und daher umständlicher zu implementieren.  Wir
-werden später sehen, dass die Widerlegungs-Vollständigkeit für unsere Zwecke ausreichend ist.
-\eox
+\subsection{Proof of Refutation Completeness}
+To succinctly state the theorem of refutation completeness in propositional logic, we need
+the concept of \textcolor{blue}{satisfiability}, which we introduce next.
 
-\subsection{Beweis der Widerlegungs-Vollständigkeit}
-Um den Satz von der Widerlegungs-Vollständigkeit der Aussagenlogik kompakt formulieren zu können, benötigen wir
-den Begriff der \blue{Erfüllbarkeit}, den wir jetzt formal einführen. 
-
-\begin{Definition}[Erfüllbarkeit] \index{erfüllbar}
-  Es sei $M$ eine Menge von aussagenlogischen Formeln.
-  Falls es eine aussagen\-logische Interpretation $\I$ gibt, die alle Formeln aus $M$ erfüllt, für die also
+\begin{Definition}[Satisfiability] \index{satisfiable} \hspace*{\fill} \linebreak
+  Let $M$ be a set of propositional formulas.
+  If there exists a propositional interpretation $\mathcal{I}$ that satisfies all formulas from $M$, i.e.~we have
   \\[0.2cm]
   \hspace*{1.3cm}
-  $\mathcal{I}(f) = \texttt{True}$ \quad für alle $f \in M$
+  $\mathcal{I}(f) = \texttt{True}$ \quad for all $f \in M$,
   \\[0.2cm]
-  gilt, so nennen wir $M$ \blue{erfüllbar}.  Weiter sagen wir, dass $M$ \blue{unerfüllbar}\index{unerfüllbar}
-  ist und schreiben 
-  \\[0.2cm]
-  \hspace*{1.3cm}
-  $\blue{M \models \falsum}$, \index{$M \models \falsum$}
-  \\[0.2cm]
-  wenn es keine aussagenlogische Interpretation $\I$ gibt, die gleichzeitig alle Formel aus $M$ erfüllt.
-  Be\-zeichnen wir die Menge der aussagenlogischen Interpretationen mit
-  \textsc{\blue{Ali}}, so schreibt sich das formal als
+  then we call $M$ \textcolor{blue}{satisfiable}.
+  Furthermore, we say that $M$ is \textcolor{blue}{unsatisfiable}\index{unsatisfiable}
+  and write 
   \\[0.2cm]
   \hspace*{1.3cm}
-  $\blue{M \models \falsum}$ \quad g.d.w. \quad 
-  $\forall \I \in \textsc{Ali}: \exists C \in M: \I(C) = \texttt{False}$.
+  $\textcolor{blue}{M \models \falsum}$, \index{$M \models \falsum$}
   \\[0.2cm]
-  Falls eine Menge $M$ von aussagenlogischen Formeln erfüllbar ist, schreiben wir auch
+  if there is no propositional interpretation $\mathcal{I}$ that simultaneously satisfies all formulas from $M$.
+  Denoting the set of propositional interpretations as
+  \textsc{\textcolor{blue}{Ali}}, we formally write
   \\[0.2cm]
   \hspace*{1.3cm}
-  $\blue{M \not\models \falsum}$.
+  $\textcolor{blue}{M \models \falsum}$ \quad iff \quad 
+  $\forall \mathcal{I} \in \textsc{Ali}: \exists C \in M: \mathcal{I}(C) = \texttt{False}$.
+  \\[0.2cm]
+  If a set $M$ of propositional formulas is satisfiable, we also write
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\textcolor{blue}{M \not\models \falsum}$.
   \eox
 \end{Definition}
 
-\remark 
-Ist $M = \{ f_1, \cdots, f_n \}$ eine Menge von aussagenlogischen Formeln, so können Sie sich leicht überlegen, dass
-$M$ genau dann unerfüllbar ist, wenn
+\remarkEng 
+If $M = \{ f_1, \cdots, f_n \}$ is a set of propositional formulas, it is straightforward to show that
+$M$ is unsatisfiable if and only if
 \\[0.2cm]
 \hspace*{1.3cm}
 $\models f_1 \wedge \cdots \wedge f_n \rightarrow \falsum$
 \\[0.2cm]
-gilt. \eox
+holds. \eox
 
-\begin{Definition}[Saturierte Klausel-Mengen] \hspace*{\fill} \linebreak
-  Eine Menge $M$ von Klauseln ist \blue{saturiert} \index{saturiert} wenn jede Klausel, die sich aus zwei
-  Klauseln $C_1,C_2 \in M$ mit Hilfe der Schnitt-Regel ableiten lässt, bereits selbst wieder ein Element der
-  Menge $M$ ist.
+\begin{Definition}[Saturated Sets of Clauses] \hspace*{\fill} \linebreak
+  A set $M$ of clauses is \textcolor{blue}{saturated} \index{saturated} if every clause that can be derived from two
+  clauses $C_1, C_2 \in M$ using the cut rule is already itself an element of
+  the set $M$, i.e.~if
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $C_1 \in M$, \quad $C_2 \in M$, \quad and \quad $C_1,\; C_2 \vdash C$,
+  \\[0.2cm]
+  then we must also have 
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $C \in M$.
+\end{Definition}
+ 
+\remarkEng
+If $M$ is a finite set of clauses, we can extend $M$ to a saturated set of clauses
+$\overline{M}$ by initializing $\overline{M}$ as the set $M$ and then continually applying the
+cut rule to clauses from $\overline{M}$ and adding them to the set $\overline{M}$ as long as this is possible.
+Since there is only a limited number of clauses that can be formed from a given finite set of propositional variables,
+this process must terminate, and the set of formulas we then obtain is saturated. \eox
+
+\subsection{Proof of Refutational Completeness}
+To succinctly state the theorem of refutational completeness in propositional logic, we need the concept of
+\textcolor{blue}{satisfiability}, which we introduce formally. 
+
+\begin{Definition}[Satisfiability] \index{satisfiable}
+  Let $M$ be a set of propositional formulas.
+  If there exists a propositional interpretation $\mathcal{I}$ that satisfies all formulas from $M$, for which
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\mathcal{I}(f) = \texttt{True}$ \quad for all $f \in M$
+  \\[0.2cm]
+  holds, then we call $M$ \textcolor{blue}{satisfiable}. Furthermore, we say that $M$ is \textcolor{blue}{unsatisfiable}\index{unsatisfiable}
+  and write 
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\textcolor{blue}{M \models \falsum}$, \index{$M \models \falsum$}
+  \\[0.2cm]
+  if there is no propositional interpretation $\mathcal{I}$ that simultaneously satisfies all formulas from $M$.
+  Denoting the set of propositional interpretations as
+  \textsc{\textcolor{blue}{Ali}}, we formally write
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\textcolor{blue}{M \models \falsum}$ \quad iff \quad 
+  $\forall \mathcal{I} \in \textsc{Ali}: \exists C \in M: \mathcal{I}(C) = \texttt{False}$.
+  \\[0.2cm]
+  If a set $M$ of propositional formulas is satisfiable, we also write
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\textcolor{blue}{M \not\models \falsum}$.
+  \eox
 \end{Definition}
 
-\remark
-Ist $M$ eine endlichen Menge von Klauseln, so können wir $M$ zu einer saturierten Menge von Klauseln
-$\overline{M}$ erweitern, indem wir $\overline{M}$ als die Menge $M$ initialisieren und dann solange die
-Schnitt-Regel auf Klauseln aus $\overline{M}$ anwenden und zu der Menge $\overline{M}$ hinzufügen, wie dies möglich
-ist. Da es zu einer gegebenen endlichen Menge von aussagenlogischen Variablen nur eine beschränkte Menge von
-Klauseln gibt, die wir aus diesen Variablen bilden können, muss dieses Verfahren abbrechen und die Menge der
-Formeln, die wir dann erhalten, ist saturiert. \eox
-
-\begin{Satz}[\blue{Widerlegungs-Vollständigkeit}] \label{widerlegungs-vollstaendig}
-  Ist  $M$ eine Menge von Klauseln,
-  so haben wir:
+\begin{Satz}[\textcolor{blue}{Refutation Completeness}] \label{widerlegungs-vollstaendig} \hspace*{\fill} \linebreak
+  Assume $M$ is a set of clauses that is unsatisfiable.  Then $M$ derives the empty clause:
   \\[0.2cm]
   \hspace*{1.3cm} 
-  Wenn $M \models \falsum$ ist, dann gilt auch  $M \vdash \{\}$.
+  If $M \models \falsum$, then $M \vdash \{\}$.
 \end{Satz}
 
 \noindent
-\textbf{Beweis}:  Wir führen den Beweis durch
-Kontraposition.  Wir nehmen an, dass $M$ eine endliche Menge von Klauseln ist,
+\textbf{Proof}: We prove this by contraposition. Assume that $M$ is a finite set of clauses such that
 \begin{enumerate}[(a)]
-\item die einerseits zwar unerfüllbar ist, es gilt also
+\item $M$ is unsatisfiable, thus
       \\[0.2cm]
       \hspace*{1.3cm}
       $M \models \falsum$,
-\item aus der sich aber andererseits die leere Klausel nicht herleiten lässt, was wir als 
+\item but such that the empty clause cannot be derived from $M$, i.e.~we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      $M \not\,\vdash \{\}$
-      \\[0.2cm]
-      shreiben.
+      $M \not\,\vdash \{\}$.
 \end{enumerate}
-Wir werden zeigen, dass es dann eine aussagenlogische Belegung $\mathcal{I}$ gibt, unter der alle Klauseln aus
-$M$ wahr werden, was der Unerfüllbarkeit von $M$ widerspricht.
+We will show that then there has to exist a propositional interpretation $\mathcal{I}$ under which all clauses
+from $M$ become true, which contradicts the unsatisfiability of $M$. 
 
-Nach der obigen Bemerkung können wir die Menge $M$ saturieren und erhalten dann die satu\-rierte Menge
-$\overline{M}$.  Es sei  
+Following the previous remark, we saturate the set $M$ to obtain the saturated set $\overline{M}$. Let
 \\[0.2cm]
 \hspace*{1.3cm}
 $\{ p_1, \cdots, p_N \}$
 \\[0.2cm]
-die Menge aller aussagenlogischen Variablen, die in Klauseln aus $M$ auftreten.  Im folgenden be\-zeichnen wir
-die Menge der aussagenlogischen Variablen, die in einer Klausel $C$ auftreten, mit $\mathtt{var}(C)$.
-Für alle $k=0,1,\cdots,N$
-definieren wir nun eine aussagenlogische Belegung $\mathcal{I}_k$ durch Induktion nach $k$.  Die
-aussagenlogischen Belegungen haben für alle $k=0,1,\cdots,N$ die Eigenschaft, dass für jede Klausel $C \in \overline{M}$,
-die nur die Variablen $p_1,\cdots,p_k$ enthält,
-$\mathcal{I}_k(C) = \mathtt{True}$ gilt.  Als Formel schreibt sich dies wie folgt:
+be the set of all propositional variables appearing in clauses from $M$. We denote the set of propositional variables appearing in a clause $C$ by $\mathtt{var}(C)$.
+For all $k=0,1,\cdots,N$
+we now define a propositional interpretation $\mathcal{I}_k$ by induction on $k$.  For all $k=0,1,\cdots,N$ the
+propositional interpretations $\mathcal{I}_k$ has the property that for each clause $C \in \overline{M}$,
+which contains only the variables $p_1,\cdots,p_k$, we have that
+$\mathcal{I}_k(C) = \mathtt{True}$ holds. This is formally written as follows:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\forall C \in \overline{M}:\Bigl(\mathtt{var}(C) \subseteq \{p_1, \cdots, p_k\} \Rightarrow \mathcal{I}_k(C) = \mathtt{True}\Bigl)$.
+$\forall C \in \overline{M}:\Bigl(\mathtt{var}(C) \subseteq \{p_1, \cdots, p_k\} \Rightarrow \mathcal{I}_k(C) =
+\mathtt{True}\Bigl)$. \hspace*{\fill} $(*)$
 \\[0.2cm]
-Außerdem definiert die aussagenlogische Belegung $\mathcal{I}_k$ nur Werte für die Variablen
-$p_1,\cdots,p_k$, es gilt also
+Additionally, the propositional interpretation $\mathcal{I}_k$ only defines values for the variables
+$p_1,\cdots,p_k$, so
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathtt{dom}(\mathcal{I}_k) = \{p_1, \cdots, p_k\}$.
 \begin{enumerate}
 \item[I.A.:] $k=0$.
  
-  Wir definieren $\mathcal{I}_0$ als die leere aussagenlogische Belegung, die keiner
-  Variablen einen Wert zuweist.  Um $(*)$ nachzuweisen müssen wir zeigen, dass für jede Klausel $C \in \overline{M}$, die
-  keine aussagenlogische Variable enthält, $\mathcal{I}_0(C) = \mathtt{True}$ gilt.  Die einzige Klausel, die
-  keine Variable enthält, ist die leere Klausel.  Da wir vorausgesetzt haben, dass  $M \not\,\vdash \{\}$
-  gilt, kann $\overline{M}$ die leere Klausel nicht enthalten.  Also ist nichts zu zeigen.
+  We define $\mathcal{I}_0$ as the empty propositional interpretation, which assigns no
+  values to any variables. To prove $(*)$, we must show that for each clause $C \in \overline{M}$ that contains
+  no propositional variable, $\mathcal{I}_0(C) = \mathtt{True}$ holds. The only clause that contains
+  no variable is the empty clause. Since we assumed that $M \not\,\vdash \{\}$,
+  $\overline{M}$ cannot contain the empty clause. Thus, there is nothing to prove.
 \item[I.S.:] $k \mapsto k+1$.
 
-  Nach IV ist $\mathcal{I}_k$ bereits definiert.  Wir setzen zunächst
+  $\mathcal{I}_k$ is already defined by the induction hypothesis. We first set
   \\[0.2cm]
   \hspace*{1.3cm}
-  $\mathcal{I}_{k+1}(p_i) := \mathcal{I}_k(p_i)$ \quad für alle $i=1,\cdots,k$
+  $\mathcal{I}_{k+1}(p_i) := \mathcal{I}_k(p_i)$ \quad for all $i=1,\cdots,k$
   \\[0.2cm]
-  und müssen nun noch $\mathcal{I}_{k+1}(p_{k+1})$ definieren.  Dies geschieht über eine Fallunterscheidung.
+  and must now define $\mathcal{I}_{k+1}(p_{k+1})$. This is done by case analysis.
   \begin{enumerate}
-  \item Es gibt eine Klausel
+  \item There exists a clause
     \\[0.2cm]
     \hspace*{1.3cm}
     $C \cup \{p_{k+1}\} \in \overline{M}$,
     \\[0.2cm]
-    so dass $C$ höchstens die Variablen $p_1,\cdots,p_k$ enthält und außerdem $\mathcal{I}_k(C) = \mathtt{False}$
-    ist.  Dann setzen wir
+    such that $C$ contains at most the variables $p_1,\cdots,p_k$ and moreover $\mathcal{I}_k(C) = \mathtt{False}$.
+    In this case, we set
     \\[0.2cm]
     \hspace*{1.3cm}
     $\mathcal{I}_{k+1}(p_{k+1}) := \mathtt{True}$,
     \\[0.2cm]    
-    denn sonst würde ja insgesamt $\mathcal{I}_{k+1}\bigl(C \cup \{p_{k+1}\}\bigr) = \mathtt{False}$ gelten. 
+    since otherwise $\mathcal{I}_{k+1}\bigl(C \cup \{p_{k+1}\}\bigr) = \mathtt{False}$ would hold. 
 
-    Wir müssen nun zeigen, dass für jede Klausel $D \in \overline{M}$, die nur die Variablen
-    $p_1,\cdots,p_k,p_{k+1}$ die Aussage $\mathcal{I}_{k+1}(D) = \mathtt{True}$ gilt.  Hier gibt es drei
-    Möglichkeiten:
+    We must now show that for every clause $D \in \overline{M}$ that contains only the variables \linebreak
+    $p_1,\cdots,p_k,p_{k+1}$, the statement $\mathcal{I}_{k+1}(D) = \mathtt{True}$ holds. There are three
+    possibilities:
     \begin{enumerate}[1.]
-    \item Fall: $\mathtt{var}(D) \subseteq \{p_1,\cdots,p_k\}$
+    \item Case: $\mathtt{var}(D) \subseteq \{p_1,\cdots,p_k\}$
 
-          Dann gilt die Behauptung nach IV, denn auf diesen Variablen stimmen die Belegungen
-          $\mathcal{I}_{k+1}$ und $\mathcal{I}_k$ überein.
-    \item Fall: $p_{k+1} \in D$.
+          Then the claim holds by the induction hypothesis, since the interpretations
+          $\mathcal{I}_{k+1}$ and $\mathcal{I}_k$ agree on these variables.
+    \item Case: $p_{k+1} \in D$.
           
-          Da wir $\mathcal{I}_{k+1}(p_{k+1})$ als $\texttt{True}$ definiert haben, gilt $\mathcal{I}_{k+1}(D) = \mathtt{True}$.
-    \item Fall: $(\neg p_{k+1}) \in D$.
+          Since we defined $\mathcal{I}_{k+1}(p_{k+1})$ as $\texttt{True}$, $\mathcal{I}_{k+1}(D) = \mathtt{True}$ holds.
+    \item Case: $(\neg p_{k+1}) \in D$.
 
-          Dann hat $D$ also die Form
+          Then $D$ has the form
           \\[0.2cm]
           \hspace*{1.3cm}
           $D = E \cup \{ \neg p_{k+1} \}$.
           \\[0.2cm]
-          An dieser Stelle benötigen wir nun die Tatsache, dass $\overline{M}$ saturiert ist.  Wir wenden die
-          Schnitt-Regel auf die Klauseln $C \cup \{ p_{k+1} \}$ und $E \cup \{ \neg p_{k+1} \}$ an:
+          At this point, we need the fact that $\overline{M}$ is saturated. We apply the
+          cut rule to the clauses $C \cup \{ p_{k+1} \}$ and $E \cup \{ \neg p_{k+1} \}$:
           \\[0.2cm]
           \hspace*{1.3cm}
           $C \cup \{ p_{k+1} \},\quad E \cup \{ \neg p_{k+1} \} \quad\vdash\quad C \cup E$
           \\[0.2cm]
-          Da $\overline{M}$ saturiert ist, gilt $C\cup E \in \overline{M}$.  $C \cup E$ enthält nur die
-          Variablen $p_1,\cdots, p_k$.  Nach IV gilt also
+          Since $\overline{M}$ is saturated, $C\cup E \in \overline{M}$. $C \cup E$ contains only the
+          variables $p_1,\cdots, p_k$. Therefore by the induction hypothesis,
           \\[0.2cm]
           \hspace*{1.3cm}
           $\mathcal{I}_{k+1}(C \cup E) = \mathcal{I}_{k}(C \cup E) = \mathtt{True}$.
           \\[0.2cm]
-          Da $\mathcal{I}_k(C) = \mathtt{False}$ ist, muss $\mathcal{I}_k(E) = \mathtt{True}$ gelten.  Damit
-          haben wir
+          Since $\mathcal{I}_k(C) = \mathtt{False}$, $\mathcal{I}_k(E) = \mathtt{True}$ must hold. Thus
+          we have
           \\[0.2cm]
           \hspace*{1.3cm}
           $
@@ -2032,39 +2046,39 @@ $\mathtt{dom}(\mathcal{I}_k) = \{p_1, \cdots, p_k\}$.
           \end{array}
           $
           \\[0.2cm]
-          und das war zu zeigen.
+          and that was to be shown.
     \end{enumerate}
-  \item Es gibt keine Klausel
+  \item There is no clause
     \\[0.2cm]
     \hspace*{1.3cm}
     $C \cup \{p_{k+1}\} \in \overline{M}$,
     \\[0.2cm]
-    so dass $C$ höchstens die Variablen $p_1,\cdots,p_k$ enthält und außerdem $\mathcal{I}_k(C) = \mathtt{False}$
-    ist.  Dann setzen wir
+    such that $C$ contains at most the variables $p_1,\cdots,p_k$ and moreover $\mathcal{I}_k(C) = \mathtt{False}$.
+    In this case, we set
     \\[0.2cm]
     \hspace*{1.3cm}
     $\mathcal{I}_{k+1}(p_{k+1}) := \mathtt{False}$.
     \\[0.2cm]    
-    In diesem Fall gibt es für Klauseln $C \in \overline{M}$ drei Fälle:
+    In this case, for clauses $D \in \overline{M}$, there are three cases:
     \begin{enumerate}[1.]
-    \item $C$ enthält die Variable $p_{k+1}$ nicht.
+    \item $D$ does not contain the variable $p_{k+1}$.
       
-          In diesem Fall gilt nach IV bereits $\mathcal{I}_{k+1} = \mathtt{True}$.        
-    \item $C = D \cup \{ p_{k+1} \}$.
+          In this case, $\mathcal{I}_{k+1} = \mathtt{True}$ already holds by the induction hypothesis.        
+    \item $D = E \cup \{ p_{k+1} \}$.
 
-          In diesem Fall muss nach der Fallunterscheidung von Fall (b) $\mathcal{I}_k(D) = \mathtt{True}$
-          gelten und daraus folgt sofort, dass auch $\mathcal{I}_{k+1}(C) = \mathtt{True}$ ist.
-    \item $C = D \cup \{ \neg p_{k+1} \}$.
+          This case cannot occur due to the condition of the case distiction $(b)$.
+    \item $D = E \cup \{ \neg p_{k+1} \}$.
 
-          In diesem Fall gilt nach Definition von $\mathcal{I}$, dass $\mathcal{I}_{k+1}(p_{k+1}) = \mathtt{False}$
-          ist und daraus folgt sofort, dass $\mathcal{I}_{k+1}(\neg p_{k+1}) = \mathtt{True}$ ist, was
-          $\mathcal{I}_{k+1}(C) = \mathtt{True}$ zur Folge hat.
+          In this case, by definition of $\mathcal{I}$, $\mathcal{I}_{k+1}(p_{k+1}) = \mathtt{False}$
+          holds and hence $\mathcal{I}_{k+1}(\neg p_{k+1}) = \mathtt{True}$ follows, resulting in
+          $\mathcal{I}_{k+1}(D) = \mathtt{True}$.
     \end{enumerate}
-    Durch die Induktion haben wir damit gezeigt, dass die aussagenlogische Belegungen
-    $\mathcal{I}_{N}$ alle Klauseln $C \in \overline{M}$ wahr macht, denn in $\overline{M}$ kommen ja nur die
-    aussagenlogischen Variablen $p_1$, $\cdots$, $p_N$ vor.
-    Da $M \subseteq \overline{M}$, macht $\mathcal{I}_{N}$ damit auch alle Klauseln aus $M$ war, was zum
-    Widerspruch mit der Voraussetzung $M \models \falsum$ führt. \qed
+    
+    Through the induction, we have thus shown that the propositional interpretation
+    $\mathcal{I}_{N}$ renders all clauses $C \in \overline{M}$ true, as only the
+    propositional variables $p_1$, $\cdots$, $p_N$ occur in $\overline{M}$.
+    Since $M \subseteq \overline{M}$, $\mathcal{I}_{N}$ also renders all clauses from $M$ true, 
+    contradicting the assumption $M \models \falsum$. \qed
   \end{enumerate}
 \end{enumerate}
 
