@@ -2082,17 +2082,20 @@ $\mathtt{dom}(\mathcal{I}_k) = \{p_1, \cdots, p_k\}$.
   \end{enumerate}
 \end{enumerate}
 
-\subsection{Konstruktive Interpretation des Beweises der Widerlegungs-Vollständigkeit}
-In diesem Abschnitt implementieren wir ein Programm, mit dessen Hilfe sich für eine Klausel-Menge $M$, aus der
-sich die leere Klausel-Menge nicht herleiten lässt, eine aussagenlogische Belegung $\mathcal{I}$ berechnen
-lässt, die alle Klauseln aus $M$ war macht.  Dieses Programm ist in den 
-Abbildungen \ref{fig:Completeness.ipynb-1}, \ref{fig:Completeness.ipynb-2} und
-\ref{fig:Completeness.ipynb-3} auf den folgenden Seiten gezeigt.  Sie finden dieses Programm unter der Adresse
+\subsection{Constructive Interpretation of the Proof of Refutation Completeness}
+In this section, we implement a program that takes a set of clauses $M$ as its input.
+If the empty set of clauses cannot be derived from $M$, i.e.~if
 \\[0.2cm]
-\hspace*{0.8cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Completeness.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Completeness.ipynb}}
+\hspace*{1.3cm}
+$M\, {\not}\!\vdash \{\}$,
 \\[0.2cm]
-im Netz.
+then it returns a propositional valuation $\mathcal{I}$ that satisfies all clauses in $M$.
+This program is shown in Figures \ref{fig:Completeness.ipynb-1}, \ref{fig:Completeness.ipynb-2}, and \ref{fig:Completeness.ipynb-3} on the following pages. You can find this program at the address
+\\[0.2cm]
+\hspace*{0.3cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/05-Completeness.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/05-Completeness.ipynb}}
+\\[0.2cm]
+online.
 
 \begin{figure}[!ht]
 \centering
@@ -2126,7 +2129,7 @@ im Netz.
     def cutRule(C1, C2):
         '''
         Return the set of all clauses that can be deduced with the cut rule 
-        from the clauses c1 and c2.
+        from the clauses C1 and C2.
         '''
         return { C1 - {l} | C2 - {complement(l)} for l in C1
                                                  if  complement(l) in C2
@@ -2137,46 +2140,43 @@ im Netz.
 \label{fig:Completeness.ipynb-1}
 \end{figure}
 
-Die Grundidee
-bei diesem Programm besteht darin, dass wir versuchen, aus einer gegebenen Menge $M$ von Klauseln
-\underline{alle} Klauseln herzuleiten, die mit der Schnitt-Regel aus $M$ herleitbar sind.  Wenn wir dabei auch
-die leere Klausel herleiten, dann ist $M$ aufgrund der Korrektheit der Schnitt-Regel offenbar
-unerfüllbar.  Falls es uns aber nicht gelingt, die leere Klausel aus $M$ abzuleiten, dann konstruieren wir
-aus der Menge aller Klauseln, die wir aus $M$ hergeleitet haben, eine aussagenlogische Interpretation
-$\I$, die alle Klauseln aus $M$ erfüllt, womit $M$ erfüllbar wäre.
-Wir diskutieren zunächst die Hilfsprozeduren, die in Abbildung \ref{fig:Completeness.ipynb-1} gezeigt
-sind. 
+The basic idea
+of this program is that we attempt to derive \underline{all} clauses from a given set $M$ of clauses
+that can be derived from $M$ by using the cut rule.  Let us call this set $\widetilde{M}$.  If $\widetilde{M}$ contains the empty clause,
+then, due to the correctness of the cut rule, $M$ has to be unsatisfiable. However, if we fail to derive the empty clause from $M$,
+we construct a propositional interpretation
+$\I$ from $\widetilde{M}$ such that $\mathcal{I}$ satisfies all clauses from $M$.
+We first discuss the auxiliary procedures shown in Figure \ref{fig:Completeness.ipynb-1}.
 \begin{enumerate}
-\item Die Funktion \texttt{complement} erhält als Argument ein Literal $l$ und berechnet das
-      \blue{Komplement} $\komplement{l}$ dieses Literals.
-      Falls das Literal $l$ eine aussagenlogische Variable $p$ ist, was wir daran erkennen, dass $l$ ein String
-      ist, so haben wir $\komplement{p} = \neg p$.
-      Falls $l$ die Form $\neg p$ mit einer aussagenlogischen Variablen $p$ hat, so gilt $\komplement{\neg p} =
+\item The function \texttt{complement} takes as argument a literal $l$ and computes the
+      \blue{complement} $\komplement{l}$ of this literal.
+      If the literal $l$ is a propositional variable $p$, which we recognize by $l$ being a string,
+      then we have $\komplement{p} = \neg p$.
+      If $l$ is in the form $\neg p$ with a propositional variable $p$, then $\komplement{\neg p} =
       p$.
-\item Die Funktion \texttt{extractVariable} extrahiert die aussagenlogische Variable, die in einem Literal $l$
-      enthalten ist.  Die Implementierung verläuft analog zu der Implementierung der Funktion \linebreak
-      \texttt{complement} über eine Fallunterscheidung, bei der wir berücksichtigen, dass $l$ entweder die Form
-      $p$ oder die Form $\neg p$ hat, wobei $p$ die zu extrahierende aussagenlogische Variable ist.
-\item Die Funktion \texttt{collectVars} erhält als Argument eine Menge $M$ von Klauseln, wobei die
-      einzelnen Klauseln  \mbox{$C \!\in\! M$} als Mengen von Literalen dargestellt werden.  Die Aufgabe der
-      Funktion \texttt{collectVars} ist es, die Menge aller aussagenlogischen Variablen zu
-      berechnen, die in einer der Klauseln $C$ aus $M$ vorkommen.  Bei der Implementierung iterieren
-      wir zunächst über die Klauseln $C$ der Menge $M$ und dann für jede Klausel $C$ über die in $C$
-      vorkommenden Literale $l$, wobei die Literale mit Hilfe der Funktion \texttt{extractVariable} in
-      aussagenlogische Variablen umgewandelt werden.
-\item Die Funktion \texttt{cutRule} erhält als Argumente zwei Klauseln $C_1$ und $C_2$ und berechnet
-      die Menge aller Klauseln, die mit Hilfe einer Anwendung der Schnitt-Regel aus $C_1$ und $C_2$ gefolgert werden
-      können.  Beispielsweise können wir aus den beiden Klauseln
+\item The function \texttt{extractVariable} extracts the propositional variable contained in a literal $l$.
+      The implementation is analogous to the previous implementation of the function 
+      \texttt{complement} with a case distinction, considering whether $l$ is either in the form
+      $p$ or in the form $\neg p$, where $p$ is the propositional variable to be extracted.
+\item The function \texttt{collectVars} takes as an argument a set $M$ of clauses, where each
+      clause \mbox{$C \!\in\! M$} is represented as a set of literals. The task of the
+      function \texttt{collectVars} is to compute the set of all propositional variables
+      that occur in any of the clauses $C$ from $M$. During the implementation, we first iterate
+      over the clauses $C$ of the set $M$ and then for each clause $C$ over the literals $l$ occurring in $C$,
+      where the literals are transformed into propositional variables using the function \texttt{extractVariable}.
+\item The function \texttt{cutRule} takes two clauses $C_1$ and $C_2$ as its arguments and calculates
+      the set of all clauses that can be derived using an application of the cut rule from $C_1$ and $C_2$.
+      For example, from the two clauses
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\{ p, q \}$ \quad und \quad $\{ \neg p, \neg q \}$ 
+      $\{ p, q \}$ \quad and \quad $\{ \neg p, \neg q \}$ 
       \\[0.2cm]
-      mit der Schnitt-Regel sowohl die Klausel
+      we can derive both the clause
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\{q, \neg q\}$ \quad als auch die Klausel \quad $\{p, \neg p \}$
+      $\{q, \neg q\}$ \quad as well as the clause \quad $\{p, \neg p \}$
       \\[0.2cm]
-      herleiten.
+      using the cut rule.
 \end{enumerate}
 
 \begin{figure}[!ht]
@@ -2207,67 +2207,63 @@ sind.
 \caption{Die Funktion \texttt{saturate}}
 \label{fig:Completeness.ipynb-2}
 \end{figure}
-    
-Abbildung \ref{fig:Completeness.ipynb-2} zeigt die Funktion \texttt{saturate}.  Diese Funktion erhält
-als Eingabe eine Menge \texttt{Clauses} von aus\-sagenlogischen Klauseln, die als Mengen von Literalen
-dargestellt werden.  Aufgabe der Funktion ist es, alle Klauseln herzuleiten, die mit Hilfe der
-Schnitt-Regel auf direktem oder indirekten Wege aus der Menge \texttt{Clauses} hergeleitet werden
-können.  Genauer gesagt ist die Menge $S$ der Klauseln, die von der Funktion \texttt{saturate}
-zurück gegeben wird, unter Anwendung der Schnitt-Regel \blue{saturiert}, es gilt also:
+Figure \ref{fig:Completeness.ipynb-2} shows the function \texttt{saturate}. This function takes
+as input a set \texttt{Clauses} of propositional clauses, represented as sets of literals.
+The task of the function is to derive all clauses that can be derived directly or indirectly from the set \texttt{Clauses}
+using the cut rule. Specifically, the set $S$ of clauses returned by the function \texttt{saturate}
+is \blue{saturated} under the application of the cut rule, meaning:
 
 \begin{enumerate}
-\item Falls $S$ die leere Klausel $\{\}$ enthält, dann ist $S$ saturiert.
-\item Andernfalls muss \texttt{Clauses} eine Teilmenge von $S$ sein und es muss zusätzlich Folgendes
-      gelten: Falls für ein Literal $l$ sowohl die Klausel $C_1 \cup \{ l \}$ als auch die Klausel $C_2 \cup
-      \bigl\{ \komplement{l} \bigr\}$ Klausel in $S$
-      enthalten ist, dann ist auch die Klausel $C_1 \cup C_2$ ein Element der Klausel\-menge $S$:
+\item If $S$ contains the empty clause $\{\}$, then $S$ is saturated.
+\item Otherwise, \texttt{Clauses} must be a subset of $S$ and additionally the following must hold:
+      If for a literal $l$ both the clause $C_1 \cup \{ l \}$ and the clause $C_2 \cup
+      \bigl\{ \komplement{l} \bigr\}$ are contained in $S$,
+      then the clause $C_1 \cup C_2$ is also an element of the set of clauses $S$:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $C_1 \cup \{ l \} \in S \;\wedge\; C_2 \cup \bigl\{ \komplement{l} \bigr\} \in S \;\Rightarrow\; C_1 \cup C_2 \in S$ 
+      $C_1 \cup \{ l \} \in S \;\wedge\; C_2 \cup \bigl\{ \komplement{l} \bigr\} \in S \;\Rightarrow\; C_1 \cup C_2 \in S$
 \end{enumerate}
 
-Wir erläutern nun die Implementierung der Funktion \texttt{saturate}.
+We now explain the implementation of the function \texttt{saturate}.
 \begin{enumerate}
-\item Die \texttt{while}-Schleife, die in Zeile 30 beginnt, hat die Aufgabe, die Schnitt-Regel
-      so lange wie möglich anzuwenden, um mit Hilfe der Schnitt-Regel neue Klauseln aus den gegebenen
-      Klauseln herzuleiten.  Da die Bedingung dieser Schleife den Wert \texttt{True} hat, kann diese
-      Schleife nur durch die Ausführung einer der beiden \texttt{return}-Befehle in Zeile 34 bzw.~Zeile 37
-      abgebrochen werden. 
-\item In Zeile 29 wird die Menge \texttt{Derived} als die Menge der Klauseln definiert, die mit Hilfe der
-      Schnitt-Regel aus zwei der Klauseln in der Menge \texttt{Clauses} gefolgert werden können.
-\item Falls die Menge \texttt{Derived} die leere Klausel enthält, dann ist die Menge
-      \texttt{Clauses} widersprüchlich und die Funktion \texttt{saturate} gibt als Ergebnis die
-      Menge $\bigl\{ \{\} \bigr\}$ zurück, wobei die innere Menge als \texttt{frozenset} dargestellt werden
-      muss.  Beachten Sie, dass die Menge $\bigl\{ \{\} \bigr\}$ dem Falsum entspricht.
-\item Andernfalls ziehen wir in Zeile 35 von der Menge \texttt{Derived} zunächst die Klauseln
-      ab, die schon in der Menge \texttt{Clauses} vorhanden waren, denn es geht uns darum
-      festzustellen, ob wir im letzten Schritt tatsächlich 
-      \underline{neue} Klauseln gefunden haben, oder ob alle Klauseln, die wir im letzten Schritt in Zeile 31
-      hergeleitet haben, schon vorher bekannt waren.
-\item Falls wir nun in Zeile 36 feststellen, dass wir keine neuen Klauseln hergeleitet haben,
-      dann ist die Menge \texttt{Clauses} \blue{saturiert} und wir geben diese Menge in Zeile 39 zurück.
-\item Andernfalls fügen wir in Zeile 38 die Klauseln, die wir neu gefunden haben, zu der Menge
-      \texttt{Clauses} hinzu und setzen die \texttt{while}-Schleife fort.
+\item The \texttt{while} loop that starts in line 28 is tasked with applying the cut rule
+      as long as possible to derive new clauses from the given
+      clauses using the cut rule. Since this loop's condition has the value \texttt{True}, it can only be
+      terminated by executing one of the two \texttt{return} commands in line 34 or line 37.
+\item In line 29, the set \texttt{Derived} is defined as the set of clauses that can be inferred using the
+      cut rule from two of the clauses in the set \texttt{Clauses}.
+\item If the set \texttt{Derived} contains the empty clause, then the set
+      \texttt{Clauses} is contradictory, and the function \texttt{saturate} returns as a result the
+      set $\bigl\{ \{\} \bigr\}$, where the inner set must be represented as \texttt{frozenset}. Note that the set $\bigl\{ \{\} \bigr\}$ corresponds to Falsum.
+\item Otherwise, in line 35, we first subtract from the set \texttt{Derived} the clauses
+      that were already present in the set \texttt{Clauses}, as we are concerned
+      with determining whether we actually found 
+      \underline{new} clauses in the last step in line 31, or whether all clauses that we derived in the last step were already known.
+\item If we find in line 36 that we have not derived any new clauses,
+      then the set \texttt{Clauses} is \blue{saturated} and we return this set in line 37.
+\item Otherwise, we add the newly found clauses to the set
+      \texttt{Clauses} in line 38  and continue the \texttt{while} loop.
 \end{enumerate}
-An dieser Stelle müssen wir uns überlegen, dass die \texttt{while}-Schleife tatsächlich irgendwann
-abbricht.  Das hat zwei Gründe:  
+At this point, we must verify that the \texttt{while} loop will eventually
+terminate. This is due to two reasons:
 \begin{enumerate}
-\item In jeder Iteration der Schleife wird die Anzahl der Elemente der Menge \texttt{Clauses}
-      mindestens um Eins erhöht, denn wir wissen ja, dass die Menge \texttt{Derived}, die wir in Zeile 38 zur
-      Menge \texttt{Clauses} hinzufügen, einerseits nicht leer ist und andererseits auch nur solche
-      Klauseln enthält, die nicht bereits in \texttt{Clauses} auftreten.
-\item Die Menge \texttt{Clauses}, mit der wir ursprünglich starten, enthält eine bestimmte Anzahl $n$
-      von aussagenlogischen Variablen.  Bei der Anwendung der Schnitt-Regel werden aber keine neuen
-      Variablen erzeugt.  Daher bleibt die Anzahl der aussagenlogischen Variablen, die in
-      \texttt{Clauses} auftreten, immer gleich.  Damit ist natürlich auch die Anzahl der Literale,
-      die in \texttt{Clauses} auftreten, beschränkt: Wenn es nur $n$ aussagenlogische Variablen gibt,
-      dann kann es auch höchstens $2 \cdot n$ verschiedene Literale geben.  Jede Klausel aus \texttt{Clauses} ist
-      aber eine Teilmenge der Menge aller Literale.  Da eine Menge mit $k$ Elementen insgesamt $2^k$
-      Teilmengen hat, gibt es höchstens $2^{2 \cdot n}$ verschiedene Klauseln, die in
-      \texttt{Clauses} auftreten können.  
+\item In each iteration of the loop, the number of elements of the set \texttt{Clauses}
+      is increased by at least one, as we know that the set \texttt{Derived}, which we add to the
+      set \texttt{Clauses} in line 38, is neither empty nor does it contains only
+      clauses that are already present in \texttt{Clauses}.
+\item The set \texttt{Clauses}, with which we originally start, contains a certain number $n$
+      of propositional variables. However, the application of the cut rule does not generate any new
+      variables. Therefore, the number of propositional variables that appear in
+      \texttt{Clauses} always remains the same. This limits the number of literals
+      that can appear in \texttt{Clauses}: If there are only $n$ propositional variables,
+      then there can be at most $2 \cdot n$ different literals.  However, each clause from \texttt{Clauses} is
+      a subset of the set of all literals.  Since a set with $k$ elements has a total of $2^k$
+      subsets, there can be at most $2^{2 \cdot n}$ different clauses that can appear in
+      \texttt{Clauses}.
 \end{enumerate}
-Aus den beiden oben angegebenen Gründen können wir schließen, dass die \texttt{while}-Schleife in
-Zeile 28 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.
+From the two reasons given above, we can conclude that the \texttt{while} loop that starts in
+line 28 will terminate after at most $2^{2 \cdot n}$ iterations.
+
 
 
 \begin{figure}[!ht]
@@ -2304,75 +2300,72 @@ Zeile 28 spätestens nach $2^{2 \cdot n}$ Iterationen abgebrochen wird.
 
 \FloatBarrier
 
-Als nächstes diskutieren wir die Implementierung der Funktion \texttt{findValuation}, die in
-Abbildung \ref{fig:Completeness.ipynb-3} gezeigt ist.  Diese Funktion erhält als Eingabe eine Menge
-\texttt{Clauses} von Klauseln.  Falls diese Menge widersprüchlich ist, soll die Funktion
-das Ergebnis \texttt{False} zurück geben.  Andernfalls soll eine aussagenlogische Belegung $\I$ berechnet werden,
-unter der alle Klauseln aus der Menge \texttt{Clauses} erfüllt sind.
-Im Detail arbeitet die Funktion \texttt{findValuation} wie folgt.
+Next, we discuss the implementation of the function \texttt{findValuation}, which is shown in
+Figure \ref{fig:Completeness.ipynb-3}. This function receives a set \texttt{Clauses} of clauses as input.
+If this set is contradictory, the function should return the result \texttt{False}.
+Otherwise, a propositional assignment $\I$ should be computed,
+under which all clauses from the set \texttt{Clauses} are satisfied.
+In detail, the function \texttt{findValuation} works as follows.
 \begin{enumerate}
-\item Zunächst berechnen wir in Zeile 41 die Menge aller aussagenlogischen Variablen, die in der Menge
-      \texttt{Clauses} auftreten.  Wir benötigen diese Menge, denn in der
-      aussagenlogischen Interpretation, die wir als Ergebnis zurück geben wollen, müssen 
-      wir diese Variablen auf die Menge $\{ \texttt{True}, \texttt{False} \}$ abbilden.       
-\item In Zeile 42 saturieren wir die Menge \texttt{Clauses} und berechnen alle Klauseln, die aus der
-      ursprünglich gegebenen Menge von Klauseln mit Hilfe der Schnitt-Regel hergeleitet werden
-      können.  Hier können zwei Fälle auftreten:
+\item First, in line 41, we compute the set of all propositional variables that appear in the set
+      \texttt{Clauses}. We need this set because in the
+      propositional interpretation, which we want to return as a result, we must
+      map these variables to the set $\{ \texttt{True}, \texttt{False} \}$.
+\item In line 42, we saturate the set \texttt{Clauses} and compute all clauses that can be derived from the
+      original set of clauses using the cut rule. Here, two cases can occur:
       \begin{enumerate}
-      \item Falls die leere Klausel hergeleitet werden kann, dann folgt aus der Korrektheit der Schnitt-Regel,
-            dass die ursprünglich gegebene Menge von Klauseln widersprüchlich ist und wir geben als Ergebnis an
-            Stelle einer Belegung den Wert \texttt{False} zurück, denn eine widersprüchliche Menge von Klauseln
-            ist sicher nicht erfüllbar.
-      \item Andernfalls berechnen wir nun eine aussagenlogische Belegung, unter der alle Klauseln aus
-            der Menge \texttt{Clauses} wahr werden.  Zu diesem Zweck berechnen wir zunächst eine Menge von
-            Literalen, die wir in der Variablen \texttt{Literals} abspeichern.  Die Idee ist dabei, dass wir
-            die aussagenlogische Variable \texttt{p} genau dann in die Menge \texttt{Literals} aufnehmen, wenn
-            die gesuchte Belegung $\I$ die aussagenlogische
-            Variable \texttt{p} zu \texttt{True} auswertet.  Andernfalls nehmen wir an Stelle von \texttt{p} das
-            Literal $\neg \texttt{p}$ in der Menge \texttt{Literals} auf.  Als Ergebnis geben wir daher in
-            Zeile 53 die Menge \texttt{Literals} zurück.  Die gesuchte aussagenlogische Belegung
-            $\mathcal{I}$ kann dann gemäß der Formel  
+      \item If the empty clause can be derived, then it follows from the correctness of the cut rule,
+            that the original set of clauses is contradictory, and we return \texttt{False} instead of an assignment,
+            as a contradictory set of clauses is certainly not satisfiable.
+      \item Otherwise, we now compute a propositional assignment under which all clauses from
+            the set \texttt{Clauses} become true. For this purpose, we first compute a set of
+            literals, which we store in the variable \texttt{Literals}. The idea is that we
+            include the propositional variable \texttt{p} in the set \texttt{Literals} exactly when
+            the sought-after assignment $\I$ evaluates the propositional
+            variable \texttt{p} to \texttt{True}. Otherwise, we include the
+            literal $\neg \texttt{p}$ in the set \texttt{Literals}. As a result, in
+            line 53, we return the set \texttt{Literals}. The sought-after propositional assignment
+            $\mathcal{I}$ can then be computed according to the formula  
             \\[0.2cm]
             \hspace*{1.3cm}
             $\mathcal{I}(\texttt{p}) = \left\{
              \begin{array}{ll}
-               \texttt{True}  & \mbox{falls $\hspace*{0.25cm}\texttt{p} \in \texttt{Literals}$} \\
-               \texttt{False} & \mbox{falls $\neg\texttt{p} \in \texttt{Literals}$}
+               \texttt{True}  & \mbox{if $\hspace*{0.25cm}\texttt{p} \in \texttt{Literals}$} \\
+               \texttt{False} & \mbox{if $\neg\texttt{p} \in \texttt{Literals}$.}
              \end{array}\right.
             $
-            \\[0.2cm]
-            berechnet werden.
+           
       \end{enumerate}
-\item Die Berechnung der Menge \texttt{Literals} erfolgt nun über eine \texttt{for}-Schleife.
-      Dabei ist der Gedanke, dass wir für eine aussagenlogische Variable \texttt{p} genau dann das Literal
-      $\texttt{p}$ zu der Menge \texttt{Literals} hinzufügen, wenn die Belegung $\I$ die Variable \texttt{p}
-      auf \texttt{True} abbilden \underline{muss}, um die Klauseln zu erfüllen.  Andernfalls fügen wir
-      stattdessen das Literal $\neg\texttt{p}$ zu dieser Menge hinzu.
+\item The computation of the set \texttt{Literals} is done using a \texttt{for} loop.
+      The idea is that for a propositional variable \texttt{p}, we add the literal
+      $\texttt{p}$ to the set \texttt{Literals} exactly when the assignment $\I$ has to map the variable \texttt{p}
+      to \texttt{True} in order to satisfy the clauses. Otherwise, we add
+      the literal $\neg\texttt{p}$ to this set instead.
 
-      Die Bedingung dafür, dass wir das Literal $p$ hinzufügen müssen ist wie folgt:
-      Angenommen, wir haben bereits Werte für die Variablen
-      $p_1$, $\cdots$, $p_n$ in der Menge \texttt{Literals}  gefunden.
-      Die Werte dieser Variablen seien durch die Literale $l_1$, $\cdots$, $l_n$ in der Menge \texttt{Literals}
-      wie folgt festgelegt: Wenn $l_i = p_i$ ist, dann gilt $\I(p_i) = \texttt{True}$ 
-      und falls $l_i = \neg p_i$ gilt, so haben wir $\I(p_i) = \texttt{False}$.
-      Nehmen wir nun weiter an, dass eine Klausel $C$ in der Menge \texttt{Clauses} existiert, so dass
+      The condition for adding the literal $p$ is as follows:
+      Suppose we have already found values for the variables
+      $p_1$, $\cdots$, $p_n$ in the set \texttt{Literals}.
+      The values of these variables are determined by the literals $l_1$, $\cdots$, $l_n$ in the set \texttt{Literals}
+      as follows: If $l_i = p_i$, then $\I(p_i) = \texttt{True}$
+      and if $l_i = \neg p_i$, then we have $\I(p_i) = \texttt{False}$.
+      Now assume that a clause $C$ exists in the set \texttt{Clauses} such that
       \\[0.2cm]
       \hspace*{1.3cm}
-      $C \backslash \{p\} \subseteq \{ \komplement{l_1}, \cdots, \komplement{l_n} \}$ \quad und \quad $\texttt{p} \in C$
+      $C \backslash \{p\} \subseteq \{ \komplement{l_1}, \cdots, \komplement{l_n} \}$ \quad and \quad $\texttt{p} \in C$
       \\[0.2cm]
-      gilt.  Wenn $\I(C) = \texttt{True}$ gelten soll, dann muss $\I(\texttt{p}) = \texttt{True}$ gelten, denn
-      nach Konstruktion von $\I$ gilt 
+      holds. If $\I(C) = \texttt{True}$ is to hold, then $\I(\texttt{p}) = \texttt{True}$ must hold, because
+      by construction of $\I$ we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\I\bigl(\komplement{l_i}) = \texttt{False}$ \quad für alle $i \in \{1,\cdots,n\}$
+      $\I\bigl(\komplement{l_i}) = \texttt{False}$ \quad for all $i \in \{1,\cdots,n\}$
       \\[0.2cm]
-      und damit ist \texttt{p} das einzige Literal in der Klausel $C$, das wir mit Hilfe der Belegung $\I$
-      überhaupt noch wahr machen können.  In diesem Fall fügen wir also das Literal
-      $\texttt{p}$ in die Menge \texttt{Literals} ein.  Andernfalls wird das Literal $\neg p$ zu der Menge
-      \texttt{Literals} hinzugefügt.
+      and thus \texttt{p} is the only literal in the clause $C$ that we can still make true with the help of the assignment $\I$. In this case, we thus add the literal
+      $\texttt{p}$ to the set \texttt{Literals}. Otherwise, the literal $\neg p$ is added to the set
+      \texttt{Literals}.
 \end{enumerate}
-Die Definition der Funktion \texttt{findValuation} setzt die induktive Definition der Belegungen
-$\mathcal{I}_k$ um, die wir im Beweis der Widerlegungs-Vollständigkeit angegeben haben.
+The definition of the function \texttt{findValuation} implements the inductive definition of the assignments
+$\mathcal{I}_k$ that we specified in the proof of refutation completeness.
+
 
 % Der entscheidende Punkt ist nun der Nachweis, dass die Funktion \texttt{findValuation} in dem Falle,
 % dass in Zeile 46 nicht der Wert \texttt{False} zurück gegeben wird, eine aussagenlogische Belegung $\I$ berechnet, bei der
