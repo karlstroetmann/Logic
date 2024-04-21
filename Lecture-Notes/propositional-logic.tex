@@ -2066,7 +2066,8 @@ $\mathtt{dom}(\mathcal{I}_k) = \{p_1, \cdots, p_k\}$.
           In this case, $\mathcal{I}_{k+1} = \mathtt{True}$ already holds by the induction hypothesis.        
     \item $D = E \cup \{ p_{k+1} \}$.
 
-          This case cannot occur due to the condition of the case distiction $(b)$.
+          Then we must have $\mathcal{I}_k(E) = \mathtt{True}$ since otherwise we would be in case (a) of the
+          outer case distinction.  Obviously, $\mathcal{I}_k(E) = \mathtt{True}$ implies $\mathtt{I}_k(D) = \mathtt{True}$.
     \item $D = E \cup \{ \neg p_{k+1} \}$.
 
           In this case, by definition of $\mathcal{I}$, $\mathcal{I}_{k+1}(p_{k+1}) = \mathtt{False}$
@@ -2136,7 +2137,7 @@ online.
                }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Hilfsprozeduren, die in Abbildung \ref{fig:Completeness.ipynb-2} genutzt werden}
+\caption{Auxiliary function that are used in Figure \ref{fig:Completeness.ipynb-2}.}
 \label{fig:Completeness.ipynb-1}
 \end{figure}
 
@@ -2303,8 +2304,8 @@ line 28 will terminate after at most $2^{2 \cdot n}$ iterations.
 Next, we discuss the implementation of the function \texttt{findValuation}, which is shown in
 Figure \ref{fig:Completeness.ipynb-3}. This function receives a set \texttt{Clauses} of clauses as input.
 If this set is contradictory, the function should return the result \texttt{False}.
-Otherwise, a propositional assignment $\I$ should be computed,
-under which all clauses from the set \texttt{Clauses} are satisfied.
+Otherwise, the function should compute a propositional valuation $\I$ that satisfies all clauses from the set
+\texttt{Clauses}. 
 In detail, the function \texttt{findValuation} works as follows.
 \begin{enumerate}
 \item First, in line 41, we compute the set of all propositional variables that appear in the set
@@ -2533,268 +2534,260 @@ $\mathcal{I}_k$ that we specified in the proof of refutation completeness.
 %              $\I(C) = \texttt{True}$ gilt. \qed
 % \end{enumerate}
 
-\section{Das Verfahren von Davis und Putnam}
-In der Praxis stellt sich oft die Aufgabe, für eine gegebene Menge von Klauseln $K$ eine aussagenlogische
-Belegung $\I$ zu berechnen, so dass 
+\section{The Algorithm of Davis and Putnam}
+In practice, the we often have to compute a propositional assignment $\I$ for a given set of clauses $K$ such that
 \\[0.2cm]
-\hspace*{1.3cm} $\texttt{evaluate}(C,\I) = \texttt{True}$ \quad für alle $C\in K$ \\[0.2cm]
-gilt.  In diesem Fall sagen wir auch, dass die Belegung $\I$ eine \blue{Lösung} der
-Klausel-Menge $K$ ist.  Im letz\-ten Abschnitt haben wir bereits die Funktion \texttt{findValuation}
-kennengelernt, mit der wir eine solche Belegung berechnen könnten.
-Bedauerlicherweise ist diese Funktion für eine praktische Anwendung nicht effizient genug, denn das Saturieren
-einer Klausel-Menge ist im Allgemeinen sehr aufwendig.
-Wir werden daher in diesem Abschnitt ein Verfahren vorstellen, mit dem die Berechnung einer Lösung
-einer aussagenlogischen Klausel-Menge in vielen praktisch relevanten Fällen auch dann möglich ist, wenn die
-Anzahle der Variablen groß ist.  Dieses Verfahren geht auf Davis und Putnam
-\cite{davis:1960, davis:1962} zurück.  Verfeinerungen dieses Verfahrens \cite{moskewicz:2001} werden beispielsweise
-eingesetzt, um die Korrektheit digitaler elektronischer Schaltungen nachzuweisen.  
+\hspace*{1.3cm} $\texttt{evaluate}(C,\I) = \texttt{True}$ \quad for all $C \in K$ \\[0.2cm]
+holds. In this case,  the assignment $\I$ is a \blue{solution} of the set of clauses $K$. In
+the last section, we have already introduced the function \texttt{findValuation} which can be used to compute
+such a solution of a set of clauses.  Unfortunately, this function is sufficiently efficient to be useful in
+practice.
+Therefore, in this section, we will introduce an algorithm that enables us to compute a solution for a
+set of propositional clauses in many practically relevant cases, even when the number of variables is
+large. This procedure is based on Davis and Putnam \cite{davis:1960, davis:1962}. Refinements of this procedure
+\cite{moskewicz:2001} are used, for example, to verify the correctness of digital electronic circuits. 
 
-Um das Verfahren zu motivieren, überlegen wir zunächst, bei welcher Form der Klausel-Menge $K$
-unmittelbar klar ist, ob es eine Belegung gibt, die $K$ löst und wie diese Belegung
-aussieht.  Betrachten wir dazu ein Beispiel: \\[0.2cm]
+To motivate the algorithm, let us first consider those cases where
+it is immediately clear whether there is an assignment that solves a set of clauses $K$.
+Consider the following example: \\[0.2cm]
 \hspace*{1.3cm} 
 $K_1 = \bigl\{\; \{p\},\; \{\neg q\},\; \{r\},\; \{\neg s\}, \; \{\neg t\} \;\bigr\}$ 
 \\[0.2cm]
-Die Klausel-Menge $K_1$ entspricht der aussagenlogischen Formel
+The clause set $K_1$ corresponds to the propositional formula
 \\[0.2cm]
 \hspace*{1.3cm}
 $p \wedge \neg q \wedge r \wedge \neg s \wedge \neg t$.
 \\[0.2cm]
-Daher ist $K_1$ lösbar und die Belegung  \\[0.2cm]
+Therefore, $K_1$ is solvable and the assignment  \\[0.2cm]
 \hspace*{1.3cm} 
-$\I = \bigl\{\; \pair(p, \texttt{True}),\; \pair(q, \texttt{False}),\;\pair(r, \texttt{True}),\; \pair(s, \texttt{False}),\; \pair(t, \texttt{False})\;\}$
+$\I = \bigl\{\; p \mapsto \texttt{True},\; q \mapsto \texttt{False},\; r \mapsto \texttt{True},\; s \mapsto
+\texttt{False},\; t \mapsto \texttt{False}\;\}$
 \\[0.2cm]
-ist eine Lösung.  Betrachten wir eine weiteres Beispiel: \\[0.2cm]
+is a solution of $K_1$. Consider another example: \\[0.2cm]
 \hspace*{1.3cm} 
 $K_2 = \bigl\{\; \{\}, \{p\},\; \{\neg q\},\; \{r\}\; \bigr\}$ 
 \\[0.2cm]
-Diese Klausel-Menge entspricht der Formel
+This clause set corresponds to the formula
 \\[0.2cm]
 \hspace*{1.3cm}
 $\falsum \wedge p \wedge \neg q \wedge r$.
 \\[0.2cm]
-Offensichtlich ist $K_2$ unlösbar.  Als letztes Beispiel betrachten wir 
+Obviously, $K_2$ is unsolvable. As a final example, consider
 \\[0.2cm]
 \hspace*{1.3cm} $K_3 = \bigl\{ \{p\}, \{\neg q\}, \{\neg p\} \bigr\}$.
 \\[0.2cm]
-Diese Klausel-Menge kodiert die Formel
+This clause set encodes the formula
 \\[0.2cm]
 \hspace*{1.3cm}
 $p \wedge \neg q \wedge \neg p $
 \\[0.2cm]
-und ist offenbar  ebenfalls unlösbar, denn eine Lösung $\I$ müsste die aussagenlogische Variable $p$ gleichzeitig
-wahr und falsch machen.  Wir nehmen die an den letzten drei Beispielen gemachten Beobachtungen zum Anlass für zwei Definitionen.
+and is obviously also unsolvable, as a solution $\I$ would have to make the propositional variable $p$ both
+true and false simultaneously. We take the observations made in the last three examples as the basis for two
+definitions.
 
-\begin{Definition}[Unit-Klausel]
-  Eine Klausel $C$ ist eine \blue{Unit-Klausel}\index{Unit-Klausel}, wenn $C$ nur aus einem Literal besteht.
-  Es gilt dann entweder
+\begin{Definition}[Unit Clause]
+  A clause $C$ is a \blue{unit clause}\index{unit clause} if $C$ consists of only one literal.
+  Then either
   \\[0.2cm]
   \hspace*{1.3cm}
-  $C = \{p\}$ \quad oder \quad $C = \{\neg p\}$ 
+  $C = \{p\}$ \quad or \quad $C = \{\neg p\}$ 
   \\[0.2cm]
-  für eine Aussage-Variable $p$. \eox
+  for a propositional variable $p$. \eox
 \end{Definition}
 
-\begin{Definition}[Triviale Klausel-Mengen]
-  Eine Klausel-Menge $K$ ist genau dann eine \blue{triviale Klausel-Menge}\index{triviale Klausel-Menge}, wenn
-  einer der beiden folgenden Fälle vorliegt:
+\begin{Definition}[Trivial Set of Clauses]
+  A set of clauses $K$ is a \blue{trivial set of clauses}\index{trivial set of clauses} if one of the following two cases applies:
   \begin{enumerate}
-  \item $K$ enthält die leere Klausel, es gilt also $\{\} \el K$.
+  \item $K$ contains the empty clause, so $\{\} \in K$.
 
-        In diesem Fall ist $K$ offensichtlich unlösbar.
-  \item $K$ enthält nur Unit-Klauseln mit \underline{\red{verschiedenen}} Aussage-Variablen.
-        Bezeichnen wir die Menge der aussagenlogischen Variablen mit $\mathcal{P}$,
-        so schreibt sich diese Bedingung als 
+        In this case, $K$ is obviously unsolvable.
+  \item $K$ contains only unit clauses with \underline{\red{different}} propositional variables.
+        Denoting the set of propositional variables by $\mathcal{P}$,
+        this condition is expressed as 
         \begin{enumerate}[(a)]
-        \item $\texttt{card}(C) = 1$ \quad für alle $C \in K$ \quad und
-        \item Es gibt kein $p\in\mathcal{P}$, so dass gilt: 
+        \item $\texttt{card}(C) = 1$ \quad for all $C \in K$ \quad and
+        \item There is no $p \in \mathcal{P}$ such that: 
               \\[0.2cm]
               \hspace*{1.3cm}
-              $\{p\} \in K$ \quad und \quad $\{\neg p\} \in K\bigr)$.
+              $\{p\} \in K$ \quad and \quad $\{\neg p\} \in K$.
         \end{enumerate}
-        In diesem Fall können wir die aussagenlogische Belegung $\I$ wie folgt definieren:
+        In this case, we can define the propositional assignment $\I$ as follows:
         \\[0.2cm]
         \hspace*{1.3cm}
         $\I(p) = \left\{
                    \begin{array}{lcr}
-                     \texttt{True}  & \mbox{falls} & \{p\}      \in K, \\[0.1cm]
-                     \texttt{False} & \mbox{falls} & \{\neg p\} \in K.
+                     \texttt{True}  & \mbox{if} & \{p\}      \in K, \\[0.1cm]
+                     \texttt{False} & \mbox{if} & \{\neg p\} \in K.
                    \end{array}
-                   \right.
+                 \right.
         $
         \\[0.2cm]
-        Damit ist $\mathcal{I}$ dann eine \blue{Lösung}\index{Lösung} der Klausel-Menge $K$. \eox
+        Then $\mathcal{I}$ is a \blue{solution}\index{solution} of the set of clauses $K$. \eox
   \end{enumerate}
 \end{Definition}
 
-Wie können wir nun eine gegebene Klausel-Menge in eine triviale Klausel-Menge umwandeln?
-Es gibt drei Möglichkeiten, Klauselmengen zu vereinfachen.  Die erste der beiden Möglichkeiten kennen wir
-schon, die anderen beiden Möglichkeiten werden wir später näher erläutern.
+How can we transform a given set of clauses into a trivial set of clauses?
+There are three ways to simplify a set of clauses.  We are already familiar with the first of the two
+possibilities, and we will explain the other two in more detail later. 
 \begin{enumerate}
-\item \blue{Schnitt-Regel},
-\item \blue{Subsumption} und
-\item \blue{Fallunterscheidung}.
+\item \blue{Resolution Rule},
+\item \blue{Subsumption}, and
+\item \blue{Case Distinction}.
 \end{enumerate}
-Wir betrachten diese Möglickeiten jetzt der Reihe nach.
+Next, we will consider these possibilities in turn.
 
-\subsection{Vereinfachung mit der Schnitt-Regel}
-Eine typische Anwendung der Schnitt-Regel hat die Form: \\[0.2cm]
+\subsection{Simplification with the Resolution Rule}
+A typical application of the resolution rule has the form: \\[0.2cm]
 \hspace*{1.3cm} $\schluss{ C_1 \cup \{p\} \quad \{\neg p\} \cup C_2}{C_1 \cup C_2}$
 \\[0.2cm]
-Die hierbei erzeugte Klausel $C_1 \cup C_2$ wird in der Regel mehr Literale enthalten
-als die Prämissen $C_1 \cup \{p\}$ und $\bigl\{\neg p\} \cup C_2$.  Enthält die
-Klausel $C_1 \cup \{p\}$ insgesamt $m+1$ Literale und enthält die Klausel
-$\bigl\{\neg p\} \cup C_2$ insgesamt $n+1$ Literale, so kann die Konklusion $C_1 \cup C_2$ 
-bis zu $m + n$ Literale enthalten.  Natürlich können es auch weniger Literale 
-sein, und zwar dann, wenn es Literale gibt, die sowohl in $C_1$ als auch in $C_2$
-auftreten.  Oft ist $m + n$ aber sowohl größer als $m + 1$ als auch größer als $n + 1$.  Die
-Klauseln wachsen nur dann sicher nicht, wenn  $n = 0$ oder $m = 0$ ist.
-Dieser Fall liegt vor, wenn einer der beiden Klauseln nur aus einem Literal besteht
-und folglich eine \blue{Unit-Klausel} ist.  Da es unser Ziel ist, die Klausel-Mengen
-zu vereinfachen, lassen wir nur solche Anwendungen der Schnitt-Regel zu, bei denen
-eine der Klausel eine Unit-Klausel ist.  Solche Schnitte bezeichnen wir als
-\blue{Unit-Schnitte}.\index{Unit-Schnitt}  Um alle mit einer gegebenen Unit-Klausel $\{l\}$ möglichen Schnitte
-durchführen zu können, definieren wir eine Funktion
+Usually, the clause $C_1 \cup C_2$ that is  generated here will contain more literals
+than the premises $C_1 \cup \{p\}$ and $\{\neg p\} \cup C_2$. If the
+clause $C_1 \cup \{p\}$ contains a total of $m+1$ literals and the clause
+$\{\neg p\} \cup C_2$ contains a total of $n+1$ literals, then the conclusion $C_1 \cup C_2$
+can contain up to $m + n$ literals. Of course, it can also contain fewer literals
+if there are literals that occur in both $C_1$ and $C_2$.
+Often, $m + n$ is greater than both $m + 1$ and $n + 1$.  We are only certain that the clauses
+do not grow if we have $n = 0$ or $m = 0$.
+This case occurs when one of the two clauses consists  of a single literal
+and is consequently a \blue{unit clause}.  Since our goal is to simplify the set of clauses,
+we allow only applications of the resolution rule where
+one of the clauses is a unit clause. Such cuts are referred to as
+\blue{unit cuts}\index{unit cut}. To perform all possible cuts with a given unit clause $\{l\}$,
+we define a function
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{unitCut}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$\index{\texttt{unitCut}}
 \\[0.2cm]
-so, dass für eine Klausel-Menge $K$ und ein Literal $l$ die Funktion
-$\texttt{unitCut}(K,l)$ die Klausel-Menge $K$ soweit wie möglich mit Unit-Schnitten mit der Klausel
-$\{l\}$ vereinfacht:
+such that for a set of clauses $K$ and a literal $l$ the function
+$\texttt{unitCut}(K,l)$ simplifies the set of clauses $K$ as much as possible with unit cuts with the clause
+$\{l\}$:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{unitCut}(K,l) = \Bigl\{ C \backslash \bigl\{ \komplement{l} \bigr\} \;\Big|\; C \in K \Bigr\}$.
 \\[0.2cm]
-Beachten Sie, dass die Menge $\texttt{unitCut}(K,l)$ genauso viele Klauseln enthält wie die Menge
-$K$.  Allerdings sind diejenigen Klauseln aus der Menge $K$, die das Literal $\komplement{l}$
-enthalten, verkleinert worden.   Alle anderen Klauseln aus $K$ bleiben unverändert.
+Note that the set $\texttt{unitCut}(K,l)$ contains the same number of clauses as the set
+$K$. However, those clauses from the set $K$ that contain the literal $\komplement{l}$
+have been reduced. All other clauses from $K$ remain unchanged.
 
-Eine Klauselmenge $K$ werden wir nur dann mit Hilfe des Ausdrucks $\texttt{unitCut}(K, l)$ vereinfachen, wenn 
-die Unit-Klausel $\{l\}$ ein Element der Menge $K$ ist.
+Of course, we only simplify a set of clauses $K$ using the expression $\texttt{unitCut}(K, l)$ if
+the unit clause $\{l\}$ is an element of the set $K$.
 
-\subsection{Vereinfachung durch Subsumption}
-Das Prinzip der Subsumption demonstrieren wir zunächst an einem Beispiel.
-Wir betrachten \\[0.2cm]
+\subsection{Simplification via Subsumption}
+We start by demonstrating the principle of subsumption with an example.
+Consider the set of clauses
+\\[0.2cm]
 \hspace*{1.3cm} $K = \bigl\{ \{p, q, \neg r\}, \{p\} \bigr\} \cup M$. \\[0.2cm]
-Offenbar impliziert die Klausel $\{p\}$ die Klausel $\{p, q, \neg r\}$, denn immer wenn
-$\{p\}$ erfüllt ist, ist automatisch auch $\{q, p, \neg r\}$ erfüllt.  Das liegt daran, dass 
+Clearly, the clause $\{p\}$ implies the clause $\{p, q, \neg r\}$, because whenever
+$\{p\}$ is satisfied, $\{q, p, \neg r\}$ is automatically satisfied as well. This is because
 \\[0.2cm]
 \hspace*{1.3cm} $\models p \rightarrow q \vee p \vee \neg r$
 \\[0.2cm]
-gilt.  Allgemein sagen wir, dass eine Klausel $C$
- von einer Unit-Klausel $U$ \blue{subsumiert}\index{subsumiert} wird, wenn
+holds. Generally, we say that a clause $C$
+is \blue{subsumed}\index{subsumed} by a unit clause $U$ when
 \\[0.2cm]
 \hspace*{1.3cm} $U \subseteq C$ \\[0.2cm]
-gilt.  Ist $K$ eine Klausel-Menge mit $C \in K$ und $U \in K$ und wird
-$C$ durch $U$ subsumiert, so können wir die Menge $K$ durch Unit-Subsumption zu der Menge $K - \{ C \}$
-verkleinern, wir können also die Klausel $C$ aus $K$ löschen.  Dazu definieren wir eine Funktion
+applies. If $K$ is a set of clauses with $C \in K$, the unit clause $U \in K$, and
+$C$ is subsumed by $U$, then we can reduce the set $K$ by unit subsumption to the set $K - \{ C \}$,
+thus we can delete the clause $C$ from $K$.  In order to implement this, we define a function
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{subsume}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$,\index{\texttt{subsume}}
 \\[0.2cm]
-die eine gegebene Klauselmenge $K$, welche die Unit-Klausel $\{l\}$ enthält, mittels Subsumption 
-dadurch vereinfacht, dass alle durch $\{l\}$ subsumierten Klauseln aus $K$ gelöscht werden.
-Die Unit-Klausel $\{l\}$ selbst behalten wir natürlich.  Daher definieren wir:
+which simplifies a given set of clauses $K$, containing the unit clause $\{l\}$, through subsumption
+by deleting all clauses subsumed by $\{l\}$ from $K$.
+The unit clause $\{l\}$ itself is, of course, retained. Therefore, we define:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{subsume}(K, l) := 
 \bigl(K \backslash \bigl\{ C \in K \mid l \in C \bigr\}\bigr) \cup \bigl\{\{l\}\bigr\} = 
 \bigl\{ C \in K \mid l \not\in C \bigr\} \cup \bigl\{\{l\}\bigr\}$.
 \\[0.2cm]
-In der obigen Definition muss die Unit-Klausel $\{l\}$ in das Ergebnis eingefügt werden, weil die Menge
-\mbox{$\bigl\{ C \in K \mid l \not\in C \bigr\}$} die Unit-Klausel $\{l\}$ nicht enthält.  Die beiden Klausel-Mengen
-$\mathtt{subsume}(K,l)$ und $K$ sind genau dann äquivalent, wenn $\{l\} \in K$ gilt.  
-Eine Klauselmenge $K$ werden wir daher nur dann mit Hilfe des Ausdrucks $\texttt{subsume}(K, l)$ vereinfachen, wenn 
-die Unit-Klausel $\{l\}$ in der Menge $K$ ent\-halten ist.
+In the above definition, the unit clause $\{l\}$ must be included in the result because the set
+\mbox{$\bigl\{ C \in K \mid l \not\in C \bigr\}$} does not contain the unit clause $\{l\}$. The two sets of clauses
+$\mathtt{subsume}(K,l)$ and $K$ are equivalent if and only if $\{l\} \in K$.
+Therefore, a set of clauses $K$ will only be simplified using the expression $\texttt{subsume}(K, l)$ if
+the unit clause $\{l\}$ is contained in the set $K$.
 
-\subsection{Vereinfachung durch Fallunterscheidung}
-Ein Kalkül, der nur mit Unit-Schnitten und Subsumption arbeitet, ist nicht 
-widerlegungs-vollständig.  Wir brauchen 
-daher eine weitere Verfahren, Klausel-Mengen zu vereinfachen.
-Eine solches Vereinfachen ist die \blue{Fallunterscheidung}.\index{Fallunterscheidung}  Dieses Prinzip basiert
-auf dem folgenden Satz.
+\subsection{Simplification through Case Distinction}
+A calculus that only uses unit cuts and subsumption is not refutation-complete. Therefore, we need another method to simplify sets of clauses.
+Such a simplification is \blue{case distinction}\index{case distinction}. This principle is based on the following theorem.
 
 \begin{Satz}
-  Ist $K$ eine Menge von Klauseln und ist $p$ eine aussagenlogische Variable, 
-  so ist $K$ genau dann erfüllbar, wenn $K \cup \bigl\{\{p\}\bigr\}$ oder 
-  $K \cup \bigl\{\{\neg p\}\bigr\}$ erfüllbar ist.  
+  If $K$ is a set of clauses and $p$ is a propositional variable,
+  then $K$ is satisfiable if and only if $K \cup \bigl\{\{p\}\bigr\}$ or
+  $K \cup \bigl\{\{\neg p\}\bigr\}$ is satisfiable.
 \end{Satz}
 
 \noindent
-\textbf{Beweis}:
+\textbf{Proof}:
 \begin{enumerate}
 \item[``$\Rightarrow$'':] 
-  Ist $K$ erfüllbar durch eine Belegung $\I$, so gibt es für  $\I(p)$ zwei Möglichkeiten, denn 
-  $\mathcal{I}(p)$ ist entweder wahr oder falsch.  Falls $\I(p) = \texttt{True}$ ist, ist damit auch die Menge $K \cup
-  \bigl\{\{p\}\bigr\}$ erfüllbar,
-  andernfalls ist $K \cup \bigl\{\{\neg p\}\bigr\}$
-  erfüllbar. 
+  If $K$ is satisfied by an assignment $\I$, then there are two possibilities for $\I(p)$, as 
+  $\mathcal{I}(p)$ is either true or false. If $\I(p) = \texttt{True}$, then the set $K \cup
+  \bigl\{\{p\}\bigr\}$ is also satisfiable,
+  otherwise $K \cup \bigl\{\{\neg p\}\bigr\}$
+  is satisfiable.
 \item[``$\Leftarrow$'':] 
-  Da $K$ sowohl eine Teilmenge von $K \cup \bigl\{\{p\}\bigr\}$ als auch von 
-  $K \cup \bigl\{\{\neg p\}\bigr\}$ ist, ist klar, dass $K$ erfüllbar
-  ist, wenn eine dieser Mengen erfüllbar sind.  
+  Since $K$ is a subset of both $K \cup \bigl\{\{p\}\bigr\}$ and of 
+  $K \cup \bigl\{\{\neg p\}\bigr\}$, it is clear that $K$ is satisfiable
+  if any of these sets is satisfiable.
 \qed
 \end{enumerate}
 
-Wir können nun eine Menge $K$ von Klauseln dadurch vereinfachen, dass wir eine
-aussagenlogische Variable $p$ wählen, die in $K$ vorkommt.
-Anschließend bilden wir die Mengen \\[0.2cm]
-\hspace*{1.3cm} $K_1 := K \cup \bigl\{\{p\}\bigr\}$ \quad und \quad $K_2 := K \cup
+We can now simplify a set of clauses $K$ by selecting a propositional variable $p$ that occurs in $K$.
+Then we form the sets \\[0.2cm]
+\hspace*{1.3cm} $K_1 := K \cup \bigl\{\{p\}\bigr\}$ \quad and \quad $K_2 := K \cup
 \bigl\{\{\neg p\}\bigr\}$
 \\[0.2cm]
-und untersuchen rekursiv ob $K_1$ erfüllbar ist.  Falls wir eine Lösung für $K_1$ finden,
-ist dies auch eine Lösung für die ursprüngliche Klausel-Menge $K$ und wir haben unser Ziel
-erreicht.
-Andernfalls untersuchen wir rekursiv ob $K_2$ erfüllbar ist.
-Falls wir eine Lösung finden, ist dies auch eine Lösung von $K$.  Wenn wir weder
-für $K_1$ noch für $K_2$ eine Lösung finden, dann kann auch $K$ keine Lösung haben,
-denn jede Lösung $\mathcal{I}$ von $K$ muss die Variable $p$ entweder wahr oder falsch machen.
-Die rekursive Untersuchung von $K_1$ bzw.~$K_2$ ist leichter als die Untersuchung von $K$,
-weil wir ja in $K_1$ und $K_2$ mit den Unit-Klausel $\{p\}$ bzw.~$\{\neg p\}$
-sowohl Unit-Subsumptionen als auch Unit-Schnitte durchführen können und dadurch diese Mengen vereinfacht
-werden. 
+and recursively investigate whether $K_1$ is satisfiable. If we find a solution for $K_1$,
+this is also a solution for the original set of clauses $K$, and we have achieved our goal.
+Otherwise, we recursively investigate whether $K_2$ is satisfiable.
+If we find a solution, this is also a solution for $K$. If we find no solution
+for either $K_1$ or $K_2$, then $K$ cannot have a solution either,
+since any solution $\mathcal{I}$ for $K$ must make the variable $p$ either true or false.
+The recursive examination of $K_1$ or $K_2$ is easier than the examination of $K$,
+because in $K_1$ and $K_2$, with the unit clauses $\{p\}$ and $\{\neg p\}$,
+we can perform both unit subsumptions and unit cuts, thereby simplifying these sets.
 
-
-\subsection{Der Algorithmus}
-Wir können jetzt den Algorithmus von Davis und Putnam \index{Davis-Putnam Algorithmus} skizzieren.
-Gegeben sei eine Menge $K$ von Klauseln.  Gesucht ist dann eine Lösung von $K$.  Wir
-suchen  also eine Belegung $\I$, so dass gilt: \\[0.2cm]
-\hspace*{1.3cm} $\I(C) = \texttt{True}$ \quad für alle $C \in K$.\\[0.2cm]
-Das Verfahren von Davis und Putnam besteht nun aus den folgenden Schritten.
+\subsection{The Algorithm}
+We can now outline the Davis and Putnam algorithm \index{Davis-Putnam Algorithm}.
+Given a set of clauses $K$, the goal is to find a solution for $K$. We
+are looking for an assignment $\I$, such that: \\[0.2cm]
+\hspace*{1.3cm} $\I(C) = \texttt{True}$ \quad for all $C \in K$.\\[0.2cm]
+The algorithm of Davis and Putnam consists of the following steps.
 \begin{enumerate}
-\item Führe alle Unit-Schnitte und Unit-Subsumptionen aus, die mit Klauseln aus $K$ möglich sind.
-\item Falls $K$ jetzt trivial ist, endet das Verfahren.
+\item Perform all unit cuts and unit subsumptions that are possible with clauses from $K$.
+\item Then, If $K$ is trivial, the procedure ends.
      \begin{enumerate}
-     \item Wenn $\{\} \in K$ ist, dann ist $K$ unlösbar.
-     \item Andernfalls ist die aussagenlogische Interpretation 
+     \item If $\{\} \in K$, then $K$ is unsolvable.
+     \item Otherwise, the propositional interpretation
            \\[0.2cm]
            \hspace*{1.3cm}
            $\mathcal{I} := \bigl\{ p \mapsto \mathtt{True}  \mid p \in \mathcal{P} \wedge \{p\}\in K\bigr\} \cup
                            \bigl\{ p \mapsto \mathtt{False} \mid p \in \mathcal{P} \wedge \{\neg p\}\in K\bigr\}  $
            \\[0.2cm]
-           eine Lösung von $K$.     
+           is a solution for $K$.     
      \end{enumerate}
-\item Falls $K$ nicht trivial ist, wählen wir eine aussagenlogische Variable $p$, die in $K$ auftritt.
+\item If $K$ is not trivial, select a propositional variable $p$ that appears in $K$.
       \begin{enumerate}
-      \item Jetzt versuchen  wir rekursiv,  die Klausel-Menge \\[0.2cm]
+      \item We then try recursively to solve the set of clauses \\[0.2cm]
             \hspace*{1.3cm}  $K \cup \bigl\{\{p\}\bigr\}$ \\[0.2cm]
-            zu lösen. Falls diese gelingt, haben wir eine Lösung von $K$.
-      \item Falls $K \cup \bigl\{\{p\}\bigr\}$ nicht lösbar ist, versuchen wir stattdessen, die Klausel-Menge
+            If successful, we have found a solution for $K$.
+      \item If $K \cup \bigl\{\{p\}\bigr\}$ is unsolvable, we instead try to solve the set of clauses
             \\[0.2cm] 
             \hspace*{1.3cm} $K \cup \bigl\{\{\neg p\}\bigr\}$
             \\[0.2cm]
-            zu lösen.  Wenn auch dies fehlschlägt, ist $K$ unlösbar.  Andernfalls
-            haben wir eine Lösung von $K$.
+            If this also fails, $K$ is unsolvable. Otherwise,
+            we have found a solution for $K$.
       \end{enumerate}
 \end{enumerate}
-Für die Implementierung ist es zweckmäßig, die beiden oben definierten Funktionen $\texttt{unitCut}()$ und
-$\texttt{subsume}()$ zu einer Funktion zusammen zu fassen.  Wir definieren daher die Funktion
+In order to implement this algorithm, it is convenient to combine the two functions $\texttt{unitCut}()$ and
+$\texttt{subsume}()$ into a single function. Therefore, we define the function
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{reduce}: 2^\mathcal{K} \times \mathcal{L} \rightarrow 2^\mathcal{K}$\index{\texttt{reduce}}
 \\[0.2cm]
-wie folgt: 
+as follows: 
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{reduce}(K,l)  = 
@@ -2802,77 +2795,78 @@ $\texttt{reduce}(K,l)  =
        \,\cup\, \Bigl\{\, C \in K \mid \komplement{l} \not\in C \wedge l \not\in C \Bigr\} \cup \bigl\{\{l\}\bigr\}.
 $
 \\[0.2cm]
-Die Menge enthält also einerseits die Ergebnisse von Schnitten mit
-der Unit-Klausel $\{l\}$ und andererseits nur die Klauseln $C$,
-die mit $l$ nichts zu tun haben, weil weder $l \in C$ noch $\komplement{l} \in C$
-gilt.  Außerdem fügen wir noch die Unit-Klausel $\{l\}$ hinzu.
-Dadurch erreichen wir, dass die beiden Mengen $K$ und $\texttt{reduce}(K,l)$
-logisch äquivalent sind, falls $\{l\} \in K$ gilt.
-Wir werden daher $K$ nur dann durch $\mathtt{reduce}(K, l)$ ersetzen, wenn $\{l\} \in K$ ist.
+Thus, the set contains the results of cuts with
+the unit clause $\{l\}$ and we have removed those clauses that are subsumed by the unit clause $\{l\}$.
+The two sets $K$ and $\texttt{reduce}(K,l)$ are logically equivalent, if $\{l\} \in K$.
+Therefore, $K$ will only be replaced by $\mathtt{reduce}(K, l)$ if $\{l\} \in K$.
 
-\subsection{Ein Beispiel}
-Zur Veranschaulichung demonstrieren wir das Verfahren von Davis und Putnam an einem Beispiel.
-Die Menge $K$ sei wie folgt definiert: \\[0.2cm]
+\subsection{An Example}
+To illustrate, we demonstrate the algorithm of Davis and Putnam with an example.
+The set $K$ is defined as follows: \\[0.2cm]
 \hspace*{-0.3cm}
- $K := \Big\{ \{p, q, s\},\; \{\neg p, r, \neg t\},\;  \{r, s\},\; \{\neg r, q, \neg p\}, 
-               \{\neg s, p\},\; \{\neg p, \neg q, s, \neg r\},\; \{p, \neg q, s\},\; \{\neg r, \neg s\},\;
+$K := \Big\{ \{p, q, s\},\; \{\neg p, r, \neg t\},\; \{r, s\},\; \{\neg r, q, \neg p\}, 
+             \{\neg s, p\},\; \{\neg p, \neg q, s, \neg r\},\; \{p, \neg q, s\},\; \{\neg r, \neg s\},\;
              \{\neg p, \neg s\} 
-        \Big\}$. 
+      \Big\}$. 
 \\[0.2cm]
-Wir zeigen nun mit dem Verfahren von Davis und Putnam, dass $K$ nicht lösbar ist.  Da die
-Menge $K$ keine Unit-Klauseln enthält, ist im ersten Schritt nichts zu tun.  Da $K$ nicht
-trivial ist, sind wir noch nicht fertig.  Also gehen wir jetzt zu Schritt 3 und wählen
-eine aussagenlogische Variable, die in $K$ auftritt.  An dieser Stelle ist es sinnvoll
-eine Variable zu wählen, die in möglichst vielen Klauseln von $K$ auftritt.  Wir wählen
-daher die aussagenlogische Variable $p$.
+We will show that $K$ is unsolvable. Since the
+set $K$ contains no unit clauses, there is nothing to do in the first step. Since $K$ is not
+trivial, we are not finished yet. Thus, we proceed to step 3 and choose
+a propositional variable that occurs in $K$. At this point, it makes sense
+to choose a variable that appears in as many clauses of $K$ as possible. We therefore choose
+the propositional variable $p$.
 \begin{enumerate}
-\item Zunächst bilden wir die Menge \\[0.2cm]
+\item First, we form the set \\[0.2cm]
       \hspace*{1.3cm} $K_0 := K \cup \bigl\{ \{p\} \bigr\}$       \\[0.2cm]
-      und versuchen, diese Menge zu lösen.  Dazu bilden wir \\[0.2cm]
+      and attempt to solve this set. To do this, we form \\[0.2cm]
       \hspace*{0.3cm} 
       $K_1 := \texttt{reduce}\bigl(K_0,p\bigr) = 
           \Big\{ \{r, \neg t\},\; \{r, s\},\; \{\neg r, q\},\; \{\neg q, s, \neg r\},\; \{\neg r, \neg s\},\; \{ \neg s\},\;\{p\}\, \Big\}$.
       \\[0.2cm]
-      Die Klausel-Menge $K_1$ enthält die Unit-Klausel $\{\neg s\}$,
-      so dass wir als nächstes mit dieser Klausel reduzieren können: \\[0.2cm]
+      The clause set $K_1$ contains the unit clause $\{\neg s\}$,
+      so next we reduce using this clause: \\[0.2cm]
       \hspace*{1.3cm} 
       $K_2 := \texttt{reduce}\bigl(K_1,\neg s\bigr) = 
               \Big\{ \{r, \neg t\},\; \{r\},\; \{\neg r, q\},\; \{\neg q, \neg r\},\; \{ \neg s\},\; \{p\} \Big\}$.
       \\[0.2cm]
-      Hier haben wir nun die neue Unit-Klausel $\{r\}$, mit der wir weiter reduzieren:
+      We have found the new unit clause $\{r\}$.  We use this unit clause to reduce $K_2$:
       \\[0.2cm]
       \hspace*{1.3cm} 
       $K_3 := \textsl{reduce}\bigl(K_2, r\bigr) = 
               \Big\{ \{r\},\; \{q\},\; \{\neg q\},\; \{ \neg s\},\; \{p\} \Big\}$
       \\[0.2cm]
-      Da $K_3$ die Unit-Klausel $\{q\}$ enthält, reduzieren wir jetzt mit $q$: \\[0.2cm]
+      Since $K_3$ contains the unit clause $\{q\}$, we now reduce with $q$:
+      \\[0.2cm]
       \hspace*{1.3cm} 
       $K_4 := \textsl{reduce}\bigl(K_3, q\bigr) = 
               \Big\{ \{r\},\; \{q\},\; \{\},\; \{ \neg s\},\; \{p\} \Big\}$.
       \\[0.2cm]
-      Die Klausel-Menge $K_4$ enthält die leere Klausel und ist damit unlösbar.
+      The clause set $K_4$ contains the empty clause and is therefore unsolvable.
      
-\item Also bilden wir jetzt die Menge \\[0.2cm]
+\item Thus, we now form the set
+      \\[0.2cm]
       \hspace*{1.3cm} $K_5 := K \cup \bigl\{ \{\neg p\} \bigr\}$ \\[0.2cm]
-      und versuchen, diese Menge zu lösen.  Dazu bilden wir
+      and attempt to solve this set. We form
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $K_6 = \textsl{reduce}\bigl(K_5, \neg p\bigr) =\Big\{ \{q, s\},\; \{r, s\},\;\{\neg s\},\; \{\neg q, s\},\; \{\neg r, \neg s\},\;\{\neg p\}\, \Big\}$.
+      $K_6 = \textsl{reduce}\bigl(K_5, \neg p\bigr) =
+      \Big\{ \{q, s\},\; \{r, s\},\;\{\neg s\},\; \{\neg q, s\},\; \{\neg r, \neg s\},\;\{\neg p\}\, \Big\}$.
       \\[0.2cm]
-      Die Menge $K_6$ enthält die  Unit-Klausel $\{\neg s\}$.  Wir bilden daher \\[0.2cm]
+      The set $K_6$ contains the unit clause $\{\neg s\}$.
+      We therefore form \\[0.2cm]
       \hspace*{1.3cm} 
       $K_7 = \textsl{reduce}\bigl(K_6, \neg s\bigr) =\Big\{ \{q\},\; \{r\},\;\{\neg s\},\; \{\neg q\},\;\{\neg p\}\, \Big\}$.
       \\[0.2cm]
-      Die Menge $K_7$ enthält die neue Unit-Klausel $\{q\}$, mit der wir als nächstes reduzieren:\\[0.2cm]
+      The set $K_7$ contains the new unit clause $\{q\}$.  We use this unit clause to reduce $K_7$:
+      \\[0.2cm]
       \hspace*{1.3cm} 
       $K_8 = \textsl{reduce}\bigl(K_7, q \bigr) =\Big\{ \{q\},\; \{r\},\;\{\neg s\},\; \{\},\;\{\neg p\}\, \Big\}$.
       \\[0.2cm]
-      Da $K_8$ die leere Klausel enthält, ist $K_8$ und damit auch die ursprünglich
-      gegebene Menge $K$ unlösbar.
+      Since $K_8$ contains the empty clause, $K_8$ and thus the originally
+      given set $K$ is unsolvable.
 \end{enumerate}
-Bei diesem Beispiel hatten wir Glück, denn wir mussten nur eine einzige Fallunterscheidung
-durchführen. Bei komplexeren Beispielen ist es häufig so, dass wir innerhalb einer Fallunterscheidung eine
-oder mehrere weitere Fallunterscheidungen durchführen müssen.
+In this example, we were fortunate as we only had to make a single case distinction.
+In more complex examples, it is often necessary to perform more than one case distinction.
 
 \subsection{Implementierung des Algorithmus von Davis und Putnam}
 Wir zeigen jetzt die Implementierung der Funktion 
