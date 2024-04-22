@@ -2840,33 +2840,28 @@ the propositional variable $p$.
 In this example, we were fortunate as we only had to make a single case distinction.
 In more complex examples, it is often necessary to perform more than one case distinction.
 
-\subsection{Implementierung des Algorithmus von Davis und Putnam}
-Wir zeigen jetzt die Implementierung der Funktion 
+\subsection{Implementation of the Davis and Putnam Algorithm}
+Next, we provide the implementation of the function 
 \href{https://github.com/karlstroetmann/Logic/blob/master/SetlX/davis-putnam.stlx}{\texttt{solve}}, 
-mit der die Frage, ob eine Menge von Klauseln erfüllbar ist, beantwortet werden kann. Die
-Implementierung ist in Abbildung \ref{fig:solve} auf Seite \pageref{fig:solve}
-gezeigt.  Die Funktion erhält zwei Argumente: Die Mengen \texttt{Clauses} und \texttt{Variables}.
-Hier ist \texttt{Clauses} eine Menge von Klauseln und \texttt{Variables} ist eine Menge von
-Variablen.  Falls die Menge \texttt{Clauses} erfüllbar ist, so liefert
-der Aufruf 
+which can answer the question of whether a set of clauses is satisfiable. The
+implementation is shown in Figure \ref{fig:solve} on page \pageref{fig:solve}.
+The function receives two arguments: The sets \texttt{Clauses} and \texttt{Variables}.
+Here, \texttt{Clauses} is a set of clauses and \texttt{Variables} is a set of
+variables. If the set \texttt{Clauses} is satisfiable, then the call
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{solve(Clauses, Variables)} \index{\texttt{solve}}
 \\[0.2cm]
-eine Menge von Unit-Klauseln \texttt{Result}, so
-dass jede Belegung $\I$, die alle Unit-Klauseln aus \texttt{Result} erfüllt, auch alle Klauseln aus
-der Menge  $\texttt{Clauses}$ erfüllt.  Falls die Menge $\texttt{Clauses}$ nicht erfüllbar ist, liefert der Aufruf
+returns a set of unit clauses \texttt{Result}, such
+that any assignment $\I$, which satisfies all unit clauses from \texttt{Result}, also satisfies all clauses from
+the set $\texttt{Clauses}$. If the set $\texttt{Clauses}$ is not satisfiable, the call
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{solve(Clauses, Variables)} 
 \\[0.2cm]
-als Ergebnis die Menge $\bigl\{ \{\} \bigr\}$ zurück, denn die leere Klausel repräsentiert die unerfüllbare Formel $\falsum$.
+returns the set $\bigl\{ \{\} \bigr\}$, as the empty clause represents the unsatisfiable formula $\falsum$.
 
-Sie fragen sich vielleicht, wozu wir in der Funktion \texttt{solve} die Menge
-\texttt{Variables} brauchen.  Der Grund ist, dass wir uns bei den rekursiven Aufrufen
-merken müssen, welche Variablen wir schon für Fallunterscheidungen benutzt haben.  Diese Variablen sammeln wir in der
-Menge \texttt{Variables}.
-
+You might wonder why we need the set \texttt{Variables} in the function \texttt{solve}. The reason is that we need to keep track of which variables we have already used for case distinctions during the recursive calls. These variables are collected in the set \texttt{Variables}.
 
 \begin{figure}[!ht]
   \centering
@@ -2880,9 +2875,9 @@ Menge \texttt{Variables}.
               ]{python3}
     def solve(Clauses, Variables):
         S      = saturate(Clauses)
-        empty  = frozenset()
-        Falsum = {empty}
-        if empty in S:                  # S is inconsistent
+        Empty  = frozenset()
+        Falsum = { Empty }
+        if Empty in S:                  # S is inconsistent
             return Falsum           
         if all(len(C) == 1 for C in S): # S is trivial
             return S
@@ -2891,55 +2886,50 @@ Menge \texttt{Variables}.
         p       = extractVariable(l)
         newVars = Variables | { p }
         Result  = solve(S | { frozenset({l}) }, newVars)
-        if not isFalsum(Result):
+        if Result != Falsum:
             return Result
         return solve(S | { frozenset({lBar}) }, newVars)
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Die Funktion \texttt{solve}}
+  \caption{The function \texttt{solve}.}
   \label{fig:solve}
 \end{figure} 
-
-Die in Abbildung \ref{fig:solve} gezeigte Implementierung funktioniert wie folgt:
 \begin{enumerate}
-\item In Zeile 2 reduzieren wir mit Hilfe der Methode \texttt{saturate} 
-      solange wie möglich die gegebene Klausel-Menge \texttt{Clauses} mit Hilfe
-      von Unit-Schnitten und entfernen alle Klauseln, die durch Unit-Klauseln
-      subsumiert werden.
-\item Anschließend testen wir in Zeile 5, ob die so vereinfachte Klausel-Menge \texttt{S}
-      die leere Klausel enthält und geben in diesem Fall als Ergebnis die Menge 
-      $\bigl\{\{\}\bigr\}$ zurück.
-\item Dann testen wir in Zeile 7, ob bereits alle Klauseln $C$ aus der Menge
-      \texttt{S} Unit-Klauseln sind.  Wenn dies so ist,
-      dann ist die Menge \texttt{S} trivial und wir geben diese Menge als Ergebnis zurück.
-\item Andernfalls wählen wir in Zeile 9 ein Literal $l$, das in einer Klausel aus der Menge \texttt{S} vorkommt, 
-      das wir aber noch nicht benutzt haben.
-      Wir untersuchen dann in Zeile 13 rekursiv, ob die Menge \\[0.2cm]
+\item In line 2, we reduce the given set of clauses \texttt{Clauses} as much as possible using the method \texttt{saturate},
+      applying unit cuts and removing all clauses that are subsumed by unit clauses.
+\item Next, we test in line 5 if the simplified set of clauses \texttt{S}
+      contains the empty clause, and if so, we return the set 
+      $\bigl\{\{\}\bigr\}$ as the result.
+\item Then, in line 7, we check if all clauses $C$ from the set
+      \texttt{S} are unit clauses. If this is the case,
+      the set \texttt{S} is trivial and we return this set as the result.
+\item Otherwise, in line 9 we select a literal $l$ that appears in a clause from the set \texttt{S} 
+      but has not yet been used.
+      We then recursively investigate in line 13 whether the set \\[0.2cm]
       \hspace*{1.3cm} 
       $\texttt{S} \cup \bigl\{\{\texttt{l}\}\bigr\}$ 
       \\[0.2cm]
-      lösbar ist.  Dabei gibt es zwei Fälle:
+      is solvable. There are two cases:
       \begin{enumerate}
-      \item Falls diese Menge lösbar ist, geben wir die Lösung dieser Menge als Ergebnis zurück.
+      \item If this set is solvable, we return the solution of this set as the result.
 
-      \item Sonst prüfen wir rekursiv, ob die Menge 
+      \item Otherwise, we recursively check whether the set 
             \\[0.2cm]
             \hspace*{1.3cm}
             $\texttt{S} \cup \Bigl\{ \bigl\{ \komplement{\texttt{l}} \bigr\} \Bigr\}$ 
             \\[0.2cm]
-            lösbar ist.  Ist diese Menge lösbar, so ist diese Lösung auch eine
-            Lösung der Menge $\texttt{Clauses}$ und wir geben diese Lösung zurück.  Ist die
-            Menge unlösbar, dann muss auch die Menge $\texttt{Clauses}$ unlösbar sein.
+            is solvable. If this set is solvable, then this solution is also a
+            solution of the set $\texttt{Clauses}$, and we return this solution. If the
+            set is unsolvable, then the set $\texttt{Clauses}$ must also be unsolvable.
       \end{enumerate}
 \end{enumerate}
 
-Wir diskutieren nun die Hilfsprozeduren, die bei der Implementierung der Funktion
-\texttt{solve} verwendet wurden.
-Als erstes besprechen wir die Funktion \texttt{saturate}.  Diese Funktion erhält eine
-Menge $S$ von Klauseln als Eingabe und führt alle möglichen Unit-Schnitte und
-Unit-Subsumptionen durch.  
-Die Funktion \texttt{saturate} ist in Abbildung \ref{fig:saturate} auf Seite \pageref{fig:saturate}
-gezeigt.
+We now discuss the auxiliary procedures used in the implementation of the function
+\texttt{solve}.
+First, we discuss the function \texttt{saturate}. This function receives a
+set $S$ of clauses as input and performs all possible unit cuts and
+unit subsumptions.
+The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pageref{fig:saturate}.
 
 \begin{figure}[!ht]
   \centering
@@ -2964,42 +2954,39 @@ gezeigt.
         return S
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Die Funktion \texttt{saturate}. \index{\texttt{saturate}}}
+  \caption{The function \texttt{saturate}. \index{\texttt{saturate}}}
   \label{fig:saturate}
 \end{figure} 
-Die Implementierung von \texttt{saturate} funktioniert wie folgt: 
 \begin{enumerate}
-\item Zunächst kopieren wir die Menge \texttt{Clauses} in die Variable \texttt{S}.
-      Dies ist notwendig, da wir die Menge \texttt{S} später verändern werden.  Die Funktion
-      \texttt{saturate} soll das Argument \texttt{Clauses} aber nicht verändern und muss daher
-      eine Kopie der Menge \texttt{S} anlegen.
-\item Dann berechnen wir in Zeile 3 die Menge \texttt{Units} aller Unit-Klauseln.  
-\item Anschließend initialisieren wir in Zeile 4 die Menge \texttt{Used} als die leere Menge.
-      In dieser Menge merken wir uns, welche Unit-Klauseln wir schon für Unit-Schnitte und
-      Subsumptionen benutzt haben.
-\item Solange die Menge \texttt{Units} der Unit-Klauseln nicht leer ist, wählen wir in Zeile 6
-      mit Hilfe der Funktion $\texttt{pop}$ eine beliebige Unit-Klausel \texttt{unit} aus der Menge
-      \texttt{Units} aus und entfernen diese Unit-Klausel aus der Menge \texttt{Units}. 
-\item In Zeile 7 fügen wir die Klausel \texttt{unit} zu der Menge
-      \texttt{Used} der benutzten Klausel hinzu.  
-\item In Zeile 8 extrahieren mit der Funktion \texttt{arb} das Literal \texttt{l} der Klausel
-      \texttt{Unit}.  Die Funktion $\texttt{arb}$ liefert ein beliebiges Element der Menge zurück,
-      das dieser Funktion als Argument übergeben wird.  Enthält diese Menge nur ein Element, so
-      wird also dieses Element zurück gegeben.
-\item In Zeile 9 wird  die eigentliche Arbeit durch einen Aufruf der Funktion
-      \texttt{reduce} geleistet.  Diese Funktion berechnet alle Unit-Schnitte, die mit der
-      Unit-Klausel $\{\texttt{l}\}$ möglich sind und entfernt darüber hinaus alle Klauseln, die
-      durch die Unit-Klausel $\{\texttt{l}\}$ subsumiert werden.
-\item Wenn die Unit-Schnitte mit der Unit-Klausel $\{\texttt{l}\}$ berechnet werden, können neue
-      Unit-Klauseln entstehen, die wir in Zeile 10 aufsammeln.  Wir sammeln dort aber nur die Unit-Klauseln auf,
-       die wir noch nicht benutzt haben. 
-\item Die Schleife in den Zeilen 5 -- 10 wird nun solange durchlaufen, wie wir 
-      Unit-Klauseln finden, die wir noch nicht benutzt haben.
-\item Am Ende geben wir die verbliebene Klauselmenge als Ergebnis zurück.
+\item Initially, we copy the set \texttt{Clauses} into the variable \texttt{S}.
+      This is necessary because we will later modify the set \texttt{S}. The function
+      \texttt{saturate} should not alter the argument \texttt{Clauses} and therefore
+      it has to create a copy of the set \texttt{S}.
+\item Then, in line 3, we compute the set \texttt{Units} of all unit clauses.
+\item Next, in line 4, we initialize the set \texttt{Used} as an empty set.
+      In this set, we record which unit clauses we have already used for unit cuts and
+      subsumptions.
+\item As long as the set \texttt{Units} of unit clauses is not empty, we select in line 6
+      an arbitrary unit clause \texttt{unit} from the set \texttt{Units} using the function $\texttt{pop}$, and remove this unit clause from the set \texttt{Units}.
+\item In line 7, we add the clause \texttt{unit} to the set
+      \texttt{Used} of used clauses.
+\item In line 8, we extract the literal \texttt{l} from the clause
+      \texttt{Unit} using the function \texttt{arb}. The function $\texttt{arb}$ returns an arbitrary element of the set passed to it as an argument. If this set contains only one element, then
+      that element is returned.
+\item In line 9, the actual work is done by a call to the function
+      \texttt{reduce}. This function performs all possible unit cuts with the
+      unit clause $\{\texttt{l}\}$ and also removes all clauses that
+      are subsumed by the unit clause $\{\texttt{l}\}$.
+\item When the unit cuts with the unit clause $\{\texttt{l}\}$ are computed, new
+      unit clauses can emerge, which we collect in line 10.  Of course, we collect only those unit clauses
+      that have not yet been used.
+\item The loop in lines 5 -- 10 is continued as long as we
+      find unit clauses that have not been used.
+\item At the end,  return the remaining set of clauses is returned.
 \end{enumerate}
-Die dabei verwendete Funktion $\texttt{reduce}$ ist in Abbildung \ref{fig:reduce} gezeigt.
-Im vorigen Abschnitt hatten wir die Funktion $\textsl{reduce}(S, l)$, die eine
-Klausel-Menge $\texttt{Cs}$ mit Hilfe des Literals $l$ reduziert, als
+The function $\texttt{reduce}$  is shown in Figure \ref{fig:reduce}.
+In the previous section, we defined the function $\textsl{reduce}(S, l)$, which reduces a
+set of clauses $\texttt{Cs}$ using the literal $l$, as
 \\[0.2cm]
 \hspace*{1.3cm}
 $\textsl{reduce}(\texttt{Cs},l)  = 
@@ -3007,9 +2994,7 @@ $\textsl{reduce}(\texttt{Cs},l)  =
        \,\cup\, \Bigl\{\, C \in \texttt{Cs} \mid \komplement{l} \not\in C \wedge l \not\in C \Bigr\} \cup \Bigl\{\{l\}\Bigr\}
 $
 \\[0.2cm]
-definiert.
-Die Implementierung setzt diese Definition unmittelbar um.  
-
+The code is an immediate implementation of this definition.
 
 \begin{figure}[!ht]
   \centering
@@ -3028,33 +3013,9 @@ Die Implementierung setzt diese Definition unmittelbar um.
                | { frozenset({l}) }
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Die Funktion \texttt{reduce}. \index{\texttt{reduce}}}
+  \caption{The function \texttt{reduce}. \index{\texttt{reduce}}}
   \label{fig:reduce}
 \end{figure} 
-
-Die Implementierung des Algorithmus von Davis und Putnam benutzt außer den bisher diskutierten Funktionen
-noch zwei weitere Hilfsprozeduren, deren Implementierung in 
-Abbildung \ref{fig:solve-aux} auf Seite \pageref{fig:solve-aux} gezeigt wird.
-
-Die Funktion \texttt{selectLiteral} wählt ein Literal aus 
-einer gegeben Menge $\texttt{Clauses}$ von Klauseln aus, dessen Variable außerdem nicht in der Menge
-\texttt{Forbidden} von den Variablen vorkommen darf, die bereits benutzt worden sind.
-Dazu iterieren wir zunächst über alle Klauseln $C$ aus der Menge $\texttt{Clauses}$ und dann über alle Literale $l$
-der Klausel $C$.  Aus diesen Literalen extrahieren wir die darin enthaltene Variable mit Hilfe der Funktion
-\texttt{extractVariable}.  Anschließend wird das Literal zurück gegeben, für welches der Wert der
-\blue{Jeroslow-Wang-Heuristik} \index{Jeroslow-Wang-Heuristik} \cite{jeroslow:1990} maximal ist.  Für eine
-Menge von Klauseln $K$ und ein 
-Literal $l$ definieren wir die Jeroslow-Wang-Heuristik $\texttt{jw}(l)$ dabei wie folgt:
-\\[0.2cm]
-\hspace*{1.3cm}
-$\ds\mathtt{jw}(l) := \sum\limits_{\{C \in K \,\mid\, l \in C\}} \frac{1}{2^{|C|}}$
-\\[0.2cm]
-Hier bezeichnet $|C|$ die Anzahl der Literale, die in der Klausel $C$ auftreten.  Die Idee ist hier, dass wir
-ein Literal $l$ auswählen wollen, das in möglichst vielen Klauseln vorkommt, denn diese Klauseln werden dann
-durch das Literal subsumiert.  Hier ist es aber wichtiger, solche Klauseln zu subsumieren, die möglichst wenig
-Literale enthalten, denn diese Klauseln sind schwieriger zu erfüllen.  Das liegt daran, dass eine Klausel
-bereits erfüllt ist, wenn auch nur ein einziges Literal aus der Klausel erfüllt wird.  Je mehr Literale die
-Klausel enthält, um so leichter ist es also, diese Klausel zu erfüllen.
 
 
 \begin{figure}[!ht]
@@ -3080,22 +3041,49 @@ Klausel enthält, um so leichter ist es also, diese Klausel zu erfüllen.
                 if cmp in C: 
                     Scores[cmp] += 2 ** -len(C)
         return max(Scores, key=Scores.get)
+
+    def extractVariable(l):
+        match l:
+            case ('¬', p): return p
+            case p       : return p
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Die Funktionen \texttt{select} und \texttt{negateLiteral}}
+  \caption{The functions \texttt{select} and \texttt{negateLiteral}.}
   \label{fig:solve-aux}
 \end{figure}
+\begin{enumerate}
+\item The function \texttt{selectLiteral} selects a literal from 
+a given set $\texttt{Clauses}$ of clauses, where the variable of the literal must not appear in the set
+\texttt{Forbidden} of variables that have already been used.
+To do this, we first iterate over all clauses $C$ from the set $\texttt{Clauses}$ and then over all literals $l$
+in the clause $C$. From these literals, we extract the variable contained within using the function
+\texttt{extractVariable}. Subsequently, we return the literal for which the value of the
+\blue{Jeroslow-Wang Heuristic} \index{Jeroslow-Wang Heuristic} \cite{jeroslow:1990} is maximal. For a
+set of clauses $K$ and a 
+literal $l$, we define the Jeroslow-Wang heuristic $\texttt{jw}(K, l)$ as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds\mathtt{jw}(K, l) := \sum\limits_{\{C \in K \,\mid\, l \in C\}} \frac{1}{2^{|C|}}$
+\\[0.2cm]
+Here, $|C|$ denotes the number of literals appearing in the clause $C$. The idea is that we
+want to select a literal $l$ that appears in as many clauses as possible, as these clauses are then
+subsumed by the literal. However, it is more important to subsume clauses that contain as few
+literals as possible, as these clauses are harder to satisfy. This is because a clause
+is satisfied if even a single literal from the clause is satisfied. The more literals the
+clause contains, the easier it is to satisfy this clause.
+\end{enumerate}
+The implementation of the other auxiliary function discussed here, \texttt{extractVariable}, is
+straightforward.
 
-Die oben dargestellte Version des Verfahrens von Davis und Putnam lässt sich in vielerlei
-Hinsicht verbessern.  Aus Zeitgründen können wir auf solche Verbesserungen nicht
-weiter eingehen. Der interessierte Leser sei hier auf die folgende Arbeit von Moskewicz
-et.al.~\cite{moskewicz:2001}  verwiesen: 
+The version of the Davis and Putnam procedure presented above can be improved in many ways.
+Due to time constraints, we cannot discuss these improvements. Interested readers are
+referred to the following paper by Moskewicz et.al.~\cite{moskewicz:2001}: 
 \\[0.2cm]
 \hspace*{1.3cm} \textsl{Chaff: Engineering an Efficient SAT Solver} \\
-\hspace*{1.3cm} von \blue{M. Moskewicz, C. Madigan, Y. Zhao, L. Zhang, S. Malik} 
+\hspace*{1.3cm} by \blue{M. Moskewicz, C. Madigan, Y. Zhao, L. Zhang, S. Malik} 
 
-\exercise
-Die Klausel-Menge $M$ sei wie folgt gegeben: \\[0.2cm]
+\exerciseEng
+The set of clauses $M$ is given as follows: \\[0.2cm]
 \hspace*{1.3cm} $M := \bigl\{ \; \{ r, p, s \},
                          \{r, s \}, \{ q, p, s \},
                          \{ \neg p,  \neg q\},
@@ -3106,26 +3094,25 @@ Die Klausel-Menge $M$ sei wie folgt gegeben: \\[0.2cm]
                          \{r,  \neg s, q\},
                          \{ \neg r,  s, \neg q\},
                          \{s, \neg r\} \bigr\}$ \\[0.2cm]
-Überprüfen Sie mit dem Verfahren von Davis und Putnam, ob die Menge $M$ widersprüchlich ist.  
-\eox
+Check whether the set $M$ is contradictory.  \eox
 
-
-\section{Das 8-Damen-Problem}
-In diesem Abschnitt zeigen wir, wie bestimmte kombinatorische Probleme als aussagenlogische Fragestellungen
-formuliert werden können.  Diese können dann anschließend mit dem Algorithmus von Davis und Putnam gelöst werden.  Als
-konkretes Beispiel betrachten wir das \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{8-Damen-Problem}.  
-Dabei geht es darum, 8 Damen so auf einem Schach-Brett aufzustellen, dass keine Dame eine andere Dame schlagen kann.
-Beim \href{https://en.wikipedia.org/wiki/Chess}{Schach-Spiel} kann eine Dame dann eine andere Figur schlagen,
-wenn diese Figur entweder 
+\section{The 8-Queens Problem}
+In this section, we demonstrate how certain combinatorial problems can be reduced to the question whether a
+set of formulas from propositional logic is satisfiable.  These problems can then be solved using the algorithm of
+Davis and Putnam. As a specific example, we consider the
+\href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{8-Queens Problem}. 
+This involves placing 8 queens on a chessboard in such a way that no queen can attack another queen.
+In the \href{https://en.wikipedia.org/wiki/Chess}{game of chess}, a queen can attack another piece if that piece is either
 \begin{itemize}
-\item in derselben Reihe,
-\item in derselben Spalte  oder
-\item in derselben Diagonale
+\item in the same row,
+\item in the same column, or
+\item on the same diagonal
 \end{itemize}
-wie die Dame steht.  Abbildung \ref{fig:queens-problem} auf Seite \pageref{fig:queens-problem}
-zeigt ein Schachbrett, in dem sich in der dritten Reihe in der vierten Spalte
-eine Dame befindet.  Diese Dame kann auf alle die Felder ziehen, die mit Pfeilen markierte
-sind, und kann damit Figuren, die sich auf diesen Feldern befinden, schlagen.
+as the queen. Figure \ref{fig:queens-problem} on page \pageref{fig:queens-problem}
+shows a chessboard where in the third row and fourth column
+a queen is placed. This queen can move to all the fields marked with arrows,
+and thus can attack pieces that are on these fields.
+
 
 \begin{figure}[!ht]
   \centering
@@ -3154,25 +3141,24 @@ sind, und kann damit Figuren, die sich auf diesen Feldern befinden, schlagen.
 \multiput(4.5,5.75)(0,-1){5}{\vector(0,-1){0.5}}
 \end{picture}
 \vspace*{-1.0cm}
-  \caption{Das 8-Damen-Problem}
+  \caption{The 8-Queens-Problem.}
   \label{fig:queens-problem}
 \end{figure}
 
-Als erstes überlegen wir uns, wie wir ein Schach-Brett mit den darauf
-positionierten Damen aussagenlogisch repräsentieren können.  Eine Möglichkeit besteht darin, 
-für jedes Feld eine aussagenlogische Variable einzuführen.  Diese Variable drückt
-aus, dass auf dem entsprechenden Feld eine Dame steht.  Wir ordnen diesen Variablen wie
-folgt Namen zu:  Die Variable, die das $j$-te Feld in der $i$-ten
-Reihe bezeichnet, stellen wir durch den String
+First, let us consider how we can represent a chessboard with queens placed on it in propositional logic. One
+possibility is to introduce a propositional logic variable for each square. This variable expresses
+that there is a queen on the corresponding square. We assign names to these variables as
+follows: The variable that denotes the $j$-th square in the $i$-th
+row is represented by the string
 \\[0.2cm]
 \hspace*{1.3cm}
- $\texttt{'Q<}i\texttt{,}j\texttt{>'}$ \quad mit $i,j \in \{1, \cdots, 8\}$ 
+ $\texttt{"Q<}i\texttt{,}j\texttt{>"}$ \quad with $i,j \in \{1, \cdots, 8\}$
 \\[0.2cm]
-dar.   Wir nummerieren die Reihen dabei von oben beginnend von 1 bis 8 durch, während die
-Spalten von links nach rechts numeriert werden.  Abbildung \ref{fig:queens-assign} auf
-Seite \pageref{fig:queens-assign} zeigt die Zuordnung der Variablen zu den Feldern.  Die in Abbildung
-\ref{fig:var} gezeigte Funktion $\texttt{var}(r,c)$ berechnet die Variable, die ausdrückt, dass sich in Reihe
-$r$ und Spalte $c$ eine Dame befindet.
+We number the rows from top to bottom from 1 to 8, while the
+columns are numbered from left to right. Figure \ref{fig:queens-assign} on
+page \pageref{fig:queens-assign} shows the assignment of variables to the squares. The function shown in
+Figure \ref{fig:var} $\texttt{var}(r,c)$ calculates the variable that expresses that there is a queen in row
+$r$ and column $c$.
 
 
 \begin{figure}[!ht]
@@ -3190,7 +3176,7 @@ $r$ und Spalte $c$ eine Dame befindet.
         return 'Q<' + str(row) + ',' + str(col) + '>'
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Funktion \texttt{var} zur Berechnung der aussagenlogischen Variablen}
+\caption{The function \texttt{var} to compute a propositional variable.}
 \label{fig:var}
 \end{figure}
 
@@ -3286,46 +3272,33 @@ $r$ und Spalte $c$ eine Dame befindet.
 
 \end{picture}
 \vspace*{-1.0cm}
-  \caption{Zuordnung der Variablen}
+  \caption{Interpretation of the variables.}
   \label{fig:queens-assign}
 \end{figure}
 
-Als nächstes überlegen wir uns, wie wir die einzelnen Bedingungen des 8-Damen-Problems 
-als aussagenlogische
-Formeln kodieren können.  Letztlich lassen sich alle Aussagen der Form
+Next, we consider how to encode the individual conditions of the 8-Queens problem as formulas from
+propositional logic. Ultimately, all statements of the form 
 \begin{itemize}
-\item ``in einer Reihe steht höchstens eine Dame'', 
-\item ``in einer Spalte steht höchstens eine Dame'', oder 
-\item ``in einer Diagonale steht höchstens eine Dame'' 
+\item "at most one queen in a row",
+\item "at most one queen in a column", or
+\item "at most one queen in a diagonal"
 \end{itemize}
-auf dasselbe Grundmuster zurückführen:
-Ist eine Menge von aussagenlogischen Variablen \\[0.2cm]
+can be reduced to the same basic pattern:
+Given a set of propositional variables \\[0.2cm]
 \hspace*{1.3cm} $V = \{ x_1, \cdots, x_n \}$ \\[0.2cm]
-gegeben, so brauchen wir eine Formel die aussagt, dass \blue{höchstens} eine der Variablen aus
-$V$ den Wert \texttt{True} hat.  Das ist aber gleichbedeutend damit, dass für jedes Paar
-$x_i, x_j \in V$ mit $x_i \not= x_j$ die folgende Formel gilt: \\[0.2cm]
+we need a formula that states that \blue{at most} one of the variables in
+$V$ has the value \texttt{True}. This is equivalent to the statement that for every pair
+$x_i, x_j \in V$ with $x_i \neq x_j$, the following formula holds: \\[0.2cm]
 \hspace*{1.3cm} $\neg (x_i \wedge x_j)$. \\[0.2cm]
-Diese Formel drückt aus, dass die Variablen $x_i$ und $x_j$ nicht gleichzeitig den Wert
-\texttt{True} annehmen.  Nach den De\-Morgan'schen Gesetzen gilt
+This formula expresses that the variables $x_i$ and $x_j$ cannot both take the value
+\texttt{True} at the same time. According to De Morgan's laws, we have
 \\[0.2cm]
 \hspace*{1.3cm}
-$\neg (x_i \wedge x_j) \leftrightarrow \neg x_i \vee \neg x_j$
+$\neg (x_i \wedge x_j) \Leftrightarrow \neg x_i \vee \neg x_j$
 \\[0.2cm]
-und die Klausel auf der rechten Seite dieser Äquivalenz schreibt sich in Mengen-Schreibweise als
+and the clause on the right side of this equivalence can be written in set notation as
 \\[0.2cm]
-\hspace*{1.3cm}  $\{\neg x_i, \neg x_j \}$. \\[0.2cm]
-Die Formel, die für eine Variablen-Menge $V$ ausdrückt, dass keine zwei verschiedenen
-Variablen gleichzeitig wahr sind, kann daher als Klausel-Menge in der Form
-\\[0.2cm]
-\hspace*{1.3cm}
-$\bigl\{\, \{ \neg p, \neg q \} \;|\; p \in V \wedge\ q \in V \wedge p \not= q \bigr\}$
-\\[0.2cm]
-geschrieben werden.
-Wir setzen diese Überlegungen in eine \textsl{Python}-Funktion um.  Die in Abbildung \ref{fig:atMostOne}
-gezeigte Funktion \texttt{atMostOne}() bekommt als Eingabe eine Menge $S$ von
-aussagenlogischen Variablen.  Der Aufruf $\texttt{atMostOne}(S)$ berechnet eine Menge von
-Klauseln.  Diese Klauseln sind genau dann wahr, wenn höchstens eine der Variablen aus $S$
-den Wert \texttt{True} hat.
+\hspace*{1.3cm}  $\{\neg x_i, \neg x_j \}$. 
 
 \begin{figure}[!ht]
   \centering
@@ -3344,26 +3317,36 @@ den Wert \texttt{True} hat.
                }
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Die Funktion \texttt{atMostOne}}
+  \caption{The function \texttt{atMostOne}.}
   \label{fig:atMostOne}
 \end{figure}
 
-Mit Hilfe der Funktion \texttt{atMostOne} können wir nun die Funktion
-\texttt{atMostOneInRow} implementieren.  Der Aufruf \\[0.2cm]
+Therefore, the formula for a set of variables $V$ that expresses that no two different
+variables are simultaneously true can be written as a set of clauses in the form
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bigl\{\, \{ \neg p, \neg q \} \;|\; p \in V \wedge\ q \in V \wedge p \neq q \bigr\}$
+\\[0.2cm]
+We implement these considerations in a \textsl{Python} function. The function \texttt{atMostOne}() shown in Figure \ref{fig:atMostOne}
+receives as input a set $S$ of propositional variables. The call $\texttt{atMostOne}(S)$ calculates a set of
+clauses. These clauses are true if and only if at most one of the variables in $S$
+has the value \texttt{True}.
+
+With the help of the function \texttt{atMostOne}, we can now implement the function
+\texttt{atMostOneInRow}. The call \\[0.2cm]
 \hspace*{1.3cm} 
 \texttt{atMostOneInRow(row, n)} \\[0.2cm]
-berechnet für eine gegebene Reihe \texttt{row} bei einer Brettgröße von \texttt{n} eine Formel,
-die ausdrückt, dass in der Reihe \texttt{row} höchstens eine Dame steht.
-Abbildung \ref{fig:atMostOneInRow} zeigt die
-Funktion \texttt{atMostOneInRow}: Wir sammeln alle Variablen der durch \texttt{row}
-spezifizierten Reihe
-in der Menge 
+calculates for a given row \texttt{row} and a board size of \texttt{n} a formula
+that expresses that at most one queen is in the row \texttt{row}.
+Figure \ref{fig:atMostOneInRow} shows the
+function \texttt{atMostOneInRow}: We collect all the variables of the row specified by \texttt{row}
+in the set 
 \\[0.2cm]
 \hspace*{1.3cm}
 $\bigl\{ \texttt{var}(\texttt{row},j) \mid j \in \{1, \cdots, n \} \bigr\}$
 \\[0.2cm]
- auf und rufen mit dieser Menge die Funktion $\texttt{atMostOne}()$ auf, die das Ergebnis
-als Menge von Klauseln liefert.
+and call the function $\texttt{atMostOne}()$ with this set, which delivers the result
+as a set of clauses.
 
 \begin{figure}[!ht]
   \centering
@@ -3379,34 +3362,33 @@ als Menge von Klauseln liefert.
         return atMostOne({ var(row, col) for col in range(1,n+1) })
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Die Funktion \texttt{atMostOneInRow}}
+  \caption{The function \texttt{atMostOneInRow}.}
   \label{fig:atMostOneInRow}
 \end{figure}
-
-Als nächstes berechnen wir eine Formel die aussagt, dass \blue{mindestens} eine Dame in einer gegebenen
-Spalte steht.  Für die erste Spalte hätte diese Formel die Form 
+Next, we compute a formula that states that \blue{at least} one queen is in a given
+column. For the first column, this formula would look like
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{Q<1,1>} \vee \texttt{Q<2,1>} \vee \texttt{Q<3,1>} \vee \texttt{Q<4,1>} \vee \texttt{Q<5,1>} \vee
 \texttt{Q<6,1>} \vee \texttt{Q<7,1>} \vee \texttt{Q<8,1>}$
 \\[0.2cm]
-und wenn allgemein eine Spalte $c$ mit $c \in \{1,\cdots,8\}$ gegeben ist, lautet die Formel
+and generally, for a column $c$ where $c \in \{1,\cdots,8\}$, the formula is
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{Q<1,c>} \vee \texttt{Q<2,c>} \vee \texttt{Q<3,c>} \vee \texttt{Q<4,c>} \vee \texttt{Q<5,c>} \vee
 \texttt{Q<6,c>} \vee \texttt{Q<7,c>} \vee \texttt{Q<8,c>}$.
 \\[0.2cm]
-Schreiben wir diese Formel in der Mengenschreibweise als Menge von Klauseln, so erhalten wir
+When we write this formula in set notation as a set of clauses, we obtain
 \\[0.2cm]
 \hspace*{1.3cm}
 $\bigl\{ \{\texttt{Q<1,c>} , \texttt{Q<2,c>} , \texttt{Q<3,c>} , \texttt{Q<4,c>} , \texttt{Q<5,c>} ,
 \texttt{Q<6,c>} , \texttt{Q<7,c>} , \texttt{Q<8,c>} \}\bigr\}$.
 \\[0.2cm]
-Abbildung \ref{fig:oneInColumn} zeigt eine \textsl{Python}-Funktion, die für eine gegebene Spalte
-\texttt{col} und eine gegebene Brettgröße \texttt{n} die entsprechende Klausel-Menge berechnet.
-Der Schritt, von einer einzelnen Klausel 
-zu einer Menge von Klauseln überzugehen ist notwendig, denn unsere Implementierung des Algorithmus von
-Davis und Putnam arbeitet mit einer Menge von Klauseln.
+Figure \ref{fig:oneInColumn} shows a \textsl{Python} function that calculates the corresponding set of clauses for a given column
+\texttt{col} and a given board size \texttt{n}.
+The step of going from a single clause
+to a set of clauses is necessary because our implementation of the Davis and Putnam algorithm
+works with a set of clauses.
 
 \begin{figure}[!ht]
   \centering
@@ -3422,40 +3404,34 @@ Davis und Putnam arbeitet mit einer Menge von Klauseln.
         return { frozenset({ var(row, col) for row in range(1,n+1) }) }
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Die Funktion \texttt{oneInColumn}}
+  \caption{The Function \texttt{oneInColumn}}
   \label{fig:oneInColumn}
 \end{figure}
 
-An dieser Stelle erwarten Sie vielleicht, dass wir noch Formeln angeben die
-ausdrücken, dass in einer gegebenen Spalte höchstens eine Dame steht und dass in jeder
-Reihe mindestens eine Dame steht.
-Solche Formeln sind aber unnötig, denn wenn wir wissen, dass in jeder Spalte mindestens
-eine Dame steht, so wissen wir bereits, dass auf dem Brett mindestens 8 Damen stehen.
-Wenn wir nun zusätzlich wissen, dass in jeder Reihe höchstens eine Dame steht, so ist
-automatisch klar, dass höchstens 8 Damen auf dem Brett stehen.  Damit stehen also insgesamt genau
-8 Damen auf dem Brett.  Dann kann aber in jeder Spalte nur höchstens eine Dame stehen, denn sonst hätten wir
-mehr als 8 Damen auf dem Brett und genauso muss in jeder Reihe mindestens eine Dame stehen, denn sonst würden
-wir in der Summe nicht auf 8 Damen kommen. 
+At this point, you might expect us to provide formulas that express that there is at most one queen in a given column and that there is at least one queen in every row.
+However, such formulas are unnecessary because if we know that there is at least one queen in every column, we already know that there are at least 8 queens on the board.
+If we additionally know that there is at most one queen in each row, it is automatically clear that there are at most 8 queens on the board. Thus, there are exactly
+8 queens on the board. Therefore, there can only be at most one queen per column, otherwise, we would have more than 8 queens on the board, and similarly, there must be at least one queen in each row, otherwise, we would not reach a total of 8 queens.
 
-Als nächstes überlegen wir uns, wie wir die Variablen, die auf derselben \blue{Diagonale}
-stehen, charakterisieren können.  Es gibt grundsätzlich zwei verschiedene Arten von
-Diagonalen: \blue{Absteigende} Diagonalen und \blue{aufsteigende} Diagonalen.  Wir be\-trach\-ten zunächst
-die aufsteigenden Diagonalen.  Die längste aufsteigende Diagonale, wir sagen dazu auch
-\blue{Hauptdiagonale}, besteht im Fall eines $8 \times 8$-Bretts aus den
-Variablen \\[0.2cm]
+Next, let's consider how we can characterize the variables that are on the same \blue{diagonal}.
+There are basically two types of diagonals: \blue{descending} diagonals and \blue{ascending} diagonals. We first consider
+the ascending diagonals. The longest ascending diagonal, also called the
+\blue{main diagonal}, in the case of an $8 \times 8$ board consists of the
+variables \\[0.2cm]
 \hspace*{1.3cm} 
 $\texttt{Q<8,1>},\; \texttt{Q<7,2>},\; \texttt{Q<6,3>},\; \texttt{Q<5,4>},\; \texttt{Q<4,5>},\; \texttt{Q<3,6>},\; 
- \texttt{Q<2,7>},\; \texttt{Q<1,8>}$. 
+ \texttt{Q<2,7>},\; \texttt{Q<1,8>}$.
 \\[0.2cm]
-Die Indizes $r$ und $c$ der Variablen $\texttt{Q}(r,c)$ erfüllen offenbar
-die Gleichung \\[0.2cm]
+The indices $r$ and $c$ of the variables $\texttt{Q}(r,c)$ clearly satisfy
+the equation \\[0.2cm]
 \hspace*{1.3cm} $r + c = 9$. \\[0.2cm]
-Allgemein erfüllen die Indizes der Variablen einer aufsteigenden Diagonale, die mehr als ein Feld enthält, die
-Gleichung \\[0.2cm] 
+In general, the indices of the variables of an ascending diagonal that contains more than one square satisfy the
+equation \\[0.2cm] 
 \hspace*{1.3cm} $r + c = k$, \\[0.2cm]
-wobei $k$ im Falle eines $8 \times 8$ Schach-Bretts einen Wert aus der Menge $\{3, \cdots, 15 \}$ annimmt.  Den Wert $k$ geben wir als Argument bei der
-Funktion \texttt{atMostOneInRisingDiagonal} mit.  Diese Funktion ist in Abbildung
-\ref{fig:atMostOneInUpperDiagonal} gezeigt. 
+where $k$ for an $8 \times 8$ chess board takes a value from the set $\{3, \cdots, 15 \}$. We pass the value $k$ as an argument in the
+function \texttt{atMostOneInRisingDiagonal}. This function is shown in Figure
+\ref{fig:atMostOneInUpperDiagonal}.
+
 
 \begin{figure}[!ht]
   \centering
@@ -3475,25 +3451,24 @@ Funktion \texttt{atMostOneInRisingDiagonal} mit.  Diese Funktion ist in Abbildun
         return atMostOne(S)
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Die Funktion \texttt{atMostOneInUpperDiagonal}}
+  \caption{The function \texttt{atMostOneInUpperDiagonal}}
   \label{fig:atMostOneInUpperDiagonal}
 \end{figure}
 
-Um zu sehen, wie die Variablen einer fallenden Diagonale
-charakterisiert werden können, betrachten wir die fallende Hauptdiagonale, die aus den
-Variablen \\[0.2cm]
+To see how the variables of a descending diagonal can be characterized, let's consider the main descending diagonal, which consists of the
+variables \\[0.2cm]
 \hspace*{1.3cm} 
 $\texttt{Q<1,1>},\; \texttt{Q<2,2>},\; \texttt{Q<3,3>},\; \texttt{Q<4,4>},\; \texttt{Q<5,5>},\; 
  \texttt{Q<6,6>},\; \texttt{Q<7,7>},\; \texttt{Q<8,8>}$ 
 \\[0.2cm]
-besteht. Die Indizes  $r$ und $c$ dieser Variablen erfüllen offenbar
-die Gleichung \\[0.2cm]
+The indices $r$ and $c$ of these variables clearly satisfy
+the equation \\[0.2cm]
 \hspace*{1.3cm} $r - c = 0$. \\[0.2cm]
-Allgemein erfüllen die Indizes der Variablen einer absteigenden Diagonale die Gleichung \\[0.2cm]
+Generally, the indices of the variables on a descending diagonal satisfy the equation \\[0.2cm]
 \hspace*{1.3cm} $r - c = k$, \\[0.2cm]
-wobei $k$ einen Wert aus der Menge $\{-6, \cdots, 6 \}$ annimmt.  Den Wert $k$ geben wir als Argument bei der
-Funktion \texttt{atMostOneInLowerDiagonal} mit. Diese Funktion ist in Abbildung
-\ref{fig:atMostOneInLowerDiagonal} gezeigt. 
+where $k$ takes a value from the set $\{-6, \cdots, 6 \}$. We pass the value $k$ as an argument in the
+function \texttt{atMostOneInLowerDiagonal}. This function is shown in Figure
+\ref{fig:atMostOneInLowerDiagonal}.
 
 \begin{figure}[!ht]
   \centering
@@ -3513,28 +3488,26 @@ Funktion \texttt{atMostOneInLowerDiagonal} mit. Diese Funktion ist in Abbildung
         return atMostOne(S)
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Die Funktion \texttt{atMostOneInLowerDiagonal}}
+  \caption{The function \texttt{atMostOneInLowerDiagonal}.}
   \label{fig:atMostOneInLowerDiagonal}
 \end{figure}
 
-Jetzt sind wir in der Lage, unsere Ergebnisse zusammen zu fassen:  Wir können eine
-Menge von Klauseln konstruieren, die das 8-Damen-Problem vollständig beschreiben.
-Abbildung \ref{fig:allClauses} zeigt die Implementierung der Funktion \texttt{allClauses}.
-Der Aufruf \\[0.2cm]
+Now we are able to summarize our results: We can construct a set of clauses that fully describe the 8-Queens problem.
+Figure \ref{fig:allClauses} shows the implementation of the function \texttt{allClauses}.
+The call \\[0.2cm]
 \hspace*{1.3cm} $\texttt{allClauses}(n)$ \\[0.2cm]
-rechnet für ein Schach-Brett der Größe $n$ eine Menge von Klauseln aus, die
-genau dann erfüllt sind, wenn auf dem Schach-Brett
+computes for a chessboard of size $n$ a set of clauses that
+are satisfied if and only if on the chessboard
 \begin{enumerate}
-\item in jeder Reihe höchstens eine Dame steht (Zeile 2),
-\item in jeder absteigenden Diagonale höchstens eine Dame steht (Zeile 3),
-\item in jeder aufsteigenden Diagonale höchstens eine Dame steht (Zeile 4) und
-\item in jeder Spalte mindestens eine Dame steht (Zeile 5).
+\item there is at most one queen in each row (line 2),
+\item there is at most one queen in each descending diagonal (line 3),
+\item there is at most one queen in each ascending diagonal (line 4), and
+\item there is at least one queen in each column (line 5).
 \end{enumerate}
-Die Ausdrücke in den einzelnen Zeilen liefern Listen, deren Elemente
-Klausel-Mengen sind.  Was wir als Ergebnis brauchen, ist aber eine Klausel-Menge
-und keine Liste von Klausel-Mengen.  Daher wandeln wir in Zeile 6 die Liste \texttt{All} in eine Menge von
-Klauseln um.
-
+The expressions in the individual lines yield lists, whose elements
+are sets of clauses. What we need as a result, however, is a set of clauses
+and not a list of sets of clauses. Therefore, in line 6 we convert the list \texttt{All} into a set of
+clauses.
 
 \begin{figure}[!ht]
   \centering
@@ -3554,26 +3527,29 @@ Klauseln um.
         return { clause for S in All for clause in S }
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Die Funktion \texttt{allClauses}}
+  \caption{The function \texttt{allClauses}.}
   \label{fig:allClauses}
 \end{figure}
 
-Als letztes zeigen wir in Abbildung \ref{fig:solve:queens} die Funktion
-\texttt{queens}, mit der wir das 8-Damen-Problem lösen können.
+Finally, we show in Figure \ref{fig:solve:queens} the function
+\texttt{queens}, with which we can solve the 8-Queens problem.
 \begin{enumerate}
-\item Zunächst kodieren wir das Problem als eine Menge von Klauseln, die genau dann lösbar ist,
-      wenn das Problem eine Lösung hat.
-\item Anschließend berechnen wir die Lösung mit Hilfe der Funktion \texttt{solve} aus dem Modul
-      \texttt{davisPutnam}, das wir als \texttt{dp} importiert haben.
-\item Zum Schluss wird die berechnete Lösung mit Hilfe der Funktion \texttt{printBoard} ausgedruckt.
+\item First, we encode the problem as a set of clauses that is solvable
+      only if the problem has a solution.
+\item Then, we compute the solution using the function \texttt{solve} from the notebook
+      that implements the algorithm of Davis and Putnam.
+\item Finally, the computed solution is printed using the function \texttt{printBoard}.
 
-      Hierbei ist $\texttt{printBoard}$ eine Funktion, welche die Lösung in lesbarere Form 
-      ausdruckt.  Das funktioniert allerdings nur, wenn ein Font verwendet wird, bei dem alle Zeichen die
-      selbe Breite haben.  Diese Funktion ist der Vollständigkeit halber in Abbildung \ref{fig:printBoard}
-      gezeigt, wir wollen die Implementierung aber nicht weiter diskutieren.
+      Here, \texttt{printBoard} is a function that prints the solution in a more readable format.
+      However, this only works properly if a font is used where all characters have the same width.
+      This function is shown for completeness in Figure \ref{fig:printBoard}, but we will not discuss the implementation further.
 \end{enumerate}
-Das vollständige Programm finden Sie als Jupyter Notebook auf meiner Webseite unter dem Namen
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/N-Queens.ipynb}{\texttt{N-Queens.ipynb}}.
+The complete program is available as a Jupyter Notebook on GitHub as
+\\[0.2cm]
+\hspace*{0.0cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/08-N-Queens.ipynb}{\texttt{karlstroetmann/Logic/blob/master/Python/Chapter-4/08-N-Queens.ipynb}}.
+
+
 
 
 \begin{figure}[!ht]
@@ -3590,17 +3566,16 @@ Das vollständige Programm finden Sie als Jupyter Notebook auf meiner Webseite u
     def queens(n):
         "Solve the n queens problem."
         Clauses  = allClauses(n)
-        Solution = dp.solve(Clauses, set())
+        Solution = solve(Clauses, set())
         if Solution != { frozenset() }:
             return Solution
         else:
             print(f'The problem is not solvable for {n} queens!')
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Funktion \texttt{queens} zur Lösung des $n$-Damen-Problems.}
+\caption{The function \texttt{queens} that solves the $n$-queens-problem.}
 \label{fig:solve:queens}
 \end{figure}
-
 
 
 \begin{figure}[!ht]
@@ -3626,71 +3601,96 @@ Das vollständige Programm finden Sie als Jupyter Notebook auf meiner Webseite u
         display(board)        
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Funktion $\texttt{show\_solution}()$.}
+\caption{The function $\texttt{show\_solution}()$.}
 \label{fig:printBoard}
 \end{figure}
 
+The set \texttt{solution} calculated by the call $\texttt{solve}(\textsl{Clauses}, \{\})$ contains for each of the variables $\texttt{Q<}r\texttt{,}c\texttt{>}$
+either the unit clause $\{\texttt{Q<}r\texttt{,}c\texttt{>}\}$ (if there is a queen on this square) or
+the unit clause $\{ \texttt{(¬, Q<}r\texttt{,}c\texttt{>)}\}$ (if the square remains empty).
+A graphical representation of a computed solution can be seen in Figure \ref{fig:8-queens.pdf}.
+This graphical representation was generated using the library
+\href{https://python-chess.readthedocs.io/en/latest/}{\texttt{python-chess}} and the function
+\texttt{show\_solution}, which is shown in Figure \ref{fig:printBoard}.
 
-
-Die durch den Aufruf $\texttt{solve}(\textsl{Clauses}, \{\})$ 
-berechnete Menge \texttt{solution} enthält für jede der Variablen $\texttt{'Q<}r\texttt{,}c\texttt{>'}$
-entweder die Unit-Klausel $\{\texttt{'Q<}r\texttt{,}c\texttt{>'}\}$  (falls auf diesem Feld eine Dame steht) oder
-aber die Unit-Klausel  $\{ \texttt{('¬', 'Q<}r\texttt{,}c\texttt{>')}\}$ (falls das Feld leer bleibt).
-Eine graphische Darstellung einer berechneten Lösungen sehen Sie in Abbildung \ref{fig:8-queens.pdf}.
-Diese graphische Darstellung habe ich mit Hilfe der Bibliothek
-\href{https://python-chess.readthedocs.io/en/latest/}{\texttt{python-chess}} und der Funktion
-\texttt{show\_solution}, die in Abbildung \ref{fig:printBoard} gezeigt ist, erzeugt.
-
-Jessica Roth und Koen Loogman (das sind zwei ehemalige DHBW-Studenten) haben eine Animation des Verfahren von
-Davis und Putnam implementiert.  Sie können diese Animation unter der Adresse
+Jessica Roth and Koen Loogman (who are two former DHBW students) implemented an animation of the Davis and Putnam procedure. You can find and try this animation at the address
 \\[0.2cm]
 \hspace*{1.3cm}
 \href{https://koenloogman.github.io/Animation-Of-N-Queens-Problem-In-JavaScript/}{https://koenloogman.github.io/Animation-Of-N-Queens-Problem-In-JavaScript/}
 \\[0.2cm]
-im Netz finden und ausprobieren.
+on the internet.
 
-Das 8-Damen-Problem ist natürlich nur eine spielerische Anwendung der Aussagen-Logik.
-Trotzdem zeigt es die Leistungsfähigkeit des Algorithmus von Davis
-und Putnam sehr gut, denn die Menge der Klauseln, die von der Funktion \texttt{allClauses}
-berechnet wird, besteht aus 512 verschiedenen Klauseln.  In dieser Klausel-Menge kommen 64 verschiedene
-Variablen vor. 
+The 8-Queens problem is of course only a playful application of propositional logic.
+Nevertheless, it demonstrates the effectiveness of the Davis and Putnam algorithm very well, as the set of clauses computed by the function \texttt{allClauses}
+consists of 512 different clauses. In this set of clauses, 64 different
+variables appear.
 
-In der Praxis gibt es viele Probleme, die sich in ganz ähnlicher Weise auf die Lösung einer
-Menge von Klauseln zurückführen lassen.  Dazu gehört zum Beispiel das Problem, einen
-Stundenplan zu erstellen, der gewissen Nebenbedingungen genügt.  Verallgemeinerungen des
-Stundenplan-Problems werden in der Literatur als \blue{Scheduling-Probleme} bezeichnet.
-Die effiziente Lösung solcher Probleme ist Gegenstand der aktuellen Forschung.
-
-
-
+In practice, there are many problems that can be similarly reduced to solving a
+set of clauses. For example, creating a timetable that meets certain constraints is one such problem. Generalizations of the
+timetable problem are referred to in the literature as \blue{Scheduling Problems}.
+The efficient solution of such problems is a subject of current research.
 
 \begin{figure}[!ht]
   \centering
-  \framebox{\epsfig{file=Figures/8-queens.pdf, scale=0.8}} 
-  \caption{Eine Lösung des 8-Damen-Problems.}
+  \framebox{\epsfig{file=Figures/8-queens.pdf, scale=0.5}} 
+  \caption{A solution of the 8-queens-problem.}
   \label{fig:8-queens.pdf}
 \end{figure}
 \FloatBarrier
 \vspace*{3cm}
 
+
+\exerciseEng
+The following exercise is taken from the book 
+\href{https://www.amazon.de/Logeleien-Zweistein-ihren-Antworten-Wegner/dp/B006YF0VUE}{99 Logeleien von Zweistein}.
+This book has been published 1968.  It is written by 
+\href{http://de.wikipedia.org/wiki/Thomas_von_Randow}{Thomas von Randow}.
+
+\begin{minipage}{0.95\linewidth}
+  {\sl
+    The gentlemen \emph{Amann}, \emph{Bemann}, \emph{Cemann} and \emph{Demann} are called - not
+    necessarily in the same order - by their 
+    first names \emph{Erich}, \emph{Fritz}, \emph{Gustav} and \emph{Heiner}. They are all married to
+    exactly one woman. We also know the following about them and their wives: 
+    \begin{enumerate}
+    \item Either \emph{Amann's} first name is \emph{Heiner}, or \emph{Bemann's} wife is \emph{Inge}.
+    \item If \emph{Cemann} is married to \emph{Josefa}, then - \textbf{and only in this case} -
+          \emph{Klara's} husband is \textbf{not} called \emph{Fritz}.
+    \item If \emph{Josefa's} husband is \textbf{not} called \emph{Erich}, then \emph{Inge} is married to
+          \emph{Fritz}. 
+    \item If \emph{Luise's} husband is called \emph{Fritz}, then \emph{Klara's} husband's first name is
+          \textbf{not} \emph{Gustav}. 
+    \item If the wife of \emph{Fritz} is called \emph{Inge}, then \emph{Erich} is \textbf{not} married to
+          \emph{Josefa}. 
+    \item If \emph{Fritz} is \textbf{not} married to \emph{Luise}, then \emph{Gustav's} wife's name is \emph{Klara}.
+    \item Either \emph{Demann} is married to \emph{Luise}, or \emph{Cemann} is called \emph{Gustav}.
+    \end{enumerate}
+    What are the full names of these gentlemen, and what are their wives' first names?}
+\end{minipage}
+I have provided a framework notebook at the following address:
+\\[0.2cm]
+\hspace*{1.3cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Zweistein.ipynb}{\texttt{karlstroetmann/Logic/blob/master/Python/Chapter-4/Zweistein.ipynb}}
+\\[0.2cm]
+You should edit this notebook in order to solve the given problem.
 \pagebreak
 
 
-\section{Reflexion}
+\section{Check Your Comprehension}
 \begin{enumerate}[(a)]
-\item Wie haben wir die Menge der aussagenlogischen Formeln definiert?
-\item Wie ist die Semantik der aussagenlogischen Formeln festgelegt worden?
-\item Wie können wir aussagenlogische Formeln in \textsl{Python} darstellen?
-\item Was ist eine Tautologie?
-\item Was ist eine konjunktive Normalform?
-\item Wie können Sie die konjunktive Normalform einer gegebenen aussagenlogischen Formel berechnen und wie lässt
-      sich diese Berechnung in \textsl{Python} implementieren?
-\item Wie haben wir den Beweis-Begriff $M \vdash C$ definiert?
-\item Welche Eigenschaften hat der Beweis-Begriff $\vdash$?
-\item Wann ist eine Menge von Klauseln lösbar?
-\item Wie funktioniert das Verfahren von Davis und Putnam?
-\item Wie können Sie das 8-Damen-Problem als aussagenlogisches Problem formulieren?
+\item We defined the set of propositional logic formulas as expressions built from propositional variables, logical constants, and logical operators according to the syntax rules of propositional logic.
+\item The semantics of propositional logic formulas were established by defining truth values for these formulas based on the truth values of their constituent propositional variables and the nature of the logical operators used.
+\item In \textsl{Python}, propositional logic formulas can be represented using objects like strings or structured data types such as lists or tuples to mimic the logical structure of the formulas.
+\item A tautology is a propositional logic formula that is true under any assignment of truth values to its variables.
+\item Conjunctive normal form (CNF) is a form of representing propositional logic formulas where the formula is a conjunction (AND) of several clauses, and each clause is a disjunction (OR) of literals (variables or their negations).
+\item To calculate the conjunctive normal form of a given propositional logic formula, one can apply logical equivalences such as De Morgan's laws, distributive laws, etc. This calculation can be implemented in \textsl{Python} using recursion or iterative transformations based on the structure of the formula.
+\item We defined the proof concept $M \vdash C$ to mean that a clause $C$ can be derived from a set of clauses $M$ through a series of logical inference rules.
+\item The proof concept $\vdash$ has properties such as soundness (if $M \vdash C$, then $M \models C$) and completeness (if $M \models C$, then $M \vdash C$).
+\item A set of clauses is solvable if there exists an assignment of truth values to the variables in the clauses such that all the clauses are satisfied.
+\item The Davis and Putnam procedure is a systematic method for determining the satisfiability of a set of clauses in propositional logic by successive variable elimination and clause simplification.
+\item The 8-Queens problem can be formulated as a propositional logic problem by defining variables that represent the presence of a queen on each square of the board and then formulating clauses that encode the constraints of the queens not attacking each other.
 \end{enumerate}
+
 
 %\input{compact-barwise}
 
