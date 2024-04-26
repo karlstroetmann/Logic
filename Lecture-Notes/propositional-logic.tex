@@ -3097,21 +3097,21 @@ The set of clauses $M$ is given as follows: \\[0.2cm]
 Check whether the set $M$ is contradictory.  \eox
 
 \section{The 8-Queens Problem}
-In this section, we demonstrate how certain combinatorial problems can be reduced to the question whether a
-set of formulas from propositional logic is satisfiable.  These problems can then be solved using the algorithm of
+In this section, we demonstrate how certain combinatorial problems can be reduced to the satisfiablity of a
+set of formulas from propositional logic.  These problems can then be solved using the algorithm of
 Davis and Putnam. As a specific example, we consider the
 \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{8-Queens Problem}. 
-This involves placing 8 queens on a chessboard in such a way that no queen can attack another queen.
-In the \href{https://en.wikipedia.org/wiki/Chess}{game of chess}, a queen can attack another piece if that piece is either
+This problem asks us to place 8 queens on a chessboard such that no queen can attack another queen.
+In the \href{https://en.wikipedia.org/wiki/Chess}{game of chess}, a queen can attack another piece if that
+piece is either 
 \begin{itemize}
 \item in the same row,
 \item in the same column, or
 \item on the same diagonal
 \end{itemize}
 as the queen. Figure \ref{fig:queens-problem} on page \pageref{fig:queens-problem}
-shows a chessboard where in the third row and fourth column
-a queen is placed. This queen can move to all the fields marked with arrows,
-and thus can attack pieces that are on these fields.
+shows a chessboard where in a queen is placed in the third row of the fourth column. This queen can move to all
+the fields marked with arrows, and thus can attack pieces that are placed on these fields.
 
 
 \begin{figure}[!ht]
@@ -3148,14 +3148,14 @@ and thus can attack pieces that are on these fields.
 First, let us consider how we can represent a chessboard with queens placed on it in propositional logic. One
 possibility is to introduce a propositional logic variable for each square. This variable expresses
 that there is a queen on the corresponding square. We assign names to these variables as
-follows: The variable that denotes the $j$-th square in the $i$-th
+follows: The variable that denotes the $j$-th column of the the $i$-th
 row is represented by the string
 \\[0.2cm]
 \hspace*{1.3cm}
  $\texttt{"Q<}i\texttt{,}j\texttt{>"}$ \quad with $i,j \in \{1, \cdots, 8\}$
 \\[0.2cm]
-We number the rows from top to bottom from 1 to 8, while the
-columns are numbered from left to right. Figure \ref{fig:queens-assign} on
+We number the rows from top to bottom, while the columns are numbered from left to right. Figure
+\ref{fig:queens-assign} on 
 page \pageref{fig:queens-assign} shows the assignment of variables to the squares. The function shown in
 Figure \ref{fig:var} $\texttt{var}(r,c)$ calculates the variable that expresses that there is a queen in row
 $r$ and column $c$.
@@ -3205,70 +3205,70 @@ $r$ and column $c$.
 %%\}
 %%  }
 
-\put(1.20,8.45){{ Q<1,1> }}
-\put(2.20,8.45){{ Q<1,2> }}
-\put(3.20,8.45){{ Q<1,3> }}
-\put(4.20,8.45){{ Q<1,4> }}
-\put(5.20,8.45){{ Q<1,5> }}
-\put(6.20,8.45){{ Q<1,6> }}
-\put(7.20,8.45){{ Q<1,7> }}
-\put(8.20,8.45){{ Q<1,8> }}
-\put(1.20,7.45){{ Q<2,1> }}
-\put(2.20,7.45){{ Q<2,2> }}
-\put(3.20,7.45){{ Q<2,3> }}
-\put(4.20,7.45){{ Q<2,4> }}
-\put(5.20,7.45){{ Q<2,5> }}
-\put(6.20,7.45){{ Q<2,6> }}
-\put(7.20,7.45){{ Q<2,7> }}
-\put(8.20,7.45){{ Q<2,8> }}
-\put(1.20,6.45){{ Q<3,1> }}
-\put(2.20,6.45){{ Q<3,2> }}
-\put(3.20,6.45){{ Q<3,3> }}
-\put(4.20,6.45){{ Q<3,4> }}
-\put(5.20,6.45){{ Q<3,5> }}
-\put(6.20,6.45){{ Q<3,6> }}
-\put(7.20,6.45){{ Q<3,7> }}
-\put(8.20,6.45){{ Q<3,8> }}
-\put(1.20,5.45){{ Q<4,1> }}
-\put(2.20,5.45){{ Q<4,2> }}
-\put(3.20,5.45){{ Q<4,3> }}
-\put(4.20,5.45){{ Q<4,4> }}
-\put(5.20,5.45){{ Q<4,5> }}
-\put(6.20,5.45){{ Q<4,6> }}
-\put(7.20,5.45){{ Q<4,7> }}
-\put(8.20,5.45){{ Q<4,8> }}
-\put(1.20,4.45){{ Q<5,1> }}
-\put(2.20,4.45){{ Q<5,2> }}
-\put(3.20,4.45){{ Q<5,3> }}
-\put(4.20,4.45){{ Q<5,4> }}
-\put(5.20,4.45){{ Q<5,5> }}
-\put(6.20,4.45){{ Q<5,6> }}
-\put(7.20,4.45){{ Q<5,7> }}
-\put(8.20,4.45){{ Q<5,8> }}
-\put(1.20,3.45){{ Q<6,1> }}
-\put(2.20,3.45){{ Q<6,2> }}
-\put(3.20,3.45){{ Q<6,3> }}
-\put(4.20,3.45){{ Q<6,4> }}
-\put(5.20,3.45){{ Q<6,5> }}
-\put(6.20,3.45){{ Q<6,6> }}
-\put(7.20,3.45){{ Q<6,7> }}
-\put(8.20,3.45){{ Q<6,8> }}
-\put(1.20,2.45){{ Q<7,1> }}
-\put(2.20,2.45){{ Q<7,2> }}
-\put(3.20,2.45){{ Q<7,3> }}
-\put(4.20,2.45){{ Q<7,4> }}
-\put(5.20,2.45){{ Q<7,5> }}
-\put(6.20,2.45){{ Q<7,6> }}
-\put(7.20,2.45){{ Q<7,7> }}
-\put(8.20,2.45){{ Q<7,8> }}
-\put(1.20,1.45){{ Q<8,1> }}
-\put(2.20,1.45){{ Q<8,2> }}
-\put(3.20,1.45){{ Q<8,3> }}
-\put(4.20,1.45){{ Q<8,4> }}
-\put(5.20,1.45){{ Q<8,5> }}
-\put(6.20,1.45){{ Q<8,6> }}
-\put(7.20,1.45){{ Q<8,7> }}
-\put(8.20,1.45){{ Q<8,8> }}
+\put(1.10,8.45){{ Q<1,1> }}
+\put(2.10,8.45){{ Q<1,2> }}
+\put(3.10,8.45){{ Q<1,3> }}
+\put(4.10,8.45){{ Q<1,4> }}
+\put(5.10,8.45){{ Q<1,5> }}
+\put(6.10,8.45){{ Q<1,6> }}
+\put(7.10,8.45){{ Q<1,7> }}
+\put(8.10,8.45){{ Q<1,8> }}
+\put(1.10,7.45){{ Q<2,1> }}
+\put(2.10,7.45){{ Q<2,2> }}
+\put(3.10,7.45){{ Q<2,3> }}
+\put(4.10,7.45){{ Q<2,4> }}
+\put(5.10,7.45){{ Q<2,5> }}
+\put(6.10,7.45){{ Q<2,6> }}
+\put(7.10,7.45){{ Q<2,7> }}
+\put(8.10,7.45){{ Q<2,8> }}
+\put(1.10,6.45){{ Q<3,1> }}
+\put(2.10,6.45){{ Q<3,2> }}
+\put(3.10,6.45){{ Q<3,3> }}
+\put(4.10,6.45){{ Q<3,4> }}
+\put(5.10,6.45){{ Q<3,5> }}
+\put(6.10,6.45){{ Q<3,6> }}
+\put(7.10,6.45){{ Q<3,7> }}
+\put(8.10,6.45){{ Q<3,8> }}
+\put(1.10,5.45){{ Q<4,1> }}
+\put(2.10,5.45){{ Q<4,2> }}
+\put(3.10,5.45){{ Q<4,3> }}
+\put(4.10,5.45){{ Q<4,4> }}
+\put(5.10,5.45){{ Q<4,5> }}
+\put(6.10,5.45){{ Q<4,6> }}
+\put(7.10,5.45){{ Q<4,7> }}
+\put(8.10,5.45){{ Q<4,8> }}
+\put(1.10,4.45){{ Q<5,1> }}
+\put(2.10,4.45){{ Q<5,2> }}
+\put(3.10,4.45){{ Q<5,3> }}
+\put(4.10,4.45){{ Q<5,4> }}
+\put(5.10,4.45){{ Q<5,5> }}
+\put(6.10,4.45){{ Q<5,6> }}
+\put(7.10,4.45){{ Q<5,7> }}
+\put(8.10,4.45){{ Q<5,8> }}
+\put(1.10,3.45){{ Q<6,1> }}
+\put(2.10,3.45){{ Q<6,2> }}
+\put(3.10,3.45){{ Q<6,3> }}
+\put(4.10,3.45){{ Q<6,4> }}
+\put(5.10,3.45){{ Q<6,5> }}
+\put(6.10,3.45){{ Q<6,6> }}
+\put(7.10,3.45){{ Q<6,7> }}
+\put(8.10,3.45){{ Q<6,8> }}
+\put(1.10,2.45){{ Q<7,1> }}
+\put(2.10,2.45){{ Q<7,2> }}
+\put(3.10,2.45){{ Q<7,3> }}
+\put(4.10,2.45){{ Q<7,4> }}
+\put(5.10,2.45){{ Q<7,5> }}
+\put(6.10,2.45){{ Q<7,6> }}
+\put(7.10,2.45){{ Q<7,7> }}
+\put(8.10,2.45){{ Q<7,8> }}
+\put(1.10,1.45){{ Q<8,1> }}
+\put(2.10,1.45){{ Q<8,2> }}
+\put(3.10,1.45){{ Q<8,3> }}
+\put(4.10,1.45){{ Q<8,4> }}
+\put(5.10,1.45){{ Q<8,5> }}
+\put(6.10,1.45){{ Q<8,6> }}
+\put(7.10,1.45){{ Q<8,7> }}
+\put(8.10,1.45){{ Q<8,8> }}
 
 \end{picture}
 \vspace*{-1.0cm}
@@ -3321,6 +3321,7 @@ and the clause on the right side of this equivalence can be written in set notat
   \label{fig:atMostOne}
 \end{figure}
 
+\noindent
 Therefore, the formula for a set of variables $V$ that expresses that no two different
 variables are simultaneously true can be written as a set of clauses in the form
 \\[0.2cm]
@@ -3337,7 +3338,7 @@ With the help of the function \texttt{atMostOne}, we can now implement the funct
 \hspace*{1.3cm} 
 \texttt{atMostOneInRow(row, n)} \\[0.2cm]
 calculates for a given row \texttt{row} and a board size of \texttt{n} a formula
-that expresses that at most one queen is in the row \texttt{row}.
+that expresses that at most one queen is in the given \texttt{row}.
 Figure \ref{fig:atMostOneInRow} shows the
 function \texttt{atMostOneInRow}: We collect all the variables of the row specified by \texttt{row}
 in the set 
@@ -3386,8 +3387,7 @@ $\bigl\{ \{\texttt{Q<1,c>} , \texttt{Q<2,c>} , \texttt{Q<3,c>} , \texttt{Q<4,c>}
 \\[0.2cm]
 Figure \ref{fig:oneInColumn} shows a \textsl{Python} function that calculates the corresponding set of clauses for a given column
 \texttt{col} and a given board size \texttt{n}.
-The step of going from a single clause
-to a set of clauses is necessary because our implementation of the Davis and Putnam algorithm
+We return a set containing  a single clause because our implementation of the Davis and Putnam algorithm
 works with a set of clauses.
 
 \begin{figure}[!ht]
@@ -3639,6 +3639,7 @@ The efficient solution of such problems is a subject of current research.
 \FloatBarrier
 \vspace*{3cm}
 
+\pagebreak
 
 \exerciseEng
 The following exercise is taken from the book 
@@ -3667,10 +3668,13 @@ This book has been published 1968.  It is written by
     \end{enumerate}
     What are the full names of these gentlemen, and what are their wives' first names?}
 \end{minipage}
-I have provided a framework notebook at the following address:
+\vspace*{0.3cm}
+
+\noindent
+I have provided the framework of a notebook at the following address:
 \\[0.2cm]
 \hspace*{1.3cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Zweistein.ipynb}{\texttt{karlstroetmann/Logic/blob/master/Python/Chapter-4/Zweistein.ipynb}}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Zweistein.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Zweistein.ipynb}}
 \\[0.2cm]
 You should edit this notebook in order to solve the given problem.
 \pagebreak
