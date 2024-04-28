@@ -5,8 +5,8 @@
 \blue{propositions}\index{propositions} 
 (a.k.a. \blue{simple statements}) through 
 \blue{logical connectives}.  Here, logical connectives are words like ``\blue{and}'', ``\blue{or}'',
-``\blue{not}'', ``\blue{if $\cdots$, then}'', and ``\blue{exactly if}''.  To start with, we define the notion
-of an \blue{atomic propositions}: An
+``\blue{not}'', ``\blue{if $\cdots$, then}'', and ``\blue{exactly if}''.  To
+start with, we define the notion of an \blue{atomic propositions}: An
 \blue{atomic proposition}\index{atomic proposition} is a sentence  that 
 \begin{itemize}
 \item expresses a fact that is either true or false and
@@ -3096,10 +3096,21 @@ The set of clauses $M$ is given as follows: \\[0.2cm]
                          \{s, \neg r\} \bigr\}$ \\[0.2cm]
 Check whether the set $M$ is contradictory.  \eox
 
-\section{The 8-Queens Problem}
+\section{Solving Logical Puzzles}
 In this section, we demonstrate how certain combinatorial problems can be reduced to the satisfiablity of a
 set of formulas from propositional logic.  These problems can then be solved using the algorithm of
-Davis and Putnam. As a specific example, we consider the
+Davis and Putnam.  We will discuss the solution of two puzzles:
+\begin{enumerate}
+\item We start with the
+      \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{8-Queens Problem}. 
+\item As a second example we discuss the
+      \href{https://en.wikipedia.org/wiki/Zebra_puzzle}{Zebra Puzzle}.  This
+      puzzle is also known as \blue{Einstein's Riddle}, even though there is no
+      evidence that it is related to Albert Einstein in any way.
+\end{enumerate}
+
+\subsection{The 8-Queens Problem}
+As our first example, we consider the
 \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{8-Queens Problem}. 
 This problem asks us to place 8 queens on a chessboard such that no queen can attack another queen.
 In the \href{https://en.wikipedia.org/wiki/Chess}{game of chess}, a queen can attack another piece if that
@@ -3110,7 +3121,8 @@ piece is either
 \item on the same diagonal
 \end{itemize}
 as the queen. Figure \ref{fig:queens-problem} on page \pageref{fig:queens-problem}
-shows a chessboard where in a queen is placed in the third row of the fourth column. This queen can move to all
+shows a chessboard where in a queen is placed in the third row of the fourth
+column. This queen can move to all 
 the fields marked with arrows, and thus can attack pieces that are placed on these fields.
 
 
@@ -3637,9 +3649,387 @@ The efficient solution of such problems is a subject of current research.
   \label{fig:8-queens.pdf}
 \end{figure}
 \FloatBarrier
-\vspace*{3cm}
+
+
+\subsection{The Zebra Puzzle} 
+The following logical puzzle appeared in the magazine \blue{Life International}
+on  December, $17^\textrm{th}$  in the year 1962:
+\begin{itemize}
+\item There are five houses.
+\item The Englishman lives in the red house.
+\item The Spaniard owns the dog.
+\item Coffee is drunk in the green house.
+\item The Ukrainian drinks tea.
+\item The green house is immediately to the right of the ivory house.
+\item The Old Gold smoker owns snails.
+\item Kools are smoked in the yellow house.
+\item Milk is drunk in the middle house.
+\item The Norwegian lives in the first house.
+\item The man who smokes Chesterfields lives in the house next to the man with the fox.
+\item Kools are smoked in the house next to the house where the horse is kept.
+\item The Lucky Strike smoker drinks orange juice.
+\item The Japanese smokes Parliaments.*
+\item The Norwegian lives next to the blue house.
+\end{itemize}
+Furthermore, each of the five houses is painted in a different colour, their
+inhabitants are of different nationalities, own different pets, drink different
+beverages, and smoke different brands of cigarettes.  
+
+Our task is to answers the following questions:
+\begin{enumerate}
+\item Who drinks water?
+\item Who owns the zebra?
+\end{enumerate}
+
+In order to formulate this puzzle as a propositional formula we first have to
+choose the appropriate propositional variables.  In order to express the fact
+that the Englishman lives in the $i^\textrm{th}$ house we can use the variables
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{English}\langle i \rangle$ \quad for $i=1,\cdots,5$.
+\\[0.2cm]
+The idea is that $\texttt{English}\langle i \rangle$ is \texttt{True} iff the
+Englishman lives in the  $i^\textrm{th}$ house.  In a similar way we use the
+variables
+\begin{itemize}
+\item $\texttt{Spanish}\langle i \rangle$,
+\item $\texttt{Ukrainian}\langle i \rangle$,
+\item $\texttt{Norwegian}\langle i \rangle$, and 
+\item $\texttt{Japanese}\langle i \rangle$
+\end{itemize}
+to encode the houses, where the people of different nationalities live.
+The different drinks are encoded by the variables
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{Coffee}\langle i \rangle$, $\texttt{Milk}\langle i \rangle$, $\texttt{OrangeJuice}\langle i \rangle$, $\texttt{Tea}\langle i \rangle$, and $\texttt{Water}\langle i \rangle$.
+\\[0.2cm] 
+The colours are encoded using the variables 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{Red}\langle i \rangle$,
+$\texttt{Green}\langle i \rangle$,
+$\texttt{Ivory}\langle i \rangle$,
+$\texttt{Yellow}\langle i \rangle$, and $\texttt{Blue}\langle i \rangle$.
+\\[0.2cm]
+The pets are encoded using the variables
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{Dog}\langle i \rangle$,
+$\texttt{Snails}\langle i \rangle$,
+$\texttt{Fox}\langle i \rangle$,
+$\texttt{Horse}\langle i \rangle$,
+and $\texttt{Zebra}\langle i \rangle$.
+\\[0.2cm]
+The cigarette brands are encoded as
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{OldGold}\langle i \rangle$, $\texttt{Kools}\langle i \rangle$,
+$\texttt{Chesterfields}\langle i \rangle$, $\texttt{LuckyStrike}\langle i \rangle$, and
+$\texttt{Parliaments}\langle i \rangle$.
+\\[0.2cm]
+We are using the angular brackets "$\langle$" and "$\rangle$" as part of the
+variable names because our parser for propositional logic accepts these symbols
+as part of variable names.  The parser would be confused if we would use the
+normal parenthesis. 
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+                 ]{python3}
+    def var(f, i):
+        return f + "<" + str(i) + ">" 
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function $\texttt{var}(f, i)$.}
+\label{fig:var_f_i}
+\end{figure}
+
+In order to be able to write the conditions concisely, we introduce the function
+$\texttt{var}(f, i)$, which is shown in Figure \ref{fig:var_f_i}.  This function
+takes a string $f$, where $f$ is a property like, e.g.~\texttt{Japanese} and an
+integer $i$ and returns the string $f\langle i\rangle$.
+
+
+
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def somewhere(x):
+        return frozenset({ var(x, i) for i in range(1, 5+1) })
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{somewhere}.}
+\label{fig:somewhere}
+\end{figure}
+The function $\texttt{somewhere}(x)$ that is shown in Figure \ref{fig:somewhere}
+takes a string $x$ as its argument, where $x$ denotes a property like,
+e.g.~\texttt{Japanese}.  It returns a clause that specifies that $x$ has to be
+located in one of the five houses.  For example,  the call
+$\texttt{somewhere('Japanese')}$ returns the following clause:
+\\[0.2cm]
+\hspace*{0.3cm}
+\texttt{frozenset({'Japanese<1>', 'Japanese<2>', 'Japanese<3>', 'Japanese<4>', 'Japanese<5>'})}
 
 \pagebreak
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def atMostOneAt(S, i):
+        return atMostOne({var(x, i) for x in S})
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{atMostOneAt}(S, i)}
+\label{fig:atMostOneAt}
+\end{figure}
+
+Given an exclusive set of properties $S$ and a house number $i$, the function
+$\texttt{atMostOne}(S, i)$ returns a set of clauses that specifies that the
+person living in house number $i$ has at most one of the properties from the set
+$S$.  For example, if  
+\\[0.2cm]
+\hspace*{1.3cm}
+$S = \{\texttt{"Japanese"}, \texttt{"Englishman"}, \texttt{"Spaniard"}, \texttt{"Norwegian"}, \texttt{"Ukranian"}\}$, 
+\\[0.2cm]
+then $\texttt{atMostOne}(S, 3)$ specifies that the inhabitant of house number 3
+has at most one of the nationalities from the set $S$.   The implementation
+makes use of the function \texttt{atMostOne} that is shown in Figure
+\ref{fig:atMostOne} on page \pageref{fig:atMostOne}.
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+                 ]{python3}
+    def onePerHouse(S):
+        Clauses = { somewhere(x) for x in S } 
+        for i in range(1, 5+1):
+            Clauses |= atMostOneAt(S, i)
+        return Clauses
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{onePerHouse}.}
+\label{fig:onePerHouse}
+\end{figure}
+
+The function $\texttt{onePerHouse}(S)$ takes a set $S$ of properties.  For
+example, $S$ could be the set of the five nationalities.
+In this case, the function would create a set of clauses that expresses that
+there has to be a house where the Japanese lives, a house where the Englishman
+lives, a house where the Spaniard lives, a house where the Norwegian lives, and
+a house where the Ukranian lives.  Furthermore, the set of clauses would contain
+clauses that express the fact that these five persons live in different houses.
+
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def sameHouse(a, b):
+        return { C for i in range(1,5+1)
+                   for C in parseKNF(f"{var(a, i)} ↔ {var(b, i)}") 
+               }
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function $\texttt{sameHouse}(a, b)$.}
+\label{fig:sameHouse}
+\end{figure}
+
+Given to properties $a$ and $b$ the function $\texttt{sameHouse}(a, b)$ that is
+shown in Figure \ref{fig:sameHouse} computes
+a set of clauses that specifies that if the inhabitant of house number $i$ has
+the property $a$, then he also has the the property $b$ and vice versa.  For
+example, $\texttt{sameHouse}(\texttt{"Japanese"}, \texttt{"Dog"})$ specifies
+that the Japanese guy keeps a dog. 
+
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def nextTo(a, b):
+        Result = parseKNF(f"{var(a,1)} → {var(b,2)}")
+        for i in [2, 3, 4]:
+            Result |= parseKNF(f"{var(a,i)} → {var(b,i-1)} ∨ {var(b,i+1)}")
+        Result |= parseKNF(f"{var(a,5)} → {var(b,4)}")
+        return Result
+\end{minted}
+\vspace*{-0.3cm}
+\caption{nextTo}
+\label{fig:nextTo}
+\end{figure}
+Given to properties $a$ and $b$ the function $\texttt{nextTo}(a, b)$ computes a
+set of clauses that specifies that the inhabitants with properties $a$ and $b$
+are direct neighbours.  For example, $\texttt{nextTo}(\texttt{'Japanese'}, \texttt{'Dog'})$
+specifies that the Japanese guy lives next to the guy who keeps a dog. 
+
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def leftTo(a, b):
+        Result = set()
+        for i in [1, 2, 3, 4]:
+            Result |= parseKNF(f"{var(a,i)} ↔ {var(b,i+1)}")
+        Result |= parseKNF(f"¬{var(a,5)}")
+        return Result
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{leftTo}.}
+\label{fig:leftTo}
+\end{figure}
+
+Given to properties $a$ and $b$ the function $\texttt{leftTo}(a, b)$ computes a
+list of clauses that specifies that the inhabitants with properties $a$ lives in
+the house to the left of the inhabitant who has property $b$.  For example,
+$\texttt{livesTo}(\texttt{'Japanese'}, \texttt{'Dog'})$ specifies that the
+Japanese guy lives in the house to the left of the house where there is a dog.
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.3cm,
+                 xrightmargin  = 0.3cm,
+               ]{python3}
+  Nations  = { "English", "Spanish", "Ukrainian", "Norwegian", "Japanese" }
+  Drinks   = { "Coffee", "Tea", "Milk", "OrangeJuice", "Water" }
+  Pets     = { "Dog", "Snails", "Horse", "Fox", "Zebra" }
+  Brands   = { "LuckyStrike", "Parliaments", "Kools", "Chesterfields", "OldGold" }
+  Colours  = { "Red", "Green", "Ivory", "Yellow", "Blue" }                
+\end{minted}
+\vspace*{-0.3cm}
+\caption{Definition of the properties.}
+\label{fig:properties}
+\end{figure}
+
+In order to be able to formulate the different conditions conveniently, we define the sets
+shown in Figure \ref{fig:properties}.
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def allClauses():
+        # Every house has exactly one inhabitant.  This inhabitant has exactly one
+        # nationality, one pet, smokes one brand of cigarettes, and has one type
+        # of drink.  Furthermore, every house has exactly one color.
+        Clauses  = onePerHouse(Nations)
+        Clauses |= onePerHouse(Drinks)
+        Clauses |= onePerHouse(Pets)
+        Clauses |= onePerHouse(Brands)
+        Clauses |= onePerHouse(Colours)
+        # The Englishman lives in the red house.
+        Clauses |= sameHouse("English", "Red")
+        # The Spaniard owns the dog.
+        Clauses |= sameHouse("Spanish", "Dog")
+        # Coffee is drunk in the green house.
+        Clauses |= sameHouse("Coffee", "Green")
+        # The Ukrainian drinks tea.
+        Clauses |= sameHouse("Ukrainian", "Tea")
+        # The green house is immediately to the right of the ivory house.
+        Clauses |= leftTo("Ivory", "Green")
+        # The Old Gold smoker owns snails.
+        Clauses |= sameHouse("OldGold", "Snails")
+        # Kools are smoked in the yellow house.
+        Clauses |= sameHouse("Kools", "Yellow")
+        # Milk is drunk in the middle house.
+        Clauses |= parseKNF("Milk<3>")
+        # The Norwegian lives in the first house.
+        Clauses |= parseKNF("Norwegian<1>")
+        # The man who smokes Chesterfields lives in the house next 
+        # to the man with the fox.
+        Clauses |= nextTo("Chesterfields", "Fox")
+        # Kools are smoked in the house next to the house where the horse is kept.
+        Clauses |= nextTo("Kools", "Horse")
+        # The Lucky Strike smoker drinks orange juice.
+        Clauses |= sameHouse("LuckyStrike", "OrangeJuice")
+        # The Japanese smokes Parliaments.
+        Clauses |= sameHouse("Japanese", "Parliaments")
+        # The Norwegian lives next to the blue house.
+        Clauses |= nextTo("Norwegian", "Blue")
+        return Clauses\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{allClauses}.}
+\label{fig:allClauses}
+\end{figure}
+The function \texttt{allClauses} in Figure \ref{fig:allClauses} computes a set of clauses that encodes the
+conditions of the zebra puzzle.  I we solve these clauses with the algorithm of
+Davis and Putnam, we get the solution that is shown in Figure \ref{fig:zebra}.
+
+\begin{figure}[!ht]
+  \centering
+  \framebox{\epsfig{file=Figures/zebra.png, scale=0.7}} 
+  \caption{The solution of the zebra puzzle.}
+  \label{fig:zebra}
+\end{figure}
+
+
+\pagebreak
+
+\FloatBarrier
 
 \exerciseEng
 The following exercise is taken from the book 
@@ -3677,22 +4067,71 @@ I have provided the framework of a notebook at the following address:
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Zweistein.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Zweistein.ipynb}}
 \\[0.2cm]
 You should edit this notebook in order to solve the given problem.
+
+\exerciseEng
+Once upon a time, there was a king who wanted to marry his daughter to a
+prince. He had it proclaimed throughout the land that he was seeking a husband
+for his daughter. One day, a prince came by to apply for the position. 
+
+Since the king did not want to marry his daughter to some dullard, he led the
+prince into a room with nine doors. The king told the prince that the princess
+was in one of the rooms, but that there were other rooms behind which hungry
+tigers were waiting. Some rooms were also empty. If the prince opened a door
+with a tiger behind it, it would probably be his last mistake. 
+
+The king went on to say that there were signs on all the doors with statements on them. These statements behave as follows:
+\begin{enumerate}
+\item In the rooms where there is a tiger, the statement on the sign is false.
+\item In the room where the princess is, the statement is true.
+\item With regards to the the empty rooms, the situation is a bit more
+      complicated, because there are two possibilities:
+      \begin{itemize}
+      \item Either all the inscriptions on the empty rooms are true,
+      \item or all the inscriptions on the empty rooms are false.
+      \end{itemize}
+
+\end{enumerate}
+The prince then read the inscriptions. These were as follows:
+\begin{enumerate}
+\item Room: The princess is in a room with an odd number.
+\item There is no tiger in the rooms with an even number.
+\item Room: This room is empty.
+\item Room: The inscription on Room No. 5 is true, the inscription on Room No. 7 is false,
+      and there is a tiger in Room No. 3.
+\item Room: The inscription on Room No. 1 is false, there is no tiger in Room No. 8,
+      and the inscription on Room No. 9 is true.
+\item Room: If the inscription on Room No. 2 or on Room No. 4 is true,
+      then there is no tiger in Room No. 1.
+\item Room: The inscription on Room No. 3 is false, the princess is in Room No. 2,
+      and there is no tiger in Room No. 2.
+\item Room: The princess is in Room No. 1 and the inscription on Room No. 5 is true.
+\item Room: There is no tiger in this room and Room No. 9 is empty.
+\item Room: Neither in this room nor in Room No. 1 is there a tiger, and moreover, the
+      inscription on Room No. 6 is true.
+\end{enumerate} 
+I have provided the framework of a notebook at the following address:
+\\[0.2cm]
+\hspace*{1.3cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Prince-Tiger.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Prince-Tiger.ipynb}}
+\\[0.2cm]
+You should edit this notebook in order to solve the given problem.
+
 \pagebreak
 
 
 \section{Check Your Comprehension}
 \begin{enumerate}[(a)]
-\item We defined the set of propositional logic formulas as expressions built from propositional variables, logical constants, and logical operators according to the syntax rules of propositional logic.
-\item The semantics of propositional logic formulas were established by defining truth values for these formulas based on the truth values of their constituent propositional variables and the nature of the logical operators used.
-\item In \textsl{Python}, propositional logic formulas can be represented using objects like strings or structured data types such as lists or tuples to mimic the logical structure of the formulas.
-\item A tautology is a propositional logic formula that is true under any assignment of truth values to its variables.
-\item Conjunctive normal form (CNF) is a form of representing propositional logic formulas where the formula is a conjunction (AND) of several clauses, and each clause is a disjunction (OR) of literals (variables or their negations).
-\item To calculate the conjunctive normal form of a given propositional logic formula, one can apply logical equivalences such as De Morgan's laws, distributive laws, etc. This calculation can be implemented in \textsl{Python} using recursion or iterative transformations based on the structure of the formula.
-\item We defined the proof concept $M \vdash C$ to mean that a clause $C$ can be derived from a set of clauses $M$ through a series of logical inference rules.
-\item The proof concept $\vdash$ has properties such as soundness (if $M \vdash C$, then $M \models C$) and completeness (if $M \models C$, then $M \vdash C$).
-\item A set of clauses is solvable if there exists an assignment of truth values to the variables in the clauses such that all the clauses are satisfied.
-\item The Davis and Putnam procedure is a systematic method for determining the satisfiability of a set of clauses in propositional logic by successive variable elimination and clause simplification.
-\item The 8-Queens problem can be formulated as a propositional logic problem by defining variables that represent the presence of a queen on each square of the board and then formulating clauses that encode the constraints of the queens not attacking each other.
+\item How have we defined the set of propositional logic formulas?
+\item How have we defined the semantics of propositional logic formulas?
+\item How do we represent propositional logic formulas in \textsl{Python}?
+\item What is a tautology?
+\item How can we transform propositional logic formula into conjunctive normal
+      form?
+\item How did we define the proof concept $M \vdash C$?
+\item What are the most important properties of the proof concept $\vdash$?
+\item How did we define the notion of a set of clauses being solvable?
+\item Do you know how the algorithm of Davis and Putnam works?
+\item Can you code a logical puzzle as a propositional formula?
 \end{enumerate}
 
 
