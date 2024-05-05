@@ -446,15 +446,15 @@ Then we have  \\[0.2cm]
     \eox
 \end{Definition}
 
-\example
+\exampleEng
 If we continue our previous example we have
 \\[0.2cm]
 \hspace*{1.3cm} 
 $\mathcal{Z}(\mathcal{I},x * y = y * x) = \mathtt{True}$.
 \eox
 
-Um die Semantik beliebiger $\Sigma$-Formeln definieren zu können, nehmen wir an, dass wir,
-genau wie in der Aussagenlogik, die folgenden Funktionen zur Verfügung haben:
+To define the semantics of arbitrary $\Sigma$-formulas, we assume that we have the following functions
+available, just like in propositional logic: 
 \begin{enumerate}
 \item $\circneg: \mathbb{B} \rightarrow \mathbb{B}$,
 \item $\circvee: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$,
@@ -462,137 +462,137 @@ genau wie in der Aussagenlogik, die folgenden Funktionen zur Verfügung haben:
 \item $\circright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$,
 \item $\circleftright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$.
 \end{enumerate}
-Die Semantik dieser Funktionen hatten wir durch die Tabelle in Abbildung
-\ref{tab:aussagen-logik} auf Seite \pageref{tab:aussagen-logik} gegeben. 
+The definitions of these functions were given by the table in Figure \ref{tab:aussagen-logik} on page
+\pageref{tab:aussagen-logik}.
 
-\begin{Definition}[Semantik der $\Sigma$-Formeln]
-    Ist $\struct$ eine $\Sigma$-Struktur und $\mathcal{I}$ eine $\struct$-Variablen-Belegung,
-    so definieren wir für jede $\Sigma$-Formel $F$ den Wert \blue{$\struct(\mathcal{I},F)$}
-    durch Induktion über den Aufbau von $F$:
+\begin{Definition}[Semantics of $\Sigma$-formulas]
+    Let $\struct$ be a $\Sigma$-structure and $\mathcal{I}$ a $\struct$-variable assignment.  
+    We define for each $\Sigma$-formula $F$ the value \blue{$\struct(\mathcal{I},F)$}
+    by induction:
     \begin{enumerate}
-    \item $\struct(\mathcal{I},\verum) := \mathtt{True}$ und $\struct(\mathcal{I},\falsum) := \mathtt{False}$.
-    \item $\struct(\mathcal{I}, \neg F) \;:=\; \circneg\bigl(\struct(\mathcal{I}, F)\bigr)$.
-    \item $\struct(\mathcal{I}, F \wedge G) \;:=\; \circwedge\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
-    \item $\struct(\mathcal{I}, F \vee G) \;:=\; \circvee\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
-    \item $\struct(\mathcal{I}, F \rightarrow G) \;:=\; \circright\!\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
-    \item $\struct(\mathcal{I}, F \leftrightarrow G) \;:=\; \circleftright\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
-    \item $\struct\bigl(\mathcal{I}, \forall x\colon F\bigr) \;:=\; \left\{
+    \item $\struct(\mathcal{I},\verum) := \mathtt{True}$ and $\struct(\mathcal{I},\falsum) := \mathtt{False}$.
+    \item $\struct(\mathcal{I}, \neg F) := \circneg\bigl(\struct(\mathcal{I}, F)\bigr)$.
+    \item $\struct(\mathcal{I}, F \wedge G) := \circwedge\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
+    \item $\struct(\mathcal{I}, F \vee G) := \circvee\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
+    \item $\struct(\mathcal{I}, F \rightarrow G) := \circright\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
+    \item $\struct(\mathcal{I}, F \leftrightarrow G) := \circleftright\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
+    \item $\struct\bigl(\mathcal{I}, \forall x\colon F\bigr) := \left\{
       \begin{array}{ll}
-         \mathtt{True}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], F) = \mathtt{True}\quad \mbox{für alle}\; c\in \mathcal{U}\;\mbox{gilt}; \\
-         \mathtt{False} & \mbox{sonst}.
+         \mathtt{True}  & \mbox{if}\; \struct(\mathcal{I}[x/c], F) = \mathtt{True}\quad \mbox{for all}\; c\in \mathcal{U}\;\mbox{holds}; \\
+         \mathtt{False} & \mbox{otherwise}.
       \end{array}
       \right.$
-    \item $\struct\bigl(\mathcal{I}, \exists x \colon F\bigr) \;:=\; \left\{
+    \item $\struct\bigl(\mathcal{I}, \exists x \colon F\bigr) := \left\{
       \begin{array}{ll}
-         \mathtt{True}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], F) = \mathtt{True}\quad \mbox{für ein}\; c\in \mathcal{U}\;\mbox{gilt}; \\
-         \mathtt{False} & \mbox{sonst}.
+         \mathtt{True}  & \mbox{if}\; \struct(\mathcal{I}[x/c], F) = \mathtt{True}\quad \mbox{for some}\; c\in \mathcal{U}\;\mbox{holds}; \\
+         \mathtt{False} & \mbox{otherwise}.
       \end{array}
       \right.$\eox    
     \end{enumerate}
 \end{Definition}
 
-\example
-In Fortführung des obigen Beispiels gilt \\[0.2cm]
+\exampleEng
+Continuing from the above example, we have \\[0.2cm]
 \hspace*{1.3cm}  $\mathcal{Z}\bigl(\mathcal{I}, \forall \mathtt{x}: \mathrm{e} * x = x \bigr) = \mathtt{True}$.
 \eox
 
-\begin{Definition}[Allgemeingültig] \index{Allgemeingültig}
-    Ist $F$ eine $\Sigma$-Formel, so dass für jede $\Sigma$-Struktur $\struct$ und für jede
-    $\struct$-Variablen-Belegung $\mathcal{I}$ \\[0.2cm]
+\begin{Definition}[Universally valid] \index{Universally valid}
+    If $F$ is a $\Sigma$-formula such that for every $\Sigma$-structure $\struct$ and for every
+    $\struct$-variable assignment $\mathcal{I}$ \\[0.2cm]
     \hspace*{1.3cm} $\struct(\mathcal{I}, F) = \mathtt{True}$ \\[0.2cm]
-    gilt, so bezeichnen wir $F$ als \blue{allgemeingültig}.  In diesem Fall schreiben wir \\[0.2cm]
+    holds, we call $F$ \blue{universally valid}. In this case, we write \\[0.2cm]
     \hspace*{1.3cm} $\models F$. 
     \eox
 \end{Definition}
 
-Ist $F$ eine Formel für die $\FV(F) = \{\}$ ist, dann hängt der Wert $\struct(\mathcal{I}, F)$ 
-offenbar gar nicht von der Interpretation $\mathcal{I}$ ab.  Solche Formeln bezeichnen wir auch als 
-\blue{geschlossene} Formeln.\index{geschlossene Formel}   In diesem Fall schreiben wir kürzer  $\struct(F)$
-an Stelle von $\struct(\mathcal{I}, F)$.  Gilt dann zusätzlich $\struct(F) = \mathtt{True}$, 
-so sagen wir auch, dass $\struct$ ein \blue{Modell} \index{Modell} von $F$ ist.  Wir schreiben dann \\[0.2cm]
+If $F$ is a formula such that $\FV(F) = \{\}$, then the value $\struct(\mathcal{I}, F)$ 
+obviously does not depend on the interpretation $\mathcal{I}$. We also refer to such formulas as 
+\blue{closed} formulas.\index{closed formula} In this case, we write more succinctly $\struct(F)$
+instead of $\struct(\mathcal{I}, F)$. If additionally $\struct(F) = \mathtt{True}$, 
+we also say that $\struct$ is a \blue{model} \index{model} of $F$.
+In this case we write \\[0.2cm]
 \hspace*{1.3cm} $\mathcal{S} \models F$. \index{$\mathcal{S} \models F$}
 \vspace{0.1cm}
 
-Die Definition der Begriffe ``\blue{erfüllbar}'' und
-``\blue{äquivalent}'' lassen sich nun aus der Aussagenlogik übertragen. 
-Um unnötigen Ballast in den Definitionen zu vermeiden, nehmen wir im Folgenden immer eine
-feste Signatur $\Sigma$ als gegeben an.  Dadurch können wir in den folgenden Definitionen
-von Termen, Formeln, Strukturen, etc.~sprechen und meinen damit  $\Sigma$-Terme,
-$\Sigma$-Formeln und $\Sigma$-Strukturen.
+The definitions of the terms ``\blue{satisfiable}'' and
+``\blue{equivalent}'' can now be transferred from propositional logic. 
+To avoid unnecessary complexity in the definitions, we assume a
+fixed signature $\Sigma$ as given. Hence, in the following definitions
+when we talk about terms, formulas, structures, etc., we mean $\Sigma$-terms,
+$\Sigma$-formulas, and $\Sigma$-structures.
 
-\begin{Definition}[Äquivalent] \index{äquivalent}
-  Zwei Formeln $F$ und $G$, in denen die Variablen $x_1$, $\cdots$, $x_n$ frei auftreten, heißen
-  \blue{äquivalent} g.d.w.  
+\begin{Definition}[Equivalent] \index{equivalent}
+  Two formulas $F$ and $G$, in which the variables $x_1$, $\cdots$, $x_n$ appear free, are called
+  \blue{equivalent} if and only if  
   \\[0.2cm] 
   \hspace*{1.3cm}
   $\models \forall x_1: \cdots\, \forall x_n: (F \leftrightarrow G)$
   \\[0.2cm] 
-  gilt.  Falls in $F$ und $G$ keine Variablen frei auftreten, dann ist $F$ genau dann äquivalent zu $G$, wenn
+  holds. If no variables appear free in $F$ and $G$, then $F$ is equivalent to $G$ if and only if
   \\[0.2cm]
   \hspace*{1.3cm}
   $\models F \leftrightarrow G$
   \\[0.2cm]
-  gilt.
+  holds.
   \eox
 \end{Definition}
 
-\remarks
-Alle aussagenlogischen Äquivalenzen sind auch prädikatenlogische Äquivalenzen.
+\remarkEng
+All propositional logic equivalences are also first-order logic equivalences.
 \eox
 
-\begin{Definition}[Erfüllbar]
-    Eine Menge $M \subseteq \mathbb{F}_\Sigma$ ist genau dann \blue{erfüllbar},\index{erfüllbar}
-    wenn es eine Struktur $\struct$ und eine Variablen-Belegung $\mathcal{I}$ gibt, so dass 
+\begin{Definition}[Satisfiable]
+    A set $M \subseteq \mathbb{F}_\Sigma$ is \blue{satisfiable},\index{satisfiable}
+    if there exists a structure $\struct$ and a variable assignment $\mathcal{I}$ such that 
     \\[0.2cm]
     \hspace*{1.3cm}
-    $\struct(\mathcal{I},F) = \mathtt{True}$ \quad für alle $F \in M$ 
+    $\struct(\mathcal{I},F) = \mathtt{True}$ \quad for all $F \in M$ 
     \\[0.2cm]
-    gilt.  Andernfalls heißt $M$ \blue{unerfüllbar} oder auch \blue{widersprüchlich}.\index{widersprüchlich}
-    Wir schreiben dafür auch \\[0.2cm]
+    holds. Otherwise, $M$ is called \blue{unsatisfiable} or \blue{contradictory}.\index{contradictory}
+    We also write \\[0.2cm]
     \hspace*{1.3cm} $M \models \falsum$ \index{$M \models \falsum$}
     \eox
 \end{Definition}
 
 \noindent
-Unser Ziel ist es, ein Verfahren anzugeben, mit dem wir in der Lage sind zu überprüfen,
-ob eine Menge $M$ von Formeln \blue{widersprüchlich} ist, ob also 
- $M \models \falsum$ gilt.  Es zeigt sich, dass dies im Allgemeinen nicht
-möglich ist, die Frage, ob $M \models \falsum$ gilt, ist \red{unentscheidbar}.  Ein Beweis
-dieser Tatsache geht allerdings über den Rahmen dieser Vorlesung heraus.
-Dem gegenüber ist es möglich, ähnlich wie in der Aussagenlogik
-einen \blue{Kalkül} $\vdash$ anzugeben, so dass gilt: \\[0.2cm]
-\hspace*{1.3cm} $M \vdash \falsum$ \quad g.d.w. \quad $M \models \falsum$. \\[0.2cm]
-Ein solcher Kalkül kann dann zur Implementierung eines
-\blue{Semi-Entscheidungs-Verfahrens} benutzt werden:  Um zu überprüfen, ob
-$M \models \falsum$ gilt, versuchen wir, aus der Menge $M$ die Formel $\falsum$
-herzuleiten.  
-Falls wir dabei systematisch vorgehen, indem wir alle möglichen Beweise durchprobieren,
-so werden wir, falls tatsächlich $M \models \falsum$ gilt, auch irgendwann einen Beweis
-finden, der $M \vdash \falsum$ zeigt.   Wenn allerdings der Fall \\[0.2cm]
+Our goal is to provide a method that allows us to check
+whether a set $M$ of formulas is \blue{contradictory}, i.e., whether 
+$M \models \falsum$ holds. It turns out that this is generally not
+possible; the question of whether $M \models \falsum$ holds is \red{undecidable}. A proof
+of this fact is beyond the scope of this lecture.
+However, as in propositional logic, it is possible
+to specify a \blue{calculus} $\vdash$ such that: \\[0.2cm]
+\hspace*{1.3cm} $M \vdash \falsum$ \quad iff \quad $M \models \falsum$. \\[0.2cm]
+This calculus can then be used to implement a
+\blue{semi-decision procedure}: To check if
+$M \models \falsum$ holds, we try to derive the formula $\falsum$
+from the set $M$.
+If we proceed systematically by trying all possible proofs,
+if indeed $M \models \falsum$ holds, we will eventually find a proof
+that demonstrates $M \vdash \falsum$. However, if $M$ is satisfiable, i.e.~if we have  \\[0.2cm]
 \hspace*{1.3cm}  $M \not\models \falsum$ \\[0.2cm]
-vorliegt,  so werden wir dies im Allgemeinen nicht feststellen können, denn die Menge aller Beweise ist unendlich 
-und wir können nie alle Beweise ausprobieren.  Wir können lediglich sicherstellen, dass
-wir jeden Beweis irgendwann versuchen.  Wenn es aber keinen Beweis gibt, so können wir das
-nie sicher sagen, denn zu jedem festen Zeitpunkt haben wir ja immer nur einen Teil der in
-Frage kommenden Beweise ausprobiert.
+we generally will not be able to detect this, because the set of all possible proofs is infinite
+and we can never try all proofs. We can only ensure that
+we attempt every proof eventually. But if there is no proof, we can
+never be certain of this fact, because at any given time we have only tried a part of the
+possible proofs.
 
-Die Situation ist ähnlich der, wie bei der Überprüfung bestimmter zahlentheoretischer
-Fragen.  Wir betrachten dazu ein konkretes Beispiel: Eine Zahl $n$ heißt 
-eine \href{https://de.wikipedia.org/wiki/Vollkommene_Zahl}{perfekte Zahl},
-wenn die Summe aller echten Teiler von $n$ wieder die Zahl $n$ ergibt.  Beispielsweise ist
-die Zahl $6$ perfekt, denn die Menge der echten Teiler von $6$ ist $\{1,2,3\}$ und es gilt
+The situation is similar to that in verifying certain number-theoretical
+questions. Consider the following specific example: A number $n$ is called 
+a \href{https://en.wikipedia.org/wiki/Perfect_number}{perfect number},
+if the sum of all proper divisors of $n$ equals $n$ itself. For example, the number $6$ is perfect, since the set of proper divisors of $6$ is $\{1,2,3\}$ and 
 \\[0.2cm]
 \hspace*{1.3cm}
 $1 + 2 + 3 = 6$.
 \\[0.2cm]
-Bisher sind alle bekannten perfekten Zahlen durch $2$ teilbar.  Die Frage, ob es auch
-ungerade Zahlen gibt, die perfekt sind, ist ein offenes mathematisches Problem.  Um dieses
-Problem zu lösen, könnten wir eine Programm schreiben, dass der Reihe nach für alle
-ungerade Zahlen überprüft, ob die Zahl perfekt ist.  Abbildung \ref{fig:Find-Perfect.ipynb}
-auf Seite \pageref{fig:Find-Perfect.ipynb} zeigt ein solches Programm.  Wenn es eine ungerade perfekte Zahl
-gibt, dann wird dieses Programm diese Zahl auch irgendwann finden.  Wenn es aber keine
-ungerade perfekte Zahl gibt, dann wird das Programm bis zum St.~Nimmerleinstag rechnen und
-wir werden nie mit Sicherheit wissen, dass es keine ungeraden perfekten Zahlen gibt.
+So far, all known perfect numbers are divisible by $2$. The question of whether there are
+odd numbers that are perfect is an open  problem. To solve this
+problem, we could write a program that sequentially checks whether each
+odd number is perfect. Figure \ref{fig:Find-Perfect.ipynb}
+on page \pageref{fig:Find-Perfect.ipynb} shows such a program. If there is an odd perfect number,
+then this program will eventually find it. However, if no
+odd perfect number exists, then the program will run indefinitely and
+we will never know for sure that there are no odd perfect numbers.
 
 \begin{figure}[!ht]
   \centering
