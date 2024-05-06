@@ -617,93 +617,97 @@ we will never know for sure that there are no odd perfect numbers.
     findOddPerfect()
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Suche nach einer ungeraden perfekten Zahl.}
+  \caption{The search for an odd perfect number.}
   \label{fig:Find-Perfect.ipynb}
 \end{figure} 
 
-\section{Implementierung prädikatenlogischer Strukturen in \textsl{Python}}
-Der im letzten Abschnitt präsentierte Begriff einer prädikatenlogischen Struktur erscheint zunächst
-sehr abstrakt.  Wir wollen in diesem Abschnitt zeigen, dass sich dieser Begriff in einfacher Weise in
-\textsl{Python} implementieren lässt.  Dadurch gelingt es, diesen Begriff zu veranschaulichen.  Als konkretes
-Beispiel wollen wir Strukturen zu \href{https://en.wikipedia.org/wiki/Group_theory}{Gruppen-Theorie}
-betrachten.  Wir gehen dazu in vier Schritten vor: 
+\section{Implementing $\Sigma$-Structures in \textsl{Python}}
+The concept of a $\Sigma$-structure that has been presented in the last section is quite abstract. In this
+section, we implement $\Sigma$-structures in \textsl{Python}. This helps to illustrate the concept. As a
+concrete example, we will consider $\Sigma$-structures related to
+\href{https://en.wikipedia.org/wiki/Group_theory}{group theory}. 
+We proceed in four steps:
 \begin{enumerate}
-\item Zunächst definieren wir mathematisch, was wir unter einer
-      \href{https://en.wikipedia.org/wiki/Group_(mathematics)}{Gruppe} verstehen. 
-\item Anschließend diskutieren wir, wie wir die Formeln der Gruppen-Theorie in \textsl{Python} darstellen.
-\item Dann definieren wir eine Struktur, in der die Formeln der Gruppen-Theorie gelten.
-\item Schließlich zeigen wir, wie wir prädikaten-logische Formeln in \textsl{Python} auswerten können und
-      führen dies am Beispiel der für die Gruppen-Theorie definierten Struktur vor.
+\item First, we define the concept of a \href{https://en.wikipedia.org/wiki/Group_(mathematics)}{group}.
+\item Then, we discuss how the formulas of group theory are represented in \textsl{Python}.
+\item Next, we define a $\Sigma$-structure in which the formulas of group theory are valid.
+\item Finally, we show how to evaluate formulas from first-order logic in \textsl{Python}.
 \end{enumerate}
 
-\subsection{Gruppen-Theorie}
-In der Mathematik wird eine Gruppe $\mathcal{G}$ \index{Gruppe} als ein Tripel der Form
+\subsection{Group Theory}
+In mathematics, a group $\mathcal{G}$ \index{Group} is defined as a triple of the form
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{G} = \langle G, \mathrm{e}, * \rangle$
 \\[0.2cm]
-definiert.  Dabei gilt:
+where:
 \begin{enumerate}
-\item $G$ ist eine Menge,
-\item $\mathrm{e}$ ist ein Element der Menge $G$ und
-\item $*:G \times G \rightarrow G$ ist eine binäre Funktion auf $G$, die wir im Folgenden als die
-      \blue{Multiplikation} der Gruppe be\-zeich\-nen.
-\item Außerdem müssen die folgenden drei Axiome gelten:
+\item $G$ is a set,
+\item $\mathrm{e}$ is an element of the set $G$, and
+\item $*: G \times G \rightarrow G$ is a binary function on $G$, which we henceforth refer to as the
+      \textcolor{blue}{multiplication} of the group.
+\item Moreover, the following three axioms hold:
       \begin{enumerate}
       \item $\forall x: \mathrm{e} * x = x$,
         
-            $\mathrm{e}$ ist bezüglich der Multiplikation ein \blue{links-neutrales} Element.
+            $\mathrm{e}$ is a \textcolor{blue}{left-neutral} element with respect to multiplication.
       \item $\forall x: \exists{y}: y * x = \mathrm{e}$,
 
-            d.h.~für jedes $x \in G$ gibt es ein \blue{links-inverses} Element. 
+            i.e., for every $x \in G$ there is a \textcolor{blue}{left-inverse} element.
       \item $\forall x: \forall y: \forall z: (x * y) * z = x * (y * z)$,
 
-            d.h.~es gilt das \blue{Assoziativ-Gesetz}.
+            i.e., the \textcolor{blue}{associative law} holds.
 
-      \item Die Gruppe $\mathcal{G}$ ist eine \blue{kommutative} Gruppe genau dann, wenn zusätzlich das folgende Axiom gilt:
+      \item The group $\mathcal{G}$ is a \textcolor{blue}{commutative} group if and only if additionally the
+            following axiom holds: 
         
-            $\forall x: \forall y: x * y = y * x$.
+            $\forall x: \forall y: x * y = y * x$,
 
-            d.h.~es gilt das \blue{Kommutativ-Gesetz}. \eox
+            This is know as the law of commutativity.
+            \eox
       \end{enumerate}
-      Beachten Sie, dass das Kommutativ-Gesetz in einer Gruppe im Allgemeinen nicht gelten muss.
+      Note that the commutative law does not have to hold in a group.  It is only required for
+      \blue{commutative groups}. 
 \end{enumerate}
 
-\subsection{Darstellung der Formeln in \textsl{Python}}
-Im letzten Abschnitt haben wir die Signatur $\Sigma_G$ der
-Gruppen-Theorie wie folgt definiert:
+\subsection{Representation of Formulas in \textsl{Python}}
+In the last section, we have defined the signature $\Sigma_G$ of
+group theory as follows:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\Sigma_G = 
    \bigl\langle \{x,y,z\},\; \{\mathrm{e},*\},\; \{=\},\; \{ \pair(\mathrm{e},0), \pair(*,2), \pair(=,2) \} \bigr\rangle 
 $.
 \\[0.2cm]
-Hierbei ist also ``$\mathrm{e}$'' ein 0-stelliges Funktions-Zeichen, ``$*$'' ist
-eine 2-stelliges Funktions-Zeichen und ``$=$'' ist ein 2-stelliges Prädikats-Zeichen.
-Wir werden für prädikaten-logische Formeln einen Parser verwenden, der keine binären Infix-Operatoren wie
-``$*$'' oder ``$=$'' unterstützt.  Bei diesem Parser können Terme nur in der Form
+Here, ``$\mathrm{e}$'' is a 0-arity function symbol representing the identity element, ``$*$'' is
+the binary function symbol representing the group multiplication, and ``$=$'' is the binary predicate symbol to 
+denote equality. 
+We will use a parser for predicate logic formulas that does not support binary infix operators like
+``$*$'' or ``$=$''. With this parser, terms can only be specified in the form
 \\[0.2cm]
 \hspace*{1.3cm}
 $f(t_1,\cdots,t_n)$
 \\[0.2cm]
-angegeben werden, wobei $f$ eine Funktions-Zeichen ist und $t_1$, $\cdots$, $t_n$ Terme sind.  Analog werden
-atomare Formeln durch Ausdrücke der Form
+where $f$ is a function symbol and $t_1$, $\cdots$, $t_n$ are terms. Similarly, atomic formulas have to be
+represented by expressions in the form 
 \\[0.2cm]
 \hspace*{1.3cm}
 $p(t_1,\cdots,t_n)$
 \\[0.2cm]
-dargestellt, wobei $p$ eine Prädikats-Zeichen ist.  Variablen werden von den Funktions- und Prädikats-Zeichen
-dadurch unterschieden, dass Variablen mit einem kleinen Buchstaben beginnen, während Funktions- und
-Prädikats-Zeichen mit einem großen Buchstaben beginnen.  Um die Formeln der Gruppentheorie darstellen zu
-können, vereinbaren wir daher das Folgende:
+where $p$ is a predicate symbol. Variables are distinguished from function and predicate symbols
+in that variables begin with a lowercase letter, while function and
+predicate symbols begin with an uppercase letter. To be able to represent the formulas of group theory, we therefore agree on the following:
 \begin{enumerate}
-\item Das neutrale Element $\mathrm{e}$ schreiben wir als $\mytt{E}()$.  
-\item Für den Operator $*$ verwenden wir das zweistellige Funktions-Zeichen $\mytt{Multiply}$.
-      Damit wird der Ausdruck $x*y$ also als $\mytt{Multiply}(x, y)$ geschrieben.
-\item Das Gleichheits-Zeichen ``$=$'' repräsentieren wir durch das zweistellige Prädikats-Zeichen
-      $\mytt{Equals}$.  Damit schreibt sich dann beispielsweise die Formel $x = y$ als $\mytt{Equals}(x, y)$.
+\item The neutral element $\mathrm{e}$ is written as $\mytt{E}()$.  
+\item For the operator $*$, we use the binary function symbol $\mytt{Multiply}$.
+      Thus, the expression $x*y$ is written as $\mytt{Multiply}(x, y)$.
+\item The equality sign ``$=$'' is represented by the binary predicate symbol
+      $\mytt{Equals}$. Thus, for example, the formula $x = y$ is written as $\mytt{Equals}(x, y)$.
 \end{enumerate}
-Abbildung \ref{fig:group-theory} zeigt die Formeln der Gruppen-Theorie als Strings.
+Figure \ref{fig:group-theory} shows the formulas of group theory as strings.
+We can transform the formulas into nested tuples using the function $\mytt{parse}(s)$ shown in Figure
+\ref{fig:fol-parse.py}. The result of this transformation is displayed in Figure \ref{fig:group-theory-tupel}. 
+
 
 \begin{figure}[!ht]
 \centering
@@ -722,14 +726,9 @@ Abbildung \ref{fig:group-theory} zeigt die Formeln der Gruppen-Theorie als Strin
     G4 = '∀x:∀y:Equals(Multiply(x,y), Multiply(y,x))'
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Formeln der kommutativen Gruppentheorie als Strings}
+\caption{The string representation of the formulas of group theory.}
 \label{fig:group-theory}
 \end{figure}
-
-Wir können die Formeln mit der in Abbildung \ref{fig:fol-parse.py} gezeigten Funktion $\mytt{parse}(s)$ in
-geschachtelte Tupel überführen.  Das Ergebnis dieser Transformation ist in Abbildung
-\ref{fig:group-theory-tupel} zu sehen.
-
 
 \begin{figure}[!ht]
 \centering
@@ -742,12 +741,11 @@ geschachtelte Tupel überführen.  Das Ergebnis dieser Transformation ist in Abb
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm,
                ]{python3}
-    import folParser as fp
-    
+    % run FOL-Parser.ipynb
+               
     def parse(s):
-        "Parse string s as fol formula."
-        p = fp.LogicParser(s)
-        return p.parse()
+        p = LogicParser(s)
+        return p.parse()    
 
     F1 = parse(G1)
     F2 = parse(G2)
@@ -755,7 +753,7 @@ geschachtelte Tupel überführen.  Das Ergebnis dieser Transformation ist in Abb
     F4 = parse(G4)
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Funktion \mytt{parse}}
+\caption{The function  \mytt{parse}}
 \label{fig:fol-parse.py}
 \end{figure}
 
@@ -788,11 +786,13 @@ geschachtelte Tupel überführen.  Das Ergebnis dieser Transformation ist in Abb
 \label{fig:group-theory-tupel}
 \end{figure}
 
-\subsection{Darstellung prädikaten-logischer Strukturen in \textsl{Python}}
-Wir hatten bei der Definition der Semantik der Prädikaten-Logik in Abschnitt \ref{sec:semantik} bereits eine
-Struktur $\mathcal{S}$ angegeben, deren Universum aus der Menge $\{ 0, 1 \}$ besteht.  In \textsl{Python}
-können wir diese Struktur durch den in Abbildung \ref{fig:Group.ipynb} auf Seite \pageref{fig:Group.ipynb}
-gezeigten Code implementieren. 
+
+\subsection{Representation of Predicate Logic Structures in \textsl{Python}}
+In the section definining  the semantics of first-order logic in Section \ref{sec:semantik}, we
+have already specied  a $\Sigma$-structure $\mathcal{Z}$ for group theory.  The universe of $\mathcal{Z}$
+consists of the set $\{ 0, 1 \}$. In \textsl{Python}, we can 
+implement this structure using the code shown in Figure \ref{fig:Group.ipynb} on page
+\pageref{fig:Group.ipynb}. 
 
 \begin{figure}[!ht]
 \centering
@@ -816,14 +816,12 @@ gezeigten Code implementieren.
 \caption{Implementierung einer Struktur zur Gruppen-Theorie}
 \label{fig:Group.ipynb}
 \end{figure}
-
 \begin{enumerate}
-\item Das in Zeile 1 definierte Universum $U$ besteht aus den beiden Zahlen $0$ und $1$.
+\item The universe $U$ defined in line 1 consists of the two numbers $0$ and $1$.
       
-\item In Zeile 2 definieren wir die Interpretation des nullstelligen Funktions-Zeichens $\mytt{E}$
-      als das \textsl{Python}-Dictionary, das dem leeren Tupel die Zahl $0$ zuordnet.
-\item In Zeile 3 definieren wir eine Funktion $\mytt{Product}$ als \textsl{Python}-Dictionary.  Für
-      die so definierte Funktion gilt
+\item In line 2, we define the interpretation of the zero-arity function symbol $\mytt{E}$
+      as the \textsl{Python} dictionary that maps the empty tuple to the number $0$.
+\item In line 3, we define a function $\mytt{Product}$ as a \textsl{Python} dictionary.  We have
       \\[0.2cm]
       \hspace*{1.3cm}
       $\mathtt{Product}(0,0) = 0$, \quad
@@ -833,21 +831,22 @@ gezeigten Code implementieren.
       $\mathtt{Product}(1,0) = 1$, \quad
       $\mathtt{Product}(1,1) = 0$.
       \\[0.2cm]  
-      Diese Funktion verwenden wir später als die Interpretation $\mytt{Multiply}^\mathcal{J}$ des Funktions-Zeichens ``$\mytt{Multiply}$''.
-\item In Zeile 4 haben wir  die Interpretation $\mytt{Equals}^\mathcal{J}$ des
-      Prädikats-Zeichens ``$\mytt{Equals}$'' als die Menge $\{ \pair(0,0), \pair(1,1)\}$ definiert.
-\item In Zeile 7 fassen wir die Interpretationen der Funktions-Zeichen ``$\mytt{E}$'' und
-      ``$\mytt{Multiply}$'' und des Prädikats-Zeichens ``$\mytt{Equals}$'' zu dem Dictionary $\mytt{J}$
-      zusammen, so dass für ein Funktions- oder Prädikats-Zeichen $f$ die Interpretation $f^\mathcal{J}$ durch
-      den Wert $\mytt{J}[f]$ gegeben ist. 
-\item Die Interpretation $\mytt{J}$ wird dann in Zeile 6 mit dem
-      Universum $\mytt{U}$ zu der Struktur $\mytt{S}$ zusammengefasst, die in \textsl{Python} einfach als
-      Paar dargestellt wird.
-\item Schließlich zeigt Zeile 7, dass eine
-      Variablen-Belegung ebenfalls als Dictionary dargestellt werden kann.  Die Schlüssel
-      sind die Variablen, die Werte sind dann die Objekte aus dem Universum, auf welche die Variablen
-      abgebildet werden.
+      We use this function later as the interpretation $\mytt{Multiply}^\mathcal{J}$ of the function symbol ``$\mytt{Multiply}$''.
+\item In line 4, we have defined the interpretation $\mytt{Equals}^\mathcal{J}$ of
+      the predicate symbol ``$\mytt{Equals}$'' as the set $\{ \pair(0,0), \pair(1,1)\}$.
+\item In line 5, we combine the interpretations of the function symbols ``$\mytt{E}$'' and
+      ``$\mytt{Multiply}$'' and the predicate symbol ``$\mytt{Equals}$'' into the dictionary $\mytt{J}$,
+      so that for a function or predicate symbol $f$, the interpretation $f^\mathcal{J}$ is given by
+      the value $\mytt{J}[f]$.
+\item The interpretation $\mytt{J}$ is then combined with the
+      universe $\mytt{U}$ into the structure $\mytt{S}$, which is simply represented as
+      a pair in \textsl{Python}.
+\item Finally, line 7 shows that a
+      variable assignment can also be represented as a dictionary. The keys
+      are the variables, and the values are the objects from the universe to which these variables
+      are mapped.
 \end{enumerate}
+
 
 
 \begin{figure}[!ht]
@@ -878,28 +877,27 @@ gezeigten Code implementieren.
 \label{fig:evalTerm.ipynb}
 \end{figure}
 
-
-Als nächstes überlegen wir uns, wie wir prädikatenlogische Terme in einer solchen Struktur
-auswerten können.  Abbildung \ref{fig:evalTerm.ipynb} zeigt die Implementierung der Prozedur
-$\mytt{evalTerm}(t, \mathcal{S}, \mathcal{I})$, der als Argumente ein prädikatenlogischer Term $t$, eine
-prädikatenlogische Struktur $\mathcal{S}$ und eine Variablen-Belegung $\mathcal{I}$ übergeben werden.  Der Term
-$t$ wird dabei in \textsl{Python} als geschachteltes Tupel dargestellt.
+Next, we consider how we can evaluate terms within  a $\Sigma$-structure.
+Figure \ref{fig:evalTerm.ipynb} shows the implementation of the procedure
+$\mytt{evalTerm}(t, \mathcal{S}, \mathcal{I})$, which takes as arguments a term $t$, a
+ $\Sigma$-structure $\mathcal{S}$, and a variable assignment $\mathcal{I}$. The term
+$t$ is represented in \textsl{Python} as a nested tuple.
 \begin{enumerate}
-\item In Zeile 2 überprüfen wir, ob der Term $t$ eine Variable ist.  Dies ist daran zu erkennen, dass Variablen
-      als Strings dargestellt werden, während alle anderen Terme Tupel sind.  Falls $t$ eine Variable ist, dann 
-      geben wir den Wert zurück, der in der Variablen-Belegung $\mathcal{I}$ für diese Variable gespeichert
-      ist.
-\item Sonst extrahieren wir in Zeile 4 das Dictionary $\mathcal{J}$, das die Interpretationen der Funktions- und
-      Prädikats-Zeichen enthält, aus der Struktur $\mathcal{S}$.
-\item Das Funktions-Zeichen $f$ des Terms $t$ ist die erste Komponente des Tupels $t$,
-      die Argumente werden in der Liste \mytt{args} zusammen gefasst.
-\item Die Interpretation $f^\mathcal{J}$ dieses Funktions-Zeichens schlagen wir in Zeile 6 in dem Dictionary
-      $\mathcal{J}$ nach.
-\item Das Tupel, das aus diesen Argumenten besteht, wird in Zeile 7 rekursiv ausgewertet.
-      Als Ergebnis erhalten wir dabei ein Tupel von Werten.
-\item Dieses Tupel dient dann in Zeile 8 als Argument für das Dictionary $f^\mathcal{J}$.  Der in diesem
-      Dictionary für die Argumente abgelegte Wert ist das Ergebnis der Auswertung des Terms $t$.
+\item In line 2, we check whether the term $t$ is a variable.  This can be done by noting that variables
+      are represented as strings, while all other terms are represented as tuples. If $t$ is a variable, then 
+      we return the value stored in the variable assignment $\mathcal{I}$ for this variable.
+\item Otherwise, in line 4, we extract the dictionary $\mathcal{J}$ that contains the interpretations of the function and
+      predicate symbols from the structure $\mathcal{S}$.
+\item The function symbol $f$ of the term $t$ is the first component of the tuple $t$,
+      the arguments are collected in the list \mytt{args}.
+\item The interpretation $f^\mathcal{J}$ of this function symbol is looked up in line 6 in the dictionary
+      $\mathcal{J}$.
+\item The tuple consisting of the arguments of $f$ is recursively evaluated in line 7.
+      As a result, we obtain a tuple of values.
+\item This tuple then serves in line 8 as the argument for the dictionary $f^\mathcal{J}$. The value stored in this
+      dictionary for the given tuple of arguments is the result of evaluating the term $t$.
 \end{enumerate}
+
 
 \begin{figure}[!ht]
 \centering
@@ -923,118 +921,114 @@ $t$ wird dabei in \textsl{Python} als geschachteltes Tupel dargestellt.
 \caption{Auswertung atomarer Formeln}
 \label{fig:evalAtomic.ipynb}
 \end{figure}
-
-Abbildung \ref{fig:evalAtomic.ipynb} zeigt die Auswertung einer atomaren Formel.  Eine atomare Formel $a$ 
-ist in Python als Tupel der Form
+Figure \ref{fig:evalAtomic.ipynb} shows the evaluation of an atomic formula. An atomic formula $a$ 
+is represented in Python as a tuple of the form
 \\[0.2cm]
 \hspace*{1.3cm}
 $a = (p, t_1,\cdots,t_n)$.
 \\[0.2cm]
-dargestellt.  Wir können diese Tupel durch die Zuweisung
+We can decompose this tuple into its components by the assignment
 \\[0.2cm]
 \hspace*{1.3cm}
 \mytt{$p$, *args = $a$}
 \\[0.2cm]
-in seine Komponenten zerlegen.  \mytt{args} ist dann die Liste $[t_1,\cdots,t_n]$.
-Um zu überprüfen, ob die atomare Formel $a$ wahr ist, müssen wir überprüfen, ob
+where \mytt{args} is then the list $[t_1,\cdots,t_n]$.
+To verify whether the atomic formula $a$ is true, we need to check whether
 \\[0.2cm]
 \hspace*{1.3cm}
 $\bigl(\mytt{evalTerm}(t_1,\mathcal{S}, \mathcal{I}), \cdots, \mytt{evalTerm}(t_n,\mathcal{S},\mathcal{I})\bigr)\in p^\mathcal{J}$
 \\[0.2cm]
-gilt.  Dieser Test wird in Zeile 6 durchgeführt. Der Rest der Implementierung der Funktion
-$\mytt{evalAtomic}$ ist analog zur Implementierung der Funktion $\mytt{evalTerm}$.
+holds. This test is conducted in line 6. The rest of the implementation of the function
+$\mytt{evalAtomic}$ is analogous to the implementation of the function $\mytt{evalTerm}$.
+
 
 
 \begin{figure}[!ht]
 \centering
 \begin{minted}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  firstnumber   = 1,
-                  bgcolor       = sepia,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = -0.3cm,
-                  xrightmargin  = 0.0cm,
-                  ]{python3}
-    def evalFormula(F, S, I):
-        U = S[0]  # universe
-        if F[0] == '⊤': return True
-        if F[0] == '⊥': return False
-        if F[0] == '¬': return not evalFormula(F[1], S, I)
-        if F[0] == '∧': return evalFormula(F[1], S, I) and evalFormula(F[2], S, I)
-        if F[0] == '∨': return evalFormula(F[1], S, I) or evalFormula(F[2], S, I)
-        if F[0] == '→': return not evalFormula(F[1], S, I) or evalFormula(F[2], S, I)
-        if F[0] == '↔': return evalFormula(F[1], S, I) == evalFormula(F[2], S, I)
-        if F[0] == '∀': 
-            x, G = F[1:] 
-            return all({ evalFormula(G, S, modify(I, x, c)) for c in U} )
-        if F[0] == '∃':
-            x, G = F[1:] 
-            return any({ evalFormula(G, S, modify(I, x, c)) for c in U} )
-        return evalAtomic(F, S, I)                   
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                bgcolor       = sepia,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm,
+              ]{python3}
+   def evalFormula(F, S, I):
+       U = S[0]  # universe
+       if F[0] == '⊤': return True
+       if F[0] == '⊥': return False
+       if F[0] == '¬': return not evalFormula(F[1], S, I)
+       if F[0] == '∧': return evalFormula(F[1], S, I) and evalFormula(F[2], S, I)
+       if F[0] == '∨': return evalFormula(F[1], S, I) or evalFormula(F[2], S, I)
+       if F[0] == '→': return not evalFormula(F[1], S, I) or evalFormula(F[2], S, I)
+       if F[0] == '↔': return evalFormula(F[1], S, I) == evalFormula(F[2], S, I)
+       if F[0] == '∀': 
+           x, G = F[1:] 
+           return all({ evalFormula(G, S, modify(I, x, c)) for c in U} )
+       if F[0] == '∃':
+           x, G = F[1:] 
+           return any({ evalFormula(G, S, modify(I, x, c)) for c in U} )
+       return evalAtomic(F, S, I)                   
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Die Funktion \mytt{evalFormula}.}
 \label{fig:evalFormula.ipynb}
 \end{figure}
-
-Abbildung \ref{fig:evalFormula.ipynb} auf Seite \pageref{fig:evalFormula.ipynb} zeigt die Implementierung der
-Funktion $\mytt{evalFormula}(F, \mathcal{S}, \mathcal{I})$, die als Argumente eine prädikatenlogische Formel
-$F$, eine prädikatenlogische Struktur $\mathcal{S}$ und eine Variablen-Belegung $\mathcal{I}$ erhält und die
-als Ergebnis den Wert $\mathcal{S}(\mathcal{I}, F)$ berechnet.
-Die Auswertung der Formel $F$ erfolgt dabei analog zu der in Abbildung \ref{fig:evaluate.py} auf
-Seite \pageref{fig:evaluate.py} gezeigten Auswertung aussagenlogischer Formeln.   Neu ist hier nur die
-Behandlung der Quantoren.  In den Zeilen 10, 11 und 12 behandeln wir die Auswertung allquantifizierter Formeln.
-Ist $F$ eine Formel der Form $\forall x: G$, so wird die Formel $F$ durch das Tupel
+Figure \ref{fig:evalFormula.ipynb} on page \pageref{fig:evalFormula.ipynb} shows the implementation of the
+function $\mytt{evalFormula}(F, \mathcal{S}, \mathcal{I})$, which receives as arguments a first-order formula
+$F$, a $\Sigma$-structure $\mathcal{S}$, and a variable assignment $\mathcal{I}$.  The function computes
+the result $\mathcal{S}(\mathcal{I}, F)$.
+The evaluation of the formula $F$ proceeds analogously to the evaluation of propositional logic formulas shown
+in Figure \ref{fig:evaluate.py} on page \pageref{fig:evaluate.py}. The novelty here is the
+handling of quantifiers. In lines 10, 11, and 12, we deal with the evaluation of universally quantified formulas.
+If $F$ is a formula of the form $\forall x: G$, then the formula $F$ is represented by the tuple
 \\[0.2cm]
 \hspace*{1.3cm}
-$F = (\mytt{'∀'}, x, G)$
+$F = (\mytt{'∀'}, x, G)$.
 \\[0.2cm]
-dargestellt.  Die Auswertung von $\forall x\colon G$ geschieht nach der Formel
+The evaluation of $\forall x\colon G$ is implements the formula
 \\[0.2cm]
 \hspace*{1.3cm}
 $\struct\bigl(\mathcal{I}, \forall x\colon G\bigr) \;:=\; \left\{
       \begin{array}{ll}
-         \mathtt{True}  & \mbox{falls}\; \struct(\mathcal{I}[x/c], G) = \mathtt{True}\quad \mbox{für alle}\; c\in \mathcal{U}\;\mbox{gilt}; \\
-         \mathtt{False} & \mbox{sonst}.
+         \mathtt{True}  & \mbox{if}\; \struct(\mathcal{I}[x/c], G) = \mathtt{True}\quad \mbox{for all}\; c\in \mathcal{U}\;\mbox{holds}; \\
+         \mathtt{False} & \mbox{otherwise}.
       \end{array}
       \right.
 $
 \\[0.2cm]
-Um die Auswertung implementieren zu können, verwenden wir die Prozedur $\mytt{modify}()$, welche die
-Variablen-Belegung $\mathcal{I}$ an der Stelle $x$ zu $c$ abändert, es gilt also
+To implement the this, we use the procedure $\mytt{modify}()$, which modifies the
+variable assignment $\mathcal{I}$ at position $x$ to $c$, hence
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mytt{modify}(\mathcal{I},x,c) = \mathcal{I}[x/c]$. 
 \\[0.2cm]
-Die Implementierung dieser Prozedur ist in \myfig{modify.ipynb} gezeigt.
- Bei der Auswertung eines All-Quantors können wir ausnutzen, dass die Sprache \textsl{Python}
-den Quantor ``$\forall$'' durch die Funktion \mytt{all} unterstützt.  Wir können also direkt testen, ob die 
-Formel für alle möglichen Werte $c$, die wir für die Variable $x$ einsetzen können,
-richtig ist.  Für eine Menge $S$ von Wahrheitswerten ist der Ausdruck
+The implementation of this procedure is shown in \myfig{modify.ipynb}.
+In the evaluation of a universal quantifier, we can take advantage of the fact that the \textsl{Python} language
+supports the quantifier ``$\forall$'' through the function \mytt{all}. Thus, we can directly test whether the 
+formula is true for all possible values $c$ that we can substitute for the variable $x$.
+For a set $S$ of truth values, the expression
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mytt{all}(S)$
 \\[0.2cm]
-genau dann wahr, wenn alle Elemente von $S$ den Wert \mytt{True} haben.
-Die Auswertung eines Existenz-Quantors ist analog zur Auswertung eines All-Quantors.
-Der einzige Unterschied besteht darin, dass wir statt der Funktion \mytt{all} die Funktion \mytt{any}
-verwenden.  Der Ausdruck
+is true exactly when all elements of $S$ are \mytt{True}.
+The evaluation of an existential quantifier is analogous to the evaluation of a universal quantifier.
+The only difference is that instead of the function \mytt{all}, we use the function \mytt{any}.
+The expression
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mytt{any}(S)$
 \\[0.2cm]
-ist für eine Menge von Wahrheitswerten $S$ genau dann wahr, wenn es wenigstens ein Element in der Menge $S$
-gibt, dass den Wert \mytt{True} hat.
+is true for a set of truth values $S$ exactly when there is at least one element in the set $S$
+that is \mytt{True}.
 
-Bei der Implementierung der Prozedur $\mytt{modify}(\textsl{I},x,c)$, die als Ergebnis die Variablen-Belegung $\mathcal{I}[x/c]$ berechnet, nutzen wir aus, dass
-wir bei einer Funktion, die als Dictionary gespeichert ist, den Wert, der für ein Argument $x$ eingetragen ist,
-durch eine Zuweisung der Form 
+In the implementation of the procedure $\mytt{modify}(\textsl{I},x,c)$, which calculates the result as the variable assignment $\mathcal{I}[x/c]$, we take advantage of the fact that
+for a function stored as a dictionary, the value assigned to an argument $x$ can be changed by an assignment of the form
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{I}[x] \;\mytt{=}\; c$ 
-\\[0.2cm]
-abändern können.
+$\mathcal{I}[x] \;\mytt{=}\; c$.
 
 \begin{figure}[!ht]
 \centering
@@ -1052,12 +1046,14 @@ abändern können.
         return I
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Implementierung der Funktion \mytt{modify}.}
+\caption{Implementation of the function \mytt{modify}.}
 \label{fig:modify.ipynb}
 \end{figure}
-Mit dem in Abbildung \ref{fig:isGroup.ipynb} gezeigten Skript können wir nun überprüfen, ob die in
-\myfig{isGroup.ipynb} definierte Struktur eine Gruppe ist.  Wir erhalten die in Abbildung \ref{fig:isGroup.out}
-gezeigte Ausgabe und können daher folgern, dass diese Struktur in der Tat eine kommutative Gruppe ist.
+
+The  script shown in Figure \ref{fig:isGroup.ipynb} can check whether the $\Sigma$-structure defined in
+\myfig{isGroup.ipynb} is a group. The output shown in Figure \ref{fig:isGroup.out} allows us to conclude that
+this structure is indeed a commutative group. 
+
 
 \begin{figure}[!ht]
 \centering
@@ -1076,7 +1072,7 @@ gezeigte Ausgabe und können daher folgern, dass diese Struktur in der Tat eine 
     f"evalFormula({G4}, S, I) = {evalFormula(F4, S, I)}"
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Überprüfung, ob die in Abbildung \ref{fig:Group.ipynb} definierte Struktur eine Gruppe ist}
+\caption{Checking whether the $\Sigma$-structure shown in Figure \ref{fig:Group.ipynb} is a group.}
 \label{fig:isGroup.ipynb}
 \end{figure}
 
@@ -1090,46 +1086,48 @@ gezeigte Ausgabe und können daher folgern, dass diese Struktur in der Tat eine 
                   xleftmargin   = -0.5cm,
                   xrightmargin  = -0.5cm,
                 ]
-    evalFormula(∀x:Equals(Multiply(E(),x),x), S, I) = True
-    evalFormula(∀x:∃y:Equals(Multiply(x,y),E()), S, I) = True
-    evalFormula(∀x:∀y:∀z:Equals(Multiply(Multiply(x,y),z), Multiply(x,Multiply(y,z))), S, I)
-    = True
-    evalFormula(∀x:∀y:Equals(Multiply(x,y), Multiply(y,x)), S, I) = True
+ evalFormula(∀x:Equals(Multiply(E(),x),x), S, I) = True
+ evalFormula(∀x:∃y:Equals(Multiply(x,y),E()), S, I) = True
+ evalFormula(∀x:∀y:∀z:Equals(Multiply(Multiply(x,y),z), Multiply(x,Multiply(y,z))), S, I)
+ = True
+ evalFormula(∀x:∀y:Equals(Multiply(x,y), Multiply(y,x)), S, I) = True
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Ausgabe des in Abbildung \ref{fig:isGroup.ipynb} gezeigten Skripts}
+\caption{Output of the script shown in Figure \ref{fig:isGroup.ipynb}.}
 \label{fig:isGroup.out}
 \end{figure}
-
 \noindent
-\textbf{Bemerkung}:  Das oben vorgestellte Programm finden sie als Jupyter Notebook auf GitHub unter der Adresse:
+\textbf{Remark}: The program shown above is available as a Jupyter Notebook on GitHub at the address:
 \\[0.2cm]
-\hspace*{0.8cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/FOL-Evaluation.ipynb}{\mytt{https://github.com/karlstroetmann/Logic/blob/master/FOL-Evaluation.ipynb}}
+\hspace*{-1.0cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/01-FOL-Evaluation.ipynb}{\mytt{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/01-FOL-Evaluation.ipynb}}
 \\[0.2cm]
-Mit diesem Programm können wir überprüfen, ob eine
-prädikatenlogische Formel in einer vorgegebenen endlichen Struktur erfüllt ist. Wir können damit
-allerdings nicht überprüfen, ob eine Formel allgemeingültig ist, denn einerseits können
-wir das Programm nicht anwenden, wenn die Strukturen ein unendliches Universum haben,
-andererseits ist selbst die Zahl der verschiedenen endlichen Stukturen, die wir ausprobieren
-müssten, unendlich groß.  \eox
+With this program, we can check whether a
+first-order formula is satisfied in a given finite structure. However, we cannot use it to check whether a
+formula is universally valid because, on one hand, we cannot apply the program if the $\Sigma$-structure has an
+infinite universe, and on the other hand, even the number of different finite $\Sigma$-structures we would need
+to test is infinitely large. \eox 
 
-\exercise
+\exerciseEng
 \begin{enumerate}
-\item Zeigen Sie, dass die Formel
+\item Show that the formula
       \\[0.2cm]
       \hspace*{1.3cm}
       $\forall x: \exists y: p(x,y) \rightarrow \exists y: \forall x: p(x,y)$
       \\[0.2cm]
-      \underline{nicht} allgemeingültig ist, indem Sie in \textsl{Python} eine geeignete
-      prädikatenlogische Struktur $\mathcal{S}$ implementieren, in der diese Formel falsch ist.
-\item Überlegen Sie, wie viele verschiedene Strukturen es für die Signatur der Gruppen-Theorie gibt, wenn wir davon
-      ausgehen, dass das Universum die Form $\{1, \cdots, n\}$ hat.
-\item Geben Sie eine \underline{erfüllbare} prädikatenlogische Formel $F$ an, die in einer prädikatenlogischen
-      Struktur $\mathcal{S} = \pair(\mathcal{U},\mathcal{J})$ immer falsch ist, wenn das Universum $\mathcal{U}$ endlich ist.
+      is \underline{not} universally valid.
 
-      \textbf{Hinweis}: Es sei $f:U \rightarrow U$ eine Funktion.  Überlegen Sie, wie die Aussagen
-      ``\emph{$f$ ist injektiv}'' und ``\emph{$f$ ist surjektiv}'' zusammen hängen, wenn das Universum endlich ist.
+      In order to do this, implement a suitable predicate logic structure $\mathcal{S}$ in \textsl{Python}
+      such that this formula is false. 
+
+\item Consider how many different structures there are for the signature of group theory if we assume that the
+      universe is of the form $\{1, \cdots, n\}$.
+
+\item Provide a \underline{satisfiable} first-order formula $F$ that is always false in a predicate logic
+      structure $\mathcal{S} = \pair(\mathcal{U},\mathcal{J})$ if  the universe $\mathcal{U}$ is finite.
+
+      \textbf{Hint}: Let $f: U \rightarrow U$ be a function. Think about how the statements
+      ``\emph{$f$ is injective}'' and ``\emph{$f$ is surjective}'' are related when the universe is finite.
       \exend  
 \end{enumerate}
 
