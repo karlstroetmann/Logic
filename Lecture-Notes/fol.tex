@@ -682,7 +682,7 @@ $.
 Here, ``$\mathrm{e}$'' is a 0-arity function symbol representing the identity element, ``$*$'' is
 the binary function symbol representing the group multiplication, and ``$=$'' is the binary predicate symbol to 
 denote equality. 
-We will use a parser for predicate logic formulas that does not support binary infix operators like
+We will use a parser for first-order logic formulas that does not support binary infix operators like
 ``$*$'' or ``$=$''. With this parser, terms can only be specified in the form
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -787,7 +787,7 @@ We can transform the formulas into nested tuples using the function $\mytt{parse
 \end{figure}
 
 
-\subsection{Representation of Predicate Logic Structures in \textsl{Python}}
+\subsection{Representation of $\Sigma$-Structures in \textsl{Python}}
 In the section definining  the semantics of first-order logic in Section \ref{sec:semantik}, we
 have already specied  a $\Sigma$-structure $\mathcal{Z}$ for group theory.  The universe of $\mathcal{Z}$
 consists of the set $\{ 0, 1 \}$. In \textsl{Python}, we can 
@@ -1117,14 +1117,14 @@ to test is infinitely large. \eox
       \\[0.2cm]
       is \underline{not} universally valid.
 
-      In order to do this, implement a suitable predicate logic structure $\mathcal{S}$ in \textsl{Python}
+      In order to do this, implement a suitable $\Sigma$-structure $\mathcal{S}$ in \textsl{Python}
       such that this formula is false. 
 
 \item Consider how many different structures there are for the signature of group theory if we assume that the
       universe is of the form $\{1, \cdots, n\}$.
 
-\item Provide a \underline{satisfiable} first-order formula $F$ that is always false in a predicate logic
-      structure $\mathcal{S} = \pair(\mathcal{U},\mathcal{J})$ if  the universe $\mathcal{U}$ is finite.
+\item Provide a \underline{satisfiable} first-order formula $F$ that is always false in a 
+      $\Sigma$-structure $\mathcal{S} = \pair(\mathcal{U},\mathcal{J})$ if  the universe $\mathcal{U}$ is finite.
 
       \textbf{Hint}: Let $f: U \rightarrow U$ be a function. Think about how the statements
       ``\emph{$f$ is injective}'' and ``\emph{$f$ is surjective}'' are related when the universe is finite.
@@ -1152,12 +1152,11 @@ that can be specified using first order logic.  The remainder of this section is
 
 \subsection{Constraint Satisfaction Problems}
 Conceptually, a constraint satisfaction problem is given by a set of first order logic formulas that contain a
-number of free variables.  Furthermore, a first order logic structure $\mathcal{S} = \langle \mathcal{U},
+set of free variables.  Furthermore, a $\Sigma$-structure $\mathcal{S} = \langle \mathcal{U},
 \mathcal{J}\rangle $
-(later abbreviated as \blue{\textsc{Fol} structure})
 consisting of a universe $\mathcal{U}$ and the interpretation $\mathcal{J}$ of the function and predicate 
-symbols used in these formulas is assumed to be understood from the context of the problem.  The goal is 
-to find a variable assignment such that the given formulas are evaluated as true.
+symbols used in these formulas is assumed to be implicitly specified by the context of the problem.  The goal is 
+to find a variable assignment such that the given first-order formulas are evaluated as true.
 
 \begin{Definition}[CSP] \index{CSP} \hspace*{\fill} \linebreak
 Formally, a \blue{constraint satisfaction problem} \index{constraint satisfaction problem} (abbreviated as
@@ -1171,7 +1170,7 @@ where
 \item $\mathtt{Vars}$ is a set of strings which serve as \blue{variables},
 \item $\mathtt{Values}$ is a set of \blue{values} that can be assigned to the variables in $\mathtt{Vars}$.
 
-      This set of values is assumed to be identical to the universe of the \blue{\textsc{Fol} structure}
+      This set of values is assumed to be identical to the universe of the $\Sigma$-structure
       $\mathcal{S} = \langle \mathcal{U}, \mathcal{J} \rangle$ that is given implicitly, i.e.~we have
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -1238,7 +1237,7 @@ states in Australia:
 \end{enumerate}
 Figure \ref{fig:australia.pdf} would certainly look better if different states had been coloured with different
 colours.  For the purpose of 
-this example let us assume that we have only the three colours \red{red}, \green{green}, and \blue{blue} 
+this example let us assume that we have only the three colours \red{red}, \puregreen{green}, and \blue{blue} 
 available.  The question then is whether it is  
 possible to colour the different states in a way that no two neighbouring states share the same colour.  This
 problem can be formalized as a constraint satisfaction problem.  To this end we define:
@@ -1691,14 +1690,14 @@ In order to solve this problem via constraint programming, we first introduce th
         variable $x'$ which does not occur in \texttt{Vars}.  The set of these primed Variables is denoted as
         $\mathtt{Vars}'$.
   \item \texttt{Values} is a set of values that these variables can take.
-  \item \texttt{Start}, \texttt{Goal}, and \texttt{Invariant} are \textsc{Fol} formulas such that all free
+  \item \texttt{Start}, \texttt{Goal}, and \texttt{Invariant} are first-order formulas such that all free
          variables occurring in these formulas are elements from the set \texttt{Vars}.
          \begin{itemize}
          \item \texttt{Start} describes the initial state of the transition system.
          \item \texttt{Goal} describes a state that should be reached by the transition system.
          \item \texttt{Invariant} is a formula that has to be true for every state of the transition system.
          \end{itemize}
-  \item \texttt{Transition} is a \textsc{Fol} formula.  The free variables of this formula are elements of
+  \item \texttt{Transition} is a first-order formula.  The free variables of this formula are elements of
         the set $\texttt{Vars} \cup \mathtt{Vars}'$, i.e.~they are either variables from the set \texttt{Vars}
         or they are primed variables from the set $\mathtt{Vars}'$.
 
@@ -3314,7 +3313,7 @@ the left identity element $\mathrm{e}$ is also a right identity.  We discuss thi
       \item \textsl{type} is either the string ``\texttt{axiom}'' or the string ``\texttt{conjecture}''.
             Every file must hold exactly one conjecture.  The conjecture is the formula that has to be proven from the
             axioms.
-      \item \textsl{formula} is \textsc{Fol} formula.  The precise syntax of formulas will be described below.
+      \item \textsl{formula} is first-order formula.  The precise syntax of formulas will be described below.
       \end{itemize}
 \item Line 2 states the axiom $\forall x: \exists y: y \circ x = \mathrm{e}$.
 \item Line 3 states the axiom $\forall x: \forall y: \forall z: (x \circ y) \circ z = x \circ (y \circ z)$.
