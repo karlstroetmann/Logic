@@ -864,16 +864,13 @@ implement this structure using the code shown in Figure \ref{fig:Group.ipynb} on
         if isinstance(t, str):  # t is a variable
             return I[t]
         _, J     = S      # J is the dictionary of interpretations
-        f, *args = t      # function symbol and arguments
+        f, *Args = t      # function symbol and arguments
         fJ       = J[f]   # interpretation of function symbol
-        argVals  = evalTermTuple(args, S, I)
-        return fJ[argVals]
-        
-    def evalTermTuple(Ts, S, I):
-        return tuple(evalTerm(t, S, I) for t in Ts)    
+        ArgVals  = tuple(evalTerm(arg, S, I) for arg in Args)
+        return fJ[ArgVals]
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Auswertung von Termen}
+\caption{Evaluation of a term.}
 \label{fig:evalTerm.ipynb}
 \end{figure}
 
@@ -889,10 +886,10 @@ $t$ is represented in \textsl{Python} as a nested tuple.
 \item Otherwise, in line 4, we extract the dictionary $\mathcal{J}$ that contains the interpretations of the function and
       predicate symbols from the structure $\mathcal{S}$.
 \item The function symbol $f$ of the term $t$ is the first component of the tuple $t$,
-      the arguments are collected in the list \mytt{args}.
+      the arguments are collected in the list \mytt{Args}.
 \item The interpretation $f^\mathcal{J}$ of this function symbol is looked up in line 6 in the dictionary
       $\mathcal{J}$.
-\item The tuple consisting of the arguments of $f$ is recursively evaluated in line 7.
+\item The arguments of $f$ are recursively evaluated in line 7.
       As a result, we obtain a tuple of values.
 \item This tuple then serves in line 8 as the argument for the dictionary $f^\mathcal{J}$. The value stored in this
       dictionary for the given tuple of arguments is the result of evaluating the term $t$.
@@ -912,15 +909,16 @@ $t$ is represented in \textsl{Python} as a nested tuple.
                 ]{python3}
     def evalAtomic(a, S, I):
         _, J     = S     # J is the dictionary of interpretations
-        p, *args = a     # predicate symbol and arguments
+        p, *Args = a     # predicate symbol and arguments
         pJ       = J[p]  # interpretation of predicate symbol
-        argVals  = evalTermTuple(args, S, I)
-        return argVals in pJ
+        ArgVals  = tuple(evalTerm(arg, S, I) for arg in Args)
+        return ArgVals in pJ
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Auswertung atomarer Formeln}
+\caption{Evaluation of an atomic formula.}
 \label{fig:evalAtomic.ipynb}
 \end{figure}
+
 Figure \ref{fig:evalAtomic.ipynb} shows the evaluation of an atomic formula. An atomic formula $a$ 
 is represented in Python as a tuple of the form
 \\[0.2cm]
@@ -930,16 +928,16 @@ $a = (p, t_1,\cdots,t_n)$.
 We can decompose this tuple into its components by the assignment
 \\[0.2cm]
 \hspace*{1.3cm}
-\mytt{$p$, *args = $a$}
+\mytt{$p$, *Args = $a$}
 \\[0.2cm]
-where \mytt{args} is then the list $[t_1,\cdots,t_n]$.
+where \mytt{Args} is then the list $[t_1,\cdots,t_n]$.
 To verify whether the atomic formula $a$ is true, we need to check whether
 \\[0.2cm]
 \hspace*{1.3cm}
 $\bigl(\mytt{evalTerm}(t_1,\mathcal{S}, \mathcal{I}), \cdots, \mytt{evalTerm}(t_n,\mathcal{S},\mathcal{I})\bigr)\in p^\mathcal{J}$
 \\[0.2cm]
-holds. This test is conducted in line 6. The rest of the implementation of the function
-$\mytt{evalAtomic}$ is analogous to the implementation of the function $\mytt{evalTerm}$.
+holds. This test is conducted in line 6. Note that the implementation of the function
+$\mytt{evalAtomic}$ is very similar to the implementation of the function $\mytt{evalTerm}$.
 
 
 
@@ -950,29 +948,26 @@ $\mytt{evalAtomic}$ is analogous to the implementation of the function $\mytt{ev
                 firstnumber   = 1,
                 bgcolor       = sepia,
                 numbers       = left,
-                numbersep     = -0.2cm,
+                numbersep     = 0.3cm,
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm,
               ]{python3}
-   def evalFormula(F, S, I):
-       U = S[0]  # universe
-       if F[0] == '⊤': return True
-       if F[0] == '⊥': return False
-       if F[0] == '¬': return not evalFormula(F[1], S, I)
-       if F[0] == '∧': return evalFormula(F[1], S, I) and evalFormula(F[2], S, I)
-       if F[0] == '∨': return evalFormula(F[1], S, I) or evalFormula(F[2], S, I)
-       if F[0] == '→': return not evalFormula(F[1], S, I) or evalFormula(F[2], S, I)
-       if F[0] == '↔': return evalFormula(F[1], S, I) == evalFormula(F[2], S, I)
-       if F[0] == '∀': 
-           x, G = F[1:] 
-           return all({ evalFormula(G, S, modify(I, x, c)) for c in U} )
-       if F[0] == '∃':
-           x, G = F[1:] 
-           return any({ evalFormula(G, S, modify(I, x, c)) for c in U} )
-       return evalAtomic(F, S, I)                   
+def evalFormula(F, S, I):
+    U, _ = S # U is the universe
+    match F:
+        case ('⊤', ):     return True
+        case ('⊥', ):     return False
+        case ('¬', G):    return not evalFormula(G, S, I)
+        case ('∧', G, H): return evalFormula(G, S, I) and evalFormula(H, S, I)
+        case ('∨', G, H): return evalFormula(G, S, I) or evalFormula(H, S, I)
+        case ('→', G, H): return not evalFormula(G, S, I) or evalFormula(H, S, I)
+        case ('↔', G, H): return evalFormula(G, S, I) == evalFormula(H, S, I)
+        case ('∀', x, G): return all(evalFormula(G, S, modify(I, x, c)) for c in U)
+        case ('∃', x, G): return any(evalFormula(G, S, modify(I, x, c)) for c in U)
+    return evalAtomic(F, S, I)
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Funktion \mytt{evalFormula}.}
+\caption{The function \mytt{evalFormula}.}
 \label{fig:evalFormula.ipynb}
 \end{figure}
 Figure \ref{fig:evalFormula.ipynb} on page \pageref{fig:evalFormula.ipynb} shows the implementation of the
@@ -981,13 +976,13 @@ $F$, a $\Sigma$-structure $\mathcal{S}$, and a variable assignment $\mathcal{I}$
 the result $\mathcal{S}(\mathcal{I}, F)$.
 The evaluation of the formula $F$ proceeds analogously to the evaluation of propositional logic formulas shown
 in Figure \ref{fig:evaluate.py} on page \pageref{fig:evaluate.py}. The novelty here is the
-handling of quantifiers. In lines 10, 11, and 12, we deal with the evaluation of universally quantified formulas.
+handling of quantifiers. In line 11, we deal with the evaluation of universally quantified formulas.
 If $F$ is a formula of the form $\forall x: G$, then the formula $F$ is represented by the tuple
 \\[0.2cm]
 \hspace*{1.3cm}
 $F = (\mytt{'∀'}, x, G)$.
 \\[0.2cm]
-The evaluation of $\forall x\colon G$ is implements the formula
+The evaluation of $\forall x\colon G$ implements the formula
 \\[0.2cm]
 \hspace*{1.3cm}
 $\struct\bigl(\mathcal{I}, \forall x\colon G\bigr) \;:=\; \left\{
@@ -998,13 +993,13 @@ $\struct\bigl(\mathcal{I}, \forall x\colon G\bigr) \;:=\; \left\{
       \right.
 $
 \\[0.2cm]
-To implement the this, we use the procedure $\mytt{modify}()$, which modifies the
-variable assignment $\mathcal{I}$ at position $x$ to $c$, hence
+To implement this, we use the procedure $\mytt{modify}()$, which modifies the
+variable assignment $\mathcal{I}$ at position $x$ to return $c$, hence
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mytt{modify}(\mathcal{I},x,c) = \mathcal{I}[x/c]$. 
 \\[0.2cm]
-The implementation of this procedure is shown in \myfig{modify.ipynb}.
+The implementation of this procedure is shown in Figure \ref{fig:modify.ipynb} on page \pageref{fig:modify.ipynb}.
 In the evaluation of a universal quantifier, we can take advantage of the fact that the \textsl{Python} language
 supports the quantifier ``$\forall$'' through the function \mytt{all}. Thus, we can directly test whether the 
 formula is true for all possible values $c$ that we can substitute for the variable $x$.
@@ -1014,21 +1009,33 @@ For a set $S$ of truth values, the expression
 $\mytt{all}(S)$
 \\[0.2cm]
 is true exactly when all elements of $S$ are \mytt{True}.
-The evaluation of an existential quantifier is analogous to the evaluation of a universal quantifier.
-The only difference is that instead of the function \mytt{all}, we use the function \mytt{any}.
-The expression
+
+The evaluation of $\exists x\colon G$ implements the formula
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{any}(S)$
+$\struct\bigl(\mathcal{I}, \exists x\colon G\bigr) \;:=\; \left\{
+      \begin{array}{ll}
+         \mathtt{True}  & \mbox{if}\; \struct(\mathcal{I}[x/c], G) = \mathtt{True}\quad \mbox{for any}\; c\in \mathcal{U}\;\mbox{holds}; \\
+         \mathtt{False} & \mbox{otherwise}.
+      \end{array}
+      \right.
+$
 \\[0.2cm]
-is true for a set of truth values $S$ exactly when there is at least one element in the set $S$
-that is \mytt{True}.
+The evaluation of $\exists x\colon G$ is then similar to the evaluation of $\forall x\colon G$, except for the
+fact that we now have to use the function \mytt{any} instead of the function \mytt{all}.  For a list, set,
+tuple, or indeed any iterable $L$ the expression $\mytt{any(L)}$ is true iff \mytt{True} is an element of $L$.
 
 In the implementation of the procedure $\mytt{modify}(\textsl{I},x,c)$, which calculates the result as the variable assignment $\mathcal{I}[x/c]$, we take advantage of the fact that
 for a function stored as a dictionary, the value assigned to an argument $x$ can be changed by an assignment of the form
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{I}[x] \;\mytt{=}\; c$.
+\\[0.2cm]
+However, we must not change the variable assignment $\mathcal{I}$.  Instead, we must return a new variable assignment
+$\mathcal{J}$ that returns the same values as the variable assignment $\mathcal{I}$, except for the argument
+$x$, where it should return $c$ instead of $\mathcal{I}[x]$.  Therefore, we have to create a copy of $\mathcal{I}$ in  
+line 2.  This copy is then modified in line 3 and returned in line 4.
+
 
 \begin{figure}[!ht]
 \centering
@@ -1042,17 +1049,20 @@ $\mathcal{I}[x] \;\mytt{=}\; c$.
                   xrightmargin  = 0.8cm,
                 ]{python3}
     def modify(I, x, c):
-        I[x] = c
-        return I
+        J = I.copy() # do not modify I       
+        J[x] = c
+        return J
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Implementation of the function \mytt{modify}.}
 \label{fig:modify.ipynb}
 \end{figure}
 
+
+
 The  script shown in Figure \ref{fig:isGroup.ipynb} can check whether the $\Sigma$-structure defined in
-\myfig{isGroup.ipynb} is a group. The output shown in Figure \ref{fig:isGroup.out} allows us to conclude that
-this structure is indeed a commutative group. 
+\ref{fig:isGroup.ipynb} on page \pageref{fig:isGroup.ipynb} is a group. The output shown in Figure
+\ref{fig:isGroup.out} allows us to conclude that this structure is indeed a commutative group. 
 
 
 \begin{figure}[!ht]
@@ -1142,11 +1152,15 @@ the programmer only has to \blue{specify} the problem precisely, she does not ha
 solution.  Usually, the specification of a problem is much easier than the coding of an algorithm to solve the problem.  This approach works well for those problems
 that can be specified using first order logic.  The remainder of this section is structured as follows:
 \begin{enumerate}
-\item We first define \blue{constraint satisfaction problems}.
-
-      As an example, we show how the eight queens puzzle can be formulated as a constraint satisfaction
-      problem.  
+\item We first define \blue{constraint satisfaction problems} and provide two examples:
+      \begin{itemize}
+      \item We introduce the map coloring problem for the case of Australia.
+      \item We formulate the eight queens puzzle as a constraint satisfaction problem.  
+      \end{itemize}
 \item We discuss a simple constraint solver that is based on \blue{backtracking}.
+
+      More efficient constraint solvers will be discussed in the lecture on artificial intelligence in the
+      $6^{\mathrm{th}}$ semester.
 \item Then we show how some puzzles can be solved using constraint programming.
 \end{enumerate}
 
@@ -1417,18 +1431,18 @@ partial assignment is shown in \myFig{eight-queens-partial.txt}.
                 firstnumber   = 1,
                 bgcolor       = sepia,
                 numbers       = left,
-                numbersep     = -0.2cm,
+                numbersep     = 0.3cm,
                 xleftmargin   = 0.2cm,
                 xrightmargin  = 0.2cm,
               ]{python3}
-    def queensCSP():
-        'Returns a CSP coding the 8 queens problem.'
-        S            = range(1, 8+1)          # used as indices
-        Variables    = [ f'Q{i}' for i in S ]
-        Values       = { 1, 2, 3, 4, 5, 6, 7, 8 }
-        SameColumn   = { f'Q{i} != Q{j}' for i in S for j in S if i < j }
-        SameDiagonal = { f'abs(Q{i}-Q{j}) != {j-i}' for i in S for j in S if i < j }
-        return (Variables, Values, SameColumn | SameDiagonal)
+ def queensCSP():
+     'Returns a CSP coding the 8 queens problem.'
+     S            = range(1, 8+1)          # used as indices
+     Variables    = [ f'Q{i}' for i in S ]
+     Values       = { 1, 2, 3, 4, 5, 6, 7, 8 }
+     SameColumn   = { f'Q{i} != Q{j}' for i in S for j in S if i < j }
+     SameDiagonal = { f'abs(Q{i}-Q{j}) != {j-i}' for i in S for j in S if i < j }
+     return (Variables, Values, SameColumn | SameDiagonal)
 \end{minted}
 \vspace*{-0.3cm}
 \caption{\textsl{Python} code to create the CSP representing the eight queens puzzle.}
@@ -1470,27 +1484,27 @@ employs backtracking.  We discuss this program next.
                   firstnumber   = 1,
                   bgcolor       = sepia,
                   numbers       = left,
-                  numbersep     = -0.2cm,
+                  numbersep     = 0.3cm,
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
                   ]{python3}
-    import ast
-                  
-    def collect_variables(expr): 
-        tree = ast.parse(expr)
-        return { node.id for node in ast.walk(tree) 
-                         if  isinstance(node, ast.Name) 
-                         if  node.id not in dir(__builtins__)
-               }
-                  
-    def solve(CSP):
-        'Compute a solution for the given constraint satisfaction problem.'
-        Variables, Values, Constraints = CSP
-        CSP = (Variables,
-               Values,
-               [(f, collect_variables(f) & set(Variables)) for f in Constraints]
-              )
-        return backtrack_search({}, CSP)
+import ast
+              
+def collect_variables(expr): 
+    tree = ast.parse(expr)
+    return { node.id for node in ast.walk(tree) 
+                     if  isinstance(node, ast.Name) 
+                     if  node.id not in dir(__builtins__)
+           }
+              
+def solve(CSP):
+    'Compute a solution for the given constraint satisfaction problem.'
+    Variables, Values, Constraints = CSP
+    CSP = (Variables,
+           Values,
+           [(f, collect_variables(f) & set(Variables)) for f in Constraints]
+          )
+    return backtrack_search({}, CSP)
 \end{minted}
 \vspace*{-0.3cm}
 \caption{A backtracking \textsc{Csp} solver}
@@ -1503,6 +1517,8 @@ employs backtracking.  We discuss this program next.
       a \textsl{Python} expression $e$.  This expression is parsed and the resulting syntax tree is returned.
 \item The function $\mytt{collect\_variables}(\mytt{expr})$ takes a \textsl{Python} expression as its input.
       It returns the set of variable names occurring in this expression.
+
+      The details of this implementation are quite technical and are not important in the following.
 \item The procedure $\mytt{solve}$ takes a constraint satisfaction problem $\mytt{CSP}$ as input and tries
       to find a solution.    
       \begin{enumerate}
@@ -1537,7 +1553,7 @@ employs backtracking.  We discuss this program next.
                   firstnumber   = 1,
                   bgcolor       = sepia,
                   numbers       = left,
-                  numbersep     = -0.2cm,
+                  numbersep     = 0.3cm,
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm,
                 ]{python3}          
@@ -1636,7 +1652,7 @@ holds, the formula $\mytt{f}$ evaluates to $\mytt{True}$ given the $\mytt{Assign
 $\mytt{isConsistent}$ is to check, whether the extended assignment
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{NA} \;\mytt{:=}\;\mytt{Assignment} \cup \{ \pair(\mytt{var}, \mytt{value}) \}$
+$\mytt{NewAssign} \;\mytt{:=}\;\mytt{Assignment} \cup \{ \pair(\mytt{var}, \mytt{value}) \}$
 \\[0.2cm]
 that assigns $\mytt{value}$ to the variable $\mytt{var}$ is still partially consistent with $\mytt{Constraints}$. 
 To this end, the \mytt{for}-loop iterates over all $\mytt{Formula}$s in $\mytt{Constraints}$. 
@@ -1644,19 +1660,19 @@ However, we only have to check those $\mytt{Formula}$s that contain the variable
 furthermore, have the property that
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{Vars}(\mytt{Formula}) \subseteq \mytt{dom}(\mytt{NA})$,
+$\mytt{Vars}(\mytt{Formula}) \subseteq \mytt{dom}(\mytt{NewAssign})$,
 \\[0.2cm]
 i.e.~all variables occurring in $\mytt{Formula}$ need to have a value assigned in
-$\mytt{NA}$.  The reasoning is as follows:
+$\mytt{NewAssign}$.  The reasoning is as follows:
 \begin{enumerate}
 \item If $\mytt{var}$ does not occur in $\mytt{Formula}$, then adding $\mytt{var}$ to
       $\mytt{Assignment}$ cannot change the result of evaluating $\mytt{Formula}$ and as
       $\mytt{Assignment}$ is assumed to be partially consistent with respect to $\mytt{Formula}$, 
-      $\mytt{NA}$ is also partially consistent with respect to $\mytt{Formula}$.
-\item If $\mytt{dom}(\mytt{NA}) \not\subseteq \mytt{Vars}(\mytt{Formula})$, then $\mytt{Formula}$ can not be evaluated anyway. 
+      $\mytt{NewAssign}$ is also partially consistent with respect to $\mytt{Formula}$.
+\item If $\mytt{dom}(\mytt{NewAssign}) \not\subseteq \mytt{Vars}(\mytt{Formula})$, then $\mytt{Formula}$ can not be evaluated anyway. 
 \end{enumerate}
-If we use backtracking, we can solve the 8 queens problem in less than a second.
-For the eight queens puzzle the order in which variables are tried is not particularly important.  The reason
+If we use backtracking, we can solve the 8 queens puzzle in less than a second.
+For the 8 queens puzzle the order in which variables are tried is not particularly important.  The reason
 is that all variables are connected to all other variables.  For other problems the ordering of the variables
 can be \red{very important}.  The general strategy is that variables that are strongly related to each other should
 be grouped together in the list $\mytt{Variables}$.
@@ -1674,8 +1690,8 @@ task.
 \eox
 
 \exerciseEng
-Figure \ref{fig:send-more-money.pdf} shows
-\href{https://en.wikipedia.org/wiki/Verbal_arithmetic}{cryptarithmetic puzzle} 
+Figure \ref{fig:send-more-money.pdf} shows a
+\href{https://en.wikipedia.org/wiki/Verbal_arithmetic}{cryptarithmetic puzzle}.
 The idea is that the letters 
 ``$\texttt{S}$'', ``$\texttt{E}$'', ``$\texttt{N}$'', ``$\texttt{D}$'', ``$\texttt{M}$'', ``$\texttt{O}$'', ``$\texttt{R}$'', ``$\texttt{Y}$'' 
 are interpreted as variables ranging over the set of decimal digits, i.e.~these variables can take values in
