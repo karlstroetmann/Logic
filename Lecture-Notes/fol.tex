@@ -1779,18 +1779,27 @@ a symbolic transition system.
 \begin{enumerate}[(a)]
 \item $\texttt{Vars} := \{ \mathtt{M}, \mathtt{C}, \mathtt{B} \}$.
 
-      \texttt{M} is the number of missionaries on the western shore, \texttt{C} is the number of infidels on
-      that shore, while \texttt{B} is the number of boats.
+      The value of \texttt{M} is the number of missionaries on the western shore, the value of \texttt{C} is
+      the number of infidels on that shore, while the value of \texttt{B} is the number of boats on the western
+      shore.
 \item $\mathtt{Values} := \{ 0, 1, 2, 3 \}$.
 \item $\texttt{Start} := (\mathtt{M} = 3 \wedge \mathtt{C} = 3 \wedge \mathtt{B} = 1)$.
 \item $\texttt{Goal}  := (\mathtt{M} = 0 \wedge \mathtt{C} = 0 \wedge B = 0)$.
-\item $\texttt{Invariant} := \bigl((\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = C) \;\wedge\; \mathtt{B} \leq 1\bigr)$,
+\item $\texttt{Invariant} := \bigl((\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = \mathtt{C}) \;\wedge\; \mathtt{B} \leq 1\bigr)$.
 
-      since there is no problem when all missionaries are either on the western shore or on the eastern shore
-      or when the number of missionaries is the same as the number of infidels on the western shore, because
-      then these numbers have to agree on the eastern shore as well.
+      The first part of the invariant, i.e.~ the formulas $\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = \mathtt{C}$,
+      describes those states where the missionaries are not threatened by the infidels.
+      \begin{itemize}
+      \item $\mathtt{M} = 3$: All missionaries are on the western shore.
+      \item $\mathtt{M} = 0$: All missionaries are together on the eastern shore.
+      \item $\mathtt{M} = \mathtt{C}$: On both shores the numbers of missionaries and cannibals are the same.
 
-      Furthermore, there is just one boat.
+            If neither $\mathtt{M} = 3$ nor $\mathtt{M} = 0$ holds, then the number of missionaries and
+            cannibals have to be the same on the western shorem because if there were more missionaries on the
+            western shore than cannibals, then there would be less missionaries than cannibals on the eastern
+            shore and hence there would be a problem on the eastern shore.
+      \end{itemize}
+      The condition $\mathtt{B} \leq 1$ has to be true because there is just one boat.
 \item $\texttt{Transition} :=
       \begin{array}[t]{cl}
          &  \mathtt{B}' = 1 - \mathtt{B}   \\[0.2cm]
@@ -1818,7 +1827,10 @@ a symbolic transition system.
             is the number of missionaries on the boat, while $\texttt{C} - \texttt{C}'$ is the number of
             infidels.  The sum of these numbers has to be between $1$ and $2$ because the boat can not travel
             empty and can take at most two passengers.
-            
+
+            The condition $\mathtt{M}' \leq \mathtt{M}$ is true because when missionaries are traveling from
+            the western shore to the eastern shore, the number of missionaries on the western shore can not
+            increase.  Similarly,  $\mathtt{C}' \leq \mathtt{C}$ has to be true.
       \item $\mathtt{B} = 0 \;\rightarrow\; 1 \leq \mathtt{M}' - \mathtt{M}  + \mathtt{C}' - \mathtt{C} \leq 2 \;\wedge\;
             \mathtt{M}' \geq \mathtt{M} \;\wedge\; \mathtt{C}' \geq \mathtt{C}$
 
@@ -1827,34 +1839,37 @@ a symbolic transition system.
       \end{itemize}
 \end{enumerate}
 
+
 \begin{figure}[!ht]
 \centering
-\begin{Verbatim}[frame         = lines, 
-                 framesep      = 0.3cm, 
+\begin{Verbatim}[frame         = single, 
+                 framesep      = 0.3cm,
+                 framerule=0.5mm,
+                 rulecolor=\color{black},
                  firstnumber   = 1,
                  numbers       = left,
-                 numbersep     = -0.2cm,
+                 numbersep     = 0.3cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
                  commandchars  = \\\{\},
                  codes         = {\catcode`$=3\catcode`^=7}
                ] 
-    def start(M, C, B):
-        return M == 3 and C == 3 and B == 1
-    
-    def goal(M, C, B):
-        return M == 0 and C == 0 and B == 0
-    
-    def invariant(M, C, B):
-        return (M == 0 or M == 3 or M == C) and B <= 1
-    
-    def transition(M$\alpha$, C$\alpha$, B$\alpha$, M$\beta$, C$\beta$, B$\beta$):
-        if not (B$\beta$ == 1 - B$\alpha$):
-            return False
-        if B$\alpha$ == 1:
-            return 1 <= M$\alpha$ - M$\beta$ + C$\alpha$ - C$\beta$ <= 2 and M$\beta$ <= M$\alpha$ and C$\beta$ <= C$\alpha$
-        else:
-            return 1 <= M$\beta$ - M$\alpha$ + C$\beta$ - C$\alpha$ <= 2 and M$\beta$ >= M$\alpha$ and C$\beta$ >= C$\alpha$
+\colorbox{sepia}{def start(M, C, B):                                                       }
+\colorbox{sepia}{    return M == 3 and C == 3 and B == 1                                   }
+\colorbox{sepia}{                                                                          }
+\colorbox{sepia}{def goal(M, C, B):                                                        }
+\colorbox{sepia}{    return M == 0 and C == 0 and B == 0                                   }
+\colorbox{sepia}{                                                                          }
+\colorbox{sepia}{def invariant(M, C, B):                                                   }
+\colorbox{sepia}{    return (M == 0 or M == 3 or M == C) and B <= 1                        }
+\colorbox{sepia}{                                                                          }
+\colorbox{sepia}{def transition(M$\alpha$, C$\alpha$, B$\alpha$, M$\beta$, C$\beta$, B$\beta$):                                   }
+\colorbox{sepia}{    if not (B$\beta$ == 1 - B$\alpha$):                                                }
+\colorbox{sepia}{        return False                                                      }
+\colorbox{sepia}{    if B$\alpha$ == 1:                                                           }
+\colorbox{sepia}{        return 1 <= M$\alpha$ - M$\beta$ + C$\alpha$ - C$\beta$ <= 2 and M$\beta$ <= M$\alpha$ and C$\beta$ <= C$\alpha$     }
+\colorbox{sepia}{    else:                                                                 }
+\colorbox{sepia}{        return 1 <= M$\beta$ - M$\alpha$ + C$\beta$ - C$\alpha$ <= 2 and M$\beta$ >= M$\alpha$ and C$\beta$ >= C$\alpha$     }
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{Coding the \emph{missionaries and cannibals problem} as a symbolic transition system.}
@@ -1914,7 +1929,7 @@ corresponding variable.
 Figure \ref{fig:Missionaries-STS.ipynb-2} shows how we can turn the symbolic transition system into a
 \textsc{Csp}.
 \begin{enumerate}
-\item The function $\texttt{flatten}(\texttt{LoL})$ receives a list $\texttt{LoL}$ of lists as its argument.
+\item The function $\texttt{flatten}(\texttt{LoL})$ receives a list of lists $\texttt{LoL}$ as its argument.
        This list has the form
        \\[0.2cm]
        \hspace*{1.3cm}
@@ -1942,15 +1957,48 @@ Figure \ref{fig:Missionaries-STS.ipynb-2} shows how we can turn the symbolic tra
        Line 12 ensures that the invariant of the transition system is valid after every crossing of the boat.
        Line 13 describes the mechanics of the crossing.
 \item The function \texttt{find\_solution} tries to find a natural number $n$ such that problem can be solved
-       with $n$ crossings. As the number off crossings has to be odd, we increment $n$ by two.
+       with $n$ crossings. As the number of crossings has to be odd, we increment $n$ by
+       two at the end of the \texttt{while} loop.
+
+       The function \texttt{find\_solution} needs less than 2 seconds to finc the solution.
 \end{enumerate}
+\pagebreak
 
+\exerciseEng
+An agricultural economist has to sell a \blue{wolf}, a \blue{goat}, and a \blue{cabbage}
+on a market place.  In order to reach the market place, she has to cross a river.  The
+boat that she can use is so small that it can only accommodate either the goat, the wolf,
+or the cabbage in addition to the agricultural economist herself.  Now if the agricultural
+economist leaves the wolf alone with the goat, the wolf will eat the goat.  If, instead,
+the agricultural economist leaves the goat with the cabbage, the goat will eat the
+cabbage.  Is it possible for the agricultural economist to develop a schedule that allows
+her to cross the river without either the goat or the cabbage being eaten?
 
-\section{Z3}
+Encode this problem as a \blue{symbolic transition system} and then solve it with the help
+of the constraints solver developed earlier.  Assume that the
+problem can be solved with $n\in\mathbb{N}$ crossing of the river.  Use the following
+variables:
+\begin{itemize}
+\item $\texttt{F}i$ for $i\in\{0,\cdots,n\}$ is the number of farmers on the western shore after the 
+      $i^{\textrm{th}}$ crossing.
+\item $\texttt{W}i$ for $i\in\{0,\cdots,n\}$ is the number of wolves on the western shore after the 
+      $i^{\textrm{th}}$ crossing.
+\item $\texttt{G}i$ for $i\in\{0,\cdots,n\}$ is the number of goats on the western shore after the 
+      $i^{\textrm{th}}$ crossing.
+\item $\texttt{C}i$ for $i\in\{0,\cdots,n\}$ is the number of cabbages on the western shore after the 
+      $i^{\textrm{th}}$ crossing.
+\end{itemize}
+You should start from the following notebook:
+\\[0.2cm]
+\hspace*{-0.5cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Wolf-Goat-Cabbage-STS.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Wolf-Goat-Cabbage-STS.ipynb}}
+\eox
+s
+\section{The Z3 Solver}
 We conclude this chapter with a discussion of the solver
-\href{https://www.microsoft.com/en-us/research/project/z3-3/}{Z3}.  
-Z3 implements most of the state-of-the-art constraint solving algorithms and is exceptionally powerful.  We
-introduce Z3 via a series of examples.
+\href{https://www.microsoft.com/en-us/research/project/z3-3/}{Z3}, which has beed developd
+at Microsoft.  Z3 implements most of the state-of-the-art constraint solving algorithms
+and is exceptionally powerful.  We introduce Z3 via a series of examples.
 
 \subsection{A Simple Text Problem}
 The following is a simple text problem from my old $8^{\textrm{th}}$ grade math book.
@@ -1961,20 +2009,20 @@ The following is a simple text problem from my old $8^{\textrm{th}}$ grade math 
   \item How many children does my father have?
   \end{itemize}}
 \noindent
-However, in order to solve this puzzle we need two additional assumptions.
+In order to solve this puzzle we need two additional assumptions.
 \begin{enumerate}
 \item My father has no illegitimate children.
 \item All of my fathers children identify themselves as either male or female.
 \end{enumerate}
-Strangely, in my old math book these assumptions are not mentioned.
+Strangely, in my old math book these assumptions have not been mentioned.
 
 We can now infer the number of children.
-If we denote the number of \blue{boys} with the variable $b$ and the number of \blue{girls} with
-$g$, the problem statements are equivalent to the following two equations:
-\begin{enumerate}[(a)]
+If we denote the number of \blue{boys} by the variable $b$ and the number of \blue{girls}
+by the variable $g$, the problem statements are equivalent to the following equations:
+\begin{itemize}
 \item $b - 1 = g$.
 \item $2 \cdot (g - 1) = b$.
-\end{enumerate}
+\end{itemize}
 Before we can start to solve this problem, we have to install \texttt{Z3} via \texttt{pip} using the following
 command:  
 \\[0.2cm]
@@ -2062,7 +2110,12 @@ Solve the following text problem using \texttt{Z3}.
   \item The penguin costs 600 bucks more than the parrot.  
   \end{enumerate}}
   \noindent
-  \textbf{What is the price of the parrot?} You may assume that the prizes of these delicacies are integer valued. 
+  \textbf{What is the price of the parrot?} You may assume that the prizes of these
+  delicacies are integer valued.
+  You should start from the following notebook:
+\\[0.2cm]
+\hspace*{0.0cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Parrot-and-Penguin.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Parrot-and-Penguin.ipynb}}
 \eox
 
 \exerciseEng
@@ -2088,6 +2141,11 @@ Solve the following text problem using \texttt{Z3}.
       One of these solutions is negative.  In order to exclude the negative solution you need to add a
       constraint stating that the speed of the train has to be greater than zero.
 \end{enumerate}
+You should start from the following notebook:
+\\[0.2cm]
+\hspace*{0.8cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Train-Z3.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Train-Z3.ipynb}}
+\eox
 
 \subsection{The Knight's Tour}
 In this subsection we will solve the puzzle \href{https://en.wikipedia.org/wiki/Knight%27s_tour}{The Knight's Tour} 
