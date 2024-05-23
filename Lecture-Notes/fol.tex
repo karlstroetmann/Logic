@@ -2604,22 +2604,19 @@ You should start with the following file:
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Japanese-Z3.ipynb}{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Japanese-Z3.ipynb}.
 \eox
 
-\section{Normalformen für prädikatenlogische Formeln}
-Im nächsten Abschnitt gehen wir daran, einen Kalkül $\vdash$ für die
-Prädikaten-Logik zu definieren.  Genau wie im Falle der Aussagen-Logik wird dies wesentlich einfacher, wenn wir
-uns auf Formeln beschränken, die in einer \blue{Normalform}  vorliegen.  Bei dieser Normalform handelt es sich
-nun um sogenannte \blue{prädikatenlogische Klauseln}.\index{prädikatenlogische Klausel}  Diese werden ähnlich
-definiert wie in der 
-Aussagen-Logik:  Ein \blue{prädikatenlogisches Literal}\index{prädikatenlogisches Literal} ist eine atomare
-Formel oder die Negation einer 
-atomaren Formel.  Eine \blue{prädikatenlogische Klausel}\index{prädikatenlogische Klausel} ist dann eine
-Disjunktion prädikatenlogischer Literale.  Wir zeigen in diesem Abschnitt, dass jede Formel-Menge $M$
-so in eine Menge von prädikatenlogischen Klauseln $K$ transformiert werden kann, dass $M$ genau dann erfüllbar ist, wenn $K$
-erfüllbar ist.  Daher ist die Beschränkung auf prädikatenlogische Klauseln keine echte Einschränkung.  Zunächst geben wir einige
-Äquivalenzen an, mit deren Hilfe Quantoren manipuliert werden können. 
+\section{Normalizing First-Order Formulas}
+In the next section, we will define a calculus $\vdash$ for first-order logic. Just as in the case of
+propositional logic, this will be much easier if we restrict ourselves to formulas that are in a \blue{normal form}. 
+This normal form consists of so-called \blue{first-order clauses}.\index{first-order clause}
+These are defined similarly as in propositional logic: A \blue{first-order literal}\index{first-order literal}
+is an atomic formula or the negation of an atomic formula. A \blue{first-order clause}\index{predicate logic clause} 
+is a disjunction of first-order literals. We show in this section that every set of formulas $M$ can be
+transformed into a set of first-order clauses $K$ such that 
+$M$ is satisfiable if and only if $K$ is satisfiable. Therefore, the restriction to first-order clauses is
+not a real restriction. First, we specify some equivalences that can be used to manipulate quantifiers.
 
 \begin{Satz}
-  Es gelten die folgenden Äquivalenzen:
+  The following equivalences are valid in first-order logic:
   \begin{enumerate}
   \item $\models \neg\big(\forall x\colon f\big) \leftrightarrow \big(\exists x\colon \neg f\big)$
   \item $\models \neg\big(\exists x\colon f\big) \leftrightarrow \big(\forall x\colon \neg f\big)$
@@ -2627,37 +2624,39 @@ erfüllbar ist.  Daher ist die Beschränkung auf prädikatenlogische Klauseln ke
   \item $\models \exists x\colon f \vee \exists x\colon g \leftrightarrow \exists x\colon (f \vee g)$
   \item $\models \forall x\colon \forall y\colon f \leftrightarrow \forall y\colon  \forall x\colon f$
   \item $\models \exists x\colon \exists y\colon f \leftrightarrow \exists y\colon  \exists x\colon f$
-  \item Falls $x$ eine Variable ist, für die $x \not\in \FV(f)$ ist, so haben wir \\[0.2cm]
-        \hspace*{1.3cm} $\models  (\forall x\colon f) \leftrightarrow f$ \quad und \quad
+  \item If $x$ is a variable such that $x \not\in \FV(f)$, then \\[0.2cm]
+        \hspace*{1.3cm} $\models  (\forall x\colon f) \leftrightarrow f$ \quad and \quad
                         $\models  (\exists x\colon f) \leftrightarrow f$.
-  \item Falls $x$ eine Variable ist, für die  $x \not\in \FV(g)$ gilt, so haben wir die folgenden Äquivalenzen:
+  \item If $x$ is a variable such that $x \not\in \FV(g)$, then:
     \begin{enumerate}
-    \item $\models (\forall x\colon f) \vee g \leftrightarrow \forall x\colon (f \vee g)$ \quad und \quad $\models g \vee (\forall x\colon f) \leftrightarrow \forall x\colon (g \vee f)$,
-    \item $\models (\exists x\colon f) \wedge g \leftrightarrow \exists x\colon (f \wedge g)$ \quad und \quad $\models g \wedge (\exists x\colon f) \leftrightarrow \exists x\colon (g \wedge f)$.
+    \item $\models (\forall x\colon f) \vee g \leftrightarrow \forall x\colon (f \vee g)$ \quad and \quad $\models g \vee (\forall x\colon f) \leftrightarrow \forall x\colon (g \vee f)$,
+    \item $\models (\exists x\colon f) \wedge g \leftrightarrow \exists x\colon (f \wedge g)$ \quad and \quad $\models g \wedge (\exists x\colon f) \leftrightarrow \exists x\colon (g \wedge f)$.
     \end{enumerate}
   \end{enumerate}
 \end{Satz}
 
-Um die Äquivalenzen der letzten Gruppe anwenden zu können, kann es notwendig sein,
-gebundene Variablen umzubenennen. Ist $f$ eine prädikatenlogische Formel und sind $x$ und
-$y$ zwei Variablen, wobei $y$ nicht in $f$ auftritt, so bezeichnet \blue{$f[x/y]$} die Formel, die aus $f$
-dadurch entsteht, dass jedes Auftreten der Variablen $x$ in $f$ durch $y$ ersetzt wird.  Beispielsweise gilt \\[0.2cm]
+In order to apply the equivalences of the last group, it may be necessary to rename bound variables. If $f$ is a first-order logic formula and $x$ and $y$ are two variables, where $y$ does not appear in $f$, then \blue{$f[x/y]$} denotes the formula that results from $f$ by replacing every occurrence of the variable $x$ in $f$ with $y$. For example, \\[0.2cm]
 \hspace*{1.3cm} $\bigl(\forall u : \exists v : p(u,v)\bigr)[u/z] = \forall z : \exists v : p(z,v)$
 \\[0.2cm]
-Damit können wir eine letzte Äquivalenz angeben: Ist $f$ eine prädikatenlogische Formel,
-ist $x \in BV(f)$ und ist $y$ eine Variable, die in $f$ nicht auftritt, so gilt \\[0.2cm]
+With this we can specify one last equivalence: If $f$ is a first-order logic formula, $x \in BV(f)$ and $y$ is a variable that does not appear in $f$, then \\[0.2cm]
 \hspace*{1.3cm} $\models f \leftrightarrow f[x/y]$.
 \vspace{0.3cm}
 
-Mit Hilfe der oben stehenden Äquivalenzen und der aussagenlogischen Äquivalenzen, die wir schon kennen, können
-wir eine Formel so umformen, dass die Quantoren nur noch außen stehen.  Eine solche Formel ist dann in
-\blue{pränexer Normalform}.\index{pränexer Normalform}  Wir führen das Verfahren an einem Beispiel vor: Wir
-zeigen, dass die Formel  
+Using the equivalences given above together with the equivalences from propositional logic we are able
+to transform every first order formula into a form where the quantifieres are all at the beginning of the
+formula, i.e.~the formula has the form
+\\[0.2cm]
+\hspace*{1.3cm}
+$Q_1 x_1: Q_2 x_2: \cdots Q_n x_n: G$ \quad where $Q_i \in \{ \forall, \exists \}$ f.a.~$i=1,\cdots,n$
+\\[0.2cm]
+and $G$ does not contain quantifieres.  A formula of this form is in 
+\blue{prenex normal form}.\index{prenex normal form}  We demonstrate this procedure with an example and show
+that the formula
 \\[0.2cm]
 \hspace*{1.3cm}
 $\bigl(\forall x\colon p(x)\bigr) \rightarrow \bigl(\exists x\colon p(x)\bigr)$ 
 \\[0.2cm]
-allgemeingültig ist: 
+is universally valid: 
 $$ 
 \begin{array}{ll}
                  & \bigl(\forall x\colon p(x)\bigr) \rightarrow \bigl(\exists x\colon p(x)\bigr)  \\
@@ -2669,138 +2668,139 @@ $$
 \end{array}
 $$
 \\[0.2cm]
-In diesem Fall haben wir Glück gehabt, dass es uns gelungen ist, die Formel als Tautologie zu
-erkennen.  Im Allgemeinen reichen die obigen Umformungen aber nicht aus, um prädikatenlogische
-Tautologien erkennen zu können.  Um Formeln noch stärker vereinfachen zu können, 
-führen wir einen weiteren Äquivalenz-Begriff ein.  Diesen Begriff wollen wir vorher durch ein Beispiel
-motivieren.  Wir betrachten die beiden Formeln 
+In this case, we were lucky that we managed to recognise the formula as a tautology.
+In general, however, the above transformations are not sufficient to recognise
+whether a first order formula is universally valid. 
+To be able to simplify formulas even more, 
+we introduce another concept of equivalence.  We want to motivate this term with an example.
+We look at the following formulas
 \\[0.2cm]
 \hspace*{1.3cm} $f_1 = \forall x \colon \exists y \colon p(x,y)$ \quad und \quad $f_2 = \forall x \colon
 p\bigl(x,s(x)\bigr)$.
 \\[0.2cm]
-Die beiden Formeln $f_1$ und $f_2$ sind nicht äquivalent, denn sie entstammen noch nicht
-einmal der gleichen Signatur: In der Formel $f_2$ wird das Funktions-Zeichen $s$
-verwendet, das in der Formel $f_1$ überhaupt nicht auftritt. 
-Auch wenn die beiden Formeln $f_1$ und $f_2$ nicht äquivalent sind, so besteht zwischen
-ihnen doch die folgende Beziehung:  Ist $\textsl{S}_1$ eine
-prädikatenlogische Struktur, in der die Formel $f_1$ gilt:
+The two formulae $f_1$ and $f_2$ are not equivalent, because they do not even originate from the same signature.
+In the formula $f_2$, the function character $s$
+is used, which does not appear at all in the formula $f_1$. 
+Even if the two formulae $f_1$ and $f_2$ are not equivalent, the following relationship exists between them: If
+$\textsl{S}_1$ is a 
+$\Sigma$-structure in which the formula $f_1$ holds, i.e.
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{S}_1 \models f_1$,
 \\[0.2cm]
-dann können wir diese Struktur zu einer Struktur $\textsl{S}_2$ erweitern, in der die
-Formel $f_2$ gilt:
+then we can extend the $\Sigma$-structure to a $\Sigma'$-structure  $\textsl{S}_2$ such that
+$f_2$ is valid in $\mathcal{S}_2$:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{S}_2 \models f_2$.
 \\[0.2cm]
-Dazu muss die Interpretation des Funktions-Zeichens $s$ so gewählt werden, dass
-für jedes $x$ tatsächlich $p\bigl(x,s(x)\bigr)$ gilt.  Dies ist möglich, denn die Formel $f_1$ sagt ja aus, 
-dass wir zu jedem $x$ einen Wert $y$ finden, für den $p(x,y)$ gilt.   Die Funktion $s$ muss also lediglich zu 
-jedem $x$ dieses $y$ zurück geben. 
+To do this, the interpretation of the function character $s$ has to be chosen such that
+$p\bigl(x,s(x)\bigr)$ actually holds for each $x$.  This is possible because the formula $f_1$ states 
+that for every $x$ there is a value $y$ such that $p(x,y)$ holds.  The function $s$ therefore has to 
+return this $y$ for every $x$. 
 
-
-
-\begin{Definition}[{\color{blue}Skolemisierung}]\index{Skolemisierung} \hspace*{\fill} \linebreak
-  Es sei $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$
-  eine Signatur.  Ferner sei $f$ eine geschlossene $\Sigma$-Formel der Form \\[0.2cm]
+\begin{Definition}[{\color{blue}Skolemisation}]\index{Skolemisation} \hspace*{\fill} \linebreak
+  Assume $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$
+  is a signature.  Furthermore, let $f$ be a closed $\Sigma$ formula of the form \\[0.2cm]
   \hspace*{1.3cm} 
   $f = \forall x_1, \cdots, x_n \colon \exists y \colon g$. \\[0.2cm]
-  Dann wählen wir ein \underline{\blue{neues}} $n$-stelliges Funktions-Zeichen $s$, d.h.~wir nehmen ein Zeichen $s$, dass in
-  der Signatur $\Sigma$ nicht auftritt und erweitern die Signatur $\Sigma$ zu der Signatur \\[0.2cm]
+  Then we choose an \underline{\blue{new}} $n$-digit function character $s$, i.e.~we take a character $s$ that
+  is not used in the  signature $\Sigma$ and extend the signature $\Sigma$ to the signature \\[0.2cm]
   \hspace*{1.3cm} 
-  $\Sigma' := \Bigl\langle \mathcal{V}, \mathcal{F} \cup \{s\}, \mathcal{P}, \textsl{arity} \cup \bigl\{\pair(s,n)\bigr\} \Bigr\rangle$, \\[0.2cm]
-  in der wir $s$ als neues $n$-stelliges Funktions-Zeichen deklarieren.  Anschließend definieren wir die $\Sigma'$-Formel
-  $f'$ wie folgt: \\[0.2cm]
+  $\Sigma' := \Bigl\langle \mathcal{V}, \mathcal{F} \cup \{s\}, \mathcal{P}, \textsl{arity} \cup \bigl\{\pair(s,n)\bigr\} \bigr\rangle$, \\[0.2cm]
+  where $s$ is declared as a new $n$-digit function character.  Then we define the $\Sigma'$ formula
+  $f'$ as follows: \\[0.2cm]
   \hspace*{1.3cm} 
   $f' := \mathtt{Skolem}(f) := 
   \forall x_1 \colon \cdots \forall x_n \colon g\bigl[y \mapsto s(x_1,\cdots,x_n)\bigr]$
   \\[0.2cm]
-  Hierbei bezeichnet der Ausdruck $g\bigl[y \mapsto s(x_1,\cdots,x_n)\bigr]$ die Formel, die wir aus $g$
-  dadurch erhalten, dass wir jedes Auftreten der Variablen $y$ in der Formel $g$ durch den Term
-  $s(x_1,\cdots,x_n)$ ersetzen.  Wir sagen, dass die Formel $f'$ aus der Formel $f$
-  durch einen \blue{Skolemisierungs-Schritt} hervorgegangen ist. 
+  Here, the expression $g\bigl[y \mapsto s(x_1,\cdots,x_n)\bigr]$ denotes the formula that we obtain from $g$
+  by replacing each occurrence of the variable $y$ in the formula $g$ by the term
+  $s(x_1,\cdots,x_n)$.  We say that the formula $f'$ results from the formula $f$  through one \blue{Skolemisation step}. 
   \eox
 \end{Definition}
-\vspace{-0.5cm}
 
 \example
-Es $f$ die folgende Formel aus der Gruppen-Theorie:
+It $f$ the following formula from group theory:
 \\[0.2cm]
 \hspace*{1.3cm}
 $f := \forall x: \exists y: y * x = 1$. 
 \\[0.2cm]
-Dann gilt
+Then the following holds:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathtt{Skolem}(f) = \forall x : s(x) * x = 1$.  \eox
 
 \noindent
-In welchem Sinne sind eine Formel $f$ und eine Formel $f'$, die aus $f$ durch einen 
-Skolem\-isierungs-Schritt hervorgegangen sind, äquivalent?  Zur Beantwortung dieser Frage
-dient die folgende Definition. 
+In what sense are a formula $f$ and a formula $f'$, which are derived from $f$ by a 
+Skolem\-isation step equivalent?  We answer this question with the following definition. 
 
-\begin{Definition}[Erfüllbarkeits-Äquivalenz] \hspace*{\fill} \linebreak
-   Zwei geschlossene Formeln $f$ und $g$ heißen 
-   \blue{erfüllbarkeits-äquivalent}\index{erfüllbarkeits-äquivalent}
-   falls $f$ und $g$ entweder beide erfüllbar oder beide unerfüllbar sind.
-   Wenn $f$ und $g$ erfüllbarkeits-äquivalent sind, so schreiben wir \\[0.2cm]
+\begin{Definition}[Satisfiability Equivalence] \hspace*{\fill} \linebreak
+   Two closed formulas $f$ and $g$ are called 
+   \blue{satisfiability-equivalent}\index{satisfiability-equivalent}
+   if $f$ and $g$ are either both satisfiable or both unsatisfiable.
+   If $f$ and $g$ are satisfiability-equivalent, we write \\[0.2cm]
    \hspace*{1.3cm} $f \approx_e g$.
 \eox
 \end{Definition}
 
 \noindent
-\textbf{Beobachtung:}
-Falls die Formel $f'$ aus der Formel $f$ durch einen Skolemisierungs-Schritt 
-hervorgegangen ist, so sind $f$ und $f'$ erfüllbarkeits-äquivalent, denn wir können jede Struktur
-$\mathcal{S}$, in der die Formel $f$ gilt, zu einer Struktur $\mathcal{S}'$ erweitern, in der auch $f'$ gilt.
-\eox
-
-Wir können nun ein einfaches Verfahren angeben, um Existenz-Quantoren aus einer Formel
-zu eliminieren.  Dieses Verfahren besteht aus zwei Schritten:  Zunächst bringen wir die Formel
-in pränexe Normalform. Anschließend können wir die Existenz-Quantoren der Reihe nach durch \linebreak
-Skolemisierungs-Schritte eliminieren.  Nach dem oben gemachten Bemerkungen ist die resultierende 
-Formel zu der ursprünglichen Formel erfüllbarkeits-äquivalent.  Dieses
-Verfahren der Eliminierung von Existenz-Quantoren durch die Einführung neuer
-Funktions-Zeichen wird als \blue{Skolemisierung} bezeichnet.  Haben wir eine Formel $F$
-in pränexe Normalform gebracht und anschließend skolemisiert, so hat das Ergebnis die Gestalt\\[0.2cm]
-\hspace*{1.3cm} $\forall x_1, \cdots, x_n: g$ \\[0.2cm]
-und in der Formel $g$ treten keine Quantoren mehr auf.  Die Formel $g$ wird auch als die
-\blue{Matrix}\index{Matrix} der obigen Formel bezeichnet.  Wir können nun  $g$ mit Hilfe
-der uns aus dem letzten Kapitel bekannten aussagenlogischen
- Äquivalenzen in konjunktive Normalform bringen.  Wir haben dann eine
-Formel der Gestalt \\[0.2cm]
-\hspace*{1.3cm} $\forall x_1, \cdots, x_n: (k_1 \wedge \cdots \wedge k_m)$. \\[0.2cm]
-Dabei sind die $k_i$ Disjunktionen von prädikatenlogischen \blue{Literalen}.  Wenden wir
-hier  die Äquivalenz 
+\textbf{Observation:}
+If the formula $f'$ is derived from the formula $f$ by a skolemisation step, i.e.~if we have that $f' = \mathtt{Skolem} (f)$
+then $f$ and $f'$ are satisfiability-equivalent, because we can transform any structure
+$\mathcal{S}$ such that $\mathcal{S} \models f$ into a structure $\mathcal{S}'$ such that
+$\mathcal{S}' \models f'$.  Therefore we have
 \\[0.2cm]
 \hspace*{1.3cm}
-$\forall x\colon (f_1\wedge f_2) \leftrightarrow (\forall x\colon f_1) \wedge (\forall x\colon f_2)$
+$f \approx_e \mathtt{Skolem}(f)$. \eox
+
+
+We can now specify a simple procedure to eliminate existential quantifiers from a formula.  This procedure
+consists of two steps:
+\begin{itemize}
+\item First, we put the formula into prenex normal form. 
+\item Then we can eliminate the existential quantifiers one by one using Skolemisation steps.
+\end{itemize}
+The resulting formula is then satisfiability-equivalent to the original formula.  This
+process of eliminating existential quantifiers through the introduction of new function
+function characters is called \blue{Skolemisation}.  If we have a formula $F$
+into prenex normal form and then skolemised it, the result has the form\\[0.2cm]
+\hspace*{1.3cm} $\forall x_1, \cdots, x_n: g$ \\[0.2cm]
+and there are no more quantifiers in the formula $g$.  The formula $g$ is also known as the
+\blue{matrix}\index{matrix} of the above formula.  We can now transform $g$ with the help of
+of the propositional equivalences known from the last chapter into conjunctive normal form.  We then have a
+formula of the form \\[0.2cm]
+\hspace*{1.3cm} $\forall x_1, \cdots, x_n: (k_1 \wedge \cdots \wedge k_m)$. \\[0.2cm]
+The $k_i$ are disjunctions of first-order \blue{literals}.  Next, we apply  the equivalence 
 \\[0.2cm]
-an, so können wir die All-Quantoren auf die einzelnen $k_i$ verteilen und
-die resultierende Formel hat die Gestalt \\[0.2cm]
+\hspace*{1.3cm}
+$\forall x\colon (f_1\wedge f_2) \leftrightarrow (\forall x\colon f_1) \wedge (\forall x\colon f_2)$.
+\\[0.2cm]
+In this way we can distribute the universal-quantifiers to the individual $k_i$.
+The resulting formula has the form \\[0.2cm]
 \hspace*{1.3cm} 
-$\big(\forall x_1, \cdots, x_n: k_1\big) \wedge \cdots \wedge \big(\forall x_1, \cdots, x_n: k_m\big)$. \\[0.2cm]
-Ist eine Formel $F$ in der obigen
-Gestalt, so sagen wir, dass $F$ in \blue{prädikatenlogischer Klausel-Normalform}
-\index{prädikatenlogische Klausel-Normalform}  ist und eine Formel der Gestalt \\[0.2cm]
+$\big(\forall x_1, \cdots, x_n: k_1\big) \wedge \cdots \wedge \big(\forall x_1, \cdots, x_n: k_m\big)$.
+\\[0.2cm]
+If a formula $F$ has this form, we say that $F$ is in \blue{first-order clause normal form}
+\index{first-order clause normal form} and a formula of the form \\[0.2cm]
 \hspace*{1.3cm} $\forall x_1, \cdots, x_n: k$, \\[0.2cm]
-bei der $k$ eine Disjunktion prädikatenlogischer Literale ist,
-bezeichnen wir als \blue{prädikatenlogische Klausel}.  \index{prädikatenlogische Klausel} Ist $M$
-eine Menge von Formeln deren Erfüllbarkeit wir untersuchen wollen, so können wir nach dem
-bisher Gezeigten  $M$ immer in eine erfüllbarkeits-äquivalente Menge prädikatenlogischer Klauseln umformen.
-Da  dann nur noch All-Quantoren vorkommen, können wir hier die  Notation noch vereinfachen,
-indem wir vereinbaren, dass alle Formeln implizit allquantifiziert sind, wir lassen also
-die All-Quantoren weg.
+where $k$ is a disjunction of first-order literals,
+is called a \blue{first-order clause}.  \index{predicate logical clause} If $M$ is
+is a set of formulas whose satisfiability we want to analyse, 
+we can always transform $M$ into a satisfiability-equivalent set of first-order clauses.
+Since then only universal-quantifiers occur, we can simplify the notation
+by agreeing that all formulae are implicitly universally quantified, i.e. we omit
+the universal quantifiers.
+
 
 \noindent
-Das Jupyter Notebook
+The Jupyter notebook
 \\[0.2cm]
 \hspace*{0.8cm}
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/FOL-CNF.ipynb}{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/FOL-CNF.ipynb}.
 \\[0.2cm]
-enthält ein \textsl{Python}-Programm, mit dessen Hilfe wir prädikatenlogische Formeln in eine \linebreak
-erfüllbarkeits-äquivalente Menge von prädikatenlogischen Klauseln umformen können.
+contains a \textsl{Python} programme that we can use to transform predicate logic formulae into a 
+satisfiability-equivalent set of predicate logic clauses.
 
 Wozu sind nun die Umformungen in Skolem-Normalform gut?  Es geht darum, dass wir 
 ein Verfahren entwickeln wollen, mit dem es möglich ist für eine prädikatenlogische Formel
