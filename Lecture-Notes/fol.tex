@@ -2216,12 +2216,11 @@ Next, we have to formulate the constraints.  In this case, there are two kinds o
     
     def is_knight_move(row, col, rowX, colX):
         Formulas = set()
-        for delta_r, delta_c in [(1, 2), (2, 1)]:
+        S = {1, 2, -1, -2}
+        DeltaSet = {(x, y) for x in S for y in S if abs(x) != abs(y)}
+        for delta_r, delta_c in DeltaSet:
             Formulas.add(z3.And(rowX == row + delta_r, colX == col + delta_c))
-            Formulas.add(z3.And(rowX == row + delta_r, colX + delta_c == col))
-            Formulas.add(z3.And(rowX + delta_r == row, colX == col + delta_c))
-            Formulas.add(z3.And(rowX + delta_r == row, colX + delta_c == col)) 
-        return z3.Or(*Formulas)
+        return z3.Or(Formulas)
             
     def all_different(Rows, Cols):
         Result = set()
