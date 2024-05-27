@@ -2801,34 +2801,43 @@ The Jupyter notebook
 contains a \textsl{Python} programme that we can use to transform predicate logic formulae into a 
 satisfiability-equivalent set of predicate logic clauses.
 
-Wozu sind nun die Umformungen in Skolem-Normalform gut?  Es geht darum, dass wir 
-ein Verfahren entwickeln wollen, mit dem es möglich ist für eine prädikatenlogische Formel
-$f$ zu zeigen, dass $f$ allgemeingültig ist, dass also \\[0.2cm]
-\hspace*{1.3cm} $\models f$ \\[0.2cm]
-gilt.  Wir wissen, dass \\[0.2cm]
-\hspace*{1.3cm} $\models f$ \quad g.d.w. \quad $\{\neg f\} \models \falsum$ \\[0.2cm]
-gilt, denn die Formel $f$ ist genau dann allgemeingültig, wenn es keine Struktur gibt, in
-der die Formel $\neg f$ erfüllbar ist. 
- Wir bilden daher zunächst die Formel $\neg f$ und formen dann diese Formel in prädikatenlogische
-Klausel-Normalform um.  Wir erhalten Klauseln $k_1, \cdots, k_n$, so dass  \\[0.2cm]
+Our goal is to develop a method that can be used to verify that a first-order formula
+$f$ is universally valid, i.e.~we want to be able to prove that \\[0.2cm]
+\hspace*{1.3cm}
+$\models f$
+\\[0.2cm]
+holds.  We know that \\[0.2cm]
+\hspace*{1.3cm}
+$\models f$ \quad if and only if \quad $\{\neg f\} \models \falsum$, \\[0.2cm]
+because the formula $f$ is universally valid iff there is no $\Sigma$-structure $\mathcal{S}$ such that
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{S} \models \neg f$,
+\\[0.2cm]
+i.e.~$f$ is universally valid iff $\neg f$ is unsatisfiable. 
+Therefore, in oder to prove that $f$ is universally valid, we transform the formula $\neg f$  into 
+first-order normal form.  By doing this we obtain clauses $k_1, \cdots, k_n$ such that \\[0.2cm]
 \hspace*{1.3cm} $\neg f \approx_e k_1 \wedge \cdots \wedge k_n$ \\[0.2cm]
-gilt.  Anschließend versuchen wir,
-aus den Klauseln $k_1,\cdots,k_n$ einen Widerspruch herzuleiten: \\[0.2cm]
+holds.  Next,  we try to
+derive a contradiction from the clauses $k_1,\cdots,k_n$: \\[0.2cm]
 \hspace*{1.3cm} $\{k_1, \cdots, k_n\} \vdash \falsum$ \\[0.2cm]
-Wenn dies gelingt, dann wissen wir, dass die Menge $\{k_1, \cdots, k_n\}$ unerfüllbar ist.
-Damit ist auch $\neg f$ unerfüllbar und also ist $f$ allgemeingültig.
-Damit wir aus den Klauseln $k_1,\cdots,k_n$ einen Widerspruch herleiten können,
-brauchen wir natürlich noch einen Kalkül $\vdash$, der mit prädikatenlogischen Klauseln arbeitet. 
-Einen solchen Kalkül werden wir im übernächsten Abschnitt vorstellen.
+If this succeeds, then we know that the set $\{k_1, \cdots, k_n\}$ is unsatisfiable.
+This means that $\neg f$ is also unsatisfiable and hence $f$ must be universally valid.
+In order to derive a contradiction from the clauses $k_1,\cdots,k_n$
+we need a calculus $\vdash$ that works with first-order clauses. 
+We will present this calculus in section \ref{sec:fol-calculus}.
 
-Um das Verfahren näher zu erläutern demonstrieren wir es an einem Beispiel. 
-Wir wollen untersuchen, ob \\[0.2cm]
+To explain the procedure in more detail, we will demonstrate it using an example. 
+We want to investigate whether 
+\\[0.2cm]
 \hspace*{1.3cm} 
 $\models \big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow \big(\forall y\colon \exists x\colon p(x,y)\big)$ \\[0.2cm]
-gilt.  Wir wissen, dass dies äquivalent dazu ist, dass  \\[0.2cm]
+holds. We know that this is equivalent to  \\[0.2cm]
 \hspace*{1.3cm} 
-$\Big\{ \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists x\colon p(x,y)\big)\Big)\Big\} \models \falsum$ \\[0.2cm]
-gilt.  Wir bringen zunächst die negierte Formel in pränexe Normalform. 
+$\Big\{ \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists
+x\colon p(x,y)\big)\Big)\Big\} \models \falsum$.
+\\[0.2cm]
+Therefore we transform the negated formula in prenex normal form.
 $$
 \begin{array}{ll}
                   & \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow \big(\forall y\colon \exists x\colon p(x,y)\big)\Big) \\
@@ -2838,8 +2847,8 @@ $$
   \leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \forall x\colon \neg p(x,y)\big) \\
 \end{array}
 $$
-Um an dieser Stelle weitermachen zu können, ist es nötig, die Variablen in dem  zweiten
-Glied der Konjunktion umzubenennen.  Wir ersetzen $x$ durch $u$ und $y$ durch $v$ und erhalten
+In order to proceed we have to rename the variables in the second part of the formula.
+We replace $x$ with $u$ and $y$ with $v$ and are left with the following:
 $$
 \begin{array}{ll}
                   &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \forall x\colon \neg p(x,y)\big) \\
@@ -2850,10 +2859,10 @@ $$
   \leftrightarrow &\exists v\colon  \exists x\colon \forall y\colon \forall u\colon \Big( p(x,y) \wedge \neg p(u,v) \Big)\\
 \end{array}
 $$
-An dieser Stelle müssen wir skolemisieren um die Existenz-Quantoren los zu werden. 
-Wir führen dazu zwei neue Funktions-Zeichen $s_1$ und $s_2$ ein. 
-Dabei gilt $\mathtt{arity}(s_1) = 0$ und $\mathtt{arity}(s_2) = 0$, denn vor den
-Existenz-Quantoren stehen keine All-Quantoren.
+Now we have to skolemize in order to get rid of the existential quantifiers.
+In order to do this, we introduce two new function symbols $s_1$ and $s_2$. 
+We have both  $\mathtt{arity}(s_1) = 0$ and $\mathtt{arity}(s_2) = 0$, because the existential quantifiers are
+not preceded by universal quantifiers.
 $$
 \begin{array}{ll}
            & \exists v\colon  \exists x\colon \forall y\colon \forall u\colon \Big( p(x,y) \wedge \neg p(u,v) \Big)\\
@@ -2861,99 +2870,108 @@ $$
  \approx_e & \forall y\colon \forall u\colon \Big( p(s_2,y) \wedge \neg p(u,s_1) \Big)\\
 \end{array}
 $$
-Da jetzt nur noch All-Quantoren auftreten, können wir diese auch noch weglassen,
-da wir ja ver\-einbart haben, dass alle freien Variablen implizit allquantifiziert sind.
-Damit können wir nun die prädikatenlogische Klausel-Normalform in Mengen-Schreibweise angeben, diese
-ist
+At this point we are left with  universal quantifiers.  These can be omitted,
+as we have already agreed that all free variables are implicitly universally quantified.
+We proceed to present the first order CNF of our formula in set notation:
 \\[0.2cm] 
 \hspace*{1.3cm}
 $M := \Big\{ \big\{ p(s_2,y) \big\}, \big\{\neg p(u,s_1)\big\}\Big\}$.
 \\[0.2cm]
-Wir zeigen, dass die Menge $M$ widersprüchlich ist.
-Dazu betrachten wir zunächst die Klausel $\big\{ p(s_2,y) \big\}$ und setzen in
-dieser Klausel für $y$ die Konstante $s_1$ ein.  Damit erhalten wir die Klausel \\[0.2cm]
-\hspace*{1.3cm}  $\big\{ p(s_2,s_1) \big\}$. \hspace*{\fill}(1)\\[0.2cm]
-Das Ersetzung von $y$ durch $s_1$ begründen wir damit, dass die obige Klausel ja implizit
-allquantifiziert ist und wenn etwas für alle $y$ gilt, dann sicher auch für $y = s_1$.
+Next, we show that the set $M$ is contradictory.
+To do this, we first consider the clause $\big\{ p(s_2,y) \big\}$ and insert 
+the constant $s_1$ in this clause for $y$.  This gives us the clause \\[0.2cm]
+\hspace*{1.3cm} $\big\{ p(s_2,s_1) \big\}$. \hspace*{\fill}(1)\\[0.2cm]
+We justify the replacement of $y$ by $s_1$ by the fact that the above clause is implicitly
+universally quantified and if something is true for all $y$, then it is certainly also true for $y = s_1$.
 
-Als nächstes betrachten wir die Klausel $\big\{\neg p(u,s_1)\big\}$.
-Hier setzen wir für die Variablen $u$ die Konstante $s_2$ ein und erhalten dann die
-Klausel \\[0.2cm]
+Next, we take the clause $\big\{\neg p(u,s_1)\big\}$ and
+insert the constant $s_2$ for the variable $u$.  We obtain the 
+clause \\[0.2cm]
 \hspace*{1.3cm} $\big\{\neg p(s_2,s_1)\big\}$ \hspace*{\fill} (2) \\[0.2cm]
-Nun wenden wir auf die Klauseln (1) und (2) die Schnitt-Regel an und finden \\[0.2cm]
+Now we apply the cut rule to the clauses (1) and (2) and have \\[0.2cm]
 \hspace*{1.3cm} 
 $\big\{ p(s_2,s_1) \big\}$, \quad$\big\{\neg p(s_2,s_1)\big\}$ \quad $\vdash \quad \{\}$.
 \\[0.2cm]
-Damit haben wir einen Widerspruch hergeleitet und gezeigt, dass die Menge $M$ unerfüllbar
-ist. Damit ist dann auch \\[0.2cm]
+We have thus derived a contradiction and shown that the set $M$ is unsatisfiable.  Therefore, we also know that
+\\[0.2cm]
 \hspace*{1.3cm} 
 $\Big\{ \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists x\colon p(x,y)\big)\Big)\Big\}$
 \\[0.2cm]
-unerfüllbar und folglich gilt \\[0.2cm]
+is unsatisfiable and hence we have shown \\[0.2cm]
 \hspace*{1.3cm} 
 $\models \big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists x\colon p(x,y)\big)$.
 
-\section{Unifikation}
-In dem  Beispiel im letzten Abschnitt haben wir die Terme $s_1$ und $s_2$ geraten, die wir für die Variablen
-$y$ und $u$ in den Klauseln $\big\{ p(s_2,y) \big\}$ und  $\big\{\neg p(u,s_1)\big\}$
-eingesetzt haben.  Wir haben diese Terme mit dem Ziel gewählt, später die Schnitt-Regel
-anwenden zu können.  In diesem Abschnitt zeigen wir nun ein Verfahren, mit dessen Hilfe
-wir die benötigten Terme ausrechnen können.
-Dazu benötigen wir zunächst den Begriff einer \blue{Substitution}.
+\section{Unification}
+In the example in the previous section we have guessed the terms $s_1$ and $s_2$ that were substituted for
+the variables $y$ and $u$ in the clauses $\big\{ p(s_2,y) \big\}$ and $\big\{\neg p(u,s_1)\big\}$.
+We had choosen these terms with the aim of being able to apply the cut rule.
+In this section, we will now show a systematic algorithm that can be used to compute the necessary terms.
+In order to do this, we first need the notion of a \blue{substitution}.
+
 \begin{Definition}[Substitution]\index{Substitution}
-    Es sei eine Signatur \\[0.2cm]
-    \hspace*{1.3cm} $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ \\[0.2cm]
-    gegeben.  Eine {\color{blue}$\Sigma$-Substitution} ist eine endliche Menge von Paaren der Form \\[0.2cm]
-    \hspace*{1.3cm} $\sigma = \bigl\{ \langle x_1, t_1 \rangle, \cdots, \langle x_n, t_n \rangle \bigr\}$. \\[0.2cm]
-    Dabei gilt:
+    Assume a signature \\[0.2cm]
+    \hspace*{1.3cm}
+    $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$
+    \\[0.2cm]
+    is given.  A {\color{blue}$\Sigma$-substitution} is a finite set of pairs of the form
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $\sigma = \bigl\{ \langle x_1, t_1 \rangle, \cdots, \langle x_n, t_n \rangle \bigr\}$.
+    \\[0.2cm]
+    Furthermore, the following conditions have to hold:
     \begin{enumerate}
-    \item $x_i \in \mathcal{V}$, die $x_i$ sind also Variablen.
-    \item $t_i \in \mathcal{T}_\Sigma$, die $t_i$ sind also Terme.
-    \item Für $i\not=j$ ist $x_i \not= x_j$, die Variablen sind also paarweise verschieden.
+    \item $x_i \in \mathcal{V}$, hence the $x_i$ are variables.
+    \item $t_i \in \mathcal{T}_\Sigma$, the $t_i$ are therefore terms.
+    \item For $i\not=j$ we have that $x_i \not= x_j$, that is the variables are pairwise different.
     \end{enumerate}
     
-    Ist $\sigma = \bigl\{ \langle x_1, t_1 \rangle, \cdots, \langle x_n, t_n \rangle \bigr\}$ eine
-    $\Sigma$-Substitution, so schreiben wir  \\[0.2cm]
+    If $\sigma = \bigl\{ \langle x_1, t_1 \rangle, \cdots, \langle x_n, t_n \rangle \bigr\}$ is a
+    $\Sigma$-substitution, we use the notation \\[0.2cm]
     \hspace*{1.3cm} $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$.  \\[0.2cm]
-    Außerdem definieren wir den \blue{Domain} einer Substitution als \\[0.2cm]
+    We also define the \blue{domain} of a substitution as \\[0.2cm]
     \hspace*{1.3cm} $\textsl{dom}(\sigma) := \{ x_1, \cdots, x_n\}$.
     \\[0.2cm]
-    Die Menge aller Substitutionen bezeichnen wir mit \blue{\textsl{Subst}}.\index{Subst}
+    We denote the set of all substitutions by \blue{$\textsl{Subst}_\Sigma$}.\index{Subst}
     \eox
 \end{Definition}
 
 \noindent
-Substitutionen werden für uns dadurch interessant, dass wir sie auf Terme \blue{anwenden} können.  Ist $t$ ein
-Term und $\sigma$ eine Substitution, so ist $t\sigma$ der Term, der aus $t$ dadurch entsteht, dass jedes
-Vorkommen einer Variablen $x_i$ durch den zugehörigen Term $t_i$ ersetzt wird.  Die formale Definition folgt. 
-\begin{Definition}[Anwendung einer Substitution]
+Substitutions become interesting for us because we can \blue{apply} them to terms.  If $t$ is a
+term and $\sigma$ is a substitution, then $t\sigma$ is the term that results from $t$ by replacing each
+occurrence of a variable $x_i$ by the corresponding term $t_i$.  The formal definition follows. 
+\begin{Definition}[Application of a substitution]
 \hspace*{\fill} \\
-Es sei $t$ ein Term und es sei $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$
-eine Substitution. Wir definieren die \blue{Anwendung}\index{Anwending einer Substitution} von $\sigma$ auf $t$
-(Schreibweise \blue{$t\sigma$}) \index{$t\sigma$} durch Induktion über 
-den Aufbau von $t$: 
+Let $t$ be a term and assume $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$
+is a substitution.  We define the \blue{application}\index{application of a substitution} of $\sigma$ to $t$
+(notation \blue{$t\sigma$}) \index{$t\sigma$} by induction on the term $t$: 
 \begin{enumerate}
-\item Falls $t$ eine Variable ist, gibt es zwei Fälle:
+\item If $t$ is a variable, there are two cases:
   \begin{enumerate}
-  \item $t = x_i$ für ein $i\in\{1,\cdots,n\}$.  Dann definieren wir \quad  $x_i\sigma := t_i$.
-  \item $t = y$ mit $y\in\mathcal{V}$, aber $y \not\in \{x_1,\cdots,x_n\}$. Dann definieren wir \quad $y\sigma := y$.
+  \item $t = x_i$ for an $i\in\{1,\cdots,n\}$.  Then we define 
+        \\[0.2cm]
+        \hspace*{1.3cm}
+        $x_i\sigma := t_i$.
+  \item $t = y$ with $y\in\mathcal{V}$, but $y \not\in \{x_1,\cdots,x_n\}$. Then we define 
+        \\[0.2cm]
+        \hspace*{1.3cm}
+        $y\sigma := y$.
   \end{enumerate}
-\item Andernfalls muss $t$ die Form $t= f(s_1,\cdots,s_m)$ haben. Dann können wir $t\sigma$ durch \\[0.2cm]
+\item Otherwise, $t$ must have the form $t= f(s_1,\cdots,s_m)$. Then we have \\[0.2cm]
       \hspace*{1.3cm} $f(s_1, \cdots, s_m)\sigma := f(s_1\sigma, \cdots, s_m\sigma)$. \\[0.2cm]
-      definieren, denn nach Induktions-Voraussetzung sind die Ausdrücke $s_i\sigma$ bereits definiert.      
+      because the expressions $s_i\sigma$ are already defined according to the induction hypothesis.
       \eox
 \end{enumerate}
 \end{Definition}
 
-Genau wie wir Substitutionen auf Terme anwenden können, können wir eine Substitution
-auch auf prädikatenlogische Klauseln anwenden.  Dabei werden Prädikats-Zeichen und
-Junktoren wie Funktions-Zeichen behandelt.
-Wir ersparen uns eine formale Definition und geben stattdessen zunächst einige Beispiele. 
-Wir definieren eine Substitution $\sigma$ durch \\[0.2cm]
+Just as we can apply substitutions to a term, we can also apply a substitution
+to a first order clause.  In this case, predicate symbols and
+and junctors are treated like function symbols.
+We will spare ourselves a formal definition and instead give some examples. 
+We define a substitution $\sigma$ as \\[0.2cm]
 \hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto c,\; x_2 \mapsto f(d) \big]$. \\[0.2cm]
-In den folgenden drei Beispielen demonstrieren wir zunächst, wie eine Substitution
-auf einen Term angewendet werden kann.  Im vierten Beispiel wenden wir die Substitution
-dann auf eine Klausel in Mengen-Schreibweise an:
+In the following three examples, we first demonstrate how a substitution
+can be applied to a term.  In the fourth example, we apply the substitution
+to a clause in set notation:
 \begin{enumerate}
 \item $x_3\sigma = x_3$,
 \item $f(x_2)\sigma = f\bigl(f(d)\bigr)$,
@@ -2961,55 +2979,48 @@ dann auf eine Klausel in Mengen-Schreibweise an:
 \item $\bigl\{ p(x_2), q(d,h(x_3,x_1))\bigr\}\sigma = \bigl\{ p(f(d)),\; q(d,h(x_3,c))\bigr\}$.
 \end{enumerate}
 
-
 \noindent
-Als nächstes zeigen wir, wie  Substitutionen miteinander verknüpft werden können.
-\begin{Definition}[Komposition von Substitutionen] \index{Komposition von Substitutionen}
-    Es seien\\[0.2cm]
-    \hspace*{1.3cm}  $\sigma = \big[ x_1 \mapsto s_1, \cdots, x_m \mapsto s_m \big]$ \quad und \quad  $\tau = \big[ y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \big]$ \\[0.2cm]
-    zwei Substitutionen mit $\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) = \{\}$. Dann definieren
-    wir die \blue{Komposition von Substitutionen} $\sigma\tau$ \index{$\sigma\tau$} von $\sigma$ und $\tau$ als \\[0.2cm]
+Next, we show how substitutions can be composed.
+\begin{Definition}[Composition of Substitutions] \index{composition of substitutions}
+    Assume \\[0.2cm]
+    \hspace*{1.3cm} $\sigma = \big[ x_1 \mapsto s_1, \cdots, x_m \mapsto s_m \big]$ \quad and \quad $\tau = \big[ y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \big]$ \\[0.2cm]
+    are two substitutions such that $\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) = \{\}$. Then 
+    we define the \blue{composition} $\sigma\tau$ \index{$\sigma\tau$} of  $\sigma$ and $\tau$ as \\[0.2cm]
     \hspace*{1.3cm} $\sigma\tau := \big[ x_1 \mapsto s_1\tau, \cdots, x_m \mapsto s_m\tau,\; y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \big]$
     \eox
 \end{Definition}
 
-\example
-Wir führen das obige Beispiel fort und setzen \\[0.2cm]
+\exampleEng
+We define \\[0.2cm]
 \hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto c,\; x_2 \mapsto f(x_3) \big]$
-                \quad und \quad $\tau := \big[ x_3 \mapsto h(c,c),\; x_4 \mapsto d \big]$. \\[0.2cm]
-Dann gilt: \\[0.2cm]
+                \quad and \quad $\tau := \big[ x_3 \mapsto h(c,c),\; x_4 \mapsto d \big]$. \\[0.2cm]
+Then we have: \\[0.2cm]
 \hspace*{1.3cm} $ \sigma\tau = \big[ x_1 \mapsto c,\; x_2 \mapsto f(h(c,c)),\; x_3 \mapsto h(c,c),\;x_4 \mapsto d \big]$.
-\hspace*{\fill} $\Box$
-\vspace{0.3cm}
+\eox
 
-\noindent
-Die Definition der Komposition von Substitutionen ist mit dem Ziel gewählt worden, dass
-der folgende Satz gilt.
-\begin{Satz} \label{satz:komposition}
-    Ist $t$ ein Term und sind $\sigma$ und $\tau$ Substitutionen mit 
-    $\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) = \{\}$, so gilt \\[0.2cm]
+\begin{Proposition} \label{set:composition}
+    If $t$ is a term and $\sigma$ and $\tau$ are substitutions such that
+    $\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) = \{\}$, then \\[0.2cm] 
     \hspace*{1.3cm} $(t \sigma)\tau = t (\sigma\tau)$.
     \hspace*{\fill} $\Box$
-\end{Satz}
-Der Satz kann durch Induktion über den Aufbau des Termes $t$ bewiesen werden.
+\end{Proposition}
+This proposition can be verified by induction on the term $t$.
 
-
-\begin{Definition}[Syntaktische Gleichung] \index{syntaktische Gleichung}
-Unter einer \blue{syntaktischen Gleichung} verstehen wir in diesem Abschnitt ein Konstrukt der Form
-$s \doteq t$, \index{$s \doteq t$} wobei einer der beiden folgenden Fälle vorliegen muss:
+\begin{Definition}[Syntactic Equation] \index{syntactic equation}
+In this section we define a \blue{syntactic equation} to be an expressions of the form
+$s \doteq t$, \index{$s \doteq t$} such that one of the following holds:
 \begin{enumerate}
-\item $s$ und $t$ sind Terme  oder
-\item $s$ und $t$ sind atomare Formeln.
+\item $s$ and $t$ are terms or
+\item $s$ and $t$ are atomic formulas.
 \end{enumerate}
-Weiter definieren wir ein \blue{syntaktisches Gleichungs-System} als eine Menge
-von syntaktischen Glei\-chun\-gen. \index{syntaktisches Gleichungs-System}
+Further, we define a \blue{system of syntactic equation} as a set
+of syntactic equations. \index{system of syntactic equations}
 \eox
 \end{Definition}
 
-Was syntaktische Gleichungen angeht, so machen wir keinen Unterschied zwischen Funktions-Zeichen und
-Prädikats-Zeichen.   Dieser Ansatz ist deswegen berechtigt, weil wir Prädikate
-ja auch als spezielle Funktionen auffassen können, nämlich als solche
-Funktionen, die als Ergebnis einen Wahrheitswert aus der Menge  $\mathbb{B}$ zurück geben.
+As far as syntactic equations are concerned, we do not distinguish between function symbols and predicate
+symbols.   This approach is justified because we can view predicate symbols
+as denoting functions that return a truth value from the set $\mathbb{B}$ as a result.
 
 \begin{Definition}[Unifikator]
 Eine Substitution $\sigma$ \blue{löst} \index{Lösung einer syntaktischen Gleichungen} eine syntaktische
@@ -3177,7 +3188,7 @@ Das Jupyter Notebook
 enthält ein \textsl{Python}-Programm, das den oben beschriebenen Algorithmus umsetzt.
 
 
-\section{Ein Kalkül für die Prädikatenlogik ohne Gleichheit}
+\section{Ein Kalkül für die Prädikatenlogik ohne Gleichheit \label{sec:fol-calculus}}
 In diesem Abschnitt setzen wir voraus, dass unsere Signatur $\Sigma$ das Gleichheits-Zeichen nicht
 verwendet, denn durch diese Einschränkung wird es wesentlich einfacher, einen vollstängen Kalkül für
 die Prädikatenlogik einzuführen.  Zwar gibt es auch für den Fall, dass die Signatur $\Sigma$ das
