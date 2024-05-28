@@ -360,7 +360,7 @@ function and predicate symbols of the signature $\Sigma$ are to be interpreted.
     \end{enumerate}
 \end{Definition}
 
-\example
+\exampleEng
 The signature $\Sigma_G$ of group theory is defined as \\[0.2cm]
 \hspace*{1.3cm} $\Sigma_G = \langle \mathcal{V}, \mathcal{F}, \mathcal{P},\textsl{arity}\rangle$ 
 \quad with
@@ -2719,7 +2719,7 @@ return this $y$ for every $x$.
   \eox
 \end{Definition}
 
-\example
+\exampleEng
 It $f$ the following formula from group theory:
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -2902,291 +2902,264 @@ is unsatisfiable and hence we have shown \\[0.2cm]
 $\models \big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists x\colon p(x,y)\big)$.
 
 \section{Unification}
-In the example in the previous section we have guessed the terms $s_1$ and $s_2$ that were substituted for
-the variables $y$ and $u$ in the clauses $\big\{ p(s_2,y) \big\}$ and $\big\{\neg p(u,s_1)\big\}$.
-We had choosen these terms with the aim of being able to apply the cut rule.
-In this section, we will now show a systematic algorithm that can be used to compute the necessary terms.
-In order to do this, we first need the notion of a \blue{substitution}.
+This section introduces the notion of a \blue{most general unifier} of two terms.
+First, we define the notion of a $\Sigma$-substitution.
 
-\begin{Definition}[Substitution]\index{Substitution}
-    Assume a signature \\[0.2cm]
-    \hspace*{1.3cm}
-    $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$
-    \\[0.2cm]
-    is given.  A {\color{blue}$\Sigma$-substitution} is a finite set of pairs of the form
-    \\[0.2cm]
-    \hspace*{1.3cm}
-    $\sigma = \bigl\{ \langle x_1, t_1 \rangle, \cdots, \langle x_n, t_n \rangle \bigr\}$.
-    \\[0.2cm]
-    Furthermore, the following conditions have to hold:
-    \begin{enumerate}
-    \item $x_i \in \mathcal{V}$, hence the $x_i$ are variables.
-    \item $t_i \in \mathcal{T}_\Sigma$, the $t_i$ are therefore terms.
-    \item For $i\not=j$ we have that $x_i \not= x_j$, that is the variables are pairwise different.
-    \end{enumerate}
-    
-    If $\sigma = \bigl\{ \langle x_1, t_1 \rangle, \cdots, \langle x_n, t_n \rangle \bigr\}$ is a
-    $\Sigma$-substitution, we use the notation \\[0.2cm]
-    \hspace*{1.3cm} $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$.  \\[0.2cm]
-    We also define the \blue{domain} of a substitution as \\[0.2cm]
-    \hspace*{1.3cm} $\textsl{dom}(\sigma) := \{ x_1, \cdots, x_n\}$.
-    \\[0.2cm]
-    We denote the set of all substitutions by \blue{$\textsl{Subst}_\Sigma$}.\index{Subst}
-    \eox
+\begin{Definition}[$\Sigma$-Substitution]
+  Assume that a signature $\Sigma = \langle \mathcal{V}, \mathcal{F}, \textsl{arity} \rangle$ is given.
+  A \blue{$\Sigma$-substitution} $\sigma$ is a map of the form
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\sigma: \mathcal{V} \rightarrow \mathcal{T}_\Sigma$ 
+  \\[0.2cm]
+  such that the set $\textsl{dom}(\sigma) := \bigl\{ x \in \mathcal{V} \mid \sigma(x) \not= x \bigr\}$ is finite.
+  If we have $\textsl{dom}(\sigma) = \{ x_1, \cdots, x_n \}$ and $t_i = \sigma(x_i)$ for all $i = 1, \cdots, n$,
+  then we use the following notation:
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\sigma = \{ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \}$.
+  \\[0.2cm]
+  The set of all $\Sigma$-Substitutions is denoted as $\mathtt{Subst}(\Sigma)$.
+  \eox
 \end{Definition}
 
-\noindent
-Substitutions become interesting for us because we can \blue{apply} them to terms.  If $t$ is a
-term and $\sigma$ is a substitution, then $t\sigma$ is the term that results from $t$ by replacing each
-occurrence of a variable $x_i$ by the corresponding term $t_i$.  The formal definition follows. 
-\begin{Definition}[Application of a substitution]
-\hspace*{\fill} \\
-Let $t$ be a term and assume $\sigma = \bigl[ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \bigr]$
-is a substitution.  We define the \blue{application}\index{application of a substitution} of $\sigma$ to $t$
-(notation \blue{$t\sigma$}) \index{$t\sigma$} by induction on the term $t$: 
+A substitution $\sigma = \{ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \}$ can be \blue{applied} to a term $t$
+by replacing the variables $x_i$ with the terms $t_i$.  We will use the postfix notation \blue{$t\sigma$} to denote the
+\blue{application} of the substitution $\sigma$ to the term $t$.  Formally, the notation $t \sigma$ is defined
+by induction on $t$:
 \begin{enumerate}
-\item If $t$ is a variable, there are two cases:
-  \begin{enumerate}
-  \item $t = x_i$ for an $i\in\{1,\cdots,n\}$.  Then we define 
-        \\[0.2cm]
-        \hspace*{1.3cm}
-        $x_i\sigma := t_i$.
-  \item $t = y$ with $y\in\mathcal{V}$, but $y \not\in \{x_1,\cdots,x_n\}$. Then we define 
-        \\[0.2cm]
-        \hspace*{1.3cm}
-        $y\sigma := y$.
-  \end{enumerate}
-\item Otherwise, $t$ must have the form $t= f(s_1,\cdots,s_m)$. Then we have \\[0.2cm]
-      \hspace*{1.3cm} $f(s_1, \cdots, s_m)\sigma := f(s_1\sigma, \cdots, s_m\sigma)$. \\[0.2cm]
-      because the expressions $s_i\sigma$ are already defined according to the induction hypothesis.
-      \eox
-\end{enumerate}
-\end{Definition}
-
-Just as we can apply substitutions to a term, we can also apply a substitution
-to a first order clause.  In this case, predicate symbols and
-and junctors are treated like function symbols.
-We will spare ourselves a formal definition and instead give some examples. 
-We define a substitution $\sigma$ as \\[0.2cm]
-\hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto c,\; x_2 \mapsto f(d) \big]$. \\[0.2cm]
-In the following three examples, we first demonstrate how a substitution
-can be applied to a term.  In the fourth example, we apply the substitution
-to a clause in set notation:
-\begin{enumerate}
-\item $x_3\sigma = x_3$,
-\item $f(x_2)\sigma = f\bigl(f(d)\bigr)$,
-\item $h(x_1,g(x_2))\sigma = h\bigl(c,g(f(d))\bigr)$.
-\item $\bigl\{ p(x_2), q(d,h(x_3,x_1))\bigr\}\sigma = \bigl\{ p(f(d)),\; q(d,h(x_3,c))\bigr\}$.
+\item $x \sigma := \sigma(x)$ \quad for all $x \in \mathcal{V}$.
+\item $c \sigma = c$ \quad for every constant $c \in \mathcal{F}$.
+\item $f(t_1, \cdots, t_n) \sigma := f\bigl(t_1\sigma, \cdots, t_n\sigma\bigr)$.
 \end{enumerate}
 
-\noindent
-Next, we show how substitutions can be composed.
-\begin{Definition}[Composition of Substitutions] \index{composition of substitutions}
-    Assume \\[0.2cm]
-    \hspace*{1.3cm} $\sigma = \big[ x_1 \mapsto s_1, \cdots, x_m \mapsto s_m \big]$ \quad and \quad $\tau = \big[ y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \big]$ \\[0.2cm]
-    are two substitutions such that $\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) = \{\}$. Then 
-    we define the \blue{composition} $\sigma\tau$ \index{$\sigma\tau$} of  $\sigma$ and $\tau$ as \\[0.2cm]
-    \hspace*{1.3cm} $\sigma\tau := \big[ x_1 \mapsto s_1\tau, \cdots, x_m \mapsto s_m\tau,\; y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \big]$
+
+
+Next, we define the composition of two $\Sigma$-substitutions.
+
+\begin{Definition}[Composition of Substitutions] \index{Composition von Substitutions}
+    Assume that \\[0.2cm]
+    \hspace*{1.3cm}
+    $\sigma = \{ x_1 \mapsto s_1, \cdots, x_m \mapsto s_m \}$
+    \quad and \quad
+    $\tau = \{ y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \}$
+    \\[0.2cm]
+    are two substitutions such that $\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) = \{\}$.
+    We define the  \blue{composition $\sigma\tau$} \index{composition $\sigma\tau$} of $\sigma$ and $\tau$  as
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $\sigma\tau := \{ x_1 \mapsto s_1\tau, \cdots, x_m \mapsto s_m\tau,\; y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \}$
     \eox
 \end{Definition}
 
 \exampleEng
-We define \\[0.2cm]
-\hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto c,\; x_2 \mapsto f(x_3) \big]$
-                \quad and \quad $\tau := \big[ x_3 \mapsto h(c,c),\; x_4 \mapsto d \big]$. \\[0.2cm]
-Then we have: \\[0.2cm]
-\hspace*{1.3cm} $ \sigma\tau = \big[ x_1 \mapsto c,\; x_2 \mapsto f(h(c,c)),\; x_3 \mapsto h(c,c),\;x_4 \mapsto d \big]$.
+If we define
+\\[0.2cm]
+\hspace*{1.3cm}
+$\sigma := \{ x_1 \mapsto c,\; x_2 \mapsto f(x_3) \}$ \quad and \quad
+$\tau := \{ x_3 \mapsto h(c,c),\; x_4 \mapsto d \}$,
+\\[0.2cm]
+then we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\sigma\tau = \{ x_1 \mapsto c,\; x_2 \mapsto f(h(c,c)),\; x_3 \mapsto h(c,c),\;x_4 \mapsto d \}$.
 \eox
+\vspace{0.3cm}
 
-\begin{Proposition} \label{set:composition}
-    If $t$ is a term and $\sigma$ and $\tau$ are substitutions such that
-    $\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) = \{\}$, then \\[0.2cm] 
+\begin{Proposition} \label{satz:composition}
+    If $t$ is a term and $\sigma$ and $\tau$ are substitutions such that  
+    $\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) = \{\}$ holds, then we have
+    \\[0.2cm]
     \hspace*{1.3cm} $(t \sigma)\tau = t (\sigma\tau)$.
-    \hspace*{\fill} $\Box$
+    \eox
 \end{Proposition}
-This proposition can be verified by induction on the term $t$.
+This proposition may be proven by induction on $t$.
 
-\begin{Definition}[Syntactic Equation] \index{syntactic equation}
-In this section we define a \blue{syntactic equation} to be an expressions of the form
-$s \doteq t$, \index{$s \doteq t$} such that one of the following holds:
-\begin{enumerate}
-\item $s$ and $t$ are terms or
-\item $s$ and $t$ are atomic formulas.
-\end{enumerate}
-Further, we define a \blue{system of syntactic equation} as a set
-of syntactic equations. \index{system of syntactic equations}
-\eox
+\begin{Definition}[Syntactical Equation] \index{syntactical equation}
+  A  \blue{syntactical equation} is a pair $\langle s, t \rangle$ of terms.
+  It is written as $s \doteq t$. \index{$s \doteq t$}
+  A \blue{system of syntactical equations} \index{system of syntactical equations} is a set of syntactical
+  equations.
+  \eox
 \end{Definition}
 
-As far as syntactic equations are concerned, we do not distinguish between function symbols and predicate
-symbols.   This approach is justified because we can view predicate symbols
-as denoting functions that return a truth value from the set $\mathbb{B}$ as a result.
 
-\begin{Definition}[Unifikator]
-Eine Substitution $\sigma$ \blue{löst} \index{Lösung einer syntaktischen Gleichungen} eine syntaktische
-Gleichung $s \doteq t$ genau dann, wenn 
-$s\sigma = t\sigma$ ist, wenn also durch die Anwendung von $\sigma$ auf $s$ und $t$
-tatsächlich identische Objekte entstehen.  Ist $E$ ein syntaktisches Gleichungs-System, so 
-sagen wir, dass $\sigma$ ein \blue{Unifikator} \index{Unifikator} von $E$ ist wenn $\sigma$ jede
-syntaktische Gleichung in $E$ löst. 
-\eox
+\begin{Definition}[Unifier]
+  A substitution $\sigma$ \blue{solves} a syntactical equation $s \doteq t$ iff we have $s\sigma = t\sigma$.
+  If $E$ is a system of syntactical equations and $\sigma$ is a substitution that solves
+  every syntactical equations in $E$, then $\sigma$ is a  \blue{unifier} \index{unifier} of $E$.
+  \eox
 \end{Definition}
-Ist $E = \{ s_1 \doteq t_1, \cdots, s_n \doteq t_n \}$ eine syntaktisches Gleichungs-System
-und ist $\sigma$ eine Substitution, so definieren wir \\[0.2cm]
+
+\noindent
+If $E = \{ s_1 \doteq t_1, \cdots, s_n \doteq t_n \}$ is a system of syntactical equations and $\sigma$ is a
+substitution, then we define
+\\[0.2cm]
 \hspace*{1.3cm}  $E\sigma := \{ s_1\sigma \doteq t_1\sigma, \cdots, s_n\sigma \doteq t_n\sigma \}$.
 \vspace{0.3cm}
 
-\example
-Wir verdeutlichen die bisher eingeführten Begriffe anhand eines Beispiels.  
-Wir betrachten die Gleichung \\[0.2cm]
-\hspace*{1.3cm} $p(x_1, f(x_4)) \doteq p( x_2, x_3)$ \\[0.2cm]
-und definieren die Substitution \\[0.2cm]
-\hspace*{1.3cm} $\sigma := \big[ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \big]$. \\[0.2cm]
-Die Substitution $\sigma$ löst die obige syntaktische Gleichung, denn es gilt \\[0.2cm]
-\hspace*{1.3cm} $p(x_1, f(x_4))\sigma = p(x_2, f(x_4))$ \quad und \quad \\[0.2cm]
-\hspace*{1.3cm} $p(x_2, x_3)\sigma \;\quad = p(x_2, f(x_4))$.  \eox
+\exampleEng
+Let us consider the syntactical equation
+\\[0.2cm]
+\hspace*{1.3cm}
+$p(x_1, f(x_4)) \doteq p( x_2, x_3)$
+\\[0.2cm]
+and define the substitution
+\\[0.2cm]
+\hspace*{1.3cm}
+$\sigma := \{ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \}$.
+\\[0.2cm]
+Then $\sigma$ solves the given syntactical equation because we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$p(x_1, f(x_4))\sigma = p(x_2, f(x_4))$ \quad und \quad \\[0.2cm]
+\hspace*{1.3cm}
+$p(x_2, x_3)\sigma \;\quad = p(x_2, f(x_4))$.  \eox
 
-
-Als nächstes entwickeln wir ein Verfahren, mit dessen Hilfe wir von einer vorgegebenen
-Menge $E$ von syntaktischen Gleichungen entscheiden können, ob es einen Unifikator $\sigma$ für $E$
-gibt.  Das Verfahren, das wir entwickeln werden, wurde von Martelli und Montanari veröffentlicht
-\cite{martelli:1982}.\index{Verfahren von Martelli und Montanari}  
-Wir überlegen uns zunächst, in welchen Fällen wir eine syntaktischen Gleichung $s \doteq t$
-garantiert nicht lösen können.  Da gibt es zwei Möglichkeiten: Eine syntaktische Gleichung  \\[0.2cm]
-\hspace*{1.3cm} $f(s_1,\cdots,s_m) \doteq g(t_1,\cdots, t_n)$ \\[0.2cm]
-ist sicher dann nicht durch eine Substitution lösbar, wenn $f$ und $g$ verschiedene
-Funktions-Zeichen sind, denn für jede Substitution $\sigma$ gilt ja \\[0.2cm]
+Next we develop an algorithm for solving a system of syntactical equations.
+The algorithm we present was published by Martelli and Montanari
+\cite{martelli:1982}.\index{algorithm of Martelli and Montanari}  
+To begin, we first consider the cases where a syntactical equation $s \doteq t$ is \blue{unsolvable}.
+There are two cases: A syntactical equation of the form
+\\[0.2cm]
+\hspace*{1.3cm}
+$f(s_1,\cdots,s_m) \doteq g(t_1,\cdots, t_n)$ \\[0.2cm]
+is certainly unsolvable if  $f$ and $g$ are different function symbols. The reason is that for any substitution
+$\sigma$ we have that \\[0.2cm]
 \hspace*{1.0cm} $f(s_1,\cdots,s_m)\sigma = f(s_1\sigma,\cdots,s_m\sigma)$ \quad und \quad
                 $g(t_1,\cdots, t_n)\sigma = g(t_1\sigma,\cdots,t_n\sigma)$. \\[0.2cm]
-Falls $f \not = g$ ist, haben die Terme  $f(s_1,\cdots,s_m)\sigma$ und $g(t_1,\cdots, t_n)\sigma$ verschieden
-Funktions-Zeichen und können daher syntaktisch nicht identisch werden.
+If $f \not = g$, then the terms  $f(s_1,\cdots,s_m)\sigma$ and $g(t_1,\cdots, t_n)\sigma$ start with different
+function symbols and hence they can't be identical.
 
-Die andere Form einer syntaktischen Gleichung, die garantiert unlösbar ist, ist\\[0.2cm]
-\hspace*{1.3cm} $x \doteq f(t_1,\cdots,t_n)$  \quad falls $x \in \textsl{Var}\big(f(t_1,\cdots,t_n)\big)$. \\[0.2cm]
-Das diese syntaktische Gleichung unlösbar ist liegt daran, dass die rechte Seite immer mindestens ein
-Funktions-Zeichen mehr enthält als die linke.  
+The other case where a syntactical equation is unsolvable, is a syntactical equation of the following form:
+\\[0.2cm]
+\hspace*{1.3cm}
+$x \doteq f(t_1,\cdots,t_n)$  \quad where $x \in \texttt{var}\big(f(t_1,\cdots,t_n)\big)$.
+\\[0.2cm]
+This syntactical equation is unsolvable because the term $f(t_1,\cdots,t_n)\sigma$ will always contain at least one more
+occurrence of the function symbol $f$ than the term $x\sigma$.
 
-Mit diesen Vorbemerkungen können wir nun ein Verfahren angeben, mit dessen Hilfe es
-möglich ist, Mengen von syntaktischen Gleichungen zu lösen, oder festzustellen, dass es
-keine Lösung gibt.  Das Verfahren operiert auf Paaren der Form 
-$\langle F, \tau \rangle$.  Dabei ist $F$ ein syntaktisches Gleichungs-System und
-$\tau$ ist eine Substitution.  Wir starten das Verfahren mit dem Paar 
-$\langle E, [] \rangle$. Hierbei ist $E$ das zu lösende Gleichungs-System und $[]$ ist die leere Substitution.
-Das Verfahren arbeitet, indem die im Folgenden
-dargestellten Reduktions-Regeln solange angewendet werden, bis entweder feststeht, dass
-die Menge der Gleichungen keine Lösung hat, oder aber ein Paar der Form 
-$\langle \{\}, \sigma \rangle$ erreicht wird.  In diesem Fall ist $\sigma$ ein
-Unifikator der Menge $E$, mit der wir gestartet sind.  Es folgen die Reduktions-Regeln:
+Now we are able to present an algorithm for solving a system of syntactical equations, provided the system is
+solvable.  The algorithm will also discover if a system of syntactical equations is unsolvable.
+The algorithm works on pairs of the form
+$\langle F, \tau \rangle$ where $F$ is a system of syntactical equations and $\tau$ is a substitution.
+The algorithm starts with the pair 
+$\langle E, \{\} \rangle$.  Here $E$ is the system of syntactical equations that is to be solved and $\{\}$
+represents the empty substitution.  The system works by simplifying the pairs $\langle F, \tau \rangle$ using
+certain reduction rules that are presented below.  These reduction rules are applied until we either discover
+that the system of syntactical equations is unsolvable or else we reduce the pairs until we finally arrive at a
+pair of the form $\langle \{\}, \mu \rangle$.  In this case  $\mu$ is a unifier of the system of
+syntactical equations $E$.  The reduction rules are as follows:
 \begin{enumerate}
-\item Falls $y\in\mathcal{V}$ eine Variable ist, die \underline{\color{red}nicht} in dem Term $t$ auftritt, so
-      können wir die folgende Reduktion durchführen: 
+\item If  $y\in\mathcal{V}$ is a variable that does  \underline{\color{red}not} occur in the term $t$, then
+      we can perform the following reduction: 
       \[ \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \quad\leadsto\quad 
-         \Big\langle E[y \mapsto t], \sigma\big[ y \mapsto t \big] \Big\rangle 
+         \Big\langle E\{y \mapsto t\}, \sigma\{ y \mapsto t \} \Big\rangle \qquad\mbox{if $y \in \mathcal{V}$
+           and $y \not\in \mathtt{var}(t)$} 
       \]
-      Diese Reduktions-Regel ist folgendermaßen zu lesen: Enthält die zu untersuchende
-      Menge von syntaktischen Gleichungen eine Gleichung der Form $y \doteq t$, wobei die
-      Variable $y$ nicht in $t$ auftritt, dann können wir diese Gleichung aus der
-      gegebenen Menge von Gleichungen entfernen.  Gleichzeitig wird die Substitution
-      $\sigma$ in die Substitution $\sigma\big[ y \mapsto t \big]$ transformiert und auf die restlichen syntaktischen Gleichungen
-      wird die Substitution $[y \mapsto t]$ angewendet.
-\item Wenn die Variable $y$  in dem Term $t$ auftritt, falls also $y \in \textsl{Var}(t)$
-      ist und wenn außerdem $t \not= y$ ist, dann hat das Gleichungs-System 
-      $E \cup \big\{ y \doteq t \big\}$ \underline{\color{red}keine} Lösung, wir schreiben 
+      This reduction rule can be understood as follows: If the system of syntactical equations that is to be
+      solved contains a syntactical equation of the form $y \doteq t$, where the variable $y$ does not occur in
+      the term $t$, then the syntactical equation $y \doteq t$ can be removed if we apply the substitution
+      $\{ y \mapsto t \}$ to both components of the pair
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle$.
+\item If the variable $y$ occurs in the term $t$, i.e.~if  $y \in \textsl{Var}(t)$
+      and, furthermore, $t \not= y$, then the system of syntactical equations
+      $E \cup \big\{ y \doteq t \big\}$ has no solution.  We write this as
       \\[0.2cm]
       \hspace*{1.3cm}
       $\Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle\;\leadsto\; \Omega$ \quad
-      falls $y \in \textsl{Var}(t)$ und $y \not=t$.
-\item Falls $y\in\mathcal{V}$ eine Variable ist und $t$ keine Variable ist, so haben wir folgende Reduktions-Regel:
+      if $y \in \texttt{var}(t)$ and $y \not=t$.
+\item If $y\in\mathcal{V}$ and  $t \not\in \mathcal{V}$, then we have:
       \[ \Big\langle E \cup \big\{ t \doteq y \big\}, \sigma \Big\rangle \quad\leadsto\quad 
-         \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle.
+         \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \qquad\mbox{if $y \in \mathcal{V}$ and
+           $t \not\in \mathcal{V}$.}
       \]   
-      Diese Regel wird benötigt, um anschließend eine der ersten beiden Regeln anwenden zu
-      können.
-\item Triviale syntaktische Gleichungen von Variablen können wir einfach weglassen:
+      After we apply this rule, we can apply either the first or the second reduction rule thereafter.
+\item Trivial syntactical equations can be deleted:
       \[ \Big\langle E \cup \big\{ x \doteq x \big\}, \sigma \Big\rangle \quad\leadsto\quad
-         \Big\langle E, \sigma \Big\rangle.
+         \Big\langle E, \sigma \Big\rangle \qquad\mbox{if $x \in \mathcal{V}$.}
       \]   
-\item Ist $f$ ein $n$-stelliges Funktions-Zeichen, so gilt 
+\item If $f$ is an  $n$-ary function symbol we have 
       \[ \Big\langle E \cup \big\{ f(s_1,\cdots,s_n) \doteq f(t_1,\cdots,t_n) \big\}, \sigma \Big\rangle 
          \;\leadsto\; 
          \Big\langle E \cup \big\{ s_1 \doteq t_1, \cdots, s_n \doteq t_n\}, \sigma \Big\rangle.
       \]   
-      Eine syntaktische Gleichung der Form $f(s_1,\cdots,s_n) \doteq f(t_1,\cdots,t_n)$
-      wird also ersetzt durch die $n$ syntaktische Gleichungen $s_1 \doteq t_1$, $\cdots$, $s_n \doteq t_n$      .
 
-      Diese Regel ist im übrigen der Grund dafür, dass wir mit Mengen von syntaktischen Gleichungen
-      arbeiten müssen, denn auch wenn wir mit nur einer syntaktischen Gleichung starten, kann 
-      durch die Anwendung dieser Regel die Zahl der syntaktischen Gleichungen erhöht werden.
+      This rule is the reason that we have to work with a system of syntactical equations, because even if we
+      start with a single syntactical equation the rule given above can increase the number of syntactical
+      equations. 
 
-      Ein Spezialfall dieser Regel ist 
+      A special case of this rule is the following:  
       \[ \Big\langle E \cup \big\{ c \doteq c \big\}, \sigma \Big\rangle \;\leadsto\; 
          \Big\langle E, \sigma \Big\rangle.
       \]
-      Hier steht $c$ für eine Konstante, also ein 0-stelliges Funktions-Zeichen. 
-      Triviale Gleichungen über Konstanten können also einfach weggelassen werden.
-\item Das Gleichungs-System $E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\}$
-      hat \underline{\color{red}keine} Lösung, falls die Funk\-tions-Zeichen $f$ und $g$ verschieden sind, wir schreiben
+      Here $c$ is a nullary function symbol.
+\item The system of syntactical equations $E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\}$ has
+      no solution if the function symbols $f$ and $g$ are different.  Hence we have
       \[ \Big\langle E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\},
-      \sigma \Big\rangle \;\leadsto\; \Omega \qquad \mbox{falls $f \not= g$}. \]
+      \sigma \Big\rangle \;\leadsto\; \Omega \qquad \mbox{provided $f \not= g$}. \]
 \end{enumerate}
-Haben wir ein nicht-leeres Gleichungs-System $E$ gegeben und starten mit dem Paar 
-$\langle E, []\rangle$  , so lässt sich immer eine der
-obigen Regeln anwenden.  Diese geht solange bis einer der folgenden Fälle eintritt:
+If a system of syntactical equations $E$ is given and we start with the pair 
+$\langle E, \{\}\rangle$, then we can apply the rules given above until one of the following two cases happens: 
 \begin{enumerate}
-\item Die 2.~oder die 6.~Regel ist anwendbar.  Dann hat das Gleichungs-System $E$ 
-      \underline{\color{red}keine} Lösung und als Ergebnis der Unifikation wird $\Omega$ zurück gegeben.
-\item Das Paar $\langle E, [] \rangle$ wird reduziert zu einem Paar $\langle \{\}, \sigma\rangle$.
-      Dann ist $\sigma$ ein \blue{Unifikator} von $E$.  In diesem Fall schreiben wir $\sigma = \mathtt{mgu}(E)$.
-      Falls $E = \{ s \doteq t \}$ ist, schreiben wir auch $\sigma = \mathtt{mgu}(s, t)$.  Die Abkürzung
-      $\mathtt{mgu}$ steht hier für {``\blue{most general unifier}''}.
+\item We use the second or the sixth of the reduction rules given above.
+      In this case the system of syntactical equations $E$ is unsolvable.
+\item The pair $\langle E, \{\} \rangle$ is reduced into a pair of the form $\langle \{\}, \mu\rangle$.
+      Then $\mu$ is a  \blue{unifier} of $E$.  In this case we write $\mu = \mathtt{mgu}(E)$.
+      If $E = \{ s \doteq t \}$, we write $\mu = \mathtt{mgu}(s, t)$.  The abbreviation
+      $\mathtt{mgu}$ is short for {``\blue{most general unifier}''}.
 \end{enumerate}
 
-\example
-Wir wenden das oben dargestellte Verfahren an, um die syntaktische Gleichung \\[0.2cm]
-\hspace*{1.3cm}  $p(x_1, f(x_4)) \doteq p( x_2, x_3)$  \\[0.2cm]
-zu lösen.  Wir haben die folgenden Reduktions-Schritte:
+\exampleEng
+We show how to solve the syntactical equation \\[0.2cm]
+\hspace*{1.3cm}  $p(x_1, f(x_4)) \doteq p( x_2, x_3)$.  \\[0.2cm]
+We have the following reductions:
 $$
 \begin{array}{ll}
-          &  \big\langle \big\{ p(x_1, f(x_4)) \doteq p( x_2, x_3) \big\}, \big[ \big] \big\rangle \\[0.2cm]
- \leadsto &  \big\langle \big\{ x_1 \doteq x_2, f(x_4) \doteq x_3 \big\}, \big[ \big] \big\rangle \\[0.2cm]
- \leadsto &  \big\langle \big\{ f(x_4) \doteq x_3 \big\}, \big[ x_1 \mapsto x_2 \big] \big\rangle \\[0.2cm]
- \leadsto &  \big\langle \big\{ x_3 \doteq f(x_4) \big\}, \big[ x_1 \mapsto x_2 \big] \big\rangle \\[0.2cm]
- \leadsto &  \big\langle \big\{\big\}, \big[ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \big] \big\rangle \\[0.2cm]
+          &  \big\langle \big\{ p(x_1, f(x_4)) \doteq p( x_2, x_3) \big\}, \{ \} \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{ x_1 \doteq x_2, f(x_4) \doteq x_3 \big\}, \{ \} \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{ f(x_4) \doteq x_3 \big\}, \{ x_1 \mapsto x_2 \} \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{ x_3 \doteq f(x_4) \big\}, \{ x_1 \mapsto x_2 \} \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{\big\}, \{ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \} \big\rangle \\[0.2cm]
 \end{array}
 $$
-In diesem Fall ist das Verfahren also erfolgreich und wir erhalten die Substitution \\[0.2cm]
-\hspace*{1.3cm} $\big[ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \big]$ \\[0.2cm]
-als Lösung der oben gegebenen syntaktischen Gleichung.  \eox
+Hence the method is successful and we have that the substitution
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \}$ \\[0.2cm]
+is a solution of the syntactical equation given above.  \eox
 
-\example
-Wir geben ein weiteres Beispiel und betrachten das Gleichungs-System 
+\exampleEng
+Next we try to solve the following system of syntactical equations: 
 \[ E = \big\{ p(h(x_1,c)) \doteq p(x_2),\; q(x_2, d) \doteq q(h(d,c),x_4) \big\} \]
-Wir haben folgende Reduktions-Schritte:
+We have the following reductions:
 $$
 \begin{array}{ll}
-          & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; q(x_2, d) \doteq q(h(d,c),x_4) \big\}, \big[ \big] \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c), \; d \doteq x_4 \big\}, \big[ \big] \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c), \; x_4 \doteq d \big\}, \big[ \big] \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c) \big\}, \big[ x_4 \mapsto d \big] \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(h(d,c)) \big\}, \big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \big] \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ h(x_1,c) \doteq h(d,c) \big\}, \big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \big] \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ x_1 \doteq d,\; c \doteq c \big\}, \big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \big] \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ x_1 \doteq d,\big\}, \big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \big] \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{\big\}, \big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \big] \big\rangle \\[0.2cm]
+          & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; q(x_2, d) \doteq q(h(d,c),x_4) \big\}, \{ \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c), \; d \doteq x_4 \big\}, \{ \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c), \; x_4 \doteq d \big\}, \{ \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c) \big\}, \{ x_4 \mapsto d \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(h(d,c)) \big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ h(x_1,c) \doteq h(d,c) \big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ x_1 \doteq d,\; c \doteq c \big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ x_1 \doteq d,\big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{\big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \} \big\rangle \\[0.2cm]
 \end{array}
 $$
-Damit haben wir die Substitution  $\big[ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \big]$ als Lösung 
-des anfangs gegebenen syn\-tak\-tischen Gleichungs-Systems gefunden.  
+Hence the  substitution  $\{ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \}$ is a solution
+of the system of syntactical equations given above.
 \eox
 
-\noindent
-Das Jupyter Notebook
-\\[0.2cm]
-\hspace*{0.8cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Unification.ipynb}{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Unification.ipynb}.
-\\[0.2cm]
-enthält ein \textsl{Python}-Programm, das den oben beschriebenen Algorithmus umsetzt.
 
+\noindent
+The Jupyter notebook
+\\[0.2cm]
+\hspace*{0.0cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/10-Unification.ipynb}{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/10-Unification.ipynb}.
+\\[0.2cm]
+implements the algorithm that has been described above.
 
 \section{Ein Kalkül für die Prädikatenlogik ohne Gleichheit \label{sec:fol-calculus}}
 In diesem Abschnitt setzen wir voraus, dass unsere Signatur $\Sigma$ das Gleichheits-Zeichen nicht
@@ -3355,7 +3328,7 @@ prädikatenlogischer Formel $f$ die Frage, ob $\models f$ gilt, untersuchen zu k
       gegebenen Formel $f$ gezeigt.
 \end{enumerate}
 
-\example
+\exampleEng
 Zum Abschluss demonstrieren wir das skizzierte Verfahren an einem Beispiel.
 Wir gehen von folgenden Axiomen aus:
 \begin{enumerate}
