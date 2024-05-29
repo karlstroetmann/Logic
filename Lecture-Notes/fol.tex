@@ -3161,187 +3161,183 @@ The Jupyter notebook
 \\[0.2cm]
 implements the algorithm that has been described above.
 
-\section{Ein Kalkül für die Prädikatenlogik ohne Gleichheit \label{sec:fol-calculus}}
-In diesem Abschnitt setzen wir voraus, dass unsere Signatur $\Sigma$ das Gleichheits-Zeichen nicht
-verwendet, denn durch diese Einschränkung wird es wesentlich einfacher, einen vollstängen Kalkül für
-die Prädikatenlogik einzuführen.  Zwar gibt es auch für den Fall, dass die Signatur $\Sigma$ das
-Gleichheits-Zeichen enthält, einen vollständigen Kalkül.  Dieser ist allerdings deutlich
-aufwendiger als der Kalkül, den wir gleich einführen werden.
+\section{A Deductive System for First-Order Logic without Equality \label{sec:fol-calculus}}
+In this section, we assume that our signature $\Sigma$ does not use the equality sign, because this restriction
+makes it significantly easier to introduce a complete deductive system for first-order logic. Although there is
+also a complete deductive system for the case where the signature $\Sigma$ contains the equality sign, it is
+considerably more complex than the system we are about to introduce and is therefore out of the scope of these
+lecture notes. 
 
 \begin{Definition}[{\color{blue}Resolution}] \index{Resolution} 
-    Es gelte:
+    Assume that
     \begin{enumerate}
-    \item $k_1$ und $k_2$ sind prädikatenlogische Klauseln,
-    \item $p(s_1,\cdots,s_n)$ und $p(t_1,\cdots,t_n)$ sind atomare Formeln,
-    \item die syntaktische Gleichung $p(s_1,\cdots,s_n)  \doteq p(t_1,\cdots,t_n)$ ist lösbar mit 
+    \item $k_1$ and $k_2$ are first-order logic clauses,
+    \item $p(s_1,\cdots,s_n)$ and $p(t_1,\cdots,t_n)$ are atomic formulas, and
+    \item the syntactic equation $p(s_1,\cdots,s_n) \doteq p(t_1,\cdots,t_n)$ is solvable with most general unifier
           \\[0.2cm]
           \hspace*{1.3cm}
           $\mu = \mathtt{mgu}\bigl(p(s_1,\cdots,s_n), p(t_1,\cdots,t_n)\bigr)$. 
     \end{enumerate}
-     Dann ist 
+     Then the following deduction rule
      \\[0.2cm]
      \hspace*{1.3cm}
      $\schluss{k_1 \cup\{ p(s_1,\cdots,s_n)\} \quad\quad \{\neg p(t_1,\cdots,t_n)\} \cup k_2}{
                  k_1\mu \cup k_2\mu} 
-     $
-     eine Anwendung der \blue{Resolutions-Regel}.
+               $
+     \\[0.2cm]
+     is an application of the \blue{resolution rule}.
      \eox
 \end{Definition}
-Die Resolutions-Regel ist eine Kombination aus der \blue{Substitutions-Regel} und der 
-Schnitt-Regel.  Die Substitutions-Regel \index{Substitutions-Regel} hat die Form
+
+The resolution rule is a combination of the \blue{substitution rule} and the cut rule. The substitution rule \index{Substitution Rule} has the form
 \\[0.2cm]
 \hspace*{1.3cm}
-$\schluss{k}{k\sigma}$. 
+$\schluss{k}{k\sigma}$.
 \\[0.2cm]
-Hierbei ist $k$ eine prädikatenlogische Klausel und $\sigma$ ist eine Substitution.
-Unter Umständen kann es sein, dass wir vor der Anwendung der Resolutions-Regel 
-die Variablen in einer der beiden Klauseln erst umbenennen
-müssen bevor wir die Regel anwenden können.  Betrachten wir dazu ein Beispiel.
-Die Klausel-Menge 
+Here, $k$ is a first-order logic clause and $\sigma$ is a substitution.
+In some cases, we may need to rename the variables in one of the two clauses before we can apply the resolution rule. Let us consider an example.
+The set of clauses
 \[ M = \Bigl\{ \bigl\{ p(x) \bigr\}, \bigl\{ \neg p(f(x)) \bigr\} \Bigr\} \]
-ist widersprüchlich.  Wir können die Resolutions-Regel aber nicht unmittelbar anwenden,
-denn die syntaktische Gleichung 
+is contradictory. However, we cannot immediately apply the resolution rule because the syntactic equation
 \[ p(x) \doteq p(f(x)) \]
-ist unlösbar.  Das liegt daran, dass \textbf{zufällig} in beiden Klauseln dieselbe Variable
-verwendet wird.  Wenn wir die Variable $x$ in der zweiten Klausel jedoch zu $y$ umbenennen, erhalten
-wir die Klausel-Menge 
+is unsolvable. This is because the same variable happens to be used in both clauses. If we rename the variable $x$ in the second clause to $y$, we get the set of clauses
 \[ \Bigl\{ \bigl\{ p(x) \bigr\}, \bigl\{ \neg p(f(y)) \bigr\} \Bigr\}. \]
-Hier können wir die Resolutions-Regel anwenden, denn die syntaktische Gleichung 
+Here, we can apply the resolution rule because the syntactic equation
 \[ p(x) \doteq p(f(y)) \]
-hat die Lösung $[x \mapsto f(y)]$.  Dann erhalten wir 
+has the solution $[x \mapsto f(y)]$. Then we obtain
 \[ \bigl\{ p(x) \bigr\}, \quad \bigl\{ \neg p(f(y)) \bigr\} \quad \vdash \quad \{\}. \]
-und haben damit die Inkonsistenz der Klausel-Menge $M$ nachgewiesen.
+and thus we have proven the inconsistency of the clause set $M$.
 
-\noindent
-Die Resolutions-Regel alleine ist nicht ausreichend, um aus einer Klausel-Menge $M$, die
-inkonsistent ist, in 
-jedem Fall die leere Klausel ableiten zu können: Wir brauchen noch eine zweite Regel.
-Um das einzusehen, betrachten wir die Klausel-Menge 
+
+The resolution rule by itselft is not sufficient to derive the empty clause from a clause set $M$ that is
+inconsistent in every case: we need a second rule. To see this, consider following set of clauses:
 \[ M = \Bigl\{ \bigl\{p(f(x),y), p(u,g(v))\bigr\}, 
                \bigl\{\neg p(f(x),y), \neg p(u,g(v))\bigr\} \Bigr\} 
 \]
-Wir werden gleich zeigen, dass die Menge $M$ widersprüchlich ist.  Man kann nachweisen,
-dass mit der Resolutions-Regel alleine ein solcher Nachweis nicht gelingt.
-Ein einfacher, aber für die Vorlesung zu aufwendiger Nachweis dieser Behauptung kann
-geführt werden, indem wir ausgehend von der Menge $M$ alle möglichen Resolutions-Schritte
-durchführen.  Dabei würden wir dann sehen, dass die leere Klausel nie berechnet werden kann.
-Wir stellen daher jetzt die
-\blue{Faktorisierungs-Regel} vor, mir der wir später zeigen werden, dass $M$ widersprüchlich
-ist.
+We will soon show that the set $M$ is contradictory. It can be shown that the resolution rule is not
+sufficient to prove that $M$ is contradictory.
+A simple but tedious proof of this fact can be given by computing all
+possible resolution steps starting from the set $M$.  In doing so, we would see that the empty clause can never
+be derived.  Because of the incompleteness of the resolution rule by itselft, we now introduce the
+\blue{factorization rule}.  Using this rule we will be able to show that $M$ is contradictory. 
 
-
-\begin{Definition}[{\color{blue}Faktorisierung}] \index{Faktorisierung} Es gelte 
+\begin{Definition}[{\color{blue}Factorization}] \index{Factorization}
+  Assume that the following holds:
   \begin{enumerate}
-  \item $k$ ist  eine prädikatenlogische Klausel,
-  \item $p(s_1,\cdots,s_n)$ und $p(t_1,\cdots,t_n)$ sind atomare Formeln,
-  \item die syntaktische Gleichung $p(s_1,\cdots,s_n)  \doteq p(t_1,\cdots,t_n)$ ist lösbar, 
+  \item $k$ is a first-order logic clause,
+  \item $p(s_1,\cdots,s_n)$ and $p(t_1,\cdots,t_n)$ are atomic formulas,
+  \item the syntactic equation $p(s_1,\cdots,s_n) \doteq p(t_1,\cdots,t_n)$ is solvable,
   \item $\mu = \mathtt{mgu}\bigl(p(s_1,\cdots,s_n), p(t_1,\cdots,t_n)\bigr)$.
   \end{enumerate}
-  Dann sind \\[0.3cm]
+  Then the following rules \\[0.3cm]
   \hspace*{0.8cm}
   $\schluss{k \cup \bigl\{p(s_1,\cdots,s_n),\, p(t_1,\cdots,t_n)\bigl\}}{k\mu \cup \bigl\{p(s_1,\cdots,s_n)\mu\bigr\} }$ 
-  \quad und \quad
+  \quad and \quad
   $\schluss{k \cup \bigl\{ \neg p(s_1,\cdots,s_n),\, \neg p(t_1,\cdots,t_n)\bigl\}}{k\mu \cup \bigl\{\neg p(s_1,\cdots,s_n)\mu\bigr\} }$ 
   \\[0.3cm]
-  Anwendungen der \blue{Faktorisierungs-Regel}.
+  are instances of the \blue{factorization rule}.
   \eox
 \end{Definition}
 
 \noindent
-Wir zeigen, wie sich mit Resolutions- und Faktorisierungs-Regel die Widersprüchlichkeit
-der Menge $M$ beweisen lässt.
+We will demonstrate how the inconsistency of the set $M$ can be proven using the resolution and factorization rules.
 \begin{enumerate}
-\item Zunächst wenden wir die Faktorisierungs-Regel auf die erste Klausel an. 
-      Dazu berechnen wir den Unifikator 
+\item First, we apply the factorization rule to the first clause. 
+      For this, we compute the unifier 
       \[ \mu = \mathtt{mgu}\bigl(p(f(x),y), p(u,g(v))\bigr) = [y \mapsto g(v), u \mapsto f(x)]. \]
-      Damit können wir die Faktorisierungs-Regel anwenden: 
+      Thus, we can apply the factorization rule: 
       \[ \bigl\{p(f(x),y), p(u,g(v))\bigr\} \quad \vdash \quad \bigl\{p(f(x),g(v))\bigr\}. \]
-\item Jetzt wenden wir die Faktorisierungs-Regel auf die zweite Klausel an.
-      Dazu berechnen wir  den Unifikator 
+\item Next, we apply the factorization rule to the second clause.
+      For this, we compute the unifier 
       \[ \mu = \mathtt{mgu}\bigl(\neg p(f(x),y), \neg p(u,g(v))\bigr) = [y \mapsto g(v), u \mapsto f(x)]. 
       \]
-      Damit können wir die Faktorisierungs-Regel anwenden: 
+      Thus, we can apply the factorization rule: 
       \[ \bigl\{ \neg p(f(x),y), \neg p(u,g(v))\bigr\} \quad \vdash \quad \bigl\{\neg p(f(x),g(v))\bigr\}.
       \]
-\item Wir schließen den Beweis mit einer Anwendung der Resolutions-Regel ab.
-      Der dabei verwendete Unifikator ist die leere Substitution, es gilt also $\mu = []$.      
-      \[ \bigl\{p(f(x),g(v))\bigr\}, \quad \bigl\{\neg p(f(x),g(v))\bigr\} \quad \vdash \quad \{\}. \]
+\item We conclude the proof with an application of the resolution rule.
+      The unifier used here is the empty substitution, thus $\mu = []$.      
+      \[ \schluss{\bigl\{p(f(x),g(v))\bigr\} \quad \bigl\{\neg p(f(x),g(v))\bigr\}}{\{\}} \]
 \end{enumerate}
-Ist $M$ eine Menge von prädikatenlogischen Klauseln und ist $k$ eine prädikatenlogische
-Klausel, die durch Anwendung der Resolutions-Regel und der Faktorisierungs-Regel aus $M$
-hergeleitet werden kann, so schreiben wir \\[0.2cm]
+
+If $M$ is a set of first-order logic clauses and $k$ is a first-order logic
+clause that can be derived from $M$ by applying the resolution rule and the factorization rule, we write \\[0.2cm]
 \hspace*{1.3cm} $M \vdash k$. \index{$M \vdash k$}
 \\[0.2cm]
-Dies wird als \blue{$M$ leitet $k$ her} \index{$M$ leitet $k$ her} gelesen.
+This is read as \blue{$M$ derives $k$} \index{$M$ derives $k$}.
 
-\begin{Definition}[Allabschluss] \index{Allabschluss}
-  Ist $k$ eine prädikatenlogische Klausel und ist $\{x_1,\cdots,x_n\}$
-  die Menge aller Variablen, die in $k$ auftreten, so definieren wir
-  den \blue{Allabschluss}  $\forall(k)$  der Klausel k als \\[0.2cm]
+\begin{Definition}[Universal closure] \index{Universal closure}
+  If $k$ is a first-order logic clause and $\{x_1,\cdots,x_n\}$
+  is the set of all variables that occur in $k$, we define
+  the \blue{universal closure} $\forall(k)$ of the clause $k$ as \\[0.2cm]
   \hspace*{1.3cm} $\forall(k) := \forall x_1\colon \cdots \forall x_n \colon k$. \eox
 \end{Definition}
 
-\noindent
-Die für uns wesentlichen Eigenschaften des Beweis-Begriffs $M \vdash k$ werden in den folgenden
-beiden Sätzen zusammengefasst.
-\begin{Satz}[{\color{blue}Korrektheits-Satz}] \index{Korrektheits-Satz der Prädikatenlogik} \hspace*{\fill} \\
-    Ist $M = \{k_1,\cdots,k_n\}$ eine Menge von Klauseln und gilt $M \vdash k$, so folgt \\[0.2cm]
+The essential properties of the notion $M \vdash k$ are summarized in the following two theorems.
+
+\begin{Satz}[{\color{blue}Correctness Theorem}] \index{Correctness Theorem of First-Order Logic} \hspace*{\fill} \\
+    If $M = \{k_1,\cdots,k_n\}$ is a set of clauses and $M \vdash k$, then \\[0.2cm]
     \hspace*{1.3cm} $\models \forall(k_1) \wedge \cdots \wedge \forall(k_n) \rightarrow \forall(k)$. \\[0.2cm]
-    Falls also eine Klausel $k$ aus einer Menge $M$ hergeleitet werden kann,
-    so ist $k$ tatsächlich eine Folgerung aus $M$. \qed
+    Thus, if a clause $k$ can be derived from a set $M$, 
+    then $k$ is indeed a consequence of $M$. \qed
 \end{Satz}
 
 \noindent
-Die Umkehrung des obigen Korrektheits-Satzes gilt nur für die leere Klausel.  Sie wurde 1965 von John
-A.~Robinson bewiesen \cite{robinson:1965}.
-\begin{Satz}[{\color{blue}Widerlegungs-Vollständigkeit} (Robinson, 1965)]
-  \index{Widerlegungs-Vollständigkeit des Resolutions-Kalküls} \hspace*{\fill} \\
-  Ist $M = \{k_1,\cdots,k_n\}$ eine Menge von Klauseln und gilt 
-  $\models \forall(k_1) \wedge \cdots \wedge \forall(k_n) \rightarrow \falsum$, so folgt \\[0.2cm]
-  \hspace*{1.3cm} $M \vdash \{\}$.
-    \qed
+The converse of the above correctness theorem holds only for the empty clause. It was proven in 1965 by John
+A.~Robinson \cite{robinson:1965}. 
+\begin{Satz}[{\color{blue}Refutational Completeness} (Robinson, 1965)]
+  \index{Refutational Completeness of the Resolution Calculus} \hspace*{\fill} \\
+  If $M = \{k_1,\cdots,k_n\}$ is a set of clauses and $M$ is unsatisfiable, i.e.~we have
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\models \forall(k_1) \wedge \cdots \wedge \forall(k_n) \rightarrow \falsum$, 
+  \\[0.2cm]
+  then the empty clause can be derived from $M$, i.e.~we have
+  \\[0.2cm]
+  \hspace*{1.3cm} $M \vdash \{\}$.     \qed
 \end{Satz}
+
 \noindent
-Damit haben wir nun ein Verfahren in der Hand, um für eine gegebene 
-prädikatenlogischer Formel $f$ die Frage, ob $\models f$ gilt, untersuchen zu können.
+We now have a method to investigate whether $\models f$ holds for a given first-order logic formula $f$.
 \begin{enumerate}
-\item Wir berechnen zunächst die Skolem-Normalform von $\neg f$ und erhalten dabei so etwas wie \\[0.2cm]
+\item First, we compute the Skolem normal form of $\neg f$ and obtain something like \\[0.2cm]
       \hspace*{1.3cm} $\neg f \approx_e \forall x_1, \cdots, x_m \colon g$.
-\item Anschließend bringen wir die Matrix $g$ in konjunktive Normalform: 
-      \[ g \leftrightarrow k_1 \wedge \cdots \wedge k_n. \]
-      Daher haben wir nun 
+\item Next, we convert the matrix $g$ into conjunctive normal form: 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+    $g \Leftrightarrow k_1 \wedge \cdots \wedge k_n$.
+      \\[0.2cm]
+      Hence, we now have 
       \[ \neg f \approx_e k_1 \wedge \cdots \wedge k_n \] 
-      und es gilt: 
+      and it holds that: 
       \[  
-          \models f                           \quad \mbox{g.d.w.} \quad
-          \{\neg f\} \models \falsum          \quad \mbox{g.d.w.} \quad 
+          \models f \quad \mbox{if and only if} \quad
+          \{\neg f\} \models \falsum \quad \mbox{if and only if} \quad 
           \{k_1,\cdots,k_n\} \models \falsum.
       \]
-\item Nach dem Korrektheits-Satz und dem Satz über die Widerlegungs-Vollständigkeit gilt
+\item According to the correctness theorem and the theorem on refutation completeness, it holds that
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\{k_1,\cdots,k_n\} \models \falsum$ \quad g.d.w. \quad 
+      $\{k_1,\cdots,k_n\} \models \falsum$ \quad if and only if \quad 
       $\{k_1,\cdots,k_n\} \vdash \falsum$. \\[0.2cm]
-      Wir versuchen also, nun die Widersprüchlichkeit der Menge $M = \{ k_1, \cdots, k_n \}$  zu zeigen, indem wir
-      aus $M$ die leere Klausel ableiten.
-      Wenn diese gelingt, haben wir damit die Allgemeingültigkeit der ursprünglich
-      gegebenen Formel $f$ gezeigt.
+      Therefore, we now try to show the inconsistency of the set $M = \{ k_1, \cdots, k_n \}$ by deriving the empty clause from $M$.
+      If this succeeds, we have demonstrated the validity of the formula $f$.
 \end{enumerate}
 
 \exampleEng
-Zum Abschluss demonstrieren wir das skizzierte Verfahren an einem Beispiel.
-Wir gehen von folgenden Axiomen aus:
+To conclude, we demonstrate the outlined method with an example.  We turn to the zoology of dragonkind and
+start with the following axioms:
 \begin{enumerate}
-\item Jeder Drache ist glücklich, wenn alle seine Kinder fliegen können.
-\item Rote Drachen können fliegen.
-\item Die Kinder eines roten Drachens sind immer rot.
+\item Every dragon is happy if all its children can fly.
+\item Red dragons can fly.
+\item The children of a red dragon are always red.
 \end{enumerate}
-Wie werden zeigen, dass aus diesen Axiomen folgt, dass alle roten Drachen glücklich sind.
-Als erstes formalisieren wir die Axiome und die Behauptung in der Prädikatenlogik.
-Wir wählen die Signatur \\[0.2cm]
-\hspace*{1.3cm}  $\Sigma_\textsl{Drache} := \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ 
+We will show that these axioms imply that all red dragons are happy.
+First, we formalize the axioms and the claim in first-order logic.
+We choose the signature \\[0.2cm]
+\hspace*{1.3cm}
+$\Sigma_\textsl{Drache} := \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ 
 \\[0.2cm]
-wobei die Mengen $\mathcal{V}$, $\mathcal{F}$, $\mathcal{P}$ und \textsl{arity} wie folgt definiert sind:
+where the sets $\mathcal{V}$, $\mathcal{F}$, $\mathcal{P}$, and \textsl{arity} are defined as follows:
 \begin{enumerate}
 \item $\mathcal{V} := \{x,y,z\}$.
 \item $\mathcal{F} = \{\}$.
@@ -3349,92 +3345,85 @@ wobei die Mengen $\mathcal{V}$, $\mathcal{F}$, $\mathcal{P}$ und \textsl{arity} 
 \item $\textsl{arity} := \bigl\{ \textsl{rot} \mapsto 1, \textsl{fliegt} \mapsto 1,
          \textsl{glücklich} \mapsto 1, \textsl{kind} \mapsto 2\bigr\}$
 \end{enumerate}
-Das Prädikat  $\textsl{kind}(x,y)$ soll genau dann wahr sein, wenn $x$ ein Kind von $y$ ist.
-Formalisieren wir die Axiome und die Behauptung, so erhalten wir die folgenden
-Formeln $f_1, \cdots, f_4$:
+The predicate \textsl{kind}$(x,y)$ is true if and only if $x$ is a child of $y$.
+Formalizing the axioms and the claim, we obtain the following
+formulas $f_1, \cdots, f_4$:
 \begin{enumerate}
 \item $f_1 := \forall x: \Bigl(\forall y: \big(\textsl{kind}(y,x) \rightarrow \textsl{fliegt}(y)\big) \rightarrow \textsl{glücklich}(x)\Bigr)$
 \item $f_2 := \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{fliegt}(x)\bigr)$
 \item $f_3 := \forall x: \bigl(\textsl{rot}(x) \rightarrow \forall y:\bigl( \textsl{kind}(y,x) \rightarrow \textsl{rot}(y)\bigr)\bigr)$
 \item $f_4 := \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{glücklich}(x)\bigr)$
 \end{enumerate}
-Wir wollen zeigen, dass die Formel 
+We want to show that the formula 
 \\[0.2cm]
 \hspace*{1.3cm} 
 $f := f_1 \wedge f_2 \wedge f_3 \rightarrow f_4$ 
 \\[0.2cm]
-allgemeingültig ist.  Wir betrachten also die Formel $\neg f$ und stellen fest \\[0.2cm]
-\hspace*{1.3cm} $\neg f \leftrightarrow f_1 \wedge f_2 \wedge f_3 \wedge \neg f_4$. \\[0.2cm]
-Als nächstes müssen wir diese Formel in eine Menge von Klauseln umformen.
-Da es sich hier um eine Konjunktion mehrerer Formeln handelt, können wir 
-die einzelnen Formeln 
- $f_1$, $f_2$, $f_3$ und  $\neg f_4$  getrennt in Klauseln umwandeln.
+is valid. We thus consider the formula $\neg f$ and note \\[0.2cm]
+\hspace*{1.3cm} $\neg f \Leftrightarrow f_1 \wedge f_2 \wedge f_3 \wedge \neg f_4$. \\[0.2cm]
+Next, we need to convert the formula on the right side of this equivalence into a set of clauses.
+Since this is a conjunction of several formulas, we can convert the individual formulas $f_1$, $f_2$, $f_3$,
+and $\neg f_4$ into clauses separately. 
 \begin{enumerate}
-\item Die Formel $f_1$ kann wie folgt umgeformt werden:
+\item The formula $f_1$ can be transformed as follows:
  $$ 
   \begin{array}{lcl}
     f_1 & =           & \forall x:\Bigl(\forall y: \big(\textsl{kind}(y,x)
     \rightarrow \textsl{fliegt}(y)\big) \rightarrow \textsl{glücklich}(x) \Bigr) \\[0.2cm]
-    &\leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \textsl{kind}(y,x) \rightarrow \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \neg \textsl{kind}(y,x) \vee \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\leftrightarrow & \forall x: \Bigl(\exists y: \neg \big( \neg \textsl{kind}(y,x) \vee \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\leftrightarrow & \forall x: \Bigl( \exists y: \big(\textsl{kind}(y,x) \wedge \neg  \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\leftrightarrow & \forall x:  \exists y: \Bigl(\big( \textsl{kind}(y,x) \wedge \neg  \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \textsl{kind}(y,x) \rightarrow \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \neg \textsl{kind}(y,x) \vee \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl(\exists y: \neg \big( \neg \textsl{kind}(y,x) \vee \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl( \exists y: \big(\textsl{kind}(y,x) \wedge \neg  \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x:  \exists y: \Bigl(\big( \textsl{kind}(y,x) \wedge \neg  \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
     &\approx_e & \forall x: \Bigl(\big( \textsl{kind}(s(x),x) \wedge \neg  \textsl{fliegt}(s(x))\big) \vee \textsl{glücklich}(x) \Bigr)\\
   \end{array}
      $$
-      Im letzten Schritt haben wir dabei die Skolem-Funktion $s$ mit 
-      $\textsl{arity}(s) = 1$ eingeführt.  Anschaulich berechnet diese Funktion für jeden
-      Drachen $x$, der nicht glücklich ist, ein Kind $s(x)$, das nicht fliegen kann.
-      Wenn wir in der Matrix dieser Formel das ``$\vee$'' noch ausmultiplizieren, so
-      erhalten wir die beiden Klauseln 
+      In the last step, we have introduced the Skolem function $s$ with 
+      $\textsl{arity}(s) = 1$. Intuitively, this function computes for each
+      dragon $x$, who is not happy, a child $s(x)$, that cannot fly.
+      If we distribute the "or" in the matrix of this formula,
+      we obtain the following two clauses:
       \\[0.2cm]
       \hspace*{1.3cm} $k_1 := \bigl\{ \textsl{kind}(s(x),x), \textsl{glücklich}(x) \bigl\}$,   \\[0.2cm]
       \hspace*{1.3cm} $k_2 := \bigl\{ \neg \textsl{fliegt}(s(x)), \textsl{glücklich}(x) \bigl\}$. 
-\item Analog finden wir für $f_2$:
+\item Similarly, for $f_2$ we find:
  $$
         \begin{array}{lcl}
             f_2 & =  & \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{fliegt}(x) \bigr) \\[0.2cm]
-            & \leftrightarrow  & \forall x: \bigl(\neg \textsl{rot}(x) \vee \textsl{fliegt}(x) \bigr)
+            & \Leftrightarrow  & \forall x: \bigl(\neg \textsl{rot}(x) \vee \textsl{fliegt}(x) \bigr)
         \end{array}
       $$ 
-      Damit ist $f_2$ zu folgender Klauseln äquivalent: \\[0.2cm]
+      Thus, $f_2$ is equivalent to the following clause: \\[0.2cm]
       \hspace*{1.3cm} $k_3 := \bigl\{ \neg \textsl{rot}(x), \textsl{fliegt}(x) \bigl\}$.
-\item Für $f_3$ sehen wir:
+\item For $f_3$, we see:
  $$
         \begin{array}{lcl}
           f_3 & =          & \forall x: \Bigl(\textsl{rot}(x) \rightarrow 
-                             \forall y: \bigl(\textsl{kind}(y,x) \rightarrow \textsl{rot}(y)\bigr) \Bigr) 
-          \\[0.2cm]
-          &\leftrightarrow & \forall x: \Bigl(\neg \textsl{rot}(x) \vee 
-                             \forall y: \bigl(\neg \textsl{kind}(y,x) \vee \textsl{rot}(y)\bigr)\Bigr) 
-          \\[0.2cm]
-          &\leftrightarrow & \forall x: \forall y: \bigl(\neg \textsl{rot}(x) \vee \neg \textsl{kind}(y,x) \vee \textsl{rot}(y)\bigr)
+                             \forall y: \bigl(\textsl{kind}(y,x) \rightarrow \textsl{rot}(y)\bigr) \Bigr) \\
+          &\Leftrightarrow & \forall x: \Bigl(\neg \textsl{rot}(x) \vee 
+                             \forall y: \bigl(\neg \textsl{kind}(y,x) \vee \textsl{rot}(y)\bigr)\Bigr) \\
+          &\Leftrightarrow & \forall x: \forall y: \bigl(\neg \textsl{rot}(x) \vee \neg \textsl{kind}(y,x) \vee \textsl{rot}(y)\bigr) \\
         \end{array}
       $$
-     Das liefert die folgende Klausel: \\[0.2cm]
+     This yields the following clause: \\[0.2cm]
      \hspace*{1.3cm} $ k_4 := \bigl\{ \neg \textsl{rot}(x), \neg \textsl{kind}(y,x), \textsl{rot}(y)\bigl\}$.
-\item Umformung der Negation von $f_4$ liefert:
+\item Transforming the negation of $f_4$ gives:
  $$
         \begin{array}{lcl}
-\neg f_4 & =      & \neg \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{glücklich}(x)\bigr) 
+         \neg f_4 & =      & \neg \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{glücklich}(x)\bigr) 
          \\[0.2cm]
-         & \leftrightarrow & \neg \forall x: \bigl(\neg \textsl{rot}(x) \vee \textsl{glücklich}(x) \bigr)
-         \\[0.2cm]
-         & \leftrightarrow & \exists x: \neg \bigl(\neg \textsl{rot}(x) \vee \textsl{glücklich}(x) \bigr)
-         \\[0.2cm]
-         & \leftrightarrow & \exists x: \bigl(\textsl{rot}(x) \wedge \neg \textsl{glücklich}(x) \bigr)
-         \\[0.2cm]
-         & \approx_e & \textsl{rot}(d) \wedge \neg \textsl{glücklich}(d) \\
+                  & \Leftrightarrow & \neg \forall x: \bigl(\neg \textsl{rot}(x) \vee \textsl{glücklich}(x) \bigr) \\
+                  & \Leftrightarrow & \exists x: \neg \bigl(\neg \textsl{rot}(x) \vee \textsl{glücklich}(x) \bigr) \\
+                  & \Leftrightarrow & \exists x: \bigl(\textsl{rot}(x) \wedge \neg \textsl{glücklich}(x) \bigr)\\
+                  & \approx_e & \textsl{rot}(d) \wedge \neg \textsl{glücklich}(d) \bigr)\\
         \end{array}
       $$
-      Die hier eingeführte Skolem-Konstante $d$ steht für einen unglücklichen roten Drachen.
-      Das führt zu den Klauseln \\[0.2cm]
+      The Skolem constant $d$ introduced here stands for an unhappy red dragon.
+      This leads to the following two clauses: \\[0.2cm]
       \hspace*{1.3cm} $k_5 = \bigl\{ \textsl{rot}(d) \bigl\}$, \\[0.2cm]
       \hspace*{1.3cm} $k_6 = \bigl\{ \neg \textsl{glücklich}(d) \bigl\}$.
 \end{enumerate}
-Wir müssen also untersuchen, ob die Menge $M$, die aus den folgenden Klauseln besteht,
-widersprüchlich ist: 
+Therefore, we have to investigate whether the set $M$, which consists of the following clauses, is contradictory:
 \begin{enumerate}
 \item $k_1 = \bigl\{ \textsl{kind}(s(x),x),\; \textsl{glücklich}(x) \bigl\}$  
 \item $k_2 = \bigl\{ \neg \textsl{fliegt}(s(x)),\; \textsl{glücklich}(x) \bigl\}$
@@ -3443,92 +3432,83 @@ widersprüchlich ist:
 \item $k_5 = \bigl\{ \textsl{rot}(d) \bigl\}$ 
 \item $k_6 = \bigl\{ \neg \textsl{glücklich}(d) \bigl\}$
 \end{enumerate}
-Sei also $M := \bigl\{k_1,k_2,k_3,k_4,k_5,k_6\bigl\}$.
-Wir  zeigen, dass $M \vdash \falsum$ gilt:
+In order to do this, define $M := \bigl\{k_1,k_2,k_3,k_4,k_5,k_6\bigl\}$.
+We will show that $M \vdash \falsum$ holds:
 \begin{enumerate}
-\item Es gilt 
+\item It holds that
       \\[0.2cm]
       \hspace*{1.3cm}
       $\mathtt{mgu}\bigl(\textsl{rot}(d), \textsl{rot}(x)\bigr) = [x \mapsto d]$.
       \\[0.2cm]
-      Daher können wir die Resolutions-Regel auf die Klauseln $k_5$ und $k_4$ wie folgt anwenden:
+      Therefore, we can apply the resolution rule to the clauses $k_5$ and $k_4$ as follows:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\bigl\{\textsl{rot}(d)\bigl\}$, \ $\bigl\{\neg \textsl{rot}(x), \neg \textsl{kind}(y,x),
-       \textsl{rot}(y)\bigl\}$ \ $\vdash$ \ $\bigl\{\neg \textsl{kind}(y,d), \textsl{rot}(y)\bigl\}$.
-\item Wir wenden nun auf die resultierende Klausel und auf die Klausel $k_1$ die
-      Resolutions-Regel an.  Dazu berechnen wir zunächst
+      $\bigl\{\textsl{rot}(d)\bigl\}$, \ $\bigl\{\neg \textsl{rot}(x), \neg \textsl{kind}(y,x), \textsl{rot}(y)\bigl\}$ \ $\vdash$ \ $\bigl\{\neg \textsl{kind}(y,d), \textsl{rot}(y)\bigl\}$.
+\item We now apply the resolution rule to the resulting clause and the clause $k_1$. For this, we first compute
       \\[0.2cm]
       \hspace*{1.3cm}
       $\mathtt{mgu}\bigl(\textsl{kind}(y,d), \textsl{kind}(s(x),x)\bigr) = 
        [y \mapsto s(d), x \mapsto d]$.
       \\[0.2cm]
-      Dann haben wir
+      Then we have
       \\[0.2cm]
       \hspace*{1.3cm}
        $\bigl\{\neg \textsl{kind}(y,d), \textsl{rot}(y)\bigl\}$, \ 
        $\bigl\{\textsl{kind}(s(x),x), \textsl{glücklich}(x)\bigl\}$ \ $\vdash$ \ 
        $\bigl\{\textsl{glücklich}(d), \textsl{rot}(s(d))\bigl\}$.
-\item Jetzt wenden wir auf die eben abgeleitete Klausel und die Klausel $k_6$ die
-      Resolutions-Regel an.  Wir haben:
+\item Now we apply the resolution rule to the derived clause and the clause $k_6$. We have:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\mathtt{mgu}\bigl(\textsl{glücklich}(d), \textsl{glücklich}(d)\bigr) = []$
       \\[0.2cm]
-      Also erhalten wir
+      Thus, we obtain
       \\[0.2cm]
       \hspace*{1.3cm}
       $\bigl\{\textsl{glücklich}(d), \textsl{rot}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{glücklich}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{rot}(s(d))\bigl\}$.
-\item Auf die Klausel $\bigl\{\textsl{rot}(s(d))\bigl\}$ und die Klausel $k_3$ wenden wir
-      die Resolutions-Regel an.  Zunächst haben wir
+\item We apply the resolution rule to the clause $\bigl\{\textsl{rot}(s(d))\bigl\}$ and the clause $k_3$. First, we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{mgu}\bigl(\textsl{rot}(s(d)), \neg \textsl{rot}(x)\bigr) = [x \mapsto s(d)]$
+      $\mathtt{mgu}\bigl(\textsl{rot}(s(d)), \textsl{rot}(x)\bigr) = [x \mapsto s(d)]$
       \\[0.2cm]
-      Also liefert die Anwendung der Resolutions-Regel:
+      Thus, the application of the resolution rule yields:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\bigl\{\textsl{rot}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{rot}(x), \textsl{fliegt}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{fliegt}(s(d))\bigl\}$
-\item Um die so erhaltenen Klausel $\bigl\{\textsl{fliegt}(s(d))\bigl\}$ mit der Klausel
-      $k_3$ resolvieren zu können, berechnen wir
+      $\bigl\{\textsl{rot}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{rot}(x), \textsl{fliegt}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{fliegt}(s(d))\bigl\}$.
+\item To resolve the clause $\bigl\{\textsl{fliegt}(s(d))\bigl\}$ with the clause $k_2$, we compute
       \\[0.2cm]
       \hspace*{1.3cm}
       $\mathtt{mgu}\bigl(\textsl{fliegt}(s(d)), \textsl{fliegt}(s(x))\bigr) = [x \mapsto d]$
       \\[0.2cm]
-      Dann liefert die Resolutions-Regel
+      Then, the resolution rule gives
       \\[0.2cm]
       \hspace*{1.3cm}
       $\bigl\{\textsl{fliegt}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{fliegt}(s(x)), \textsl{glücklich}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{glücklich}(d)\bigl\}$.
-\item Auf das Ergebnis $\bigl\{\textsl{glücklich}(d)\bigl\}$ und die Klausel $k_6$ können
-      wir nun die Resolutions-Regel anwenden:
+\item We now apply the resolution rule to the result $\bigl\{\textsl{glücklich}(d)\bigl\}$ and the clause $k_6$:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\bigl\{\textsl{glücklich}(d)\bigl\}$, \  $\bigl\{\neg \textsl{glücklich}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\bigl\}$.
+      $\bigl\{\textsl{glücklich}(d)\bigl\}$, \ $\bigl\{\neg \textsl{glücklich}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\bigl\}$.
 \end{enumerate}
-Da wir im letzten Schritt die leere Klausel erhalten haben,  ist insgesamt $M \vdash
-\falsum$ 
-nachgewiesen worden und damit haben wir gezeigt, dass alle kommunistischen Drachen glücklich sind. 
+Since we obtained the empty clause in the last step, we have proven that $M \vdash \falsum$, and thus we have
+shown that all communist dragons are happy. 
 \eox
 
-\exercise
-Die von Bertrant Russell definierte \emph{Russell-Menge} $R$ ist
-definiert als die Menge aller der Mengen, die sich nicht selbst enthalten.   Damit gilt also
+\exerciseEng
+The \emph{Russell set} $R$ defined by Bertrand Russell is the set of all sets that do not contain themselves. Therefore, it holds that
 \\[0.2cm]
 \hspace*{1.3cm}
-$\forall x: \bigl( x \el R \leftrightarrow \neg x \el x)$.
+$\forall x: \bigl( x \in R \leftrightarrow \neg x \in x \bigr)$.
 \\[0.2cm]
-Zeigen Sie mit Hilfe des in diesem Abschnitt definierten Kalküls, dass diese Formel
-widersprüchlich ist. 
+Using the calculus defined in this section, show that this formula is contradictory. \eox
 \vspace{0.3cm}
 
-\exercise
-Gegeben seien folgende Axiome:
+\exerciseEng
+Given the following axioms:
 \begin{enumerate}
-\item Jeder Barbier rasiert alle Personen, die sich nicht selbst rasieren.
-\item Kein Barbier rasiert jemanden, der sich selbst rasiert.
+\item Every barber shaves all persons who do not shave themselves.
+\item No barber shaves anyone who shaves themselves.
 \end{enumerate}
-Zeigen Sie, dass aus diesen Axiomen logisch die folgende Aussage folgt: \\[0.3cm]
-\hspace*{1.3cm} Alle Barbiere sind blond.
+These two axioms have a truly surprising consequence: Using only these axioms,  show that all barbers are
+gay. \eox 
 
 \section{Vampire}
 The logical calculus described in the last section can be automated and forms the basis of modern
