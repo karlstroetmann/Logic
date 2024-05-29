@@ -3341,18 +3341,18 @@ where the sets $\mathcal{V}$, $\mathcal{F}$, $\mathcal{P}$, and \textsl{arity} a
 \begin{enumerate}
 \item $\mathcal{V} := \{x,y,z\}$.
 \item $\mathcal{F} = \{\}$.
-\item $\mathcal{P} := \{ \textsl{rot}, \textsl{fliegt}, \textsl{glücklich}, \textsl{kind} \}$.
-\item $\textsl{arity} := \bigl\{ \textsl{rot} \mapsto 1, \textsl{fliegt} \mapsto 1,
-         \textsl{glücklich} \mapsto 1, \textsl{kind} \mapsto 2\bigr\}$
+\item $\mathcal{P} := \{ \textsl{red}, \textsl{flies}, \textsl{happy}, \textsl{child} \}$.
+\item $\textsl{arity} := \bigl\{ \textsl{red} \mapsto 1, \textsl{flies} \mapsto 1,
+         \textsl{happy} \mapsto 1, \textsl{child} \mapsto 2\bigr\}$
 \end{enumerate}
-The predicate \textsl{kind}$(x,y)$ is true if and only if $x$ is a child of $y$.
+The predicate \textsl{child}$(x,y)$ is true if and only if $x$ is a child of $y$.
 Formalizing the axioms and the claim, we obtain the following
 formulas $f_1, \cdots, f_4$:
 \begin{enumerate}
-\item $f_1 := \forall x: \Bigl(\forall y: \big(\textsl{kind}(y,x) \rightarrow \textsl{fliegt}(y)\big) \rightarrow \textsl{glücklich}(x)\Bigr)$
-\item $f_2 := \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{fliegt}(x)\bigr)$
-\item $f_3 := \forall x: \bigl(\textsl{rot}(x) \rightarrow \forall y:\bigl( \textsl{kind}(y,x) \rightarrow \textsl{rot}(y)\bigr)\bigr)$
-\item $f_4 := \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{glücklich}(x)\bigr)$
+\item $f_1 := \forall x: \Bigl(\forall y: \big(\textsl{child}(y,x) \rightarrow \textsl{flies}(y)\big) \rightarrow \textsl{happy}(x)\Bigr)$
+\item $f_2 := \forall x: \bigl(\textsl{red}(x) \rightarrow \textsl{flies}(x)\bigr)$
+\item $f_3 := \forall x: \bigl(\textsl{red}(x) \rightarrow \forall y:\bigl( \textsl{child}(y,x) \rightarrow \textsl{red}(y)\bigr)\bigr)$
+\item $f_4 := \forall x: \bigl(\textsl{red}(x) \rightarrow \textsl{happy}(x)\bigr)$
 \end{enumerate}
 We want to show that the formula 
 \\[0.2cm]
@@ -3368,14 +3368,14 @@ and $\neg f_4$ into clauses separately.
 \item The formula $f_1$ can be transformed as follows:
  $$ 
   \begin{array}{lcl}
-    f_1 & =           & \forall x:\Bigl(\forall y: \big(\textsl{kind}(y,x)
-    \rightarrow \textsl{fliegt}(y)\big) \rightarrow \textsl{glücklich}(x) \Bigr) \\[0.2cm]
-    &\Leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \textsl{kind}(y,x) \rightarrow \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\Leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \neg \textsl{kind}(y,x) \vee \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\Leftrightarrow & \forall x: \Bigl(\exists y: \neg \big( \neg \textsl{kind}(y,x) \vee \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\Leftrightarrow & \forall x: \Bigl( \exists y: \big(\textsl{kind}(y,x) \wedge \neg  \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\Leftrightarrow & \forall x:  \exists y: \Bigl(\big( \textsl{kind}(y,x) \wedge \neg  \textsl{fliegt}(y)\big) \vee \textsl{glücklich}(x) \Bigr)\\[0.2cm]
-    &\approx_e & \forall x: \Bigl(\big( \textsl{kind}(s(x),x) \wedge \neg  \textsl{fliegt}(s(x))\big) \vee \textsl{glücklich}(x) \Bigr)\\
+    f_1 & =           & \forall x:\Bigl(\forall y: \big(\textsl{child}(y,x)
+    \rightarrow \textsl{flies}(y)\big) \rightarrow \textsl{happy}(x) \Bigr) \\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \textsl{child}(y,x) \rightarrow \textsl{flies}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \neg \textsl{child}(y,x) \vee \textsl{flies}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl(\exists y: \neg \big( \neg \textsl{child}(y,x) \vee \textsl{flies}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl( \exists y: \big(\textsl{child}(y,x) \wedge \neg  \textsl{flies}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x:  \exists y: \Bigl(\big( \textsl{child}(y,x) \wedge \neg  \textsl{flies}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\approx_e & \forall x: \Bigl(\big( \textsl{child}(s(x),x) \wedge \neg  \textsl{flies}(s(x))\big) \vee \textsl{happy}(x) \Bigr)\\
   \end{array}
      $$
       In the last step, we have introduced the Skolem function $s$ with 
@@ -3384,53 +3384,53 @@ and $\neg f_4$ into clauses separately.
       If we distribute the "or" in the matrix of this formula,
       we obtain the following two clauses:
       \\[0.2cm]
-      \hspace*{1.3cm} $k_1 := \bigl\{ \textsl{kind}(s(x),x), \textsl{glücklich}(x) \bigl\}$,   \\[0.2cm]
-      \hspace*{1.3cm} $k_2 := \bigl\{ \neg \textsl{fliegt}(s(x)), \textsl{glücklich}(x) \bigl\}$. 
+      \hspace*{1.3cm} $k_1 := \bigl\{ \textsl{child}(s(x),x), \textsl{happy}(x) \bigl\}$,   \\[0.2cm]
+      \hspace*{1.3cm} $k_2 := \bigl\{ \neg \textsl{flies}(s(x)), \textsl{happy}(x) \bigl\}$. 
 \item Similarly, for $f_2$ we find:
  $$
         \begin{array}{lcl}
-            f_2 & =  & \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{fliegt}(x) \bigr) \\[0.2cm]
-            & \Leftrightarrow  & \forall x: \bigl(\neg \textsl{rot}(x) \vee \textsl{fliegt}(x) \bigr)
+            f_2 & =  & \forall x: \bigl(\textsl{red}(x) \rightarrow \textsl{flies}(x) \bigr) \\[0.2cm]
+            & \Leftrightarrow  & \forall x: \bigl(\neg \textsl{red}(x) \vee \textsl{flies}(x) \bigr)
         \end{array}
       $$ 
       Thus, $f_2$ is equivalent to the following clause: \\[0.2cm]
-      \hspace*{1.3cm} $k_3 := \bigl\{ \neg \textsl{rot}(x), \textsl{fliegt}(x) \bigl\}$.
+      \hspace*{1.3cm} $k_3 := \bigl\{ \neg \textsl{red}(x), \textsl{flies}(x) \bigl\}$.
 \item For $f_3$, we see:
  $$
         \begin{array}{lcl}
-          f_3 & =          & \forall x: \Bigl(\textsl{rot}(x) \rightarrow 
-                             \forall y: \bigl(\textsl{kind}(y,x) \rightarrow \textsl{rot}(y)\bigr) \Bigr) \\
-          &\Leftrightarrow & \forall x: \Bigl(\neg \textsl{rot}(x) \vee 
-                             \forall y: \bigl(\neg \textsl{kind}(y,x) \vee \textsl{rot}(y)\bigr)\Bigr) \\
-          &\Leftrightarrow & \forall x: \forall y: \bigl(\neg \textsl{rot}(x) \vee \neg \textsl{kind}(y,x) \vee \textsl{rot}(y)\bigr) \\
+          f_3 & =          & \forall x: \Bigl(\textsl{red}(x) \rightarrow 
+                             \forall y: \bigl(\textsl{child}(y,x) \rightarrow \textsl{red}(y)\bigr) \Bigr) \\
+          &\Leftrightarrow & \forall x: \Bigl(\neg \textsl{red}(x) \vee 
+                             \forall y: \bigl(\neg \textsl{child}(y,x) \vee \textsl{red}(y)\bigr)\Bigr) \\
+          &\Leftrightarrow & \forall x: \forall y: \bigl(\neg \textsl{red}(x) \vee \neg \textsl{child}(y,x) \vee \textsl{red}(y)\bigr) \\
         \end{array}
       $$
      This yields the following clause: \\[0.2cm]
-     \hspace*{1.3cm} $ k_4 := \bigl\{ \neg \textsl{rot}(x), \neg \textsl{kind}(y,x), \textsl{rot}(y)\bigl\}$.
+     \hspace*{1.3cm} $ k_4 := \bigl\{ \neg \textsl{red}(x), \neg \textsl{child}(y,x), \textsl{red}(y)\bigl\}$.
 \item Transforming the negation of $f_4$ gives:
  $$
         \begin{array}{lcl}
-         \neg f_4 & =      & \neg \forall x: \bigl(\textsl{rot}(x) \rightarrow \textsl{glücklich}(x)\bigr) 
+         \neg f_4 & =      & \neg \forall x: \bigl(\textsl{red}(x) \rightarrow \textsl{happy}(x)\bigr) 
          \\[0.2cm]
-                  & \Leftrightarrow & \neg \forall x: \bigl(\neg \textsl{rot}(x) \vee \textsl{glücklich}(x) \bigr) \\
-                  & \Leftrightarrow & \exists x: \neg \bigl(\neg \textsl{rot}(x) \vee \textsl{glücklich}(x) \bigr) \\
-                  & \Leftrightarrow & \exists x: \bigl(\textsl{rot}(x) \wedge \neg \textsl{glücklich}(x) \bigr)\\
-                  & \approx_e & \textsl{rot}(d) \wedge \neg \textsl{glücklich}(d) \bigr)\\
+                  & \Leftrightarrow & \neg \forall x: \bigl(\neg \textsl{red}(x) \vee \textsl{happy}(x) \bigr) \\
+                  & \Leftrightarrow & \exists x: \neg \bigl(\neg \textsl{red}(x) \vee \textsl{happy}(x) \bigr) \\
+                  & \Leftrightarrow & \exists x: \bigl(\textsl{red}(x) \wedge \neg \textsl{happy}(x) \bigr)\\
+                  & \approx_e & \textsl{red}(d) \wedge \neg \textsl{happy}(d) \bigr)\\
         \end{array}
       $$
       The Skolem constant $d$ introduced here stands for an unhappy red dragon.
       This leads to the following two clauses: \\[0.2cm]
-      \hspace*{1.3cm} $k_5 = \bigl\{ \textsl{rot}(d) \bigl\}$, \\[0.2cm]
-      \hspace*{1.3cm} $k_6 = \bigl\{ \neg \textsl{glücklich}(d) \bigl\}$.
+      \hspace*{1.3cm} $k_5 = \bigl\{ \textsl{red}(d) \bigl\}$, \\[0.2cm]
+      \hspace*{1.3cm} $k_6 = \bigl\{ \neg \textsl{happy}(d) \bigl\}$.
 \end{enumerate}
 Therefore, we have to investigate whether the set $M$, which consists of the following clauses, is contradictory:
 \begin{enumerate}
-\item $k_1 = \bigl\{ \textsl{kind}(s(x),x),\; \textsl{glücklich}(x) \bigl\}$  
-\item $k_2 = \bigl\{ \neg \textsl{fliegt}(s(x)),\; \textsl{glücklich}(x) \bigl\}$
-\item $k_3 = \bigl\{ \neg \textsl{rot}(x),\; \textsl{fliegt}(x) \bigl\}$
-\item $k_4 = \bigl\{ \neg \textsl{rot}(x),\; \neg \textsl{kind}(y,x),\; \textsl{rot}(y) \bigl\}$
-\item $k_5 = \bigl\{ \textsl{rot}(d) \bigl\}$ 
-\item $k_6 = \bigl\{ \neg \textsl{glücklich}(d) \bigl\}$
+\item $k_1 = \bigl\{ \textsl{child}(s(x),x),\; \textsl{happy}(x) \bigl\}$  
+\item $k_2 = \bigl\{ \neg \textsl{flies}(s(x)),\; \textsl{happy}(x) \bigl\}$
+\item $k_3 = \bigl\{ \neg \textsl{red}(x),\; \textsl{flies}(x) \bigl\}$
+\item $k_4 = \bigl\{ \neg \textsl{red}(x),\; \neg \textsl{child}(y,x),\; \textsl{red}(y) \bigl\}$
+\item $k_5 = \bigl\{ \textsl{red}(d) \bigl\}$ 
+\item $k_6 = \bigl\{ \neg \textsl{happy}(d) \bigl\}$
 \end{enumerate}
 In order to do this, define $M := \bigl\{k_1,k_2,k_3,k_4,k_5,k_6\bigl\}$.
 We will show that $M \vdash \falsum$ holds:
@@ -3438,55 +3438,55 @@ We will show that $M \vdash \falsum$ holds:
 \item It holds that
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{mgu}\bigl(\textsl{rot}(d), \textsl{rot}(x)\bigr) = [x \mapsto d]$.
+      $\mathtt{mgu}\bigl(\textsl{red}(d), \textsl{red}(x)\bigr) = [x \mapsto d]$.
       \\[0.2cm]
       Therefore, we can apply the resolution rule to the clauses $k_5$ and $k_4$ as follows:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\bigl\{\textsl{rot}(d)\bigl\}$, \ $\bigl\{\neg \textsl{rot}(x), \neg \textsl{kind}(y,x), \textsl{rot}(y)\bigl\}$ \ $\vdash$ \ $\bigl\{\neg \textsl{kind}(y,d), \textsl{rot}(y)\bigl\}$.
+      $\bigl\{\textsl{red}(d)\bigl\}$, \ $\bigl\{\neg \textsl{red}(x), \neg \textsl{child}(y,x), \textsl{red}(y)\bigl\}$ \ $\vdash$ \ $\bigl\{\neg \textsl{child}(y,d), \textsl{red}(y)\bigl\}$.
 \item We now apply the resolution rule to the resulting clause and the clause $k_1$. For this, we first compute
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{mgu}\bigl(\textsl{kind}(y,d), \textsl{kind}(s(x),x)\bigr) = 
+      $\mathtt{mgu}\bigl(\textsl{child}(y,d), \textsl{child}(s(x),x)\bigr) = 
        [y \mapsto s(d), x \mapsto d]$.
       \\[0.2cm]
       Then we have
       \\[0.2cm]
       \hspace*{1.3cm}
-       $\bigl\{\neg \textsl{kind}(y,d), \textsl{rot}(y)\bigl\}$, \ 
-       $\bigl\{\textsl{kind}(s(x),x), \textsl{glücklich}(x)\bigl\}$ \ $\vdash$ \ 
-       $\bigl\{\textsl{glücklich}(d), \textsl{rot}(s(d))\bigl\}$.
+       $\bigl\{\neg \textsl{child}(y,d), \textsl{red}(y)\bigl\}$, \ 
+       $\bigl\{\textsl{child}(s(x),x), \textsl{happy}(x)\bigl\}$ \ $\vdash$ \ 
+       $\bigl\{\textsl{happy}(d), \textsl{red}(s(d))\bigl\}$.
 \item Now we apply the resolution rule to the derived clause and the clause $k_6$. We have:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{mgu}\bigl(\textsl{glücklich}(d), \textsl{glücklich}(d)\bigr) = []$
+      $\mathtt{mgu}\bigl(\textsl{happy}(d), \textsl{happy}(d)\bigr) = []$
       \\[0.2cm]
       Thus, we obtain
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\bigl\{\textsl{glücklich}(d), \textsl{rot}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{glücklich}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{rot}(s(d))\bigl\}$.
-\item We apply the resolution rule to the clause $\bigl\{\textsl{rot}(s(d))\bigl\}$ and the clause $k_3$. First, we have
+      $\bigl\{\textsl{happy}(d), \textsl{red}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{happy}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{red}(s(d))\bigl\}$.
+\item We apply the resolution rule to the clause $\bigl\{\textsl{red}(s(d))\bigl\}$ and the clause $k_3$. First, we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{mgu}\bigl(\textsl{rot}(s(d)), \textsl{rot}(x)\bigr) = [x \mapsto s(d)]$
+      $\mathtt{mgu}\bigl(\textsl{red}(s(d)), \textsl{red}(x)\bigr) = [x \mapsto s(d)]$
       \\[0.2cm]
       Thus, the application of the resolution rule yields:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\bigl\{\textsl{rot}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{rot}(x), \textsl{fliegt}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{fliegt}(s(d))\bigl\}$.
-\item To resolve the clause $\bigl\{\textsl{fliegt}(s(d))\bigl\}$ with the clause $k_2$, we compute
+      $\bigl\{\textsl{red}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{red}(x), \textsl{flies}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{flies}(s(d))\bigl\}$.
+\item To resolve the clause $\bigl\{\textsl{flies}(s(d))\bigl\}$ with the clause $k_2$, we compute
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{mgu}\bigl(\textsl{fliegt}(s(d)), \textsl{fliegt}(s(x))\bigr) = [x \mapsto d]$
+      $\mathtt{mgu}\bigl(\textsl{flies}(s(d)), \textsl{flies}(s(x))\bigr) = [x \mapsto d]$
       \\[0.2cm]
       Then, the resolution rule gives
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\bigl\{\textsl{fliegt}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{fliegt}(s(x)), \textsl{glücklich}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{glücklich}(d)\bigl\}$.
-\item We now apply the resolution rule to the result $\bigl\{\textsl{glücklich}(d)\bigl\}$ and the clause $k_6$:
+      $\bigl\{\textsl{flies}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{flies}(s(x)), \textsl{happy}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{happy}(d)\bigl\}$.
+\item We now apply the resolution rule to the result $\bigl\{\textsl{happy}(d)\bigl\}$ and the clause $k_6$:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\bigl\{\textsl{glücklich}(d)\bigl\}$, \ $\bigl\{\neg \textsl{glücklich}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\bigl\}$.
+      $\bigl\{\textsl{happy}(d)\bigl\}$, \ $\bigl\{\neg \textsl{happy}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\bigl\}$.
 \end{enumerate}
 Since we obtained the empty clause in the last step, we have proven that $M \vdash \falsum$, and thus we have
 shown that all communist dragons are happy. 
@@ -3510,7 +3510,7 @@ Given the following axioms:
 These two axioms have a truly surprising consequence: Using only these axioms,  show that all barbers are
 gay. \eox 
 
-\section{Vampire}
+\section{Vampire \index{Vampire}}
 The logical calculus described in the last section can be automated and forms the basis of modern
 automatic provers.  This section presents the theorem prover \href{https://vprover.github.io}{Vampire}
 \cite{kovacs:2013}.  We introduce this theorem prover via a small example from group theory.
@@ -3761,71 +3761,38 @@ successful.  Hence we have shown again that Agatha committed suicide.
 \end{figure}
 
 
-\section{\textsl{Prover9} und \textsl{Mace4}$^*$}
-Der im letzten Abschnitt beschriebene Kalkül lässt sich automatisieren und bildet die Grundlage moderner
-automatischer Beweiser.  Gleichzeitig lässt sich auch die Suche nach Gegenbeispielen automatisieren.
-Wir stellen in diesem Abschnitt zwei Systeme vor, die diesen Zwecken dienen.
+\section{\textsl{Prover9} and \textsl{Mace4}$^*$}
+The deductive system described in the last section can be automated and forms the basis of modern automatic
+provers. At the same time, the search for counterexamples can also be automated. In this section, we introduce
+two systems that serve these purposes. 
 \begin{enumerate}
-\item \textsl{Prover9} dient dazu, automatisch prädikatenlogische Formeln zu beweisen.
-\item \textsl{Mace4} untersucht, ob eine gegebene Menge prädikatenlogischer Formeln in einer endlichen
-  Struktur erfüllbar ist.  Gegebenenfalls wird diese Struktur berechnet.
+\item \textsl{Prover9} is used to automatically prove first-order logic formulas.
+\item \textsl{Mace4} examines whether a given set of first-order logic formulas is satisfiable in a finite
+      structure. If so, this structure is computed. 
 \end{enumerate}
-Die beiden Programme \textsl{Prover9} und \textsl{Mace4} wurden von William McCune \cite{mccune:2010} 
-entwickelt, stehen unter der \href{http://www.gnu.org/licenses/gpl.html}{GPL} (\emph{Gnu General
-  Public Licence}) und können unter der Adresse 
+The two programs, \textsl{Prover9} and \textsl{Mace4}, were developed by William McCune \cite{mccune:2010}, are
+available under the \href{http://www.gnu.org/licenses/gpl.html}{GPL} (\emph{GNU General Public License}), and
+can be downloaded in source code form from 
 \\[0.2cm]
 \hspace*{1.3cm}
 \href{http://www.cs.unm.edu/~mccune/prover9/download/}{\mytt{http://www.cs.unm.edu/\symbol{126}mccune/prover9/download/}}
 \\[0.2cm]
-im Quelltext heruntergeladen werden.  Wir diskutieren zunächst \textsl{Prover9} und schauen uns anschließend
-\textsl{Mace4} an.
+First, we will discuss \textsl{Prover9} and then look at \textsl{Mace4}.
 
-\subsection{Der automatische Beweiser \textsl{Prover9}}
-\textsl{Prover9} ist ein Programm, das als Eingabe zwei Mengen von Formeln bekommt.  Die erste Menge von
-Formeln wird als Menge von \emph{Axiomen} interpretiert, die zweite Menge von Formeln sind die zu
-beweisenden \emph{Thereme}, die aus den Axiomen gefolgert werden sollen.  Wollen wir beispielsweise zeigen,
-dass in der Gruppen-Theorie aus der Existenz eines  links-inversen Elements auch die Existenz eines
-rechts-inversen Elements folgt und dass außerdem das links-neutrale Element auch rechts-neutral ist,
-so können wir zunächst die Gruppen-Theorie wie folgt axiomatisieren:
+\subsection{The Automatic Prover \textsl{Prover9}}
+\textsl{Prover9} is a program that takes two sets of formulas as input. The first set of formulas is interpreted as a set of \emph{axioms}, and the second set of formulas are the \emph{theorems} to be proven from the axioms. For example, if we want to show that in group theory, the existence of a left-inverse element implies the existence of a right-inverse element, and that the left-neutral element is also right-neutral, we can axiomatize group theory as follows:
 \begin{enumerate}
 \item $\forall x: e \cdot x = x$,
 \item $\forall x: \exists y: y \cdot x = e$,
 \item $\forall x: \forall y: \forall z: (x \cdot y) \cdot z = x \cdot (y \cdot z)$.
 \end{enumerate}
-Wir müssen nun zeigen, dass aus diesen Axiomen die beiden Formeln
+We must now show that these axioms logically imply the two formulas
 \\[0.2cm]
 \hspace*{1.3cm}
-$\forall x: x \cdot e = x$ \quad und \quad $\forall x: \exists y: y \cdot x = e$ 
+$\forall x: x \cdot e = x$ \quad and \quad $\forall x: \exists y: x \cdot y = e$.
 \\[0.2cm]
-logisch folgen.  Wir können diese Formeln wie in Abbildung \ref{fig:group2.in} auf Seite
-\pageref{fig:group2.in} gezeigt für \textsl{Prover9} darstellen.
-Der Anfang der Axiome wird in dieser Datei durch ``\mytt{formulas(sos)}'' eingeleitet und durch
-das Schlüsselwort ``\mytt{end\_of\_list}'' beendet.  Zu beachten ist, dass sowohl die Schlüsselwörter als
-auch die einzelnen Formel jeweils durch einen Punkt ``\mytt{.}'' beendet werden.  Die Axiome in den Zeilen
-2, 3, und 4 drücken aus, dass 
-\begin{enumerate}
-\item \mytt{e} ein links-neutrales Element ist,
-\item zu jedem Element $x$ ein links-inverses Element $y$ existiert und
-\item das Assoziativ-Gesetz gilt.
-\end{enumerate}
-Aus diesen Axiomen folgt, dass das \mytt{e} auch ein rechts-neutrales Element ist und dass außerdem zu
-jedem Element $x$ ein rechts-neutrales Element $y$ existiert.  Diese beiden  Formeln sind die zu beweisenden 
-\blue{Ziele} und werden in der Datei durch ``\mytt{formulas}(goal)'' markiert.
-Trägt die in Abbildung \ref{fig:group2.in} gezeigte Datei den Namen ``\mytt{group2.in}'', so können wir das
-Programm \textsl{Prover9} mit dem Befehl 
-\\[0.2cm]
-\hspace*{1.3cm}
-\mytt{prover9 -f group2.in}
-\\[0.2cm]
-starten und erhalten als Ergebnis die Information, dass die beiden in Zeile 8 und 9 gezeigten Formeln
-tatsächlich aus den vorher angegebenen Axiomen folgen.  Ist eine Formel nicht beweisbar, so gibt es zwei Möglichkeiten:
-In bestimmten Fällen kann \textsl{Prover9} tatsächlich erkennen, dass ein Beweis unmöglich ist.  In
-diesem Fall bricht das Programm die Suche nach einem Beweis mit einer entsprechenden Meldung ab.
-Wenn die Dinge ungünstig liegen, ist es auf Grund der Unentscheidbarkeit der Prädikatenlogik nicht
-möglich zu erkennen, dass die Suche nach einem Beweis scheitern muss.  In einem solchen Fall
-läuft das Programm solange weiter, bis kein freier Speicher mehr zur Verfügung steht und
-bricht dann mit einer Fehlermeldung ab.
-
+We can represent these formulas for \textsl{Prover9} as shown in Figure \ref{fig:group2.in} on page
+\pageref{fig:group2.in}. 
 
 \begin{figure}[!ht]
 \centering
@@ -3850,24 +3817,47 @@ bricht dann mit einer Fehlermeldung ab.
     end_of_list.
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Textuelle Darstellung der Axiome der Gruppentheorie.}
+\caption{The axioms of group theory given in the syntax of Prover9.}
 \label{fig:group2.in}
 \end{figure}
 
 
-\textsl{Prover9} versucht, einen indirekten Beweis zu führen.  Zunächst werden die Axiome in
-prädikatenlogische Klauseln 
-überführt. Dann wird jedes zu beweisenden Theorem negiert und die negierte Formel wird ebenfalls in 
-Klauseln überführt.  Anschließend versucht \textsl{Prover9} aus der Menge aller Axiome zusammen mit den
-Klauseln, die sich aus der Negation eines der zu beweisenden Theoreme ergeben, die leere
-Klausel herzuleiten.  Gelingt dies, so ist bewiesen, dass das jeweilige  Theorem tatsächlich aus den Axiomen
-folgt.   Abbildung \ref{fig:group-commutative.in} zeigt eine
-Eingabe-Datei für \textsl{Prover9}, bei der versucht wird, das Kommutativ-Gesetz aus den Axiomen der
-Gruppentheorie zu folgern.  Der Beweis-Versuch mit \textsl{Prover9} schlägt allerdings fehl.  In diesem Fall
-wird die Beweissuche nicht endlos fortgesetzt.  Dies liegt daran, dass es \textsl{Prover9} gelingt, in
-endlicher Zeit alle aus den gegebenen Voraussetzungen folgenden Formeln abzuleiten.
-Leider ist ein solcher Fall eher die Ausnahme als die Regel.
+The beginning of the axioms in this file is indicated by ``\mytt{formulas(sos)}'' and ends with the keyword
+``\mytt{end\_of\_list}.'' Note that both the keywords and each formula are terminated by a period ``\mytt{.}''.
+The axioms in lines 2, 3, and 4 express that: 
+\begin{enumerate}
+\item \mytt{e} is a left-neutral element,
+\item for every element $x$, there exists a left-inverse element $y$, and
+\item the associative law holds.
+\end{enumerate}
+From these axioms, it follows that \mytt{e} is also a right-neutral element and that for every element $x$,
+there exists a right-inverse element $y$. These two formulas are the \blue{goals} to be proven and are marked
+in the file by ``\mytt{formulas(goal)}.'' 
+If the file shown in Figure \ref{fig:group2.in} is named ``\mytt{group2.in},'' we can run the \textsl{Prover9}
+program with the command 
+\\[0.2cm]
+\hspace*{1.3cm}
+\mytt{prover9 -f group2.in}
+\\[0.2cm]
+and obtain the information that the two formulas shown in lines 8 and 9 do indeed follow from the previously
+given axioms. If a formula cannot be proven, there are two possibilities: In certain cases, \textsl{Prover9}
+can actually recognize that a proof is impossible. In this case, the program stops the search for a proof with
+a corresponding message. If the situation is unfavorable, due to the undecidability of first-order logic, it is
+not possible to recognize that the search for a proof must fail. In such a case, the program runs until no more
+memory is available and then terminates with an error message. 
 
+
+\textsl{Prover9} attempts to conduct an indirect proof. First, the axioms are converted into first-order logic
+clauses. Then, each theorem to be proven is negated, and the negated formula is also converted into
+clauses. Subsequently, \textsl{Prover9} attempts to derive the empty clause from the set of all axioms along
+with the clauses resulting from the negation of one of the theorems to be proven. If this succeeds, it is
+proven that the respective theorem indeed follows from the axioms. Figure \ref{fig:group-commutative.in} shows
+an input file for \textsl{Prover9}, in which an attempt is made to deduce the commutative law from the axioms
+of group theory. However, the proof attempt with \textsl{Prover9} fails. In this case, the proof search is not
+continued indefinitely. This is because \textsl{Prover9} manages to derive all formulas that follow from the
+given premises in finite time. Unfortunately, such a case is the exception.  Most of the time \textsl{Prover9}
+will abort the attempt because it runs out of memory. 
+ 
 \begin{figure}[!ht]
 \centering
 \begin{Verbatim}[ frame         = lines, 
@@ -3890,32 +3880,29 @@ Leider ist ein solcher Fall eher die Ausnahme als die Regel.
     end_of_list.
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Gilt das Kommutativ-Gesetz in allen Gruppen?}
+\caption{Does the commutative law apply to all groups?}
 \label{fig:group-commutative.in}
 \end{figure}
 
 
 \subsection{\textsl{Mace4} }
-Dauert ein Beweisversuch  mit \textsl{Prover9} endlos, so ist zunächst nicht klar, ob das zu beweisende
-Theorem gilt.  Um sicher zu sein, 
-dass eine Formel nicht aus einer gegebenen Menge von Axiomen folgt, reicht es aus, eine Struktur zu
-konstruieren, in der alle Axiome erfüllt sind, in der das zu beweisende Theorem aber falsch ist.
-Das Programm \textsl{Mace4} dient genau dazu, solche Strukturen zu finden.  Das funktioniert natürlich nur,
-solange die Strukturen endlich sind.  Abbildung \ref{fig:group.in} zeigt eine Eingabe-Datei, mit deren Hilfe
-wir die Frage, ob es endliche nicht-kommutative Gruppen gibt, unter Verwendung von \textsl{Mace4} beantworten
-können.  In den Zeilen 2, 3 und 4 stehen die Axiome der Gruppen-Theorie.  Die Formel in Zeile 5 postuliert,
-dass für die beiden Elemente $a$ und $b$ das Kommutativ-Gesetz nicht gilt, dass also $a \cdot b \not= b \cdot
-a$ ist.  Ist der in 
-Abbildung \ref{fig:group.in} gezeigte Text in einer Datei mit dem Namen ``\textsl{group.in}'' gespeichert, so
-können wir \textsl{Mace4} durch das Kommando
+If a proof attempt with \textsl{Prover9} takes forever, it is unclear whether the theorem to be
+proven holds. To be sure that a formula does not follow from a given set of axioms, it is sufficient to
+construct a $\Sigma$-structure in which all the axioms are satisfied, but the theorem to be proven is false. The program
+\textsl{Mace4} is specifically designed to find such structures. This, of course, only works as long as the
+structures are finite. Figure \ref{fig:group.in} shows an input file that we can use to answer the question of
+whether finite non-commutative groups exist using \textsl{Mace4}. Lines 2, 3, and 4 contain the axioms of group
+theory. The formula in line 5 postulates that for the two elements $a$ and $b$, the commutative law does not
+hold, that is, $a \cdot b \not= b \cdot a$. If the text shown in Figure \ref{fig:group.in} is saved in a file
+named ``\textsl{group.in}'', we can start \textsl{Mace4} with the command 
 \\[0.2cm]
 \hspace*{1.3cm}
 \textsl{mace4 -f group.in}
 \\[0.2cm]
-starten.  \textsl{Mace4} sucht für alle positiven natürlichen  Zahlen $n=1,2,3,\cdots$, ob es eine Struktur 
-$\mathcal{S} = \langle \mathcal{U}, \mathcal{J} \rangle$ mit $\textsl{card}(U) = n$ gibt, in der die
-angegebenen Formeln gelten.  Bei $n=6$ wird \textsl{Mace4} fündig und berechnet tatsächlich eine Gruppe mit 6
-Elementen, in der das Kommutativ-Gesetz verletzt ist.
+\textsl{Mace4} searches for all positive natural numbers $n=1,2,3,\cdots$, to see if there is a $\Sigma$-structure \linebreak
+$\mathcal{S} = \langle \mathcal{U}, \mathcal{J} \rangle$ with $\textsl{card}(U) = n$ in which the specified
+formulas hold. For $n=6$, \textsl{Mace4} succeeds and indeed computes a group with 6 elements in which the
+commutative law is violated. 
 
 \begin{figure}[!ht]
 \centering
@@ -3936,18 +3923,15 @@ Elementen, in der das Kommutativ-Gesetz verletzt ist.
     end_of_list.
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Gibt es eine Gruppe, in der das Kommutativ-Gesetz nicht gilt?}
+\caption{Is there a non-commutative group?}
 \label{fig:group.in}
 \end{figure}
 
-
-Abbildung \ref{fig:group.out} zeigt einen Teil der von \textsl{Mace4} produzierten Ausgabe.
-Die Elemente der Gruppe sind die Zahlen $0, \cdots, 5$, die Konstante $a$ ist das Element $0$,
-$b$ ist das Element $1$, $e$ ist das Element $2$.  Weiter sehen wir, dass das Inverse von $0$ wieder $0$ ist,
-das Inverse von $1$ ist $1$ das Inverse von $2$ ist $2$, das Inverse von $3$ ist $4$, das Inverse von $4$ ist
-$3$ und das Inverse von $5$ ist $5$.  Die Multiplikation wird durch die folgende Gruppen-Tafel realisiert:
-\\[0.2cm]
-\hspace*{1.3cm}
+Figure \ref{fig:group.out} shows a part of the output produced by \textsl{Mace4}. The elements of the group are
+the numbers $0, \cdots, 5$, the constant $a$ is the element $0$, $b$ is the element $1$, and $e$ is the element
+$2$. Furthermore, we see that the inverse of $0$ is $0$, the inverse of $1$ is $1$, the inverse of $2$ is $2$,
+the inverse of $3$ is $4$, the inverse of $4$ is $3$, and the inverse of $5$ is $5$. The multiplication is
+realized by the following group table: 
 \hspace*{1.3cm}
 \begin{tabular}[t]{|l||l|l|l|l|l|l|}
 \hline
@@ -3968,13 +3952,14 @@ $\circ$ & 0 & 1 & 2 & 3 & 4 & 5 \\
 \hline
 \end{tabular}
 \\[0.2cm]
-Diese Gruppen-Tafel zeigt, dass
+This group table shows that
 \\[0.2cm]
 \hspace*{1.3cm}
-$a \circ b = 0 \circ 1 = 3$, \quad aber \quad
-$b \circ a = 1 \circ 0 = 4$
+$a \circ b = 0 \circ 1 = 3$, \quad but \quad
+$b \circ a = 1 \circ 0 = 4$.
 \\[0.2cm]
-gilt, mithin ist das Kommutativ-Gesetz tatsächlich verletzt.
+Therefore, the commutative law is indeed violated.
+
 
 \begin{figure}[!ht]
 \centering
@@ -4015,52 +4000,50 @@ gilt, mithin ist das Kommutativ-Gesetz tatsächlich verletzt.
     ============================== end of model ==========================
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{Ausgabe von \textsl{Mace4}.}
+\caption{Output of \textsl{Mace4}.}
 \label{fig:group.out}
 \end{figure}
-
-\remark
-Der Theorem-Beweiser \textsl{Prover9} ist ein Nachfolger des Theorem-Beweisers \textsl{Otter}.  Mit Hilfe von
-\textsl{Otter} ist es William McCune 1996 gelungen, die Robbin'sche Vermutung zu beweisen \cite{mccune:1997}.
-Dieser Beweis war damals sogar der \href{http://www.nytimes.com/}{New York Times} eine Schlagzeile wert,
-nachzulesen unter
+\remarkEng
+The theorem prover \textsl{Prover9} is a successor of the theorem prover \textsl{Otter}. With the help of
+\textsl{Otter}, William McCune succeeded in proving the Robbins conjecture in 1996 \cite{mccune:1997}. This
+proof was even featured in the \href{http://www.nytimes.com/}{New York Times} headline, which can be read at 
 \\[0.2cm]
 \hspace*{1.3cm}
 \href{http://www.nytimes.com/library/cyber/week/1210math.html}{\mytt{http://www.nytimes.com/library/cyber/week/1210math.html}}.
 \\[0.2cm]
-Dies zeigt, dass \href{https://en.wikipedia.org/wiki/Automated_theorem_proving}{automatische Theorem-Beweiser}
-durchaus nützliche Werkzeuge sein können.  Nichtsdestoweniger ist die Prädikatenlogik unentscheidbar und bisher
-sind  nur wenige offene mathematische Probleme mit Hilfe von automatischen Beweisern gelöst worden.  Das wird
-sich vermutlich auch in der näheren Zukunft nicht ändern.  \eox
+This shows that \href{https://en.wikipedia.org/wiki/Automated_theorem_proving}{automated theorem provers} can
+indeed be useful tools. Nevertheless, first-order logic is undecidable, and so far, only a few open
+mathematical problems have been solved with the help of automated provers.  It remains to be seen whether this
+will change in the future.
+\eox
 \pagebreak
 
-\section{Reflexion}
+\section{Check Your Comprehension}
 \begin{enumerate}
-\item Was ist eine \blue{Signatur}?
-\item Wie haben wir die Menge $\mathcal{T}_\Sigma$ der \blue{$\Sigma$-Terme} definiert?
-\item Was ist eine \blue{atomare} Formel?
-\item Wie haben wir die Menge $\mathbb{F}_\Sigma$ der \blue{$\Sigma$-Formeln} definiert?
-\item Was ist eine \blue{$\Sigma$-Struktur}?
-\item Es sei $\mathcal{S}$ eine  $\Sigma$-Struktur.  Wie haben wir den Begriff der
-      \blue{$\mathcal{S}$-Variablen-Belegung} definiert?
-\item Wie haben wir die Semantik von $\Sigma$-Formeln definiert?
-\item Wann ist eine prädikatenlogische Formel \blue{allgemeingültig}?
-\item Was bedeutet die Schreibweise \blue{$\mathcal{S} \models F$} für eine $\Sigma$-Struktur $\mathcal{S}$ und eine
-      $\Sigma$-Formel $F$?
-\item Wann ist eine Menge von prädikatenlogischen Formeln \blue{unerfüllbar}?
-\item Was ist ein \blue{Constraint Satisfaction Problem}?
-\item Wie funktioniert \blue{Backtracking}?
-\item Warum kommt es beim Backtracking auf die Reihenfolge an, in der die verschiedenen Variablen instantiiert
-      werden?
-\item Was sind \blue{prädikatenlogische Klauseln} und welche Schritte müssen wir durchführen, um eine gegebene
-      prädikatenlogische Formel in eine erfüllbarkeits-äquivalente Menge von Klauseln zu überführen?
-\item Was ist eine \blue{Substitution}?
-\item Was ist ein \blue{Unifikator}?
-\item Geben Sie die Regeln von \blue{Martelli und Montanari} an!
-\item Wie ist die \blue{Resolutions-Regel} definiert und warum ist es eventuell erforderlich, Variablen umzubenennen,
-      bevor die Resolutions-Regel angewendet werden kann?
-\item Was ist die \blue{Faktorisierungs-Regel}?
-\item Wie gehen wir vor, wenn wir die Allgemeingültigkeit einer prädikatenlogischen Formel $f$ nachweisen wollen?
+\item What is a \textcolor{blue}{signature}?
+\item How did we define the set $\mathcal{T}_\Sigma$ of \textcolor{blue}{$\Sigma$-terms}?
+\item Define \textcolor{blue}{atomic} formulas!
+\item How did we define the set $\mathbb{F}_\Sigma$ of \textcolor{blue}{$\Sigma$-formulas}?
+\item What is a \textcolor{blue}{$\Sigma$-structure}?
+\item Let $\mathcal{S}$ be a $\Sigma$-structure. How did we define the concept of
+      an \textcolor{blue}{$\mathcal{S}$-variable assignment}?
+\item How did we define the semantics of $\Sigma$-formulas?
+\item When is a first-order logic formula \textcolor{blue}{valid}?
+\item What does the notation \textcolor{blue}{$\mathcal{S} \models F$} mean for a $\Sigma$-structure $\mathcal{S}$ and a
+      $\Sigma$-formula $F$?
+\item When is a set of first-order logic formulas \textcolor{blue}{unsatisfiable}?
+\item What is a \textcolor{blue}{constraint satisfaction problem}?
+\item How does \textcolor{blue}{backtracking} work?
+\item Why does the order in which the different variables are instantiated matter in backtracking?
+\item What are \textcolor{blue}{first-order logic clauses} and what steps must we take to convert a given
+      first-order logic formula into a satisfiability-equivalent set of clauses?
+\item What is a \textcolor{blue}{substitution}?
+\item What is a \textcolor{blue}{unifier}?
+\item State the rules of \textcolor{blue}{Martelli and Montanari}!
+\item How is the \textcolor{blue}{resolution rule} defined and why might it be necessary to rename variables
+      before the resolution rule can be applied?
+\item What is the \textcolor{blue}{factorization rule}?
+\item How do we proceed when we want to prove the validity of a first-order logic formula $f$?
 \end{enumerate}
 
 %%% Local Variables: 
