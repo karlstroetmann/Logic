@@ -371,9 +371,6 @@ of its arguments. \eox
   \label{fig:isqrt}
 \end{figure} 
 
-
-
-
 \exerciseEng
 The \blue{integer square root} of a natural number $n$ is defined as 
 \\[0.2cm]
@@ -382,7 +379,35 @@ $\texttt{isqrt}(n) := \max\bigl(\{ r \in \mathbb{N} \mid r^2 \leq n \}\bigr)$.
 \\[0.2cm]
 Prove that the function \mytt{isqrt} that is shown in Figure \ref{fig:isqrt} on page \pageref{fig:isqrt}
 computes the integer square root of its argument. \eox
+\pagebreak
 
+\exerciseEng
+Figure \ref{fig:square} shows a \textsl{Python} program implementing the function \texttt{square}.  Show that the equation
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{square}(n) = n^2$
+\\[0.2cm]
+holds for every $n \in \mathbb{N}$.  You should use computational induction to verify the claim. \eox
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    def square(n):
+        if n == 0:
+            return 0
+        return square(n-1) + 2 * n - 1 
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{The function \texttt{square}.}
+\label{fig:square}
+\end{figure}
 
 
 
@@ -511,7 +536,7 @@ $y_{n+1} = y_n \dv 2 < y_n$ \quad as long as \quad $y_n > 0$
 \\[0.2cm]
 and therefore $y_n$ must eventually become $0$.  Thus we have proven that
 $\mytt{power}(a,b) =a^b$ holds. \qed
-\pagebreak
+
 
 \subsection{Integer Square Root}
 We continue with another example that demonstrates the method of \blue{symbolic execution}.
@@ -685,6 +710,41 @@ function \mytt{gcd} that is implemented in Figure \ref{fig:gcd.stlx}.
 \vspace*{-0.3cm}
 \caption{The Euclidean algorithm.}
 \label{fig:gcd.stlx}
+\end{figure}
+
+
+\pagebreak
+\exerciseEng
+Figure \ref{fig:square-iterative} shows a \textsl{Python} program implementing the function \texttt{square}.  Show that the equation
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{square}(s) = s^2$
+\\[0.2cm]
+holds for every $s \in \mathbb{N}$.  You should use symbolic execution to verify the claim.
+\eox
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    def square(s):
+        r = 0
+        u = 1
+        while s > 0:
+            r += u
+            u += 2
+            s -= 1
+        return r
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{The function \texttt{square}.}
+\label{fig:square-iterative}
 \end{figure}
 
 
