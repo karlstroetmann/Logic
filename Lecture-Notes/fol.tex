@@ -3601,8 +3601,9 @@ the left identity element $\mathrm{e}$ is also a right identity.  We discuss thi
 \item Line 1 states the axiom $\forall x: \mathrm{e} \circ x = x$.  Every formula is written in the form
       \\[0.2cm]
       \hspace*{1.3cm}
-      \texttt{fof}(\textsl{name}, \textsl{type}, \textsl{formula} \texttt{).}
+      \texttt{fof}(\textsl{name}, \textsl{type}, \textsl{formula}\texttt{).}
       \begin{itemize}
+      \item \texttt{fof} is an abbreviation for \textsl{first-order formula}. 
       \item \textsl{name} is a string giving the name of the formula.  This name can be freely chosen,
             but should contain only letters, digits, and underscores.  Furthermore, it should start with a letter.
       \item \textsl{type} is either the string ``\texttt{axiom}'' or the string ``\texttt{conjecture}''.
@@ -3612,7 +3613,7 @@ the left identity element $\mathrm{e}$ is also a right identity.  We discuss thi
       \end{itemize}
 \item Line 2 states the axiom $\forall x: \exists y: y \circ x = \mathrm{e}$.
 \item Line 3 states the axiom $\forall x: \forall y: \forall z: (x \circ y) \circ z = x \circ (y \circ z)$.
-\item Line 5 states the conjecture $\forall x: x \circ \mathrm{e} = x$.  The keyword \texttt{conjecture}
+\item Line 5 states the conjecture $\forall x: x \circ \mathrm{e} = x$.  The keyword \blue{\texttt{conjecture}}
       signifies that we want to prove this formula.  
 \end{enumerate}
 In order to understand the syntax of \textsl{Vampire} formulas we first have to note that all variables start
@@ -3632,14 +3633,17 @@ operators:
 \item $F\;$\texttt{=>}$\;G$ is interpreted as $F \rightarrow G$.
 \item $F\;$\texttt{<=>}$\;G$ is interpreted as $F \leftrightarrow G$.
 \end{enumerate}
-When the text shown in Figure \ref{fig:group-right-identity.tptp} is stored in a file with the name \texttt{group.tptp},
+When the text shown in Figure \ref{fig:group-right-identity.tptp} is stored in a file with the name \texttt{group-right-identity.tptp},
 then we can invoke \textsl{Vampire} with the following command
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{vampire group.tptp}
+\texttt{vampire group-right-identity.tptp}
 \\[0.2cm]
-This will produce the output shown in Figure \ref{fig:group-right-identity.output}.  If we want to prove that
-the left inverse is also a right inverse we can simply change the last line in Figure
+This will produce the output shown in Figure \ref{fig:group-right-identity.output}.  This output shows that
+\textsl{Vampire} is trying to perform an indirect proof, i.e.~\textsl{Vampire} negates the conjecture and then
+tries to derive a contradiction from the negated conjecture and the axioms.
+
+If we want to prove that the left inverse is also a right inverse we can simply change the last line in Figure
 \ref{fig:group-right-identity.tptp} to
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -3707,9 +3711,13 @@ Next, we solve the following puzzle.
  victim. Charles hates no one that Aunt Agatha hates. Agatha hates everyone
  except the butler. The butler hates everyone not richer than Aunt Agatha. The
  butler hates everyone Aunt Agatha hates. No one hates everyone. Agatha is not
- the butler.}
+ the butler.
+ \vspace*{0.2cm}}
+
 \end{minipage}
 }
+
+
 
 \noindent
 The question then is: Who killed Agatha?  Let us first solve the puzzle by hand.  As there are only three
