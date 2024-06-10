@@ -391,24 +391,58 @@ holds for every $n \in \mathbb{N}$.  You should use computational induction to v
 
 \begin{figure}[!ht]
 \centering
-\begin{Verbatim}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  firstnumber   = 1,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm,
-                ]
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm,
+              ]{python3}
     def square(n):
         if n == 0:
             return 0
         return square(n-1) + 2 * n - 1 
-\end{Verbatim}
+\end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{square}.}
 \label{fig:square}
 \end{figure}
 
+\exerciseEng
+The \href{https://en.wikipedia.org/wiki/Binomial_coefficient}{binomial coefficient} $\ds {n \choose k}$ is defined as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds {n \choose k} = \frac{n!}{k! \cdot (n-k)!}$
+\\[0.2cm]
+Figure \ref{fig:binomial} shows a \textsl{Python} program implementing the function \texttt{binomial}.  Prove
+that 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds \mathtt{binomial}(n, k) = {n \choose k}$
+\\[0.2cm]
+holds for all $n \in \mathbb{N}$ and all $k \in \{ 0, \cdots, n \}$. \eox
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm,
+                ]{python3}
+    def binomial(n, k):
+        if k == 0 or k == n:
+            return 1
+        else:
+            return binomial(n - 1, k - 1) + binomial(n - 1, k)                
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{binomial}.}
+\label{fig:binomial}
+\end{figure}
 
 
 
