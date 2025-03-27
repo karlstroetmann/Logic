@@ -4,6 +4,9 @@ def problem(S):
             ('wolf' in S and 'goat'    in S)   )  # wolf eats goat
 
 All   = frozenset({ 'farmer', 'wolf', 'goat', 'cabbage' })
+States = { S for S in power(All) if not problem(S) and 
+                                    not problem(All - S) 
+         }
 R1    = { (S, S - B) for S in States for B in power(S)
                      if S - B in States and 'farmer' in B and len(B) <= 2
         }
