@@ -137,7 +137,7 @@ by computational induction.
             return 0, m
         q, r = div_mod(m // 2, n)
         if 2 * r + m % 2 < n:
-            return 2 * q, 2 * r + m % 2
+            return 2 * q    , 2 * r + m % 2
         else:
             return 2 * q + 1, 2 * r + m % 2 - n                
 \end{minted}
@@ -164,7 +164,7 @@ $\bar{q}, \bar{r} = \mytt{div\_mod}(m, n)$.
 In order to prove the correctness of \mytt{div\_mod}, we have to show two formulas:
 \begin{align}
 m = \bar{q} \cdot n + \bar{r} \label{divmod1} \\
-\bar{r} < n \label{divmod2}
+\bar{r} < n \hspace*{1.1cm} \label{divmod2}
 \end{align}
 Since \mytt{div\_mod} is defined recursively, the proof of these formulas is done by computational induction.
 \begin{enumerate}
@@ -448,11 +448,10 @@ holds for all $n \in \mathbb{N}$ and all $k \in \{ 0, \cdots, n \}$. \eox
 
 \section{Symbolic Execution}
 In the last chapter we have seen how to prove the correctness of a recursive function via
-\blue{computational induction}.  If a function is implemented via loops instead of recursion, then the method
-of computational induction is not applicable.  Therefore, this section introduces the method of
-\blue{symbolic execution}. \index{symbolic execution}  Using this method it is possible to verify the
-correctness of programs that are implemented in an iterative fashion using loops. 
-We will introduce this method via two  examples.
+\blue{computational induction}.  If a function is implemented iteratively via loops instead of recursively,
+then the method of computational induction is not applicable.   Instead, the method of 
+\blue{symbolic execution} \index{symbolic execution} is then used.
+We introduce this method via two examples.
 
 \subsection{Iterative Squaring}
 In the previous section we have implemented a recursive version of \blue{iterative squaring} and verified its
@@ -518,7 +517,7 @@ This claim is proven by induction on the number of loop iterations.
             Since we have $r_0 = 1$, $x_0 = a$, and $y_0 = b$ we have 
             \\[0.2cm]
             \hspace*{1.3cm}
-            $r_n \cdot x_n^{y_n} = r_0 \cdot x_0^{y_0} = 1 \cdot a^{b} = a^b$.
+            $r_n \cdot x_n^{y_n} = r_0 \cdot x_0^{y_0} = 1 \cdot a^{b} = a^b$. \mycheck
 \item[I.S.:] $n \mapsto n + 1$.
 
             We proof proceeds by a case distinction with respect to the expression $y_n \mmod 2$:
@@ -532,7 +531,7 @@ This claim is proven by induction on the number of loop iterations.
                       & = & (r_{n} \cdot x_n) \cdot (x_{n} \cdot x_{n})^{y_{n}\dvv 2} \\[0.2cm] 
                       & = & r_{n} \cdot x_n^{2 \cdot (y_{n}\dvv 2) + 1} \\[0.2cm] 
                       & = & r_{n} \cdot x_n^{y_n} \\
-                      & \stackrel{i.h.}{=} & a^{b} 
+                      & \stackrel{i.h.}{=} & a^{b} \quad \text{\mycheck}
                   \end{eqnarray*}
 
             \item $y_n \mmod 2 = 0$.
@@ -544,7 +543,7 @@ This claim is proven by induction on the number of loop iterations.
                       & = & r_{n} \cdot (x_{n} \cdot x_{n})^{y_{n}\dvv 2} \\[0.2cm] 
                       & = & r_{n} \cdot x_n^{2 \cdot (y_{n} \dvv 2)} \\[0.2cm] 
                       & = & r_{n} \cdot x_n^{y_n} \\
-                      & \stackrel{i.h.}{=} & a^{b} 
+                      & \stackrel{i.h.}{=} & a^{b} \quad \text{\mycheck}
                   \end{eqnarray*}
             \end{enumerate}
 \end{enumerate}
