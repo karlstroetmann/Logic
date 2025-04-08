@@ -589,17 +589,17 @@ represent $\mathtt{isqrt}(a)$ in the binary system, we have
 $\ds \mathtt{isqrt}(a) = \sum\limits_{i=0}^{31} b_i \cdot 2^i$, \quad where $b_i \in \{0,1\}$.
 \\[0.2cm]
 In order to compute $\mathtt{isqrt}(a)$ we start with the last bit $b_{31}$.  If the square of $2^{31}$ is less
-than $a$, then $b_{31} = 1$.  Otherwise we have $b_{31} = 0$.  Assume now that we have already computed the
-bits $b_{32-1}$, $b_{32-2}$, $\cdots$, $b_{32-(n-1)}$.  In order to compute $b_{32-n}$ we have to check whether
+than $a$, then we must have $b_{31} = 1$.  Otherwise we have $b_{31} = 0$.  Assume now that we have already computed the
+bits $b_{31}$, $b_{30}$, $\cdots$, $b_{31-n)}$.  In order to compute $b_{31-(n+1)}$ we have to check whether
 \\[0.2cm]
 \hspace*{1.3cm}
-$\ds\left(\ds 2^{32-n} + \sum\limits_{i=32-(n-1)}^{31} b_i \cdot 2^i \right)^2 \leq a$.
+$\ds\left(\ds 2^{32-{n+1}} + \sum\limits_{i=31-n}^{31} b_i \cdot 2^i \right)^2 \leq a$.
 \\[0.2cm]
-If it is, then  $b_{32-n} = 1$, else $b_{32-n} = 0$.
+If it is, then  $b_{31-{n+1}} = 1$, else $b_{31-(n+1)} = 0$.
 With this in mind, we can state the invariants that hold when the \texttt{while} loop in line 4 is entered:
 \begin{enumerate}
-\item $\ds p_n = 2^{32 - n}$ \quad for $n=1,\cdots,32$ and $p_{33} = 0$.
-\item $\ds r_n = \sum\limits_{i=32-(n-1)}^{31} b_i \cdot 2^i$ \quad where the $b_i$ are the bits of
+\item $\ds p_n = 2^{31 - n}$ \quad for $n=0,\cdots,31$ and $p_{32} = 0$.
+\item $\ds r_n = \sum\limits_{i=32-n}^{31} b_i \cdot 2^i$ \quad where the $b_i$ are the bits of
       $\mathtt{isqrt}(a)$ in the binary representation.
 \end{enumerate}
 
@@ -616,8 +616,8 @@ With this in mind, we can state the invariants that hold when the \texttt{while}
                   commandchars  = \\\{\},
                 ]
     \colorbox{sepia}{\green{def} \blue{root}(a):}
-    \colorbox{sepia}{    r$_1$ = 0}
-    \colorbox{sepia}{    p$_1$ = 2 ** 31}
+    \colorbox{sepia}{    r$_0$ = 0}
+    \colorbox{sepia}{    p$_0$ = 2 ** 31}
     \colorbox{sepia}{    \green{while} p$_n$ > 0:}
     \colorbox{sepia}{        \green{if} a >= (r$_n$ + p$_n$) ** 2:}
     \colorbox{sepia}{            r$_{n+1}$ = r$_n$ + p$_n$}
@@ -631,75 +631,75 @@ With this in mind, we can state the invariants that hold when the \texttt{while}
 
 We proceed to prove the first invariant by induction.  
 \begin{enumerate}
-\item[B.C.:] $n = 1$
+\item[B.C.:] $n = 0$
 
-             $p_1 = 2^{31} = 2^{32-1}$. 
+             $p_0 = 2^{31} = 2^{31-0}$. 
 \item[I.S.:] $n \mapsto n + 1$
 
-   $p_{n+1} = p_n \;\mathtt{/\!/}\; 2 \;\stackrel{IV}{=}\; 2^{32-n} \;\mathtt{/\!/}\; 2 \;=\; 2^{32-n-1} \;=\; 2^{32-(n+1)}$.
+   $p_{n+1} = p_n \;\mathtt{/\!/}\; 2 \;\stackrel{IV}{=}\; 2^{31-n} \;\mathtt{/\!/}\; 2 \;=\; 2^{31-n-1} \;=\; 2^{31-(n+1)}$.
 
-   This holds as long as $n+1 \leq 32$.  Since we have $p_{32} = 2^{32-32} = 2^0 = 1$ it follows that
+   This holds as long as $n+1 \leq 32$.  Since we have $p_{31} = 2^{31-31} = 2^0 = 1$ it follows that
    \\[0.2cm]
    \hspace*{1.3cm}
-   $p_{33} \;=\; p_{32} \;\mathtt{/\!/}\; 2 = 1 \;\mathtt{/\!/}\; 2 = 0$.
+   $p_{32} \;=\; p_{31} \;\mathtt{/\!/}\; 2 = 1 \;\mathtt{/\!/}\; 2 = 0$.
    \\[0.2cm]
    This shows that the body of the \texttt{while} loop is executed $32$ times.  This was to be expected, as
    each execution of this loop computes one bit of the result.
 \end{enumerate}
 We proceed to prove the second invariant by induction.
 \begin{enumerate}
-\item[B.C.:] $n = 1$
+\item[B.C.:] $n = 0$
 
-  We have $r_1 = 0$ and also $\sum\limits_{i=33-1}^{31} b_i \cdot 2^i = \sum\limits_{i=32}^{31} b_i \cdot 2^i =  0$,
+  We have $r_0 = 0$ and also $\sum\limits_{i=32-0}^{31} b_i \cdot 2^i = \sum\limits_{i=32}^{31} b_i \cdot 2^i =  0$,
   since the last sum is empty.
 \item[I.S.:] $n \mapsto n+1$
 
-  Now we need a case distinction with respect to the test $a \geq (r_n + p_n)^2$.
+  Now we need to perform a case distinction with respect to the test $a \geq (r_n + p_n)^2$.
   \begin{enumerate}
   \item $a \geq (r_n + p_n)^2$.
 
-    In this case we have that $r_n + p_n \leq \mathtt{isqrt}(a)$ and since $p_n = 2^{32-n}$ this shows that
+    In this case we have that $r_n + p_n \leq \mathtt{isqrt}(a)$ and since $p_n = 2^{31-n}$ this shows that
     \\[0.2cm]
     \hspace*{1.3cm}
-    $r_n + 2^{32-n} \leq \mathtt{isqrt}(a)$.
+    $r_n + 2^{31-n} \leq \mathtt{isqrt}(a)$.
     \\[0.2cm]
-    This implies that $b_{32-n} = 1$.  Therefore we have
+    This implies that $b_{31-n} = 1$.  Therefore we have
     \\[0.2cm]
     \hspace*{1.3cm}
     $
     \begin{array}[t]{lcl}
       r_{n+1} & = & r_n + p_n \\[0.2cm] 
-              & \stackrel{IV}{=} & \sum\limits_{i=33-n}^{31} b_i \cdot 2^i + 2^{32-n} \\[0.5cm]
-              & = & \sum\limits_{i=33-n}^{31} b_i \cdot 2^i + b_{32-n} \cdot 2^{32-n} \\[0.5cm]
-              & = & \sum\limits_{i=33-(n+1)}^{31} b_i \cdot 2^i 
+              & \stackrel{IV}{=} & \sum\limits_{i=32-n}^{31} b_i \cdot 2^i + 2^{31-n} \\[0.5cm]
+              & = & \sum\limits_{i=32-n}^{31} b_i \cdot 2^i + b_{32-(n+1)} \cdot 2^{32-(n+1)} \\[0.5cm]
+              & = & \sum\limits_{i=32-(n+1)}^{31} b_i \cdot 2^i 
     \end{array}
     $
   \item $a < (r_n + p_n)^2$. 
 
-    In this case we have that $r_n + p_n > \mathtt{isqrt}(a)$ and since $p_n = 2^{32-n}$ this shows that
+    In this case we have that $r_n + p_n > \mathtt{isqrt}(a)$ and since $p_n = 2^{31-n}$ this shows that
     \\[0.2cm]
     \hspace*{1.3cm}
-    $r_n + 2^{32-n} > \mathtt{isqrt}(a)$.
+    $r_n + 2^{31-n} > \mathtt{isqrt}(a)$.
     \\[0.2cm]
-    This implies that $b_{32-n} = 0$.  Therefore we have
+    This implies that $b_{31-n} = 0$.  Since $b_{32-(n+1)} = b_{31-n}$ we have
     \\[0.2cm]
     \hspace*{1.3cm}
     $
     \begin{array}[t]{lcl}
       r_{n+1} & = & r_n  \\[0.2cm] 
-              & \stackrel{IV}{=} & \sum\limits_{i=33-n}^{31} b_i \cdot 2^i + 0 \\[0.5cm]
-              & \stackrel{IV}{=} & \sum\limits_{i=33-n}^{31} b_i \cdot 2^i + 0 \cdot 2^{32-n} \\[0.5cm]
-              & = & \sum\limits_{i=33-n}^{31} b_i \cdot 2^i + b_{32-n} \cdot 2^{32-n} \\[0.5cm]
-              & = & \sum\limits_{i=33-(n+1)}^{31} b_i \cdot 2^i 
+              & \stackrel{IV}{=} & \sum\limits_{i=32-n}^{31} b_i \cdot 2^i \\[0.5cm]
+              & = & \sum\limits_{i=32-n}^{31} b_i \cdot 2^i + 0 \cdot 2^{32-(n+1)} \\[0.5cm]
+              & = & \sum\limits_{i=32-n}^{31} b_i \cdot 2^i + b_{32-(n+1)} \cdot 2^{32-(n+1)} \\[0.5cm]
+              & = & \sum\limits_{i=32-(n+1)}^{31} b_i \cdot 2^i 
     \end{array}
     $
   \end{enumerate}
 \end{enumerate}
-Since the program terminates when $n=33$ we have
+Since the program terminates when $n=32$ we have
 \\[0.2cm]
 \hspace*{1.3cm}
-$\ds \mathtt{root}(a) = r_N = r_{33} = \sum\limits_{i=33-33}^{31} b_i \cdot 2^i = \sum\limits_{i=0}^{31} b_i \cdot 2^i = \mathtt{isqrt}(a)$. \qed
-
+$\ds \mathtt{root}(a) = r_N = r_{32} = \sum\limits_{i=32-32}^{31} b_i \cdot 2^i = \sum\limits_{i=0}^{31} b_i \cdot 2^i = \mathtt{isqrt}(a)$. \qed
+\pagebreak
 
 \exerciseEng
 Use the method of symbolic program execution to prove the correctness of the implementation of the
@@ -714,7 +714,7 @@ $\mytt{ggt}(x, y) = \mytt{ggt}(x \,\mytt{\%}\, y, y)$.
 Furthermore, the invariant of the \mytt{while} loop is
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{ggt}(x_n, y_n) = \mytt{ggt}(a, b)$ \quad where $a := x_1$ and $b := y_1$.
+$\mytt{ggt}(x_n, y_n) = \mytt{ggt}(a, b)$ \quad where $a := x_0$ and $b := y_0$.
 \\[0.2cm]
 Using this invariant you should be able to prove that $\mytt{gcd}(a, b) = \mytt{ggt}(a, b)$ for all
 $a, b \in \mathbb{N}$ such that $a > 0$.  Note that in order to carry out the proof you have to distinguish
@@ -735,18 +735,16 @@ function \mytt{gcd} that is implemented in Figure \ref{fig:gcd.stlx}.
                   codes         = {\catcode`_=8\catcode`$=3},
                   commandchars  = \\\{\},
                 ]
-\colorbox{sepia}{    \green{def} \blue{gcd}(x, y):                    }
-\colorbox{sepia}{        \green{while} y != 0:                 }
-\colorbox{sepia}{            x, y = y, x % y           }
-\colorbox{sepia}{        \green{return} x                      }
+\colorbox{sepia}{    \green{def} \blue{gcd}(x$_0$, y$_0$):               }
+\colorbox{sepia}{        \green{while} y$_n$ != 0:                       }
+\colorbox{sepia}{            x$_{n+1}$, y$_{n+1}$ = y$_n$, x$_n$ % y$_n$ }
+\colorbox{sepia}{        \green{return} x$_N$                            }
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{The Euclidean algorithm.}
+\caption{An iterative implementation of the Euclidean algorithm.}
 \label{fig:gcd.stlx}
 \end{figure}
 
-
-\pagebreak
 \exerciseEng
 Figure \ref{fig:square-iterative} shows a \textsl{Python} program implementing the function \texttt{square}.  Show that the equation
 \\[0.2cm]
@@ -765,29 +763,37 @@ holds for every $s \in \mathbb{N}$.  You should use symbolic execution to verify
                   numbersep     = -0.2cm,
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm,
+                  codes         = {\catcode`_=8\catcode`$=3},
+                  commandchars  = \\\{\},
                 ]
-    def square(s):
-        r = 0
-        u = 1
-        while s > 0:
-            r += u
-            u += 2
-            s -= 1
-        return r
+    def square(s$_0$):
+        r$_0$ = 0
+        u$_0$ = 1
+        while s$_n$ > 0:
+            r$_{n+1}$ += u$_n$
+            u$_{n+1}$ += 2
+            s$_{n+1}$ -= 1
+        return r$_N$
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{The function \texttt{square}.}
+\caption{The function \texttt{square} with annotations.}
 \label{fig:square-iterative}
 \end{figure}
 
-
+\pagebreak
 
 \section{Check Your Understanding}
 \begin{enumerate}[(a)]
-\item Explain the method of \blue{computational induction}.
-\item Use the method of computational induction to prove the correctness of the function \texttt{div\_mod}.
+\item Explain the method of \blue{computational induction}.  
+\item What are the three steps that have to be executed to prove the correctness of the implementation of a
+      \textsl{Python} function via computational induction?
+\item What are the two properties of \href{https://en.wikipedia.org/wiki/Euclidean_division}{Euclidean division} of natural numbers?
+\item Are you able to prove the correctness of an iterative implementation of Euclid's algorithm?
+\item What is the difference between a variable occurring in a mathematical formula and a variable occurring in
+      a \textsl{Python} program?
+\item How do we transform a variable occurring in a \textsl{Python} program into a mathematical variable?
 \item Explain the method of \blue{symbolic execution}.
-\item Use the method of symbolic execution to prove the correctness of Euklid's algorithm.
+\item Are you able to prove the correctness of an iterative implementation of Euclid's algorithm?
 \item When would you use computational induction and when would you choose symbolic execution instead?
 \end{enumerate}
 
