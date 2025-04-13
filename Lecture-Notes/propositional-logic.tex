@@ -527,7 +527,7 @@ The function \texttt{evaluate} takes two arguments.
             case ('¬', G):    return not evaluate(G, I)
             case ('∧', G, H): return     evaluate(G, I) and evaluate(H, I)
             case ('∨', G, H): return     evaluate(G, I) or  evaluate(H, I)
-            case ('→', G, H): return not evaluate(G, I) or  evaluate(H, I)
+            case ('→', G, H): return     evaluate(G, I) <=  evaluate(H, I)
             case ('↔', G, H): return     evaluate(G, I) ==  evaluate(H, I)
 \end{minted}
 \vspace*{-0.3cm}
@@ -560,12 +560,18 @@ Next, we discuss the implementation of the function \texttt{evaluate()}.
       $G$ and $H$ using $I$.  The results are then combined with the \textsl{Python} operator
       ``\texttt{or}''.
 \item If $F$ has the form $G \rightarrow H$, we recursively evaluate
-      $G$ and $H$ using $I$.  Then we exploit the fact that the two formulas    
+      $G$ and $H$ using $I$.  Then we exploit the fact that in \textsl{Python} the values \texttt{True} and
+      \texttt{False} are ordered and we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      $G \rightarrow H$ \quad and \quad $\neg G \vee H$
+      \texttt{False < True}.
       \\[0.2cm]
-      are equivalent.
+      Now the evaluation of the formula $G \rightarrow H$ is only false if the evaluation of $G$ yields \texttt{True} but the
+      evaluation of $H$ yields false.  Therefore, 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{evaluate}($G \rightarrow H$, I) \quad has the same value as \quad
+      $\texttt{evaluate}(G), I) \leq \texttt{evaluate}(H, I)$.
 \item If $F$ has the form $G \leftrightarrow H$, we recursively evaluate
       $G$ and $H$ using $I$.  Then we exploit the fact that the formula $G \leftrightarrow H$ is true if and
       only if $G$ and $H$ have the same truth value.
@@ -574,12 +580,12 @@ Next, we discuss the implementation of the function \texttt{evaluate()}.
 \subsection{An Application}
 Next, we showcase a playful application of propositional logic.  Inspector Watson is called to investigate a
 burglary at a jewelry store.  Three suspects have been detained in the vicinity of the jewelry store.
-Their names are Aaron, Bernard, and Cain.  The evaluation of the files reveals the following facts.
+Their names are Aaron, Bernard, and Caine.  The evaluation of the files reveals the following facts.
 \begin{enumerate}
 \item \green{At least one of these suspects must have been involved in the crime.}
 
       If the propositional variable $a$ is interpreted as claiming that Aaron is guilty, while $b$ and $c$
-      stand for the guilt of Bernard and Cain respectively, then this statement is captured by the following formula: 
+      stand for the guilt of Bernard and Caine respectively, then this statement is captured by the following formula: 
       \\[0.2cm]
       \hspace*{1.3cm} 
       $f_1 := a \vee b \vee c$.
@@ -592,16 +598,16 @@ Their names are Aaron, Bernard, and Cain.  The evaluation of the files reveals t
       \item If Aaron is guilty, then he has at most one accomplice. \\[0.2cm]
            \hspace*{1.3cm} $f_3 := a \rightarrow \neg (b \wedge c)$
       \end{enumerate}
-\item \green{If Bernard is innocent, then Cain is innocent too.} \\[0.2cm]
+\item \green{If Bernard is innocent, then Caine is innocent too.} \\[0.2cm]
       \hspace*{1.3cm} $f_4 :=  \neg b \rightarrow \neg c$ 
-\item \green{If exactly two of the suspects are guilty, then Cain is one of them.}
+\item \green{If exactly two of the suspects are guilty, then Caine is one of them.}
 
       It is not straightforward to translate this statement into a propositional formula.
       One trick we can try is to negate the statement and then try to translate the negation.
-      Now the statement given above is wrong if Cain is innocent but both Aaron and Bernard are guilty.
+      Now the statement given above is wrong if Caine is innocent but both Aaron and Bernard are guilty.
       Therefore we can translate this statement as follows: \\[0.2cm]
       \hspace*{1.3cm} $f_5 := \neg ( \neg c  \wedge a \wedge b )$ 
-\item \green{If Cain is innocent, then Aaron is guilty.} 
+\item \green{If Caine is innocent, then Aaron is guilty.} 
 
       This translates into the following formula:\\[0.2cm]
       \hspace*{1.3cm} $f_6 := \neg c \rightarrow a$
@@ -632,16 +638,16 @@ We discuss this program next.
         return parser.parse()   
     
     P = { 'a', 'b', 'c' }
-    # Aaron, Bernard, or Cain is guilty.
+    # Aaron, Bernard, or Caine is guilty.
     f1 = 'a ∨ b ∨ c'
     # If Aaron is guilty, he has exactly one accomplice.
     f2 = 'a → b ∨ c'
     f3 = 'a → ¬(b ∧ c)'
-    # If Bernard is innocent, then Cain is innocent, too.
+    # If Bernard is innocent, then Caine is innocent, too.
     f4 = '¬b → ¬c'
-    # If exactly two of the suspects are guilty, then Cain is one of them.
+    # If exactly two of the suspects are guilty, then Caine is one of them.
     f5 = '¬(¬c ∧ a ∧ b)'
-    # If Cain is innocent, then Aaron is guilty.
+    # If Caine is innocent, then Aaron is guilty.
     f6 = '¬c → a'
     Fs = { f1, f2, f3, f4, f5, f6 };
     Fs = { parse(f) for f in Fs }
@@ -663,7 +669,7 @@ We discuss this program next.
       represented as a string and transforms it into a nested tuple.
 \item Line 7 defines the set $P$ of propositional variables.  We use the propositional variable \texttt{a} to
       express that Aaron is guilty, \texttt{b} is short for Bernard is guilty and \texttt{c} is true if and
-      only if Cain is guilty. 
+      only if Caine is guilty. 
 \item Next, we define the propositional formulas $f_1$, $\cdots$, $f_6$.
 \item \texttt{Fs} is the set of all propositional formulas.
 \item In line 20 these formulas are transformed into nested tuples.
@@ -684,7 +690,8 @@ from \texttt{Fs} are rendered \texttt{True} under $I$.  This propositional valua
 \hspace*{1.3cm}
 \texttt{\{'b', 'c'\}.}
 \\[0.2cm]
-Thus, the given problem is solvable and both Bernard and Cain are guilty, while Aaron is innocent.
+Thus, the given problem is solvable and both Bernard and Caine are guilty, while Aaron is innocent.
+\pagebreak
 
 \exerciseEng
 Solve the following puzzle by editing the notebook \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/The-Visit.ipynb}{Python/Chapter-4/The-Visit.ipynb}.
@@ -750,16 +757,16 @@ $\begin{array}{lll}
  \models p \vee   \neg p \leftrightarrow \verum & \models p \wedge \neg p \leftrightarrow \falsum & \mbox{\blue{tertium-non-datur}} \\[0.2cm]
  \models p \vee   \falsum \leftrightarrow p & \models p \wedge \verum  \leftrightarrow p & \mbox{\blue{identity element}}\\[0.2cm]
  \models p \vee   \verum  \leftrightarrow \verum & \models p \wedge \falsum \leftrightarrow \falsum &  \\[0.2cm]
- \models p \wedge p \leftrightarrow p  & \models p \vee p \leftrightarrow p &  \mbox{\blue{idempotent}}\index{idempotent} \\[0.2cm]
- \models p \wedge q \leftrightarrow q \wedge p & \models p \vee   q \leftrightarrow q \vee p & \mbox{\blue{commutative}}\index{commutative} \\[0.2cm]
+ \models p \wedge p \leftrightarrow p  & \models p \vee p \leftrightarrow p &  \mbox{\blue{idempotency}}\index{idempotency} \\[0.2cm]
+ \models p \wedge q \leftrightarrow q \wedge p & \models p \vee   q \leftrightarrow q \vee p & \mbox{\blue{commutativity}}\index{commutative} \\[0.2cm]
  \models (p \wedge q) \wedge r \leftrightarrow p \wedge (q \wedge r) & \models (p \vee   q) \vee r \leftrightarrow p \vee   (q \vee r)  &
- \mbox{\blue{Assoziativität}}\index{associative} \\[0.2cm]
+ \mbox{\blue{associativity}}\index{associative} \\[0.2cm]
  \models \neg \neg p \leftrightarrow p & & \mbox{elimination of $\neg \neg$} \\[0.2cm]
  \models p \wedge (p \vee q)   \leftrightarrow p & \models p \vee   (p \wedge q) \leftrightarrow p &  \mbox{\blue{absorption}}\index{absorption} \\[0.2cm]
  \models p \wedge (q \vee r)   \leftrightarrow (p \wedge q) \vee   (p \wedge r) & 
- \models p \vee   (q \wedge r) \leftrightarrow (p \vee q)   \wedge (p \vee   r) & \mbox{\blue{distributive}}\index{distributive} \\[0.2cm]
+ \models p \vee   (q \wedge r) \leftrightarrow (p \vee q)   \wedge (p \vee   r) & \mbox{\blue{distributivity}}\index{distributive} \\[0.2cm]
  \models \neg (p \wedge q) \leftrightarrow  \neg p \vee   \neg q &  \models \neg (p \vee   q) \leftrightarrow  \neg p \wedge \neg q &
- \mbox{\blue{DeMorgan's rules}}\index{DeMorgan rules}  \\[0.2cm]
+ \mbox{\blue{DeMorgan}}\index{DeMorgan rules}  \\[0.2cm]
  \models (p \rightarrow q) \leftrightarrow \neg p \vee q & &  \mbox{elimination of $\rightarrow$} \\[0.2cm]
  \models (p \leftrightarrow q) \leftrightarrow (\neg p \vee q) \wedge (\neg q \vee p) & & \mbox{elimination of $\leftrightarrow$}
 \end{array}$ \\[0.3cm]
@@ -835,7 +842,7 @@ this definition.  Note that we have been able to combine the last four cases.
             case (_, g, h): return collectVars(g) | collectVars(h) 
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Überprüfung der Allgemeingültigkeit einer aussagenlogischen Formel}
+  \caption{Checking that a formula is a tautology.}
   \label{fig:tautology.py-collectVars}
 \end{figure}
 
@@ -849,8 +856,19 @@ Figure \ref{fig:tautology.py} on page \pageref{fig:tautology.py}
 shows the implementation.
 \begin{enumerate}
 \item First, we compute the set $P$ of all propositional variables occurring in $f$.
-\item Next, the function $\mathtt{allSubsets}$ computes a list containing all subsets of the set $P$.
-      Every propositional interpretation  $\mathcal{I}$ is contained in this list.
+\item The function $\mathtt{allSubsets}(M)$ takes a set $M$ as its input and returns the list of all subsets of $M$.
+      The idea behind the definition of $\mathtt{allSubsets}(M)$ is as follows:
+      \begin{enumerate}[(a)]
+      \item Let $x$ be any element from the set $M$. 
+      \item Then there are two kinds of subsets of $M$:
+        \begin{itemize}
+        \item Those subsets $A \subseteq M$ that do not contain $x$.
+        \item Those subsets $B \subseteq M$ that do contain $x$.
+      \end{itemize}
+      The set $\mathcal{L}$ of those subsets $A$ of $M$ that do not contain $x$ can be calculated recursively:
+      $$ \mathcal{L} = \texttt{allSubsets}(M - \{x\}) $$
+      \item Adding $x$ to the subsets in $\mathcal{L}$ yields all those subsets of $M$ that do contain $x$. 
+      \end{enumerate}  
 \item Then we try to find a propositional interpretation $\mathcal{I}$ such that $\mathcal{I}(f)$
       \texttt{False}.  In this case $\mathcal{I}$ is returned. 
 \item Otherwise $f$ is a tautology and we return \texttt{True}.
@@ -866,10 +884,18 @@ shows the implementation.
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
               ]{python3}
+    def allSubsets(M: set[T]) -> list[set[T]]:
+        "Compute a list containing all subsets of the set M"
+        if M == set():
+            return [ set() ]
+        x = M.pop() # remove x from M and return x
+        L = allSubsets(M)
+        return L + [ A | { x } for A in L ]
+
     def tautology(f):
         "Check, whether the formula f is a tautology."
         P = collectVars(f)
-        for I in power.allSubsets(P):
+        for I in allSubsets(P):
             if not evaluate(f, I):
                 return I
         return True
