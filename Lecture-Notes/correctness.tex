@@ -357,7 +357,7 @@ of its arguments. \eox
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
                 ]{python3}
-    def isqrt(n):
+    def root(n):
         if n == 0:
             return 0
         r = isqrt(n // 4)
@@ -377,7 +377,7 @@ The \blue{integer square root} of a natural number $n$ is defined as
 \hspace*{1.3cm}
 $\texttt{isqrt}(n) := \max\bigl(\{ r \in \mathbb{N} \mid r^2 \leq n \}\bigr)$.
 \\[0.2cm]
-Prove that the function \mytt{isqrt} that is shown in Figure \ref{fig:isqrt} on page \pageref{fig:isqrt}
+Prove that the function \mytt{root} that is shown in Figure \ref{fig:isqrt} on page \pageref{fig:isqrt}
 computes the integer square root of its argument. \eox
 \pagebreak
 
@@ -705,21 +705,21 @@ $\ds \mathtt{root}(a) = r_N = r_{32} = \sum\limits_{i=32-32}^{31} b_i \cdot 2^i 
 Use the method of symbolic program execution to prove the correctness of the implementation of the
 \href{https://en.wikipedia.org/wiki/Euclidean_algorithm}{Euclidean algorithm} that is shown in Figure
 \ref{fig:gcd.stlx} on page \pageref{fig:gcd.stlx}.  During the proof 
-you should make use of the fact that for all positive natural numbers $x$ and $y$ the function $\mytt{ggt}$
+you should make use of the fact that for all positive natural numbers $x$ and $y$ the function $\mytt{gcd}$
 that computes the greatest common divisor of $x$ and $x$ satisfies the equation
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{ggt}(x, y) = \mytt{ggt}(x \,\mytt{\%}\, y, y)$.
+$\mytt{gcd}(x, y) = \mytt{gcd}(y, x \,\mytt{\%}\, y)$.
 \\[0.2cm]
 Furthermore, the invariant of the \mytt{while} loop is
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mytt{ggt}(x_n, y_n) = \mytt{ggt}(a, b)$ \quad where $a := x_0$ and $b := y_0$.
 \\[0.2cm]
-Using this invariant you should be able to prove that $\mytt{gcd}(a, b) = \mytt{ggt}(a, b)$ for all
+Using this invariant you should be able to prove that $\mytt{ggt}(a, b) = \mytt{gcd}(a, b)$ for all
 $a, b \in \mathbb{N}$ such that $a > 0$.  Note that in order to carry out the proof you have to distinguish
-between the mathematical function \mytt{ggt} that computes the greatest common divisor and the \textsl{Python}
-function \mytt{gcd} that is implemented in Figure \ref{fig:gcd.stlx}.
+between the mathematical function \mytt{gcd} that computes the greatest common divisor and the \textsl{Python}
+function \mytt{ggt} that is implemented in Figure \ref{fig:gcd.stlx}.
 \eox
 
 \begin{figure}[!ht]
@@ -735,7 +735,7 @@ function \mytt{gcd} that is implemented in Figure \ref{fig:gcd.stlx}.
                   codes         = {\catcode`_=8\catcode`$=3},
                   commandchars  = \\\{\},
                 ]
-\colorbox{sepia}{    \green{def} \blue{gcd}(x$_0$, y$_0$):               }
+\colorbox{sepia}{    \green{def} \blue{ggt}(x$_0$, y$_0$):               }
 \colorbox{sepia}{        \green{while} y$_n$ != 0:                       }
 \colorbox{sepia}{            x$_{n+1}$, y$_{n+1}$ = y$_n$, x$_n$ % y$_n$ }
 \colorbox{sepia}{        \green{return} x$_N$                            }

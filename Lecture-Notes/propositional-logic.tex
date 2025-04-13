@@ -407,7 +407,7 @@ propositional formulas as \blue{nested tuples}.  A nested tuple is a tuple that 
 nested tuples.  For example,
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{('$\wedge$', ('$\neg$', 'p'), 'q')}
+\texttt{(\tsq{$\wedge$}, (\tsq{$\neg$}, \tsq{p}), \tsq{q})}
 \\[0.2cm]
 is a nested tuple that represents the propositional formula $\neg p \wedge q$.
 
@@ -419,56 +419,56 @@ $\textsl{rep}: \mathcal{F} \rightarrow \textsl{Python}$
 that maps a propositional formula $f$ to the corresponding nested tuple \index{nested tuple}
 $\textsl{rep}(f)$.  We define $\textsl{rep}(f)$ inductively by induction on $f$.
 \begin{enumerate}
-\item $\verum$ is represented as the tuple \texttt{('$\top$',)}.
+\item $\verum$ is represented as the tuple \texttt{(\tsq{$\top$},)}.
   
-      This is possible because \texttt{'$\top$'} is a unicode symbol and \textsl{Python} supports the use of unicode
-      symbols in strings.   Alternatively, in \textsl{Python} the string \texttt{'$\top$'} can be written as
-      \texttt{'\symbol{92}N\{up tack\}'} since ``\texttt{up tack}'' is the name of the unicode symbol
+      This is possible because \texttt{\tsq{$\top$}} is a unicode symbol and \textsl{Python} supports the use of unicode
+      symbols in strings.   Alternatively, in \textsl{Python} the string \texttt{\tsq{$\top$}} can be written as
+      \texttt{\tsq{\symbol{92}N\{up tack\}}} since ``\texttt{up tack}'' is the name of the unicode symbol
       ``$\top$'' and any unicode symbol that has the name  $u$ can be written 
-      as \texttt{'\symbol{92}N\{$u$\}'} in \textsl{Python}.  Therefore, we have
+      as \texttt{\tsq{\symbol{92}N\{$u$\}}} in \textsl{Python}.  Therefore, we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\textsl{rep}(\verum) := \texttt{('\symbol{92}N\{up tack\}',)}$.
-\item $\falsum$  is represented as the tuple \texttt{('$\falsum$',)}.
+      $\textsl{rep}(\verum) := \texttt{(\tsq{\symbol{92}N\{up tack\}},)}$.
+\item $\falsum$  is represented as the tuple \texttt{(\tsq{$\falsum$},)}.
       
-      The unicode symbol \texttt{'$\falsum$'} has the name ``\texttt{down tack}''.
+      The unicode symbol \texttt{\tsq{$\falsum$}} has the name ``\texttt{down tack}''.
       Therefore, we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\textsl{rep}(\falsum) := \texttt{('\symbol{92}N\{down tack\}',)}$.
+      $\textsl{rep}(\falsum) := \texttt{(\tsq{\symbol{92}N\{down tack\}},)}$.
 \item Since propositional variables are strings we can represents these variables by themselves:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{rep}(p) := p$ \quad for all $p \in \mathcal{P}$.
 \item If $f$ is a propositional formula, the  negation $\neg f$ is represented as a pair where
-      we put the unicode symbol \texttt{'$\neg$'} at the first position, while the representation of $f$ is put
-      at the second position.  As the name of the unicode symbol \texttt{'$\neg$'} is
+      we put the unicode symbol \texttt{\tsq{$\neg$}} at the first position, while the representation of $f$ is put
+      at the second position.  As the name of the unicode symbol \texttt{\tsq{$\neg$}} is
       ``\texttt{not sign}'' we have
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(\neg f) := \bigl(\texttt{'$\neg$'}, \textsl{rep}(f)\bigr)$.
+      $\textsl{rep}(\neg f) := \bigl(\texttt{\tsq{$\neg$}}, \textsl{rep}(f)\bigr)$.
 \item If $f_1$ and $f_2$ are propositional formulas, we represent $f_1 \wedge f_2$ with the help of the
-      unicode symbol \texttt{'$\wedge$'}.  This symbol has the name ``\texttt{logical and}''.  Hence we have
+      unicode symbol \texttt{\tsq{$\wedge$}}.  This symbol has the name ``\texttt{logical and}''.  Hence we have
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(f \wedge g) := \bigl(\texttt{'$\wedge$'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
+      $\textsl{rep}(f \wedge g) := \bigl(\texttt{\tsq{$\wedge$}}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
 \item If $f_1$ and $f_2$ are propositional formulas, we represent $f_1 \vee f_2$ with the help of the unicode symbol
       \texttt{'$\vee$'}. This symbol has the name ``\texttt{logical or}''.  Hence we have
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(f \vee g) := \bigl(\texttt{'$\vee$'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
+      $\textsl{rep}(f \vee g) := \bigl(\texttt{\tsq{$\vee$}}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
 \item If $f_1$ and $f_2$ are propositional formulas, we represent $f_1 \rightarrow f_2$ with the help of the
-      unicode symbol \texttt{'$\rightarrow$'}.  This symbol has the name ``\texttt{rightwards arrow}''.
+      unicode symbol \texttt{\tsq{$\rightarrow$}}.  This symbol has the name ``\texttt{rightwards arrow}''.
       Hence we have
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(f \rightarrow g) := \bigl(\texttt{'$\rightarrow$'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
+      $\textsl{rep}(f \rightarrow g) := \bigl(\texttt{\tsq{$\rightarrow$}}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
 \item If $f_1$ and $f_2$ are propositional formulas, we represent $f_1 \leftrightarrow f_2$ with the help of
-      the unicode symbol \texttt{'$\leftrightarrow$'}.  This symbol has the name ``\texttt{left right arrow}''.
+      the unicode symbol \texttt{\tsq{$\leftrightarrow$}}.  This symbol has the name ``\texttt{left right arrow}''.
       Hence we have
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(f \leftrightarrow g) := \bigl(\texttt{'$\leftrightarrow$'}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
+      $\textsl{rep}(f \leftrightarrow g) := \bigl(\texttt{\tsq{$\leftrightarrow$}}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
 \end{enumerate}
 When choosing the representation of a formula in \textsl{Python} we have a lot of freedom.
 We could as well have represented formulas as objects of different classes.  A good representation should have
@@ -539,7 +539,7 @@ The function \texttt{evaluate} takes two arguments.
 Next, we discuss the implementation of the function \texttt{evaluate()}.
 \begin{enumerate}
 \item We make use of the \texttt{match} statement, which is available since \textsl{Python} $3.10$.
-      This new control structure is explained in the tutorial ``PEP 636: Structural Pattern Matching''
+      This control structure is explained in the tutorial ``PEP 636: Structural Pattern Matching''
       available at
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -563,7 +563,7 @@ Next, we discuss the implementation of the function \texttt{evaluate()}.
       $G$ and $H$ using $I$.  Then we exploit the fact that the two formulas    
       \\[0.2cm]
       \hspace*{1.3cm}
-      $G \rightarrow H$ \quad und \quad $\neg G \vee H$
+      $G \rightarrow H$ \quad and \quad $\neg G \vee H$
       \\[0.2cm]
       are equivalent.
 \item If $F$ has the form $G \leftrightarrow H$, we recursively evaluate
