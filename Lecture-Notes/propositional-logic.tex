@@ -1070,8 +1070,19 @@ is in conjunctive normal form.  In set notation, this becomes
 \hspace*{1.3cm}
 $\bigl\{ \{p, q, \neg r \},\, \{ p, \neg q, \neg r \} \bigr\}$.
 \\[0.2cm]
-We now present a method that can be used to transform any formula $F$ into CNF.  As we have seen above, we can
-then easily decide whether $F$ is a tautology. 
+Since we have $K \wedge \verum \Leftrightarrow K$ we have that
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{\} \Leftrightarrow \verum$,
+\\[0.2cm]
+when the empty set is interpreted as an empty set of clauses.  Furthermore, we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bigl\{ \{\} \bigr\} \Leftrightarrow \falsum$.
+
+\subsection{Transforming a Formula into CNF}
+Next, we present a method that can be used to transform any propositional formula $F$ into CNF.  As we have
+seen above, we can then easily decide whether $F$ is a tautology. 
 \begin{enumerate}
 \item Eliminate all occurrences of the junction ``$\leftrightarrow$'' using the equivalence \\[0.2cm]
       \hspace*{1.3cm} 
@@ -1145,7 +1156,7 @@ $\texttt{elimBiconditional}: \mathcal{F} \rightarrow \mathcal{F}$
 which has the task of transforming a given propositional formula $f$ into an equivalent formula
 which no longer contains the operator ``$\leftrightarrow$''.  The function
 $\texttt{elimBiconditional}(f)$ is defined by induction with respect to the propositional formula $f$.
-In order to present this inductive defined, we set up recursive equations
+In order to present this inductive definition, we set up recursive equations
 that describe the behavior of the function $\texttt{elimBiconditional}$:
 \begin{enumerate}
 \item If $f$ is a propositional variable $p$, there is nothing to do:
@@ -1198,12 +1209,12 @@ that describe the behavior of the function $\texttt{elimBiconditional}$:
         match f:
             case p if isinstance(p, str):   # This case covers variables.
                 return p
-            case ('↔', g, h):
-                return eliminateBiconditional( ('∧', ('→', g, h), ('→', h, g)) )
             case ('⊤', ) | ('⊥', ):
                 return f
             case ('¬', g):
                 return ('¬', eliminateBiconditional(g))
+            case ('↔', g, h):
+                return eliminateBiconditional( ('∧', ('→', g, h), ('→', h, g)) )
             case (op, g, h):   # This case covers '→', '∧', and '∨'.
                 return (op, eliminateBiconditional(g), eliminateBiconditional(h))
 \end{minted}
@@ -1218,25 +1229,25 @@ function \texttt{elimBiconditional}.
 \item In line 3, the function call $\texttt{isinstance}(p, \mathtt{str})$ checks whether $p$ is a string.  In this case
       $f$ must be a propositional variable, because all other propositional formulas are represented as nested lists.
       Therefore, $f$ is returned unchanged in this case.
-\item In line 5 we check the case that $f$ has the form $g \leftrightarrow h$.
-      In this case, we use the equivalence
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $(g \leftrightarrow h) \Leftrightarrow (g \rightarrow h) \wedge (h \rightarrow g)$.
-      \\[0.2cm]
-      Furthermore, we have to eliminate the operator ``$\leftrightarrow$'' from $g$ and $h$ by recursively calling the function
-      function \texttt{elimBiconditional}.
 \item In line 5 we deal with the cases where $f$ is equal to Verum or Falsum.
       Note that these formulas are also represented as nested tuples.
-      For example, verum is represented as the tuple \texttt{('⊤',)}, while falsum is represented in
+      For example, Verum is represented as the tuple \texttt{('⊤',)}, while Falsum is represented in
       \textsl{Python} by the tuple \texttt{('⊥',)}.  In this case, $f$
       is returned unchanged.
-\item In line 9, we consider the case where $f$ is a negation.  Then $f$ has the form
+\item In line 7, we consider the case where $f$ is a negation.  Then $f$ has the form
       \\[0.2cm]
       \hspace*{1.3cm}
       \texttt{('¬', $g$)}  
       \\[0.2cm]
       and we have to recursively remove the operator ``$\leftrightarrow$'' from $g$.
+\item In line 9 we check the case that $f$ has the form $g \leftrightarrow h$.
+      In this case, we use the equivalence
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $(g \leftrightarrow h) \Leftrightarrow (g \rightarrow h) \wedge (h \rightarrow g)$.
+      \\[0.2cm]
+      Furthermore, we have to eliminate the operator ``$\leftrightarrow$'' from $g$ and $h$ by recursively
+      calling the function function \texttt{elimBiconditional}.
 \item In the remaining cases, $f$ has the form
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -1255,7 +1266,7 @@ The underlying idea of the implementation is the same as for the elimination of 
 operator ``$\leftrightarrow$''.  The only difference is that we now use the
 equivalence \\[0.2cm]
 \hspace*{1.3cm}
-$(g \rightarrow h) \Leftrightarrow (\neg g \vee h)$. \\[0.2cm]
+$g \rightarrow h \Leftrightarrow \neg g \vee h$. \\[0.2cm]
 Furthermore, when implementing this function, we can assume that the operator ``$\leftrightarrow$''
 has already been eliminated from the propositional formula \texttt{f}, which is passed as an argument.
 This eliminates one case in the implementation. 
@@ -1279,10 +1290,10 @@ This eliminates one case in the implementation.
                 return p
             case ('⊤', ) | ('⊥', ):
                 return f
-            case ('→', g, h): 
-                return eliminateConditional(('∨', ('¬', g), h))
             case ('¬', g):
                 return ('¬', eliminateConditional(g))
+            case ('→', g, h): 
+                return eliminateConditional(('∨', ('¬', g), h))
             case (op, g, h):      # This case covers '∧' and '∨'.
                 return (op, eliminateConditional(g), eliminateConditional(h))
 \end{minted}
@@ -1305,8 +1316,8 @@ $\texttt{neg}(\texttt{f}) = \texttt{nnf}(\neg \texttt{f})$.
 function \texttt{neg}, because this is where DeMorgan's laws 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\neg (f \wedge g) \Leftrightarrow (\neg f \vee \neg g)$ \quad and \quad 
-$\neg (f \vee g) \Leftrightarrow (\neg f \wedge \neg g)$ 
+$\neg (f \wedge g) \Leftrightarrow \neg f \vee \neg g$ \quad and \quad 
+$\neg (f \vee g) \Leftrightarrow \neg f \wedge \neg g$ 
 \\[0.2cm]
 are applied.  We describe the transformation into negation normal form by 
 the following equations: \index{\texttt{nnf}}
@@ -1541,14 +1552,15 @@ on my \href{https://github.com/karlstroetmann/Logic}{GitHub repository}.
   \caption{Normalizing a Formula.}
   \label{fig:normalize}
 \end{figure}
+\pagebreak
 
 \exerciseEng
 Calculate the conjunctive normal forms of the following formulae and state your result in set notation.
 \begin{enumerate}[(a)]
 \item $p \vee q \rightarrow r$,
 \item $p \vee q \leftrightarrow r$,
-\item $(p \rightarrow q) \leftrightarrow (\neg p \rightarrow \neg q)$,
-\item $(p \rightarrow q) \leftrightarrow (\neg q \rightarrow \neg p)$,
+\item $p \rightarrow q \leftrightarrow \neg p \rightarrow \neg q$,
+\item $p \rightarrow q \leftrightarrow \neg q \rightarrow \neg p$,
 \item $\neg r \wedge (q \vee p \rightarrow r) \rightarrow \neg q \wedge \neg p$.
 \end{enumerate}
 
@@ -3811,7 +3823,7 @@ $\texttt{somewhere('Japanese')}$ returns the following clause:
 \hspace*{0.3cm}
 \texttt{frozenset({'Japanese<1>', 'Japanese<2>', 'Japanese<3>', 'Japanese<4>', 'Japanese<5>'})}
 
-\pagebreak
+
 \begin{figure}[!ht]
 \centering
 \begin{minted}[ frame         = lines, 
