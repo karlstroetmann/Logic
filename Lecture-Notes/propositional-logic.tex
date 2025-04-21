@@ -1565,6 +1565,12 @@ Calculate the conjunctive normal forms of the following formulae and state your 
 \end{enumerate}
 
 \section{The Concept of a Derivation}
+Logic is concerned with the validity of \blue{proofs}. In order to build an automatic theorem prover that can 
+help us with the verification of digital circuit or a program we need to investigate the concept of a proof.\index{proof}
+In mathematics, a proof is a conclusive argument that starts from given axioms and applies certain rules of
+derivation to these axioms in order to derive theorems.  Our aim is to formalize this process so that we are
+able to implement it. The formalized version of a proof will be called a \blue{derivation}.\index{derivation}
+
 If $\{f_1,\cdots,f_n\}$ is a set of formulas and $g$ is another formula, then
 we might ask whether the formula $g$ is a \textcolor{blue}{logical consequence} of the formulas $f_1$,
 $\cdots$, $f_n$, i.e.~whether
@@ -1607,12 +1613,15 @@ whether a formula follows from a given set of formulas. The idea of this method
 is to \textcolor{blue}{derive} the formula to be proved using \textcolor{blue}{inference rules} from the
 given formulas. The concept of an inference rule is based on the following definition. 
 \begin{Definition}[Inference Rule] \hspace*{\fill} \linebreak
-    A propositional \textcolor{blue}{inference rule} is a pair of the form  $\bigl\langle \langle f_1, f_2 \rangle, k \bigr\rangle$.
+    A propositional \textcolor{blue}{inference rule}\index{inference rule} is a pair of the form  
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $\bigl\langle \langle f_1, f_2 \rangle, k \bigr\rangle$.    
+    \\[0.2cm]
     Here, $\langle f_1, f_2 \rangle$ is a pair of propositional formulas, and $k$ is a
-    single propositional formula.  
-    The formulas $f_1$ and $f_2$ are referred to as
-    \textcolor{blue}{premises}, and the formula $k$ is called the \textcolor{blue}{conclusion} of the inference rule.
-    If the pair $\bigl\langle \langle f_1, f_2 \rangle, k \bigr\rangle$ is an inference rule, then this is written as: 
+    single propositional formula.   The formulas $f_1$ and $f_2$ are referred to as
+    \textcolor{blue}{premises}, and the formula $k$ is called the \textcolor{blue}{conclusion} of the inference
+    rule. If the pair $\bigl\langle \langle f_1, f_2 \rangle, k \bigr\rangle$ is an inference rule, then this is written as: 
     \\[0.3cm]
     \hspace*{1.3cm}      
     $\schluss{f_1 \qquad f_2}{k}$.
@@ -1628,7 +1637,7 @@ given formulas. The concept of an inference rule is based on the following defin
 \hspace*{1.3cm}            
 \begin{tabular}[t]{|c|c|c|}
 \hline
-\rule{0pt}{15pt} \href{https://en.wikipedia.org/wiki/Modus_ponens}{Modus Ponens} & \href{https://en.wikipedia.org/wiki/Modus_tollens}{Modus Tollens} & \textcolor{blue}{Nonsense} \\[0.3cm]
+\rule{0pt}{15pt} \href{https://en.wikipedia.org/wiki/Modus_ponens}{Modus Ponens} & \href{https://en.wikipedia.org/wiki/Modus_tollens}{Modus Tollens} & \textcolor{blue}{Denying the Antecedent} \\[0.3cm]
 \hline
 $
 \rule[-15pt]{0pt}{40pt}\schluss{f \quad\quad f \rightarrow g}{g}$ &
@@ -1656,8 +1665,8 @@ inference rules in proofs, they should be \textcolor{blue}{correct} in the sense
 \end{Definition}
 With this definition, we see that
 the rules of inference referred to above as ``\textcolor{blue}{Modus Ponens}'' and ``\textcolor{blue}{Modus Tollens}''
-are correct, while the one called ``\textcolor{blue}{Nonsense}''
-is not correct.
+are correct, while the one called ``\textcolor{blue}{Denying the Antecedent}''
+is, in fact, a \href{https://en.wikipedia.org/wiki/List_of_fallacies}{logical fallacy}.\index{fallacy}
 
 From now on, we assume that all formulas are clauses. On one hand, this is
 not a real restriction, as we can transform any formula into an equivalent set of
@@ -1885,7 +1894,8 @@ the concept of \textcolor{blue}{satisfiability}, which we introduce next.
   \hspace*{1.3cm}
   $\mathcal{I}(f) = \texttt{True}$ \quad for all $f \in M$,
   \\[0.2cm]
-  then we call $M$ \textcolor{blue}{satisfiable}.
+  then we call $M$ \textcolor{blue}{satisfiable}.\index{satisfiable}  In this case the propositional
+  interpretation $\mathcal{I}$ is called a \blue{solution}\index{solution} of $M$.
   Furthermore, we say that $M$ is \textcolor{blue}{unsatisfiable}\index{unsatisfiable}
   and write 
   \\[0.2cm]
@@ -1934,8 +1944,8 @@ holds. \eox
 If $M$ is a finite set of clauses, we can extend $M$ to a saturated set of clauses
 $\overline{M}$ by initializing $\overline{M}$ as the set $M$ and then continually applying the
 cut rule to clauses from $\overline{M}$ and adding them to the set $\overline{M}$ as long as this is possible.
-Since there is only a limited number of clauses that can be formed from a given finite set of propositional variables,
-this process must terminate, and the set of formulas we then obtain is saturated. \eox
+Since there is only a limited number of clauses in set notation that can be formed from a given finite set of
+propositional variables, this process must terminate, and the set of formulas we then obtain is saturated. \eox 
 
 \subsection{Refutational Completeness}
 We are now ready to state and proof the refutational completeness of the cut rule for propositional logic.
@@ -2544,10 +2554,10 @@ $\mathcal{I}_k$ that we specified in the proof of refutation completeness.
 % \end{enumerate}
 
 \section{The Algorithm of Davis and Putnam}
-In practice, the we often have to compute a propositional assignment $\I$ for a given set of clauses $K$ such that
+In practice, we often have to compute a propositional assignment $\I$ for a given set of clauses $K$ such that
 \\[0.2cm]
 \hspace*{1.3cm} $\texttt{evaluate}(C,\I) = \texttt{True}$ \quad for all $C \in K$ \\[0.2cm]
-holds. In this case,  the assignment $\I$ is a \blue{solution} of the set of clauses $K$. In
+holds. In this case,  the assignment $\I$ is a \blue{solution}\index{solution} of the set of clauses $K$. In
 the last section, we have already introduced the function \texttt{findValuation} which can be used to compute
 such a solution of a set of clauses.  Unfortunately, this function is too inefficient to be useful in
 practice.
@@ -2636,16 +2646,17 @@ definitions.
 \end{Definition}
 
 How can we transform a given set of clauses into a trivial set of clauses?
-There are three ways to simplify a set of clauses.  We are already familiar with the first of the two
-possibilities, and we will explain the other two in more detail later. 
+There are three ways to simplify a set of clauses:
 \begin{enumerate}
-\item \blue{Resolution Rule},
+\item \blue{The Cut Rule},
 \item \blue{Subsumption}, and
 \item \blue{Case Distinction}.
 \end{enumerate}
+We are already familiar with the first of the two
+possibilities, and we will explain the other two in more detail later.
 Next, we will consider these possibilities in turn.
 
-\subsection{Simplification with the Resolution Rule}
+\subsection{Simplification with the Cut Rule}
 A typical application of the resolution rule has the form: \\[0.2cm]
 \hspace*{1.3cm} $\schluss{ C_1 \cup \{p\} \quad \{\neg p\} \cup C_2}{C_1 \cup C_2}$
 \\[0.2cm]
