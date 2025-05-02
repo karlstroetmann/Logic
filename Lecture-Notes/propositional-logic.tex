@@ -3697,10 +3697,11 @@ The efficient solution of such problems is a subject of current research.
   \label{fig:8-queens.pdf}
 \end{figure}
 \FloatBarrier
+\pagebreak
 
-
-\subsection{The Zebra Puzzle \label{section:zebra}} 
-The following logical puzzle appeared in the magazine \blue{Life International}
+\subsection{The \href{https://en.wikipedia.org/wiki/Zebra_Puzzle}{Zebra Puzzle} \label{section:zebra}} 
+The following logical puzzle appeared in the magazine
+\href{https://en.wikipedia.org/wiki/Life_(magazine)}{Life International} 
 on  December, $17^\textrm{th}$  in the year 1962:
 \begin{itemize}
 \item There are five houses.
@@ -3716,7 +3717,7 @@ on  December, $17^\textrm{th}$  in the year 1962:
 \item The man who smokes Chesterfields lives in the house next to the man with the fox.
 \item Kools are smoked in the house next to the house where the horse is kept.
 \item The Lucky Strike smoker drinks orange juice.
-\item The Japanese smokes Parliaments.*
+\item The Japanese smokes Parliaments.
 \item The Norwegian lives next to the blue house.
 \end{itemize}
 Furthermore, each of the five houses is painted in a different colour, their
@@ -3736,49 +3737,50 @@ that the Englishman lives in the $i^\textrm{th}$ house we can use the variables
 \hspace*{1.3cm}
 $\texttt{English}\langle i \rangle$ \quad for $i=1,\cdots,5$.
 \\[0.2cm]
-The idea is that $\texttt{English}\langle i \rangle$ is \texttt{True} iff the
+The idea is that the variable $\texttt{English}\langle i \rangle$ is \texttt{True} iff the
 Englishman lives in the  $i^\textrm{th}$ house.  In a similar way we use the
 variables
-\begin{itemize}
-\item $\texttt{Spanish}\langle i \rangle$,
-\item $\texttt{Ukrainian}\langle i \rangle$,
-\item $\texttt{Norwegian}\langle i \rangle$, and 
-\item $\texttt{Japanese}\langle i \rangle$
-\end{itemize}
-to encode the houses, where the people of different nationalities live.
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{Spanish}\langle i \rangle$,\;
+$\texttt{Ukrainian}\langle i \rangle$,\;
+$\texttt{Norwegian}\langle i \rangle$,\; and 
+$\texttt{Japanese}\langle i \rangle$
+\\[0.2cm]
+to encode where the people of different nationalities live.
 The different drinks are encoded by the variables
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{Coffee}\langle i \rangle$, $\texttt{Milk}\langle i \rangle$, $\texttt{OrangeJuice}\langle i \rangle$, $\texttt{Tea}\langle i \rangle$, and $\texttt{Water}\langle i \rangle$.
+$\texttt{Coffee}\langle i \rangle$,\; $\texttt{Milk}\langle i \rangle$,\; $\texttt{OrangeJuice}\langle i \rangle$,\; $\texttt{Tea}\langle i \rangle$,\; and $\texttt{Water}\langle i \rangle$.
 \\[0.2cm] 
 The colours are encoded using the variables 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{Red}\langle i \rangle$,
-$\texttt{Green}\langle i \rangle$,
-$\texttt{Ivory}\langle i \rangle$,
-$\texttt{Yellow}\langle i \rangle$, and $\texttt{Blue}\langle i \rangle$.
+$\texttt{Red}\langle i \rangle$,\;
+$\texttt{Green}\langle i \rangle$,\;
+$\texttt{Ivory}\langle i \rangle$,\;
+$\texttt{Yellow}\langle i \rangle$,\; and $\texttt{Blue}\langle i \rangle$.
 \\[0.2cm]
 The pets are encoded using the variables
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{Dog}\langle i \rangle$,
-$\texttt{Snails}\langle i \rangle$,
-$\texttt{Fox}\langle i \rangle$,
-$\texttt{Horse}\langle i \rangle$,
+$\texttt{Dog}\langle i \rangle$,\;
+$\texttt{Snails}\langle i \rangle$,\;
+$\texttt{Fox}\langle i \rangle$,\;
+$\texttt{Horse}\langle i \rangle$,\;
 and $\texttt{Zebra}\langle i \rangle$.
 \\[0.2cm]
 The cigarette brands are encoded as
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{OldGold}\langle i \rangle$, $\texttt{Kools}\langle i \rangle$,
-$\texttt{Chesterfields}\langle i \rangle$, $\texttt{LuckyStrike}\langle i \rangle$, and
+$\texttt{OldGold}\langle i \rangle$,\; $\texttt{Kools}\langle i \rangle$,\;
+$\texttt{Chesterfields}\langle i \rangle$,\; $\texttt{LuckyStrike}\langle i \rangle$,\; and
 $\texttt{Parliaments}\langle i \rangle$.
 \\[0.2cm]
 We are using the angular brackets "$\langle$" and "$\rangle$" as part of the
 variable names because our parser for propositional logic accepts these symbols
 as part of variable names.  The parser would be confused if we would use the
-normal parenthesis. 
+normal parenthesis.  
 
 \begin{figure}[!ht]
 \centering
@@ -3802,7 +3804,7 @@ normal parenthesis.
 In order to be able to write the conditions concisely, we introduce the function
 $\texttt{var}(f, i)$, which is shown in Figure \ref{fig:var_f_i}.  This function
 takes a string $f$, where $f$ is a property like, e.g.~\texttt{Japanese} and an
-integer $i$ and returns the string $f\langle i\rangle$.
+integer $i \in \{1,\cdots,5\}$ and returns the string $f\langle i\rangle$.
 
 
 
@@ -3829,11 +3831,12 @@ The function $\texttt{somewhere}(x)$ that is shown in Figure \ref{fig:somewhere}
 takes a string $x$ as its argument, where $x$ denotes a property like,
 e.g.~\texttt{Japanese}.  It returns a clause that specifies that $x$ has to be
 located in one of the five houses.  For example,  the call
-$\texttt{somewhere('Japanese')}$ returns the following clause:
+$\texttt{somewhere('Japanese')}$ returns the clause
 \\[0.2cm]
-\hspace*{0.3cm}
-\texttt{frozenset({'Japanese<1>', 'Japanese<2>', 'Japanese<3>', 'Japanese<4>', 'Japanese<5>'})}
-
+\hspace*{1.3cm}
+\texttt{\{'Japanese<1>', 'Japanese<2>', 'Japanese<3>', 'Japanese<4>', 'Japanese<5>'\}}
+\\[0.2cm]
+as a \texttt{frozenset}.
 
 \begin{figure}[!ht]
 \centering
@@ -3854,7 +3857,7 @@ $\texttt{somewhere('Japanese')}$ returns the following clause:
 \label{fig:atMostOneAt}
 \end{figure}
 
-Given an exclusive set of properties $S$ and a house number $i$, the function
+Given an set of properties $S$ and a house number $i$, the function
 $\texttt{atMostOne}(S, i)$ returns a set of clauses that specifies that the
 person living in house number $i$ has at most one of the properties from the set
 $S$.  For example, if  
@@ -3879,9 +3882,8 @@ makes use of the function \texttt{atMostOne} that is shown in Figure
                  xrightmargin  = 0.8cm,
                  ]{python3}
     def onePerHouse(S):
-        Clauses = { somewhere(x) for x in S } 
-        for i in range(1, 5+1):
-            Clauses |= atMostOneAt(S, i)
+        Clauses  = { somewhere(x) for x in S } 
+        Clauses |= { C for i in range(1, 5+1) for C in atMostOneAt(S, i) }
         return Clauses
 \end{minted}
 \vspace*{-0.3cm}
@@ -3919,31 +3921,32 @@ clauses that express the fact that these five persons live in different houses.
 \label{fig:sameHouse}
 \end{figure}
 
-Given to properties $a$ and $b$ the function $\texttt{sameHouse}(a, b)$ that is
+Given two properties $a$ and $b$ the function $\texttt{sameHouse}(a, b)$ that is
 shown in Figure \ref{fig:sameHouse} computes
 a set of clauses that specifies that if the inhabitant of house number $i$ has
 the property $a$, then he also has the the property $b$ and vice versa.  For
 example, $\texttt{sameHouse}(\texttt{"Japanese"}, \texttt{"Dog"})$ specifies
-that the Japanese guy keeps a dog. 
+that the Japanese guy keeps a dog.  The function \texttt{parseKNF} that is used here takes a string, converts
+it into a formula from propositional logic, and finally converts this formula into \textsc{Cnf}.
 
 
 \begin{figure}[!ht]
 \centering
 \begin{minted}[ frame         = lines, 
-                 framesep      = 0.3cm, 
+                 framesep      = 0.2cm, 
                  firstnumber   = 1,
                  bgcolor       = sepia,
                  numbers       = left,
                  numbersep     = -0.2cm,
-                 xleftmargin   = 0.8cm,
-                 xrightmargin  = 0.8cm,
+                 xleftmargin   = 0.0cm,
+                 xrightmargin  = 0.0cm,
                ]{python3}
-    def nextTo(a, b):
-        Result = parseKNF(f"{var(a,1)} → {var(b,2)}")
-        for i in [2, 3, 4]:
-            Result |= parseKNF(f"{var(a,i)} → {var(b,i-1)} ∨ {var(b,i+1)}")
-        Result |= parseKNF(f"{var(a,5)} → {var(b,4)}")
-        return Result
+  def nextTo(a, b):
+      Result  = parseKNF(f"{var(a,1)} → {var(b,2)}")
+      Result |= { C for i in [2,3,4]
+                    for C in parseKNF(f"{var(a,i)} → {var(b,i-1)} ∨ {var(b,i+1)}") }
+      Result |= parseKNF(f"{var(a,5)} → {var(b,4)}")
+      return Result
 \end{minted}
 \vspace*{-0.3cm}
 \caption{nextTo}
@@ -4177,8 +4180,14 @@ You should edit this notebook in order to solve the given problem.
 \item What is a tautology?
 \item How can we transform propositional logic formula into conjunctive normal
       form?
+\item Define the notion of an inference rule.
+\item when is  an inference rule correct?
+\item Define the cut rule.
 \item How did we define the proof concept $M \vdash C$?
-\item What are the most important properties of the proof concept $\vdash$?
+\item What is a saturated set of clauses?
+\item What are the two most important properties of the proof concept $\vdash$?
+\item Assume that $M$ is a saturated set of clauses. How can we define a propositional interpretation
+      $\mathcal{I}$ such that $\mathcal{I}(C) = \mathtt{True}$ for all $C \in M$?
 \item How did we define the notion of a set of clauses being solvable?
 \item Do you know how the algorithm of Davis and Putnam works?
 \item Can you code a logical puzzle as a propositional formula?
