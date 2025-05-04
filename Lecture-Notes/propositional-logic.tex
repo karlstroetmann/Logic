@@ -4171,6 +4171,417 @@ You should edit this notebook in order to solve the given problem.
 
 \pagebreak
 
+\section{Sudoku and PicoSat}
+As a final example we will solve a \href{https://en.wikipedia.org/wiki/Sudoku}{Sudoku} puzzle.  In particular,
+we will solve an instance of a Sudoku puzzle that was created by Arto Inkala.  He claims that this is the
+\href{https://abcnews.go.com/blogs/headlines/2012/06/can-you-solve-the-hardest-ever-sudoku}{hardest solvable instance}
+of a Sudoku puzzle.  Figure \ref{fig:sudoku.png} shows the Sudoku created by Arto Inkala.
+
+\begin{figure}[!ht]
+  \centering
+  \framebox{\epsfig{file=Figures/sudoku.png, scale=0.5}} 
+  \caption{The Sudoku puzzle created by Arto Inkala.}
+  \label{fig:sudoku.png}
+\end{figure}
+
+A Sudoku puzzle is a logic-based, combinatorial number-placement puzzle. The objective is to fill a
+$9 \times 9$ grid with digits from the set $\{1, \cdots, 9\}$ so that each column, each row, and each of the
+nine $3 \times 3$ subgrids that compose the grid (also called "boxes") contain all of these digits exactly
+once.  The puzzle is given as a partially completed grid.  A well-posed puzzle must have a single unique
+solution.
+
+In order to formulate a Sudoku as a satisfiablity problem from propositional logic, we will use the following
+set of propositional variables:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{P} = \bigl\{ Q_{r,c,d} \mid r \in \{1,\cdots, 9\} \wedge c \in \{1,\cdots, 9\} \wedge r \in \{1,\cdots, 9\} \bigl\}$
+\\[0.2cm]
+The variable $Q_{r,c,d}$ is supposed to be \texttt{True} if $d$ is the digit in row $r$ and column $c$ of the
+Sudoku.  Note that this means that we have $9^3 = 729$ different propositional variables.  In our
+implementation we will use the function \texttt{var} shown in Figure \ref{fig:sudoku-var} to create these variables.
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def var(row, col, digit):
+        return f'Q<{row},{col},{digit}>'
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{var}.}
+\label{fig:sudoku-var}
+\end{figure}
+
+The Sudoku itself is created by the function \texttt{create\_puzzle} shown in Figure
+\ref{fig:sudoku-create-puzzle} on page \pageref{fig:sudoku-create-puzzle}.  In this function, the puzzle is
+represented as a list of lists.  Each of these lists represents a row.  The inner lists contain digits and the
+characters \texttt{"*"}.  These characters represent the digits that are initially unknown and whose value have
+to be computed.
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def create_puzzle():
+        return [ [ 8 , "*", "*", "*", "*", "*", "*", "*", "*"], 
+                 ["*", "*",  3 ,  6 , "*", "*", "*", "*", "*"],
+                 ["*",  7 , "*", "*",  9 , "*",  2 , "*", "*"],
+                 ["*",  5 , "*", "*", "*",  7 , "*", "*", "*"],
+                 ["*", "*", "*", "*",  4 ,  5 ,  7 , "*", "*"],
+                 ["*", "*", "*",  1 , "*", "*", "*",  3 , "*"],
+                 ["*", "*",  1 , "*", "*", "*", "*",  6 ,  8 ],
+                 ["*", "*",  8 ,  5 , "*", "*", "*",  1 , "*"],
+                 ["*",  9 , "*", "*", "*", "*",  4 , "*", "*"]
+               ]
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{create\_puzzle}.}
+\label{fig:sudoku-create-puzzle}
+\end{figure}
+
+In our implementation we will use functions \texttt{atMostOne} that we have already seen in Figure
+\ref{fig:atMostOne} on page \pageref{fig:atMostOne} that expresses that at most one of a given set of
+propositional variables is \texttt{True}.  Furthermore, we will use the auxiliary function
+$\texttt{atLeastOne}(V)$ which takes a set of propositional variables $V$ and which returns a formula in
+conjunctive normal form in set notation that is \texttt{True} if and only if at least one of the variables in
+$V$ is \texttt{True}.  Note that in set notation we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{atLeastOne}(V) = \bigl\{ V \bigr\}$.
+\\[0.2cm]
+The reason is that in set notation  $V$ is interpreted as a clause, i.e.~as a disjunction of its variables.
+Using these two functions we can then define a function $\texttt{exactlyOne}(V)$ that
+takes a set of variables and returns \texttt{True} iff exactly one of the variables in $V$ is \texttt{True}.
+The implementation is shown in Figure \ref{fig:sudoku-exactly}.
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def atLeastOne(S):
+        return { frozenset(S) }
+    
+    def exactlyOne(S):
+        return atMostOne(S) | atLeastOne(S)
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The functions \texttt{atLeastOne} and \texttt{exactlyOne}.}
+\label{fig:sudoku-exactly}
+\end{figure}
+
+Figure \ref{fig:sudoku-exactlyOnce} show the implementation of the function
+$\texttt{allDifferent}(L)$.  This function takes a set $L$ of pairs as arguments.  Every pair $(r,c) \in L$ is
+interpreted as a position in the Sudoku grid whre $r$ specifies the row and $c$ specifies the column of the
+position.  The function $\texttt{allDifferent}$ computes a set of formulas that express that every digit
+$d \in \{1,\cdots,9\}$ occurs exactly once in the set of coordinates $L$: 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{exactlyOnce}(L) = \bigcup\limits_{d \in \{1,\cdots,9\}} \bigl\{ Q_{r,c,d} \mid (r,c) \in L \bigl\}$
+
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def exactlyOnce(L):
+        Clauses = set()
+        for digit in range(1, 10):
+            Clauses |= exactlyOne({ var(col, row, digit)  for col, row in L })
+        return Clauses
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{exactlyOnce}.}
+\label{fig:sudoku-exactlyOnce}
+\end{figure}
+
+The function $\texttt{exactlyOneDigit}(r, c)$ takes a row $r$ and a column $c$ as its argument.  It returns a
+formula expressing that exactly one of the variables from the set
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bigl\{ Q_{r,c,d} \mid d \in \{1,\cdots, 9\} \bigr\}$
+\\[0.2cm]
+is \texttt{True}. The implementation is shown in Figure \ref{fig:sudoku-exactlyOneDigit}.
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def exactlyOneDigit(row, col):
+        return exactlyOne({ var(row, col, digit) for digit in range(1, 10) })
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{exactlyOneDigit}.}
+\label{fig:sudoku-exactlyOneDigit}
+\end{figure}
+
+Furthermore, we need a function encoding the constraints form the puzzle itself.
+This function is called \texttt{constraintsFromPuzzle} and its implementation is shown in Figure
+\ref{fig:sudoku-constraintsFromPuzzle} on page \pageref{fig:sudoku-constraintsFromPuzzle}.
+For example, the given puzzle demands that the digit in row 2 and column 4 is the digit $6$.
+This can be expressed as the formula $Q_{2,3,6}$.  In set notation this formula takes the form
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bigl\{ \{Q_{2,3,6}\} \bigr\}$.
+\\[0.2cm]
+Of course, we have to take the union of all these formula.  This leads to the code shown in Figure
+\ref{fig:sudoku-constraintsFromPuzzle} on page \pageref{fig:sudoku-constraintsFromPuzzle}.
+Note that we have to provide \texttt{row+1} and \texttt{col+1} as arguments to the function \texttt{var} since
+in Python list indices start with $0$.
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.0cm,
+                 xrightmargin  = 0.0cm,
+                 ]{python3}
+    def constraintsFromPuzzle():
+        Puzzle = create_puzzle()
+        Variables = [ var(row+1, col+1, Puzzle[row][col]) for row in range(9)
+                                                          for col in range(9)
+                                                          if  Puzzle[row][col] != '*'
+                    ]
+        return { frozenset({ var }) for var in Variables }                 
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{constraintsFromPuzzle}}
+\label{fig:sudoku-constraintsFromPuzzle}
+\end{figure}
+
+Finally, we have to combine all constraints of the puzzle.  This is done with the function
+\texttt{allConstraints} shown in Figure \ref{fig:sudoku-allConstraints} shown on page \pageref{fig:sudoku-allConstraints}.
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+def allConstraints(): 
+    L = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    # the constraints from the puzzle have to be satisfied
+    Clauses = constraints_from_puzzle()
+    # there is exactly one digit in every field
+    for row in L:
+        for col in L:
+            Clauses |= exactlyOneDigit(row, col) 
+    # all entries in a row are unique
+    for row in L:
+        Clauses |= exactlyOnce([ (row, col) for col in L ]) 
+    # all entries in a column are unique
+    for col in L:
+        Clauses |= exactlyOnce([ (row, col) for row in L ])
+    # all entries in a 3x3 box are unique    
+    for r in range(3):
+        for c in range(3):
+            S = [ (r * 3 + row, c * 3 + col) for row in range(1, 4)
+                                             for col in range(1, 4) 
+                ]
+            Clauses |= exactlyOnce(S)
+    return Clauses
+ \end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{allConstraints}.}
+\label{fig:sudoku-allConstraints}
+\end{figure}
+
+\pagebreak
+
+\hspace*{\fill}
+\pagebreak
+
+\subsection{PicoSat}
+Unfortunately, solving the resulting set of clauses takes about 10 minutes.  Fortunately, there is a version
+of the Davis-Putnam algorithm that is implemented in \texttt{C} and that, furthermore, incorporates a number of
+improvements to the original algorithm.  This solver is called \href{https://fmv.jku.at/picosat/}{PicoSat}
+and has been implemented by \href{https://cca.informatik.uni-freiburg.de/biere/}{Armine Biere}
+A \href{https://github.com/conda/pycosat}{Python API} to this solver is available as
+\href{https://pypi.org/project/pycosat/}{pycosat}.  We can install it via \texttt{pip} using the following command:
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{pip install pycosat}
+\\[0.2cm]
+In \textsl{PicoSat} propositional variables are represented as follows:
+\begin{enumerate}
+\item A propositional variable $p$ is represented as a positive natural number.
+\item If $n$ is the natural number representing the propositional variable $p$, then $\neg p$ is represented as
+      the integer $-n$. 
+\item A clause is represented as a list of integers.
+\item A formula in CNF is represented as a list of clauses and hence as a list of list of integers.
+\end{enumerate}
+For example, if the propositional variables $p$, $q$, and $r$ are represented as the natural numbers
+$1$, $2$, and $3$ respectively, then
+\begin{enumerate}
+\item $p \vee \neg q \vee r$ is represented as the list \texttt{[1, -2, 3]},
+\item $\neg p \vee q \vee \neg r$ is represented as the list \texttt{[-1, 2, -3]},
+\item $\neg p \vee \neg q \vee r$ is represented as the list \texttt{[-1, -2, 3]}, and
+\item $p \vee q \vee \neg r$ is represented as the list \texttt{[1, 2, -3]}.
+\end{enumerate}
+Finally, the formula 
+$$ f = (p \vee \neg q \vee r) \wedge (\neg p \vee q \vee \neg r) \wedge (\neg p \vee \neg q \vee r) \wedge (p \vee q \vee \neg r), $$
+which is in conjunctive normal form, is represented as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{f = [ [1, -2, 3], [-1, 2, -3], [-1, -2, 3], [1, 2, -3] ]}
+\\[0.2cm]
+In order so find a solution to this formula we can call $\texttt{pycosat.solve}(f)$.
+
+\subsubsection{Transforming Clauses into PyCoSat Format}
+In order to use \textsl{PicoSat} to solve the Sudoku discussed earlier, we need a function that transforms a
+formula that is in conjunctive normal form into the format of \textsl{PicoSat}.  Furthermore, we need  a function that can translate a solution found by \textsl{PicoSat} back into our format.
+
+The function \texttt{findVariables(Clauses)} in Figure \ref{fig:sudoku-findVariables} on page
+\pageref{fig:sudoku-findVariables} takes a set of clauses and returns the set of all propositional variables
+occurring in this set.
+\pagebreak
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def findVariables(Clauses):
+        Variables = set()
+        for Clause in Clauses:
+            for literal in Clause:
+                match literal:
+                    case ('¬', var): Variables |= { var }
+                    case var       : Variables |= { var }
+        return Variables
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{findVariables}.}
+\label{fig:sudoku-findVariables}
+\end{figure}
+
+The function \texttt{numberVariables(Clauses)} takes a set of clauses as input.  It returns two dictionaries:
+\begin{enumerate}
+\item The dictionary \texttt{Var2Int} maps every propositional variable occurring in \texttt{Clauses} to a
+      unique natural number. 
+\item The dictionary \texttt{Int2Var} is the mapping that is inverse to the dictionary \texttt{Var2Int}.
+      Hence it maps the natural numbers back to propositional variables.
+\end{enumerate}
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def numberVariables(Clauses):
+        Variables = findVariables(Clauses)
+        count     = 1
+        Var2Int   = {}
+        Int2Var   = {}
+        for variable in Variables:
+            Var2Int[variable] = count
+            Int2Var[count   ] = variable
+            count += 1
+        return Var2Int, Int2Var             
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{numberVariables}}
+\label{fig:sudoku-numberVariables}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+               ]{python3}
+    def literal2int(literal, Var2Int):
+        match literal:
+            case ('¬', var): return -Var2Int[var]
+            case var       : return  Var2Int[var]
+    
+    def clause2pyco(Clause, Var2Int):
+        return [literal2int(literal, Var2Int) for literal in Clause]
+    
+    def clause2pyco(Clause, Var2Int):
+        return [literal2int(literal, Var2Int) for literal in Clause]
+    
+    def clauses2pyco(Clauses, Var2Int):
+        return [clause2pyco(clause, Var2Int) for clause in Clauses ]
+    
+    def int2var(Numbers, Int2Var):
+        Result = set()
+        for n in Numbers:
+            if n > 0:
+                Result |= {frozenset({Int2Var[n]})}
+            else: 
+                Result |= {frozenset({ ('¬', Int2Var[-n]) })}
+        return Result
+\end{minted}
+\vspace*{-0.3cm}
+\caption{Some axilliary functions to transform clauses into the format of PicoSat.}
+\label{fig:sudoku-format}
+\end{figure}
+
+\pagebreak
+\hspace*{\fill}
+
+\pagebreak
 
 \section{Check Your Comprehension}
 \begin{enumerate}[(a)]
