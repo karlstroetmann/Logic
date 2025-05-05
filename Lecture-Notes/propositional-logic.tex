@@ -4291,13 +4291,13 @@ The implementation is shown in Figure \ref{fig:sudoku-exactly}.
 \end{figure}
 
 Figure \ref{fig:sudoku-exactlyOnce} show the implementation of the function
-$\texttt{allDifferent}(L)$.  This function takes a set $L$ of pairs as arguments.  Every pair $(r,c) \in L$ is
+$\texttt{exactlyOnce}(L)$.  This function takes a set $L$ of pairs as arguments.  Every pair $(r,c) \in L$ is
 interpreted as a position in the Sudoku grid whre $r$ specifies the row and $c$ specifies the column of the
-position.  The function $\texttt{allDifferent}$ computes a set of formulas that express that every digit
+position.  The function $\texttt{exactlyOnce}$ computes a set of formulas that express that every digit
 $d \in \{1,\cdots,9\}$ occurs exactly once in the set of coordinates $L$: 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{exactlyOnce}(L) = \bigcup\limits_{d \in \{1,\cdots,9\}} \bigl\{ Q_{r,c,d} \mid (r,c) \in L \bigl\}$
+$\texttt{exactlyOnce}(L) = \bigcup\limits_{d \in \{1,\cdots,9\}} \mathtt{exactlyOne}\bigl(\bigl\{ Q_{r,c,d} \mid (r,c) \in L \bigl\}\bigr)$
 
 
 \begin{figure}[!ht]
@@ -4348,6 +4348,7 @@ is \texttt{True}. The implementation is shown in Figure \ref{fig:sudoku-exactlyO
 \caption{The function \texttt{exactlyOneDigit}.}
 \label{fig:sudoku-exactlyOneDigit}
 \end{figure}
+
 
 Furthermore, we need a function encoding the constraints form the puzzle itself.
 This function is called \texttt{constraintsFromPuzzle} and its implementation is shown in Figure
@@ -4470,6 +4471,7 @@ which is in conjunctive normal form, is represented as follows:
 \\[0.2cm]
 In order so find a solution to this formula we can call $\texttt{pycosat.solve}(f)$.
 
+\pagebreak
 \subsubsection{Transforming Clauses into PyCoSat Format}
 In order to use \textsl{PicoSat} to solve the Sudoku discussed earlier, we need a function that transforms a
 formula that is in conjunctive normal form into the format of \textsl{PicoSat}.  Furthermore, we need  a function that can translate a solution found by \textsl{PicoSat} back into our format.
@@ -4477,7 +4479,7 @@ formula that is in conjunctive normal form into the format of \textsl{PicoSat}. 
 The function \texttt{findVariables(Clauses)} in Figure \ref{fig:sudoku-findVariables} on page
 \pageref{fig:sudoku-findVariables} takes a set of clauses and returns the set of all propositional variables
 occurring in this set.
-\pagebreak
+
 
 \begin{figure}[!ht]
 \centering
@@ -4539,6 +4541,22 @@ The function \texttt{numberVariables(Clauses)} takes a set of clauses as input. 
 \label{fig:sudoku-numberVariables}
 \end{figure}
 
+\pagebreak
+Figure \ref{fig:sudoku-format} shows the remaining auxiliary functions that are necessary to transform a
+formula represented as a set of clauses into the format of PicoSat.
+\begin{enumerate}
+\item The function \texttt{literal2int} takes a literal and transforms this literal into an integer
+      representing the literal. If the literal is a negated variable, the integer is negative, else it is
+      positive. \texttt{Var2Int} is a dictionary mapping propositional variables to natural numbers.
+\item The function \texttt{clause2pyco(Clause, Var2Int)} transforms a set of literals into a list of integers.
+      \texttt{Var2Int} is a dictionary mapping the propositional variables to natural numbers. 
+\item The function \texttt{clauses2pyco(Clauses, Var2Int)} transforms a set of clauses into a list of lists of
+      integers. \texttt{Var2Int} is a dictionary mapping the propositional variables to natural numbers.  
+\item The function \texttt{int2var(Numbers, Int2Var)} takes a list of numbers representing a set of literals and returns
+      the associated list of literals.  \texttt{Int2Var} is a dictionary mapping natural numbers to
+      propositional variables.     
+\end{enumerate}
+
 \begin{figure}[!ht]
 \centering
 \begin{minted}[ frame         = lines, 
@@ -4579,9 +4597,7 @@ The function \texttt{numberVariables(Clauses)} takes a set of clauses as input. 
 \end{figure}
 
 \pagebreak
-\hspace*{\fill}
 
-\pagebreak
 
 \section{Check Your Comprehension}
 \begin{enumerate}[(a)]
