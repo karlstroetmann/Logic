@@ -46,7 +46,7 @@ This chapter is structured as follows:
       first-order logic formulas, i.e., we will specify those strings that are regarded as first-order
       formulas.
 \item In the following section, we deal with the
-      \href{https://en.wikipedia.org/wiki/Semantics}{semantics} of these formulas, That is we specify the 
+      \href{https://en.wikipedia.org/wiki/Semantics}{semantics} of these formulas, that is we specify the 
       meaning of first-order formulas.
 \item After that, we show how to implement syntax and semantics in \textsl{Python}.
 \item As an application of first-order logic we discuss \textcolor{blue}{constraint programming}.
@@ -81,6 +81,11 @@ arity of these symbols.
         \hspace*{1.3cm} $\textsl{arity}: \mathcal{F} \cup \mathcal{P} \rightarrow \mathbb{N}$. \\[0.2cm]
         We say that the function or predicate symbol $f$ is an
         $n$-ary symbol if $\textsl{arity}(f) = n$.
+        
+        A function symbol $c$ such that $\textsl{arity}(c) = 0$ is called a \blue{constant}. \index{constant}
+        
+        A predicate symbol $p$ such that $\textsl{arity}(p) = 0$ is called a \blue{propositional variable}.
+        \index{propositional variable}
   \item Since we need to be able to distinguish between variables, function symbols, and predicate symbols,
         we agree that the sets $\mathcal{V}$, $\mathcal{F}$, and $\mathcal{P}$ have to be pairwise disjoint: \\[0.2cm] 
         \hspace*{1.3cm} $\mathcal{V} \cap \mathcal{F} = \{\}$, \quad
@@ -98,14 +103,16 @@ called \textcolor{blue}{terms}.\index{terms} The formal definition follows.
   \textcolor{blue}{$\mathcal{T}_\Sigma$} \index{$\mathcal{T}_\Sigma$} inductively:
   \begin{enumerate}
   \item For every variable $x \in \mathcal{V}$, we have that $x \in \mathcal{T}_\Sigma$. Thus, every variable is also a term.
-  \item If $f \in \mathcal{F}$ is an $n$-ary function symbol and 
+  \item If $c \in \mathcal{F}$ is a $0$-ary function symbol,
+        i.e.~$\textsl{arity}(c) = 0$, then $c \in \mathcal{T}_\Sigma$.
+
+        Therefore, every constant is a term.
+  \item If $f \in \mathcal{F}$ is an $n$-ary function symbol such that $n > 0$ and 
         $t_1,\cdots,t_n \in \mathcal{T}_\Sigma$, then 
         \\[0.2cm]
         \hspace*{1.3cm} $f(t_1,\cdots,t_n) \in \mathcal{T}_\Sigma$,
         \\[0.2cm]
         thus the expression $f(t_1,\cdots,t_n) \in \mathcal{T}_\Sigma$ is a term.
-        If $c \in \mathcal{F}$ is a nullary function symbol, we also allow the notation
-        $c$ instead of $c()$. In this case, we call $c$ a \textcolor{blue}{constant}.\index{constant}
         \eox
   \end{enumerate}
 \end{Definition}
@@ -141,17 +148,22 @@ we write $x+y$ instead of $+(x,y)$. The infix notation is then to be understood 
 above-defined representation. This, of course, works only if we also set precedence levels for the various operators.
 \eox
 
-Next, we define the concept of \textcolor{blue}{atomic formulas}.\index{Atomic Formulas} These are formulas that cannot be decomposed into smaller formulas: atomic formulas thus contain neither connectives nor quantifiers.
+Next, we define the concept of \textcolor{blue}{atomic formulas}.\index{Atomic Formulas} These are formulas
+that cannot be decomposed into smaller formulas: atomic formulas thus contain neither propositional connectives
+nor quantifiers. 
 \begin{Definition}[Atomic Formulas, $\mathcal{A}_\Sigma$]
   Given a signature $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$. 
   The set of atomic $\Sigma$-formulas $\mathcal{A}_\Sigma$ \index{$\mathcal{A}_\Sigma$}
-  is defined as follows: If $p \in \mathcal{P}$ is an $n$-ary predicate symbol
-  and $n$ $\Sigma$-terms $t_1$, $\cdots$, $t_n$ are given, then
-  $p(t_1,\cdots,t_n)$ is an \textcolor{blue}{atomic $\Sigma$-formula}: \\[0.2cm]
-  \hspace*{1.3cm} $p(t_1,\cdots,t_n) \in \mathcal{A}_\Sigma$.  \\[0.2cm]
-  If $p$ is a nullary predicate symbol, then we also write $p$ instead of $p()$.
-  In this case, we call $p$ a \textcolor{blue}{propositional variable}.\index{Propositional Variable}
-  \eox
+  is defined as follows:
+  \begin{enumerate}
+  \item $\verum \in \mathcal{A}_\Sigma$ and  $\falsum \in \mathcal{A}_\Sigma$.
+  \item If $p \in \mathcal{A}_\Sigma$ and $\textsl{arity}(p)= 0$, then $p \in \mathcal{A}_\Sigma$.
+
+        Therefore, propositional variables are atomic formulas.
+  \item If $p \in \mathcal{P}$ is an $n$-ary predicate symbol such that $n > 0$ and, furthermore,  $n$ $\Sigma$-terms
+        $t_1$, $\cdots$, $t_n$ are given, then  $p(t_1,\cdots,t_n)$ is an \textcolor{blue}{atomic $\Sigma$-formula}: \\[0.2cm]
+        \hspace*{1.3cm} $p(t_1,\cdots,t_n) \in \mathcal{A}_\Sigma$.  \qed
+  \end{enumerate}
 \end{Definition}
 
 \exampleEng
@@ -160,7 +172,14 @@ Continuing from the last example, we can see that \\[0.2cm]
 is an atomic $\Sigma_\mathrm{arith}$-formula. Note that we have not yet discussed the truth value of such
 formulas. The question of whether a formula is considered true or false
 will be explored in the next section.
+
+In practice we will often use infix notation for binary predicate symbols.  The atomic formula given above is then
+written as
+\\[0.2cm]
+\hspace*{1.3cm}
+$(0 + x) * 1 = 0$.
 \eox
+
 
 \subsection{Bound Variables and Free Variables}
 In defining first-order logic formulas, it is necessary
@@ -171,7 +190,7 @@ Consider the following equation: \\[0.2cm]
 \hspace*{1.3cm}
 $\ds\int_{0}^{x} y \cdot t\, dt = \frac{1}{2} \cdot x^2 \cdot y$
 \\[0.2cm]
-In this equation, the variables $x$ and $y$ appear \textcolor{blue}{free}, while the variable $t$ is \textcolor{blue}{bound} by the integral.
+In this equation, the variables $x$ and $y$ occur \textcolor{blue}{free}, while the variable $t$ is \textcolor{blue}{bound} by the integral.
 This means the following: We can substitute arbitrary values for $x$ and $y$ in this equation without
 changing the validity of the formula. For example, substituting $2$ for $x$, we get \\[0.2cm]
 \hspace*{1.3cm}
@@ -213,7 +232,7 @@ $\Sigma$-term $t$ the set of variables contained in $t$.
 \begin{Definition}[$\var(t)$]
   \index{$\var(t)$}
   Given a signature $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ and
-  $t$ a $\Sigma$-term, we define the set \textcolor{blue}{$\var(t)$} of variables that appear in $t$
+  $t$ a $\Sigma$-term, we define the set \textcolor{blue}{$\var(t)$} of variables that occur in $t$
   by induction on the structure of the term:
   \begin{enumerate}
     \item $\var(x) := \{ x \}$ \quad for all $x \in \mathcal{V}$,
@@ -230,10 +249,16 @@ $\Sigma$-term $t$ the set of variables contained in $t$.
 Let $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ be a signature.
     We denote the set of \textcolor{blue}{$\Sigma$-\emph{Formulas}} by $\mathbb{F}_\Sigma$.
     We define this set inductively.
-    Simultaneously, for each formula $F \in \mathbb{F}_\Sigma$, we define the set $\textsl{BV}(F)$ of variables that appear \textcolor{blue}{bound} in $F$ and the set $\textsl{FV}(F)$ of variables that appear \textcolor{blue}{free} in $F$.
+    Simultaneously, for each formula $F \in \mathbb{F}_\Sigma$, we define the set $\textsl{BV}(F)$ of variables
+    that occur \textcolor{blue}{bound} in $F$ and the set $\textsl{FV}(F)$ of variables that occur
+    \textcolor{blue}{free} in $F$. 
     \begin{enumerate}
     \item $\falsum \in \mathbb{F}_\Sigma$ and $\verum \in \mathbb{F}_\Sigma$, and we define \\[0.2cm]
           \hspace*{1.3cm} $\FV(\falsum) := \FV(\verum) := \BV(\falsum) := \BV(\verum) := \{\}$.
+    \item If $p \in \mathcal{A}_\Sigma$ and $\textsl{arity}(p)= 0$, then $p \in \mathbb{F}_\Sigma$ and    
+          \\[0.2cm]
+          \hspace*{1.3cm}
+          \hspace*{1.3cm} $\FV(p) := \{\}$ \quad and \quad $\BV(p) := \{\}$.
     \item If $F = p(t_1,\cdots,t_n)$ is an atomic $\Sigma$-formula, then $F \in \mathbb{F}_\Sigma$.
           Furthermore, we have
           \begin{enumerate}
@@ -291,7 +316,7 @@ is a formula from $\mathbb{F}_{\Sigma_{\mathrm{arith}}}$.
 The set of bound variables is $\{x\}$, the set of free variables is 
 $\{ y \}$. \eox
 
-If we always wrote formulas in the prefix notation defined above, then readability would suffer
+If we would always write formulas in the prefix notation defined above, then readability would suffer
 disproportionately.  
 To abbreviate, we agree that in first-order logic the same rules for saving parentheses apply that we have
 already used in propositional logic. In addition, the same quantifiers are combined: for example, we write   
@@ -300,25 +325,28 @@ already used in propositional logic. In addition, the same quantifiers are combi
 $\forall x, y \colon p(x, y)  \quad \text{instead of} \quad \forall x \colon ( \forall y \colon p(x,y))$.
 \\[0.2cm]
 Moreover, we agree that we may also indicate binary predicate and function symbols in infix notation.
-To ensure clear readability, we must then define the precedence of the function symbols.
-For example, we write \\[0.2cm]
+In order to guarantee a unique readability, we must then define the precedence and the associativity of the
+function symbols.  For example, we write \\[0.2cm]
 \hspace*{1.3cm} $\mathtt{n}_1 = \mathtt{n}_2$  \quad instead of \quad $=(\mathtt{n}_1, \mathtt{n}_2)$. \\[0.2cm]
 The formula $(\exists x \colon \leq(\mathtt{+}(y, x),y))$ becomes more readable as \\[0.2cm]
 \hspace*{1.3cm} $\exists x \colon y + x \leq y$ \\[0.2cm]
-Moreover, in the literature, you often find expressions of the form
+Moreover, in the literature, you will often find expressions of the form
 \\[0.2cm]
 \hspace*{1.3cm}
 $\forall x \in M: F$ \quad or \quad $\exists x \in M: F$.
 \\[0.2cm]
-These are abbreviations, defined as
+These are abbreviations defined as
 \\[0.2cm]
 \hspace*{1.3cm}
-$\ds \bigl(\forall x \in M: F\bigr) \stackrel{\mathrm{def}}{\Longleftrightarrow} \forall x: \bigl(x \in M \rightarrow F\bigr)$,
+$\ds \bigl(\forall x \in M: F\bigr) \stackrel{\mathrm{def}}{\Longleftrightarrow} \forall x: \bigl(x \in M \rightarrow F\bigr)$
 \quad and \quad 
 $\ds\bigl(\exists x \in M: F\bigr) \stackrel{\mathrm{def}}{\Longleftrightarrow} \exists x: \bigl(x \in M \wedge F\bigr)$.
+\\[0.2cm]
+Finally, we agree that quantifiers bind more tightly than the operators $\wedge$, $\vee$, $\rightarrow$, and
+$\leftrightarrow$. 
 
 \section{Semantics of First-Order Logic \label{sec:semantik}}
-Next, we define the meaning of the formulas. For this purpose, we introduce the concept of a
+Next, we define the \blue{meaning} of the formulas. For this purpose, we introduce the concept of a
 \blue{$\Sigma$-structure}. \index{$\Sigma$-structure} This kind of structure specifies how the
 function and predicate symbols of the signature $\Sigma$ are to be interpreted.
 
@@ -334,20 +362,25 @@ function and predicate symbols of the signature $\Sigma$ are to be interpreted.
         \item $\mathcal{J}$ is the \blue{interpretation} \index{interpretation} of the function and predicate symbols.
               Formally, we define $\mathcal{J}$ as a mapping with the following properties:
         \begin{enumerate}
-        \item Every function symbol $f \in \mathcal{F}$ with $\textsl{arity}(f) = m$ is mapped to
+        \item Every function symbol $c \in \mathcal{F}$ with $\textsl{arity}(f) = 0$ is mapped to an element
+              of $\mathcal{U}$, i.e.~we have $\mathcal{J}(c) \in \mathcal{U}$.  Instead of writing
+              $\mathcal{J}(c)$ we will write $c^{\mathcal{J}}$.
+        \item Every function symbol $f \in \mathcal{F}$ with $\textsl{arity}(f) = m$ and $m > 0$ is mapped to
               an $m$-ary function \\[0.2cm]
               \hspace*{1.3cm}
               $f^\mathcal{J}\colon \mathcal{U}^m \rightarrow \mathcal{U}$ \\[0.2cm]
               that maps $m$-tuples of the universe $\mathcal{U}$ into the universe $\mathcal{U}$.
-        \item Every predicate symbol $p \in \mathcal{P}$ with $\textsl{arity}(p) = n$ is mapped to
+        \item Every predicate symbol $p \in \mathcal{P}$ with $\textsl{arity}(p) = 0$ is mapped to
+              the set $\mathbb{B}$ of truth values, i.e.~$p^{\mathcal{J}} \in \{ \mathtt{True}, \mathtt{False}\}$.
+        \item Every predicate symbol $p \in \mathcal{P}$ with $\textsl{arity}(p) = n$ such that $n > 0$ is mapped to
               a subset \\[0.2cm]
               \hspace*{1.3cm} 
-              $p^\mathcal{J} \subseteq \mathcal{U}^n$ \\[0.2cm]
+              $p^\mathcal{J} \subseteq \mathcal{U}^n$. \\[0.2cm]
               The idea is that an atomic formula of the form $p(t_1, \cdots, t_n)$
-              is interpreted as true exactly when the interpretation of the tuple
+              is interpreted as $\texttt{True}$ exactly if the interpretation of the tuple
               $\langle t_1, \cdots, t_n \rangle$ is an element of the set $p^\mathcal{J}$.
-        \item If the symbol ``$=$'' is a member of the set of predicate symbols $\mathcal{P}$, then
-              interpretation of  the equality symbol ``$=$'' has to be \emph{canonical}, i.e.~we must have
+        \item If the symbol ``$=$'' is a member of the set of predicate symbols $\mathcal{P}$, then the
+              interpretation of  the equality symbol ``$=$'' has to be \blue{canonical}, i.e.~we must have
               \\[0.2cm]
               \hspace*{1.3cm}  
               $=^\mathcal{J} \;=\; \bigl\{ \langle u, u \rangle \mid u \in \mathcal{U} \bigr\}$.
@@ -371,7 +404,7 @@ The signature $\Sigma_G$ of group theory is defined as \\[0.2cm]
 \item $\textsl{arity} = \bigl\{ \pair(\mathrm{e},0), \pair(*,2), \pair(\mathtt{=},2)\bigr\}$
 \end{enumerate}
 We can then define a $\Sigma_G$ structure $\mathcal{Z} = \langle \{0,1\},\mathcal{J}\rangle$ 
-by setting the interpretation $\mathcal{J}$ 
+by defining the interpretation $\mathcal{J}$ 
 as follows:
 \begin{enumerate}
 \item $\mathrm{e}^\mathcal{J} := 0$,
@@ -410,13 +443,15 @@ for these variables. Which values we substitute is determined by a \blue{variabl
 
 
 \begin{Definition}[Interpretation of Terms]
-    If $\struct = \pair(\mathcal{U},\mathcal{J})$ is a  $\Sigma$-structure and $\mathcal{I}$ is an  $\struct$
+  If $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ is a signature
+  $\struct = \pair(\mathcal{U},\mathcal{J})$ is a  $\Sigma$-structure and $\mathcal{I}$ is an  $\struct$
     variable assignment, then for every term $t$ the \blue{value} \blue{$\struct(\mathcal{I}, t)$}
     \index{$\struct(\mathcal{I}, t)$} is defined by induction on $t$:
     \begin{enumerate}
     \item If $x \in \mathcal{V}$ we define: \\[0.2cm]
           \hspace*{1.3cm} $\struct(\mathcal{I}, x) := \mathcal{I}(x)$.
-    \item If $t$ is a term of the form $f(t_1,\cdots,t_n)$ we define \\[0.2cm]
+    \item If $c \in \mathcal{F}$ and $\textsl{arity}(c) = 0$, then $\mathcal{S}(\mathcal{I}, c) := c^\mathcal{J}$.
+    \item If $t$ is a term of the form $f(t_1,\cdots,t_n)$, then we define \\[0.2cm]
           \hspace*{1.3cm} $\struct\bigl(\mathcal{I}, f(t_1,\cdots,t_n)\bigr) := 
                            f^\mathcal{J}\bigl( \struct(\mathcal{I}, t_1), \cdots, \struct(\mathcal{I}, t_n) \bigr)$.
                            \eox
@@ -436,15 +471,7 @@ The previous line is interpreted as follows:
 Then we have  \\[0.2cm]
 \hspace*{1.3cm}  $\mathcal{Z}\bigl(\mathcal{I}, \mathtt{x} * \mathtt{y} \bigr) = 1$. \eox
 
-\begin{Definition}[Semantics of Atomic $\Sigma$-Formulas]
-    If $\struct$ is a  $\Sigma$-structure and $\mathcal{I}$ is an $\struct$ variable assignment,
-    then for each atomic $\Sigma$-Formel 
-    $p(t_1, \cdots, t_n)$ we define the value \blue{$\struct\bigl(\mathcal{I}, p(t_1, \cdots, t_n) \bigr)$} as follows: \\[0.2cm]
-    \hspace*{1.3cm}
-    $\struct\bigl(\mathcal{I}, p(t_1,\cdots,t_n)\bigr) := 
-       \Bigl(\bigl\langle \struct(\mathcal{I}, t_1), \cdots, \struct(\mathcal{I}, t_n) \bigr\rangle \in p^\mathcal{J}\Bigr)$.
-    \eox
-\end{Definition}
+
 
 \exampleEng
 If we continue our previous example we have
@@ -462,15 +489,23 @@ available, just like in propositional logic:
 \item $\circright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$,
 \item $\circleftright: \mathbb{B} \times \mathbb{B} \rightarrow \mathbb{B}$.
 \end{enumerate}
-The definitions of these functions were given by the table in Figure \ref{tab:aussagen-logik} on page
+The definitions of these functions have been given by the table in Figure \ref{tab:aussagen-logik} on page
 \pageref{tab:aussagen-logik}.
 
 \begin{Definition}[Semantics of $\Sigma$-formulas]
-    Let $\struct$ be a $\Sigma$-structure and $\mathcal{I}$ a $\struct$-variable assignment.  
-    We define for each $\Sigma$-formula $F$ the value \blue{$\struct(\mathcal{I},F)$}
+    Let $\struct = \langle \mathcal{U}, \mathcal{J} \rangle$ be a $\Sigma$-structure and $\mathcal{I}$ a $\struct$-variable assignment.  
+    For each $\Sigma$-formula $F$ the value \blue{$\struct(\mathcal{I},F)$} is defined
     by induction:
     \begin{enumerate}
     \item $\struct(\mathcal{I},\verum) := \mathtt{True}$ and $\struct(\mathcal{I},\falsum) := \mathtt{False}$.
+    \item If $p$ is a propositional variable, then we define the value of $p$ as follows:
+          \\[0.2cm]
+          \hspace*{1.3cm}
+          $\mathcal{S}(\mathcal{I}, p) := p^\mathcal{J}$.
+    \item For each atomic $\Sigma$-formula of the form $p(t_1, \cdots, t_n)$ we define the value  as follows: \\[0.2cm]
+          \hspace*{1.3cm}
+          $\struct\bigl(\mathcal{I}, p(t_1,\cdots,t_n)\bigr) := 
+          \Bigl(\bigl\langle \struct(\mathcal{I}, t_1), \cdots, \struct(\mathcal{I}, t_n) \bigr\rangle \in p^\mathcal{J}\Bigr)$.
     \item $\struct(\mathcal{I}, \neg F) := \circneg\bigl(\struct(\mathcal{I}, F)\bigr)$.
     \item $\struct(\mathcal{I}, F \wedge G) := \circwedge\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
     \item $\struct(\mathcal{I}, F \vee G) := \circvee\bigl(\struct(\mathcal{I}, F), \struct(\mathcal{I}, G)\bigr)$.
@@ -507,10 +542,10 @@ Continuing from the above example, we have \\[0.2cm]
 
 If $F$ is a formula such that $\FV(F) = \{\}$, then the value $\struct(\mathcal{I}, F)$ 
 obviously does not depend on the interpretation $\mathcal{I}$. We also refer to such formulas as 
-\blue{closed} formulas.\index{closed formula} In this case, we write more succinctly $\struct(F)$
+\blue{closed} formulas.\index{closed formula} In this case, we write $\struct(F)$
 instead of $\struct(\mathcal{I}, F)$. If additionally $\struct(F) = \mathtt{True}$, 
 we also say that $\struct$ is a \blue{model} \index{model} of $F$.
-In this case we write \\[0.2cm]
+This is written as \\[0.2cm]
 \hspace*{1.3cm} $\mathcal{S} \models F$. \index{$\mathcal{S} \models F$}
 \vspace{0.1cm}
 
@@ -533,7 +568,10 @@ $\Sigma$-formulas, and $\Sigma$-structures.
   \hspace*{1.3cm}
   $\models F \leftrightarrow G$
   \\[0.2cm]
-  holds.
+  holds.  If $F$ and $G$ are equivalent, then this will be written as
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $F \;\Leftrightarrow\; G$.
   \eox
 \end{Definition}
 
@@ -549,7 +587,7 @@ All propositional logic equivalences are also first-order logic equivalences.
     $\struct(\mathcal{I},F) = \mathtt{True}$ \quad for all $F \in M$ 
     \\[0.2cm]
     holds. Otherwise, $M$ is called \blue{unsatisfiable} or \blue{contradictory}.\index{contradictory}
-    We also write \\[0.2cm]
+    This is written as \\[0.2cm]
     \hspace*{1.3cm} $M \models \falsum$ \index{$M \models \falsum$}
     \eox
 \end{Definition}
@@ -559,7 +597,8 @@ Our goal is to provide a method that allows us to check
 whether a set $M$ of formulas is \blue{contradictory}, i.e., whether 
 $M \models \falsum$ holds. It turns out that this is generally not
 possible; the question of whether $M \models \falsum$ holds is \red{undecidable}. A proof
-of this fact is beyond the scope of this lecture.
+of this fact is based on the unsolvability of the halting problem but the details are beyond the scope of
+this lecture. 
 However, as in propositional logic, it is possible
 to specify a \blue{calculus} $\vdash$ such that: \\[0.2cm]
 \hspace*{1.3cm} $M \vdash \falsum$ \quad iff \quad $M \models \falsum$. \\[0.2cm]
