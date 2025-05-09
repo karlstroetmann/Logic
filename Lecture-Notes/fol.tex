@@ -94,13 +94,31 @@ arity of these symbols.
   \end{enumerate}
 \end{Definition}
 
+\exampleEng
+Next, we define the signature $\Sigma_G$ of group theory. Let
+\begin{enumerate}
+\item $\mathcal{V} := \{ x, y, z \}$ be the set of variables,
+\item $\mathcal{F} := \{ \mathtt{e}, \circ \}$ be the set of function symbols,
+\item $\mathcal{P} := \{\mathtt{=} \}$ be the set of predicate symbols,
+\item $\textsl{arity} := \bigl\{ \mathtt{e} \mapsto 0, \mathtt{\circ} \mapsto 2, = \mapsto 2 \bigr\}$
+      specifes the arities of function and predicate symbols.
+\end{enumerate}
+Then the signature $\Sigma_G$ of group theory is defined as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\Sigma_G := \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$.
+\eox
+\vspace{0.3cm}
+
 \noindent
 We use expressions built from variables and function symbols as identifiers for objects. These expressions are
 called \textcolor{blue}{terms}.\index{terms} The formal definition follows.
 
-\begin{Definition}[Terms, $\mathcal{T}_\Sigma$]
-  If $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ is a signature, then we define the set of \textcolor{blue}{$\Sigma$-terms},
-  \textcolor{blue}{$\mathcal{T}_\Sigma$} \index{$\mathcal{T}_\Sigma$} inductively:
+\begin{Definition}[Terms, $\mathcal{T}_\Sigma$] \hspace*{\fill} \\
+  If $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ is a signature, then we
+  define the set \textcolor{blue}{$\mathcal{T}_\Sigma$} \index{$\mathcal{T}_\Sigma$}  of
+  \textcolor{blue}{$\Sigma$-terms}, 
+  inductively:
   \begin{enumerate}
   \item For every variable $x \in \mathcal{V}$, we have that $x \in \mathcal{T}_\Sigma$. Thus, every variable is also a term.
   \item If $c \in \mathcal{F}$ is a $0$-ary function symbol,
@@ -345,6 +363,65 @@ $\ds\bigl(\exists x \in M: F\bigr) \stackrel{\mathrm{def}}{\Longleftrightarrow} 
 \\[0.2cm]
 Finally, we agree that quantifiers bind more tightly than the operators $\wedge$, $\vee$, $\rightarrow$, and
 $\leftrightarrow$. 
+
+\exerciseEng
+\noindent \textbf{Consider the following signature for formalizing family relationships:}
+\begin{itemize}
+    \item \textbf{Variables:} $\{ u, v, w, x, y, z \}$.
+    \item \textbf{Function Symbols:}
+    \begin{itemize}
+        \item $\texttt{mother}(x)$: the mother of $x$.
+        \item $\texttt{father}(x)$: the father of $x$.
+    \end{itemize}
+    \item \textbf{Unary Predicates:}
+    \begin{itemize}
+        \item $\texttt{female}(x)$: $x$ is female.
+        \item $\texttt{male}(x)$: $x$ is male.
+    \end{itemize}
+    \item \textbf{Binary Predicates:}
+    \begin{itemize}
+    \item $\texttt{brother}(x,y)$: $x$ is a brother of $y$.
+    \item $\texttt{sister}(x,y)$: $x$ is a sister of $y$.
+    \item $\texttt{sibling}(x,y)$: $x$ is a sibling of $y$.
+    \item $\texttt{married}(x,y)$: $x$ is married to $y$.
+    \item $\texttt{grandmother}(x,y)$: $x$ is a grandmother of $y$.
+    \item $\texttt{grandfather}(x,y)$: $x$ is a grandfather of $y$.
+    \item $\texttt{grandchild}(x, y)$: $x$ is a grandchild of $y$,
+    \item $\texttt{uncle}(x,y)$: $x$ is an uncle of $y$.
+    \item $\texttt{aunt}(x,y)$: $x$ is an aunt of $y$.
+    \item $\texttt{cousin}(x,y)$: $x$ is a cousin of $y$.
+    \end{itemize}
+\end{itemize}
+In the following, your task is to \blue{define} certain predicates. In general, a \blue{definition} of an
+$n$-ary predicate $p$ has the form 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\forall x_1, \cdots, x_n: \bigl(p(x_1,\cdots,x_n) \leftrightarrow F\bigr)$,
+\\[0.2cm]
+where $F$ is a formula that does not contain the predicate $p$.  In this exercise, this formula
+may only contain the function symbols \texttt{mother} and \texttt{father} and the predicate symbols \texttt{male} and
+\texttt{female}.  For the purpose of this exercise we make the simplifying assumption that
+every person is either femal or male.
+
+As an example, to \texttt{define} the predicate \texttt{brother} we can use the following formula:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\forall x, y:\bigl(\mathtt{brother}(x, y) \leftrightarrow \mathtt{male}(x) \wedge \mathtt{father}(x)
+= \mathtt{father}(y) \wedge \mathtt{mother}(x) = \mathtt{mother}(y)\bigr)$
+\\[0.2cm]
+Define the following predicates:
+\begin{enumerate}[(a)]
+\item $\texttt{sister}(x, y)$,
+\item $\texttt{aunt}(x, y)$,
+\item $\mathtt{uncle}$,
+\item $\texttt{sibling}(x, y)$,
+\item $\texttt{grandfather}(x, y)$,
+\item $\texttt{grandmother}(x, y)$,
+\item $\texttt{grandchild}(x, y)$,
+\item $\texttt{cousin}(x, y)$.
+  \eox
+\end{enumerate}
+
 
 \section{Semantics of First-Order Logic \label{sec:semantik}}
 Next, we define the \blue{meaning} of the formulas. For this purpose, we introduce the concept of a
@@ -678,35 +755,35 @@ We proceed in four steps:
 In mathematics, a group $\mathcal{G}$ \index{Group} is defined as a triple of the form
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{G} = \langle G, \mathrm{e}, * \rangle$
+$\mathcal{G} = \langle G, \mathrm{e}, \circ \rangle$
 \\[0.2cm]
 where:
 \begin{enumerate}
 \item $G$ is a set,
 \item $\mathrm{e}$ is an element of the set $G$, and
-\item $*: G \times G \rightarrow G$ is a binary function on $G$, which we henceforth refer to as the
+\item $\circ: G \times G \rightarrow G$ is a binary function on $G$, which we henceforth refer to as the
       \textcolor{blue}{multiplication} of the group.
 \item Moreover, the following three axioms hold:
       \begin{enumerate}
-      \item $\forall x: \mathrm{e} * x = x$,
+      \item $\forall x: \mathrm{e} \circ x = x$,
         
             $\mathrm{e}$ is a \textcolor{blue}{left-neutral} element with respect to multiplication.
-      \item $\forall x: \exists{y}: y * x = \mathrm{e}$,
+      \item $\forall x: \exists{y}: y \circ x = \mathrm{e}$
 
-            i.e., for every $x \in G$ there is a \textcolor{blue}{left-inverse} element.
-      \item $\forall x: \forall y: \forall z: (x * y) * z = x * (y * z)$,
+            for every $x \in G$ there is a \textcolor{blue}{left-inverse} element.
+      \item $\forall x: \forall y: \forall z: (x \circ y) \circ z = x \circ (y \circ z)$
 
-            i.e., the \textcolor{blue}{associative law} holds.
+            the operator $\circ$ is \blue{associative}.
 
       \item The group $\mathcal{G}$ is a \textcolor{blue}{commutative} group if and only if additionally the
             following axiom holds: 
         
-            $\forall x: \forall y: x * y = y * x$,
+            $\forall x: \forall y: x \circ y = y \circ x$
 
-            This is know as the law of commutativity.
+            This is know as the law of \blue{commutativity}.
             \eox
       \end{enumerate}
-      Note that the commutative law does not have to hold in a group.  It is only required for
+      Note that the law of commutativity does not have to hold in a group.  It is only required for
       \blue{commutative groups}. 
 \end{enumerate}
 
@@ -716,14 +793,14 @@ group theory as follows:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\Sigma_G = 
-   \bigl\langle \{x,y,z\},\; \{\mathrm{e},*\},\; \{=\},\; \{ \pair(\mathrm{e},0), \pair(*,2), \pair(=,2) \} \bigr\rangle 
+   \bigl\langle \{x,y,z\},\; \{\mathrm{e},\circ\},\; \{=\},\; \{ \pair(\mathrm{e},0), \pair(\circ,2), \pair(=,2) \} \bigr\rangle 
 $.
 \\[0.2cm]
-Here, ``$\mathrm{e}$'' is a 0-arity function symbol representing the identity element, ``$*$'' is
+Here, ``$\mathrm{e}$'' is a 0-arity function symbol representing the identity element, ``$\circ$'' is
 the binary function symbol representing the group multiplication, and ``$=$'' is the binary predicate symbol to 
 denote equality. 
 We will use a parser for first-order logic formulas that does not support binary infix operators like
-``$*$'' or ``$=$''. With this parser, terms can only be specified in the form
+``$\circ$'' or ``$=$''. With this parser, terms can only be written in prefix form, i.e. as
 \\[0.2cm]
 \hspace*{1.3cm}
 $f(t_1,\cdots,t_n)$
@@ -734,13 +811,16 @@ represented by expressions in the form
 \hspace*{1.3cm}
 $p(t_1,\cdots,t_n)$
 \\[0.2cm]
-where $p$ is a predicate symbol. Variables are distinguished from function and predicate symbols
-in that variables begin with a lowercase letter, while function and
-predicate symbols begin with an uppercase letter. To be able to represent the formulas of group theory, we therefore agree on the following:
+where $p$ is a predicate symbol.  Variables are distinguished from function and predicate symbols
+by the fact that variables begin with a lowercase letter, while function and
+predicate symbols begin with an uppercase letter. To be able to represent the formulas of group theory, we
+therefore agree on the following: 
 \begin{enumerate}
-\item The neutral element $\mathrm{e}$ is written as $\mytt{E}()$.  
-\item For the operator $*$, we use the binary function symbol $\mytt{Multiply}$.
-      Thus, the expression $x*y$ is written as $\mytt{Multiply}(x, y)$.
+\item The neutral element $\mathrm{e}$ is written as $\mytt{E}()$.
+
+      The parser we use requires that  a constant is followed by parentheses.
+\item For the operator $\circ$, we use the binary function symbol $\mytt{Multiply}$.
+      Thus, the expression $x \circ y$ is written as $\mytt{Multiply}(x, y)$.
 \item The equality sign ``$=$'' is represented by the binary predicate symbol
       $\mytt{Equals}$. Thus, for example, the formula $x = y$ is written as $\mytt{Equals}(x, y)$.
 \end{enumerate}
@@ -1149,10 +1229,10 @@ The  script shown in Figure \ref{fig:isGroup.ipynb} can check whether the $\Sigm
 \noindent
 \textbf{Remark}: The program shown above is available as a Jupyter Notebook on GitHub at the address:
 \\[0.2cm]
-\hspace*{-1.0cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/01-FOL-Evaluation.ipynb}{\mytt{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/01-FOL-Evaluation.ipynb}}
+\hspace*{0.0cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/01-FOL-Evaluation.ipynb}{\mytt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/01-FOL-Evaluation.ipynb}}
 \\[0.2cm]
-With this program, we can check whether a
+With this program we can check, whether a
 first-order formula is satisfied in a given finite structure. However, we cannot use it to check whether a
 formula is universally valid because, on one hand, we cannot apply the program if the $\Sigma$-structure has an
 infinite universe, and on the other hand, even the number of different finite $\Sigma$-structures we would need
