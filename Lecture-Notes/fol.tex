@@ -1269,7 +1269,7 @@ in order to solve a given problem, this problem is \blue{specified} and this \bl
 given as input to a problem solver which will then compute a solution to the problem.  Hence, the task of the
 programmer is much easier than it normally is: Instead of \blue{implementing} a program that solves a given problem,
 the programmer only has to \blue{specify} the problem precisely, she does not have to explicitely code an algorithm to find the
-solution.  Usually, the specification of a problem is much easier than the coding of an algorithm to solve the problem.  This approach works well for those problems
+solution.  Usually, the specification of a problem is much easier than the coding of an algorithm to solve the problem.  This approach works well for some problems
 that can be specified using first order logic.  The remainder of this section is structured as follows:
 \begin{enumerate}
 \item We first define \blue{constraint satisfaction problems} and provide two examples:
@@ -1280,8 +1280,10 @@ that can be specified using first order logic.  The remainder of this section is
 \item We discuss a simple constraint solver that is based on \blue{backtracking}.
 
       More efficient constraint solvers will be discussed in the lecture on artificial intelligence in the
-      $6^{\mathrm{th}}$ semester.
-\item Then we show how some puzzles can be solved using constraint programming.
+      $6^{\mathrm{th}}$ semester.  Furthermore, later in this chapter we will introduce
+      \href{https://www.microsoft.com/en-us/research/project/z3-3/}{Z3}, which is a very powerful
+      constraint solver developed by Microsoft.
+\item Finally, we demonstrate a number of puzzles that can be solved using constraint programming.
 \end{enumerate}
 
 \subsection{Constraint Satisfaction Problems}
@@ -1289,60 +1291,64 @@ Conceptually, a constraint satisfaction problem is given by a set of first order
 set of free variables.  Furthermore, a $\Sigma$-structure $\mathcal{S} = \langle \mathcal{U},
 \mathcal{J}\rangle $
 consisting of a universe $\mathcal{U}$ and the interpretation $\mathcal{J}$ of the function and predicate 
-symbols used in these formulas is assumed to be implicitly specified by the context of the problem.  The goal is 
-to find a variable assignment such that the given first-order formulas are evaluated as true.
+symbols used in these formulas is assumed to be specified by the context of the problem.  The goal is 
+to find a variable assignment such that the given first-order formulas are evaluated as true.  The formal
+definition follows.
 
 \begin{Definition}[CSP] \index{CSP} \hspace*{\fill} \linebreak
-Formally, a \blue{constraint satisfaction problem} \index{constraint satisfaction problem} (abbreviated as
-\textsc{Csp}) is defined as a triple 
+A \blue{constraint satisfaction problem} \index{constraint satisfaction problem} (abbreviated as
+\textsc{Csp}) is defined as a triple
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{P} := \langle \mathtt{Vars}, \mathtt{Values}, \mathtt{Constraints} \rangle$
+$\mathbb{P} := \langle \Sigma, \mathcal{S}, \mathcal{C} \rangle$
 \\[0.2cm]
 where
 \begin{enumerate}
-\item $\mathtt{Vars}$ is a set of strings which serve as \blue{variables},
-\item $\mathtt{Values}$ is a set of \blue{values} that can be assigned to the variables in $\mathtt{Vars}$.
-
-      This set of values is assumed to be identical to the universe of the $\Sigma$-structure
-      $\mathcal{S} = \langle \mathcal{U}, \mathcal{J} \rangle$ that is given implicitly, i.e.~we have
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      $\mytt{Values} = \mathcal{U}$.
-\item $\mathtt{Constraints}$ is a set of formulas from \blue{first order logic}.  Each of these formulas is
-      called a \blue{constraint} of $\mathcal{P}$.  \eox
+\item $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ is signature,
+\item $\mathcal{S} = \langle \mathcal{U}, \mathcal{J} \rangle$ is $\Sigma$-structure,
+\item $\mathcal{C} \subseteq \mathbb{F}_\Sigma$, i.e.~$\mathcal{C}$ is a set of $\Sigma$-formulas from
+      \blue{first order logic}.  These formulas are called the \blue{constraints}\index{constraints} of $\mathbb{P}$.  \eox
 \end{enumerate}
 \end{Definition}
 \vspace*{-0.3cm}
 
-\noindent
+In the following, we will often specify a constraint satisfaction problem by just specifying the variables
+$\mathcal{V}$,  the set of values $\mathcal{U}$ that these variables can take, and the set $\mathcal{C}$ of
+constraints.  In this case, we assume that the sets $\mathcal{F}$ and $\mathcal{P}$ of function and predicate
+symbols and their interpretation $\mathcal{J}$ are implicitly given.  In this case the constraint satisfaction
+problem is given as the triple 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathbb{P} = \langle \mathcal{V}, \mathcal{U}, \mathcal{C} \rangle$.
+\\[0.2cm]
 Given a \textsc{Csp}
 \\[0.2cm]
 \hspace*{1.3cm}
- $\mathcal{P} = \langle \mathtt{Vars}, \mathtt{Values}, \mathtt{Constraints} \rangle$, 
+ $\mathbb{P} = \langle \mathcal{V}, \mathcal{U}, \mathcal{C} \rangle$, 
 \\[0.2cm]
-a \blue{variable assignment} for $\mathcal{P}$ is a function
-\\[0.2cm]
-\hspace*{1.3cm}
-$\mathcal{I}: \mathtt{Vars} \rightarrow \mathtt{Values}$.
-\\[0.2cm]
-A variable assignment $\mathcal{I}$ is a \blue{solution} of the \textsc{Csp} $\mathcal{P}$ \index{solution of a \textsc{Csp}}
-if, given the assignment $\mathcal{I}$, all constraints of $\mathcal{P}$ are satisfied, i.e.~we have
+a \blue{variable assignment} for $\mathbb{P}$ is a function
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{S}(\mathcal{I}, f) = \mathtt{True}$ \quad for all $f \in \mathtt{Constraints}$.
+$\mathcal{I}: \mathcal{V} \rightarrow \mathcal{U}$.
+\\[0.2cm]
+A variable assignment $\mathcal{I}$ is a \blue{solution} of the \textsc{Csp}
+$\mathbb{P}= \langle \mathcal{V}, \mathcal{U}, \mathcal{C} \rangle$ \index{solution of a \textsc{Csp}}
+if, given the assignment $\mathcal{I}$, all constraints from $\mathcal{C}$ are satisfied, i.e.~we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{S}(\mathcal{I}, f) = \mathtt{True}$ \quad for all $f \in \mathcal{C}$.
 \\[0.2cm]
 Finally, a \blue{partial variable assignment} \index{partial variable assignment} $\mathcal{B}$ for $\mathcal{P}$ is a function
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{B}: \mathtt{Vars} \rightarrow \mathtt{Values} \cup \{ \Omega \}$ \quad where $\Omega$ denotes the undefined value.
+$\mathcal{B}: \mathcal{V} \rightarrow \mathcal{U} \cup \{ \Omega \}$ \quad where $\Omega$ denotes the undefined value.
 \\[0.2cm]
 Hence, a partial variable assignment does not assign values to all variables.  Instead, it assigns values only
-to a subset of the set $\mathtt{Vars}$.  The \blue{domain} $\mathtt{dom}(\mathcal{B})$ \index{domain} of a partial variable assignment $\mathcal{B}$ is the
+to a subset of the set $\mathcal{V}$.  The \blue{domain} $\mathtt{dom}(\mathcal{B})$ \index{domain} of a partial variable assignment $\mathcal{B}$ is the
 set of those variables that are assigned a value different from $\Omega$, i.e.~we define
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathtt{dom}(\mathcal{B}) := \bigl\{ x \in \mathtt{Vars} \mid \mathcal{B}(x) \not= \Omega \bigr\}$.
+$\mathtt{dom}(\mathcal{B}) := \bigl\{ x \in \mathcal{V} \mid \mathcal{B}(x) \not= \Omega \bigr\}$.
 \\[0.2cm]
 We proceed to illustrate the definitions given so far by presenting two examples.
 
@@ -1376,14 +1382,13 @@ available.  The question then is whether it is
 possible to colour the different states in a way that no two neighbouring states share the same colour.  This
 problem can be formalized as a constraint satisfaction problem.  To this end we define:
 \begin{enumerate}
-\item $\mytt{Vars} := \{ \mathtt{WA}, \mathtt{NT}, \mathtt{SA}, \mathtt{Q}, \mathtt{NSW}, \mathtt{V}, \mathtt{T} \}$,
-\item $\mytt{Values} := \{ \mytt{red}, \mytt{green}, \mytt{blue} \}$,
-\item $\mytt{Constraints} := $ \\[0.1cm]
-      \hspace*{1.3cm}
-      $\bigl\{ \mathtt{WA} \not= \mathtt{NT}, \mathtt{WA} \not= \mathtt{SA},
-                 \mathtt{NT} \not= \mathtt{SA}, \mathtt{NT} \not= \mathtt{Q},
-                 \mathtt{SA} \not= \mathtt{Q},  \mathtt{SA} \not= \mathtt{NSW}, \mathtt{SA} \not= \mathtt{V}, 
-                 \mathtt{Q}  \not= \mathtt{NSW},
+\item $\mathcal{V} := \{ \mathtt{WA}, \mathtt{NT}, \mathtt{SA}, \mathtt{Q}, \mathtt{NSW}, \mathtt{V}, \mathtt{T} \}$,
+\item $\mathcal{U} := \{ \mytt{red}, \mytt{green}, \mytt{blue} \}$,
+\item $\mathcal{C} :=  
+      \bigl\{ \mathtt{WA} \not= \mathtt{NT},\;\mathtt{WA} \not= \mathtt{SA},
+                 \mathtt{NT} \not= \mathtt{SA},\;\mathtt{NT} \not= \mathtt{Q},
+                 \mathtt{SA} \not= \mathtt{Q},\; \mathtt{SA} \not= \mathtt{NSW},\;\mathtt{SA} \not= \mathtt{V},\;
+                 \mathtt{Q}  \not= \mathtt{NSW},\;
                  \mathtt{NSW}\not= \mathtt{V}
        \bigr\}
        $.
@@ -1391,7 +1396,7 @@ problem can be formalized as a constraint satisfaction problem.  To this end we 
        The constraints do not mention the variable \texttt{T} for Tasmania, as Tasmania does not share a common
        border with any of the other states.
 \end{enumerate}
-Then $\mathcal{P} := \langle \mytt{Vars}, \mytt{Values}, \mytt{Constraints} \rangle$ is a constraint satisfaction problem.  
+Then $\mathbb{P} := \langle \mathcal{V}, \mathcal{U}, \mathcal{C} \rangle$ is a constraint satisfaction problem.  
 If we define the assignment $\mathcal{I}$ such that
 \begin{enumerate}
 \item $\mathcal{I}(\mathtt{WA}) = \mytt{red}$,
@@ -1426,13 +1431,13 @@ than 8 queens on the board.  Therefore, in order to model the eight queens probl
 problem, we will use the following set of variables:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{Vars} := \{ \mytt{Q}_1, \mytt{Q}_2, \mytt{Q}_3, \mytt{Q}_4, \mytt{Q}_5, \mytt{Q}_6, \mytt{Q}_7,\mytt{Q}_8 \}$,
+$\mathcal{V} := \{ \mytt{Q}_1, \mytt{Q}_2, \mytt{Q}_3, \mytt{Q}_4, \mytt{Q}_5, \mytt{Q}_6, \mytt{Q}_7,\mytt{Q}_8 \}$,
 \\[0.2cm]
 where for $i \in \{1,\cdots,8\}$ the variable $\mytt{Q}_i$ specifies the column of the queen that is placed in
-row $i$.   As the columns run from one to eight, we define the set $\mytt{Values}$ as
+row $i$.   As the columns run from one to eight, we define the set $\mathcal{U}$ as
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{Values} := \{1,2,3,4,5,6,7,8\}$.
+$\mathcal{U} := \{1,2,3,4,5,6,7,8\}$.
 \\[0.2cm]
 Next, let us define the constraints.  There are two different types of constraints.
 \begin{enumerate}
@@ -1440,7 +1445,7 @@ Next, let us define the constraints.  There are two different types of constrain
       To capture these constraints, we define
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mytt{SameColumn} := \bigl\{ \mytt{Q}_i \not= \mytt{Q}_j \bigm| i \in \{1,\cdots,8\} \wedge j \in \{1,\cdots,8\} \wedge j < i \bigr\}$.
+      $\mytt{SameColumn} := \bigl\{ \mytt{Q}_i \not= \mytt{Q}_j \bigm| i,j \in \{1,\cdots,8\} \wedge j < i \bigr\}$.
       \\[0.2cm]
       Here the condition $i < j$ ensures that, for example, we have the constraint $\mytt{Q}_2 \not= \mytt{Q}_1$
       but not the constraint  $\mytt{Q}_1 \not= \mytt{Q}_2$, as the latter constraint would be redundant if
@@ -1456,17 +1461,17 @@ Next, let us define the constraints.  There are two different types of constrain
       columns of these queens.  To capture these constraints, we define
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mytt{SameDiagonal} := \bigl\{ |i  - j| \not= |\mytt{Q}_i - \mytt{Q}_j| \bigm| i \in \{1,\cdots,8\} \wedge j \in \{1,\cdots,8\} \wedge j < i \bigr\}$.
+      $\mytt{SameDiagonal} := \bigl\{ |i  - j| \not= |\mytt{Q}_i - \mytt{Q}_j| \bigm| i,j \in \{1,\cdots,8\} \wedge j < i \bigr\}$.
 \end{enumerate}
 Then, the set of constraints is defined as 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{Constraints} := \mytt{SameColumn} \cup \mytt{SameDiagonal}$
+$\mathcal{C} := \mytt{SameColumn} \cup \mytt{SameDiagonal}$
 \\[0.2cm]
 and the eight queens problem can be stated as the constraint satisfaction problem
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{P} := \langle \mytt{Vars}, \mytt{Values}, \mytt{Constraints} \rangle$.
+$\mathbb{P} := \langle \mathcal{V}, \mathcal{U}, \mathcal{C} \rangle$.
 \\[0.2cm]
 If we define the assignment $\mathcal{I}$ such that
 \\[0.2cm]
@@ -1503,7 +1508,7 @@ in \myFig{eight-queens.txt}.
 \end{figure}
 Later, when we implement procedures to solve  \textsc{Csp}s, we will represent variable assignments and partial
 variable assignments as dictionaries.  For example, the variable assignment $\mathcal{I}$ defined above would
-then be represented as the dictionary 
+then be represented in \textsl{Python} as the dictionary 
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{I} = \bigl\{ \mytt{Q}_1:4,\, \mytt{Q}_2:8,\, \mytt{Q}_3:1,\, \mytt{Q}_4:3,\, 
@@ -1761,9 +1766,9 @@ assignment that satisfies all constraints of the given $\mytt{CSP}$.
 
 We still need to discuss the implementation of the auxiliary procedure $\mytt{isConsistent}$
 shown in \myFig{CSP-Solver.ipynb-isConsistent}.  This procedure takes a variable $\mytt{var}$, a $\mytt{value}$, a partial 
-$\mytt{Assignment}$ and a set of $\mytt{Constraints}$.  It is assumed that $\mytt{Assignment}$ is
-\blue{partially consistent} with respect to the set $\mytt{Constraints}$, i.e.~for every formula $\mytt{f}$
-occurring in $\mytt{Constraints}$ such that
+$\mytt{Assignment}$ and a set of constraints \texttt{Constraints}.  It is assumed that $\mytt{Assignment}$ is
+\blue{partially consistent} with respect to the set $\mathtt{Constraints}$, i.e.~for every formula $\mytt{f}$
+occurring in $\mathtt{Constraints}$ such that
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mytt{vars}(\mytt{f}) \subseteq \mytt{dom}(\mytt{Assignment})$
@@ -1774,22 +1779,23 @@ $\mytt{isConsistent}$ is to check, whether the extended assignment
 \hspace*{1.3cm}
 $\mytt{NewAssign} \;\mytt{:=}\;\mytt{Assignment} \cup \{ \pair(\mytt{var}, \mytt{value}) \}$
 \\[0.2cm]
-that assigns $\mytt{value}$ to the variable $\mytt{var}$ is still partially consistent with $\mytt{Constraints}$. 
-To this end, the \mytt{for}-loop iterates over all $\mytt{Formula}$s in $\mytt{Constraints}$. 
+that assigns $\mytt{value}$ to the variable $\mytt{var}$ is still partially consistent with $\mathcal{C}$. 
+To this end, the \mytt{for}-loop iterates over all $\mytt{Formula}$s in $\mathcal{C}$. 
 However, we only have to check those $\mytt{Formula}$s that contain the variable $\mytt{var}$ and,
 furthermore, have the property that
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{Vars}(\mytt{Formula}) \subseteq \mytt{dom}(\mytt{NewAssign})$,
+$\mathcal{V}(\mytt{Formula}) \subseteq \mytt{dom}(\mytt{NewAssign})$,
 \\[0.2cm]
 i.e.~all variables occurring in $\mytt{Formula}$ need to have a value assigned in
 $\mytt{NewAssign}$.  The reasoning is as follows:
 \begin{enumerate}
 \item If $\mytt{var}$ does not occur in $\mytt{Formula}$, then adding $\mytt{var}$ to
-      $\mytt{Assignment}$ cannot change the result of evaluating $\mytt{Formula}$ and as
+      $\mytt{Assignment}$ cannot change the result of evaluating $\mytt{Formula}$: As
       $\mytt{Assignment}$ is assumed to be partially consistent with respect to $\mytt{Formula}$, 
       $\mytt{NewAssign}$ is also partially consistent with respect to $\mytt{Formula}$.
-\item If $\mytt{dom}(\mytt{NewAssign}) \not\subseteq \mytt{Vars}(\mytt{Formula})$, then $\mytt{Formula}$ can not be evaluated anyway. 
+\item If the formula $\mathtt{f}$ contains variables that have not been assigned yet, then \texttt{f} can not
+      be evaluated anyway.
 \end{enumerate}
 If we use backtracking, we can solve the 8 queens puzzle in less than a second.
 For the 8 queens puzzle the order in which variables are tried is not particularly important.  The reason
@@ -1862,26 +1868,26 @@ In order to solve this problem via constraint programming, we first introduce th
   A symbolic transition system is a 6-tuple
   \\[0.2cm]
   \hspace*{1.3cm}
-  $\mathcal{T} = \langle \mathtt{Vars}, \mathtt{Values}, \mathtt{Start}, \mathtt{Goal}, \mathtt{Invariant}, \mathtt{Transition} \rangle$
+  $\mathcal{T} = \langle \mathcal{V}, \mathcal{U}, \mathtt{Start}, \mathtt{Goal}, \mathtt{Invariant}, \mathtt{Transition} \rangle$
   \\[0.2cm]
   such that:
   \begin{enumerate}[(a)]
-  \item \texttt{Vars} is a set of variables.
+  \item $\mathcal{V}$ is a set of variables.
 
-        These variables are strings.  For every variable $x \in \texttt{Vars}$ there is a \blue{primed}
-        variable $x'$ which does not occur in \texttt{Vars}.  The set of these primed Variables is denoted as
-        $\mathtt{Vars}'$.
-  \item \texttt{Values} is a set of values that these variables can take.
+        These variables are strings.  For every variable $x \in \mathcal{V}$ there is a \blue{primed}
+        variable $x'$ which does not occur in $\mathcal{V}$.  The set of these primed variables is denoted as
+        $\mathcal{V}'$.
+  \item $\mathcal{U}$ is a set of values that these variables can take.
   \item \texttt{Start}, \texttt{Goal}, and \texttt{Invariant} are first-order formulas such that all free
-         variables occurring in these formulas are elements from the set \texttt{Vars}.
+         variables occurring in these formulas are elements from the set $\mathcal{V}$.
          \begin{itemize}
          \item \texttt{Start} describes the initial state of the transition system.
          \item \texttt{Goal} describes a state that should be reached by the transition system.
          \item \texttt{Invariant} is a formula that has to be true for every state of the transition system.
          \end{itemize}
   \item \texttt{Transition} is a first-order formula.  The free variables of this formula are elements of
-        the set $\texttt{Vars} \cup \mathtt{Vars}'$, i.e.~they are either variables from the set \texttt{Vars}
-        or they are primed variables from the set $\mathtt{Vars}'$.
+        the set $\mathcal{V} \cup \mathcal{V}'$, i.e.~they are either variables from the set $\mathcal{V}$
+        or they are primed variables from the set $\mathcal{V}'$.
 
         The formula \texttt{Transition} describes how the variables in the transition system change during a
         state transition.  The primed variables refer to the values of the original variables after the
@@ -1897,17 +1903,22 @@ and that has to remain true after every transition of our system.
 In order to clarify this definition we show how the \emph{missionaries and cannibals} problem can be formulated as
 a symbolic transition system.
 \begin{enumerate}[(a)]
-\item $\texttt{Vars} := \{ \mathtt{M}, \mathtt{C}, \mathtt{B} \}$.
+\item $\mathcal{V} := \{ \mathtt{M}, \mathtt{C}, \mathtt{B} \}$.
 
       The value of \texttt{M} is the number of missionaries on the western shore, the value of \texttt{C} is
       the number of infidels on that shore, while the value of \texttt{B} is the number of boats on the western
       shore.
-\item $\mathtt{Values} := \{ 0, 1, 2, 3 \}$.
+\item $\mathcal{U} := \{ 0, 1, 2, 3 \}$.
 \item $\texttt{Start} := (\mathtt{M} = 3 \wedge \mathtt{C} = 3 \wedge \mathtt{B} = 1)$.
+
+      At the beginning, there are 3 missionaries, 3 infidels, and 1 boat on the western shore.
 \item $\texttt{Goal}  := (\mathtt{M} = 0 \wedge \mathtt{C} = 0 \wedge B = 0)$.
+
+      The goal is to transfer everybody to the eastern shore.  Hence the number of missionaries, infidels, and
+      boats on the western shore will then be $0$.
 \item $\texttt{Invariant} := \bigl((\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = \mathtt{C}) \;\wedge\; \mathtt{B} \leq 1\bigr)$.
 
-      The first part of the invariant, i.e.~ the formulas $\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = \mathtt{C}$,
+      The first part of the invariant, i.e.~the formulas $\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = \mathtt{C}$,
       describes those states where the missionaries are not threatened by the infidels.
       \begin{itemize}
       \item $\mathtt{M} = 3$: All missionaries are on the western shore.
@@ -2001,7 +2012,7 @@ Figure \ref{fig:Missionaries-STS.ipynb} shows how the \emph{missionaries and can
 represented as a symbolic transition system in \textsl{Python}.  In the function \texttt{transition} 
 we use the following convention: Since variables cannot be primed in
 \textsl{Python} we append the character $\alpha$ to the names of the original
-variables from the set \texttt{Vars}, while we append $\beta$ to these names to get the primed versions of the
+variables from the set $\mathcal{V}$, while we append $\beta$ to these names to get the primed versions of the
 corresponding variable.
 
 
@@ -2080,7 +2091,7 @@ Figure \ref{fig:Missionaries-STS.ipynb-2} shows how we can turn the symbolic tra
        with $n$ crossings. As the number of crossings has to be odd, we increment $n$ by
        two at the end of the \texttt{while} loop.
 
-       The function \texttt{find\_solution} needs less than 2 seconds to finc the solution.
+       The function \texttt{find\_solution} needs less than 2 seconds to find the solution.
 \end{enumerate}
 \pagebreak
 
@@ -2113,9 +2124,9 @@ You should start from the following notebook:
 \hspace*{-0.5cm}
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Wolf-Goat-Cabbage-STS.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Wolf-Goat-Cabbage-STS.ipynb}}
 \eox
-s
+
 \section{The Z3 Solver}
-We conclude this chapter with a discussion of the solver
+We proceed with a discussion of the solver
 \href{https://www.microsoft.com/en-us/research/project/z3-3/}{Z3}, which has beed developd
 at Microsoft.  Z3 implements most of the state-of-the-art constraint solving algorithms
 and is exceptionally powerful.  We introduce Z3 via a series of examples.
@@ -2217,7 +2228,6 @@ interface of Z3.
       rather as objects of the class \mytt{IntNumRef}, which is some internal class of \texttt{Z3} to store
       integers.  This class provides the method \mytt{as\_long} that converts its argument into an integer number.
 \end{enumerate}
-\pagebreak
 
 \exerciseEng
 Solve the following text problem using \texttt{Z3}.
