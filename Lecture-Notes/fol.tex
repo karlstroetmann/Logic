@@ -1916,8 +1916,8 @@ a symbolic transition system.
       At the beginning, there are 3 missionaries, 3 infidels, and 1 boat on the western shore.
 \item $\texttt{Goal}  := (\mathtt{M} = 0 \wedge \mathtt{C} = 0 \wedge B = 0)$.
 
-      The goal is to transfer everybody to the eastern shore.  Hence the number of missionaries, infidels, and
-      boats on the western shore will then be $0$.
+      The goal is to transfer everybody to the eastern shore.  If the goal is reached, the number of
+      missionaries, infidels, and boats on the western shore will be $0$.
 \item $\texttt{Invariant} := \bigl((\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = \mathtt{C}) \;\wedge\; \mathtt{B} \leq 1\bigr)$.
 
       The first part of the invariant, i.e.~the formulas $\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = \mathtt{C}$,
@@ -1928,11 +1928,12 @@ a symbolic transition system.
       \item $\mathtt{M} = \mathtt{C}$: On both shores the numbers of missionaries and cannibals are the same.
 
             If neither $\mathtt{M} = 3$ nor $\mathtt{M} = 0$ holds, then the number of missionaries and
-            cannibals have to be the same on the western shorem because if there were more missionaries on the
-            western shore than cannibals, then there would be less missionaries than cannibals on the eastern
-            shore and hence there would be a problem on the eastern shore.
+            cannibals have to be the same on the western shore, because if, for example, there were more
+            missionaries on the western shore than cannibals, then there would be less missionaries than
+            cannibals on the eastern shore and hence there would be a problem.
       \end{itemize}
-      The condition $\mathtt{B} \leq 1$ has to be true because there is just one boat.
+      The condition $\mathtt{B} \leq 1$ is needed because there is just one boat, but the set $\mathcal{U}$ of
+      values also includes the numbers $2$ and $3$.
 \item $\texttt{Transition} :=
       \begin{array}[t]{cl}
          &  \mathtt{B}' = 1 - \mathtt{B}   \\[0.2cm]
@@ -2075,9 +2076,9 @@ Figure \ref{fig:Missionaries-STS.ipynb-2} shows how we can turn the symbolic tra
        \hspace*{1.3cm}
        $L_1 + \cdots + L_k$,
        \\[0.2cm]
-       i.e.~it appends these lists and returns the result.
+       i.e.~it concatenates the lists that are elements of \texttt{Lol} and returns the resulting list.
 \item The function $\mathtt{missionaries\_CSP}(n)$ receives a natural number $n$ as its argument.
-       It returns a \textsc{Csp} that has a solution if there is a solution of the \emph{missionaries and cannibals}
+       It returns a \textsc{Csp} that has a solution iff there is a solution of the \emph{missionaries and cannibals}
        problem that crosses the river exactly $n$ times.  It uses the variables
        \\[0.2cm]
        \hspace*{1.3cm}
@@ -2095,7 +2096,6 @@ Figure \ref{fig:Missionaries-STS.ipynb-2} shows how we can turn the symbolic tra
 
        The function \texttt{find\_solution} needs less than 2 seconds to find the solution.
 \end{enumerate}
-\pagebreak
 
 \exerciseEng
 An agricultural economist has to sell a \blue{wolf}, a \blue{goat}, and a \blue{cabbage}
@@ -2151,11 +2151,11 @@ Strangely, in my old math book these assumptions have not been mentioned.
 
 We can now infer the number of children.
 If we denote the number of \blue{boys} by the variable $b$ and the number of \blue{girls}
-by the variable $g$, the problem statements are equivalent to the following equations:
-\begin{itemize}
-\item $b - 1 = g$.
-\item $2 \cdot (g - 1) = b$.
-\end{itemize}
+by the variable $g$, the problem statements are equivalent to the following two equations:
+\\[0.2cm]
+\hspace*{1.3cm}
+$b - 1 = g$ \quad and \quad $2 \cdot (g - 1) = b$.
+\\[0.2cm]
 Before we can start to solve this problem, we have to install \texttt{Z3} via \texttt{pip} using the following
 command:  
 \\[0.2cm]
@@ -2206,15 +2206,21 @@ interface of Z3.
       \\[0.2cm]
       \hspace*{1.3cm}
       \href{https://ericpony.github.io/z3py-tutorial/guide-examples.htm}{https://ericpony.github.io/z3py-tutorial/guide-examples.htm}
+      \\[0.2cm]
+      However, there is no need for you to consult this documentation as we will only use a very small part of
+      the \textsc{Api} of \texttt{Z3} in this lecture. 
 \item Lines 3 and 4 creates the \texttt{Z3} variables \mytt{boys} and \mytt{girls} as integer valued variables.
       The function \mytt{Int} takes one argument, which has to be a string.  This string is the name of the
       variable.  We store these variables in Python variables of the same name.  It would be possible to use
       different names for the Python variables, but that would be very confusing.
 \item Line 6 creates an object of the class \texttt{Solver}.  This is the constraint solver provided by
       \texttt{Z3}.
-\item Lines 8 and 9 add the constraints expressing that the number of girls is one less than the number of boys
-      and that my sister has twice as many brothers as she has sisters as constraints to the solver
-      \texttt{S}.
+    \item Lines 8 and 9 add the constraints expressing that
+      \begin{enumerate}[(a)]
+      \item the number of girls is one less than the number of boys \quad and 
+      \item that my sister has twice as many brothers as she has sisters 
+      \end{enumerate}
+      as constraints to the solver \texttt{S}.
 \item In line 10 the method \mytt{check} examines whether the given set of constraints is satisfiable.
       In general, this method returns one of the following results:
       \begin{enumerate}[(a)]
@@ -2736,7 +2742,6 @@ Start with the following file:
 \hspace*{0.0cm}
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Japanese-Z3.ipynb}{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Japanese-Z3.ipynb}.
 \eox
-\pagebreak
 
 \exerciseEng
 The following puzzle offers a new twist to the river crossing puzzles encountered before, because we have to
