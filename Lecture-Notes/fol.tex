@@ -2812,13 +2812,17 @@ not a real restriction. First, we specify some equivalences that can be used to 
   \end{enumerate}
 \end{Satz}
 
-In order to apply the equivalences of the last group, it may be necessary to rename bound variables. If $f$ is a first-order logic formula and $x$ and $y$ are two variables, where $y$ does not appear in $f$, then \blue{$f[x/y]$} denotes the formula that results from $f$ by replacing every occurrence of the variable $x$ in $f$ with $y$. For example, \\[0.2cm]
-\hspace*{1.3cm} $\bigl(\forall u : \exists v : p(u,v)\bigr)[u/z] = \forall z : \exists v : p(z,v)$
+In order to apply the equivalences of the last group, it may be necessary to rename bound variables. If $f$ is
+a first-order logic formula and $x$ and $y$ are two variables, where $y$ does not appear in $f$, then
+\blue{$f[x \mapsto y]$} denotes the formula that results from $f$ by replacing every occurrence of the variable
+$x$ in $f$ with $y$. For example, \\[0.2cm] 
+\hspace*{1.3cm} $\bigl(\forall u : \exists v : p(u,v)\bigr)[u \mapsto z] = \forall z : \exists v : p(z,v)$
 \\[0.2cm]
-With this we can specify one last equivalence: If $f$ is a first-order logic formula, $x \in BV(f)$ and $y$ is a variable that does not appear in $f$, then \\[0.2cm]
-\hspace*{1.3cm} $\models f \leftrightarrow f[x/y]$.
-\vspace{0.3cm}
-
+With this we can specify one last equivalence:
+\begin{enumerate}
+\item[9.] If $f$ is a first-order logic formula, $x \in BV(f)$ and $y \not\in FV(f) \cup BV(f)$, then \\[0.2cm] 
+          \hspace*{1.3cm} $\models f \leftrightarrow f[x \mapsto y]$.
+\end{enumerate}
 Using the equivalences given above together with the equivalences from propositional logic we are able
 to transform every first order formula into a form where the quantifieres are all at the beginning of the
 formula, i.e.~the formula has the form
@@ -2849,7 +2853,7 @@ In this case, we were lucky that we managed to recognise the formula as a tautol
 In general, however, the above transformations are not sufficient to recognise
 whether a first order formula is universally valid. 
 To be able to simplify formulas even more, 
-we introduce another concept of equivalence.  We want to motivate this term with an example.
+we introduce another concept of equivalence.  We want to motivate this concept via an example.
 We look at the following formulas
 \\[0.2cm]
 \hspace*{1.3cm} $f_1 = \forall x \colon \exists y \colon p(x,y)$ \quad und \quad $f_2 = \forall x \colon
@@ -2874,18 +2878,18 @@ $\mathcal{S}_2 \models f_2$.
 To do this, the interpretation of the function character $s$ has to be chosen such that
 $p\bigl(x,s(x)\bigr)$ actually holds for each $x$.  This is possible because the formula $f_1$ states 
 that for every $x$ there is a value $y$ such that $p(x,y)$ holds.  The function $s$ therefore has to 
-return this $y$ for every $x$. 
+return one such $y$ for every $x$. 
 
 \begin{Definition}[{\color{blue}Skolemisation}]\index{Skolemisation} \hspace*{\fill} \linebreak
-  Assume $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$
-  is a signature.  Furthermore, let $f$ be a closed $\Sigma$ formula of the form \\[0.2cm]
+  Assume that $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$
+  is a signature and that $f$ is a closed $\Sigma$ formula of the form \\[0.2cm]
   \hspace*{1.3cm} 
   $f = \forall x_1, \cdots, x_n \colon \exists y \colon g$. \\[0.2cm]
-  Then we choose an \underline{\blue{new}} $n$-digit function character $s$, i.e.~we take a character $s$ that
+  Then we choose an \underline{\blue{new}} $n$-ary function character $s$, i.e.~we take a character $s$ that
   is not used in the  signature $\Sigma$ and extend the signature $\Sigma$ to the signature \\[0.2cm]
   \hspace*{1.3cm} 
-  $\Sigma' := \Bigl\langle \mathcal{V}, \mathcal{F} \cup \{s\}, \mathcal{P}, \textsl{arity} \cup \bigl\{\pair(s,n)\bigr\} \bigr\rangle$, \\[0.2cm]
-  where $s$ is declared as a new $n$-digit function character.  Then we define the $\Sigma'$ formula
+  $\Sigma' := \Bigl\langle \mathcal{V}, \mathcal{F} \cup \{s\}, \mathcal{P}, \textsl{arity} \cup \bigl\{ s \mapsto n \bigr\} \bigr\rangle$, \\[0.2cm]
+  where $s$ is declared as a new $n$-ary function character.  Furthermore, we define the $\Sigma'$ formula
   $f'$ as follows: \\[0.2cm]
   \hspace*{1.3cm} 
   $f' := \mathtt{Skolem}(f) := 
@@ -2893,17 +2897,17 @@ return this $y$ for every $x$.
   \\[0.2cm]
   Here, the expression $g\bigl[y \mapsto s(x_1,\cdots,x_n)\bigr]$ denotes the formula that we obtain from $g$
   by replacing each occurrence of the variable $y$ in the formula $g$ by the term
-  $s(x_1,\cdots,x_n)$.  We say that the formula $f'$ results from the formula $f$  through one \blue{Skolemisation step}. 
+  $s(x_1,\cdots,x_n)$.  We say that the formula $f'$ results from the formula $f$ by a \blue{Skolemisation step}. 
   \eox
 \end{Definition}
 
 \exampleEng
-It $f$ the following formula from group theory:
+Let $f$ be the following formula from group theory:
 \\[0.2cm]
 \hspace*{1.3cm}
 $f := \forall x: \exists y: y * x = 1$. 
 \\[0.2cm]
-Then the following holds:
+Then we have:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathtt{Skolem}(f) = \forall x : s(x) * x = 1$.  \eox
@@ -2923,7 +2927,7 @@ Skolem\-isation step equivalent?  We answer this question with the following def
 
 \noindent
 \textbf{Observation:}
-If the formula $f'$ is derived from the formula $f$ by a skolemisation step, i.e.~if we have that $f' = \mathtt{Skolem} (f)$
+If the formula $f'$ is derived from the formula $f$ by a skolemisation step, i.e.~if we have that $f' = \mathtt{Skolem} (f)$,
 then $f$ and $f'$ are satisfiability-equivalent, because we can transform any structure
 $\mathcal{S}$ such that $\mathcal{S} \models f$ into a structure $\mathcal{S}'$ such that
 $\mathcal{S}' \models f'$.  Therefore we have
@@ -2940,35 +2944,25 @@ consists of two steps:
 \end{itemize}
 The resulting formula is then satisfiability-equivalent to the original formula.  This
 process of eliminating existential quantifiers through the introduction of new function
-function characters is called \blue{Skolemisation}.  If we have a formula $F$
-into prenex normal form and then skolemised it, the result has the form\\[0.2cm]
+function characters is called \blue{Skolemisation}.  If we have put a formula $F$
+into prenex normal form and then successively remove all existential quantifiers by the process of
+Skolemisation, the resulting formula has the form\\[0.2cm] 
 \hspace*{1.3cm} $\forall x_1, \cdots, x_n: g$ \\[0.2cm]
 and there are no more quantifiers in the formula $g$.  The formula $g$ is also known as the
-\blue{matrix}\index{matrix} of the above formula.  We can now transform $g$ with the help of
-of the propositional equivalences known from the last chapter into conjunctive normal form.  We then have a
-formula of the form \\[0.2cm]
-\hspace*{1.3cm} $\forall x_1, \cdots, x_n: (k_1 \wedge \cdots \wedge k_m)$. \\[0.2cm]
-The $k_i$ are disjunctions of first-order \blue{literals}.  Next, we apply  the equivalence 
+\blue{matrix}\index{matrix} of the above formula.  If the original formula $F$ had no free variables, then all
+remaining variables are universally quantified and we lose no information when we drop the universal quantifiers.
+We can then transform $g$ with the help of
+of the propositional equivalences known from the last chapter into conjunctive normal form.  The resulting 
+formula will have the form \\[0.2cm]
+\hspace*{1.3cm} $k_1 \wedge \cdots \wedge k_m$
 \\[0.2cm]
-\hspace*{1.3cm}
-$\forall x\colon (f_1\wedge f_2) \leftrightarrow (\forall x\colon f_1) \wedge (\forall x\colon f_2)$.
-\\[0.2cm]
-In this way we can distribute the universal-quantifiers to the individual $k_i$.
-The resulting formula has the form \\[0.2cm]
-\hspace*{1.3cm} 
-$\big(\forall x_1, \cdots, x_n: k_1\big) \wedge \cdots \wedge \big(\forall x_1, \cdots, x_n: k_m\big)$.
-\\[0.2cm]
-If a formula $F$ has this form, we say that $F$ is in \blue{first-order clause normal form}
-\index{first-order clause normal form} and a formula of the form \\[0.2cm]
-\hspace*{1.3cm} $\forall x_1, \cdots, x_n: k$, \\[0.2cm]
-where $k$ is a disjunction of first-order literals,
+where the formulas $k_i$ are disjunctions of atomic formulas.
+If a formula has this form, we say that is in \blue{first-order clause normal form}
+\index{first-order clause normal form} and a formula 
+ $k$ where $k$ is a disjunction of first-order literals,
 is called a \blue{first-order clause}.  \index{predicate logical clause} If $M$ is
 is a set of formulas whose satisfiability we want to analyse, 
 we can always transform $M$ into a satisfiability-equivalent set of first-order clauses.
-Since then only universal-quantifiers occur, we can simplify the notation
-by agreeing that all formulae are implicitly universally quantified, i.e. we omit
-the universal quantifiers.
-
 
 \noindent
 The Jupyter notebook
@@ -2977,9 +2971,10 @@ The Jupyter notebook
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/FOL-CNF.ipynb}{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/FOL-CNF.ipynb}.
 \\[0.2cm]
 contains a \textsl{Python} programme that we can use to transform predicate logic formulae into a 
-satisfiability-equivalent set of predicate logic clauses.
+satisfiability-equivalent set of first-order clauses.
+\vspace*{0.2cm}
 
-Our goal is to develop a method that can be used to verify that a first-order formula
+Next, our goal is to develop a method that can be used to verify that a first-order formula
 $f$ is universally valid, i.e.~we want to be able to prove that \\[0.2cm]
 \hspace*{1.3cm}
 $\models f$
