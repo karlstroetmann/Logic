@@ -2964,15 +2964,29 @@ is called a \blue{first-order clause}.  \index{predicate logical clause} If $M$ 
 is a set of formulas whose satisfiability we want to analyse, 
 we can always transform $M$ into a satisfiability-equivalent set of first-order clauses.
 
+\exerciseEng
+Transform the following formulas from first-order logic into sets of first-order clause normal form:
+\begin{enumerate}[(a)]
+\item $\forall x, y: \Bigl(\mathtt{uncle}(x,y) \leftrightarrow
+       \exists z: \bigl(\mathtt{brother}(x,z) \wedge (z = \mathtt{father}(y) \vee z = \mathtt{mother}(y)
+       \bigr)\Bigr)$,
+\item $\forall x, z: \Bigl(x < z \rightarrow \exists y: \bigl(x < y \wedge y < z\bigr)\Bigr)$,
+\item $\forall x: \bigl(p(x) \leftrightarrow \exists y: q(x,y) \bigr)$, 
+\item $\forall x: \exists y: \bigl(\forall z:q(y,z) \rightarrow p(x,y)\bigr)$. \eox
+\end{enumerate}
+\vspace*{-0.1cm}
+
 \noindent
-The Jupyter notebook
+The Jupyter notebook linked below contains a \textsl{Python} programm that we can use to transform predicate
+logic formulae into a satisfiability-equivalent set of first-order clauses. 
+\vspace*{0.2cm}
 \\[0.2cm]
 \hspace*{0.8cm}
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/FOL-CNF.ipynb}{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/FOL-CNF.ipynb}.
-\\[0.2cm]
-contains a \textsl{Python} programme that we can use to transform predicate logic formulae into a 
-satisfiability-equivalent set of first-order clauses.
-\vspace*{0.2cm}
+
+
+
+
 
 Next, our goal is to develop a method that can be used to verify that a first-order formula
 $f$ is universally valid, i.e.~we want to be able to prove that \\[0.2cm]
@@ -3075,6 +3089,7 @@ is unsatisfiable and hence we have shown \\[0.2cm]
 $\models \big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists x\colon p(x,y)\big)$.
 
 \section{Unification}
+\subsection{Substitutions}
 This section introduces the notion of a \blue{most general unifier} of two terms.
 First, we define the notion of a $\Sigma$-substitution.
 
@@ -3189,6 +3204,7 @@ $p(x_1, f(x_4))\sigma = p(x_2, f(x_4))$ \quad und \quad \\[0.2cm]
 \hspace*{1.3cm}
 $p(x_2, x_3)\sigma \;\quad = p(x_2, f(x_4))$.  \eox
 
+\subsection{The Algorithm of Martelli and Montanari}
 Next we develop an algorithm for solving a system of syntactical equations.
 The algorithm we present was published by Martelli and Montanari
 \cite{martelli:1982}.\index{algorithm of Martelli and Montanari}  
@@ -4220,11 +4236,11 @@ will change in the future.
 \item What is a \textcolor{blue}{constraint satisfaction problem}?
 \item How does \textcolor{blue}{backtracking} work?
 \item Why does the order in which the different variables are instantiated matter in backtracking?
-\item What are \textcolor{blue}{first-order logic clauses} and what steps must we take to convert a given
-      first-order logic formula into a satisfiability-equivalent set of clauses?
-\item What is a \textcolor{blue}{substitution}?
+\item What are \textcolor{blue}{first-order logic clauses} and what steps have to be taken in order to convert
+      a given first-order logic formula into a set of first-order clauses that is satisfiability-equivalent ?
+\item Define the notion of a \textcolor{blue}{substitution}?
 \item What is a \textcolor{blue}{unifier}?
-\item State the rules of \textcolor{blue}{Martelli and Montanari}!
+\item State the rules of \textcolor{blue}{Martelli-Montanari algorithm} for unification!
 \item How is the \textcolor{blue}{resolution rule} defined and why might it be necessary to rename variables
       before the resolution rule can be applied?
 \item What is the \textcolor{blue}{factorization rule}?
