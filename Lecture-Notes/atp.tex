@@ -319,10 +319,10 @@ Therefore we transform the negated formula in prenex normal form.
 $$
 \begin{array}{ll}
                   & \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow \big(\forall y\colon \exists x\colon p(x,y)\big)\Big) \\
-  \leftrightarrow & \neg \Big(\neg \big(\exists x\colon \forall y\colon  p(x,y)\big) \vee \big(\forall y\colon \exists x\colon p(x,y)\big)\Big) \\
-  \leftrightarrow &                \big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge \neg \big(\forall y\colon \exists x\colon p(x,y)\big) \\
-  \leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \neg \exists x\colon p(x,y)\big) \\
-  \leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \forall x\colon \neg p(x,y)\big) \\
+  \Leftrightarrow & \neg \Big(\neg \big(\exists x\colon \forall y\colon  p(x,y)\big) \vee \big(\forall y\colon \exists x\colon p(x,y)\big)\Big) \\
+  \Leftrightarrow &                \big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge \neg \big(\forall y\colon \exists x\colon p(x,y)\big) \\
+  \Leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \neg \exists x\colon p(x,y)\big) \\
+  \Leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \forall x\colon \neg p(x,y)\big) \\
 \end{array}
 $$
 In order to proceed we have to rename the variables in the second part of the formula.
@@ -330,11 +330,11 @@ We replace $x$ with $u$ and $y$ with $v$ and are left with the following:
 $$
 \begin{array}{ll}
                   &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \forall x\colon \neg p(x,y)\big) \\
-  \leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists v\colon  \forall u\colon \neg p(u,v)\big) \\
-  \leftrightarrow &\exists v\colon  \Big( \big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\forall u\colon \neg p(u,v)\big) \Big)\\
-  \leftrightarrow &\exists v\colon  \exists x\colon  \Big( \big(\forall y\colon  p(x,y)\big) \wedge \big(\forall u\colon \neg p(u,v)\big) \Big)\\
-  \leftrightarrow &\exists v\colon  \exists x\colon \forall y\colon \Big( p(x,y) \wedge \big(\forall u\colon \neg p(u,v)\big) \Big)\\
-  \leftrightarrow &\exists v\colon  \exists x\colon \forall y\colon \forall u\colon \Big( p(x,y) \wedge \neg p(u,v) \Big)\\
+  \Leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists v\colon  \forall u\colon \neg p(u,v)\big) \\
+  \Leftrightarrow &\exists v\colon  \Big( \big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\forall u\colon \neg p(u,v)\big) \Big)\\
+  \Leftrightarrow &\exists v\colon  \exists x\colon  \Big( \big(\forall y\colon  p(x,y)\big) \wedge \big(\forall u\colon \neg p(u,v)\big) \Big)\\
+  \Leftrightarrow &\exists v\colon  \exists x\colon \forall y\colon \Big( p(x,y) \wedge \big(\forall u\colon \neg p(u,v)\big) \Big)\\
+  \Leftrightarrow &\exists v\colon  \exists x\colon \forall y\colon \forall u\colon \Big( p(x,y) \wedge \neg p(u,v) \Big)\\
 \end{array}
 $$
 Now we have to skolemize in order to get rid of the existential quantifiers.
@@ -696,10 +696,7 @@ inconsistent in every case: we need a second rule. To see this, consider followi
 \]
 We will soon show that the set $M$ is contradictory. It can be shown that the resolution rule is not
 sufficient to prove that $M$ is contradictory.
-A simple but tedious proof of this fact can be given by computing all
-possible resolution steps starting from the set $M$.  In doing so, we would see that the empty clause can never
-be derived.  Because of the incompleteness of the resolution rule by itselft, we now introduce the
-\blue{factorization rule}.  Using this rule we will be able to show that $M$ is contradictory. 
+However, we will soon see that $M$ is contradictory. 
 
 \begin{Definition}[{\color{blue}Factorization}] \index{Factorization}
   Assume that the following holds:
@@ -724,19 +721,29 @@ We will demonstrate how the inconsistency of the set $M$ can be proven using the
 \begin{enumerate}
 \item First, we apply the factorization rule to the first clause. 
       For this, we compute the unifier 
-      \[ \mu = \mathtt{mgu}\bigl(p(f(x),y), p(u,g(v))\bigr) = [y \mapsto g(v), u \mapsto f(x)]. \]
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mu = \mathtt{mgu}\bigl(p(f(x),y), p(u,g(v))\bigr) = \bigl\{y \mapsto g(v), u \mapsto f(x)\bigr\}$. 
+      \\[0.2cm]
       Thus, we can apply the factorization rule: 
-      \[ \bigl\{p(f(x),y), p(u,g(v))\bigr\} \quad \vdash \quad \bigl\{p(f(x),g(v))\bigr\}. \]
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{p(f(x),y), p(u,g(v))\bigr\} \quad \vdash \quad \bigl\{p(f(x),g(v))\bigr\}$. 
 \item Next, we apply the factorization rule to the second clause.
       For this, we compute the unifier 
-      \[ \mu = \mathtt{mgu}\bigl(\neg p(f(x),y), \neg p(u,g(v))\bigr) = [y \mapsto g(v), u \mapsto f(x)]. 
-      \]
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mu = \mathtt{mgu}\bigl(\neg p(f(x),y), \neg p(u,g(v))\bigr) = \{y \mapsto g(v), u \mapsto f(x)\}$. 
+      \\[0.2cm]
       Thus, we can apply the factorization rule: 
-      \[ \bigl\{ \neg p(f(x),y), \neg p(u,g(v))\bigr\} \quad \vdash \quad \bigl\{\neg p(f(x),g(v))\bigr\}.
-      \]
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{ \neg p(f(x),y), \neg p(u,g(v))\bigr\} \quad \vdash \quad \bigl\{\neg p(f(x),g(v))\bigr\}$.
 \item We conclude the proof with an application of the resolution rule.
-      The unifier used here is the empty substitution, thus $\mu = []$.      
-      \[ \schluss{\bigl\{p(f(x),g(v))\bigr\} \quad \bigl\{\neg p(f(x),g(v))\bigr\}}{\{\}} \]
+      The unifier used here is the empty substitution, thus $\mu = \{\}$:    
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\schluss{\bigl\{p(f(x),g(v))\bigr\} \quad \bigl\{\neg p(f(x),g(v))\bigr\}}{\{\}}$.
 \end{enumerate}
 
 If $M$ is a set of first-order logic clauses and $k$ is a first-order logic
@@ -794,7 +801,7 @@ We now have a method to investigate whether $\models f$ holds for a given first-
           \{\neg f\} \models \falsum \quad \mbox{if and only if} \quad 
           \{k_1,\cdots,k_n\} \models \falsum.
       \]
-\item According to the correctness theorem and the theorem on refutation completeness, it holds that
+\item According to the correctness theorem and the theorem on refutational completeness, it holds that
       \\[0.2cm]
       \hspace*{1.3cm} 
       $\{k_1,\cdots,k_n\} \models \falsum$ \quad if and only if \quad 
@@ -825,7 +832,7 @@ where the sets $\mathcal{V}$, $\mathcal{F}$, $\mathcal{P}$, and \textsl{arity} a
 \item $\textsl{arity} := \bigl\{ \textsl{red} \mapsto 1, \textsl{flies} \mapsto 1,
          \textsl{happy} \mapsto 1, \textsl{child} \mapsto 2\bigr\}$
 \end{enumerate}
-The predicate \textsl{child}$(x,y)$ is true if and only if $x$ is a child of $y$.
+The predicate \textsl{child}$(y,x)$ is true if and only if $y$ is a child of $x$.
 Formalizing the axioms and the claim, we obtain the following
 formulas $f_1, \cdots, f_4$:
 \begin{enumerate}
@@ -839,8 +846,16 @@ We want to show that the formula
 \hspace*{1.3cm} 
 $f := f_1 \wedge f_2 \wedge f_3 \rightarrow f_4$ 
 \\[0.2cm]
-is valid. We thus consider the formula $\neg f$ and note \\[0.2cm]
-\hspace*{1.3cm} $\neg f \Leftrightarrow f_1 \wedge f_2 \wedge f_3 \wedge \neg f_4$. \\[0.2cm]
+is valid. We thus consider the formula $\neg f$ and note that \\[0.2cm]
+\hspace*{1.3cm}
+$
+\begin{array}[t]{lcl}
+  \neg f & =                & \neg\bigl(f_1 \wedge f_2 \wedge f_3       \rightarrow f_4 \bigr) \\[0.2cm]
+         &  \Leftrightarrow & \neg\bigl(\neg(f_1 \wedge f_2 \wedge f_3) \vee        f_4 \bigr) \\[0.2cm]
+         &  \Leftrightarrow & f_1 \wedge f_2 \wedge f_3 \wedge \neg f_4 \\[0.2cm]
+\end{array}
+$
+\\[0.2cm]
 Next, we need to convert the formula on the right side of this equivalence into a set of clauses.
 Since this is a conjunction of several formulas, we can convert the individual formulas $f_1$, $f_2$, $f_3$,
 and $\neg f_4$ into clauses separately. 
@@ -855,14 +870,16 @@ and $\neg f_4$ into clauses separately.
     &\Leftrightarrow & \forall x: \Bigl(\exists y: \neg \big( \neg \textsl{child}(y,x) \vee \textsl{flies}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
     &\Leftrightarrow & \forall x: \Bigl( \exists y: \big(\textsl{child}(y,x) \wedge \neg  \textsl{flies}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
     &\Leftrightarrow & \forall x:  \exists y: \Bigl(\big( \textsl{child}(y,x) \wedge \neg  \textsl{flies}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
-    &\approx_e & \forall x: \Bigl(\big( \textsl{child}(s(x),x) \wedge \neg  \textsl{flies}(s(x))\big) \vee \textsl{happy}(x) \Bigr)\\
+    &\approx_e & \forall x: \Bigl(\big( \textsl{child}(s(x),x) \wedge \neg  \textsl{flies}(s(x))\big) \vee
+                 \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl(\big( \textsl{child}(s(x),x) \vee \textsl{happy}(x)\bigr) \wedge \neg  \bigl(\textsl{flies}(s(x))\big) \vee \textsl{happy}(x)\bigr) \Bigr)
   \end{array}
      $$
-      In the last step, we have introduced the Skolem function $s$ with 
+      In the penultimate step, we have introduced the Skolem function $s$ with 
       $\textsl{arity}(s) = 1$. Intuitively, this function computes for each
       dragon $x$, who is not happy, a child $s(x)$, that cannot fly.
-      If we distribute the "or" in the matrix of this formula,
-      we obtain the following two clauses:
+      In the last step, we have distributed the ``$\vee$'' in the matrix of this formula.
+      In set notation, we obtain the following two clauses:
       \\[0.2cm]
       \hspace*{1.3cm} $k_1 := \bigl\{ \textsl{child}(s(x),x), \textsl{happy}(x) \bigl\}$,   \\[0.2cm]
       \hspace*{1.3cm} $k_2 := \bigl\{ \neg \textsl{flies}(s(x)), \textsl{happy}(x) \bigl\}$. 
@@ -918,7 +935,7 @@ We will show that $M \vdash \falsum$ holds:
 \item It holds that
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{mgu}\bigl(\textsl{red}(d), \textsl{red}(x)\bigr) = [x \mapsto d]$.
+      $\mathtt{mgu}\bigl(\textsl{red}(d), \textsl{red}(x)\bigr) = \{x \mapsto d\}$.
       \\[0.2cm]
       Therefore, we can apply the resolution rule to the clauses $k_5$ and $k_4$ as follows:
       \\[0.2cm]
@@ -927,28 +944,27 @@ We will show that $M \vdash \falsum$ holds:
 \item We now apply the resolution rule to the resulting clause and the clause $k_1$. For this, we first compute
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{mgu}\bigl(\textsl{child}(y,d), \textsl{child}(s(x),x)\bigr) = 
-       [y \mapsto s(d), x \mapsto d]$.
+      $\mathtt{mgu}\bigl(\textsl{child}(y,d), \textsl{child}(s(x),x)\bigr) = \{ y \mapsto s(d), x \mapsto d \}$.
       \\[0.2cm]
       Then we have
       \\[0.2cm]
       \hspace*{1.3cm}
        $\bigl\{\neg \textsl{child}(y,d), \textsl{red}(y)\bigl\}$, \ 
        $\bigl\{\textsl{child}(s(x),x), \textsl{happy}(x)\bigl\}$ \ $\vdash$ \ 
-       $\bigl\{\textsl{happy}(d), \textsl{red}(s(d))\bigl\}$.
+       $\bigl\{ \textsl{red}(s(d)), \textsl{happy}(d) \bigl\}$.
 \item Now we apply the resolution rule to the derived clause and the clause $k_6$. We have:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{mgu}\bigl(\textsl{happy}(d), \textsl{happy}(d)\bigr) = []$
+      $\mathtt{mgu}\bigl(\textsl{happy}(d), \textsl{happy}(d)\bigr) = \{\}$.
       \\[0.2cm]
       Thus, we obtain
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\bigl\{\textsl{happy}(d), \textsl{red}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{happy}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{red}(s(d))\bigl\}$.
+      $\bigl\{ \textsl{red}(s(d)), \textsl{happy}(d) \bigl\}$, \ $\bigl\{\neg \textsl{happy}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{red}(s(d))\bigl\}$.
 \item We apply the resolution rule to the clause $\bigl\{\textsl{red}(s(d))\bigl\}$ and the clause $k_3$. First, we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{mgu}\bigl(\textsl{red}(s(d)), \textsl{red}(x)\bigr) = [x \mapsto s(d)]$
+      $\mathtt{mgu}\bigl(\textsl{red}(s(d)), \textsl{red}(x)\bigr) = \{ x \mapsto s(d) \}$.
       \\[0.2cm]
       Thus, the application of the resolution rule yields:
       \\[0.2cm]
@@ -957,7 +973,7 @@ We will show that $M \vdash \falsum$ holds:
 \item To resolve the clause $\bigl\{\textsl{flies}(s(d))\bigl\}$ with the clause $k_2$, we compute
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathtt{mgu}\bigl(\textsl{flies}(s(d)), \textsl{flies}(s(x))\bigr) = [x \mapsto d]$
+      $\mathtt{mgu}\bigl(\textsl{flies}(s(d)), \textsl{flies}(s(x))\bigr) = \bigl\{ x \mapsto d \bigr\}$.
       \\[0.2cm]
       Then, the resolution rule gives
       \\[0.2cm]
@@ -987,8 +1003,7 @@ Given the following axioms:
 \item Every barber shaves all persons who do not shave themselves.
 \item No barber shaves anyone who shaves themselves.
 \end{enumerate}
-These two axioms have a truly surprising consequence: Using only these axioms,  show that all barbers are
-gay. \eox 
+These two axioms have an unsurprising consequence: Using only these axioms, show that all barbers are gay. \eox 
 
 \section{Vampire \index{Vampire}}
 The logical calculus described in the last section can be automated and forms the basis of modern
@@ -1007,12 +1022,12 @@ such that
       $\circ: G \times G \rightarrow G$.
 \item Furthermore, the following axioms hold:
       \begin{enumerate}[(a)]
-      \item $\forall x: e \circ x = x$, \hspace*{\fill} ($\mathrm{e}$ is a \blue{left identity})
+      \item $\forall x: \mathrm{e} \circ x = x$, \hspace*{\fill} ($\mathrm{e}$ is a \blue{left identity})
       \item $\forall x: \exists y: y \circ x = \mathrm{e}$, \hspace*{\fill} (every element has a \blue{left inverse}) 
       \item $\forall x: \forall y: \forall z: (x \circ y) \circ z = x \circ (y \circ z)$. \hspace*{\fill} ($\circ$ is \blue{associative})
       \end{enumerate}
 \end{enumerate}
-It is a well known fact that the given axioms imply the following:
+It is a well known fact that these axioms imply the following:
 \begin{enumerate}
 \item The element $\mathrm{e}$ is also a \blue{right identity}, i.e.~we have
       \\[0.2cm]
