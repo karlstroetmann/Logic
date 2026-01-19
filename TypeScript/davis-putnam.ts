@@ -1,7 +1,5 @@
-import * as tslab from "tslab";
 import { RecursiveSet, RecursiveTuple, StructuralValue } from './recursive-set';
 import { LogicParser, Variable } from './propositional-logic-parser';
-// We import the strict types and the normalize function from the CNF module
 import { normalize, NNFNegation, Literal, Clause, CNF } from './cnf'; 
 
 /**
@@ -40,16 +38,32 @@ function arb<T extends StructuralValue>(S: RecursiveSet<T>): T | null {
   return null;
 }
 
+/**
+ * Selects a variable to branch on.
+ * FIXED: Now selects a RANDOM variable from the available set.
+ * This prevents the solver from getting stuck in a worst-case deterministic order
+ * (like row-by-row) when using the ordered Compact RecursiveSet.
+ */
 function selectVariable(
   Variables: RecursiveSet<Variable>,
   UsedVars: RecursiveSet<Variable>
 ): Variable | null {
+  const candidates: Variable[] = [];
+  
+  // Collect all variables that haven't been assigned yet
   for (const x of Variables) {
     if (!UsedVars.has(x)) {
-      return x;
+      candidates.push(x);
     }
   }
-  return null;
+
+  if (candidates.length === 0) {
+    return null;
+  }
+
+  // Random selection to break symmetries and avoid worst-case DFS
+  const idx = Math.floor(Math.random() * candidates.length);
+  return candidates[idx];
 }
 
 function reduce(Clauses: CNF, l: Literal): CNF {
@@ -59,10 +73,8 @@ function reduce(Clauses: CNF, l: Literal): CNF {
   for (const clause of Clauses) {
     if (clause.has(lBar)) {
       // Unit cut: Remove lBar from the clause
-      // Fix: Cast cloned set (Interface) to Clause (Class)
       const newClause = clause.clone() as Clause;
       newClause.remove(lBar);
-      // The modified clause must be frozen before adding to the result set
       newClause.freeze(); 
       result.add(newClause);
     } else if (!clause.has(l)) {
@@ -97,9 +109,10 @@ function saturate(Clauses: CNF): CNF {
       break;
     }
     
-    const unit = arb(Units)!;
+    // RecursiveSet.rnd() is now random, so this unit propagation order is also random
+    const unit = Units.rnd()!;
     Used.add(unit);
-    const l = arb(unit)!;
+    const l = unit.rnd()!;
     S = reduce(S, l);
   }
   return S;
@@ -137,7 +150,6 @@ function solveRecursive(
   // Branching
   const p = selectVariable(Variables, UsedVars)!;
   
-  // FIX: Cast the result of union (Interface) to RecursiveSet (Class)
   const nextUsedVars = UsedVars.union(RecursiveSet.fromArray([p])) as RecursiveSet<Variable>;
 
   // Branch 1: assume p is true -> add clause {p}
@@ -147,7 +159,6 @@ function solveRecursive(
   cP.freeze();
   unitP.add(cP);
   
-  // FIX: Cast result of union to CNF (Class)
   const Result1 = solveRecursive(S.union(unitP) as CNF, Variables, nextUsedVars);
   if (!Result1.has(EmptyClause)) {
     return Result1;
@@ -160,7 +171,6 @@ function solveRecursive(
   cNotP.freeze();
   unitNotP.add(cNotP);
   
-  // FIX: Cast result of union to CNF (Class)
   return solveRecursive(S.union(unitNotP) as CNF, Variables, nextUsedVars);
 }
 
@@ -174,4 +184,3 @@ export function solve(Clauses: CNF): CNF {
   const UsedVars = new RecursiveSet<Variable>();
   return solveRecursive(Clauses, Variables, UsedVars);
 }
-

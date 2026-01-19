@@ -1,10 +1,9 @@
 /**
  * Specification for Structural Sets and Tuples in TypeScript.
  * * Optimized for performance:
- * - Uses "Compact Layout" (Python-style): Dense values array + Sparse indices array.
- * - Uses Swap-and-Pop deletion to keep the values array perfectly contiguous.
- * - Uses Int32Array for indices to minimize memory and GC overhead.
- * - FIXED: rnd() is now truly random to prevent algorithmic bias in DPLL solvers.
+ * - Uses Power-of-Two bucket sizing for bitwise masking.
+ * - Optimized resize strategy (skipping redundant equality checks).
+ * - Pre-allocation support in constructor.
  */
 
 // --- 1. Strict Type Definitions ---
@@ -13,6 +12,7 @@ type Primitive = string | number;
 
 /**
  * The strict recursive union.
+ * A value is either a Primitive, or a Set/Tuple explicitly containing other StructuralValues.
  */
 type StructuralValue = 
     | Primitive 
@@ -36,6 +36,11 @@ interface RecursiveTuple<T> extends Structural {
     
     freeze(): void;
     get(index: number): T | undefined;
+    
+    /**
+     * Helper to add items during construction. 
+     * Throws if isFrozen is true.
+     */
     add(item: T): void; 
 }
 
@@ -48,6 +53,9 @@ interface RecursiveSet<T> extends Structural, Iterable<T> {
 
     freeze(): void;
     
+    /**
+     * Adds element `e`. Throws if frozen or if `e` is a mutable structure.
+     */
     add(e: T): void;
     remove(e: T): void;
     
@@ -55,12 +63,12 @@ interface RecursiveSet<T> extends Structural, Iterable<T> {
     isEmpty(): boolean;
 
     /**
-     * Returns a random element from the set.
-     * Uses Math.random() to ensure O(1) random selection.
+     * Returns an arbitrary element from the set (the first one found).
+     * Returns undefined if the set is empty.
      */
     rnd(): T | undefined;
 
-    // Functional operations
+    // Functional operations returning new strict sets
     clone(): RecursiveSet<T>;
     union(other: RecursiveSet<T>): RecursiveSet<T>;
     intersection(other: RecursiveSet<T>): RecursiveSet<T>;
@@ -80,6 +88,7 @@ interface RecursiveSet<T> extends Structural, Iterable<T> {
 
 function getHashCode(val: StructuralValue): number {
     if (typeof val === 'number') {
+        // Integer-like hash for numbers (bitwise mixing)
         let h = val | 0; 
         h = ((h >> 16) ^ h) * 0x45d9f3b;
         h = ((h >> 16) ^ h) * 0x45d9f3b;
@@ -87,6 +96,7 @@ function getHashCode(val: StructuralValue): number {
         return h;
     }     
     if (typeof val === 'string') {
+        // FNV-1a hash for strings
         let h = 0x811c9dc5;
         for (let i = 0; i < val.length; i++) {
             h ^= val.charCodeAt(i);
@@ -95,31 +105,39 @@ function getHashCode(val: StructuralValue): number {
         return h;
     } 
     if (val && typeof val === 'object' && 'hashCode' in val) {
-        return (val as Structural).hashCode();
+        return val.hashCode();
     }
     return 0;
 }
 
 function areEqual(a: StructuralValue, b: StructuralValue): boolean {
-    if (a === b) return true;
-    if (typeof a !== typeof b) return false;
+    if (a === b) {
+        return true; // Reference or Primitive strict equality
+    }
+    if (typeof a !== typeof b) {
+        return false;
+    }
+    // Check Structural equality
     if (typeof a === 'object' && typeof b === 'object' && a !== null && b !== null) {
-        if ('equals' in a) return (a as Structural).equals(b);
+        if ('equals' in a) {
+            return (a as Structural).equals(b);
+        }
     }
     return false;
 }
 
 // --- 3. Class Implementations ---
 
+/**
+ * Ordered sequence implementation.
+ */
 class RecursiveTupleImpl<T extends StructuralValue> implements RecursiveTuple<T> {
     private _elements:   T[] = [];
     private _isFrozen:   boolean = false;
-    private _runningHash: number = 1; 
+    private _cachedHash: number | null = null;
 
     constructor(elements?: T[]) {
-        if (elements) {
-            for(const e of elements) this.add(e);
-        }
+        if (elements) this._elements = [...elements];
     }
 
     get isFrozen(): boolean { return this._isFrozen; }
@@ -131,30 +149,54 @@ class RecursiveTupleImpl<T extends StructuralValue> implements RecursiveTuple<T>
 
     add(element: T): void {
         if (this._isFrozen) throw new Error("Cannot modify a frozen Tuple.");
+        
+        // Constraint: Elements must be frozen if they are structural
         if (typeof element === 'object' && element !== null) {
             if ('isFrozen' in element && !(element as any).isFrozen) {
                 throw new Error("Cannot add a non-frozen structure to a RecursiveTuple.");
             }
         }
         this._elements.push(element);
-        this._runningHash = Math.imul(this._runningHash, 31) + getHashCode(element);
     }
 
     freeze(): void {
+        if (this._isFrozen) return;
         this._isFrozen = true;
+        this.hashCode(); // Cache hash immediately
     }
 
     hashCode(): number {
-        return this._runningHash;
+        if (this._cachedHash !== null) {
+            return this._cachedHash;
+        }
+        let h = 1;
+        for (const el of this._elements) {
+            // Order-dependent hash: hash = hash * 31 + elementHash
+            h = Math.imul(h, 31) + getHashCode(el);
+        }
+        if (this._isFrozen) {
+            this._cachedHash = h;
+        }
+        return h;
     }
 
     equals(other: unknown): boolean {
-        if (this === other) return true;
-        if (!(other instanceof RecursiveTupleImpl)) return false;
-        if (this.length !== other.length) return false;
-        if (this.hashCode() !== other.hashCode()) return false;
+        if (this === other) {
+            return true;
+        }
+        if (!(other instanceof RecursiveTupleImpl)) {
+            return false;
+        }
+        if (this.length !== other.length) {
+            return false;
+        }
+        if (this.hashCode() !== other.hashCode()) {
+            return false;
+        }
         for (let i = 0; i < this.length; i++) {
-            if (!areEqual(this._elements[i], other.get(i)!)) return false;
+            if (!areEqual(this._elements[i], other.get(i)!)) {
+                return false;
+            }
         }
         return true;
     }
@@ -165,192 +207,157 @@ class RecursiveTupleImpl<T extends StructuralValue> implements RecursiveTuple<T>
 }
 
 /**
- * Set implementation using "Compact Layout".
+ * Set implementation using Hash Table with Separate Chaining.
+ * Optimized for performance using Power-of-Two buckets and bitwise masking.
  */
 class RecursiveSetImpl<T extends StructuralValue> implements RecursiveSet<T> {
     
-    private _values: T[] = [];
-    private _indices: Int32Array;
-    
-    private _bucketCount: number;
-    private _mask: number;
-    
-    private _xorHash: number = 0;
+    // --- State ---
+    private _buckets: Array<Array<T>>;
+    private _size: number = 0;
+    private _bucketCount: number; // Always a power of 2
     private _isFrozen: boolean = false;
-
+    private _cachedHash: number | null = null;
+    
     private readonly LOAD_FACTOR = 0.75;
     private readonly MIN_BUCKETS = 16;
 
     constructor(expectedSize: number = 0) {
-        let cap = this.MIN_BUCKETS;
         if (expectedSize > 0) {
-             const target = Math.ceil(expectedSize / this.LOAD_FACTOR);
-             while (cap < target) cap <<= 1;
+            // Calculate minimum buckets needed to satisfy load factor
+            const minBuckets = Math.ceil(expectedSize / this.LOAD_FACTOR);
+            // Round up to the next power of 2 (min 16)
+            this._bucketCount = Math.pow(2, Math.ceil(Math.log2(Math.max(this.MIN_BUCKETS, minBuckets))));
+        } else {
+            this._bucketCount = this.MIN_BUCKETS;
         }
-        this._bucketCount = cap;
-        this._mask = cap - 1;
-        this._indices = new Int32Array(cap).fill(-1);
+        this._buckets = this.createBuckets(this._bucketCount);
     }
     
     static fromArray<V extends StructuralValue>(a: V[]): RecursiveSet<V> {
+        // Pre-allocate to avoid resizing during initialization
         const set = new RecursiveSetImpl<V>(a.length);
-        for (const item of a) set.add(item);
+        for (const item of a) {
+            set.add(item);
+        }
         return set;
     }
 
     static singleton<V extends StructuralValue>(a: V): RecursiveSet<V> {
+        // Pre-allocate to avoid resizing during initialization
         const set = new RecursiveSetImpl<V>(1);
         set.add(a);
         return set;
     }
     
     get isFrozen(): boolean { return this._isFrozen; }
-    get size(): number { return this._values.length; }
+    get size(): number { return this._size; }
 
-    hashCode(): number {
-        return this._xorHash;
+    // --- Internal Logic ---
+
+    private createBuckets(count: number): Array<Array<T>> {
+        return new Array(count).fill(null).map(() => []);
     }
 
+    private getBucketIndex(hash: number): number {
+        // Optimization: Bitwise AND is faster than Modulo, requires power-of-2 size
+        return hash & (this._bucketCount - 1);
+    }
+
+    /**
+     * Optimized internal adder for Resizing.
+     * Skips equality checks because elements being moved are already unique.
+     * Does NOT increment size.
+     */
+    private addDirect(e: T): void {
+        const h = getHashCode(e);
+        const idx = this.getBucketIndex(h);
+        this._buckets[idx].push(e);
+    }
+
+    private resize(): void {
+        const oldBuckets = this._buckets;
+        this._bucketCount *= 2; // Keeps power of 2
+        this._buckets = this.createBuckets(this._bucketCount);
+        for (const bucket of oldBuckets) {
+            for (const item of bucket) {
+                this.addDirect(item);
+            }
+        }
+    }
+
+    private addInternal(e: T): void {
+        const h = getHashCode(e);
+        const idx = this.getBucketIndex(h);
+        const bucket = this._buckets[idx];
+        // Linear scan for duplicates
+        for (const existing of bucket) {
+            if (areEqual(existing, e)) return;
+        }
+        bucket.push(e);
+        this._size++;
+    }
+
+    // --- Core Lifecycle & Mutation ---
     freeze(): void {
+        if (this._isFrozen) return;
         this._isFrozen = true;
+        this.hashCode();
     }
 
     add(e: T): void {
         if (this._isFrozen) throw new Error("Cannot add to a frozen set.");
+
+        // Constraint: Nested structures must be frozen
         if (typeof e === 'object' && e !== null) {
             if ('isFrozen' in e && !(e as any).isFrozen) {
                 throw new Error("Cannot add a non-frozen RecursiveSet or Tuple to a RecursiveSet.");
             }
         }
 
-        if (this._values.length >= this._bucketCount * this.LOAD_FACTOR) {
+        if (this._size / this._bucketCount >= this.LOAD_FACTOR) {
             this.resize();
         }
-
-        const h = getHashCode(e);
-        let idx = h & this._mask;
-
-        while (true) {
-            const valIndex = this._indices[idx];
-            
-            if (valIndex === -1) {
-                this._indices[idx] = this._values.length;
-                this._values.push(e);
-                this._xorHash ^= h;
-                return;
-            }
-
-            const existing = this._values[valIndex];
-            if (areEqual(existing, e)) {
-                return; 
-            }
-
-            idx = (idx + 1) & this._mask;
-        }
+        this.addInternal(e);
     }
 
     remove(e: T): void {
         if (this._isFrozen) throw new Error("Cannot remove from a frozen set.");
-        if (this._values.length === 0) return;
 
         const h = getHashCode(e);
-        let idx = h & this._mask;
+        const idx = this.getBucketIndex(h);
+        const bucket = this._buckets[idx];
 
-        while (true) {
-            const valIndex = this._indices[idx];
-
-            if (valIndex === -1) {
-                return; 
-            }
-
-            const existing = this._values[valIndex];
-            if (areEqual(existing, e)) {
-                this._xorHash ^= h;
-                
-                this.removeIndex(idx);
-                const lastVal = this._values.pop()!;
-                
-                if (valIndex < this._values.length) {
-                    this._values[valIndex] = lastVal;
-                    this.updateIndexForValue(lastVal, this._values.length, valIndex);
-                }
+        for (let i = 0; i < bucket.length; i++) {
+            if (areEqual(bucket[i], e)) {
+                bucket.splice(i, 1);
+                this._size--;
                 return;
             }
-
-            idx = (idx + 1) & this._mask;
         }
     }
 
     /**
-     * Returns a random element.
-     * Crucial for DPLL solvers: Avoids deterministic selection bias.
+     * Returns the first element found in the buckets.
+     * Since this is a hash set, the "first" element is arbitrary but deterministic.
      */
     rnd(): T | undefined {
-        const len = this._values.length;
-        if (len === 0) return undefined;
-        // True randomness to break symmetries
-        const idx = Math.floor(Math.random() * len);
-        return this._values[idx];
-    }
-
-    // --- Internals ---
-
-    private updateIndexForValue(val: T, oldLoc: number, newLoc: number): void {
-        const h = getHashCode(val);
-        let idx = h & this._mask;
+        if (this._size === 0) return undefined;
         
-        while (true) {
-            if (this._indices[idx] === oldLoc) {
-                this._indices[idx] = newLoc;
-                return;
+        for (const bucket of this._buckets) {
+            if (bucket.length > 0) {
+                return bucket[0];
             }
-            idx = (idx + 1) & this._mask;
         }
-    }
-
-    private removeIndex(holeIdx: number): void {
-        let i = (holeIdx + 1) & this._mask;
-        while (this._indices[i] !== -1) {
-            const valPtr = this._indices[i];
-            const val = this._values[valPtr];
-            const h = getHashCode(val);
-            const idealIdx = h & this._mask;
-
-            const distToHole = (holeIdx - idealIdx + this._bucketCount) & this._mask;
-            const distToI = (i - idealIdx + this._bucketCount) & this._mask;
-
-            if (distToHole < distToI) {
-                this._indices[holeIdx] = valPtr;
-                holeIdx = i;
-            }
-            i = (i + 1) & this._mask;
-        }
-        this._indices[holeIdx] = -1;
-    }
-
-    private resize(): void {
-        const oldValues = this._values;
-        this._bucketCount *= 2;
-        this._mask = this._bucketCount - 1;
-        this._indices = new Int32Array(this._bucketCount).fill(-1);
-
-        for (let i = 0; i < oldValues.length; i++) {
-            const val = oldValues[i];
-            const h = getHashCode(val);
-            let idx = h & this._mask;
-            
-            while (this._indices[idx] !== -1) {
-                idx = (idx + 1) & this._mask;
-            }
-            this._indices[idx] = i; 
-        }
+        return undefined;
     }
 
     // --- Set Operations ---
 
     clone(): RecursiveSet<T> {
+        // Pre-allocate based on current size
         const newSet = new RecursiveSetImpl<T>(this.size);
-        for (const item of this._values) newSet.add(item);
+        for (const item of this) newSet.add(item);
         return newSet;
     }
 
@@ -379,7 +386,7 @@ class RecursiveSetImpl<T extends StructuralValue> implements RecursiveSet<T> {
     }
 
     powerSet(): RecursiveSet<RecursiveSet<T>> {
-        const elements = this._values;
+        const elements = Array.from(this);
         const powerSize = Math.pow(2, elements.length);
         const result = new RecursiveSetImpl<RecursiveSet<T>>(powerSize);
 
@@ -398,6 +405,7 @@ class RecursiveSetImpl<T extends StructuralValue> implements RecursiveSet<T> {
 
     cartesianProduct<U extends StructuralValue>(other: RecursiveSet<U>): RecursiveSet<RecursiveTuple<T | U>> {
         const result = new RecursiveSetImpl<RecursiveTuple<T | U>>(this.size * other.size);
+        
         for (const a of this) {
             for (const b of other) {
                 const tuple = new RecursiveTupleImpl<T | U>();
@@ -410,15 +418,17 @@ class RecursiveSetImpl<T extends StructuralValue> implements RecursiveSet<T> {
         return result;
     }
 
+    // --- Comparison & Query ---
+
     has(element: T): boolean {
         const h = getHashCode(element);
-        let idx = h & this._mask;
-        while (true) {
-            const valIndex = this._indices[idx];
-            if (valIndex === -1) return false;
-            if (areEqual(this._values[valIndex], element)) return true;
-            idx = (idx + 1) & this._mask;
+        const idx = this.getBucketIndex(h);
+        const bucket = this._buckets[idx];
+        
+        for (const item of bucket) {
+            if (areEqual(item, element)) return true;
         }
+        return false;
     }
 
     equals(other: unknown): boolean {
@@ -428,7 +438,7 @@ class RecursiveSetImpl<T extends StructuralValue> implements RecursiveSet<T> {
         if (this.size !== other.size) return false;
         if (this.hashCode() !== other.hashCode()) return false;
 
-        for (const item of this._values) {
+        for (const item of this) {
             if (!other.has(item)) return false;
         }
         return true;
@@ -436,7 +446,7 @@ class RecursiveSetImpl<T extends StructuralValue> implements RecursiveSet<T> {
 
     isSubset(other: RecursiveSet<T>): boolean {
         if (this.size > other.size) return false;
-        for (const item of this._values) {
+        for (const item of this) {
             if (!other.has(item)) return false;
         }
         return true;
@@ -447,15 +457,44 @@ class RecursiveSetImpl<T extends StructuralValue> implements RecursiveSet<T> {
     }
 
     isEmpty(): boolean {
-        return this._values.length === 0;
+        return this._size === 0;
     }
 
+    hashCode(): number {
+        if (this._cachedHash !== null) return this._cachedHash;
+
+        let xorSum = 0;
+        for (const item of this) {
+            xorSum ^= getHashCode(item);
+        }
+
+        if (this._isFrozen) this._cachedHash = xorSum;
+        return xorSum;
+    }
+
+    // --- Iteration & Utils ---
+
     [Symbol.iterator](): Iterator<T> {
-        return this._values[Symbol.iterator]();
+        let bucketIdx = 0;
+        let itemIdx = 0;
+        const buckets = this._buckets;
+
+        return {
+            next: (): IteratorResult<T> => {
+                while (bucketIdx < buckets.length) {
+                    if (itemIdx < buckets[bucketIdx].length) {
+                        return { value: buckets[bucketIdx][itemIdx++], done: false };
+                    }
+                    bucketIdx++;
+                    itemIdx = 0;
+                }
+                return { value: undefined as any, done: true };
+            }
+        };
     }
 
     toString(sort: boolean = true): string {
-        let items = [...this._values];
+        let items = Array.from(this);
         if (sort) {
             items.sort((a, b) => {
                 const sa = typeof a === 'object' ? a.toString() : String(a);
@@ -472,6 +511,7 @@ class RecursiveSetImpl<T extends StructuralValue> implements RecursiveSet<T> {
     }
 }
 
+// Export the types and the implementations
 export { 
     RecursiveSetImpl as RecursiveSet, 
     RecursiveTupleImpl as RecursiveTuple, 

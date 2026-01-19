@@ -216,7 +216,7 @@ function cnf(f: NNF): CNF {
     throw new Error("Unknown NNF type");
 }
 
-function getComplement(l: Literal): Literal {
+export function getComplement(l: Literal): Literal {
     if (typeof l === 'string') return new NNFNegation(l);
     return l.get(1) as Variable; // NNFNegation always contains Variable at index 1
 }
