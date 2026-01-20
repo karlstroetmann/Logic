@@ -4,11 +4,9 @@
  * - Uses "Compact Layout" (Python-style): Dense values array + Sparse indices array.
  * - Uses Swap-and-Pop deletion to keep the values array perfectly contiguous.
  * - Uses Int32Array for indices to minimize memory and GC overhead.
- * - FIXED: rnd() is now truly random to prevent algorithmic bias in DPLL solvers.
  */
 
 // --- 1. Strict Type Definitions ---
-
 type Primitive = string | number;
 
 /**
