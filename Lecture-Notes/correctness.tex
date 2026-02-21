@@ -21,19 +21,22 @@ the value $m^n$.  We will verify the correctness of this function.
 \begin{minted}[ frame         = lines, 
                 framesep      = 0.3cm, 
                 numbers       = left,
-                numbersep     = -0.2cm,
+                numbersep     = 0.3cm,
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
               ]{python3}
-    def power(m, n):
-        if n == 0:
-            return 1
-        p = power(m, n // 2)
-        if n % 2 == 0:
-            return p * p
-        else:
-            return p * p * m
+function power(m: bigint, n: number): bigint {
+    if (n == 0) {
+        return 1n;
+    }
+    const p = power(m, Math.floor(n / 2));
+    if (n % 2 == 0) {
+        return p * p;
+    } else {
+        return p * p * m;
+    }
+}
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Computation of $m^n$ for $m,n \in \mathbb{N}$.}
@@ -65,9 +68,14 @@ A proof by computational induction consists of three parts:
 Let us prove the claim 
 \\[0.2cm]
 \hspace*{1.3cm}
- $\mytt{power}(m,n) = m^n$
+ $\mathtt{power}(m,n) = m^n$
 \\[0.2cm] 
-by computational induction.
+by computational induction.  In order to simplify the notation we use Gauß's bracket notation for the
+\blue{floor} function and define
+\\[0.2cm]
+\hspace*{1.3cm}
+$\lfloor x \rfloor := \mathtt{Math.floor}(x)$.
+\\[0.2cm]
 \begin{enumerate}
 \item \textbf{Base case}:
 
@@ -75,53 +83,54 @@ by computational induction.
       In this case, we have
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\mytt{power}(m,0) = 1 =  m^0$. \mycheck
+      $\mathtt{power}(m,0) = 1 =  m^0$. \mycheck
 \item \textbf{Induction step}:
 
-      The recursive invocation of $\mytt{power}$ has the form
-      $\mytt{power}(m,n \dv 2)$.  By the induction hypotheses we may assume that 
+      The recursive invocation of $\mathtt{power}$ has the form
+      $\mathtt{power}(m, \lfloor n / 2 \rfloor)$.  By the induction hypotheses we may assume that 
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\displaystyle \mytt{power}(m,n \dv 2) = m^{n \dvv 2}$ 
+      $\displaystyle \mathtt{power}\bigr(m, \lfloor n / 2 \rfloor)\bigr) = m^{\lfloor n/2 \rfloor}$ 
       \\[0.2cm]
       holds.  After the recursive invocation there are two cases that have to be dealt with separately.
       \begin{enumerate}
-      \item $n \;\mytt{\%}\; 2 = 0$, therefore $n$ is even.
+      \item $n \;\mathtt{\%}\; 2 = 0$, therefore $n$ is even.
 
             Then there exists a number $k \in \mathbb{N}$ such that $n = 2 \cdot k$ and therefore
-            $n \dv 2 = k$.
+            $\lfloor n / 2 \rfloor = k$.
             Hence we have:
             \\[0.2cm]
             \hspace*{1.3cm}
            $ 
             \begin{array}{lcl}
-            \mytt{power}(m,n) & = & \mytt{power}(m,k) \cdot \mytt{power}(m,k) \\[0.2cm]
+            \mathtt{power}(m,n) & = & \mathtt{power}(m,k) \cdot \mathtt{power}(m,k) \\[0.2cm]
                                 & \stackrel{\mathrm{IV}}{=} & m^k \cdot m^k  \\[0.2cm]
                                 & = & m^{2\cdot k} \\[0.2cm]
                                 & = & m^{n}.
             \end{array}
             $            
-      \item $n \;\mytt{\%}\; 2 = 1$, therefore $n$ is odd.
+      \item $n \;\mathtt{\%}\; 2 = 1$, therefore $n$ is odd.
 
             Then there exists a number $k \in \mathbb{N}$ such that $n = 2 \cdot k + 1$ and we have
-            $n \dv 2 = k$.  In this case we have:
+            $\lfloor n / 2 \rfloor = k$.  In this case we have:
             \\[0.2cm]
             \hspace*{1.3cm}
             $ 
             \begin{array}{lcl}
-            \mytt{power}(m,n) & = & \mytt{power}(m,k) \cdot \mytt{power}(m,k) \cdot m  \\[0.2cm]
+            \mathtt{power}(m,n) & = & \mathtt{power}(m,k) \cdot \mathtt{power}(m,k) \cdot m  \\[0.2cm]
                                 & \stackrel{\mathrm{IV}}{=} & m^k \cdot m^k \cdot m  \\[0.2cm]
                                 & = & m^{2\cdot k+1} \\[0.2cm]
                                 & = & m^{n}.
             \end{array}
             $
       \end{enumerate}
-      As we have shown that $\mytt{power}(m,n) = m^n$ in both cases, the induction step is finished. \mycheck
-\item \textbf{Termination proof}:
-      Every time the function \mytt{power} is invoked as $\mytt{power}(m, n)$ and $n > 0$, the recursive
-      invocation has the form $\mytt{power}(m,n \dv 2)$ and, since $n \dv 2 < n$ for all $n > 0$, the second
+      As we have shown that $\mathtt{power}(m,n) = m^n$ in both cases, the induction step is finished. \mycheck
+\item \textbf{Termination proof}: \\
+      Every time the function $\mathtt{power}$ is invoked as $\mathtt{power}(m, n)$ and $n > 0$, the recursive
+      invocation has the form $\mathtt{power}\bigl(m, \lfloor n / 2 \rfloor\bigr)$ and, since
+    $\lfloor n / 2 \rfloor < n$ for all $n > 0$, the second
       argument is decreased.  As this argument is a natural number, it must eventually reach $0$.  But if the
-      second argument of the function $\mytt{power}$ is $0$, the function terminates immediately. \mycheck
+      second argument of the function $\mathtt{power}$ is $0$, the function terminates immediately. \mycheck
       \qed
 \end{enumerate}
 
@@ -130,31 +139,34 @@ by computational induction.
 \begin{minted}[ frame         = lines, 
                 framesep      = 0.3cm, 
                 numbers       = left,
-                numbersep     = -0.2cm,
+                numbersep     = 0.3cm,
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
                 ]{python3}
-    def div_mod(m, n):
-        if m < n:
-            return 0, m
-        q, r = div_mod(m // 2, n)
-        if 2 * r + m % 2 < n:
-            return 2 * q    , 2 * r + m % 2
-        else:
-            return 2 * q + 1, 2 * r + m % 2 - n                
+function divMod(m: number, n: number): [number, number] {
+    if (m < n) {
+        return [0, m];
+    }
+    const [q, r] = divMod(Math.floor(m / 2), n);
+    if (2 * r + (m % 2) < n) {
+        return [2 * q, 2 * r + (m % 2)];
+    } else {
+        return [2 * q + 1, 2 * r + (m % 2) - n];
+    }
+}
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{The function \mytt{div\_mod}.}
+  \caption{The function \texttt{divMod}.}
   \label{fig:div_mod}
 \end{figure} 
 
 
 \exampleEng
-The function \mytt{div\_mod} that is shown in Figure \ref{fig:div_mod} satisfies the specification
+The function \texttt{divMod} that is shown in Figure \ref{fig:div_mod} satisfies the specification
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{div\_mod}(m, n) = (q, r)  \rightarrow m = q \cdot n + r \;\wedge\; r < n$. \eox
+$\mathtt{divMod}(m, n) = (q, r)  \rightarrow m = q \cdot n + r \;\wedge\; r < n$. \eox
 
 
 
@@ -162,14 +174,14 @@ $\mytt{div\_mod}(m, n) = (q, r)  \rightarrow m = q \cdot n + r \;\wedge\; r < n$
 Assume that $m,n \in \mathbb{N}$, where $n > 0$.  Furthermore, assume
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bar{q}, \bar{r} = \mytt{div\_mod}(m, n)$.
+$\bar{q}, \bar{r} = \mathtt{divMod}(m, n)$.
 \\[0.2cm] 
-In order to prove the correctness of \mytt{div\_mod}, we have to show two formulas:
+In order to prove the correctness of \texttt{divMod}, we have to show two formulas:
 \begin{align}
 m = \bar{q} \cdot n + \bar{r} \label{divmod1} \\
 \bar{r} < n \hspace*{1.1cm} \label{divmod2}
 \end{align}
-Since \mytt{div\_mod} is defined recursively, the proof of these formulas is done by computational induction.
+Since \texttt{divMod} is defined recursively, the proof of these formulas is done by computational induction.
 \begin{enumerate}
 \item[B.C.:] $m < n$
 
@@ -185,16 +197,16 @@ Since \mytt{div\_mod} is defined recursively, the proof of these formulas is don
     \Leftrightarrow\quad & m < n \quad\green{\surd}
   \end{align*}
   Here $m < n$ is true because this condition is the assumption of the base case.
-\item[I.S.:] $m \dv 2 \mapsto m$
+\item[I.S.:] $\lfloor m / 2 \rfloor \mapsto m$
 
-  By induction hypotheses we know that our claim is true for the recursive invocation of \mytt{div\_mod} in
-  line 4.  Therefore we have the following:
+  By induction hypotheses we know that our claim is true for the recursive invocation of \texttt{divMod} in
+  line 5.  Therefore we have the following:
   \begin{eqnarray}
-    m \dv 2 &\!=\! & q \cdot n + r \label{divmod3} \\
-          r &\!<\! & n             \label{divmod4}
+    \lfloor m / 2 \rfloor &\!=\! & q \cdot n + r \label{divmod3} \\
+                        r &\!<\! & n             \label{divmod4}
   \end{eqnarray}
   In order to complete the induction step we have to perform a case distinction that is analogous to the test
-  of the second \texttt{if}-statement in the implementation of \mytt{div\_mod}.
+  of the second \texttt{if}-statement in the implementation of \texttt{divMod}.
   \begin{enumerate}
   \item $2 \cdot r + m \mmod 2 < n$
 
@@ -208,14 +220,14 @@ Since \mytt{div\_mod} is defined recursively, the proof of these formulas is don
     (\ref{divmod3}) by $2$.  This yields:
     \\[0.2cm]
     \hspace*{1.3cm}
-    $2 \cdot m \dv 2 = 2 \cdot q \cdot n + 2 \cdot r$.
+    $2 \cdot \lfloor m / 2 \rfloor = 2 \cdot q \cdot n + 2 \cdot r$.
     \\[0.2cm]
     If we add $m \mmod 2$ to this equation we get
     \\[0.2cm]
     \hspace*{1.3cm}
-    $2 \cdot m \dv 2 + m \mmod 2 = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2$.
+    $2 \cdot \lfloor m / 2 \rfloor + m \mmod 2 = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2$.
     \\[0.2cm]
-    As we have $2 \cdot m \dv 2 + m \mmod 2 = m$ the last equation can be simplified to
+    As we have $2 \cdot \lfloor m / 2 \rfloor + m \mmod 2 = m$ the last equation can be simplified to
     \\[0.2cm]
     \hspace*{1.3cm}
     $m = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2$.
@@ -239,9 +251,9 @@ Since \mytt{div\_mod} is defined recursively, the proof of these formulas is don
     \end{align*}
     This last equation follows from equation (\ref{divmod3}) as follows:
     \begin{align*}
-                       & m \dv 2 = q \cdot n + r \\
-      \Rightarrow\quad & 2 \cdot m \dv 2 = 2 \cdot q \cdot n + 2 \cdot r \\
-      \Rightarrow\quad & 2 \cdot m \dv 2 + m \mmod 2 = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2 \\
+                       & \lfloor m / 2 \rfloor = q \cdot n + r \\
+      \Rightarrow\quad & 2 \cdot \lfloor m / 2 \rfloor = 2 \cdot q \cdot n + 2 \cdot r \\
+      \Rightarrow\quad & 2 \cdot \lfloor m / 2 \rfloor + m \mmod 2 = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2 \\
       \Rightarrow\quad & m = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2 
     \end{align*}
 
@@ -260,8 +272,8 @@ Since \mytt{div\_mod} is defined recursively, the proof of these formulas is don
       \Rightarrow\quad & 2 \cdot r + m \mmod 2 - n < n \green{\surd}
     \end{align*}
   \end{enumerate}
-\item[T.:] As $m \dv 2 < m$ for all $m \geq n$ and $n > 0$ it is obvious that we will eventually have
-  $m  < n$. But then the function \mytt{div\_mod} terminates.
+\item[T.:] As $\lfloor m / 2 \rfloor < m$ for all $m \geq n$ and $n > 0$ it is obvious that we will eventually have
+  $m  < n$. But then the function \texttt{divMod} terminates. \qed
 \end{enumerate}
 
 Before we can tackle the next exercise, we need to prove the following lemma.
@@ -302,7 +314,7 @@ holds.  We show these two statements separately.
       \hspace*{1.3cm}
       $a = t \cdot u$ \quad and \quad $b = t \cdot v$.
       \\[0.2cm]
-      Since $a = q \cdot b + a \mmod b$ where $q = a \dv b$ we have
+      Since $a = q \cdot b + a \mmod b$ where $q = \lfloor a / b \rfloor$ we have
       \\[0.2cm]
       \hspace*{1.3cm}
       $a \mmod b = a - q \cdot b = t \cdot u - q \cdot t \cdot v = t \cdot (u - q \cdot v)$.
@@ -316,7 +328,7 @@ holds.  We show these two statements separately.
       \hspace*{1.3cm}
       $b = t \cdot u$ \quad and \quad $a \mmod b = t \cdot v$.
       \\[0.2cm]
-      Since $a = q \cdot b + a \mmod b$ where $q = a \dv b$ we have
+      Since $a = q \cdot b + a \mmod b$ where $q = \lfloor a / b \rfloor$ we have
       \\[0.2cm]
       \hspace*{1.3cm}
       $a = q \cdot t \cdot u + t \cdot v = t \cdot (q \cdot u + v)$.
@@ -331,46 +343,52 @@ This concludes the proof. \qed
 \begin{minted}[ frame         = lines, 
                 framesep      = 0.3cm, 
                 numbers       = left,
-                numbersep     = -0.2cm,
+                numbersep     = 0.3cm,
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
                 ]{python3}
-    def ggt(x, y):
-        if y == 0:
-            return x
-        return ggt(y, x % y)
+function ggt(a: number, b: number): number {
+    while(b != 0) {
+        [a, b] = [b, a % b];
+    }
+    return a;
+}
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{The function \mytt{ggt}.}
+  \caption{The function \texttt{ggt}.}
   \label{fig:gcd}
 \end{figure}
 
 \exerciseEng
-Prove that the function \mytt{ggt} that is shown in Figure \ref{fig:gcd} computes the greatest common divisor
-of its arguments. \eox
+Prove that the function \texttt{ggt} that is shown in Figure \ref{fig:gcd} computes the greatest common divisor
+of its arguments, i.e.~prove that $\mathtt{ggt}(a, b) = \mathtt{gcd}(a, b)$ holds for all $a,b \in\mathbb{N}$.
+\eox
 
 \begin{figure}[!h]
   \centering
 \begin{minted}[ frame         = lines, 
                 framesep      = 0.3cm, 
                 numbers       = left,
-                numbersep     = -0.2cm,
+                numbersep     = 0.3cm,
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
                 ]{python3}
-    def root(n):
-        if n == 0:
-            return 0
-        r = root(n // 4)
-        if (2 * r + 1) ** 2 <= n:
-            return 2 * r + 1
-        else:
-            return 2 * r
+function root(n: bigint): bigint {
+    if (n == 0n) {
+        return 0n;
+    }
+    const r = isqrt(n / 4n);
+    if ((2n * r + 1n) * (2n * r + 1n) <= n) {
+        return 2n * r + 1n;
+    } else {
+        return 2n * r;
+    }
+}
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{The function \mytt{isqrt}.}
+  \caption{The function \texttt{isqrt}.}
   \label{fig:isqrt}
 \end{figure} 
 
@@ -380,7 +398,7 @@ The \blue{integer square root} of a natural number $n$ is defined as
 \hspace*{1.3cm}
 $\texttt{isqrt}(n) := \max\bigl(\{ r \in \mathbb{N} \mid r^2 \leq n \}\bigr)$.
 \\[0.2cm]
-Prove that the function \mytt{root} that is shown in Figure \ref{fig:isqrt} on page \pageref{fig:isqrt}
+Prove that the function \texttt{root} that is shown in Figure \ref{fig:isqrt} on page \pageref{fig:isqrt}
 computes the integer square root of its argument. \eox
 \pagebreak
 
@@ -402,10 +420,12 @@ holds for every $n \in \mathbb{N}$.  You should use computational induction to v
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm,
               ]{python3}
-    def square(n):
-        if n == 0:
-            return 0
-        return square(n-1) + 2 * n - 1 
+function square(n: number): number {
+    if (n == 0) {
+        return 0;
+    }
+    return square(n - 1) + 2 * n - 1;
+}                
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{square}.}
@@ -431,16 +451,18 @@ holds for all $n \in \mathbb{N}$ and all $k \in \{ 0, \cdots, n \}$. \eox
 \begin{minted}[ frame         = lines, 
                 framesep      = 0.3cm, 
                 numbers       = left,
-                numbersep     = -0.2cm,
+                numbersep     = 0.3cm,
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm,
                 ]{python3}
-    def binomial(n, k):
-        if k == 0 or k == n:
-            return 1
-        else:
-            return binomial(n - 1, k - 1) + binomial(n - 1, k)                
+function binomial(n: number, k: number): number {
+    if (k == 0 || k == n) {
+        return 1;
+    } else {
+        return binomial(n - 1, k - 1) + binomial(n - 1, k);
+    }
+}
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{binomial}.}
@@ -498,17 +520,17 @@ still denote different values if the variable occurs inside  a loop.  In this ca
 the variables in a way such that the index includes a counter that counts the number of loop iterations.
 For concreteness, consider the  program shown in 
 Figure \ref{fig:power-iterative-annotated.stlx}.  
-Here, in line 5 the variable \mytt{r} has the index $n$ on the right side of the assignment,
+Here, in line 5 the variable \texttt{r} has the index $n$ on the right side of the assignment,
 while it has the index $n+1$ on the left side of the assignment in line 5.  The index $n$ denotes 
-the number of times that the test \mytt{y > 0} of the \mytt{while} loop has been executed.
-After the \texttt{while}-loop finishes, the variable $\mytt{r}$ is indexed as
-$\mytt{r}_N$ in line 8, where $N$ denotes the total number of times that the test \mytt{y > 0} has been executed.
+the number of times that the test \texttt{y > 0} of the \texttt{while} loop has been executed.
+After the \texttt{while}-loop finishes, the variable $\texttt{r}$ is indexed as
+$\texttt{r}_N$ in line 8, where $N$ denotes the total number of times that the test \texttt{y > 0} has been executed.
 We show the correctness of the given program next.  Let us define
 \\[0.2cm]
 \hspace*{1.3cm}
 $ a := x_0, \quad b := y_0$.
 \\[0.2cm]
-We will show that, provided $a \geq 1$, the \mytt{while} loop satisfies the \blue{invariant}
+We will show that, provided $a \geq 1$, the \texttt{while} loop satisfies the \blue{invariant}
 \begin{equation}
   \label{eq:powerInv}
   \ds r_n \cdot x_n^{y_n} = a^b.
@@ -527,7 +549,7 @@ This claim is proven by induction on the number of loop iterations.
             \begin{enumerate}
             \item $y_n \mmod 2 = 1$.
 
-                  Then we have $y_{n} = 2 \cdot (y_n\dv 2) + 1$ and
+                  Then we have $y_{n} = 2 \cdot \lfloor y_n /  2\rfloor + 1$ and
                   $r_{n+1} = r_n \cdot x_n$.  Hence
                   \begin{eqnarray*}
                       &   & r_{n+1} \cdot x_{n+1}^{y_{n+1}} \\[0.2cm] 
@@ -539,18 +561,18 @@ This claim is proven by induction on the number of loop iterations.
 
             \item $y_n \mmod 2 = 0$.
 
-                  Then we have $y_{n} = 2 \cdot (y_n\dv 2)$ and $r_{n+1} = r_n$.
+                  Then we have $y_{n} = 2 \cdot \lfloor y_n / 2\rfloor$ and $r_{n+1} = r_n$.
                   Therefore
                   \begin{eqnarray*}
                       &   & r_{n+1} \cdot x_{n+1}^{y_{n+1}} \\[0.2cm] 
-                      & = & r_{n} \cdot (x_{n} \cdot x_{n})^{y_{n}\dvv 2} \\[0.2cm] 
-                      & = & r_{n} \cdot x_n^{2 \cdot (y_{n} \dvv 2)} \\[0.2cm] 
+                      & = & r_{n} \cdot (x_{n} \cdot x_{n})^{\lfloor y_{n} / 2\rfloor} \\[0.2cm] 
+                      & = & r_{n} \cdot x_n^{2 \cdot (\lfloor y_{n} / 2\rfloor)} \\[0.2cm] 
                       & = & r_{n} \cdot x_n^{y_n} \\
                       & \stackrel{i.h.}{=} & a^{b} \quad \text{\mycheck}
                   \end{eqnarray*}
             \end{enumerate}
 \end{enumerate}
-This shows the validity of equation (\ref{eq:powerInv}).   If the \mytt{while} loop
+This shows the validity of equation (\ref{eq:powerInv}).   If the \texttt{while} loop
 terminates, we must have $y_N = 0$.  If $n=N$, then equation (\ref{eq:powerInv}) yields:
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -565,13 +587,13 @@ $$
 \\[0.2cm]
 In the step from the second line to the third line we have used the fact that, since $x_0 \not= 0$, we also
 have that $x_n \not= 0$ for all $n \in \{0,1, \cdots, N\}$ and therefore $x_N^0 = 1$.  Hence we have shown that $r_N = a^b$.  The
-\mytt{while} loop terminates because we have 
+\texttt{while} loop terminates because we have 
 \\[0.2cm]
 \hspace*{1.3cm}
 $y_{n+1} = y_n \dv 2 < y_n$ \quad as long as \quad $y_n > 0$
 \\[0.2cm]
 and therefore $y_n$ must eventually become $0$.  Thus we have proven that
-$\mytt{power}(a,b) =a^b$ holds. \qed
+$\texttt{power}(a,b) =a^b$ holds. \qed
 
 
 \subsection{Integer Square Root}
@@ -586,7 +608,7 @@ have to establish invariants for the variables $p_n$ and $r_n$.  In order to be 
 for the variable \texttt{r}, we have to understand that the function \texttt{root} computes the integer square
 root of its argument $a$ bit by bit starting at the most significant bit.  Let us denote the
 mathematical function that computes the integer square root of a number $a$ with \texttt{isqrt}.  If we
-represent $\mathtt{isqrt}(a)$ in the binary system, we have
+represent $\texttt{isqrt}(a)$ in the binary system, we have
 \\[0.2cm]
 \hspace*{1.3cm}
 $\ds \mathtt{isqrt}(a) = \sum\limits_{i=0}^{31} b_i \cdot 2^i$, \quad where $b_i \in \{0,1\}$.
@@ -702,27 +724,26 @@ Since the program terminates when $n=32$ we have
 \\[0.2cm]
 \hspace*{1.3cm}
 $\ds \mathtt{root}(a) = r_N = r_{32} = \sum\limits_{i=32-32}^{31} b_i \cdot 2^i = \sum\limits_{i=0}^{31} b_i \cdot 2^i = \mathtt{isqrt}(a)$. \qed
-\pagebreak
 
 \exerciseEng
 Use the method of symbolic program execution to prove the correctness of the implementation of the
 \href{https://en.wikipedia.org/wiki/Euclidean_algorithm}{Euclidean algorithm} that is shown in Figure
 \ref{fig:gcd.stlx} on page \pageref{fig:gcd.stlx}.  During the proof 
-you should make use of the fact that for all positive natural numbers $x$ and $y$ the function $\mytt{gcd}$
+you should make use of the fact that for all positive natural numbers $x$ and $y$ the function $\mathtt{gcd}$
 that computes the greatest common divisor of $x$ and $x$ satisfies the equation
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{gcd}(x, y) = \mytt{gcd}(y, x \,\mytt{\%}\, y)$.
+$\mathtt{gcd}(x, y) = \mathtt{gcd}(y, x \,\mathtt{\%}\, y)$.
 \\[0.2cm]
-Furthermore, the invariant of the \mytt{while} loop is
+Furthermore, the invariant of the \texttt{while} loop is
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mytt{ggt}(x_n, y_n) = \mytt{ggt}(a, b)$ \quad where $a := x_0$ and $b := y_0$.
+$\mathtt{ggt}(x_n, y_n) = \mathtt{ggt}(a, b)$ \quad where $a := x_0$ and $b := y_0$.
 \\[0.2cm]
-Using this invariant you should be able to prove that $\mytt{ggt}(a, b) = \mytt{gcd}(a, b)$ for all
+Using this invariant you should be able to prove that $\mathtt{ggt}(a, b) = \mathtt{gcd}(a, b)$ for all
 $a, b \in \mathbb{N}$ such that $a > 0$.  Note that in order to carry out the proof you have to distinguish
-between the mathematical function \mytt{gcd} that computes the greatest common divisor and the \textsl{Python}
-function \mytt{ggt} that is implemented in Figure \ref{fig:gcd.stlx}.
+between the mathematical function \texttt{gcd} that computes the greatest common divisor and the \textsl{Python}
+function \texttt{ggt} that is implemented in Figure \ref{fig:gcd.stlx}.
 \eox
 
 \begin{figure}[!ht]
@@ -783,7 +804,6 @@ holds for every $s \in \mathbb{N}$.  You should use symbolic execution to verify
 \label{fig:square-iterative}
 \end{figure}
 
-\pagebreak
 
 \section{Check Your Understanding}
 \begin{enumerate}[(a)]
