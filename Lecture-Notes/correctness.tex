@@ -496,14 +496,17 @@ Consider the program shown in Figure \ref{fig:power-iterative-annotated.stlx}.
                   codes         = {\catcode`_=8\catcode`$=3},
                   commandchars  = \\\{\},
                 ]
-    \colorbox{sepia}{\green{def} \blue{power}(x$_0$, y$_0$):}
-    \colorbox{sepia}{    r$_0$ = 1}
-    \colorbox{sepia}{    \green{while} y$_n$ > 0:}
-    \colorbox{sepia}{        \green{if} y$_n$ % 2 == 1:}
-    \colorbox{sepia}{            r$_{n+1}$ = r$_n$ * x$_n$}
-    \colorbox{sepia}{        x$_{n+1}$ = x$_n$ * x$_n$}
-    \colorbox{sepia}{        y$_{n+1}$ = y$_n$ // 2}
-    \colorbox{sepia}{    \green{return} r$_{N}$}
+    \colorbox{sepia}{\green{function} \blue{power}(x$_0$: bigint, y$_0$: number): bigint \{}
+    \colorbox{sepia}{    r$_0$ = 1n;}
+    \colorbox{sepia}{    \green{while} (y$_n$ > 0) \{}
+    \colorbox{sepia}{        \green{if} (y$_n$ % 2 == 1) \{}
+    \colorbox{sepia}{            r$_{n+1}$ = r$_n$ * x$_n$;}
+    \colorbox{sepia}{        \}}  
+    \colorbox{sepia}{        x$_{n+1}$ = x$_n$ * x$_n$;}
+    \colorbox{sepia}{        y$_{n+1}$ = Math.floor(y$_n$ / 2);}
+    \colorbox{sepia}{    \}}  
+    \colorbox{sepia}{    \green{return} r$_{N}$;}
+    \colorbox{sepia}{\}}  
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{An annotated programm to compute powers.}
@@ -640,14 +643,17 @@ With this in mind, we can state the invariants that hold when the \texttt{while}
                   codes         = {\catcode`_=8\catcode`$=3},
                   commandchars  = \\\{\},
                 ]
-    \colorbox{sepia}{\green{def} \blue{root}(a):}
-    \colorbox{sepia}{    r$_0$ = 0}
-    \colorbox{sepia}{    p$_0$ = 2 ** 31}
-    \colorbox{sepia}{    \green{while} p$_n$ > 0:}
-    \colorbox{sepia}{        \green{if} a >= (r$_n$ + p$_n$) ** 2:}
-    \colorbox{sepia}{            r$_{n+1}$ = r$_n$ + p$_n$}
-    \colorbox{sepia}{        p$_{n+1}$ = p$_n$ // 2}
-    \colorbox{sepia}{    \green{return} r$_N$}
+    \colorbox{sepia}{\green{function} \blue{root}(a) \{}
+    \colorbox{sepia}{    r$_0$ = 0;}
+    \colorbox{sepia}{    p$_0$ = 2 ** 31;}
+    \colorbox{sepia}{    \green{while} (p$_n$ > 0):}
+    \colorbox{sepia}{        \green{if} (a >= (r$_n$ + p$_n$) ** 2) \{}
+    \colorbox{sepia}{            r$_{n+1}$ = r$_n$ + p$_n$;}
+    \colorbox{sepia}{        \}}
+    \colorbox{sepia}{        p$_{n+1}$ >>= 1;}
+    \colorbox{sepia}{    \}}
+    \colorbox{sepia}{    \green{return} r$_N$;}
+    \colorbox{sepia}{\}}
 \end{Verbatim}
 \vspace*{-0.3cm}
 \caption{An annotated programm to compute powers.}
