@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{collectVars}\PYG{p}{(}\PYG{n}{f}\PYG{p}{):}
+        \PYG{l+s+s2}{\PYGZdq{}Collect all propositional variables occurring in the formula f.\PYGZdq{}}
+        \PYG{k}{match} \PYG{n}{f}\PYG{p}{:}
+            \PYG{k}{case} \PYG{n}{p} \PYG{k}{if} \PYG{n+nb}{isinstance}\PYG{p}{(}\PYG{n}{p}\PYG{p}{,} \PYG{n+nb}{str}\PYG{p}{):} \PYG{k}{return} \PYG{p}{\PYGZob{}} \PYG{n}{p} \PYG{p}{\PYGZcb{}}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}⊤\PYGZsq{}}\PYG{p}{,} \PYG{p}{):}   \PYG{k}{return} \PYG{n+nb}{set}\PYG{p}{()}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}⊥\PYGZsq{}}\PYG{p}{,} \PYG{p}{):}   \PYG{k}{return} \PYG{n+nb}{set}\PYG{p}{()}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{g}\PYG{p}{):}  \PYG{k}{return} \PYG{n}{collectVars}\PYG{p}{(}\PYG{n}{g}\PYG{p}{)}
+            \PYG{k}{case}\PYG{+w}{ }\PYG{p}{(}\PYG{k}{\PYGZus{}}\PYG{p}{,} \PYG{n}{g}\PYG{p}{,} \PYG{n}{h}\PYG{p}{):} \PYG{k}{return} \PYG{n}{collectVars}\PYG{p}{(}\PYG{n}{g}\PYG{p}{)} \PYG{o}{|} \PYG{n}{collectVars}\PYG{p}{(}\PYG{n}{h}\PYG{p}{)}
+\end{Verbatim}

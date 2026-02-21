@@ -1,0 +1,1541 @@
+\chapter{Automatic Theorem Proving}
+This chapter is structured as follows:
+\begin{enumerate}[(a)]
+\item First, we consider normal forms of first-order logic formulas and show how formulas
+      can be transformed into first-order logic clauses.
+\item Next, we discuss the unification algorithm of Martelli and Montanari.
+\item Then we also discuss a \textcolor{blue}{first-order logic calculus}, which is the basis
+      of automatic reasoning in first-order logic.
+\item To conclude the chapter, we discuss the automatic theorem prover \textsl{Vampire}, as well as
+      the programs \textsl{Prover9} and \textsl{Mace4}.
+\end{enumerate}
+
+\section{\textsc{Fol} Conjunctive Normal Form}
+In order to perform automatic theorem proving for first order logic (abbreviated as \textsc{Fol} in the
+following), it is necessary to transform \textsc{Fol} formulas in conjunctive normal form.
+\blue{\textsc{Fol} conjunctive normal form} (abbreviated as \textsc{Cnf}) provides a standardized
+representation for logical formulas. Its structure is defined as follows: 
+\begin{itemize}
+\item A \blue{literal} is an atomic formula (a predicate applied to terms) or the negation of an
+      atomic formula. For example, $p(x, f(a))$ and $\neg q(y)$ are literals. 
+\item A \blue{clause} is a disjunction of one or more literals. For example,
+      $p(x) \lor \neg q(y) \lor r(a,z)$ is a clause. 
+\item A formula in \blue{\textsc{Cnf}} is a conjunction of clauses. It is often represented as a set of its clauses
+      where the clauses itself are represented as sets of literals.
+\end{itemize}
+A critical characteristic of clausal form in \textsc{Fol} is that \textbf{all variables appearing in the clauses are implicitly universally quantified}. The scope of these quantifiers is the individual clause in which the variable appears. Explicit universal quantifiers are typically dropped for conciseness.
+
+\subsection{Significance of Clausal Form in Automated Reasoning}
+The transformation of \textsc{Fol} formulas into clausal form is not merely a syntactic exercise; it is a
+cornerstone of automated reasoning and computational logic. The primary significance lies in its utility for
+automated theorem proving (\textsc{Atp}) systems. 
+Clausal form offers a standardized and simplified representation of \textsc{Fol} formulas, which is highly
+amenable to computational manipulation. The uniformity of this structure---a conjunction of disjunctions of
+literals---simplifies the design and implementation of inference algorithms. Many \textsc{Atp} systems, particularly
+those based on the \blue{resolution principle}, require their input to be in clausal form. The resolution
+principle is a powerful inference rule specifically designed to operate on clauses.  It is a generalization of
+the cut rule from propositional logic.
+
+The purpose of converting \textsc{Fol} formulas to clausal form is to make them suitable for
+processing by automated deduction systems. These systems often aim to determine the satisfiability or
+unsatisfiability of a set of formulas. Specifically, for theorem proving, the goal is frequently to show that a
+conclusion logically follows from a set of premises. This is often achieved through
+a \textbf{proof by refutation}: to prove a theorem $T$ from some axioms $A_1$, $\cdots$, $A_n$
+we show that the formula $A_1 \land \cdots A_n \land \neg T$ is unsatisfiable.  
+
+The conversion process yields a set of clauses that is \textbf{equisatisfiable} with the original formula (or
+the set of formulas including the negated theorem). This means the original formula is satisfiable if and only
+if the resulting set of clauses is satisfiable. If the clausal form is found to be unsatisfiable (e.g., by
+deriving an empty clause via resolution), then the original formula (or set of formulas) must also be
+unsatisfiable. This property is crucial for the soundness of refutation-based theorem proving. 
+
+\section{The Transformation Process: From \textsc{Fol} to Clauses}
+The conversion of an arbitrary First-Order Logic formula into clausal form involves a sequence of steps. Each
+step systematically simplifies the formula or brings it closer to the desired structure of a conjunction of
+disjunctions of literals, with all variables implicitly universally quantified. 
+
+\subsection{Step 1: Elimination of Implications and Biconditionals}
+The initial step aims to reduce the variety of logical connectives in the formula, retaining only negation
+($\neg$), conjunction ($\land$), and disjunction ($\lor$), which are the fundamental connectives for
+\textsc{Cnf}. 
+\begin{itemize}
+\item \textbf{Rule for Biconditional Elimination:}
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $A \leftrightarrow B \quad\Leftrightarrow\quad (A \rightarrow B) \land (B \rightarrow A)$.
+\item \textbf{Rule for Implication Elimination:} 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $A \rightarrow B \quad\Leftrightarrow\quad \neg A \lor B$.
+\end{itemize}
+
+\subsection{Step 2: Conversion to Negation Normal Form - \textsc{Nnf}}
+The objective of this step is to ensure that negation operators ($\neg$) apply only to atomic formulas
+(predicates). This form, where negations are pushed as deeply as possible into the formula, is known as
+Negation Normal Form (NNF). This is achieved by repeatedly applying the following equivalences: 
+\begin{enumerate}[(a)]
+\item Double Negation Elimination:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\neg \neg A \quad\Leftrightarrow\quad A$
+\item De Morgan's Laws for Connectives:
+      \begin{itemize}
+        \item $\neg (A \land B) \quad\Leftrightarrow\quad \neg A \lor \neg B$
+        \item $\neg (A \lor B)  \quad\Leftrightarrow\quad \neg A \land \neg B$
+      \end{itemize}
+\item De Morgan's Laws for Quantifiers:
+      \begin{itemize}
+        \item $\neg \forall x: p(x) \quad\Leftrightarrow\quad \exists x: \neg p(x)$
+        \item $\neg \exists x: p(x) \quad\Leftrightarrow\quad \forall x: \neg p(x)$
+      \end{itemize}
+\end{enumerate}
+After these transformations, negation symbols will only appear directly in front of predicate symbols, forming literals.
+
+
+\subsection{Step 3: Standardization of Variables (Renaming Variables)}
+The next step is crucial for ensuring that each quantifier in the formula binds a unique variable name. If a
+variable name is used by multiple quantifiers in different scopes, ambiguities and errors can arise during
+later stages, such as quantifier movement or quantifier elimination. 
+\begin{itemize}
+\item If a variable name (e.g., $x$) is bound by more than one quantifier, all occurrences of that variable
+      within the scope of one of these quantifiers (including the quantifier itself) must be renamed to a new,
+      unique variable name (e.g., $y$) that does not appear elsewhere in the formula, or at least not in
+      conflicting scopes. For example, the formula
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $(\forall x: p(x)) \land (\exists x: q(x))$ 
+      \\[0.2cm]
+      should be transformed into
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $(\forall x: p(x)) \land (\exists y: q(y))$. 
+\end{itemize}
+
+\subsection{Step 4: Conversion to \blue{Prenex Normal Form}}
+The goal of this step is to restructure the formula so that all quantifiers appear at the beginning of the
+formula, forming a ``prefix.'' The remainder of the formula, which is quantifier-free, is called the
+\blue{matrix}.  Every \textsc{Fol} formula in classical logic is logically equivalent to a formula in prenex
+normal form (abbreviated as \textsc{Pnf}). 
+The conversion involves applying rules to move quantifiers outwards, past logical connectives. Assuming $x$ is
+not a free variable in the subformula $\psi$ (a condition ensured by prior variable standardization if
+necessary): 
+\begin{itemize}
+    \item $(\forall x: \phi) \land \psi \quad\Leftrightarrow\quad \forall x: (\phi \land \psi)$
+    \item $(\forall x: \phi) \lor \psi \quad\Leftrightarrow\quad \forall x: (\phi \lor \psi)$
+    \item $(\exists x: \phi) \land \psi \quad\Leftrightarrow\quad \exists x: (\phi \land \psi)$
+    \item $(\exists x: \phi) \lor \psi \quad\Leftrightarrow\quad \exists x: (\phi \lor \psi)$
+\end{itemize}
+Similar rules apply when the quantified subformula is on the right (e.g.,
+\\[0.2cm]
+\hspace*{1.3cm}
+$\psi \land (\forall x: \phi)  \quad\Leftrightarrow\quad \forall x: (\psi \land \phi)$).
+\\[0.2cm]
+These rules are applied repeatedly until all quantifiers are in the prefix. The
+resulting formula has the structure $Q_1 x_1: Q_2 x_2: \dots Q_n x_n: M$, where each $Q_i$ is a quantifier and $M$
+is the quantifier-free matrix. 
+
+\subsection{Step 5: Skolemization: Eliminating Existential Quantifiers}
+\blue{Skolemization} is a pivotal step that eliminates all existential quantifiers from the formula. This
+transformation is unique because it does not preserve logical equivalence; instead, it preserves
+\blue{equisatisfiability}. The original formula and the Skolemized formula are either both satisfiable or
+both unsatisfiable. 
+The process involves replacing existentially quantified variables with Skolem terms (constants or functions):
+\begin{enumerate}[(a)]
+\item \textbf{Skolem Constant:} If an existential quantifier $\exists y$ is not within the scope of any
+      universal quantifiers in the \textsc{Pnf} prefix (i.e., all quantifiers preceding $\exists y$, if any, are
+      also existential), then every occurrence of the variable $y$ in the matrix is replaced by a \textbf{new}
+      Skolem constant $c_{\mathrm{sk}}$. This constant symbol must not appear anywhere else in the formula or the
+      knowledge base. The quantifier $\exists y$ is then removed.  Example
+      \begin{itemize}
+          \item $\exists y: p(y)$ becomes $P(c_{\mathrm{sk}})$.
+      \end{itemize}
+\item \textbf{Skolem Function:} If an existential quantifier $\exists y$ is within the scope of one or more
+      universal quantifiers $\forall x_1, \forall x_2, \dots, \forall x_k$ that precede it in the \textsc{Pnf}
+      prefix, then every occurrence of $y$ in the matrix is replaced by a \textbf{new} Skolem function
+      $f_{\mathrm{sk}}(x_1, x_2, \dots, x_k)$. The arguments of this function are precisely those universally
+      quantified variables $x_1, \dots, x_k$ whose quantifiers precede $\exists y$. The function symbol
+      $f_{\mathrm{sk}}$ must be new. The quantifier $\exists y$ is then removed. 
+      \begin{itemize}
+        \item $\forall x: \exists y: p(x,y)$ becomes $\forall x: p(x, f_{\mathrm{sk}}(x))$.
+        \item  $\forall x_1: \forall x_2: \exists y: \forall x_3: \exists z: q(x_1, x_2, y, x_3, z)$ would first
+              transform $\exists y$ to $f_{\mathrm{sk1}}(x_1, x_2)$, resulting in
+              \\[0.2cm]
+              \hspace*{1.3cm}
+              $\forall x_1: \forall x_2: \forall x_3: \exists z: q\bigl(x_1, x_2, f_{\mathrm{sk1}}(x_1, x_2), x_3, z\bigr)$.
+              \\[0.2cm]
+              Then, $\exists z$ (which is in the scope of $\forall x_1, \forall x_2, \forall x_3$) would be replaced by $g_{\mathrm{sk2}}(x_1, x_2,
+              x_3)$, yielding
+              \\[0.2cm]
+              \hspace*{1.3cm}
+              $\forall x_1: \forall x_2: \forall x_3: q\bigl(x_1, x_2, f_{\mathrm{sk1}}(x_1, x_2), x_3, g_{\mathrm{sk2}}(x_1, x_2, x_3)\bigr)$. 
+    \end{itemize}
+\end{enumerate}
+The ``newness'' of Skolem symbols is critical to avoid unintended relationships or assertions. Skolemization fundamentally alters the language of the formula by introducing these new symbols. The original formula asserts the \textit{existence} of an entity, while the Skolemized formula refers to a \textit{specific named entity} (via a Skolem constant) or a \textit{specific function} that produces such an entity (via a Skolem function) that witnesses this existence. This change in language is why logical equivalence is lost. However, the transformation is designed such that if the original formula had a model, that model can be \textit{extended} to provide an interpretation for these new Skolem symbols in a way that satisfies the Skolemized formula. Conversely, any model of the Skolemized formula directly provides the witnesses for the existential quantifiers in the original formula, thus satisfying it as well. This relationship ensures equisatisfiability.
+
+\subsection{Step 6: Dropping Universal Quantifiers}
+After Skolemization, the \textsc{Pnf} prefix contains only universal quantifiers (e.g., $\forall x_1: \forall x_2: \dots \forall x_k: M$). Since variables in clausal form are, by convention, implicitly universally quantified, these explicit universal quantifiers can be dropped.
+\begin{itemize}
+    \item \textbf{Rule:} Remove all universal quantifiers $\forall x_i$ from the prefix. All variables remaining in the matrix $M'$ are now considered free but are implicitly understood to be universally quantified over the scope of their respective clauses.
+\end{itemize}
+The formula is now just the quantifier-free matrix, $M$.
+
+\subsection{Step 7: Conversion of the Matrix to Conjunctive Normal Form (\textsc{Cnf})}
+
+The quantifier-free matrix $M'$ obtained from the previous step must now be converted into conjunctive normal form (\textsc{Cnf}). A formula is in \textsc{Cnf} if it is a conjunction of one or more clauses, where each clause is a disjunction of literals. This primarily involves applying the distributive laws to move disjunctions inwards over conjunctions:
+\begin{itemize}
+\item $A \lor (B \land C) \quad\Leftrightarrow\quad (A \lor B) \land (A \lor C)$,
+\item $(A \land B) \lor C \quad\Leftrightarrow\quad (A \lor C) \land (B \lor C)$.
+\end{itemize}
+These rules are applied repeatedly until the matrix is a conjunction of disjunctions. It is important to note
+that this step can, in the worst case, lead to an exponential increase in the size of the formula. For example,
+converting $(A_1 \land B_1) \lor (A_2 \land B_2) \lor \dots \lor (A_n \land B_n)$ to \textsc{Cnf} results in
+$2^n$ clauses. However, for many practical applications, this explosion is manageable. 
+
+
+\subsection{Step 8: Using Set Notation}
+Once the matrix is in \textsc{Cnf}, it has the form $C_1 \land C_2 \land \dots \land C_m$, where each $C_i$ is a disjunction of literals.
+\begin{itemize}
+\item \textbf{Rule:} Each conjunct $C_i$ forms an individual clause. The entire formula can then be
+      represented as a set of these clauses: $\{C_1, C_2, \dots, C_m\}$. The conjunction symbol between the
+      clauses is now implicit in the set notation.
+\item The clauses themselves are disjunctions of literals and are also written as sets.
+\end{itemize}
+
+\subsection{Step 9: Comprehensive Example Illustrating All Steps}
+Consider the First-Order Logic formula:
+$\phi := \forall x: \bigl(R(x) \rightarrow (\exists y: (P(x,y) \land \neg Q(y)) \land \forall z: S(x,z)))$.
+The transformation proceeds as follows:
+\begin{enumerate}
+\item \textbf{Step 1: Elimination of Implications and Biconditionals} \\
+      Replace $A \rightarrow B$ with $\neg A \lor B$. 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\phi \quad\Leftrightarrow\quad \forall x: \bigl(\neg R(x) \lor \bigl(\exists y: (P(x,y) \land \neg
+      Q(y)\bigr) \land \forall z: S(x,z)\bigr)\bigr)$ 
+\item \textbf{Step 2: Moving Negations Inwards (NNF)} \\
+      The previous formula is already in NNF as all negations ($\neg R(x)$, $\neg Q(y)$) apply directly to atomic formulas.
+
+\item \textbf{Step 3: Standardization of Variables} \\
+    The variables $x, y, z$ are bound by distinct quantifiers and their scopes are nested or separate as required. No renaming is needed at this stage for these variables.
+
+\item \textbf{Step 4: Conversion to Prenex Normal Form (\textsc{Pnf})} \\
+      Move all quantifiers to the front. $\exists y$ and $\forall z$ are within the scope of $\forall x$. \\
+      So, $(\exists y: (P(x,y) \land \neg Q(y))) \land \forall z: S(x,z)$ becomes
+      \\[0.2cm]
+      \hspace*{1.3cm}
+   $\exists y: \forall z: \Bigl(\bigl(P(x,y) \land \neg Q(y)\bigr) \land S(x,z)\Bigr)$,
+      \\[0.2cm]
+      since $z$ is not free in the left part and $y$ is not free in the right. 
+      Thus we have 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\phi \quad\Leftrightarrow\quad
+       \forall x: \exists y: \forall z: \Bigl(\neg R(x) \lor \bigl(P(x,y) \land \neg Q(y) \land S(x,z)\bigr)\Bigr)$
+    \item \textbf{Step 5: Skolemization}
+    \begin{itemize}
+        \item The existential quantifier $\exists y$ is in the scope of the universal quantifier $\forall x$.
+        \item Therefore, we replace $y$ with a new Skolem function $f(x)$ and remove the existential quantifier
+          $\exists y$.   This yields
+          \\[0.2cm]
+          \hspace*{1.3cm}
+          $\phi \approx_e \forall x: \forall z: \Bigl(\neg R(x) \lor \bigl(P(x,f(x)) \land \neg Q(f(x)) \land S(x,z)\bigr)\Bigr)$
+       \end{itemize}
+  \item \textbf{Step 6: Drop the Universal Quantifiers} \\
+    Remove $\forall x$ and $\forall z$. Variables $x$ and $z$ are now implicitly universally quantified.  Therefore
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $\phi \approx_e \neg R(x) \lor \bigl(P(x,f(x)) \land \neg Q(f(x)) \land S(x,z)\bigr)$ 
+
+    \item \textbf{Step 7: Conversion of the Matrix to Conjunctive Normal Form (\textsc{Cnf})} 
+          Applying the distributive law yields 
+          \\[0.2cm]
+          \hspace*{1.3cm}
+    $\phi \approx_e \bigl(\neg R(x) \lor P(x,f(x))\bigr) \land \bigl(\neg R(x) \lor \neg Q(f(x))\bigr) \land \bigl(\neg R(x) \lor S(x,z)\bigr)$
+
+    \item \textbf{Step 8: Set Notation} \\
+    The last formula  is a conjunction of three clauses. The set of clauses is: 
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $\Bigl\{\bigl\{\neg R(x), P(x,f(x))\bigr\}, \bigl\{\neg R(x), \neg Q(f(x))\bigr\}, \bigl\{\neg R(x), S(x,z)\bigl\} \Bigl\}$
+\end{enumerate}
+
+\exerciseEng
+Transform the following formulas from first-order logic into sets of first-order clause normal form:
+\begin{enumerate}[(a)]
+\item $\forall x, y: \Bigl(\mathtt{uncle}(x,y) \leftrightarrow
+       \exists z: \bigl(\mathtt{brother}(x,z) \wedge \mathtt{parent}(z,y)\bigr)\Bigr)$,
+\item $\forall x, z: \Bigl(x < z \rightarrow \exists y: \bigl(x < y \wedge y < z\bigr)\Bigr)$,
+\item $\forall x: \bigl(p(x) \leftrightarrow \exists y: q(x,y) \bigr)$, 
+\item $\forall x: \exists y: \bigl(\forall z:q(y,z) \rightarrow p(x,y)\bigr)$. \eox
+\end{enumerate}% 
+\vspace*{-0.1cm}
+
+\noindent
+The Jupyter notebook linked below contains a \textsl{Python} programm that we can use to transform predicate
+logic formulae into a satisfiability-equivalent set of first-order clauses. 
+\\[0.2cm]
+\hspace*{0.3cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/09-FOL-CNF.ipynb}{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/09-FOL-CNF.ipynb}.
+\vspace*{0.2cm}
+
+Next, our goal is to develop a method that can be used to verify that a first-order formula
+$f$ is universally valid, i.e.~we want to be able to prove that \\[0.2cm]
+\hspace*{1.3cm}
+$\models f$
+\\[0.2cm]
+holds.  We know that \\[0.2cm]
+\hspace*{1.3cm}
+$\models f$ \quad if and only if \quad $\{\neg f\} \models \falsum$, \\[0.2cm]
+because the formula $f$ is universally valid iff there is no $\Sigma$-structure $\mathcal{S}$ such that
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathcal{S} \models \neg f$,
+\\[0.2cm]
+i.e.~$f$ is universally valid iff $\neg f$ is unsatisfiable. 
+Therefore, in oder to prove that $f$ is universally valid, we transform the formula $\neg f$  into 
+first-order normal form.  By doing this we obtain clauses $k_1, \cdots, k_n$ such that \\[0.2cm]
+\hspace*{1.3cm} $\neg f \approx_e k_1 \wedge \cdots \wedge k_n$ \\[0.2cm]
+holds.  Next,  we try to
+derive a contradiction from the clauses $k_1,\cdots,k_n$: \\[0.2cm]
+\hspace*{1.3cm} $\{k_1, \cdots, k_n\} \vdash \falsum$ \\[0.2cm]
+If this succeeds, then we know that the set $\{k_1, \cdots, k_n\}$ is unsatisfiable.
+This means that $\neg f$ is also unsatisfiable and hence $f$ must be universally valid.
+In order to derive a contradiction from the clauses $k_1,\cdots,k_n$
+we need a calculus $\vdash$ that works with first-order clauses. 
+We will present this calculus in section \ref{sec:fol-calculus}.
+
+To explain the procedure in more detail, we will demonstrate it using an example. 
+We want to investigate whether 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\models \big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow \big(\forall y\colon \exists x\colon p(x,y)\big)$ \\[0.2cm]
+holds. We know that this is equivalent to  \\[0.2cm]
+\hspace*{1.3cm} 
+$\Big\{ \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists
+x\colon p(x,y)\big)\Big)\Big\} \models \falsum$.
+\\[0.2cm]
+Therefore we transform the negated formula in prenex normal form.
+$$
+\begin{array}{ll}
+                  & \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow \big(\forall y\colon \exists x\colon p(x,y)\big)\Big) \\
+  \Leftrightarrow & \neg \Big(\neg \big(\exists x\colon \forall y\colon  p(x,y)\big) \vee \big(\forall y\colon \exists x\colon p(x,y)\big)\Big) \\
+  \Leftrightarrow &                \big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge \neg \big(\forall y\colon \exists x\colon p(x,y)\big) \\
+  \Leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \neg \exists x\colon p(x,y)\big) \\
+  \Leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \forall x\colon \neg p(x,y)\big) \\
+\end{array}
+$$
+In order to proceed we have to rename the variables in the second part of the formula.
+We replace $x$ with $u$ and $y$ with $v$ and are left with the following:
+$$
+\begin{array}{ll}
+                  &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists y\colon  \forall x\colon \neg p(x,y)\big) \\
+  \Leftrightarrow &\big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\exists v\colon  \forall u\colon \neg p(u,v)\big) \\
+  \Leftrightarrow &\exists v\colon  \Big( \big(\exists x\colon \forall y\colon  p(x,y)\big) \wedge  \big(\forall u\colon \neg p(u,v)\big) \Big)\\
+  \Leftrightarrow &\exists v\colon  \exists x\colon  \Big( \big(\forall y\colon  p(x,y)\big) \wedge \big(\forall u\colon \neg p(u,v)\big) \Big)\\
+  \Leftrightarrow &\exists v\colon  \exists x\colon \forall y\colon \Big( p(x,y) \wedge \big(\forall u\colon \neg p(u,v)\big) \Big)\\
+  \Leftrightarrow &\exists v\colon  \exists x\colon \forall y\colon \forall u\colon \Big( p(x,y) \wedge \neg p(u,v) \Big)\\
+\end{array}
+$$
+Now we have to skolemize in order to get rid of the existential quantifiers.
+In order to do this, we introduce two new function symbols $s_1$ and $s_2$. 
+We have both  $\mathtt{arity}(s_1) = 0$ and $\mathtt{arity}(s_2) = 0$, because the existential quantifiers are
+not preceded by universal quantifiers.
+$$
+\begin{array}{ll}
+           & \exists v\colon  \exists x\colon \forall y\colon \forall u\colon \Big( p(x,y) \wedge \neg p(u,v) \Big)\\
+ \approx_e & \exists x\colon \forall y\colon \forall u\colon \Big( p(x,y) \wedge \neg p(u,s_1) \Big)\\
+ \approx_e & \forall y\colon \forall u\colon \Big( p(s_2,y) \wedge \neg p(u,s_1) \Big)\\
+\end{array}
+$$
+At this point we are left with  universal quantifiers.  These can be omitted,
+as we have already agreed that all free variables are implicitly universally quantified.
+We proceed to present the first order \textsc{Cnf} of our formula in set notation:
+\\[0.2cm] 
+\hspace*{1.3cm}
+$M := \Big\{ \big\{ p(s_2,y) \big\}, \big\{\neg p(u,s_1)\big\}\Big\}$.
+\\[0.2cm]
+Next, we show that the set $M$ is contradictory.
+To do this, we first consider the clause $\big\{ p(s_2,y) \big\}$ and insert 
+the constant $s_1$ in this clause for $y$.  This gives us the clause \\[0.2cm]
+\hspace*{1.3cm} $\big\{ p(s_2,s_1) \big\}$. \hspace*{\fill}(1)\\[0.2cm]
+We justify the replacement of $y$ by $s_1$ by the fact that the above clause is implicitly
+universally quantified and if something is true for all $y$, then it is certainly also true for $y = s_1$.
+
+Next, we take the clause $\big\{\neg p(u,s_1)\big\}$ and
+insert the constant $s_2$ for the variable $u$.  We obtain the 
+clause \\[0.2cm]
+\hspace*{1.3cm} $\big\{\neg p(s_2,s_1)\big\}$ \hspace*{\fill} (2) \\[0.2cm]
+Now we apply the cut rule to the clauses (1) and (2) and have \\[0.2cm]
+\hspace*{1.3cm} 
+$\big\{ p(s_2,s_1) \big\}$, \quad$\big\{\neg p(s_2,s_1)\big\}$ \quad $\vdash \quad \{\}$.
+\\[0.2cm]
+We have thus derived a contradiction and shown that the set $M$ is unsatisfiable.  Therefore, we also know that
+\\[0.2cm]
+\hspace*{1.3cm} 
+$\Big\{ \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists x\colon p(x,y)\big)\Big)\Big\}$
+\\[0.2cm]
+is unsatisfiable and hence we have shown \\[0.2cm]
+\hspace*{1.3cm} 
+$\models \big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists x\colon p(x,y)\big)$.
+
+\section{Unification}
+\subsection{Substitutions}
+This section introduces the notion of a \blue{most general unifier} of two terms.
+First, we define the notion of a $\Sigma$-substitution.
+
+\begin{Definition}[$\Sigma$-Substitution]
+  Assume that a signature $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ is given.
+  A \blue{$\Sigma$-substitution} $\sigma$ is a map of the form
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\sigma: \mathcal{V} \rightarrow \mathcal{T}_\Sigma$ 
+  \\[0.2cm]
+  such that the set $\textsl{dom}(\sigma) := \bigl\{ x \in \mathcal{V} \mid \sigma(x) \not= x \bigr\}$ is finite.
+  If we have $\textsl{dom}(\sigma) = \{ x_1, \cdots, x_n \}$ and $t_i = \sigma(x_i)$ for all $i = 1, \cdots, n$,
+  then we use the following notation:
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\sigma = \{ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \}$.
+  \\[0.2cm]
+  The set of all $\Sigma$-Substitutions is denoted as $\mathtt{Subst}(\Sigma)$.
+  \eox
+\end{Definition}
+
+A substitution $\sigma = \{ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \}$ can be \blue{applied} to a term $t$
+by replacing the variables $x_i$ with the terms $t_i$.  We will use the postfix notation \blue{$t\sigma$} to denote the
+\blue{application} of the substitution $\sigma$ to the term $t$.  Formally, the notation $t \sigma$ is defined
+by induction on $t$:
+\begin{enumerate}
+\item $x \sigma := \sigma(x)$ \quad for all $x \in \mathcal{V}$.
+\item $c \sigma = c$ \quad for every constant $c \in \mathcal{F}$.
+\item $f(t_1, \cdots, t_n) \sigma := f\bigl(t_1\sigma, \cdots, t_n\sigma\bigr)$.
+\end{enumerate}
+
+
+
+Next, we define the composition of two $\Sigma$-substitutions.
+
+\begin{Definition}[Composition of Substitutions] \index{Composition von Substitutions}
+    Assume that \\[0.2cm]
+    \hspace*{1.3cm}
+    $\sigma = \{ x_1 \mapsto s_1, \cdots, x_m \mapsto s_m \}$
+    \quad and \quad
+    $\tau = \{ y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \}$
+    \\[0.2cm]
+    are two substitutions such that $\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) = \{\}$.
+    We define the  \blue{composition $\sigma\tau$} \index{composition $\sigma\tau$} of $\sigma$ and $\tau$  as
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $\sigma\tau := \{ x_1 \mapsto s_1\tau, \cdots, x_m \mapsto s_m\tau,\; y_1 \mapsto t_1, \cdots, y_n \mapsto t_n \}$
+    \eox
+\end{Definition}
+
+\exampleEng
+If we define
+\\[0.2cm]
+\hspace*{1.3cm}
+$\sigma := \{ x_1 \mapsto c,\; x_2 \mapsto f(x_3) \}$ \quad and \quad
+$\tau := \{ x_3 \mapsto h(c,c),\; x_4 \mapsto d \}$,
+\\[0.2cm]
+then we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\sigma\tau = \{ x_1 \mapsto c,\; x_2 \mapsto f(h(c,c)),\; x_3 \mapsto h(c,c),\;x_4 \mapsto d \}$.
+\eox
+\vspace{0.3cm}
+
+\begin{Proposition} \label{satz:composition}
+    If $t$ is a term and $\sigma$ and $\tau$ are substitutions such that  
+    $\textsl{dom}(\sigma) \cap \textsl{dom}(\tau) = \{\}$ holds, then we have
+    \\[0.2cm]
+    \hspace*{1.3cm} $(t \sigma)\tau = t (\sigma\tau)$.
+    \eox
+\end{Proposition}
+This proposition may be proven by induction on $t$.
+
+\begin{Definition}[Syntactical Equation] \index{syntactical equation}
+  A  \blue{syntactical equation} is a pair $\langle s, t \rangle$ of terms.
+  It is written as $s \doteq t$. \index{$s \doteq t$}
+  A \blue{system of syntactical equations} \index{system of syntactical equations} is a set of syntactical
+  equations.
+  \eox
+\end{Definition}
+
+
+\begin{Definition}[Unifier]
+  A substitution $\sigma$ \blue{solves} a syntactical equation $s \doteq t$ iff we have $s\sigma = t\sigma$.
+  If $E$ is a system of syntactical equations and $\sigma$ is a substitution that solves
+  every syntactical equations in $E$, then $\sigma$ is a  \blue{unifier} \index{unifier} of $E$.
+  \eox
+\end{Definition}
+
+\noindent
+If $E = \{ s_1 \doteq t_1, \cdots, s_n \doteq t_n \}$ is a system of syntactical equations and $\sigma$ is a
+substitution, then we define
+\\[0.2cm]
+\hspace*{1.3cm}  $E\sigma := \{ s_1\sigma \doteq t_1\sigma, \cdots, s_n\sigma \doteq t_n\sigma \}$.
+\vspace{0.3cm}
+
+\exampleEng
+Let us consider the syntactical equation
+\\[0.2cm]
+\hspace*{1.3cm}
+$p(x_1, f(x_4)) \doteq p( x_2, x_3)$
+\\[0.2cm]
+and define the substitution
+\\[0.2cm]
+\hspace*{1.3cm}
+$\sigma := \{ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \}$.
+\\[0.2cm]
+Then $\sigma$ solves the given syntactical equation because we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$p(x_1, f(x_4))\sigma = p(x_2, f(x_4))$ \quad und \quad \\[0.2cm]
+\hspace*{1.3cm}
+$p(x_2, x_3)\sigma \;\quad = p(x_2, f(x_4))$.  \eox
+
+\subsection{The Algorithm of Martelli and Montanari}
+Next we develop an algorithm for solving a system of syntactical equations.
+The algorithm we present was published by Martelli and Montanari
+\cite{martelli:1982}.\index{algorithm of Martelli and Montanari}  
+To begin, we first consider the cases where a syntactical equation $s \doteq t$ is \blue{unsolvable}.
+There are two cases: A syntactical equation of the form
+\\[0.2cm]
+\hspace*{1.3cm}
+$f(s_1,\cdots,s_m) \doteq g(t_1,\cdots, t_n)$ \\[0.2cm]
+is certainly unsolvable if  $f$ and $g$ are different function symbols. The reason is that for any substitution
+$\sigma$ we have that \\[0.2cm]
+\hspace*{1.0cm} $f(s_1,\cdots,s_m)\sigma = f(s_1\sigma,\cdots,s_m\sigma)$ \quad und \quad
+                $g(t_1,\cdots, t_n)\sigma = g(t_1\sigma,\cdots,t_n\sigma)$. \\[0.2cm]
+If $f \not = g$, then the terms  $f(s_1,\cdots,s_m)\sigma$ and $g(t_1,\cdots, t_n)\sigma$ start with different
+function symbols and hence they can't be identical.
+
+The other case where a syntactical equation is unsolvable, is a syntactical equation of the following form:
+\\[0.2cm]
+\hspace*{1.3cm}
+$x \doteq f(t_1,\cdots,t_n)$  \quad where $x \in \texttt{var}\big(f(t_1,\cdots,t_n)\big)$.
+\\[0.2cm]
+This syntactical equation is unsolvable because the term $f(t_1,\cdots,t_n)\sigma$ will always contain at least one more
+occurrence of the function symbol $f$ than the term $x\sigma$.
+
+Now we are able to present an algorithm for solving a system of syntactical equations, provided the system is
+solvable.  The algorithm will also discover if a system of syntactical equations is unsolvable.
+The algorithm works on pairs of the form
+$\langle F, \tau \rangle$ where $F$ is a system of syntactical equations and $\tau$ is a substitution.
+The algorithm starts with the pair 
+$\langle E, \{\} \rangle$.  Here $E$ is the system of syntactical equations that is to be solved and $\{\}$
+represents the empty substitution.  The system works by simplifying the pairs $\langle F, \tau \rangle$ using
+certain reduction rules that are presented below.  These reduction rules are applied until we either discover
+that the system of syntactical equations is unsolvable or else we reduce the pairs until we finally arrive at a
+pair of the form $\langle \{\}, \mu \rangle$.  In this case  $\mu$ is a unifier of the system of
+syntactical equations $E$.  The reduction rules are as follows:
+\begin{enumerate}
+\item If  $y\in\mathcal{V}$ is a variable that does  \underline{\color{red}not} occur in the term $t$, then
+      we can perform the following reduction: 
+      \[ \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \quad\leadsto\quad 
+         \Big\langle E\{y \mapsto t\}, \sigma\{ y \mapsto t \} \Big\rangle \qquad\mbox{if $y \in \mathcal{V}$
+           and $y \not\in \mathtt{var}(t)$} 
+      \]
+      This reduction rule can be understood as follows: If the system of syntactical equations that is to be
+      solved contains a syntactical equation of the form $y \doteq t$, where the variable $y$ does not occur in
+      the term $t$, then the syntactical equation $y \doteq t$ can be removed if we apply the substitution
+      $\{ y \mapsto t \}$ to both components of the pair
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle$.
+\item If the variable $y$ occurs in the term $t$, i.e.~if  $y \in \textsl{Var}(t)$
+      and, furthermore, $t \not= y$, then the system of syntactical equations
+      $E \cup \big\{ y \doteq t \big\}$ has no solution.  We write this as
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle\;\leadsto\; \Omega$ \quad
+      if $y \in \texttt{var}(t)$ and $y \not=t$.
+\item If $y\in\mathcal{V}$ and  $t \not\in \mathcal{V}$, then we have:
+      \[ \Big\langle E \cup \big\{ t \doteq y \big\}, \sigma \Big\rangle \quad\leadsto\quad 
+         \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \qquad\mbox{if $y \in \mathcal{V}$ and
+           $t \not\in \mathcal{V}$.}
+      \]   
+      After we apply this rule, we can apply either the first or the second reduction rule thereafter.
+\item Trivial syntactical equations can be deleted:
+      \[ \Big\langle E \cup \big\{ x \doteq x \big\}, \sigma \Big\rangle \quad\leadsto\quad
+         \Big\langle E, \sigma \Big\rangle \qquad\mbox{if $x \in \mathcal{V}$.}
+      \]   
+\item If $f$ is an  $n$-ary function symbol we have 
+      \[ \Big\langle E \cup \big\{ f(s_1,\cdots,s_n) \doteq f(t_1,\cdots,t_n) \big\}, \sigma \Big\rangle 
+         \;\leadsto\; 
+         \Big\langle E \cup \big\{ s_1 \doteq t_1, \cdots, s_n \doteq t_n\}, \sigma \Big\rangle.
+      \]   
+
+      This rule is the reason that we have to work with a system of syntactical equations, because even if we
+      start with a single syntactical equation the rule given above can increase the number of syntactical
+      equations. 
+
+      A special case of this rule is the following:  
+      \[ \Big\langle E \cup \big\{ c \doteq c \big\}, \sigma \Big\rangle \;\leadsto\; 
+         \Big\langle E, \sigma \Big\rangle.
+      \]
+      Here $c$ is a nullary function symbol.
+\item The system of syntactical equations $E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\}$ has
+      no solution if the function symbols $f$ and $g$ are different.  Hence we have
+      \[ \Big\langle E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\},
+      \sigma \Big\rangle \;\leadsto\; \Omega \qquad \mbox{provided $f \not= g$}. \]
+\end{enumerate}
+If a system of syntactical equations $E$ is given and we start with the pair 
+$\langle E, \{\}\rangle$, then we can apply the rules given above until one of the following two cases happens: 
+\begin{enumerate}
+\item We use the second or the sixth of the reduction rules given above.
+      In this case the system of syntactical equations $E$ is unsolvable.
+\item The pair $\langle E, \{\} \rangle$ is reduced into a pair of the form $\langle \{\}, \mu\rangle$.
+      Then $\mu$ is a  \blue{unifier} of $E$.  In this case we write $\mu = \mathtt{mgu}(E)$.
+      If $E = \{ s \doteq t \}$, we write $\mu = \mathtt{mgu}(s, t)$.  The abbreviation
+      $\mathtt{mgu}$ is short for {``\blue{most general unifier}''}.
+\end{enumerate}
+
+\exampleEng
+We show how to solve the syntactical equation \\[0.2cm]
+\hspace*{1.3cm}  $p(x_1, f(x_4)) \doteq p( x_2, x_3)$.  \\[0.2cm]
+We have the following reductions:
+$$
+\begin{array}{ll}
+          &  \big\langle \big\{ p(x_1, f(x_4)) \doteq p( x_2, x_3) \big\}, \{ \} \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{ x_1 \doteq x_2, f(x_4) \doteq x_3 \big\}, \{ \} \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{ f(x_4) \doteq x_3 \big\}, \{ x_1 \mapsto x_2 \} \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{ x_3 \doteq f(x_4) \big\}, \{ x_1 \mapsto x_2 \} \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{\big\}, \{ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \} \big\rangle \\[0.2cm]
+\end{array}
+$$
+Hence the method is successful and we have that the substitution
+\\[0.2cm]
+\hspace*{1.3cm}
+$\{ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \}$ \\[0.2cm]
+is a solution of the syntactical equation given above.  \eox
+
+\exampleEng
+Next we try to solve the following system of syntactical equations: 
+\[ E = \big\{ p(h(x_1,c)) \doteq p(x_2),\; q(x_2, d) \doteq q(h(d,c),x_4) \big\} \]
+We have the following reductions:
+$$
+\begin{array}{ll}
+          & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; q(x_2, d) \doteq q(h(d,c),x_4) \big\}, \{ \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c), \; d \doteq x_4 \big\}, \{ \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c), \; x_4 \doteq d \big\}, \{ \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c) \big\}, \{ x_4 \mapsto d \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(h(d,c)) \big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ h(x_1,c) \doteq h(d,c) \big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ x_1 \doteq d,\; c \doteq c \big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ x_1 \doteq d,\big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{\big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \} \big\rangle \\[0.2cm]
+\end{array}
+$$
+Hence the  substitution  $\{ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \}$ is a solution
+of the system of syntactical equations given above.
+\eox
+
+
+\noindent
+The Jupyter notebook
+\\[0.2cm]
+\hspace*{0.0cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/10-Unification.ipynb}{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/10-Unification.ipynb}.
+\\[0.2cm]
+implements the algorithm that has been described above.
+
+\section{A Deductive System for First-Order Logic without Equality \label{sec:fol-calculus}}
+In this section, we assume that our signature $\Sigma$ does not use the equality sign, because this restriction
+makes it significantly easier to introduce a complete deductive system for first-order logic. Although there is
+also a complete deductive system for the case where the signature $\Sigma$ contains the equality sign, it is
+considerably more complex than the system we are about to introduce and is therefore out of the scope of these
+lecture notes. 
+
+\begin{Definition}[{\color{blue}Resolution}] \index{Resolution} 
+    Assume that
+    \begin{enumerate}
+    \item $k_1$ and $k_2$ are first-order logic clauses,
+    \item $p(s_1,\cdots,s_n)$ and $p(t_1,\cdots,t_n)$ are atomic formulas, and
+    \item the syntactic equation $p(s_1,\cdots,s_n) \doteq p(t_1,\cdots,t_n)$ is solvable with most general unifier
+          \\[0.2cm]
+          \hspace*{1.3cm}
+          $\mu = \mathtt{mgu}\bigl(p(s_1,\cdots,s_n), p(t_1,\cdots,t_n)\bigr)$. 
+    \end{enumerate}
+     Then the following deduction rule
+     \\[0.2cm]
+     \hspace*{1.3cm}
+     $\schluss{k_1 \cup\{ p(s_1,\cdots,s_n)\} \quad\quad \{\neg p(t_1,\cdots,t_n)\} \cup k_2}{
+                 k_1\mu \cup k_2\mu} 
+               $
+     \\[0.2cm]
+     is an application of the \blue{resolution rule}.
+     \eox
+\end{Definition}
+
+The resolution rule is a combination of the \blue{substitution rule} and the cut rule. The substitution rule \index{Substitution Rule} has the form
+\\[0.2cm]
+\hspace*{1.3cm}
+$\schluss{k}{k\sigma}$.
+\\[0.2cm]
+Here, $k$ is a first-order logic clause and $\sigma$ is a substitution.
+In some cases, we may need to rename the variables in one of the two clauses before we can apply the resolution rule. Let us consider an example.
+The set of clauses
+\[ M = \Bigl\{ \bigl\{ p(x) \bigr\}, \bigl\{ \neg p(f(x)) \bigr\} \Bigr\} \]
+is contradictory. However, we cannot immediately apply the resolution rule because the syntactic equation
+\[ p(x) \doteq p(f(x)) \]
+is unsolvable. This is because the same variable happens to be used in both clauses. If we rename the variable $x$ in the second clause to $y$, we get the set of clauses
+\[ \Bigl\{ \bigl\{ p(x) \bigr\}, \bigl\{ \neg p(f(y)) \bigr\} \Bigr\}. \]
+Here, we can apply the resolution rule because the syntactic equation
+\[ p(x) \doteq p(f(y)) \]
+has the solution $\{ x \mapsto f(y) \}$. Then we obtain
+\[ \bigl\{ p(x) \bigr\}, \quad \bigl\{ \neg p(f(y)) \bigr\} \quad \vdash \quad \{\}. \]
+and thus we have proven the inconsistency of the clause set $M$.
+
+
+The resolution rule by itselft is not sufficient to derive the empty clause from a clause set $M$ that is
+inconsistent in every case: we need a second rule. To see this, consider following set of clauses:
+\[ M = \Bigl\{ \bigl\{p(f(x),y), p(u,g(v))\bigr\}, 
+               \bigl\{\neg p(f(x),y), \neg p(u,g(v))\bigr\} \Bigr\} 
+\]
+We will soon show that the set $M$ is contradictory. It can be shown that the resolution rule is not
+sufficient to prove that $M$ is contradictory.
+However, we will soon see that $M$ is contradictory. 
+
+\begin{Definition}[{\color{blue}Factorization}] \index{Factorization}
+  Assume that the following holds:
+  \begin{enumerate}
+  \item $k$ is a first-order logic clause,
+  \item $p(s_1,\cdots,s_n)$ and $p(t_1,\cdots,t_n)$ are atomic formulas,
+  \item the syntactic equation $p(s_1,\cdots,s_n) \doteq p(t_1,\cdots,t_n)$ is solvable,
+  \item $\mu = \mathtt{mgu}\bigl(p(s_1,\cdots,s_n), p(t_1,\cdots,t_n)\bigr)$.
+  \end{enumerate}
+  Then the following rules \\[0.3cm]
+  \hspace*{0.8cm}
+  $\schluss{k \cup \bigl\{p(s_1,\cdots,s_n),\, p(t_1,\cdots,t_n)\bigl\}}{k\mu \cup \bigl\{p(s_1,\cdots,s_n)\mu\bigr\} }$ 
+  \quad and \quad
+  $\schluss{k \cup \bigl\{ \neg p(s_1,\cdots,s_n),\, \neg p(t_1,\cdots,t_n)\bigl\}}{k\mu \cup \bigl\{\neg p(s_1,\cdots,s_n)\mu\bigr\} }$ 
+  \\[0.3cm]
+  are instances of the \blue{factorization rule}.
+  \eox
+\end{Definition}
+
+\noindent
+We will demonstrate how the inconsistency of the set $M$ can be proven using the resolution and factorization rules.
+\begin{enumerate}
+\item First, we apply the factorization rule to the first clause. 
+      For this, we compute the unifier 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mu = \mathtt{mgu}\bigl(p(f(x),y), p(u,g(v))\bigr) = \bigl\{y \mapsto g(v), u \mapsto f(x)\bigr\}$. 
+      \\[0.2cm]
+      Thus, we can apply the factorization rule: 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{p(f(x),y), p(u,g(v))\bigr\} \quad \vdash \quad \bigl\{p(f(x),g(v))\bigr\}$. 
+\item Next, we apply the factorization rule to the second clause.
+      For this, we compute the unifier 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mu = \mathtt{mgu}\bigl(\neg p(f(x),y), \neg p(u,g(v))\bigr) = \{y \mapsto g(v), u \mapsto f(x)\}$. 
+      \\[0.2cm]
+      Thus, we can apply the factorization rule: 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{ \neg p(f(x),y), \neg p(u,g(v))\bigr\} \quad \vdash \quad \bigl\{\neg p(f(x),g(v))\bigr\}$.
+\item We conclude the proof with an application of the resolution rule.
+      The unifier used here is the empty substitution, thus $\mu = \{\}$:    
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\schluss{\bigl\{p(f(x),g(v))\bigr\} \quad \bigl\{\neg p(f(x),g(v))\bigr\}}{\{\}}$.
+\end{enumerate}
+
+If $M$ is a set of first-order logic clauses and $k$ is a first-order logic
+clause that can be derived from $M$ by applying the resolution rule and the factorization rule, we write \\[0.2cm]
+\hspace*{1.3cm} $M \vdash k$. \index{$M \vdash k$}
+\\[0.2cm]
+This is read as \blue{$M$ derives $k$} \index{$M$ derives $k$}.
+
+\begin{Definition}[Universal closure] \index{Universal closure}
+  If $k$ is a first-order logic clause and $\{x_1,\cdots,x_n\}$
+  is the set of all variables that occur in $k$, we define
+  the \blue{universal closure} $\forall(k)$ of the clause $k$ as \\[0.2cm]
+  \hspace*{1.3cm} $\forall(k) := \forall x_1\colon \cdots \forall x_n \colon k$. \eox
+\end{Definition}
+
+The essential properties of the notion $M \vdash k$ are summarized in the following two theorems.
+
+\begin{Satz}[{\color{blue}Correctness Theorem}] \index{Correctness Theorem of First-Order Logic} \hspace*{\fill} \\
+    If $M = \{k_1,\cdots,k_n\}$ is a set of clauses and $M \vdash k$, then \\[0.2cm]
+    \hspace*{1.3cm} $\models \forall(k_1) \wedge \cdots \wedge \forall(k_n) \rightarrow \forall(k)$. \\[0.2cm]
+    Thus, if a clause $k$ can be derived from a set $M$, 
+    then $k$ is indeed a consequence of $M$. \qed
+\end{Satz}
+
+\noindent
+The converse of the above correctness theorem holds only for the empty clause. It was proven in 1965 by John
+A.~Robinson \cite{robinson:1965}. 
+\begin{Satz}[{\color{blue}Refutational Completeness} (Robinson, 1965)]
+  \index{Refutational Completeness of the Resolution Calculus} \hspace*{\fill} \\
+  If $M = \{k_1,\cdots,k_n\}$ is a set of clauses and $M$ is unsatisfiable, i.e.~we have
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\models \forall(k_1) \wedge \cdots \wedge \forall(k_n) \rightarrow \falsum$, 
+  \\[0.2cm]
+  then the empty clause can be derived from $M$, i.e.~we have
+  \\[0.2cm]
+  \hspace*{1.3cm} $M \vdash \{\}$.     \qed
+\end{Satz}
+
+\noindent
+We now have a method to investigate whether $\models f$ holds for a given first-order logic formula $f$.
+\begin{enumerate}
+\item First, we compute the Skolem normal form of $\neg f$ and obtain something like \\[0.2cm]
+      \hspace*{1.3cm} $\neg f \approx_e \forall x_1, \cdots, x_m \colon g$.
+\item Next, we convert the matrix $g$ into conjunctive normal form: 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+    $g \Leftrightarrow k_1 \wedge \cdots \wedge k_n$.
+      \\[0.2cm]
+      Hence, we now have 
+      \[ \neg f \approx_e k_1 \wedge \cdots \wedge k_n \] 
+      and it holds that: 
+      \[  
+          \models f \quad \mbox{if and only if} \quad
+          \{\neg f\} \models \falsum \quad \mbox{if and only if} \quad 
+          \{k_1,\cdots,k_n\} \models \falsum.
+      \]
+\item According to the correctness theorem and the theorem on refutational completeness, it holds that
+      \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\{k_1,\cdots,k_n\} \models \falsum$ \quad if and only if \quad 
+      $\{k_1,\cdots,k_n\} \vdash \falsum$. \\[0.2cm]
+      Therefore, we now try to show the inconsistency of the set $M = \{ k_1, \cdots, k_n \}$ by deriving the empty clause from $M$.
+      If this succeeds, we have demonstrated the validity of the formula $f$.
+\end{enumerate}
+
+\exampleEng
+To conclude, we demonstrate the outlined method with an example.  We turn to the zoology of dragonkind and
+start with the following axioms \cite{schoening:2008}:
+\begin{enumerate}
+\item Every dragon is happy if all its children can fly.
+\item Red dragons can fly.
+\item The children of a red dragon are always red.
+\end{enumerate}
+We will show that these axioms imply that all red dragons are happy.
+First, we formalize the axioms and the claim in first-order logic.
+We choose the signature \\[0.2cm]
+\hspace*{1.3cm}
+$\Sigma_\textsl{Drache} := \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ 
+\\[0.2cm]
+where the sets $\mathcal{V}$, $\mathcal{F}$, $\mathcal{P}$, and \textsl{arity} are defined as follows:
+\begin{enumerate}
+\item $\mathcal{V} := \{x,y,z\}$.
+\item $\mathcal{F} = \{\}$.
+\item $\mathcal{P} := \{ \textsl{red}, \textsl{flies}, \textsl{happy}, \textsl{child} \}$.
+\item $\textsl{arity} := \bigl\{ \textsl{red} \mapsto 1, \textsl{flies} \mapsto 1,
+         \textsl{happy} \mapsto 1, \textsl{child} \mapsto 2\bigr\}$
+\end{enumerate}
+The predicate \textsl{child}$(y,x)$ is true if and only if $y$ is a child of $x$.
+Formalizing the axioms and the claim, we obtain the following
+formulas $f_1, \cdots, f_4$:
+\begin{enumerate}
+\item $f_1 := \forall x: \Bigl(\forall y: \big(\textsl{child}(y,x) \rightarrow \textsl{flies}(y)\big) \rightarrow \textsl{happy}(x)\Bigr)$
+\item $f_2 := \forall x: \bigl(\textsl{red}(x) \rightarrow \textsl{flies}(x)\bigr)$
+\item $f_3 := \forall x: \bigl(\textsl{red}(x) \rightarrow \forall y:\bigl( \textsl{child}(y,x) \rightarrow \textsl{red}(y)\bigr)\bigr)$
+\item $f_4 := \forall x: \bigl(\textsl{red}(x) \rightarrow \textsl{happy}(x)\bigr)$
+\end{enumerate}
+We want to show that the formula 
+\\[0.2cm]
+\hspace*{1.3cm} 
+$f := f_1 \wedge f_2 \wedge f_3 \rightarrow f_4$ 
+\\[0.2cm]
+is valid. We thus consider the formula $\neg f$ and note that \\[0.2cm]
+\hspace*{1.3cm}
+$
+\begin{array}[t]{lcl}
+  \neg f & =                & \neg\bigl(f_1 \wedge f_2 \wedge f_3       \rightarrow f_4 \bigr) \\[0.2cm]
+         &  \Leftrightarrow & \neg\bigl(\neg(f_1 \wedge f_2 \wedge f_3) \vee        f_4 \bigr) \\[0.2cm]
+         &  \Leftrightarrow & f_1 \wedge f_2 \wedge f_3 \wedge \neg f_4 \\[0.2cm]
+\end{array}
+$
+\\[0.2cm]
+Next, we need to convert the formula on the right side of this equivalence into a set of clauses.
+Since this is a conjunction of several formulas, we can convert the individual formulas $f_1$, $f_2$, $f_3$,
+and $\neg f_4$ into clauses separately. 
+\begin{enumerate}
+\item The formula $f_1$ can be transformed as follows:
+ $$ 
+  \begin{array}{lcl}
+    f_1 & =           & \forall x:\Bigl(\forall y: \big(\textsl{child}(y,x)
+    \rightarrow \textsl{flies}(y)\big) \rightarrow \textsl{happy}(x) \Bigr) \\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \textsl{child}(y,x) \rightarrow \textsl{flies}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl(\neg \forall y: \big( \neg \textsl{child}(y,x) \vee \textsl{flies}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl(\exists y: \neg \big( \neg \textsl{child}(y,x) \vee \textsl{flies}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl( \exists y: \big(\textsl{child}(y,x) \wedge \neg  \textsl{flies}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x:  \exists y: \Bigl(\big( \textsl{child}(y,x) \wedge \neg  \textsl{flies}(y)\big) \vee \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\approx_e & \forall x: \Bigl(\big( \textsl{child}(s(x),x) \wedge \neg  \textsl{flies}(s(x))\big) \vee
+                 \textsl{happy}(x) \Bigr)\\[0.2cm]
+    &\Leftrightarrow & \forall x: \Bigl(\big( \textsl{child}(s(x),x) \vee \textsl{happy}(x)\bigr) \wedge \neg  \bigl(\textsl{flies}(s(x))\big) \vee \textsl{happy}(x)\bigr) \Bigr)
+  \end{array}
+     $$
+      In the penultimate step, we have introduced the Skolem function $s$ with 
+      $\textsl{arity}(s) = 1$. Intuitively, this function computes for each
+      dragon $x$, who is not happy, a child $s(x)$, that cannot fly.
+      In the last step, we have distributed the ``$\vee$'' in the matrix of this formula.
+      In set notation, we obtain the following two clauses:
+      \\[0.2cm]
+      \hspace*{1.3cm} $k_1 := \bigl\{ \textsl{child}(s(x),x), \textsl{happy}(x) \bigl\}$,   \\[0.2cm]
+      \hspace*{1.3cm} $k_2 := \bigl\{ \neg \textsl{flies}(s(x)), \textsl{happy}(x) \bigl\}$. 
+\item Similarly, for $f_2$ we find:
+ $$
+        \begin{array}{lcl}
+            f_2 & =  & \forall x: \bigl(\textsl{red}(x) \rightarrow \textsl{flies}(x) \bigr) \\[0.2cm]
+            & \Leftrightarrow  & \forall x: \bigl(\neg \textsl{red}(x) \vee \textsl{flies}(x) \bigr)
+        \end{array}
+      $$ 
+      Thus, $f_2$ is equivalent to the following clause: \\[0.2cm]
+      \hspace*{1.3cm} $k_3 := \bigl\{ \neg \textsl{red}(x), \textsl{flies}(x) \bigl\}$.
+\item For $f_3$, we see:
+ $$
+        \begin{array}{lcl}
+          f_3 & =          & \forall x: \Bigl(\textsl{red}(x) \rightarrow 
+                             \forall y: \bigl(\textsl{child}(y,x) \rightarrow \textsl{red}(y)\bigr) \Bigr) \\
+          &\Leftrightarrow & \forall x: \Bigl(\neg \textsl{red}(x) \vee 
+                             \forall y: \bigl(\neg \textsl{child}(y,x) \vee \textsl{red}(y)\bigr)\Bigr) \\
+          &\Leftrightarrow & \forall x: \forall y: \bigl(\neg \textsl{red}(x) \vee \neg \textsl{child}(y,x) \vee \textsl{red}(y)\bigr) \\
+        \end{array}
+      $$
+     This yields the following clause: \\[0.2cm]
+     \hspace*{1.3cm} $ k_4 := \bigl\{ \neg \textsl{red}(x), \neg \textsl{child}(y,x), \textsl{red}(y)\bigl\}$.
+\item Transforming the negation of $f_4$ gives:
+ $$
+        \begin{array}{lcl}
+         \neg f_4 & =      & \neg \forall x: \bigl(\textsl{red}(x) \rightarrow \textsl{happy}(x)\bigr) 
+         \\[0.2cm]
+                  & \Leftrightarrow & \neg \forall x: \bigl(\neg \textsl{red}(x) \vee \textsl{happy}(x) \bigr) \\
+                  & \Leftrightarrow & \exists x: \neg \bigl(\neg \textsl{red}(x) \vee \textsl{happy}(x) \bigr) \\
+                  & \Leftrightarrow & \exists x: \bigl(\textsl{red}(x) \wedge \neg \textsl{happy}(x) \bigr)\\
+                  & \approx_e & \textsl{red}(d) \wedge \neg \textsl{happy}(d) \bigr)\\
+        \end{array}
+      $$
+      The Skolem constant $d$ introduced here stands for an unhappy red dragon.
+      This leads to the following two clauses: \\[0.2cm]
+      \hspace*{1.3cm} $k_5 = \bigl\{ \textsl{red}(d) \bigl\}$, \\[0.2cm]
+      \hspace*{1.3cm} $k_6 = \bigl\{ \neg \textsl{happy}(d) \bigl\}$.
+\end{enumerate}
+Therefore, we have to investigate whether the set $M$, which consists of the following clauses, is contradictory:
+\begin{enumerate}
+\item $k_1 = \bigl\{ \textsl{child}(s(x),x),\; \textsl{happy}(x) \bigl\}$  
+\item $k_2 = \bigl\{ \neg \textsl{flies}(s(x)),\; \textsl{happy}(x) \bigl\}$
+\item $k_3 = \bigl\{ \neg \textsl{red}(x),\; \textsl{flies}(x) \bigl\}$
+\item $k_4 = \bigl\{ \neg \textsl{red}(x),\; \neg \textsl{child}(y,x),\; \textsl{red}(y) \bigl\}$
+\item $k_5 = \bigl\{ \textsl{red}(d) \bigl\}$ 
+\item $k_6 = \bigl\{ \neg \textsl{happy}(d) \bigl\}$
+\end{enumerate}
+In order to do this, define $M := \bigl\{k_1,k_2,k_3,k_4,k_5,k_6\bigl\}$.
+We will show that $M \vdash \falsum$ holds:
+\begin{enumerate}
+\item It holds that
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{mgu}\bigl(\textsl{red}(d), \textsl{red}(x)\bigr) = \{x \mapsto d\}$.
+      \\[0.2cm]
+      Therefore, we can apply the resolution rule to the clauses $k_5$ and $k_4$ as follows:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{\textsl{red}(d)\bigl\}$, \ $\bigl\{\neg \textsl{red}(x), \neg \textsl{child}(y,x), \textsl{red}(y)\bigl\}$ \ $\vdash$ \ $\bigl\{\neg \textsl{child}(y,d), \textsl{red}(y)\bigl\}$.
+\item We now apply the resolution rule to the resulting clause and the clause $k_1$. For this, we first compute
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{mgu}\bigl(\textsl{child}(y,d), \textsl{child}(s(x),x)\bigr) = \{ y \mapsto s(d), x \mapsto d \}$.
+      \\[0.2cm]
+      Then we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+       $\bigl\{\neg \textsl{child}(y,d), \textsl{red}(y)\bigl\}$, \ 
+       $\bigl\{\textsl{child}(s(x),x), \textsl{happy}(x)\bigl\}$ \ $\vdash$ \ 
+       $\bigl\{ \textsl{red}(s(d)), \textsl{happy}(d) \bigl\}$.
+\item Now we apply the resolution rule to the derived clause and the clause $k_6$. We have:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{mgu}\bigl(\textsl{happy}(d), \textsl{happy}(d)\bigr) = \{\}$.
+      \\[0.2cm]
+      Thus, we obtain
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{ \textsl{red}(s(d)), \textsl{happy}(d) \bigl\}$, \ $\bigl\{\neg \textsl{happy}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{red}(s(d))\bigl\}$.
+\item We apply the resolution rule to the clause $\bigl\{\textsl{red}(s(d))\bigl\}$ and the clause $k_3$. First, we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{mgu}\bigl(\textsl{red}(s(d)), \textsl{red}(x)\bigr) = \{ x \mapsto s(d) \}$.
+      \\[0.2cm]
+      Thus, the application of the resolution rule yields:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{\textsl{red}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{red}(x), \textsl{flies}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{flies}(s(d))\bigl\}$.
+\item To resolve the clause $\bigl\{\textsl{flies}(s(d))\bigl\}$ with the clause $k_2$, we compute
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathtt{mgu}\bigl(\textsl{flies}(s(d)), \textsl{flies}(s(x))\bigr) = \bigl\{ x \mapsto d \bigr\}$.
+      \\[0.2cm]
+      Then, the resolution rule gives
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{\textsl{flies}(s(d))\bigl\}$, \ $\bigl\{\neg \textsl{flies}(s(x)), \textsl{happy}(x)\bigl\}$ \ $\vdash$ \ $\bigl\{\textsl{happy}(d)\bigl\}$.
+\item We now apply the resolution rule to the result $\bigl\{\textsl{happy}(d)\bigl\}$ and the clause $k_6$:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\bigl\{\textsl{happy}(d)\bigl\}$, \ $\bigl\{\neg \textsl{happy}(d)\bigl\}$ \ $\vdash$ \ $\bigl\{\bigl\}$.
+\end{enumerate}
+Since we obtained the empty clause in the last step, we have proven that $M \vdash \falsum$, and thus we have
+shown that all communist dragons are happy. 
+\eox
+
+\exerciseEng
+The \emph{Russell set} $R$ defined by Bertrand Russell is the set of all sets that do not contain themselves. Therefore, it holds that
+\\[0.2cm]
+\hspace*{1.3cm}
+$\forall x: \bigl( x \in R \leftrightarrow \neg x \in x \bigr)$.
+\\[0.2cm]
+Using the calculus defined in this section, show that this formula is contradictory. \eox
+\vspace{0.3cm}
+
+\exerciseEng
+Given the following axioms:
+\begin{enumerate}
+\item Every barber shaves all persons who do not shave themselves.
+\item No barber shaves anyone who shaves themselves.
+\end{enumerate}
+These two axioms have an unsurprising consequence: Using only these axioms, show that all barbers are gay. \eox 
+
+\section{Vampire \index{Vampire}}
+The logical calculus described in the last section can be automated and forms the basis of modern
+automatic provers.  This section presents the theorem prover \href{https://vprover.github.io}{Vampire}
+\cite{kovacs:2013}.  We introduce this theorem prover via a small example from group theory.
+
+\subsection{Proving Theorems in Group Theory}
+A \blue{group} is a triple $\mathcal{G} = \langle G, \mathrm{e}, \circ \rangle$
+such that
+\begin{enumerate}
+\item $G$ is a set.
+\item $\mathrm{e}$ is an element of $G$.
+\item $\circ$ is a binary operation on $G$, i.e.~we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\circ: G \times G \rightarrow G$.
+\item Furthermore, the following axioms hold:
+      \begin{enumerate}[(a)]
+      \item $\forall x: \mathrm{e} \circ x = x$, \hspace*{\fill} ($\mathrm{e}$ is a \blue{left identity})
+      \item $\forall x: \exists y: y \circ x = \mathrm{e}$, \hspace*{\fill} (every element has a \blue{left inverse}) 
+      \item $\forall x: \forall y: \forall z: (x \circ y) \circ z = x \circ (y \circ z)$. \hspace*{\fill} ($\circ$ is \blue{associative})
+      \end{enumerate}
+\end{enumerate}
+It is a well known fact that these axioms imply the following:
+\begin{enumerate}
+\item The element $\mathrm{e}$ is also a \blue{right identity}, i.e.~we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x: x \circ \mathrm{e} = x$.
+\item Every element has a \blue{right inverse}, i.e.~we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\forall x: \exists y: x \circ y = e$.
+\end{enumerate}
+We will show both these claims with the help of \textsl{Vampire}.  Figure \ref{fig:group-right-identity.tptp} on page
+\pageref{fig:group-right-identity.tptp} shows the input file for \textsl{Vampire} that is used to prove that
+the left identity element $\mathrm{e}$ is also a right identity.  We discuss this file line by line.
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    fof(identity, axiom, ! [X] : mult(e,X) = X).
+    fof(inverse,  axiom, ! [X] : ? [Y] : mult(Y, X) = e).
+    fof(assoc,    axiom, ! [X,Y,Z] : mult(mult(X, Y), Z) = mult(X, mult(Y, Z))).
+    
+    fof(right, conjecture, ! [X] : mult(X, e) = X).
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Prove that the left identity is also a right identity.}
+\label{fig:group-right-identity.tptp}
+\end{figure}
+
+\begin{enumerate}
+\item Line 1 states the axiom $\forall x: \mathrm{e} \circ x = x$.  Every formula is written in the form
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      \texttt{fof}(\textsl{name}, \textsl{type}, \textsl{formula}\texttt{).}
+      \begin{itemize}
+      \item \texttt{fof} is an abbreviation for \textsl{first-order formula}. 
+      \item \textsl{name} is a string giving the name of the formula.  This name can be freely chosen,
+            but should contain only letters, digits, and underscores.  Furthermore, it should start with a letter.
+      \item \textsl{type} is either the string ``\texttt{axiom}'' or the string ``\texttt{conjecture}''.
+            Every file must hold exactly one conjecture.  The conjecture is the formula that has to be proven from the
+            axioms.
+      \item \textsl{formula} is first-order formula.  The precise syntax of formulas will be described below.
+      \end{itemize}
+\item Line 2 states the axiom $\forall x: \exists y: y \circ x = \mathrm{e}$.
+\item Line 3 states the axiom $\forall x: \forall y: \forall z: (x \circ y) \circ z = x \circ (y \circ z)$.
+\item Line 5 states the conjecture $\forall x: x \circ \mathrm{e} = x$.  The keyword \blue{\texttt{conjecture}}
+      signifies that we want to prove this formula.  
+\end{enumerate}
+In order to understand the syntax of \textsl{Vampire} formulas we first have to note that all variables start
+with a capital letter, while function symbols and predicate symbols start with a lower case letter.  As
+\textsl{Vampire} does not support binary operators, we had to introduce the function symbol \texttt{mult} to
+represent the operator $\circ$.  Therefore, the term $\mathtt{mult}(x, y)$ is interpreted as $x \circ y$.
+Instead of \texttt{mult} we could have chosen any other name.  Furthermore, \textsl{Vampire} uses the following
+operators:
+\begin{enumerate}[(a)]
+\item \texttt{!\;[X]}$:F$ is interpreted as $\forall x: F$.
+\item \texttt{?\;[X]}$:F$ is interpreted as $\exists x:F$.
+\item \texttt{\$true} is interpreted as $\verum$.
+\item \texttt{\$false} is interpreted as $\falsum$.
+\item \texttt{\symbol{126}}$F$ is interpreted as $\neg F$.
+\item $F\;$\texttt{\&}$\;G$ is interpreted as $F \wedge G$.
+\item $F\;$\texttt{|}$\;G$ is interpreted as $F \vee G$.
+\item $F\;$\texttt{=>}$\;G$ is interpreted as $F \rightarrow G$.
+\item $F\;$\texttt{<=>}$\;G$ is interpreted as $F \leftrightarrow G$.
+\end{enumerate}
+When the text shown in Figure \ref{fig:group-right-identity.tptp} is stored in a file with the name \texttt{group-right-identity.tptp},
+then we can invoke \textsl{Vampire} with the following command
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{vampire group-right-identity.tptp}
+\\[0.2cm]
+This will produce the output shown in Figure \ref{fig:group-right-identity.output}.  This output shows that
+\textsl{Vampire} is trying to perform an indirect proof, i.e.~\textsl{Vampire} negates the conjecture and then
+tries to derive a contradiction from the negated conjecture and the axioms.
+
+If we want to prove that the left inverse is also a right inverse we can simply change the last line in Figure
+\ref{fig:group-right-identity.tptp} to
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{fof(right, conjecture, ![X]: ?[Y]: mult(X, Y) = e).}
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    vampire group-right-identity.tptp
+    % Running in auto input_syntax mode. Trying TPTP
+    % Refutation found. Thanks to Tanya!
+    % SZS status Theorem for group-right-identity
+    % SZS output start Proof for group-right-identity
+    1. ! [X0] : mult(e,X0) = X0 [input]
+    2. ! [X0] : ? [X1] : e = mult(X1,X0) [input]
+    3. ! [X0,X1,X2] : mult(mult(X0,X1),X2) = mult(X0,mult(X1,X2)) [input]
+    4. ! [X0] : mult(X0,e) = X0 [input]
+    5. ~! [X0] : mult(X0,e) = X0 [negated conjecture 4]
+    6. ? [X0] : mult(X0,e) != X0 [ennf transformation 5]
+    7. ! [X0] : (? [X1] : e = mult(X1,X0) => e = mult(sK0(X0),X0)) [choice axiom]
+    8. ! [X0] : e = mult(sK0(X0),X0) [skolemisation 2,7]
+    9. ? [X0] : mult(X0,e) != X0 => sK1 != mult(sK1,e) [choice axiom]
+    10. sK1 != mult(sK1,e) [skolemisation 6,9]
+    11. mult(e,X0) = X0 [cnf transformation 1]
+    12. e = mult(sK0(X0),X0) [cnf transformation 8]
+    13. mult(mult(X0,X1),X2) = mult(X0,mult(X1,X2)) [cnf transformation 3]
+    14. sK1 != mult(sK1,e) [cnf transformation 10]
+    16. mult(sK0(X2),mult(X2,X3)) = mult(e,X3) [superposition 13,12]
+    18. mult(sK0(X2),mult(X2,X3)) = X3 [forward demodulation 16,11]
+    22. mult(sK0(sK0(X1)),e) = X1 [superposition 18,12]
+    24. mult(X5,X6) = mult(sK0(sK0(X5)),X6) [superposition 18,18]
+    35. mult(X3,e) = X3 [superposition 24,22]
+    55. sK1 != sK1 [superposition 14,35]
+    56. $false [trivial inequality removal 55]
+    % SZS output end Proof for group-right-identity
+    % ------------------------------
+    % Version: Vampire 4.7 (commit )
+    % Termination reason: Refutation
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Vampire proof that the left identity is a right identity.}
+\label{fig:group-right-identity.output} %$
+\end{figure}
+
+\exerciseEng
+Use \textsl{Vampire} to show that in every group the left inverse is unique. \eox
+
+\subsection{Who killed Agatha?}
+Next, we solve the following puzzle.
+
+\fcolorbox{blue}{yellow}{
+  \begin{minipage}[t]{450pt}
+ \blue{Someone who lives in Dreadbury Mansion killed Aunt Agatha. Agatha, the butler,
+ and Charles live in Dreadbury Mansion, and are the only people who live
+ therein. A killer always hates his victim, and is never richer than his
+ victim. Charles hates no one that Aunt Agatha hates. Agatha hates everyone
+ except the butler. The butler hates everyone not richer than Aunt Agatha. The
+ butler hates everyone Aunt Agatha hates. No one hates everyone. Agatha is not
+ the butler.
+ \vspace*{0.2cm}}
+
+\end{minipage}
+}
+
+
+
+\noindent
+The question then is: Who killed Agatha?  Let us first solve the puzzle by hand.  As there are only three
+suspects who could have killed Agatha, we proceed with a case distinction.
+\begin{enumerate}
+\item Charles killed Agatha.
+  \begin{enumerate}[(a)]
+  \item As a killer always hates its victim, Charles must then have hated Agatha.
+  \item As Charles hates no one that Agatha hates, Agatha can not have hated herself.
+  \item But Agatha hates everybody with the exception of the butler and since Agatha is not the
+        butler, she must have hated herself.
+
+        This contradiction shows that Charles has not killed Agatha.
+  \end{enumerate}
+\item The butler killed Agatha.
+  \begin{enumerate}
+  \item As a killer is never richer than his victim, the butler can then not be not richer than Agatha.
+  \item But as the butler hates every one not richer than Agatha, he would then hate himself.
+  \item As the butler also hates everyone that Agatha hates and Agatha hates everyone except the butler,
+        the butler would then hate everyone.
+  \item However, we know that no one hates everyone.
+
+        This contradiction shows, that the butler has not killed Agatha.      
+  \end{enumerate}
+\item Hence we must conclude that Agatha has killed herself.
+\end{enumerate}
+Next, we show how \textsl{Vampire} can solve the puzzle.
+As there are only three possibilities, we try to prove the following conjectures one by one:
+\begin{enumerate}
+\item Charles killed Agatha.
+\item The butler killed Agatha.
+\item Agatha killed herself.
+\end{enumerate}
+Figure \ref{fig:who-killed-agatha.tptp} on page \pageref{fig:who-killed-agatha.tptp} shows the axioms
+and the conjecture of the last proof attempt.  The first two proof attempts fail, but the last one is
+successful.  Hence we have shown again that Agatha committed suicide. 
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    % Someone who lives in Dreadbury Mansion killed Aunt Agatha.
+    fof(a1, axiom, ?[X] : (lives_at_dreadbury(X) & killed(X, agatha))).
+    % Agatha, the butler, and Charles live in Dreadbury Mansion, and are 
+    % the only people who live therein.
+    fof(a2, axiom, ![X] : (lives_at_dreadbury(X) <=>
+                           (X = agatha | X = butler | X = charles))).
+    % A killer always hates his victim.
+    fof(a3, axiom, ![X, Y]: (killed(X, Y) => hates(X, Y))).
+    % A killer is never richer than his victim.
+    fof(a4, axiom, ![X, Y]:  (killed(X, Y) => ~richer(X, Y))).
+    % Charles hates no one that Aunt Agatha hates.
+    fof(a5, axiom, ![X]: (hates(agatha, X) => ~hates(charles, X))).
+    % Agatha hates everyone except the butler.
+    fof(a6, axiom, ![X]: (hates(agatha, X) <=> X != butler)).
+    % The butler hates everyone not richer than Aunt Agatha.
+    fof(a7, axiom, ![X]: (~richer(X, agatha) => hates(butler, X))).
+    % The butler hates everyone Aunt Agatha hates.
+    fof(a8, axiom, ![X]: (hates(agatha, X) => hates(butler, X))).
+    %  No one hates everyone.
+    fof(a9, axiom, ![X]: ?[Y]: ~hates(X, Y)).
+    % Agatha is not the butler.
+    fof(a0, axiom, agatha != butler).
+
+    fof(c, conjecture, killed(agatha, agatha)).
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Who killed Agatha?}
+\label{fig:who-killed-agatha.tptp}
+\end{figure}
+
+
+\section{\textsl{Prover9} and \textsl{Mace4}$^*$}
+The deductive system described in the last section can be automated and forms the basis of modern automatic
+provers. At the same time, the search for counterexamples can also be automated. In this section, we introduce
+two systems that serve these purposes. 
+\begin{enumerate}
+\item \textsl{Prover9} is used to automatically prove first-order logic formulas.
+\item \textsl{Mace4} examines whether a given set of first-order logic formulas is satisfiable in a finite
+      structure. If so, this structure is computed. 
+\end{enumerate}
+The two programs, \textsl{Prover9} and \textsl{Mace4}, were developed by William McCune \cite{mccune:2010}, are
+available under the \href{http://www.gnu.org/licenses/gpl.html}{GPL} (\emph{GNU General Public License}), and
+can be downloaded in source code form from 
+\\[0.2cm]
+\hspace*{1.3cm}
+\href{http://www.cs.unm.edu/~mccune/prover9/download/}{\mytt{http://www.cs.unm.edu/\symbol{126}mccune/prover9/download/}}
+\\[0.2cm]
+First, we will discuss \textsl{Prover9} and then look at \textsl{Mace4}.
+
+\subsection{The Automatic Prover \textsl{Prover9}}
+\textsl{Prover9} is a program that takes two sets of formulas as input. The first set of formulas is interpreted as a set of \emph{axioms}, and the second set of formulas are the \emph{theorems} to be proven from the axioms. For example, if we want to show that in group theory, the existence of a left-inverse element implies the existence of a right-inverse element, and that the left-neutral element is also right-neutral, we can axiomatize group theory as follows:
+\begin{enumerate}
+\item $\forall x: e \cdot x = x$,
+\item $\forall x: \exists y: y \cdot x = e$,
+\item $\forall x: \forall y: \forall z: (x \cdot y) \cdot z = x \cdot (y \cdot z)$.
+\end{enumerate}
+We must now show that these axioms logically imply the two formulas
+\\[0.2cm]
+\hspace*{1.3cm}
+$\forall x: x \cdot e = x$ \quad and \quad $\forall x: \exists y: x \cdot y = e$.
+\\[0.2cm]
+We can represent these formulas for \textsl{Prover9} as shown in Figure \ref{fig:group2.in} on page
+\pageref{fig:group2.in}. 
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    formulas(sos).
+    all x (e * x = x).                              % left neutral 
+    all x exists y (y * x = e).                     % left inverse
+    all x all y all z ((x * y) * z = x * (y * z)).  % associativity
+    end_of_list.
+    
+    formulas(goals).
+    all x (x * e = x).                              % right neutral 
+    all x exists y (x * y = e).                     % right inverse
+    end_of_list.
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{The axioms of group theory given in the syntax of Prover9.}
+\label{fig:group2.in}
+\end{figure}
+
+
+The beginning of the axioms in this file is indicated by ``\mytt{formulas(sos)}'' and ends with the keyword
+``\mytt{end\_of\_list}.'' Note that both the keywords and each formula are terminated by a period ``\mytt{.}''.
+The axioms in lines 2, 3, and 4 express that: 
+\begin{enumerate}
+\item \mytt{e} is a left-neutral element,
+\item for every element $x$, there exists a left-inverse element $y$, and
+\item the associative law holds.
+\end{enumerate}
+From these axioms, it follows that \mytt{e} is also a right-neutral element and that for every element $x$,
+there exists a right-inverse element $y$. These two formulas are the \blue{goals} to be proven and are marked
+in the file by ``\mytt{formulas(goal)}.'' 
+If the file shown in Figure \ref{fig:group2.in} is named ``\mytt{group2.in},'' we can run the \textsl{Prover9}
+program with the command 
+\\[0.2cm]
+\hspace*{1.3cm}
+\mytt{prover9 -f group2.in}
+\\[0.2cm]
+and obtain the information that the two formulas shown in lines 8 and 9 do indeed follow from the previously
+given axioms. If a formula cannot be proven, there are two possibilities: In certain cases, \textsl{Prover9}
+can actually recognize that a proof is impossible. In this case, the program stops the search for a proof with
+a corresponding message. If the situation is unfavorable, due to the undecidability of first-order logic, it is
+not possible to recognize that the search for a proof must fail. In such a case, the program runs until no more
+memory is available and then terminates with an error message. 
+
+
+\textsl{Prover9} attempts to conduct an indirect proof. First, the axioms are converted into first-order logic
+clauses. Then, each theorem to be proven is negated, and the negated formula is also converted into
+clauses. Subsequently, \textsl{Prover9} attempts to derive the empty clause from the set of all axioms along
+with the clauses resulting from the negation of one of the theorems to be proven. If this succeeds, it is
+proven that the respective theorem indeed follows from the axioms. Figure \ref{fig:group-commutative.in} shows
+an input file for \textsl{Prover9}, in which an attempt is made to deduce the commutative law from the axioms
+of group theory. However, the proof attempt with \textsl{Prover9} fails. In this case, the proof search is not
+continued indefinitely. This is because \textsl{Prover9} manages to derive all formulas that follow from the
+given premises in finite time. Unfortunately, such a case is the exception.  Most of the time \textsl{Prover9}
+will abort the attempt because it runs out of memory. 
+ 
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    formulas(sos).
+    all x (e * x = x).                              % left neutral 
+    all x exists y (y * x = e).                     % left inverse
+    all x all y all z ((x * y) * z = x * (y * z)).  % associativity
+    end_of_list.
+    
+    formulas(goals).
+    all x all y (x * y = y * x).                    % * is commutative
+    end_of_list.
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Does the commutative law apply to all groups?}
+\label{fig:group-commutative.in}
+\end{figure}
+
+
+\subsection{\textsl{Mace4} }
+If a proof attempt with \textsl{Prover9} takes forever, it is unclear whether the theorem to be
+proven holds. To be sure that a formula does not follow from a given set of axioms, it is sufficient to
+construct a $\Sigma$-structure in which all the axioms are satisfied, but the theorem to be proven is false. The program
+\textsl{Mace4} is specifically designed to find such structures. This, of course, only works as long as the
+structures are finite. Figure \ref{fig:group.in} shows an input file that we can use to answer the question of
+whether finite non-commutative groups exist using \textsl{Mace4}. Lines 2, 3, and 4 contain the axioms of group
+theory. The formula in line 5 postulates that for the two elements $a$ and $b$, the commutative law does not
+hold, that is, $a \cdot b \not= b \cdot a$. If the text shown in Figure \ref{fig:group.in} is saved in a file
+named ``\textsl{group.in}'', we can start \textsl{Mace4} with the command 
+\\[0.2cm]
+\hspace*{1.3cm}
+\mytt{mace4 -f group.in}
+\\[0.2cm]
+\textsl{Mace4} searches for all positive natural numbers $n=1,2,3,\cdots$, to see if there is a $\Sigma$-structure \linebreak
+$\mathcal{S} = \langle \mathcal{U}, \mathcal{J} \rangle$ with $\textsl{card}(U) = n$ in which the specified
+formulas hold. For $n=6$, \textsl{Mace4} succeeds and indeed computes a group with 6 elements in which the
+commutative law is violated. 
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                ]
+    formulas(theory).
+    all x (e * x = x).                              % left neutral
+    all x exists y (y * x = e).                     % left inverse
+    all x all y all z ((x * y) * z = x * (y * z)).  % associativity
+    a * b != b * a.                                 % a and b do not commute
+    end_of_list.
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Is there a non-commutative group?}
+\label{fig:group.in}
+\end{figure}
+
+Figure \ref{fig:group.out} shows a part of the output produced by \textsl{Mace4}. The elements of the group are
+the numbers $0, \cdots, 5$, the constant $a$ is the element $0$, $b$ is the element $1$, and $e$ is the element
+$2$. Furthermore, we see that the inverse of $0$ is $0$, the inverse of $1$ is $1$, the inverse of $2$ is $2$,
+the inverse of $3$ is $4$, the inverse of $4$ is $3$, and the inverse of $5$ is $5$. The multiplication is
+realized by the following group table: 
+\hspace*{1.3cm}
+\begin{tabular}[t]{|l||l|l|l|l|l|l|}
+\hline
+$\circ$ & 0 & 1 & 2 & 3 & 4 & 5 \\
+\hline
+\hline
+      0 & 2 & 3 & 0 & 1 & 5 & 4 \\
+\hline
+      1 & 4 & 2 & 1 & 5 & 0 & 3 \\
+\hline
+      2 & 0 & 1 & 2 & 3 & 4 & 5 \\
+\hline
+      3 & 5 & 0 & 3 & 4 & 2 & 1 \\
+\hline
+      4 & 1 & 5 & 4 & 2 & 3 & 0 \\
+\hline
+      5 & 3 & 4 & 5 & 0 & 1 & 2 \\
+\hline
+\end{tabular}
+\\[0.2cm]
+This group table shows that
+\\[0.2cm]
+\hspace*{1.3cm}
+$a \circ b = 0 \circ 1 = 3$, \quad but \quad
+$b \circ a = 1 \circ 0 = 4$.
+\\[0.2cm]
+Therefore, the commutative law is indeed violated.
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.5cm,
+                  xrightmargin  = 0.5cm,
+                ]
+    ============================== DOMAIN SIZE 6 =========================
+    
+    === Mace4 starting on domain size 6. ===
+    
+    ============================== MODEL =================================
+    
+    interpretation( 6, [number=1, seconds=0], [
+    
+            function(a, [ 0 ]),
+    
+            function(b, [ 1 ]),
+    
+            function(e, [ 2 ]),
+    
+            function(f1(_), [ 0, 1, 2, 4, 3, 5 ]),
+    
+            function(*(_,_), [
+    			   2, 3, 0, 1, 5, 4,
+    			   4, 2, 1, 5, 0, 3,
+    			   0, 1, 2, 3, 4, 5,
+    			   5, 0, 3, 4, 2, 1,
+    			   1, 5, 4, 2, 3, 0,
+    			   3, 4, 5, 0, 1, 2 ])
+    ]).
+    
+    ============================== end of model ==========================
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{Output of \textsl{Mace4}.}
+\label{fig:group.out}
+\end{figure}
+
+\remarkEng
+The theorem prover \textsl{Prover9} is a successor of the theorem prover \textsl{Otter}. With the help of
+\textsl{Otter}, William McCune succeeded in proving the Robbins conjecture in 1996 \cite{mccune:1997}. This
+proof was even featured in the \href{http://www.nytimes.com/}{New York Times} headline, which can be read at 
+\\[0.2cm]
+\hspace*{1.3cm}
+\href{http://www.nytimes.com/library/cyber/week/1210math.html}{\mytt{http://www.nytimes.com/library/cyber/week/1210math.html}}.
+\\[0.2cm]
+This shows that \href{https://en.wikipedia.org/wiki/Automated_theorem_proving}{automated theorem provers} can
+indeed be useful tools. Nevertheless, first-order logic is undecidable, and so far, only a few open
+mathematical problems have been solved with the help of automated provers.  It remains to be seen whether this
+will change in the future.
+\eox
+
+
+\section{Check Your Comprehension}
+\begin{enumerate}
+\item What are \textcolor{blue}{first-order logic clauses} and what steps have to be taken in order to convert
+      a given first-order logic formula into a set of first-order clauses that is satisfiability-equivalent ?
+\item Define the notion of a \textcolor{blue}{substitution}?
+\item What is a \textcolor{blue}{unifier}?
+\item State the rules of \textcolor{blue}{Martelli-Montanari algorithm} for unification!
+\item How is the \textcolor{blue}{resolution rule} defined and why might it be necessary to rename variables
+      before the resolution rule can be applied?
+\item What is the \textcolor{blue}{factorization rule}?
+\item How do we proceed when we want to prove the validity of a first-order logic formula $f$?
+\end{enumerate}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "logic"
+%%% End:

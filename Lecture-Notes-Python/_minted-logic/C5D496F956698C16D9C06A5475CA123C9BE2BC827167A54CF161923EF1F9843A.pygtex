@@ -1,0 +1,26 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{flatten}\PYG{p}{(}\PYG{n}{LoL}\PYG{p}{):}
+        \PYG{k}{return} \PYG{p}{[}\PYG{n}{x} \PYG{k}{for} \PYG{n}{L} \PYG{o+ow}{in} \PYG{n}{LoL} \PYG{k}{for} \PYG{n}{x} \PYG{o+ow}{in} \PYG{n}{L}\PYG{p}{]}
+
+    \PYG{k}{def} \PYG{n+nf}{missionaries\PYGZus{}CSP}\PYG{p}{(}\PYG{n}{n}\PYG{p}{):}
+        \PYG{l+s+s2}{\PYGZdq{}Returns a CSP encoding the problem.\PYGZdq{}}
+        \PYG{n}{Lists}        \PYG{o}{=} \PYG{p}{[[}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}M}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}C}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}B}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]} \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{n}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)]}
+        \PYG{n}{Variables}    \PYG{o}{=} \PYG{n}{flatten}\PYG{p}{(}\PYG{n}{Lists}\PYG{p}{)}
+        \PYG{n}{Values}       \PYG{o}{=} \PYG{p}{\PYGZob{}} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{3} \PYG{p}{\PYGZcb{}}
+        \PYG{n}{Constraints}  \PYG{o}{=} \PYG{p}{\PYGZob{}}  \PYG{l+s+s1}{\PYGZsq{}start(M0, C0, B0)\PYGZsq{}}      \PYG{p}{\PYGZcb{}}  \PYG{c+c1}{\PYGZsh{} start state}
+        \PYG{n}{Constraints} \PYG{o}{|=} \PYG{p}{\PYGZob{}} \PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}goal(M}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{n}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{, C}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{n}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{, B}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{n}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{)\PYGZsq{}} \PYG{p}{\PYGZcb{}}  \PYG{c+c1}{\PYGZsh{} goal state}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{n}\PYG{p}{):}
+            \PYG{n}{Constraints}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}invariant(M}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{, C}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{, B}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{)\PYGZsq{}}\PYG{p}{)}
+            \PYG{n}{Constraints}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}transition(M}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{, C}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{, B}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{, M}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{, C}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{, B}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{)\PYGZsq{}}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n}{Variables}\PYG{p}{,} \PYG{n}{Values}\PYG{p}{,} \PYG{n}{Constraints}
+
+    \PYG{k}{def} \PYG{n+nf}{find\PYGZus{}solution}\PYG{p}{():}
+        \PYG{n}{n} \PYG{o}{=} \PYG{l+m+mi}{1}
+        \PYG{k}{while} \PYG{k+kc}{True}\PYG{p}{:}
+            \PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)}
+            \PYG{n}{CSP} \PYG{o}{=} \PYG{n}{missionaries\PYGZus{}CSP}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)}
+            \PYG{n}{Solution} \PYG{o}{=} \PYG{n}{solve}\PYG{p}{(}\PYG{n}{CSP}\PYG{p}{)}
+            \PYG{k}{if} \PYG{n}{Solution} \PYG{o}{!=} \PYG{k+kc}{None}\PYG{p}{:}
+                \PYG{k}{return} \PYG{n}{n}\PYG{p}{,} \PYG{n}{Solution}
+            \PYG{n}{n} \PYG{o}{+=} \PYG{l+m+mi}{2}
+\end{Verbatim}

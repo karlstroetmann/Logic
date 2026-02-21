@@ -1,0 +1,13 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{saturate}\PYG{p}{(}\PYG{n}{Clauses}\PYG{p}{):}
+        \PYG{n}{S}     \PYG{o}{=} \PYG{n}{Clauses}\PYG{o}{.}\PYG{n}{copy}\PYG{p}{()}
+        \PYG{n}{Units} \PYG{o}{=} \PYG{p}{\PYGZob{}} \PYG{n}{C} \PYG{k}{for} \PYG{n}{C} \PYG{o+ow}{in} \PYG{n}{S} \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{C}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{1} \PYG{p}{\PYGZcb{}}
+        \PYG{n}{Used}  \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{()}
+        \PYG{k}{while} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{Units}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
+            \PYG{n}{unit}  \PYG{o}{=} \PYG{n}{Units}\PYG{o}{.}\PYG{n}{pop}\PYG{p}{()}
+            \PYG{n}{Used} \PYG{o}{|=} \PYG{p}{\PYGZob{}} \PYG{n}{unit} \PYG{p}{\PYGZcb{}}
+            \PYG{n}{l}     \PYG{o}{=} \PYG{n}{arb}\PYG{p}{(}\PYG{n}{unit}\PYG{p}{)}
+            \PYG{n}{S}     \PYG{o}{=} \PYG{n}{reduce}\PYG{p}{(}\PYG{n}{S}\PYG{p}{,} \PYG{n}{l}\PYG{p}{)}
+            \PYG{n}{Units} \PYG{o}{=} \PYG{p}{\PYGZob{}} \PYG{n}{C} \PYG{k}{for} \PYG{n}{C} \PYG{o+ow}{in} \PYG{n}{S} \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{C}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{1} \PYG{p}{\PYGZcb{}} \PYG{o}{\PYGZhy{}} \PYG{n}{Used}
+        \PYG{k}{return} \PYG{n}{S}
+\end{Verbatim}

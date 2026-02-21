@@ -1,0 +1,15 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{def} \PYG{n+nf}{evalFormula}\PYG{p}{(}\PYG{n}{F}\PYG{p}{,} \PYG{n}{S}\PYG{p}{,} \PYG{n}{I}\PYG{p}{):}
+    \PYG{n}{U}\PYG{p}{,} \PYG{n}{\PYGZus{}} \PYG{o}{=} \PYG{n}{S} \PYG{c+c1}{\PYGZsh{} U is the universe}
+    \PYG{k}{match} \PYG{n}{F}\PYG{p}{:}
+        \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}⊤\PYGZsq{}}\PYG{p}{,} \PYG{p}{):}     \PYG{k}{return} \PYG{k+kc}{True}
+        \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}⊥\PYGZsq{}}\PYG{p}{,} \PYG{p}{):}     \PYG{k}{return} \PYG{k+kc}{False}
+        \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{G}\PYG{p}{):}    \PYG{k}{return} \PYG{o+ow}{not} \PYG{n}{evalFormula}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{S}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)}
+        \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}∧\PYGZsq{}}\PYG{p}{,} \PYG{n}{G}\PYG{p}{,} \PYG{n}{H}\PYG{p}{):} \PYG{k}{return} \PYG{n}{evalFormula}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{S}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)} \PYG{o+ow}{and} \PYG{n}{evalFormula}\PYG{p}{(}\PYG{n}{H}\PYG{p}{,} \PYG{n}{S}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)}
+        \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}∨\PYGZsq{}}\PYG{p}{,} \PYG{n}{G}\PYG{p}{,} \PYG{n}{H}\PYG{p}{):} \PYG{k}{return} \PYG{n}{evalFormula}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{S}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)} \PYG{o+ow}{or} \PYG{n}{evalFormula}\PYG{p}{(}\PYG{n}{H}\PYG{p}{,} \PYG{n}{S}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)}
+        \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}→\PYGZsq{}}\PYG{p}{,} \PYG{n}{G}\PYG{p}{,} \PYG{n}{H}\PYG{p}{):} \PYG{k}{return} \PYG{o+ow}{not} \PYG{n}{evalFormula}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{S}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)} \PYG{o+ow}{or} \PYG{n}{evalFormula}\PYG{p}{(}\PYG{n}{H}\PYG{p}{,} \PYG{n}{S}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)}
+        \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}↔\PYGZsq{}}\PYG{p}{,} \PYG{n}{G}\PYG{p}{,} \PYG{n}{H}\PYG{p}{):} \PYG{k}{return} \PYG{n}{evalFormula}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{S}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)} \PYG{o}{==} \PYG{n}{evalFormula}\PYG{p}{(}\PYG{n}{H}\PYG{p}{,} \PYG{n}{S}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)}
+        \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}∀\PYGZsq{}}\PYG{p}{,} \PYG{n}{x}\PYG{p}{,} \PYG{n}{G}\PYG{p}{):} \PYG{k}{return} \PYG{n+nb}{all}\PYG{p}{(}\PYG{n}{evalFormula}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{S}\PYG{p}{,} \PYG{n}{modify}\PYG{p}{(}\PYG{n}{I}\PYG{p}{,} \PYG{n}{x}\PYG{p}{,} \PYG{n}{c}\PYG{p}{))} \PYG{k}{for} \PYG{n}{c} \PYG{o+ow}{in} \PYG{n}{U}\PYG{p}{)}
+        \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}∃\PYGZsq{}}\PYG{p}{,} \PYG{n}{x}\PYG{p}{,} \PYG{n}{G}\PYG{p}{):} \PYG{k}{return} \PYG{n+nb}{any}\PYG{p}{(}\PYG{n}{evalFormula}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{S}\PYG{p}{,} \PYG{n}{modify}\PYG{p}{(}\PYG{n}{I}\PYG{p}{,} \PYG{n}{x}\PYG{p}{,} \PYG{n}{c}\PYG{p}{))} \PYG{k}{for} \PYG{n}{c} \PYG{o+ow}{in} \PYG{n}{U}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{evalAtomic}\PYG{p}{(}\PYG{n}{F}\PYG{p}{,} \PYG{n}{S}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)}
+\end{Verbatim}

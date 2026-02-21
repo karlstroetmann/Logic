@@ -1,0 +1,806 @@
+\chapter{Correctness Proofs}
+\epigraph{\blue{\large\calligfont There are two ways to write error-free programs; only the third one works.}}{
+    --- \calligfont Alan Perlis}
+
+\noindent
+In this chapter we will show two different methods that can be used to prove the correctness of a \textsl{Python}
+function.
+\begin{enumerate}[(a)]
+\item The method of \blue{computational induction} can be used to verify the correctness of a \textsl{Python}
+      function that is defined recursively.
+\item In order to establish the correctness of a \textsl{Python} function that is defined iteratively we use
+      \blue{symbolic execution}. 
+\end{enumerate}
+
+\section{Computational Induction}
+Figure \ref{fig:power.py} shows the definition of the function $\mytt{power}(m,n)$ that computes
+the value $m^n$.  We will verify the correctness of this function.
+
+\begin{figure}[!h]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm
+              ]{python3}
+    def power(m, n):
+        if n == 0:
+            return 1
+        p = power(m, n // 2)
+        if n % 2 == 0:
+            return p * p
+        else:
+            return p * p * m
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{Computation of $m^n$ for $m,n \in \mathbb{N}$.}
+  \label{fig:power.py}
+\end{figure} 
+
+It is by no means obvious that the program shown in \ref{fig:power.py} does compute
+$m^n$.  We prove this claim by  \blue{computational induction}\index{computational induction}.
+Computational induction is an induction on the number of recursive invocations.
+This method is the method of choice to prove the correctness of a function if this function is defined recursively.
+A proof by computational induction consists of three parts:
+
+\begin{enumerate}
+\item The \blue{base case}.
+
+      In the base case we have to show that the function definition is correct in all those cases where the function
+      does not invoke itself recursively.
+\item The \blue{induction step}.
+
+      In the induction step we have to prove that the function definition works in all those cases where
+      the function does invoke itself recursively.  In order to carry out this proof we may
+      assume that the results computed by the recursively invocations are correct.
+      This assumption is called the \blue{induction hypotheses}.
+\item The \blue{termination proof}.
+
+      In this final step we have to show that the recursive definition of the function is \blue{well founded},
+      i.e.~we have to prove that the recursive invocations terminate.
+\end{enumerate}
+Let us prove the claim 
+\\[0.2cm]
+\hspace*{1.3cm}
+ $\mytt{power}(m,n) = m^n$
+\\[0.2cm] 
+by computational induction.
+\begin{enumerate}
+\item \textbf{Base case}:
+
+      The only case where \mytt{power} does not invoke itself recursively is the case $n = 0$.  
+      In this case, we have
+      \\[0.2cm]
+      \hspace*{1.3cm} 
+      $\mytt{power}(m,0) = 1 =  m^0$. \mycheck
+\item \textbf{Induction step}:
+
+      The recursive invocation of $\mytt{power}$ has the form
+      $\mytt{power}(m,n \dv 2)$.  By the induction hypotheses we may assume that 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\displaystyle \mytt{power}(m,n \dv 2) = m^{n \dvv 2}$ 
+      \\[0.2cm]
+      holds.  After the recursive invocation there are two cases that have to be dealt with separately.
+      \begin{enumerate}
+      \item $n \;\mytt{\%}\; 2 = 0$, therefore $n$ is even.
+
+            Then there exists a number $k \in \mathbb{N}$ such that $n = 2 \cdot k$ and therefore
+            $n \dv 2 = k$.
+            Hence we have:
+            \\[0.2cm]
+            \hspace*{1.3cm}
+           $ 
+            \begin{array}{lcl}
+            \mytt{power}(m,n) & = & \mytt{power}(m,k) \cdot \mytt{power}(m,k) \\[0.2cm]
+                                & \stackrel{\mathrm{IV}}{=} & m^k \cdot m^k  \\[0.2cm]
+                                & = & m^{2\cdot k} \\[0.2cm]
+                                & = & m^{n}.
+            \end{array}
+            $            
+      \item $n \;\mytt{\%}\; 2 = 1$, therefore $n$ is odd.
+
+            Then there exists a number $k \in \mathbb{N}$ such that $n = 2 \cdot k + 1$ and we have
+            $n \dv 2 = k$.  In this case we have:
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $ 
+            \begin{array}{lcl}
+            \mytt{power}(m,n) & = & \mytt{power}(m,k) \cdot \mytt{power}(m,k) \cdot m  \\[0.2cm]
+                                & \stackrel{\mathrm{IV}}{=} & m^k \cdot m^k \cdot m  \\[0.2cm]
+                                & = & m^{2\cdot k+1} \\[0.2cm]
+                                & = & m^{n}.
+            \end{array}
+            $
+      \end{enumerate}
+      As we have shown that $\mytt{power}(m,n) = m^n$ in both cases, the induction step is finished. \mycheck
+\item \textbf{Termination proof}:
+      Every time the function \mytt{power} is invoked as $\mytt{power}(m, n)$ and $n > 0$, the recursive
+      invocation has the form $\mytt{power}(m,n \dv 2)$ and, since $n \dv 2 < n$ for all $n > 0$, the second
+      argument is decreased.  As this argument is a natural number, it must eventually reach $0$.  But if the
+      second argument of the function $\mytt{power}$ is $0$, the function terminates immediately. \mycheck
+      \qed
+\end{enumerate}
+
+\begin{figure}[!h]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm
+                ]{python3}
+    def div_mod(m, n):
+        if m < n:
+            return 0, m
+        q, r = div_mod(m // 2, n)
+        if 2 * r + m % 2 < n:
+            return 2 * q    , 2 * r + m % 2
+        else:
+            return 2 * q + 1, 2 * r + m % 2 - n                
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{The function \mytt{div\_mod}.}
+  \label{fig:div_mod}
+\end{figure} 
+
+
+\exampleEng
+The function \mytt{div\_mod} that is shown in Figure \ref{fig:div_mod} satisfies the specification
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mytt{div\_mod}(m, n) = (q, r)  \rightarrow m = q \cdot n + r \;\wedge\; r < n$. \eox
+
+
+
+\proof
+Assume that $m,n \in \mathbb{N}$, where $n > 0$.  Furthermore, assume
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bar{q}, \bar{r} = \mytt{div\_mod}(m, n)$.
+\\[0.2cm] 
+In order to prove the correctness of \mytt{div\_mod}, we have to show two formulas:
+\begin{align}
+m = \bar{q} \cdot n + \bar{r} \label{divmod1} \\
+\bar{r} < n \hspace*{1.1cm} \label{divmod2}
+\end{align}
+Since \mytt{div\_mod} is defined recursively, the proof of these formulas is done by computational induction.
+\begin{enumerate}
+\item[B.C.:] $m < n$
+
+  In this case we have $\bar{q} = 0$ and $\bar{r} = m$.
+  In order to prove (\ref{divmod1}) we note that 
+  \begin{align*}
+                    & m = \bar{q} \cdot n + \bar{r} \\
+    \Leftrightarrow\quad & m = 0 \cdot n + m \quad \green{\surd}
+  \end{align*}
+  To prove (\ref{divmod2}) we note that
+  \begin{align*}
+                         & \bar{r} < n \\
+    \Leftrightarrow\quad & m < n \quad\green{\surd}
+  \end{align*}
+  Here $m < n$ is true because this condition is the assumption of the base case.
+\item[I.S.:] $m \dv 2 \mapsto m$
+
+  By induction hypotheses we know that our claim is true for the recursive invocation of \mytt{div\_mod} in
+  line 4.  Therefore we have the following:
+  \begin{eqnarray}
+    m \dv 2 &\!=\! & q \cdot n + r \label{divmod3} \\
+          r &\!<\! & n             \label{divmod4}
+  \end{eqnarray}
+  In order to complete the induction step we have to perform a case distinction that is analogous to the test
+  of the second \texttt{if}-statement in the implementation of \mytt{div\_mod}.
+  \begin{enumerate}
+  \item $2 \cdot r + m \mmod 2 < n$
+
+    In this case we have $\bar{q} = 2 \cdot q$ and $\bar{r} = 2 \cdot r + m \mmod 2$.
+    In order to prove (\ref{divmod1}) we note the following:
+    \begin{align}
+                           &  m = \bar{q} \cdot n + \bar{r} \\
+      \Leftrightarrow\quad & m = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2 \label{divmod5}
+    \end{align}
+    We will derive equation (\ref{divmod5}) from equation (\ref{divmod3}).  To this end, we multiply equation
+    (\ref{divmod3}) by $2$.  This yields:
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $2 \cdot m \dv 2 = 2 \cdot q \cdot n + 2 \cdot r$.
+    \\[0.2cm]
+    If we add $m \mmod 2$ to this equation we get
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $2 \cdot m \dv 2 + m \mmod 2 = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2$.
+    \\[0.2cm]
+    As we have $2 \cdot m \dv 2 + m \mmod 2 = m$ the last equation can be simplified to
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $m = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2$.
+    \\[0.2cm]
+    However, this is just equation (\ref{divmod5}) which we had to prove. \mycheck
+
+    Next, we show that $\bar{r} < n$.  This is equivalent to
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $2 \cdot r + m \mmod 2 < n$.
+    \\[0.2cm]
+    However, this inequation is the condition of this case of the case distinction and is therefore valid. \mycheck
+  \item $2 \cdot r + m \mmod 2 \geq n$
+
+    In this case we have $\bar{q} = 2 \cdot q + 1$ and $\bar{r} = 2 \cdot r + m \mmod 2 - n$.
+    We start with the proof of (\ref{divmod1}).
+    \begin{align*}
+                           & m = \bar{q} \cdot n + \bar{r} \\
+      \Leftrightarrow\quad & m = (2 \cdot q + 1) \cdot n + 2 \cdot r + m \mmod 2 - n \\
+      \Leftrightarrow\quad & m = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2 
+    \end{align*}
+    This last equation follows from equation (\ref{divmod3}) as follows:
+    \begin{align*}
+                       & m \dv 2 = q \cdot n + r \\
+      \Rightarrow\quad & 2 \cdot m \dv 2 = 2 \cdot q \cdot n + 2 \cdot r \\
+      \Rightarrow\quad & 2 \cdot m \dv 2 + m \mmod 2 = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2 \\
+      \Rightarrow\quad & m = 2 \cdot q \cdot n + 2 \cdot r + m \mmod 2 
+    \end{align*}
+
+    Next, we show that $\bar{r} < n$. This is equivalent to
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $2 \cdot r + m \mmod 2 - n < n$
+    \\[0.2cm]
+    From (\ref{divmod4}) we know that
+    \begin{align*}
+                       & r < n \\
+      \Rightarrow\quad & r + 1 \leq n \\
+      \Rightarrow\quad & 2 \cdot r + 2 \leq 2 \cdot n \\
+      \Rightarrow\quad & 2 \cdot r + m \mmod 2 + 1 \leq 2 \cdot n \quad \mbox{since $m \mmod 2 \leq 1$} \\
+      \Rightarrow\quad & 2 \cdot r + m \mmod 2 < 2 \cdot n \\
+      \Rightarrow\quad & 2 \cdot r + m \mmod 2 - n < n \green{\surd}
+    \end{align*}
+  \end{enumerate}
+\item[T.:] As $m \dv 2 < m$ for all $m \geq n$ and $n > 0$ it is obvious that we will eventually have
+  $m  < n$. But then the function \mytt{div\_mod} terminates.
+\end{enumerate}
+
+Before we can tackle the next exercise, we need to prove the following lemma.
+\begin{Lemma}[Euclid]
+  Assume $a, b \in \mathbb{N}$ such that $b > 0$.  Then we have
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\mathtt{gcd}(a, b) = \mathtt{gcd}(b, a \mmod b)$.
+\end{Lemma}
+
+\proof
+The function $\mathtt{cd}(a, b)$ computes the set of common divisors of $a$ and $b$ and is therefore defined as
+\\[0.2cm]
+\hspace*{1.3cm}
+ $\mathtt{cd}(a, b) := \bigl\{ t \in \mathbb{N} \mid a \mmod t = 0 \wedge b \mmod t = 0 \bigr\}$.
+ \\[0.2cm]
+The function \texttt{gcd} is related to the function \texttt{cd} by the equation
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{gcd}(a, b) = \max\bigl(\mathtt{cd}(a, b)\bigr)$.
+\\[0.2cm]
+Hence it is sufficient if we can show that
+\\[0.2cm]
+\hspace*{1.3cm}
+  $\mathtt{cd}(a, b) = \mathtt{cd}(b, a \mmod b)$.
+\\[0.2cm]
+This is an equation between two sets and therefore is equivalent to showing that both
+\\[0.2cm]
+\hspace*{1.3cm}
+  $\mathtt{cd}(a, b) \subseteq \mathtt{cd}(b, a \mmod b)$ \quad and \quad $\mathtt{cd}(b, a \mmod b) \subseteq \mathtt{cd}(a, b)$
+\\[0.2cm]
+holds.  We show these two statements separately.
+\begin{enumerate}
+\item We show that $\mathtt{cd}(a, b) \subseteq \mathtt{cd}(b, a \mmod b)$.
+
+      Assume $t \in \mathtt{cd}(a, b)$.  Then there are $u, v \in \mathbb{N}$ such that
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $a = t \cdot u$ \quad and \quad $b = t \cdot v$.
+      \\[0.2cm]
+      Since $a = q \cdot b + a \mmod b$ where $q = a \dv b$ we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $a \mmod b = a - q \cdot b = t \cdot u - q \cdot t \cdot v = t \cdot (u - q \cdot v)$.
+      \\[0.2cm]
+      This shows that $t$ divides $a \mmod b$. Since $t$ also divides $b$ we therefore have
+      $t \in \mathtt{cd}(b, a \mmod b)$. \green{$\surd$}
+\item We show that $\mathtt{cd}(b, a \mmod b) \subseteq \mathtt{cd}(a, b)$.
+
+      Assume $t \in \mathtt{cd}(b, a \mmod b)$.  Then there are $u, v \in \mathbb{N}$ such that
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $b = t \cdot u$ \quad and \quad $a \mmod b = t \cdot v$.
+      \\[0.2cm]
+      Since $a = q \cdot b + a \mmod b$ where $q = a \dv b$ we have
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $a = q \cdot t \cdot u + t \cdot v = t \cdot (q \cdot u + v)$.
+      \\[0.2cm]
+      This shows that $t$ divides $a$. Since $t$ also divides $b$ we therefore have
+      $t \in \mathtt{cd}(a, b)$. \green{$\surd$}
+\end{enumerate}
+This concludes the proof. \qed
+
+\begin{figure}[!h]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm
+                ]{python3}
+    def ggt(x, y):
+        if y == 0:
+            return x
+        return ggt(y, x % y)
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{The function \mytt{ggt}.}
+  \label{fig:gcd}
+\end{figure}
+
+\exerciseEng
+Prove that the function \mytt{ggt} that is shown in Figure \ref{fig:gcd} computes the greatest common divisor
+of its arguments. \eox
+
+\begin{figure}[!h]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm
+                ]{python3}
+    def root(n):
+        if n == 0:
+            return 0
+        r = root(n // 4)
+        if (2 * r + 1) ** 2 <= n:
+            return 2 * r + 1
+        else:
+            return 2 * r
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{The function \mytt{isqrt}.}
+  \label{fig:isqrt}
+\end{figure} 
+
+\exerciseEng
+The \blue{integer square root} of a natural number $n$ is defined as 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{isqrt}(n) := \max\bigl(\{ r \in \mathbb{N} \mid r^2 \leq n \}\bigr)$.
+\\[0.2cm]
+Prove that the function \mytt{root} that is shown in Figure \ref{fig:isqrt} on page \pageref{fig:isqrt}
+computes the integer square root of its argument. \eox
+\pagebreak
+
+\exerciseEng
+Figure \ref{fig:square} shows a \textsl{Python} program implementing the function \texttt{square}.  Show that the equation
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{square}(n) = n^2$
+\\[0.2cm]
+holds for every $n \in \mathbb{N}$.  You should use computational induction to verify the claim. \eox
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm,
+              ]{python3}
+    def square(n):
+        if n == 0:
+            return 0
+        return square(n-1) + 2 * n - 1 
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{square}.}
+\label{fig:square}
+\end{figure}
+
+\exerciseEng
+The \href{https://en.wikipedia.org/wiki/Binomial_coefficient}{binomial coefficient} $\ds {n \choose k}$ is defined as follows:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds {n \choose k} = \frac{n!}{k! \cdot (n-k)!}$
+\\[0.2cm]
+Figure \ref{fig:binomial} shows a \textsl{Python} program implementing the function \texttt{binomial}.  Prove
+that 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds \mathtt{binomial}(n, k) = {n \choose k}$
+\\[0.2cm]
+holds for all $n \in \mathbb{N}$ and all $k \in \{ 0, \cdots, n \}$. \eox
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm,
+                ]{python3}
+    def binomial(n, k):
+        if k == 0 or k == n:
+            return 1
+        else:
+            return binomial(n - 1, k - 1) + binomial(n - 1, k)                
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{binomial}.}
+\label{fig:binomial}
+\end{figure}
+
+
+
+\section{Symbolic Execution}
+In the last chapter we have seen how to prove the correctness of a recursive function via
+\blue{computational induction}.  If a function is implemented iteratively via loops instead of recursively,
+then the method of computational induction is not applicable.   Instead, the method of 
+\blue{symbolic execution} \index{symbolic execution} is then used.
+We introduce this method via two examples.
+
+\subsection{Iterative Squaring}
+In the previous section we have implemented a recursive version of \blue{iterative squaring} and verified its
+correctness via \blue{computational induction}.  In this section we implement an iterative version of
+\blue{iterative squaring} and verify its correctness via \blue{symbolic execution}.
+Consider the program shown in Figure \ref{fig:power-iterative-annotated.stlx}. 
+
+\begin{figure}[!h]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 1.3cm,
+                  xrightmargin  = 1.3cm,
+                  codes         = {\catcode`_=8\catcode`$=3},
+                  commandchars  = \\\{\},
+                ]
+    \colorbox{sepia}{\green{def} \blue{power}(x$_0$, y$_0$):}
+    \colorbox{sepia}{    r$_0$ = 1}
+    \colorbox{sepia}{    \green{while} y$_n$ > 0:}
+    \colorbox{sepia}{        \green{if} y$_n$ % 2 == 1:}
+    \colorbox{sepia}{            r$_{n+1}$ = r$_n$ * x$_n$}
+    \colorbox{sepia}{        x$_{n+1}$ = x$_n$ * x$_n$}
+    \colorbox{sepia}{        y$_{n+1}$ = y$_n$ // 2}
+    \colorbox{sepia}{    \green{return} r$_{N}$}
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{An annotated programm to compute powers.}
+\label{fig:power-iterative-annotated.stlx}
+\end{figure} % $
+
+The main difference between a mathematical formula and a program is that in a formula all
+occurrences of a variable refer to the same value.   This is different in a program because the
+variables change their values dynamically.  In order to deal with this property of program variables,
+we have to be able to distinguish the different occurrences of a given variable.  To this end,  we 
+\blue{index} the program variables. 
+When doing this, we have to be aware of the fact that the same occurrence of a program variable can
+still denote different values if the variable occurs inside  a loop.  In this case we have to index
+the variables in a way such that the index includes a counter that counts the number of loop iterations.
+For concreteness, consider the  program shown in 
+Figure \ref{fig:power-iterative-annotated.stlx}.  
+Here, in line 5 the variable \mytt{r} has the index $n$ on the right side of the assignment,
+while it has the index $n+1$ on the left side of the assignment in line 5.  The index $n$ denotes 
+the number of times that the test \mytt{y > 0} of the \mytt{while} loop has been executed.
+After the \texttt{while}-loop finishes, the variable $\mytt{r}$ is indexed as
+$\mytt{r}_N$ in line 8, where $N$ denotes the total number of times that the test \mytt{y > 0} has been executed.
+We show the correctness of the given program next.  Let us define
+\\[0.2cm]
+\hspace*{1.3cm}
+$ a := x_0, \quad b := y_0$.
+\\[0.2cm]
+We will show that, provided $a \geq 1$, the \mytt{while} loop satisfies the \blue{invariant}
+\begin{equation}
+  \label{eq:powerInv}
+  \ds r_n \cdot x_n^{y_n} = a^b.
+\end{equation}
+This claim is proven by induction on the number of loop iterations.
+\begin{enumerate}
+\item[B.C.:] $n=0$.
+
+            Since we have $r_0 = 1$, $x_0 = a$, and $y_0 = b$ we have 
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            $r_n \cdot x_n^{y_n} = r_0 \cdot x_0^{y_0} = 1 \cdot a^{b} = a^b$. \mycheck
+\item[I.S.:] $n \mapsto n + 1$.
+
+            We proof proceeds by a case distinction with respect to the expression $y_n \mmod 2$:
+            \begin{enumerate}
+            \item $y_n \mmod 2 = 1$.
+
+                  Then we have $y_{n} = 2 \cdot (y_n\dv 2) + 1$ and
+                  $r_{n+1} = r_n \cdot x_n$.  Hence
+                  \begin{eqnarray*}
+                      &   & r_{n+1} \cdot x_{n+1}^{y_{n+1}} \\[0.2cm] 
+                      & = & (r_{n} \cdot x_n) \cdot (x_{n} \cdot x_{n})^{y_{n}\dvv 2} \\[0.2cm] 
+                      & = & r_{n} \cdot x_n^{2 \cdot (y_{n}\dvv 2) + 1} \\[0.2cm] 
+                      & = & r_{n} \cdot x_n^{y_n} \\
+                      & \stackrel{i.h.}{=} & a^{b} \quad \text{\mycheck}
+                  \end{eqnarray*}
+
+            \item $y_n \mmod 2 = 0$.
+
+                  Then we have $y_{n} = 2 \cdot (y_n\dv 2)$ and $r_{n+1} = r_n$.
+                  Therefore
+                  \begin{eqnarray*}
+                      &   & r_{n+1} \cdot x_{n+1}^{y_{n+1}} \\[0.2cm] 
+                      & = & r_{n} \cdot (x_{n} \cdot x_{n})^{y_{n}\dvv 2} \\[0.2cm] 
+                      & = & r_{n} \cdot x_n^{2 \cdot (y_{n} \dvv 2)} \\[0.2cm] 
+                      & = & r_{n} \cdot x_n^{y_n} \\
+                      & \stackrel{i.h.}{=} & a^{b} \quad \text{\mycheck}
+                  \end{eqnarray*}
+            \end{enumerate}
+\end{enumerate}
+This shows the validity of equation (\ref{eq:powerInv}).   If the \mytt{while} loop
+terminates, we must have $y_N = 0$.  If $n=N$, then equation (\ref{eq:powerInv}) yields:
+\\[0.2cm]
+\hspace*{1.3cm}
+$$
+\begin{array}[t]{cll}
+                 & r_N \cdot x_N^{y_N} = a^b \\
+\Leftrightarrow  & r_N \cdot x_N^{0}  = a^b \\
+\Leftrightarrow  & r_N \cdot 1       = a^b  & \mbox{because $x_N \not= 0$} \\
+\Leftrightarrow  & r_N               = a^b
+\end{array}
+$$
+\\[0.2cm]
+In the step from the second line to the third line we have used the fact that, since $x_0 \not= 0$, we also
+have that $x_n \not= 0$ for all $n \in \{0,1, \cdots, N\}$ and therefore $x_N^0 = 1$.  Hence we have shown that $r_N = a^b$.  The
+\mytt{while} loop terminates because we have 
+\\[0.2cm]
+\hspace*{1.3cm}
+$y_{n+1} = y_n \dv 2 < y_n$ \quad as long as \quad $y_n > 0$
+\\[0.2cm]
+and therefore $y_n$ must eventually become $0$.  Thus we have proven that
+$\mytt{power}(a,b) =a^b$ holds. \qed
+
+
+\subsection{Integer Square Root}
+We continue with another example that demonstrates the method of \blue{symbolic execution}.
+Figure \ref{fig:Integer-Square-Root-Iterative.ipynb} shows a function that is able to compute the
+\blue{integer square root} of its argument $a$ as long as $a$ is less than $2^{64}$, i.e.~if $a$ is represented as an unsigned
+number, then it can be represented with 64 bits.  In the implementation of the function \texttt{root} we have
+already indexed the variables.  Note that there is no 
+need to index the variable \texttt{a} since this variable is never updated.  To prove the correctness of this
+program, we first 
+have to establish invariants for the variables $p_n$ and $r_n$.  In order to be able to formulate the invariant
+for the variable \texttt{r}, we have to understand that the function \texttt{root} computes the integer square
+root of its argument $a$ bit by bit starting at the most significant bit.  Let us denote the
+mathematical function that computes the integer square root of a number $a$ with \texttt{isqrt}.  If we
+represent $\mathtt{isqrt}(a)$ in the binary system, we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds \mathtt{isqrt}(a) = \sum\limits_{i=0}^{31} b_i \cdot 2^i$, \quad where $b_i \in \{0,1\}$.
+\\[0.2cm]
+In order to compute $\mathtt{isqrt}(a)$ we start with the last bit $b_{31}$.  If the square of $2^{31}$ is less
+than $a$, then we must have $b_{31} = 1$.  Otherwise we have $b_{31} = 0$.  Assume now that we have already computed the
+bits $b_{31}$, $b_{30}$, $\cdots$, $b_{31-n)}$.  In order to compute $b_{31-(n+1)}$ we have to check whether
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds\left(\ds 2^{32-{n+1}} + \sum\limits_{i=31-n}^{31} b_i \cdot 2^i \right)^2 \leq a$.
+\\[0.2cm]
+If it is, then  $b_{31-{n+1}} = 1$, else $b_{31-(n+1)} = 0$.
+With this in mind, we can state the invariants that hold when the \texttt{while} loop in line 4 is entered:
+\begin{enumerate}
+\item $\ds p_n = 2^{31 - n}$ \quad for $n=0,\cdots,31$ and $p_{32} = 0$.
+\item $\ds r_n = \sum\limits_{i=32-n}^{31} b_i \cdot 2^i$ \quad where the $b_i$ are the bits of
+      $\mathtt{isqrt}(a)$ in the binary representation.
+\end{enumerate}
+
+\begin{figure}[!h]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 1.3cm,
+                  xrightmargin  = 1.3cm,
+                  codes         = {\catcode`_=8\catcode`$=3},
+                  commandchars  = \\\{\},
+                ]
+    \colorbox{sepia}{\green{def} \blue{root}(a):}
+    \colorbox{sepia}{    r$_0$ = 0}
+    \colorbox{sepia}{    p$_0$ = 2 ** 31}
+    \colorbox{sepia}{    \green{while} p$_n$ > 0:}
+    \colorbox{sepia}{        \green{if} a >= (r$_n$ + p$_n$) ** 2:}
+    \colorbox{sepia}{            r$_{n+1}$ = r$_n$ + p$_n$}
+    \colorbox{sepia}{        p$_{n+1}$ = p$_n$ // 2}
+    \colorbox{sepia}{    \green{return} r$_N$}
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{An annotated programm to compute powers.}
+\label{fig:Integer-Square-Root-Iterative.ipynb}
+\end{figure} % $
+
+We proceed to prove the first invariant by induction.  
+\begin{enumerate}
+\item[B.C.:] $n = 0$
+
+             $p_0 = 2^{31} = 2^{31-0}$. 
+\item[I.S.:] $n \mapsto n + 1$
+
+   $p_{n+1} = p_n \;\mathtt{/\!/}\; 2 \;\stackrel{IV}{=}\; 2^{31-n} \;\mathtt{/\!/}\; 2 \;=\; 2^{31-n-1} \;=\; 2^{31-(n+1)}$.
+
+   This holds as long as $n+1 \leq 32$.  Since we have $p_{31} = 2^{31-31} = 2^0 = 1$ it follows that
+   \\[0.2cm]
+   \hspace*{1.3cm}
+   $p_{32} \;=\; p_{31} \;\mathtt{/\!/}\; 2 = 1 \;\mathtt{/\!/}\; 2 = 0$.
+   \\[0.2cm]
+   This shows that the body of the \texttt{while} loop is executed $32$ times.  This was to be expected, as
+   each execution of this loop computes one bit of the result.
+\end{enumerate}
+We proceed to prove the second invariant by induction.
+\begin{enumerate}
+\item[B.C.:] $n = 0$
+
+  We have $r_0 = 0$ and also $\sum\limits_{i=32-0}^{31} b_i \cdot 2^i = \sum\limits_{i=32}^{31} b_i \cdot 2^i =  0$,
+  since the last sum is empty.
+\item[I.S.:] $n \mapsto n+1$
+
+  Now we need to perform a case distinction with respect to the test $a \geq (r_n + p_n)^2$.
+  \begin{enumerate}
+  \item $a \geq (r_n + p_n)^2$.
+
+    In this case we have that $r_n + p_n \leq \mathtt{isqrt}(a)$ and since $p_n = 2^{31-n}$ this shows that
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $r_n + 2^{31-n} \leq \mathtt{isqrt}(a)$.
+    \\[0.2cm]
+    This implies that $b_{31-n} = 1$.  Therefore we have
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $
+    \begin{array}[t]{lcl}
+      r_{n+1} & = & r_n + p_n \\[0.2cm] 
+              & \stackrel{IV}{=} & \sum\limits_{i=32-n}^{31} b_i \cdot 2^i + 2^{31-n} \\[0.5cm]
+              & = & \sum\limits_{i=32-n}^{31} b_i \cdot 2^i + b_{32-(n+1)} \cdot 2^{32-(n+1)} \\[0.5cm]
+              & = & \sum\limits_{i=32-(n+1)}^{31} b_i \cdot 2^i 
+    \end{array}
+    $
+  \item $a < (r_n + p_n)^2$. 
+
+    In this case we have that $r_n + p_n > \mathtt{isqrt}(a)$ and since $p_n = 2^{31-n}$ this shows that
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $r_n + 2^{31-n} > \mathtt{isqrt}(a)$.
+    \\[0.2cm]
+    This implies that $b_{31-n} = 0$.  Since $b_{32-(n+1)} = b_{31-n}$ we have
+    \\[0.2cm]
+    \hspace*{1.3cm}
+    $
+    \begin{array}[t]{lcl}
+      r_{n+1} & = & r_n  \\[0.2cm] 
+              & \stackrel{IV}{=} & \sum\limits_{i=32-n}^{31} b_i \cdot 2^i \\[0.5cm]
+              & = & \sum\limits_{i=32-n}^{31} b_i \cdot 2^i + 0 \cdot 2^{32-(n+1)} \\[0.5cm]
+              & = & \sum\limits_{i=32-n}^{31} b_i \cdot 2^i + b_{32-(n+1)} \cdot 2^{32-(n+1)} \\[0.5cm]
+              & = & \sum\limits_{i=32-(n+1)}^{31} b_i \cdot 2^i 
+    \end{array}
+    $
+  \end{enumerate}
+\end{enumerate}
+Since the program terminates when $n=32$ we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds \mathtt{root}(a) = r_N = r_{32} = \sum\limits_{i=32-32}^{31} b_i \cdot 2^i = \sum\limits_{i=0}^{31} b_i \cdot 2^i = \mathtt{isqrt}(a)$. \qed
+\pagebreak
+
+\exerciseEng
+Use the method of symbolic program execution to prove the correctness of the implementation of the
+\href{https://en.wikipedia.org/wiki/Euclidean_algorithm}{Euclidean algorithm} that is shown in Figure
+\ref{fig:gcd.stlx} on page \pageref{fig:gcd.stlx}.  During the proof 
+you should make use of the fact that for all positive natural numbers $x$ and $y$ the function $\mytt{gcd}$
+that computes the greatest common divisor of $x$ and $x$ satisfies the equation
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mytt{gcd}(x, y) = \mytt{gcd}(y, x \,\mytt{\%}\, y)$.
+\\[0.2cm]
+Furthermore, the invariant of the \mytt{while} loop is
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mytt{ggt}(x_n, y_n) = \mytt{ggt}(a, b)$ \quad where $a := x_0$ and $b := y_0$.
+\\[0.2cm]
+Using this invariant you should be able to prove that $\mytt{ggt}(a, b) = \mytt{gcd}(a, b)$ for all
+$a, b \in \mathbb{N}$ such that $a > 0$.  Note that in order to carry out the proof you have to distinguish
+between the mathematical function \mytt{gcd} that computes the greatest common divisor and the \textsl{Python}
+function \mytt{ggt} that is implemented in Figure \ref{fig:gcd.stlx}.
+\eox
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                  codes         = {\catcode`_=8\catcode`$=3},
+                  commandchars  = \\\{\},
+                ]
+\colorbox{sepia}{    \green{def} \blue{ggt}(x$_0$, y$_0$):               }
+\colorbox{sepia}{        \green{while} y$_n$ != 0:                       }
+\colorbox{sepia}{            x$_{n+1}$, y$_{n+1}$ = y$_n$, x$_n$ % y$_n$ }
+\colorbox{sepia}{        \green{return} x$_N$                            }
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{An iterative implementation of the Euclidean algorithm.}
+\label{fig:gcd.stlx}
+\end{figure}
+
+\exerciseEng
+Figure \ref{fig:square-iterative} shows a \textsl{Python} program implementing the function \texttt{square}.  Show that the equation
+\\[0.2cm]
+\hspace*{1.3cm}
+$\mathtt{square}(s) = s^2$
+\\[0.2cm]
+holds for every $s \in \mathbb{N}$.  You should use symbolic execution to verify the claim.
+\eox
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                  codes         = {\catcode`_=8\catcode`$=3},
+                  commandchars  = \\\{\},
+                ]
+    def square(s$_0$):
+        r$_0$ = 0
+        u$_0$ = 1
+        while s$_n$ > 0:
+            r$_{n+1}$ += u$_n$
+            u$_{n+1}$ += 2
+            s$_{n+1}$ -= 1
+        return r$_N$
+\end{Verbatim}
+\vspace*{-0.3cm}
+\caption{The function \texttt{square} with annotations.}
+\label{fig:square-iterative}
+\end{figure}
+
+\pagebreak
+
+\section{Check Your Understanding}
+\begin{enumerate}[(a)]
+\item Explain the method of \blue{computational induction}.  
+\item What are the three steps that have to be executed to prove the correctness of the implementation of a
+      \textsl{Python} function via computational induction?
+\item What are the two properties of \href{https://en.wikipedia.org/wiki/Euclidean_division}{Euclidean division} of natural numbers?
+\item Are you able to prove the correctness of a recursive implementation of Euclid's algorithm?
+\item What is the difference between a variable occurring in a mathematical formula and a variable occurring in
+      a \textsl{Python} program?
+\item How do we transform a variable occurring in a \textsl{Python} program into a mathematical variable?
+\item Explain the method of \blue{symbolic execution}.
+\item Are you able to prove the correctness of an iterative implementation of Euclid's algorithm?
+\item When would you use computational induction and when would you choose symbolic execution instead?
+\end{enumerate}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "logic"
+%%% End:

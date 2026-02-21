@@ -1,0 +1,21 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{literal2int}\PYG{p}{(}\PYG{n}{literal}\PYG{p}{,} \PYG{n}{Var2Int}\PYG{p}{):}
+        \PYG{k}{match} \PYG{n}{literal}\PYG{p}{:}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{var}\PYG{p}{):} \PYG{k}{return} \PYG{o}{\PYGZhy{}}\PYG{n}{Var2Int}\PYG{p}{[}\PYG{n}{var}\PYG{p}{]}
+            \PYG{k}{case} \PYG{n}{var}       \PYG{p}{:} \PYG{k}{return}  \PYG{n}{Var2Int}\PYG{p}{[}\PYG{n}{var}\PYG{p}{]}
+
+    \PYG{k}{def} \PYG{n+nf}{clause2pyco}\PYG{p}{(}\PYG{n}{Clause}\PYG{p}{,} \PYG{n}{Var2Int}\PYG{p}{):}
+        \PYG{k}{return} \PYG{p}{[}\PYG{n}{literal2int}\PYG{p}{(}\PYG{n}{literal}\PYG{p}{,} \PYG{n}{Var2Int}\PYG{p}{)} \PYG{k}{for} \PYG{n}{literal} \PYG{o+ow}{in} \PYG{n}{Clause}\PYG{p}{]}
+
+    \PYG{k}{def} \PYG{n+nf}{clauses2pyco}\PYG{p}{(}\PYG{n}{Clauses}\PYG{p}{,} \PYG{n}{Var2Int}\PYG{p}{):}
+        \PYG{k}{return} \PYG{p}{[}\PYG{n}{clause2pyco}\PYG{p}{(}\PYG{n}{clause}\PYG{p}{,} \PYG{n}{Var2Int}\PYG{p}{)} \PYG{k}{for} \PYG{n}{clause} \PYG{o+ow}{in} \PYG{n}{Clauses} \PYG{p}{]}
+
+    \PYG{k}{def} \PYG{n+nf}{int2var}\PYG{p}{(}\PYG{n}{Numbers}\PYG{p}{,} \PYG{n}{Int2Var}\PYG{p}{):}
+        \PYG{n}{Result} \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{()}
+        \PYG{k}{for} \PYG{n}{n} \PYG{o+ow}{in} \PYG{n}{Numbers}\PYG{p}{:}
+            \PYG{k}{if} \PYG{n}{n} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
+                \PYG{n}{Result} \PYG{o}{|=} \PYG{p}{\PYGZob{}}\PYG{n+nb}{frozenset}\PYG{p}{(\PYGZob{}}\PYG{n}{Int2Var}\PYG{p}{[}\PYG{n}{n}\PYG{p}{]\PYGZcb{})\PYGZcb{}}
+            \PYG{k}{else}\PYG{p}{:}
+                \PYG{n}{Result} \PYG{o}{|=} \PYG{p}{\PYGZob{}}\PYG{n+nb}{frozenset}\PYG{p}{(\PYGZob{}} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{Int2Var}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{n}{n}\PYG{p}{])} \PYG{p}{\PYGZcb{})\PYGZcb{}}
+        \PYG{k}{return} \PYG{n}{Result}
+\end{Verbatim}

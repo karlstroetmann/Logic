@@ -1,0 +1,20 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{selectLiteral}\PYG{p}{(}\PYG{n}{Clauses}\PYG{p}{,} \PYG{n}{Forbidden}\PYG{p}{):}
+        \PYG{n}{Variables} \PYG{o}{=} \PYG{p}{\PYGZob{}} \PYG{n}{extractVariable}\PYG{p}{(}\PYG{n}{l}\PYG{p}{)} \PYG{k}{for} \PYG{n}{C} \PYG{o+ow}{in} \PYG{n}{Clauses} \PYG{k}{for} \PYG{n}{l} \PYG{o+ow}{in} \PYG{n}{C} \PYG{p}{\PYGZcb{}} \PYG{o}{\PYGZhy{}} \PYG{n}{Forbidden}
+        \PYG{n}{Scores}    \PYG{o}{=} \PYG{p}{\PYGZob{}\PYGZcb{}}
+        \PYG{k}{for} \PYG{n}{var} \PYG{o+ow}{in} \PYG{n}{Variables}\PYG{p}{:}
+            \PYG{n}{cmp} \PYG{o}{=} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{var}\PYG{p}{)}
+            \PYG{n}{Scores}\PYG{p}{[}\PYG{n}{var}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mf}{0.0}
+            \PYG{n}{Scores}\PYG{p}{[}\PYG{n}{cmp}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mf}{0.0}
+            \PYG{k}{for} \PYG{n}{C} \PYG{o+ow}{in} \PYG{n}{Clauses}\PYG{p}{:}
+                \PYG{k}{if} \PYG{n}{var} \PYG{o+ow}{in} \PYG{n}{C}\PYG{p}{:}
+                    \PYG{n}{Scores}\PYG{p}{[}\PYG{n}{var}\PYG{p}{]} \PYG{o}{+=} \PYG{l+m+mi}{2} \PYG{o}{**} \PYG{o}{\PYGZhy{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{C}\PYG{p}{)}
+                \PYG{k}{if} \PYG{n}{cmp} \PYG{o+ow}{in} \PYG{n}{C}\PYG{p}{:}
+                    \PYG{n}{Scores}\PYG{p}{[}\PYG{n}{cmp}\PYG{p}{]} \PYG{o}{+=} \PYG{l+m+mi}{2} \PYG{o}{**} \PYG{o}{\PYGZhy{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{C}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n+nb}{max}\PYG{p}{(}\PYG{n}{Scores}\PYG{p}{,} \PYG{n}{key}\PYG{o}{=}\PYG{n}{Scores}\PYG{o}{.}\PYG{n}{get}\PYG{p}{)}
+
+    \PYG{k}{def} \PYG{n+nf}{extractVariable}\PYG{p}{(}\PYG{n}{l}\PYG{p}{):}
+        \PYG{k}{match} \PYG{n}{l}\PYG{p}{:}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{p}\PYG{p}{):} \PYG{k}{return} \PYG{n}{p}
+            \PYG{k}{case} \PYG{n}{p}       \PYG{p}{:} \PYG{k}{return} \PYG{n}{p}
+\end{Verbatim}

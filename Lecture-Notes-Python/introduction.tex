@@ -1,0 +1,163 @@
+\chapter{Introduction}
+For the uninitiated, \href{https://en.wikipedia.org/wiki/Mathematical_logic}{mathematical logic} 
+is both quite abstract and pretty arcane.  
+In this short chapter, I would like to motivate why you have to learn
+logic in order to become a computer scientist.  After that, I will give a short overview of the topics covered
+in this lecture.
+
+\section{Motivation}
+In the lecture on \href{https://github.com/karlstroetmann/Algorithms/blob/master/Lecture-Notes/algorithms.pdf}{algorithms},
+we have discussed three important properties that an algorithms should have:
+An algorithm should be
+\begin{itemize}
+\item correct,
+\item efficient, and
+\item simple.  
+\end{itemize}
+The efficiency of algorithms has been discussed in the lecture on algorithms.  This lecture will
+therefore focus on the correctness of algorithms.  The rest of this section will further motivate the
+importance of the correctness of algorithms. 
+
+Modern software systems are among the most complex systems developed by mankind.  You can get a
+sense of the complexity of these systems if you look at the amount of work that is necessary to
+build and maintain complex software systems.  Today it is quite common that complex software projects require
+more than a thousand developers.  Of course, the failure of a project of this size is very costly and can have
+catastrophic consequences.  Nevertheless, history shows that these failures happen.
+Here is a list of software problems that have made it to the headlines in recent years.
+\begin{enumerate}
+\item A stark example of IT failure consequences is the
+      \href{https://www.npr.org/2023/01/26/1151667801/southwest-airlines-investigation-losses-holiday-travel-cancellations}{December 2022 Southwest Airlines meltdown}.
+      A number of delayed flights due to a severe winter storm triggered the collapse of the Southwest Airlines
+      crew scheduling system \blue{SkySolver}, leading to over 16,700 
+      canceled flights and stranding hundreds of thousands of passengers during peak holiday travel. Southwest
+      estimated the financial impact at over \$1 billion. 
+\item In 2018 and 2019 two Boeing 737 MAX planes crashed because of a software problem in the
+      \href{https://en.wikipedia.org/wiki/Maneuvering_Characteristics_Augmentation_System}{Maneuvering
+        Characteristics Augmentation System}.
+      
+      This error lead to the death of 346 passengers and crew.
+\item Between 1999 and 2015 the British Post Office used a faulty accounting software provided by Fujitsu.
+      As a result of the buggy accounting, over 900 employees of the British Post Office were falsely
+      convicted of embezzlement.  As a consequences, some of these employees were imprisoned.  Four of those
+      that were falsely convicted committed suicide.  These tragic incidents are know as the
+      \href{https://en.wikipedia.org/wiki/British_Post_Office_scandal}{Horizon IT scandal}.     
+\item In 1996, the very first Ariane 5 rocket self-destructed as a result of a
+      \href{https://www.bugsnag.com/blog/bug-day-ariane-5-disaster/}{software error}. 
+\end{enumerate}
+These and numerous other examples show that the development of complex software systems requires a high level
+of precision and diligence.  Hence, the development of software needs a solid scientific
+foundation.  \href{https://en.wikipedia.org/wiki/Mathematical_logic}{Mathematical logic} 
+is an important part of this foundation that has immediate applications in computer science. 
+\begin{enumerate}[(a)]
+\item Logic can be used to specify the \blue{interfaces} of complex systems.  
+\item Logic is used to build interactive theorem provers that are able to establish the correctness of
+      software.  For example, \textsl{MicroSoft}\textsuperscript{TM} has build the
+      \href{https://leanprover.github.io}{Lean Prover} and the
+      \href{https://www.microsoft.com/en-us/research/project/z3-3/}{Z3}, which is a logic constraint solver, as
+      part of their 
+      \href{https://www.microsoft.com/en-us/research/group/research-software-engineering-rise/}{research in
+        software engineering}. 
+\item The correctness of digital circuits can be verified using \blue{automatic theorem provers} that are based on
+      propositional logic.  For example, \textsl{Cadence}\textsuperscript{TM} has built the
+      \href{https://www.cadence.com/en_US/home/tools/system-design-and-verification/formal-and-static-verification.html}{Jasper
+        Formal Verification Platform}.
+\end{enumerate}
+It is easy to extend this enumeration.  However, besides their immediate applications, 
+there is another reason you have to study both logic and set theory: Without the proper use of
+{\color{blue}abstractions}, complex software systems cannot be managed.  After all, nobody is able to keep
+millions of lines of program code in her head.  The only way to construct and manage a software system of this
+size is to introduce the right abstractions and to develop the system in layers.  Hence, the ability
+to work with abstract concepts is one of the main virtues of a modern computer scientist.  
+Exposing students to mathematics in general and logic in particular trains their abilities to grasp abstract concepts.
+
+From my past teaching experience I know that many students think that a good programmer already is a
+good computer scientist.  In reality, we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textrm{good programmer} \not= \textrm{good computer scientist}$.
+\\[0.2cm]
+This should not be too surprising.  After all, there is no reason to believe that a good bricklayer is a good
+architect and neither is a good architect necessarily a good bricklayer.
+In computer science, a good programmer need not be a scientist at all, while a {\color{blue}computer
+  \underline{scientist}}, by its very name, is a {\color{blue}scientist}.  
+There is no denying that {\color{blue}mathematics} in general and 
+{\color{blue}logic} in particular is an important part of science.  Furthermore, these topics form the
+foundation of computer science.  Therefore, you should master them.  In addition, this
+part of your scientific education is much more permanent than the knowledge of any particular programming
+language.  Nobody knows which programming language will be \emph{en vogue} in 10 years from now.  In three 
+years, when you start your professional career, most of you will have to learn new
+programming languages.   Then your ability to quickly grasp new concepts will be much more important than your
+skills in any particular programming language. 
+
+\section{Overview} 
+This lecture deals mostly with mathematical logic and is structured as follows.
+\begin{enumerate}[(a)]
+\item We begin our lecture by investigating the limits of computability.
+
+      For certain problems there is no algorithm that can solve the problem algorithmically. 
+      For example, the question whether a given program will \blue{terminate} for a given input is not
+      \blue{decidable}.  This is known as the \href{https://en.wikipedia.org/wiki/Halting_problem}{halting problem}.  
+      We will prove the \blue{undecidability} of the halting problem in the second chapter. 
+\item The third chapter discusses two different methods that can be used to prove the correctness of a program:
+      \begin{itemize}
+      \item \blue{Computational induction} is the method of choice for proving the correctness of recursive
+            algorithms.
+      \item \blue{Symbolic verification} is used to verify iterative algorithms.
+      \end{itemize}
+\item The fourth chapter discusses \href{https://en.wikipedia.org/wiki/Propositional_calculus}{propositional logic}.
+
+      In logic, we distinguish between  \blue{propositional logic},
+      \blue{first order logic}, and \blue{higher order logic}.  \blue{Propositional} logic is only
+      concerned with the \blue{logical connectives}
+      \begin{itemize}
+      \item $\neg$ (not), 
+      \item $\wedge$ (and),
+      \item $\vee$ (or),
+      \item $\rightarrow$ (if $\cdots$ then),
+      \item $\leftrightarrow$ (if and only if).
+      \end{itemize}
+      \blue{First-order logic} also investigates the \blue{quantifiers}
+      \begin{itemize}
+      \item $\forall$ (for all),
+      \item $\exists$ (there exists).
+      \end{itemize}
+      where these quantifiers range over the objects of the \blue{domain of discourse}.
+      Finally, in \blue{higher order logic} these quantifiers also range over \blue{sets}, \blue{functions}, and
+      \blue{predicates}. 
+
+      As propositional logic is easier to grasp than first-order logic, we start our investigation
+      of logic with propositional logic.  Furthermore, propositional logic has the advantage of
+      being \blue{decidable}:  We will present an algorithm that can check whether a propositional formula
+      is satisfiable.  In contrast to propositional logic, first-order logic is not decidable.
+
+      Next, we discuss applications of propositional logic:  We will show how the \blue{8 queens problem} 
+      can be reduced to the question whether a formula from propositional logic is satisfiable.  We present
+      the algorithm of \blue{Davis and Putnam} that can decide the satisfiability of a propositional formula.
+      and, for example, is able to solve the 8 queens problem.  
+\item Finally, we discuss \href{https://en.wikipedia.org/wiki/First-order_logic}{first-order logic}.
+
+      The most important concept of the last chapter will be the notion of a \blue{formal proof} in
+      first order logic.  To this end, we introduce a \blue{formal proof system} that is
+      \blue{complete} for first order logic.  \blue{Completeness} means that we will develop an
+      algorithm that can \blue{prove} the correctness of every first-order formula that is
+      universally valid.  This algorithm is the foundation of \blue{automated theorem proving}.
+
+      As an application of theorem proving we discuss the systems \href{https://vprover.github.io/}{Vampire},
+      \href{https://www.cs.unm.edu/~mccune/mace4/}{Prover9} and
+      \href{https://www.cs.unm.edu/~mccune/mace4/}{Mace4}. \blue{Prover9} is an automated theorem prover, while
+      \blue{Mace4} can be used to refute a mathematical conjecture.
+\end{enumerate}
+
+\section{Chapter Review}
+\begin{itemize}
+\item Provide three examples of faulty software systems that have caused great harm.
+      Do not cote the examples given in this Chapter but rather search the web to find more examples.
+\item Provide two examples of automatic theorem provers that are used in industry.
+\item Is first order logic more expressive as propositional logic or is it the other way around?
+\end{itemize}
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "logic"
+%%% End: 

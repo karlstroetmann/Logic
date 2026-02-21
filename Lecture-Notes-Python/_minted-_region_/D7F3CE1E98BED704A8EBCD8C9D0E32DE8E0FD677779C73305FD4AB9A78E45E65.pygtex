@@ -1,0 +1,17 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{findValuation}\PYG{p}{(}\PYG{n}{Clauses}\PYG{p}{):}
+        \PYG{l+s+s2}{\PYGZdq{}Given a set of Clauses, find an interpretation satisfying all clauses.\PYGZdq{}}
+        \PYG{n}{Variables} \PYG{o}{=} \PYG{n}{collectVariables}\PYG{p}{(}\PYG{n}{Clauses}\PYG{p}{)}
+        \PYG{n}{Clauses}   \PYG{o}{=} \PYG{n}{saturate}\PYG{p}{(}\PYG{n}{Clauses}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n+nb}{frozenset}\PYG{p}{()} \PYG{o+ow}{in} \PYG{n}{Clauses}\PYG{p}{:}  \PYG{c+c1}{\PYGZsh{} The set Clauses is inconsistent.}
+            \PYG{k}{return} \PYG{k+kc}{False}
+        \PYG{n}{Literals} \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{()}
+        \PYG{k}{for} \PYG{n}{p} \PYG{o+ow}{in} \PYG{n}{Variables}\PYG{p}{:}
+            \PYG{k}{if} \PYG{n+nb}{any}\PYG{p}{(}\PYG{n}{C} \PYG{k}{for} \PYG{n}{C} \PYG{o+ow}{in} \PYG{n}{Clauses}
+                     \PYG{k}{if}  \PYG{n}{p} \PYG{o+ow}{in} \PYG{n}{C} \PYG{o+ow}{and} \PYG{n}{C} \PYG{o}{\PYGZhy{}} \PYG{p}{\PYGZob{}}\PYG{n}{p}\PYG{p}{\PYGZcb{}} \PYG{o}{\PYGZlt{}=} \PYG{p}{\PYGZob{}} \PYG{n}{complement}\PYG{p}{(}\PYG{n}{l}\PYG{p}{)} \PYG{k}{for} \PYG{n}{l} \PYG{o+ow}{in} \PYG{n}{Literals} \PYG{p}{\PYGZcb{}}
+                  \PYG{p}{):}
+                \PYG{n}{Literals} \PYG{o}{|=} \PYG{p}{\PYGZob{}} \PYG{n}{p} \PYG{p}{\PYGZcb{}}
+            \PYG{k}{else}\PYG{p}{:}
+                \PYG{n}{Literals} \PYG{o}{|=} \PYG{p}{\PYGZob{}} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{p}\PYG{p}{)} \PYG{p}{\PYGZcb{}}
+        \PYG{k}{return} \PYG{n}{Literals}
+\end{Verbatim}

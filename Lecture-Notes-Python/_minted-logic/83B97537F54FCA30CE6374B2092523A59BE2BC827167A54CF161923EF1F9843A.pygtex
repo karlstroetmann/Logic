@@ -1,0 +1,40 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{allClauses}\PYG{p}{():}
+        \PYG{c+c1}{\PYGZsh{} Every house has exactly one inhabitant.  This inhabitant has exactly one}
+        \PYG{c+c1}{\PYGZsh{} nationality, one pet, smokes one brand of cigarettes, and has one type}
+        \PYG{c+c1}{\PYGZsh{} of drink.  Furthermore, every house has exactly one color.}
+        \PYG{n}{Clauses}  \PYG{o}{=} \PYG{n}{onePerHouse}\PYG{p}{(}\PYG{n}{Nations}\PYG{p}{)}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{onePerHouse}\PYG{p}{(}\PYG{n}{Drinks}\PYG{p}{)}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{onePerHouse}\PYG{p}{(}\PYG{n}{Pets}\PYG{p}{)}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{onePerHouse}\PYG{p}{(}\PYG{n}{Brands}\PYG{p}{)}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{onePerHouse}\PYG{p}{(}\PYG{n}{Colours}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} The Englishman lives in the red house.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{sameHouse}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}English\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}Red\PYGZdq{}}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} The Spaniard owns the dog.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{sameHouse}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Spanish\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}Dog\PYGZdq{}}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} Coffee is drunk in the green house.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{sameHouse}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Coffee\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}Green\PYGZdq{}}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} The Ukrainian drinks tea.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{sameHouse}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Ukrainian\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}Tea\PYGZdq{}}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} The green house is immediately to the right of the ivory house.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{leftTo}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Ivory\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}Green\PYGZdq{}}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} The Old Gold smoker owns snails.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{sameHouse}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}OldGold\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}Snails\PYGZdq{}}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} Kools are smoked in the yellow house.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{sameHouse}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Kools\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}Yellow\PYGZdq{}}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} Milk is drunk in the middle house.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{parseKNF}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Milk\PYGZlt{}3\PYGZgt{}\PYGZdq{}}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} The Norwegian lives in the first house.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{parseKNF}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Norwegian\PYGZlt{}1\PYGZgt{}\PYGZdq{}}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} The man who smokes Chesterfields lives in the house next}
+        \PYG{c+c1}{\PYGZsh{} to the man with the fox.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{nextTo}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Chesterfields\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}Fox\PYGZdq{}}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} Kools are smoked in the house next to the house where the horse is kept.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{nextTo}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Kools\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}Horse\PYGZdq{}}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} The Lucky Strike smoker drinks orange juice.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{sameHouse}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}LuckyStrike\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}OrangeJuice\PYGZdq{}}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} The Japanese smokes Parliaments.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{sameHouse}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Japanese\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}Parliaments\PYGZdq{}}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} The Norwegian lives next to the blue house.}
+        \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{nextTo}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Norwegian\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}Blue\PYGZdq{}}\PYG{p}{)}
+\end{Verbatim}

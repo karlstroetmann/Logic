@@ -1,0 +1,32 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k+kn}{import} \PYG{n+nn}{z3}
+
+    \PYG{k}{def} \PYG{n+nf}{row}\PYG{p}{(}\PYG{n}{i}\PYG{p}{):} \PYG{k}{return} \PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}R}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}
+    \PYG{k}{def} \PYG{n+nf}{col}\PYG{p}{(}\PYG{n}{i}\PYG{p}{):} \PYG{k}{return} \PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}C}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{\PYGZsq{}}
+
+    \PYG{k}{def} \PYG{n+nf}{is\PYGZus{}knight\PYGZus{}move}\PYG{p}{(}\PYG{n}{row}\PYG{p}{,} \PYG{n}{col}\PYG{p}{,} \PYG{n}{rowX}\PYG{p}{,} \PYG{n}{colX}\PYG{p}{):}
+        \PYG{n}{Formulas} \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{()}
+        \PYG{n}{S} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{2}\PYG{p}{\PYGZcb{}}
+        \PYG{n}{DeltaSet} \PYG{o}{=} \PYG{p}{\PYGZob{}(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)} \PYG{k}{for} \PYG{n}{x} \PYG{o+ow}{in} \PYG{n}{S} \PYG{k}{for} \PYG{n}{y} \PYG{o+ow}{in} \PYG{n}{S} \PYG{k}{if} \PYG{n+nb}{abs}\PYG{p}{(}\PYG{n}{x}\PYG{p}{)} \PYG{o}{!=} \PYG{n+nb}{abs}\PYG{p}{(}\PYG{n}{y}\PYG{p}{)\PYGZcb{}}
+        \PYG{k}{for} \PYG{n}{delta\PYGZus{}r}\PYG{p}{,} \PYG{n}{delta\PYGZus{}c} \PYG{o+ow}{in} \PYG{n}{DeltaSet}\PYG{p}{:}
+            \PYG{n}{Formulas}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{z3}\PYG{o}{.}\PYG{n}{And}\PYG{p}{(}\PYG{n}{rowX} \PYG{o}{==} \PYG{n}{row} \PYG{o}{+} \PYG{n}{delta\PYGZus{}r}\PYG{p}{,} \PYG{n}{colX} \PYG{o}{==} \PYG{n}{col} \PYG{o}{+} \PYG{n}{delta\PYGZus{}c}\PYG{p}{))}
+        \PYG{k}{return} \PYG{n}{z3}\PYG{o}{.}\PYG{n}{Or}\PYG{p}{(}\PYG{n}{Formulas}\PYG{p}{)}
+
+    \PYG{k}{def} \PYG{n+nf}{all\PYGZus{}different}\PYG{p}{(}\PYG{n}{Rows}\PYG{p}{,} \PYG{n}{Cols}\PYG{p}{):}
+        \PYG{n}{Result} \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{()}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{62}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{):}
+            \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range} \PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{63}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{):}
+                \PYG{n}{Result}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{z3}\PYG{o}{.}\PYG{n}{Or}\PYG{p}{(}\PYG{n}{Rows}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{!=} \PYG{n}{Rows}\PYG{p}{[}\PYG{n}{j}\PYG{p}{],} \PYG{n}{Cols}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{!=} \PYG{n}{Cols}\PYG{p}{[}\PYG{n}{j}\PYG{p}{]))}
+        \PYG{k}{return} \PYG{n}{Result}
+
+    \PYG{k}{def} \PYG{n+nf}{all\PYGZus{}constraints}\PYG{p}{(}\PYG{n}{Rows}\PYG{p}{,} \PYG{n}{Cols}\PYG{p}{):}
+        \PYG{n}{Constraints} \PYG{o}{=} \PYG{n}{all\PYGZus{}different}\PYG{p}{(}\PYG{n}{Rows}\PYG{p}{,} \PYG{n}{Cols}\PYG{p}{)}
+        \PYG{n}{Constraints}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{Rows}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{n}{Constraints}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{Cols}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{62}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{):}
+            \PYG{n}{Constraints}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{is\PYGZus{}knight\PYGZus{}move}\PYG{p}{(}\PYG{n}{Rows}\PYG{p}{[}\PYG{n}{i}\PYG{p}{],} \PYG{n}{Cols}\PYG{p}{[}\PYG{n}{i}\PYG{p}{],} \PYG{n}{Rows}\PYG{p}{[}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{],} \PYG{n}{Cols}\PYG{p}{[}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]))}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{63}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{):}
+            \PYG{n}{Constraints}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{Rows}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{\PYGZgt{}=} \PYG{l+m+mi}{0}\PYG{p}{)}
+            \PYG{n}{Constraints}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{Cols}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{\PYGZgt{}=} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n}{Constraints}
+\end{Verbatim}

@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{saturate}\PYG{p}{(}\PYG{n}{Clauses}\PYG{p}{):}
+        \PYG{k}{while} \PYG{k+kc}{True}\PYG{p}{:}
+            \PYG{n}{Derived} \PYG{o}{=} \PYG{p}{\PYGZob{}} \PYG{n}{C} \PYG{k}{for} \PYG{n}{C1} \PYG{o+ow}{in} \PYG{n}{Clauses}
+                          \PYG{k}{for} \PYG{n}{C2} \PYG{o+ow}{in} \PYG{n}{Clauses}
+                          \PYG{k}{for} \PYG{n}{C} \PYG{o+ow}{in} \PYG{n}{cutRule}\PYG{p}{(}\PYG{n}{C1}\PYG{p}{,} \PYG{n}{C2}\PYG{p}{)}
+                      \PYG{p}{\PYGZcb{}}
+            \PYG{k}{if} \PYG{n+nb}{frozenset}\PYG{p}{()} \PYG{o+ow}{in} \PYG{n}{Derived}\PYG{p}{:}
+                \PYG{k}{return} \PYG{p}{\PYGZob{}} \PYG{n+nb}{frozenset}\PYG{p}{()} \PYG{p}{\PYGZcb{}}  \PYG{c+c1}{\PYGZsh{} This is the set notation of ⊥.}
+            \PYG{n}{Derived} \PYG{o}{\PYGZhy{}=} \PYG{n}{Clauses}
+            \PYG{k}{if} \PYG{n}{Derived} \PYG{o}{==} \PYG{n+nb}{set}\PYG{p}{():}        \PYG{c+c1}{\PYGZsh{} no new clauses found}
+                \PYG{k}{return} \PYG{n}{Clauses}
+            \PYG{n}{Clauses} \PYG{o}{|=} \PYG{n}{Derived}
+\end{Verbatim}

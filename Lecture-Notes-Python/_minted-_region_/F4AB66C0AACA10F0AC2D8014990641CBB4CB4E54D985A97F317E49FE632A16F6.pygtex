@@ -1,0 +1,33 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{n}{M} \PYG{o}{=} \PYG{n}{z3}\PYG{o}{.}\PYG{n}{Int}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}M\PYGZsq{}}\PYG{p}{)}
+    \PYG{n}{C} \PYG{o}{=} \PYG{n}{z3}\PYG{o}{.}\PYG{n}{Int}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}C\PYGZsq{}}\PYG{p}{)}
+    \PYG{n}{B} \PYG{o}{=} \PYG{n}{z3}\PYG{o}{.}\PYG{n}{Int}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}B\PYGZsq{}}\PYG{p}{)}
+
+    \PYG{k}{def} \PYG{n+nf}{start}\PYG{p}{(}\PYG{n}{M}\PYG{p}{,} \PYG{n}{C}\PYG{p}{,} \PYG{n}{B}\PYG{p}{):}
+        \PYG{k}{return} \PYG{n}{z3}\PYG{o}{.}\PYG{n}{And}\PYG{p}{(}\PYG{n}{M} \PYG{o}{==} \PYG{l+m+mi}{3}\PYG{p}{,} \PYG{n}{C} \PYG{o}{==} \PYG{l+m+mi}{3}\PYG{p}{,} \PYG{n}{B} \PYG{o}{==} \PYG{l+m+mi}{1}\PYG{p}{)}
+
+    \PYG{k}{def} \PYG{n+nf}{goal}\PYG{p}{(}\PYG{n}{M}\PYG{p}{,} \PYG{n}{C}\PYG{p}{,} \PYG{n}{B}\PYG{p}{):}
+        \PYG{k}{return} \PYG{n}{z3}\PYG{o}{.}\PYG{n}{And}\PYG{p}{(}\PYG{n}{M} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{C} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{B} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)}
+
+    \PYG{k}{def} \PYG{n+nf}{invariant}\PYG{p}{(}\PYG{n}{M}\PYG{p}{,} \PYG{n}{C}\PYG{p}{,} \PYG{n}{B}\PYG{p}{):}
+        \PYG{k}{return} \PYG{n}{z3}\PYG{o}{.}\PYG{n}{And}\PYG{p}{(}\PYG{n}{z3}\PYG{o}{.}\PYG{n}{Or}\PYG{p}{(}\PYG{n}{M} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{M} \PYG{o}{==} \PYG{l+m+mi}{3}\PYG{p}{,} \PYG{n}{M} \PYG{o}{==} \PYG{n}{C}\PYG{p}{),}
+                      \PYG{l+m+mi}{0} \PYG{o}{\PYGZlt{}=} \PYG{n}{M}\PYG{p}{,} \PYG{n}{M} \PYG{o}{\PYGZlt{}=} \PYG{l+m+mi}{3}\PYG{p}{,}
+                      \PYG{l+m+mi}{0} \PYG{o}{\PYGZlt{}=} \PYG{n}{C}\PYG{p}{,} \PYG{n}{C} \PYG{o}{\PYGZlt{}=} \PYG{l+m+mi}{3}\PYG{p}{,}
+                      \PYG{l+m+mi}{0} \PYG{o}{\PYGZlt{}=} \PYG{n}{B}\PYG{p}{,} \PYG{n}{B} \PYG{o}{\PYGZlt{}=} \PYG{l+m+mi}{1}\PYG{p}{)}
+    \PYG{k}{def} \PYG{n+nf}{transition}\PYG{p}{(}\PYG{n}{M}\PYG{p}{,} \PYG{n}{C}\PYG{p}{,} \PYG{n}{B}\PYG{p}{,} \PYG{n}{Mx}\PYG{p}{,} \PYG{n}{Cx}\PYG{p}{,} \PYG{n}{Bx}\PYG{p}{):}
+        \PYG{n}{Formulas}  \PYG{o}{=} \PYG{p}{\PYGZob{}} \PYG{n}{Bx} \PYG{o}{==} \PYG{l+m+mi}{1} \PYG{o}{\PYGZhy{}} \PYG{n}{B} \PYG{p}{\PYGZcb{}}
+        \PYG{n}{Formulas} \PYG{o}{|=} \PYG{p}{\PYGZob{}} \PYG{n}{z3}\PYG{o}{.}\PYG{n}{Implies}\PYG{p}{(}\PYG{n}{B} \PYG{o}{==} \PYG{l+m+mi}{1}\PYG{p}{,}
+                                 \PYG{n}{z3}\PYG{o}{.}\PYG{n}{And}\PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{\PYGZlt{}=} \PYG{n}{M} \PYG{o}{\PYGZhy{}} \PYG{n}{Mx} \PYG{o}{+} \PYG{n}{C} \PYG{o}{\PYGZhy{}} \PYG{n}{Cx}\PYG{p}{,}
+                                        \PYG{l+m+mi}{2} \PYG{o}{\PYGZgt{}=} \PYG{n}{M} \PYG{o}{\PYGZhy{}} \PYG{n}{Mx} \PYG{o}{+} \PYG{n}{C} \PYG{o}{\PYGZhy{}} \PYG{n}{Cx}\PYG{p}{,}
+                                        \PYG{n}{Mx} \PYG{o}{\PYGZlt{}=} \PYG{n}{M}\PYG{p}{,}
+                                        \PYG{n}{Cx} \PYG{o}{\PYGZlt{}=} \PYG{n}{C}\PYG{p}{)}
+                                \PYG{p}{),}
+                      \PYG{n}{z3}\PYG{o}{.}\PYG{n}{Implies}\PYG{p}{(}\PYG{n}{B} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{,}
+                                 \PYG{n}{z3}\PYG{o}{.}\PYG{n}{And}\PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{\PYGZlt{}=} \PYG{n}{Mx} \PYG{o}{\PYGZhy{}} \PYG{n}{M} \PYG{o}{+} \PYG{n}{Cx} \PYG{o}{\PYGZhy{}} \PYG{n}{C}\PYG{p}{,}
+                                        \PYG{l+m+mi}{2} \PYG{o}{\PYGZgt{}=} \PYG{n}{Mx} \PYG{o}{\PYGZhy{}} \PYG{n}{M} \PYG{o}{+} \PYG{n}{Cx} \PYG{o}{\PYGZhy{}} \PYG{n}{C}\PYG{p}{,}
+                                        \PYG{n}{Mx} \PYG{o}{\PYGZgt{}=} \PYG{n}{M}\PYG{p}{,}
+                                        \PYG{n}{Cx} \PYG{o}{\PYGZgt{}=} \PYG{n}{C}\PYG{p}{)}
+                                \PYG{p}{)}
+                    \PYG{p}{\PYGZcb{}}
+        \PYG{k}{return} \PYG{n}{z3}\PYG{o}{.}\PYG{n}{And}\PYG{p}{(}\PYG{n}{Formulas}\PYG{p}{)}
+\end{Verbatim}

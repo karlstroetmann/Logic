@@ -1,0 +1,16 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{cnf}\PYG{p}{(}\PYG{n}{f}\PYG{p}{:} \PYG{n}{Formula}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n}{CNF}\PYG{p}{:}
+        \PYG{k}{match} \PYG{n}{f}\PYG{p}{:}
+            \PYG{k}{case} \PYG{n}{p} \PYG{k}{if} \PYG{n+nb}{isinstance}\PYG{p}{(}\PYG{n}{p}\PYG{p}{,} \PYG{n+nb}{str}\PYG{p}{):}
+                \PYG{k}{return} \PYG{p}{\PYGZob{}} \PYG{n+nb}{frozenset}\PYG{p}{(\PYGZob{}}\PYG{n}{p}\PYG{p}{\PYGZcb{})} \PYG{p}{\PYGZcb{}}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}⊤\PYGZsq{}}\PYG{p}{,} \PYG{p}{):}
+                \PYG{k}{return} \PYG{n+nb}{set}\PYG{p}{()}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}⊥\PYGZsq{}}\PYG{p}{,} \PYG{p}{):}
+                \PYG{k}{return} \PYG{p}{\PYGZob{}} \PYG{n+nb}{frozenset}\PYG{p}{()} \PYG{p}{\PYGZcb{}}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{p}\PYG{p}{):}
+                \PYG{k}{return} \PYG{p}{\PYGZob{}} \PYG{n+nb}{frozenset}\PYG{p}{(\PYGZob{}} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{p}\PYG{p}{)} \PYG{p}{\PYGZcb{})} \PYG{p}{\PYGZcb{}}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}∧\PYGZsq{}}\PYG{p}{,} \PYG{n}{g}\PYG{p}{,} \PYG{n}{h}\PYG{p}{):}
+                \PYG{k}{return} \PYG{n}{cnf}\PYG{p}{(}\PYG{n}{g}\PYG{p}{)} \PYG{o}{|} \PYG{n}{cnf}\PYG{p}{(}\PYG{n}{h}\PYG{p}{)}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}∨\PYGZsq{}}\PYG{p}{,} \PYG{n}{g}\PYG{p}{,} \PYG{n}{h}\PYG{p}{):}
+                \PYG{k}{return} \PYG{p}{\PYGZob{}} \PYG{n}{k1} \PYG{o}{|} \PYG{n}{k2} \PYG{k}{for} \PYG{n}{k1} \PYG{o+ow}{in} \PYG{n}{cnf}\PYG{p}{(}\PYG{n}{g}\PYG{p}{)} \PYG{k}{for} \PYG{n}{k2} \PYG{o+ow}{in} \PYG{n}{cnf}\PYG{p}{(}\PYG{n}{h}\PYG{p}{)} \PYG{p}{\PYGZcb{}}
+\end{Verbatim}

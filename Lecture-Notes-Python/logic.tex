@@ -1,0 +1,327 @@
+\documentclass[11pt]{report}
+
+%\usepackage{atkinson}
+\usepackage[T1]{fontenc}
+% Nicer default font (+ math font) than Computer Modern for most use cases
+\usepackage{mathpazo}
+
+\newcommand{\calligfont}{\fontfamily{pzc}\selectfont}
+
+% Basic figure setup, for now with no caption control since it's done
+% automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+\usepackage{graphicx}
+% We will generate all images so they have a width \maxwidth. This means
+% that they will get their normal width if they fit onto the page, but
+% are scaled down if they would overflow the margins.
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+\else\Gin@nat@width\fi}
+\makeatother
+\let\Oldincludegraphics\includegraphics
+
+\usepackage{color}
+
+\usepackage{xcolor} % Allow colors to be defined
+\usepackage{enumerate} % Needed for markdown enumerations to work
+\usepackage{amsmath} % Equations
+\usepackage{amssymb} % Equations
+\usepackage{textcomp} % defines textquotesingle
+% Hack from http://tex.stackexchange.com/a/47451/13684:
+\AtBeginDocument{%
+    \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+}
+\usepackage{upquote} % Upright quotes for verbatim code
+\usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+\usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+\usepackage{fancyvrb} % verbatim replacement that allows latex
+
+% The hyperref package gives us a pdf with properly built
+% internal navigation ('pdf bookmarks' for the table of contents,
+% internal cross-reference links, web links for URLs, etc.)
+\usepackage{hyperref}
+
+\usepackage{fleqn}
+\usepackage{placeins}
+\usepackage{epsfig}
+\usepackage{a4wide}
+\usepackage{wasysym}
+\usepackage{stmaryrd}
+\usepackage{alltt}
+\usepackage{theorem}
+\usepackage{minted}
+\usepackage{makeidx}
+\usepackage{epigraph}
+\setlength{\epigraphwidth}{0.7\textwidth}
+
+\usepackage{hyperref}
+\usepackage[all]{hypcap}
+\hypersetup{
+  colorlinks = true, 
+  linkcolor  = blue,
+  citecolor  = red,
+  filecolor  = Gold,
+  urlcolor   = [rgb]{0.5, 0.0, 0.5},
+  pdfborder  = {0 0 0} 
+}
+
+\usepackage{fancyhdr}
+\usepackage{lastpage} 
+
+% Colors for the hyperref package
+\definecolor{urlcolor}{rgb}{0.5,0,0.5}
+\definecolor{linkcolor}{rgb}{0.0,0.0,1.0}
+\definecolor{citecolor}{rgb}{.12,.54,.11}
+\definecolor{ttcolor}{rgb}{0.4,0.1,0.0}
+
+\definecolor{darkgreen}{rgb}{0.0, 0.0, 0.8}
+\definecolor{puregreen}{rgb}{0.0, 1.0, 0.0}
+\definecolor{darkred}{rgb}{0.6, 0.0, 0.0}
+
+\newcommand{\tsq}[1]{\textquotesingle#1\textquotesingle} 
+\newcommand{\blue}[1]{{\color{blue}#1}}
+\newcommand{\green}[1]{{\color{darkgreen}#1}}
+\newcommand{\puregreen}[1]{\colorbox{brown}{\color{puregreen}#1}}
+\newcommand{\red}[1]{{\color{darkred}#1}}
+\newcommand{\mytt}[1]{{\color{ttcolor}\texttt{#1}}}
+\pagestyle{fancy}
+
+\fancyfoot[C]{--- \thepage/\pageref{LastPage}\ ---}
+
+\fancypagestyle{plain}{%
+\fancyhf{}
+\fancyfoot[C]{--- \thepage/\pageref{LastPage}\ ---}
+\renewcommand{\headrulewidth}{0pt}
+}
+
+\fancyheadoffset{0.1cm}
+\renewcommand{\chaptermark}[1]{\markboth{\chaptername \ \thechapter.\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection. \ #1}{}}
+\fancyhead[R]{\leftmark}
+\fancyhead[L]{\rightmark}
+
+\definecolor{amethyst}{rgb}{1.0, 0.7, 0.4}
+\definecolor{orange}{rgb}{1, 0.9, 0.0}
+\definecolor{sepia}{rgb}{1.0,1.0,0.9}
+
+\setlength{\mathindent}{1.3cm}
+\setlength{\textwidth}{17cm}
+\addtolength{\oddsidemargin}{-1cm}
+\addtolength{\evensidemargin}{-1cm}
+\addtolength{\topmargin}{-1cm}
+
+
+\setlength{\mathindent}{1.3cm}
+\setlength{\topsep}{0.1cm plus0.1cm minus 0.0cm}
+\setlength{\partopsep}{0.0cm plus0.1cm minus 0.0cm}
+\setlength{\parsep}{0.1cm plus0.1cm minus 0.0cm}
+\setlength{\parskip}{0.1cm plus0.1cm minus 0.0cm}
+\newfont{\chess}{chess20}
+\newfont{\bigchess}{chess30}
+\newcommand{\chf}{\baselineskip20pt\lineskip0pt\chess}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\diff}{\frac{\textrm{d}\;\;}{\textrm{d}\mbox{$x$}}}
+
+{\theorembodyfont{\slshape}
+\newtheorem{Definition}{Definition}
+\newtheorem{Notation}[Definition]{Notation}
+\newtheorem{Korollar}[Definition]{Korollar}
+\newtheorem{Corollary}[Definition]{Corollary}
+\newtheorem{Lemma}[Definition]{Lemma}
+\newtheorem{Proposition}[Definition]{Proposition}
+\newtheorem{Satz}[Definition]{Satz}
+\newtheorem{Theorem}[Definition]{Theorem}
+}
+
+\hyphenation{com-pre-hen-sion}
+% set the monospace-font to Inconsalata-g
+% font-source: http://leonardo-m.livejournal.com/77079.html
+
+\title{\epsfig{file=dhbw-logo.eps, scale=1.2}  \\[0.2cm]
+       Theoretical Computer Science: \\
+       An Introduction to Logic via \textsl{Python} \\[0.3cm]
+      --- Spring 2025 ---     \\[0.3cm]
+      Baden-Wuerttemberg Cooperative State University (DHBW)}
+\author{Prof.~Dr.~Karl Stroetmann}
+
+
+\date{\today \\[0.5cm]
+\begin{minipage}[t]{1.0\linewidth}
+\noindent
+These lecture notes, the corresponding \LaTeX\ sources and the programs discussed in these lecture notes are available at
+\\[0.2cm]
+\hspace*{\fill}
+\href{https://github.com/karlstroetmann/Logic}{\texttt{https://github.com/karlstroetmann/Logic}}.
+\hspace*{\fill} 
+\\[0.2cm]
+The \href{https://github.com/karlstroetmann/Logic/blob/master/Lecture-Notes/logic.pdf}{lecture notes}
+can be found in the directory
+\href{https://github.com/karlstroetmann/Logic/blob/master/Lecture-Notes}{\texttt{Lecture-Notes}}
+in the file
+\href{https://github.com/karlstroetmann/Logic/blob/master/Lecture-Notes/logic.pdf}{\texttt{logic.pdf}}.
+The \href{https://jupyter-notebook.readthedocs.io/en/stable/}{Jupyter Notebooks} discussed in this lecture 
+are found in the directory \href{https://github.com/karlstroetmann/Logic/blob/master/Python}{\texttt{Python}}.
+These lecture notes are revised occasionally.   To automatically update the lecture notes,  you can install
+the program \href{http://git-scm.com/download}{\texttt{git}}.  Then, using the command line of your favourite
+operating system, you can \blue{clone} my repository using the command  
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{git clone https://github.com/karlstroetmann/Logic.git}.
+\\[0.2cm]
+Once the repository has been cloned, it can be \blue{updated} using the command
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{git pull}.
+\\[0.2cm]
+As the lecture notes are constantly changing, you should do so regularly.
+\end{minipage}
+}
+
+\newcommand{\quoted}[1]{\texttt{\symbol{34}\texttt{#1}\symbol{34}}}
+\newcommand{\schluss}[2]{\frac{\displaystyle\quad \rule[-6pt]{0pt}{12pt}#1 \quad}{\displaystyle\quad \rule{0pt}{10pt}#2 \quad}}
+\newcommand{\bruch}[2]{\frac{\displaystyle#1}{\displaystyle #2}}
+\newcommand{\vschlus}[1]{{\displaystyle\rule[-6pt]{0pt}{12pt} \atop \rule{0pt}{10pt}#1}}
+
+\newcommand{\example}{\vspace*{0.2cm}
+
+\noindent
+\textbf{Beispiel}: \ }
+
+\newcommand{\exampleEng}{\vspace*{0.2cm}
+
+\noindent
+\textbf{Example}: \ }
+
+\newcommand{\examples}{\vspace*{0.2cm}
+
+\noindent
+\textbf{Beispiele}: \ }
+
+\newcommand{\examplesEng}{\vspace*{0.2cm}
+
+\noindent
+\textbf{Examples}: \ }
+
+\newcommand{\next}{\vspace*{0.2cm}
+
+\noindent}
+
+\newcommand{\remark}{\vspace*{0.2cm}
+
+\noindent
+\textbf{Bemerkung}: }
+
+\newcommand{\remarks}{
+
+\noindent
+\textbf{Bemerkung}: }
+
+\newcommand{\remarkEng}{\vspace*{0.2cm}
+
+\noindent
+\textbf{Remark}: }
+
+
+\newcounter{aufgabe}
+\newcommand{\exercise}{\vspace*{0.1cm}
+\stepcounter{aufgabe}
+
+\noindent
+\textbf{Aufgabe \arabic{aufgabe}}: }
+
+\newcommand{\exerciseEng}{\vspace*{0.1cm}
+\stepcounter{aufgabe}
+
+\noindent
+\textbf{Exercise \arabic{aufgabe}}: }
+
+\newcommand{\solution}{\vspace*{0.2cm}
+
+\noindent
+\textbf{L\"{o}sung}: \ }
+
+\newcommand{\solutionEng}{\vspace*{0.2cm}
+
+\noindent
+\textbf{Solution}: \ }
+
+\newcommand{\proof}{\vspace*{0.2cm}
+
+\noindent
+\textbf{Proof}: }
+
+\newcommand{\mycheck}{\green{$\surd$}}
+\newcommand{\dv}{\mbox{\,\mytt{/}$\!$\mytt{/}\,}}
+\newcommand{\dvv}{\mbox{\scriptsize\,\mytt{/}$\!$\mytt{/}\,}}
+\newcommand{\mmod}{\,\texttt{\%}\,}
+\newcommand{\mdiv}{\,\texttt{//}\,}
+\newcommand{\lb}{\hspace*{\fill} \linebreak}
+\newcommand{\modulo}{\;\texttt{\%}\;}
+\newcommand{\qed}{\hspace*{\fill} $\Box$}
+\newcommand{\eox}{\hspace*{\fill} $\diamond$}
+\newcommand{\exend}{\hspace*{\fill} $\diamond$}
+\newcommand{\setl}{\textsc{SetlX}}
+\newcommand{\setlx}{\textsc{SetlX}}
+\newcommand{\struct}{\mathcal{S}}
+\newcommand{\FV}{\textsl{FV}}
+\newcommand{\id}{\textrm{id}}
+\newcommand{\dom}{\textrm{dom}}
+\newcommand{\rng}{\textrm{rng}}
+\newcommand{\BV}{\textsl{BV}}
+\newcommand{\var}{\textsl{Var}}
+\newcommand{\el}{\!\in\!}
+\newcommand{\at}{\texttt{\symbol{64}}}
+\newcommand{\notel}{\!\not\in\!}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\verum}{\top}
+\newcommand{\falsum}{\bot}
+\newcommand{\gentzen}{\vdash}
+\newcommand{\komplement}[1]{\overline{\,#1\,}}
+\newcommand{\mathquote}[1]{\mbox{``}\mathtt{#1}\mbox{''}}
+\newcommand{\squote}[1]{\symbol{34}\texttt{#1}\symbol{34}}
+
+\newcommand{\circneg}{\mbox{$\bigcirc\hspace*{-0.36cm}\neg$}}
+\newcommand{\circwedge}{\mbox{$\bigcirc\hspace*{-0.34cm}\wedge$}}
+\newcommand{\circvee}{\mbox{$\bigcirc\hspace*{-0.34cm}\vee$}}
+\newcommand{\circright}{\mbox{$\bigcirc\hspace*{-0.52cm}\rightarrow$}}
+\newcommand{\circleftright}{\mbox{$\bigcirc\hspace*{-0.52cm}\leftrightarrow$}}
+\newcommand{\club }{\ensuremath{\clubsuit   }}
+\newcommand{\spade}{\ensuremath{\spadesuit  }}
+\newcommand{\heart}{\ensuremath{\heartsuit  }}
+\newcommand{\diamo}{\ensuremath{\diamondsuit}}
+
+\newcommand{\hoare}[3]{\bigl\{#1\bigr\}\quad\texttt{#2}\quad\bigl\{#3\bigr\}}
+\newcommand{\Oh}{\mathcal{O}}
+
+\newcommand{\myfig}[1]{Abbildung \ref{fig:#1} auf Seite \pageref{fig:#1}}
+\newcommand{\myFig}[1]{Figure \ref{fig:#1} on page \pageref{fig:#1}}
+
+\def\pair(#1,#2){\langle #1, #2 \rangle}
+
+\makeindex
+
+\begin{document}
+\maketitle
+\tableofcontents
+\include{introduction}
+%\include{sets}
+%\include{python}
+%\include{case-studies}
+\include{limits}
+\include{correctness}
+%\include{hoare}
+\include{propositional-logic}
+\include{fol}
+\include{atp}
+
+\bibliographystyle{is-alpha.bst}
+\bibliography{cs.bib}
+\printindex
+
+\end{document}
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "logic"
+%%% End: 

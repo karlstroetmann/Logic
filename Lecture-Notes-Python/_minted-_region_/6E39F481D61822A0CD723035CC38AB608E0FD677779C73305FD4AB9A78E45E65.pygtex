@@ -1,0 +1,18 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k+kn}{import} \PYG{n+nn}{z3}
+
+    \PYG{n}{boys}  \PYG{o}{=} \PYG{n}{z3}\PYG{o}{.}\PYG{n}{Int}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}boys\PYGZsq{}}\PYG{p}{)}
+    \PYG{n}{girls} \PYG{o}{=} \PYG{n}{z3}\PYG{o}{.}\PYG{n}{Int}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}girls\PYGZsq{}}\PYG{p}{)}
+
+    \PYG{n}{S} \PYG{o}{=} \PYG{n}{z3}\PYG{o}{.}\PYG{n}{Solver}\PYG{p}{()}
+
+    \PYG{n}{S}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{boys} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1} \PYG{o}{==} \PYG{n}{girls}\PYG{p}{)}
+    \PYG{n}{S}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{p}{(}\PYG{n}{girls} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{==} \PYG{n}{boys}\PYG{p}{)}
+    \PYG{n}{S}\PYG{o}{.}\PYG{n}{check}\PYG{p}{()}
+    \PYG{n}{Solution} \PYG{o}{=} \PYG{n}{S}\PYG{o}{.}\PYG{n}{model}\PYG{p}{()}
+
+    \PYG{n}{b} \PYG{o}{=} \PYG{n}{Solution}\PYG{p}{[}\PYG{n}{boys} \PYG{p}{]}\PYG{o}{.}\PYG{n}{as\PYGZus{}long}\PYG{p}{()}
+    \PYG{n}{g} \PYG{o}{=} \PYG{n}{Solution}\PYG{p}{[}\PYG{n}{girls}\PYG{p}{]}\PYG{o}{.}\PYG{n}{as\PYGZus{}long}\PYG{p}{()}
+
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s1}{\PYGZsq{}My father has }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{b}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{g}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s1}{ children.\PYGZsq{}}\PYG{p}{)}
+\end{Verbatim}

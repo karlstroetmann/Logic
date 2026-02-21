@@ -1,0 +1,27 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{o}{\PYGZpc{}}\PYG{n}{run} \PYG{n}{Propositional}\PYG{o}{\PYGZhy{}}\PYG{n}{Logic}\PYG{o}{\PYGZhy{}}\PYG{n}{Parser}\PYG{o}{.}\PYG{n}{ipynb}
+
+    \PYG{k}{def} \PYG{n+nf}{parse}\PYG{p}{(}\PYG{n}{s}\PYG{p}{):}
+        \PYG{n}{parser} \PYG{o}{=} \PYG{n}{LogicParser}\PYG{p}{(}\PYG{n}{s}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n}{parser}\PYG{o}{.}\PYG{n}{parse}\PYG{p}{()}
+
+    \PYG{n}{P} \PYG{o}{=} \PYG{p}{\PYGZob{}} \PYG{l+s+s1}{\PYGZsq{}a\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}b\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}c\PYGZsq{}} \PYG{p}{\PYGZcb{}}
+    \PYG{c+c1}{\PYGZsh{} Aaron, Bernard, or Caine is guilty.}
+    \PYG{n}{f1} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}a ∨ b ∨ c\PYGZsq{}}
+    \PYG{c+c1}{\PYGZsh{} If Aaron is guilty, he has exactly one accomplice.}
+    \PYG{n}{f2} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}a → b ∨ c\PYGZsq{}}
+    \PYG{n}{f3} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}a → ¬(b ∧ c)\PYGZsq{}}
+    \PYG{c+c1}{\PYGZsh{} If Bernard is innocent, then Caine is innocent, too.}
+    \PYG{n}{f4} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}¬b → ¬c\PYGZsq{}}
+    \PYG{c+c1}{\PYGZsh{} If exactly two of the suspects are guilty, then Caine is one of them.}
+    \PYG{n}{f5} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}¬(¬c ∧ a ∧ b)\PYGZsq{}}
+    \PYG{c+c1}{\PYGZsh{} If Caine is innocent, then Aaron is guilty.}
+    \PYG{n}{f6} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}¬c → a\PYGZsq{}}
+    \PYG{n}{Fs} \PYG{o}{=} \PYG{p}{\PYGZob{}} \PYG{n}{f1}\PYG{p}{,} \PYG{n}{f2}\PYG{p}{,} \PYG{n}{f3}\PYG{p}{,} \PYG{n}{f4}\PYG{p}{,} \PYG{n}{f5}\PYG{p}{,} \PYG{n}{f6} \PYG{p}{\PYGZcb{};}
+    \PYG{n}{Fs} \PYG{o}{=} \PYG{p}{\PYGZob{}} \PYG{n}{parse}\PYG{p}{(}\PYG{n}{f}\PYG{p}{)} \PYG{k}{for} \PYG{n}{f} \PYG{o+ow}{in} \PYG{n}{Fs} \PYG{p}{\PYGZcb{}}
+
+    \PYG{k}{def} \PYG{n+nf}{allTrue}\PYG{p}{(}\PYG{n}{Fs}\PYG{p}{,} \PYG{n}{I}\PYG{p}{):}
+        \PYG{k}{return} \PYG{n+nb}{all}\PYG{p}{(\PYGZob{}}\PYG{n}{evaluate}\PYG{p}{(}\PYG{n}{f}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)} \PYG{k}{for} \PYG{n}{f} \PYG{o+ow}{in} \PYG{n}{Fs}\PYG{p}{\PYGZcb{})}
+
+    \PYG{n+nb}{print}\PYG{p}{(\PYGZob{}} \PYG{n}{I} \PYG{k}{for} \PYG{n}{I} \PYG{o+ow}{in} \PYG{n}{power}\PYG{p}{(}\PYG{n}{P}\PYG{p}{)} \PYG{k}{if} \PYG{n}{allTrue}\PYG{p}{(}\PYG{n}{Fs}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)} \PYG{p}{\PYGZcb{})}
+\end{Verbatim}

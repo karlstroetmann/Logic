@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{eliminateBiconditional}\PYG{p}{(}\PYG{n}{f}\PYG{p}{):}
+        \PYG{k}{match} \PYG{n}{f}\PYG{p}{:}
+            \PYG{k}{case} \PYG{n}{p} \PYG{k}{if} \PYG{n+nb}{isinstance}\PYG{p}{(}\PYG{n}{p}\PYG{p}{,} \PYG{n+nb}{str}\PYG{p}{):}   \PYG{c+c1}{\PYGZsh{} This case covers variables.}
+                \PYG{k}{return} \PYG{n}{p}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}⊤\PYGZsq{}}\PYG{p}{,} \PYG{p}{)} \PYG{o}{|} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}⊥\PYGZsq{}}\PYG{p}{,} \PYG{p}{):}
+                \PYG{k}{return} \PYG{n}{f}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{g}\PYG{p}{):}
+                \PYG{k}{return} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{eliminateBiconditional}\PYG{p}{(}\PYG{n}{g}\PYG{p}{))}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}↔\PYGZsq{}}\PYG{p}{,} \PYG{n}{g}\PYG{p}{,} \PYG{n}{h}\PYG{p}{):}
+                \PYG{k}{return} \PYG{n}{eliminateBiconditional}\PYG{p}{(} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}∧\PYGZsq{}}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}→\PYGZsq{}}\PYG{p}{,} \PYG{n}{g}\PYG{p}{,} \PYG{n}{h}\PYG{p}{),} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}→\PYGZsq{}}\PYG{p}{,} \PYG{n}{h}\PYG{p}{,} \PYG{n}{g}\PYG{p}{))} \PYG{p}{)}
+            \PYG{k}{case} \PYG{p}{(}\PYG{n}{op}\PYG{p}{,} \PYG{n}{g}\PYG{p}{,} \PYG{n}{h}\PYG{p}{):}   \PYG{c+c1}{\PYGZsh{} This case covers \PYGZsq{}→\PYGZsq{}, \PYGZsq{}∧\PYGZsq{}, and \PYGZsq{}∨\PYGZsq{}.}
+                \PYG{k}{return} \PYG{p}{(}\PYG{n}{op}\PYG{p}{,} \PYG{n}{eliminateBiconditional}\PYG{p}{(}\PYG{n}{g}\PYG{p}{),} \PYG{n}{eliminateBiconditional}\PYG{p}{(}\PYG{n}{h}\PYG{p}{))}
+\end{Verbatim}

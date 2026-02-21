@@ -1,0 +1,19 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import} \PYG{n+nn}{ast}
+
+\PYG{k}{def} \PYG{n+nf}{collect\PYGZus{}variables}\PYG{p}{(}\PYG{n}{expr}\PYG{p}{):}
+    \PYG{n}{tree} \PYG{o}{=} \PYG{n}{ast}\PYG{o}{.}\PYG{n}{parse}\PYG{p}{(}\PYG{n}{expr}\PYG{p}{)}
+    \PYG{k}{return} \PYG{p}{\PYGZob{}} \PYG{n}{node}\PYG{o}{.}\PYG{n}{id} \PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{ast}\PYG{o}{.}\PYG{n}{walk}\PYG{p}{(}\PYG{n}{tree}\PYG{p}{)}
+                     \PYG{k}{if}  \PYG{n+nb}{isinstance}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{n}{ast}\PYG{o}{.}\PYG{n}{Name}\PYG{p}{)}
+                     \PYG{k}{if}  \PYG{n}{node}\PYG{o}{.}\PYG{n}{id} \PYG{o+ow}{not} \PYG{o+ow}{in} \PYG{n+nb}{dir}\PYG{p}{(}\PYG{n}{\PYGZus{}\PYGZus{}builtins\PYGZus{}\PYGZus{}}\PYG{p}{)}
+           \PYG{p}{\PYGZcb{}}
+
+\PYG{k}{def} \PYG{n+nf}{solve}\PYG{p}{(}\PYG{n}{CSP}\PYG{p}{):}
+    \PYG{l+s+s1}{\PYGZsq{}Compute a solution for the given constraint satisfaction problem.\PYGZsq{}}
+    \PYG{n}{Variables}\PYG{p}{,} \PYG{n}{Values}\PYG{p}{,} \PYG{n}{Constraints} \PYG{o}{=} \PYG{n}{CSP}
+    \PYG{n}{CSP} \PYG{o}{=} \PYG{p}{(}\PYG{n}{Variables}\PYG{p}{,}
+           \PYG{n}{Values}\PYG{p}{,}
+           \PYG{p}{[(}\PYG{n}{f}\PYG{p}{,} \PYG{n}{collect\PYGZus{}variables}\PYG{p}{(}\PYG{n}{f}\PYG{p}{)} \PYG{o}{\PYGZam{}} \PYG{n+nb}{set}\PYG{p}{(}\PYG{n}{Variables}\PYG{p}{))} \PYG{k}{for} \PYG{n}{f} \PYG{o+ow}{in} \PYG{n}{Constraints}\PYG{p}{]}
+          \PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{backtrack\PYGZus{}search}\PYG{p}{(\PYGZob{}\PYGZcb{},} \PYG{n}{CSP}\PYG{p}{)}
+\end{Verbatim}

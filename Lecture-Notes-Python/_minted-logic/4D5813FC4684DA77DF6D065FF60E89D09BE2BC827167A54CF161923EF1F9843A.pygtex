@@ -1,0 +1,17 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{allSubsets}\PYG{p}{(}\PYG{n}{M}\PYG{p}{:} \PYG{n+nb}{set}\PYG{p}{[}\PYG{n}{T}\PYG{p}{])} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nb}{list}\PYG{p}{[}\PYG{n+nb}{set}\PYG{p}{[}\PYG{n}{T}\PYG{p}{]]:}
+        \PYG{l+s+s2}{\PYGZdq{}Compute a list containing all subsets of the set M\PYGZdq{}}
+        \PYG{k}{if} \PYG{n}{M} \PYG{o}{==} \PYG{n+nb}{set}\PYG{p}{():}
+            \PYG{k}{return} \PYG{p}{[} \PYG{n+nb}{set}\PYG{p}{()} \PYG{p}{]}
+        \PYG{n}{x} \PYG{o}{=} \PYG{n}{M}\PYG{o}{.}\PYG{n}{pop}\PYG{p}{()} \PYG{c+c1}{\PYGZsh{} remove x from M and return x}
+        \PYG{n}{L} \PYG{o}{=} \PYG{n}{allSubsets}\PYG{p}{(}\PYG{n}{M}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n}{L} \PYG{o}{+} \PYG{p}{[} \PYG{n}{A} \PYG{o}{|} \PYG{p}{\PYGZob{}} \PYG{n}{x} \PYG{p}{\PYGZcb{}} \PYG{k}{for} \PYG{n}{A} \PYG{o+ow}{in} \PYG{n}{L} \PYG{p}{]}
+
+    \PYG{k}{def} \PYG{n+nf}{tautology}\PYG{p}{(}\PYG{n}{f}\PYG{p}{):}
+        \PYG{l+s+s2}{\PYGZdq{}Check, whether the formula f is a tautology.\PYGZdq{}}
+        \PYG{n}{P} \PYG{o}{=} \PYG{n}{collectVars}\PYG{p}{(}\PYG{n}{f}\PYG{p}{)}
+        \PYG{k}{for} \PYG{n}{I} \PYG{o+ow}{in} \PYG{n}{allSubsets}\PYG{p}{(}\PYG{n}{P}\PYG{p}{):}
+            \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{evaluate}\PYG{p}{(}\PYG{n}{f}\PYG{p}{,} \PYG{n}{I}\PYG{p}{):}
+                \PYG{k}{return} \PYG{n}{I}
+        \PYG{k}{return} \PYG{k+kc}{True}
+\end{Verbatim}

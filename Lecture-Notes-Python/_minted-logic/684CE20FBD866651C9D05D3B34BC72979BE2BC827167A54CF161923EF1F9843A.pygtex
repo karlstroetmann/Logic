@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{normalize} \PYG{p}{(}\PYG{n}{f}\PYG{p}{):}
+        \PYG{n}{n1} \PYG{o}{=} \PYG{n}{elimBiconditional}\PYG{p}{(}\PYG{n}{f}\PYG{p}{)}
+        \PYG{n}{n2} \PYG{o}{=} \PYG{n}{elimConditional}\PYG{p}{(}\PYG{n}{n1}\PYG{p}{)}
+        \PYG{n}{n3} \PYG{o}{=} \PYG{n}{nnf}\PYG{p}{(}\PYG{n}{n2}\PYG{p}{)}
+        \PYG{n}{n4} \PYG{o}{=} \PYG{n}{cnf}\PYG{p}{(}\PYG{n}{n3}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n}{simplify}\PYG{p}{(}\PYG{n}{n4}\PYG{p}{)}
+
+    \PYG{k}{def} \PYG{n+nf}{simplify}\PYG{p}{(}\PYG{n}{Clauses}\PYG{p}{):}
+        \PYG{k}{return} \PYG{p}{\PYGZob{}} \PYG{n}{C} \PYG{k}{for} \PYG{n}{C} \PYG{o+ow}{in} \PYG{n}{Clauses} \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{isTrivial}\PYG{p}{(}\PYG{n}{C}\PYG{p}{)} \PYG{p}{\PYGZcb{}}
+
+    \PYG{k}{def} \PYG{n+nf}{isTrivial}\PYG{p}{(}\PYG{n}{Clause}\PYG{p}{):}
+        \PYG{k}{return} \PYG{n+nb}{any}\PYG{p}{((}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{p}\PYG{p}{)} \PYG{o+ow}{in} \PYG{n}{Clause} \PYG{k}{for} \PYG{n}{p} \PYG{o+ow}{in} \PYG{n}{Clause}\PYG{p}{)}
+\end{Verbatim}

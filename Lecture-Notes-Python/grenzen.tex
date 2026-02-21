@@ -1,0 +1,478 @@
+\chapter{Grenzen der Berechenbarkeit}
+In jeder Disziplin der Wissenschaft wird die Frage gestellt, welche \blue{Grenzen} die
+verwendeten Methoden haben.   Wir wollen daher in diesem Kapitel beispielhaft ein Problem
+untersuchen, bei dem die Informatik an ihre Grenzen stößt.  Es handelt sich um das
+\href{http://de.wikipedia.org/wiki/Halteproblem}{Halte-Problem}.  
+
+\section{Das Halte-Problem}
+Das \blue{Halte-Problem} ist die Frage, ob eine gegebene Funktion $f$ für eine bestimmte Eingabe $x$ 
+\blue{terminiert}, ob also der Aufruf $f(x)$ ein Ergebnis liefert oder sich in eine Endlos-Schleife
+verabschiedet.   Bevor wir formal beweisen, dass das Halte-Problem im Allgemeinen \blue{unlösbar} ist, wollen 
+wir versuchen, anschaulich zu verstehen, warum dieses Problem schwer sein muss.  Dieser informalen
+Betrachtung des Halte-Problems ist der nächste Abschnitt gewidmet.  Im Anschluss an diesen Abschluss
+beweisen wir dann formal die \blue{Unlösbarkeit} des Halte-Problems. 
+
+\subsection{Informale Betrachtungen zum Halte-Problem}
+
+
+\begin{figure}[!ht]
+\centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  firstnumber   = 1,
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm
+                ]
+    def legendre(n):
+        k = n * n + 1;
+        while k < (n + 1) ** 2:
+            if is_prime(k):
+                return True
+            k += 1
+        return False
+    
+    def is_prime(k):
+        return divisors(k) == {1, k}    
+    
+    def divisors(k):
+        return { t for t in range(1, k+1) if k % t == 0 }
+    
+    def find_counter_example(n):
+        while True:
+           if legendre(n):
+               n = n + 1
+           else:
+               print(f'Eureka! No prime between {n}**2 and {n+1}**2!')
+               return
+\end{Verbatim} 
+\vspace*{-0.3cm}
+\caption{Eine Funktion zur Überprüfung der von Legendre aufgestellten Vermutung.}
+\label{fig:legendre.stlx}
+\end{figure}
+
+Um zu verstehen, warum das Halte-Problem schwer ist, betrachten wir  
+das in Abbildung \ref{fig:legendre.stlx} gezeigte Programm. 
+Dieses Programm ist dazu gedacht, die
+\href{http://de.wikipedia.org/wiki/Legendresche_Vermutung}{\emph{Legendresche Vermutung}} zu
+überprüfen.  Der französische 
+Mathematiker  \href{http://de.wikipedia.org/wiki/Adrien-Marie_Legendre}{Adrien-Marie Legendre} 
+(1752 --- 1833) hatte vor etwa 200 Jahren die Vermutung 
+aufgestellt, dass zwischen zwei Quadrat-Zahlen immer eine Primzahl liegt.  Die Frage, ob diese
+Vermutung richtig ist, ist auch heute noch unbeantwortet.  Die in Abbildung \ref{fig:legendre.stlx}
+definierte Funktion $\texttt{legendre}(n)$ überprüft für eine gegebene positive natürliche Zahl $n$,
+ob zwischen $n^2$ und $(n+1)^2$ eine Primzahl liegt.  Falls dies, wie von Legendre vermutet, der
+Fall ist, gibt die Funktion als Ergebnis \texttt{True} zurück, andernfalls wird \texttt{False}
+zurück gegeben.  Die Funktion \texttt{legendre} ist mit Hilfe der Funktion \texttt{is\_prime} definiert.  Für
+eine natürliche Zahl $k$ liefert $\texttt{is\_prime}(k)$ genau dann den Wert \texttt{True} zurück, wenn $k$
+eine Primzahl ist.  Dazu überprüft die Funktion $\texttt{is\_prime}(k)$ ob die Menge der Teiler von $k$ mit der Menge
+die Menge $\{1, k\}$ übereinstimmt.  Die Menge der Teiler wird mit Hilfe der Funktion \texttt{divisors} berechnet.
+
+Abbildung \ref{fig:legendre.stlx} enthält darüber hinaus die Definition der Funktion
+$\texttt{findCounterExample}(n)$, die versucht, für eine gegebene positive natürliche Zahl $n$ eine
+Zahl $k \geq n$ zu finden, so dass zwischen $k^2$ und $(k+1)^2$ keine Primzahl liegt.  Die Idee bei
+der Implementierung dieser Funktion ist einfach:  Zunächst überprüfen wir durch den Aufruf
+$\texttt{legendre}(n)$, ob zwischen $n^2$ und $(n+1)^2$
+eine Primzahl liegt.  Falls dies der Fall ist, untersuchen wir anschließend das Intervall von
+$(n+1)^2$ bis $(n+2)^2$, dann das Intervall von 
+$(n+2)^2$ bis $(n+3)^2$ und so weiter, bis wir schließlich eine Zahl $m$ finden, so dass zwischen
+$m^2$ und $(m+1)^2$ keine Primzahl liegt.  Falls Legendre Recht hatte, werden wir nie ein solches
+$k$ finden und in diesem Fall wird der Aufruf $\texttt{findCounterExample}(2)$ nicht terminieren. 
+
+Nehmen wir nun an, wir hätten ein schlaues Programm, nennen wir es \texttt{stops}, das als Eingabe
+eine \textsl{Python} Funktion $f$ und ein Argument $a$ verarbeitet und das uns die Frage, ob die Berechnung von $f(a)$
+terminiert, beantworten kann.  Die Idee wäre, dass die Funktion \texttt{stops} die folgende Spezifikation erfüllt:
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{stops}(f, a) = \texttt{true}$ \quad g.d.w. \quad der Aufruf $f(a)$ terminiert.
+\\[0.2cm]
+Falls der Aufruf $f(a)$ nicht terminiert,  sollte stattdessen $\texttt{stops}(f,a) = \texttt{false}$ gelten.
+Wenn wir eine solche Funktion \texttt{stops} hätten, dann könnten wir 
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{stops(findCounterExample, 1)}
+\\[0.2cm]
+aufrufen und wüssten anschließend, ob die Vermutung von Legendre wahr ist oder nicht:  Wenn
+\\[0.2cm]
+\hspace*{1.3cm}
+$\texttt{stops(findCounterExample, 1)} = \texttt{true}$
+ \\[0.2cm]
+ist, dann würde das heißen,
+dass der Funktions-Aufruf $\texttt{findCounterExample}(1)$ terminiert.  Das passiert aber nur dann,
+wenn ein Gegenbeispiel gefunden wird.  Würde der Aufruf 
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{stops(findCounterExample, 1)}
+\\[0.2cm]
+stattdessen den Wert  $\texttt{false}$ zurück liefern, so könnten wir schließen, dass der Aufruf \texttt{findCounterExample(1)}
+nicht terminiert. Mithin würde die Funktion \texttt{findCounterExample} kein Gegenbeispiel finden und
+damit wäre klar, dass die von Legendre aufgestellte Vermutung wahr ist.
+
+Es gibt eine Reihe weiterer offener  mathematischer Probleme, die alle auf die Frage abgebildet
+werden können, ob eine gegebene Funktion terminiert.  Daher zeigen die vorhergehenden Überlegungen,
+dass es sehr nützlich wäre, eine Funktion wie \texttt{stops} zur Verfügung zu haben.  Andererseits
+können wir an dieser Stelle schon ahnen, dass die Implementierung der Funktion \texttt{stops}
+nicht ganz einfach sein kann.  
+
+ 
+\subsection{Formale Analyse des Halte-Problems}
+Wir werden in diesem Abschnitt beweisen, dass das Halte-Problem unlösbar ist.  Dazu führen
+wir den Begriff einer \blue{Test-Funktion} ein.  
+\pagebreak
+
+\begin{Definition}[Test-Funktion] 
+Ein String $t$ ist genau dann eine \blue{Test-Funktion} mit Namen $f$, wenn $t$ 
+ die Form \\[0.3cm]
+\hspace*{1.3cm} \texttt{\symbol{34}\symbol{34}\symbol{34}}         \\
+\hspace*{1.3cm} \texttt{def $f$(x):} \\
+\hspace*{1.8cm} \textsl{body}        \\
+\hspace*{1.3cm} \texttt{\symbol{34}\symbol{34}\symbol{34}}         \\[0.2cm]
+hat und sich als \textsl{Python}-Funktion parsen lässt.  Die Variable \textsl{body} steht hier für den Rumpf
+der Test-Funktion.  Die Menge der Test-Funktionen bezeichnen wir mit $T\!F$.  \eox
+\end{Definition}
+
+\noindent
+\textbf{Beispiele}:  
+\begin{enumerate}
+\item $s_1$ := 
+     \texttt{\symbol{34}\symbol{34}\symbol{34}}        \\
+     \hspace*{0.8cm} \texttt{def zero(x):} \\
+     \hspace*{1.65cm} \texttt{return 0}        \\
+     \hspace*{0.8cm} \texttt{\symbol{34}\symbol{34}\symbol{34}}        \\[0.2cm]
+      $s_1$ ist eine (sehr einfache) Test-Funktion mit dem Name \texttt{zero}.
+\item $s_2$ := 
+     \texttt{\symbol{34}\symbol{34}\symbol{34}}        \\
+     \hspace*{0.8cm}  \texttt{def loop(x):} \\
+     \hspace*{1.65cm} \texttt{while True:}        \\
+     \hspace*{2.5cm}  \texttt{x = x + 1}        \\
+     \hspace*{0.8cm}  \texttt{\symbol{34}\symbol{34}\symbol{34}}        \\[0.2cm]
+      $s_2$ ist eine Test-Funktion mit dem Name \texttt{loop}.
+\item $s_3$ := 
+     \texttt{\symbol{34}\symbol{34}\symbol{34}}        \\
+     \hspace*{0.8cm}  \texttt{def buggy(x):} \\
+     \hspace*{1.65cm} \texttt{while True:}        \\
+     \hspace*{2.5cm}  \texttt{++x}        \\
+     \hspace*{0.8cm}  \texttt{\symbol{34}\symbol{34}\symbol{34}}        \\[0.2cm]
+      $s_3$ ist keine Test-Funktion, denn da \textsl{Python} den Präfix-Operator
+      ``\texttt{++}'' nicht unterstützt, lässt sich der String $s_3$  nicht fehlerfrei als \textsl{Python} 
+      parsen.
+\item $s_4$ := 
+     \texttt{\symbol{34}\symbol{34}\symbol{34}}        \\
+     \hspace*{0.8cm}  \texttt{def sum(x, y):} \\
+     \hspace*{1.65cm} \texttt{while True:}        \\
+     \hspace*{2.5cm}  \texttt{return x + y}        \\
+     \hspace*{0.8cm}  \texttt{\symbol{34}\symbol{34}\symbol{34}}        \\[0.2cm]
+      $s_4$ ist keine Test-Funktion, denn ein String ist nur dann eine Test-Funktion, wenn die durch den String
+      definierte Funktion mit \blue{genau einen} Parameter aufgerufen wird.
+\end{enumerate}
+Um das Halte-Problem übersichtlicher formulieren zu können, führen wir noch vier
+zusätzliche Notationen ein.
+\begin{Notation}[\textsl{name}, $\leadsto$, $\downarrow$, $\uparrow$]
+{\em
+Ist $t$ eine Testfunktion mit Namen $f$, so schreiben wir 
+\\[0.2cm]
+\hspace*{1.3cm}
+$\textsl{name}(t) = f$.
+\\[0.2cm]
+Ist $f$ der Name einer \textsl{Python}-Funktion, die $k$ Argumente verarbeitet und sind $a_1$, $\cdots$, $a_k$ mögliche
+Argumente, mit denen wir diese Funktion aufrufen können,
+so schreiben wir \\[0.3cm]
+\hspace*{1.3cm} $f(a_1, \cdots, a_k) \leadsto r$ \\[0.3cm]
+wenn der Aufruf $f(a_1, \cdots, a_k)$ das Ergebnis $r$ liefert.  Sind wir an dem Ergebnis
+selbst nicht interessiert, sondern wollen nur angeben, dass ein Ergebnis existiert, so
+schreiben wir \\[0.3cm]
+\hspace*{1.3cm} $f(a_1, \cdots, a_k) \,\downarrow$ \\[0.3cm]
+und sagen, dass der Aufruf $f(a_1, \cdots, a_k)$ \blue{terminiert}.
+Terminiert der Aufruf $f(a_1, \cdots, a_k)$ nicht, so schreiben wir \\[0.3cm]
+\hspace*{1.3cm} $f(a_1, \cdots, a_k) \,\uparrow$ \\[0.3cm]
+und sagen, dass der Aufruf $f(a_1, \cdots, a_k)$ \blue{divergiert}.  Diese Notation
+verwenden wir auch, wenn der Aufruf  $f(a_1, \cdots, a_k)$ mit einer Fehlermeldung abbricht.
+\hspace*{\fill} $\Box$
+}
+\end{Notation}
+
+\noindent
+\textbf{Beispiele}: Legen wir die Funktions-Definitionen zugrunde, die wir im Anschluss an
+die Definition des Begriffs der Test-Funktion gegeben haben, so gilt:
+\begin{enumerate}
+\item {\tt zero(1)} $\leadsto 0$
+\item {\tt zero(1)} $\downarrow$
+\item {\tt loop(0)} $\uparrow$
+\end{enumerate} 
+
+\noindent
+Das \blue{Halte-Problem} für
+\textsl{Python}-Funktionen ist die Frage, ob es eine \textsl{Python}-Funktion \\[0.2cm] 
+\hspace*{1.3cm} \texttt{def stops($t$, $a$):}\\
+\hspace*{2.1cm} \textsl{body}
+\\[0.2cm]
+gibt, die als Eingaben eine Testfunktion $t$ und einen String $a$ erhält und die folgende
+Eigenschaft hat:
+\begin{enumerate}
+\item $t \not\in T\!F \quad\Leftrightarrow\quad \texttt{stops}(t, a) \leadsto 2$.
+
+      Der Aufruf \texttt{stops($t$, $a$)} liefert genau dann den Wert 2 zurück, 
+      wenn $t$ keine Test-Funktion ist.
+\item $t \in T\!F \,\wedge\, \textsl{name}(t) = f \,\wedge\, f(a)\downarrow \quad\Leftrightarrow\quad
+       \texttt{stops}(t, a) \leadsto 1$.
+
+      Der Aufruf \texttt{stops($t$, $a$)} liefert genau dann den Wert 1 zurück,
+      wenn $t$ eine Test-Funktion mit Namen $f$ ist und der Aufruf $f(a)$ terminiert.
+
+\item $t \in T\!F  \,\wedge\, \textsl{name}(t) = f \,\wedge\, t(a)\uparrow \quad\Leftrightarrow\quad
+       \texttt{stops}(t, a) \leadsto 0$.
+
+      Der Aufruf \texttt{stops($t$, $a$)} liefert genau dann den Wert 0 zurück,
+      wenn $t$ eine Test-Funktion ist und der Aufruf $t(a)$ \underline{nicht} terminiert.
+\end{enumerate}
+Falls eine \textsl{Python}-Funktion \texttt{stops} mit den obigen Eigenschaften existiert, dann
+sagen wir, dass das Halte-Problem für \textsl{Python} entscheidbar ist.
+
+\begin{Theorem}[\href{http://de.wikipedia.org/wiki/Alan_Turing}{Alan Turing}, 1936]
+{\em
+  Das Halte-Problem ist unentscheidbar.
+} 
+\end{Theorem}
+
+\noindent
+\textbf{Beweis}:  Zunächst eine Vorbemerkung.  Um die Unentscheidbarkeit des
+Halte-Problems nachzuweisen, müssen wir zeigen, dass etwas, nämlich eine Funktion mit
+gewissen Eigenschaften nicht existiert.  Wie kann so ein Beweis überhaupt funktionieren?
+Wie können wir überhaupt zeigen, dass irgendetwas nicht existiert?
+Die einzige Möglichkeit zu zeigen, dass etwas nicht existiert ist indirekt:
+Wir nehmen also an, dass eine Funktion \texttt{stops} existiert, die das Halte-Problem löst.
+Aus dieser Annahme werden wir einen Widerspruch ableiten.  Dieser Widerspruch zeigt
+uns dann, dass eine Funktion \texttt{stops} mit den gewünschten Eigenschaften nicht
+existieren kann.
+Um zu einem Widerspruch zu kommen, definieren wir den String \texttt{turing} wie in Abbildung
+\ref{fig:turing-string} gezeigt.
+
+\begin{figure}[!h]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.8cm,
+                  xrightmargin  = 0.8cm,
+                  commandchars  = \\\{\},
+                ]
+    turing = """
+             def alan(x):
+                 result = stops(x, x)
+                 if result == 1:
+                     while True:
+                         print("... looping ...")
+                 return result
+             """ 
+\end{Verbatim}
+  \vspace*{-0.3cm}
+  \caption{Die Definition des Strings \texttt{turing}.}
+  \label{fig:turing-string}
+\end{figure}
+
+Mit dieser Definition ist klar, dass \texttt{turing} eine Test-Funktion mit Namen \texttt{alan} ist: \\[0.3cm]
+\hspace*{1.3cm} $\texttt{turing} \in T\!F$ \quad und \quad $\textsl{name}(\texttt{turing}) = \texttt{alan}$. 
+\\[0.3cm]
+Damit sind wir in der Lage, den String \texttt{turing} als Eingabe der Funktion \texttt{stops}
+zu verwenden.  Wir betrachten nun den folgenden Aufruf: \\[0.3cm]
+\hspace*{1.3cm} \texttt{stops(\texttt{turing}, \texttt{turing});} \\[0.3cm]
+Da \texttt{turing} eine Test-Funktion mit dem Namen \texttt{alan} ist und der Aufruf von \texttt{alan} mit dem Argument \texttt{turing}
+auch nicht zu einem Fehler führen darf, können nur zwei Fälle auftreten:
+\\[0.1cm]
+\hspace*{1.3cm} 
+$\texttt{stops(\texttt{turing}, \texttt{turing})} \leadsto 0 \quad \vee\quad
+ \texttt{stops(\texttt{turing}, \texttt{turing})} \leadsto 1$. \\[0.1cm]
+Diese beiden Fälle analysieren wir nun im Detail:
+\begin{enumerate}
+\item $\texttt{stops(\texttt{turing}, \texttt{turing})} \leadsto 0$. 
+
+      Nach der Spezifikation von \texttt{stops} bedeutet dies \\[0.1cm]
+      \hspace*{1.3cm} $\texttt{alan}(\texttt{turing}) \uparrow$ \\[0.1cm]
+      Schauen wir nun, was wirklich beim Aufruf \texttt{alan(turing)} passiert:
+      In Zeile 2 erhält die Variable \texttt{result} den Wert 0 zugewiesen.  In Zeile 3
+      wird dann getestet, ob \texttt{result} den Wert 1 hat.  Dieser Test schlägt fehl.
+      Daher wird der Block der \texttt{if}-Anweisung nicht ausgeführt und die Funktion liefert als
+      nächstes in Zeile 8 den Wert 0 zurück.  Insbesondere terminiert der Aufruf also, im
+      Widerspruch zu dem, was die Funktion \texttt{stops} behauptet hat. $\red{\lightning}$
+
+      Damit ist der erste Fall ausgeschlossen.
+\item  $\texttt{stops}(\texttt{turing}, \texttt{turing}) \leadsto 1$. 
+
+      Aus der Spezifikation der Funktion \texttt{stops} folgt, dass der Aufruf
+      \texttt{alan(turing)} terminiert: \\[0.1cm]
+      \hspace*{1.3cm} $\texttt{alan(turing)} \downarrow$ \\[0.1cm]
+      Schauen wir nun, was wirklich beim Aufruf \texttt{alan(turing)} passiert:
+      In Zeile 2 erhält die Variable \texttt{result} den Wert 1 zugewiesen.  In Zeile 3
+      wird dann getestet, ob \texttt{result} den Wert 1 hat.  Diesmal gelingt der Test.
+      Daher wird der Block der \texttt{if}-Anweisung ausgeführt.  Dieser Block
+      besteht aber nur aus einer Endlos-Schleife, aus der wir nie wieder zurück kommen.
+      Das steht im Widerspruch zu dem, was die Funktion \texttt{stops} behauptet hat.
+      $\red{\lightning}$
+
+      Damit ist der zweite Fall ausgeschlossen.
+\end{enumerate}
+Insgesamt haben wir also in jedem Fall einen Widerspruch erhalten.  
+Damit muss die Annahme, dass die \textsl{Python}-Funktion \texttt{stops}
+das Halte-Problem löst, falsch sein, denn diese Annahme ist die Ursache für die Widersprüche, die
+wir erhalten haben.  Insgesamt haben wir daher gezeigt, dass es keine \textsl{Python}-Funktion
+geben kann, die das Halte-Problem löst. \hspace*{\fill} $\Box$
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Bemerkung}:
+Der Nachweis, dass das Halte-Problem unlösbar ist, wurde 1936 von Alan Turing (1912 -- 1954)
+\cite{turing:36} erbracht.  Turing hat das Problem damals natürlich nicht für die Sprache
+\textsl{Python} gelöst, sondern für die heute nach ihm benannten
+\href{https://de.wikipedia.org/wiki/Turingmaschine}{Turing-Maschinen}.   
+Eine Turing-Maschine ist abstrakt gesehen nichts anderes als eine Beschreibung eines
+Algorithmus.  Turing hat also gezeigt, dass es keinen Algorithmus gibt, der entscheiden
+kann, ob ein gegebener anderer Algorithmus terminiert.
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Bemerkung}:
+An dieser Stelle können wir uns fragen, ob es vielleicht eine andere Programmier-Sprache
+gibt, in der wir das Halte-Problem dann vielleicht doch lösen könnten.  
+Wenn es in dieses Programmier-Sprache Prozeduren, \texttt{if}-Verzweigungen und
+\texttt{while}-Schleifen gibt, und wenn wir dort 
+Programm-Texte als Argumente von Funktionen übergeben können, dann ist leicht zu sehen,
+dass der obige Beweis der 
+Unlösbarkeit des Halte-Problems sich durch geeignete syntaktische Modifikationen auch auf
+die andere Programmier-Sprache übertragen lässt.
+
+
+\section{Unlösbarkeit des Äquivalenz-Problems}
+Es gibt noch eine ganze Reihe anderer Funktionen, die nicht berechenbar sind.  In der
+Regel werden wir den Nachweis, dass eine bestimmt Funktion nicht berechenbar ist, indirekt führen
+und annehmen, dass die gesuchte Funktion doch berechenbar ist.  Unter dieser Annahme
+konstruieren wir dann eine Funktion, die das Halte-Problem löst, was im Widerspruch zu der Unlösbarkeit
+des Halte-Problems steht.
+Dieser Widerspruch zwingt uns zu der Folgerung, dass die gesuchte Funktion nicht berechenbar ist.
+Wir werden dieses Verfahren an einem Beispiel demonstrieren.  Vorweg benötigen wir aber
+noch eine Definition.
+
+\begin{Definition}[partiell äquivalent, $\simeq$]  
+Es seien $f_1$ und $f_2$ die Namen zwei \textsl{Python}-Funktionen und
+  $a_1$, $\cdots$, $a_k$ seien Argumente, mit denen wir diese Funktionen füttern können. Wir definieren \\[0.1cm]
+\hspace*{1.3cm} $f_1(a_1,\cdots,a_k) \simeq f_2(a_1,\cdots,a_k)$ \\[0.1cm]
+g.d.w. einer der beiden folgen Fälle auftritt:
+\begin{enumerate}
+\item $f_1(a_1,\cdots,a_k)\uparrow \quad\wedge\quad f_2(a_1,\cdots,a_k)\uparrow$,
+
+      beide Funktionen divergieren also für die gegebenen Argumente.
+\item $\exists r: \Bigl(f_1(a_1,\cdots,a_k) \leadsto r \;\wedge\; f_2(a_1,\cdots,a_k) \leadsto r\Bigr)$,
+
+      die beiden Funktionen liefern also für die gegebenen Argumente das gleiche Ergebnis.
+\end{enumerate}
+      In diesem Fall sagen wir, dass die beiden Funktions-Aufrufe 
+      $f_1(a_1,\cdots,a_k) \simeq f_2(a_1,\cdots,a_k)$ \blue{partiell äquivalent} sind.  
+      \qed
+\end{Definition}
+
+\noindent
+Wir kommen jetzt zum \blue{Äquivalenz-Problem}.  Die Funktion $\texttt{equal}$ sei wie folgt definiert:
+\\[0.2cm]
+\hspace*{1.3cm} \texttt{def equal(t1, t2, a):} \\
+\hspace*{2.2cm} \textsl{body}
+\\[0.2cm]
+Zusätzlich erfüllt \texttt{equal} die folgende Spezifikation:
+\begin{enumerate}
+\item $t_1 \not\in T\!F \;\vee\; t_2 \not\in T\!F \quad\Leftrightarrow\quad \texttt{equal}(t_1, t_2, a) \leadsto 2$.
+\item Falls 
+  \begin{enumerate}
+  \item $t_1 \in T\!F$ \quad und \quad $\textsl{name}(t_1) = f_1$,
+  \item $t_2 \in T\!F$ \quad und \quad $\textsl{name}(t_2) = f_2$ \quad und
+  \item $f_1(a) \simeq f_2(a)$
+  \end{enumerate}
+    gilt, dann muss gelten: \\[0.1cm]
+   \hspace*{1.3cm}  $\texttt{equal}(t_1, t_2, a) \leadsto 1$.
+\item Ansonsten gilt \\[0.1cm]
+      \hspace*{1.3cm} $\texttt{equal}(t_1, t_2, a) \leadsto 0$.
+\end{enumerate}
+Wir sagen, dass eine Funktion, die der eben angegebenen Spezifikation genügt, das
+\blue{Äquivalenz-Problem} löst.
+
+\begin{Theorem}[Rice, 1953]
+Das Äquivalenz-Problem ist unlösbar.  
+\end{Theorem}
+
+\noindent
+\textbf{Beweis}:
+Wir führen den Beweis indirekt und nehmen
+an, dass es doch eine Implementierung der Funktion \texttt{equal} gibt, die das
+Äquivalenz-Problem löst.  Wir betrachten die in Abbildung 
+\ref{fig:stops} angegeben Implementierung der Funktion \texttt{stops}.
+
+
+\begin{figure}[!h]
+  \centering
+\begin{Verbatim}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  labelposition = bottomline,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                  xleftmargin   = 0.3cm,
+                  xrightmargin  = 0.3cm
+                ]
+     def stops(t, a):
+         l = """
+             def loop(x): 
+                 while True:
+                     x = 1
+             """ 
+         e = equal(l, t, a);
+         if e == 2:
+             return 2
+         else:
+             return 1 - e
+\end{Verbatim}
+  \vspace*{-0.3cm}
+  \caption{Eine Implementierung der Funktion \texttt{stops}.}
+  \label{fig:stops}
+\end{figure}
+
+Zu beachten ist, dass in Zeile 3 die Funktion \texttt{equal} mit einem String aufgerufen
+wird, der eine Test-Funktion ist.  Diese 
+Test-Funktion hat die
+folgende Form:
+\begin{verbatim}
+            def loop(x): 
+                 while True:
+                     x = 1
+\end{verbatim}
+Es ist offensichtlich, dass diese Funktion für keine Eingabe terminiert.
+Ist also das Argument $t$ eine Test-Funktion mit Namen $f$, so liefert die Funktion
+\texttt{equal} immer dann den Wert 1, 
+wenn $f(a)$ nicht terminiert, andernfalls muss sie den Wert 0 zurück geben.
+Damit liefert die Funktion \texttt{stops} aber für eine Test-Funktion $t$ mit Namen $f$
+und ein Argument $a$ genau dann 1, wenn der Aufruf $f(a)$ terminiert und würde folglich das Halte-Problem
+lösen.  Das kann nicht sein, also kann es keine Funktion  \texttt{equal}
+geben, die das Äquivalenz-Problem löst. 
+\qed
+\vspace*{0.3cm}
+
+\noindent
+Die Unlösbarkeit des Äquivalenz-Problems und vieler weiterer praktisch interessanter
+Probleme folgen aus dem 1953 von Henry G.~Rice \cite{rice:53} bewiesenen
+\href{http://de.wikipedia.org/wiki/Satz_von_Rice}{Satz von Rice}.
+
+\section{Reflexion}
+Beantworten Sie die folgenden Fragen.
+\begin{enumerate}
+\item Wie ist das Halteproblem definiert?
+\item Versuchen Sie, die Definition der Funktion \texttt{turing} aus dem Gedächtnis aufzuschreiben und führen Sie
+      dann den Nachweis, dass das Halteproblem nicht lösbar ist.
+\item Wie haben wir das Äquivalenz-Problem definiert?
+\item Können Sie den Beweis der Unlösbarkeit des Äquivalenz-Problems wiedergeben?
+\end{enumerate}
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "logic"
+%%% ispell-local-dictionary: "deutsch8"
+%%% End: 

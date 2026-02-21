@@ -1,0 +1,28 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{complement}\PYG{p}{(}\PYG{n}{l}\PYG{p}{):}
+        \PYG{l+s+s2}{\PYGZdq{}Compute the complement of the literal l.\PYGZdq{}}
+        \PYG{k}{match} \PYG{n}{l}\PYG{p}{:}
+            \PYG{k}{case} \PYG{n}{p} \PYG{k}{if} \PYG{n+nb}{isinstance}\PYG{p}{(}\PYG{n}{p}\PYG{p}{,} \PYG{n+nb}{str}\PYG{p}{):}  \PYG{k}{return} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{p}\PYG{p}{)}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{p}\PYG{p}{):}                 \PYG{k}{return} \PYG{n}{p}
+
+     \PYG{k}{def} \PYG{n+nf}{extractVariable}\PYG{p}{(}\PYG{n}{l}\PYG{p}{):}
+        \PYG{l+s+s2}{\PYGZdq{}Extract the variable of the literal l.\PYGZdq{}}
+        \PYG{k}{match} \PYG{n}{l}\PYG{p}{:}
+            \PYG{k}{case} \PYG{n}{p} \PYG{k}{if} \PYG{n+nb}{isinstance}\PYG{p}{(}\PYG{n}{p}\PYG{p}{,} \PYG{n+nb}{str}\PYG{p}{):} \PYG{k}{return} \PYG{n}{p}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{p}\PYG{p}{):}                \PYG{k}{return} \PYG{n}{p}
+
+    \PYG{k}{def} \PYG{n+nf}{collectVariables}\PYG{p}{(}\PYG{n}{M}\PYG{p}{):}
+        \PYG{l+s+s2}{\PYGZdq{}Return the set of all variables occurring in M.\PYGZdq{}}
+        \PYG{k}{return} \PYG{p}{\PYGZob{}} \PYG{n}{extractVariable}\PYG{p}{(}\PYG{n}{l}\PYG{p}{)} \PYG{k}{for} \PYG{n}{C} \PYG{o+ow}{in} \PYG{n}{M}
+                                    \PYG{k}{for} \PYG{n}{l} \PYG{o+ow}{in} \PYG{n}{C}
+               \PYG{p}{\PYGZcb{}}
+
+    \PYG{k}{def} \PYG{n+nf}{cutRule}\PYG{p}{(}\PYG{n}{C1}\PYG{p}{,} \PYG{n}{C2}\PYG{p}{):}
+\PYG{+w}{        }\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+\PYG{l+s+sd}{        Return the set of all clauses that can be deduced with the cut rule}
+\PYG{l+s+sd}{        from the clauses C1 and C2.}
+\PYG{l+s+sd}{        \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+        \PYG{k}{return} \PYG{p}{\PYGZob{}} \PYG{n}{C1} \PYG{o}{\PYGZhy{}} \PYG{p}{\PYGZob{}}\PYG{n}{l}\PYG{p}{\PYGZcb{}} \PYG{o}{|} \PYG{n}{C2} \PYG{o}{\PYGZhy{}} \PYG{p}{\PYGZob{}}\PYG{n}{complement}\PYG{p}{(}\PYG{n}{l}\PYG{p}{)\PYGZcb{}} \PYG{k}{for} \PYG{n}{l} \PYG{o+ow}{in} \PYG{n}{C1}
+                                                 \PYG{k}{if}  \PYG{n}{complement}\PYG{p}{(}\PYG{n}{l}\PYG{p}{)} \PYG{o+ow}{in} \PYG{n}{C2}
+               \PYG{p}{\PYGZcb{}}
+\end{Verbatim}

@@ -1,0 +1,19 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{def} \PYG{n+nf}{backtrack\PYGZus{}search}\PYG{p}{(}\PYG{n}{Assignment}\PYG{p}{,} \PYG{n}{CSP}\PYG{p}{):}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+\PYG{l+s+sd}{    Given a partial variable assignment, this function tries to}
+\PYG{l+s+sd}{    complete this assignment towards a solution of the CSP.}
+\PYG{l+s+sd}{    \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+    \PYG{n}{Variables}\PYG{p}{,} \PYG{n}{Values}\PYG{p}{,} \PYG{n}{Constraints} \PYG{o}{=} \PYG{n}{CSP}
+    \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{Assignment}\PYG{p}{)} \PYG{o}{==} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{Variables}\PYG{p}{):}
+        \PYG{k}{return} \PYG{n}{Assignment}
+    \PYG{n}{var} \PYG{o}{=} \PYG{p}{[}\PYG{n}{x} \PYG{k}{for} \PYG{n}{x} \PYG{o+ow}{in} \PYG{n}{Variables} \PYG{k}{if} \PYG{n}{x} \PYG{o+ow}{not} \PYG{o+ow}{in} \PYG{n}{Assignment}\PYG{p}{][}\PYG{l+m+mi}{0}\PYG{p}{]}
+    \PYG{k}{for} \PYG{n}{value} \PYG{o+ow}{in} \PYG{n}{Values}\PYG{p}{:}
+        \PYG{k}{if} \PYG{n}{isConsistent}\PYG{p}{(}\PYG{n}{var}\PYG{p}{,} \PYG{n}{value}\PYG{p}{,} \PYG{n}{Assignment}\PYG{p}{,} \PYG{n}{Constraints}\PYG{p}{):}
+            \PYG{n}{NewAssign}      \PYG{o}{=} \PYG{n}{Assignment}\PYG{o}{.}\PYG{n}{copy}\PYG{p}{()}
+            \PYG{n}{NewAssign}\PYG{p}{[}\PYG{n}{var}\PYG{p}{]} \PYG{o}{=} \PYG{n}{value}
+            \PYG{n}{Solution} \PYG{o}{=} \PYG{n}{backtrack\PYGZus{}search}\PYG{p}{(}\PYG{n}{NewAssign}\PYG{p}{,} \PYG{n}{CSP}\PYG{p}{)}
+            \PYG{k}{if} \PYG{n}{Solution} \PYG{o}{!=} \PYG{k+kc}{None}\PYG{p}{:}
+                \PYG{k}{return} \PYG{n}{Solution}
+    \PYG{k}{return} \PYG{k+kc}{None}
+\end{Verbatim}

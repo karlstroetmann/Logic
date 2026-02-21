@@ -1,0 +1,18 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{solve}\PYG{p}{(}\PYG{n}{Clauses}\PYG{p}{,} \PYG{n}{Variables}\PYG{p}{):}
+        \PYG{n}{S}      \PYG{o}{=} \PYG{n}{saturate}\PYG{p}{(}\PYG{n}{Clauses}\PYG{p}{)}
+        \PYG{n}{Empty}  \PYG{o}{=} \PYG{n+nb}{frozenset}\PYG{p}{()}
+        \PYG{n}{Falsum} \PYG{o}{=} \PYG{p}{\PYGZob{}} \PYG{n}{Empty} \PYG{p}{\PYGZcb{}}
+        \PYG{k}{if} \PYG{n}{Empty} \PYG{o+ow}{in} \PYG{n}{S}\PYG{p}{:}                  \PYG{c+c1}{\PYGZsh{} S is inconsistent}
+            \PYG{k}{return} \PYG{n}{Falsum}
+        \PYG{k}{if} \PYG{n+nb}{all}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{C}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{1} \PYG{k}{for} \PYG{n}{C} \PYG{o+ow}{in} \PYG{n}{S}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{} S is trivial}
+            \PYG{k}{return} \PYG{n}{S}
+        \PYG{n}{l}       \PYG{o}{=} \PYG{n}{selectLiteral}\PYG{p}{(}\PYG{n}{S}\PYG{p}{,} \PYG{n}{Variables}\PYG{p}{)}
+        \PYG{n}{lBar}    \PYG{o}{=} \PYG{n}{complement}\PYG{p}{(}\PYG{n}{l}\PYG{p}{)}
+        \PYG{n}{p}       \PYG{o}{=} \PYG{n}{extractVariable}\PYG{p}{(}\PYG{n}{l}\PYG{p}{)}
+        \PYG{n}{newVars} \PYG{o}{=} \PYG{n}{Variables} \PYG{o}{|} \PYG{p}{\PYGZob{}} \PYG{n}{p} \PYG{p}{\PYGZcb{}}
+        \PYG{n}{Result}  \PYG{o}{=} \PYG{n}{solve}\PYG{p}{(}\PYG{n}{S} \PYG{o}{|} \PYG{p}{\PYGZob{}} \PYG{n+nb}{frozenset}\PYG{p}{(\PYGZob{}}\PYG{n}{l}\PYG{p}{\PYGZcb{})} \PYG{p}{\PYGZcb{},} \PYG{n}{newVars}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n}{Result} \PYG{o}{!=} \PYG{n}{Falsum}\PYG{p}{:}
+            \PYG{k}{return} \PYG{n}{Result}
+        \PYG{k}{return} \PYG{n}{solve}\PYG{p}{(}\PYG{n}{S} \PYG{o}{|} \PYG{p}{\PYGZob{}} \PYG{n+nb}{frozenset}\PYG{p}{(\PYGZob{}}\PYG{n}{lBar}\PYG{p}{\PYGZcb{})} \PYG{p}{\PYGZcb{},} \PYG{n}{newVars}\PYG{p}{)}
+\end{Verbatim}

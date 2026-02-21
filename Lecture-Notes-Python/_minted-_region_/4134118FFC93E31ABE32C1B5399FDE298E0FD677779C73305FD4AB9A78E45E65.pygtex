@@ -1,0 +1,13 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k}{def} \PYG{n+nf}{evaluate}\PYG{p}{(}\PYG{n}{F}\PYG{p}{,} \PYG{n}{I}\PYG{p}{):}
+        \PYG{k}{match} \PYG{n}{F}\PYG{p}{:}
+            \PYG{k}{case} \PYG{n}{p} \PYG{k}{if} \PYG{n+nb}{isinstance}\PYG{p}{(}\PYG{n}{p}\PYG{p}{,} \PYG{n+nb}{str}\PYG{p}{):}
+                \PYG{k}{return} \PYG{n}{p} \PYG{o+ow}{in} \PYG{n}{I}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}⊤\PYGZsq{}}\PYG{p}{,} \PYG{p}{):}     \PYG{k}{return} \PYG{k+kc}{True}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}⊥\PYGZsq{}}\PYG{p}{,} \PYG{p}{):}     \PYG{k}{return} \PYG{k+kc}{False}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}¬\PYGZsq{}}\PYG{p}{,} \PYG{n}{G}\PYG{p}{):}    \PYG{k}{return} \PYG{o+ow}{not} \PYG{n}{evaluate}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}∧\PYGZsq{}}\PYG{p}{,} \PYG{n}{G}\PYG{p}{,} \PYG{n}{H}\PYG{p}{):} \PYG{k}{return}     \PYG{n}{evaluate}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)} \PYG{o+ow}{and} \PYG{n}{evaluate}\PYG{p}{(}\PYG{n}{H}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}∨\PYGZsq{}}\PYG{p}{,} \PYG{n}{G}\PYG{p}{,} \PYG{n}{H}\PYG{p}{):} \PYG{k}{return}     \PYG{n}{evaluate}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)} \PYG{o+ow}{or}  \PYG{n}{evaluate}\PYG{p}{(}\PYG{n}{H}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}→\PYGZsq{}}\PYG{p}{,} \PYG{n}{G}\PYG{p}{,} \PYG{n}{H}\PYG{p}{):} \PYG{k}{return}     \PYG{n}{evaluate}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)} \PYG{o}{\PYGZlt{}=}  \PYG{n}{evaluate}\PYG{p}{(}\PYG{n}{H}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)}
+            \PYG{k}{case} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}↔\PYGZsq{}}\PYG{p}{,} \PYG{n}{G}\PYG{p}{,} \PYG{n}{H}\PYG{p}{):} \PYG{k}{return}     \PYG{n}{evaluate}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)} \PYG{o}{==}  \PYG{n}{evaluate}\PYG{p}{(}\PYG{n}{H}\PYG{p}{,} \PYG{n}{I}\PYG{p}{)}
+\end{Verbatim}
