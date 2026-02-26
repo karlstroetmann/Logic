@@ -16,7 +16,7 @@ function single<T extends Value>(x: T): RS<T> {
     return new RecursiveSet<T>(x)
 }
 
-function complement(l: Literal): Literal {
+export function complement(l: Literal): Literal {
     if (typeof l === 'string') {
         return new Tuple('¬', l);
     } else {
