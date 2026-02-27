@@ -6,8 +6,8 @@ declare module 'logic-solver' {
      * Examples: "foo", "-foo", 5, -5
      */
     export type NameTerm = string;
-    export type NumTerm = number;
-    export type Term = NameTerm | NumTerm;
+    export type NumTerm  = number;
+    export type Term     = NameTerm | NumTerm;
 
     // ==================== FORMULAS ====================
     
