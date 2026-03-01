@@ -49,32 +49,10 @@ function selectVariable(Variables: RS<Variable>, UsedVars:  RS<Variable>): Varia
     return null;
 }
 
-/**
- * If M is a set, p is a predicate and f is a mapping function,
- * then filterMap(M, p, f) computes the following set:
- * { f(x) : x in M | p(x) }
- */
-function filterMap<T extends Value, U extends Value>(
-    set: RecursiveSet<T>,
-    p: (value: T) => boolean,
-    f: (value: T) => U
-): RecursiveSet<U> {
-    const result = new RecursiveSet<U>();   
-    if (set.size !== undefined) {
-        result.ensureCapacity(set.size);
-    }
-    for (const v of set) {
-        if (p(v)) {
-            result.add(f(v));
-        }
-    }
-    return result;
-}
-
 function reduce(Clauses: Clauses, l: Literal): Clauses {
     const lBar          = complement(l);
     const singletonLBar = single(lBar);
-    const result = filterMap(Clauses,
+    const result = Clauses.filterMap(
         (clause) => !clause.has(l),
         (clause) => clause.has(lBar) ? clause.difference(singletonLBar) : clause
     );
