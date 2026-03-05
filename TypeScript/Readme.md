@@ -55,7 +55,7 @@ npm install --save-dev @types/pngjs
 npm install heap-js
 npm install logic-solver
 npm install z3-solver
-npm install recursive-set@8.0.0
+npm install recursive-set
 ```
 
 ## Verifying installation
