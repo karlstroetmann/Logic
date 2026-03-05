@@ -1,4 +1,4 @@
-import { RecursiveSet, Value, Tuple } from 'recursive-set';
+import { RecursiveSet, Value, Tuple, flatMap } from 'recursive-set';
 
 type Variable = string;
 type Literal  = Variable 
@@ -8,9 +8,7 @@ type Clauses  = RecursiveSet<Clause>;
 
 type RS<T extends Value> = RecursiveSet<T>;
 
-function empty<T extends Value>(): RS<T> {
-    return new RecursiveSet<T>()
-}
+const RS = RecursiveSet;
 
 function single<T extends Value>(x: T): RS<T> {
     return new RecursiveSet<T>(x)
@@ -87,7 +85,7 @@ function reduce(Clauses: Clauses, l: Literal): Clauses {
 
 function saturate(Clauses: Clauses): Clauses {
     let S = Clauses;
-    const Used : RS<Clause> = empty(); 
+    const Used = new RS<Clause>(); 
     while (true) {
         const Units = S.filter(C => C.size == 1 && !Used.has(C));
         const unit  = arb(Units);
@@ -106,7 +104,7 @@ function solveRecursive(
     UsedVars:  RS<Variable>): Clauses 
 {
     const S = saturate(Clauses);
-    const EmptyClause: RS<Literal> = empty();
+    const EmptyClause = new RS<Literal>();
     if (S.has(EmptyClause)) { // S is inconsistent
         return single(EmptyClause);
     }
@@ -127,10 +125,8 @@ function solveRecursive(
 }
 
 export function solve(Clauses: RS<Clause>): RS<Clause> {
-    const Variables = Clauses
-        .map(clause => clause.map(extractVariable))
-        .reduce((acc, vars) => acc.union(vars), empty<Variable>());
-    return solveRecursive(Clauses, Variables, empty<Variable>());
+    const Variables = flatMap(Clauses, clause => clause.map(extractVariable));
+    return solveRecursive(Clauses, Variables, new RS<Variable>());
 }
 
 function literal_to_str(C: Clause): string {
