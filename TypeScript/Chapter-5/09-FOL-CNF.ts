@@ -76,7 +76,7 @@ function applySubstitution(f: Formula | Term, sigma: Substitution): Formula | Te
 
     const first = getOrThrow(f, 0);
 
-    if (first === "true" || first === "false") return f;
+    if (first === "⊤" || first === "⊥") return f;
 
     if (first === "¬") {
         const operand = getOrThrow(f, 1);
@@ -141,7 +141,7 @@ function boundVariables(f: Formula): Set<VariableName> {
         return new Set([varName, ...boundVariables(body)]);
     }
 
-    if (first === "true" || first === "false") return new Set();
+    if (first === "⊤" || first === "⊥") return new Set();
 
     if (first === "¬") return boundVariables(getUnary(f));
 
@@ -156,7 +156,7 @@ function boundVariables(f: Formula): Set<VariableName> {
 function allVariables(f: Formula | Term): Set<VariableName> {
     if (f.length === 1) {
         const first = getOrThrow(f, 0);
-        if (isString(first) && first !== "true" && first !== "false" && 
+        if (isString(first) && first !== "⊤" && first !== "⊥" && 
             first[0] === first[0].toLowerCase()) {
             return new Set([first]);
         }
@@ -174,7 +174,7 @@ function allVariables(f: Formula | Term): Set<VariableName> {
         return new Set([varName, ...allVariables(body)]);
     }
 
-    if (first === "true" || first === "false") return new Set();
+    if (first === "⊤" || first === "⊥") return new Set();
 
     if (first === "¬") {
         const operand = getOrThrow(f, 1);
@@ -230,7 +230,7 @@ function renameBoundVariables(f: Formula): Formula {
 function eliminateBiconditional(f: Formula): Formula {
     const first = getOrThrow(f, 0);
 
-    if (first === "true" || first === "false") return f;
+    if (first === "⊤" || first === "⊥") return f;
     if (first === "¬") return createNotFormula(eliminateBiconditional(getUnary(f)));
 
     if (first === "↔") {
@@ -260,7 +260,7 @@ function eliminateBiconditional(f: Formula): Formula {
 function eliminateConditional(f: Formula): Formula {
     const first = getOrThrow(f, 0);
 
-    if (first === "true" || first === "false") return f;
+    if (first === "⊤" || first === "⊥") return f;
     if (first === "¬") return createNotFormula(eliminateConditional(getUnary(f)));
 
     if (first === "→") {
@@ -284,7 +284,7 @@ function eliminateConditional(f: Formula): Formula {
 function nnf(f: Formula): Formula {
     const first = getOrThrow(f, 0);
 
-    if (first === "true" || first === "false") return f;
+    if (first === "⊤" || first === "⊥") return f;
     if (first === "¬") return neg(getUnary(f));
 
     if (first === "∧" || first === "∨") {
@@ -303,8 +303,8 @@ function nnf(f: Formula): Formula {
 function neg(f: Formula): Formula {
     const first = getOrThrow(f, 0);
 
-    if (first === "true") return createConstFormula("false");
-    if (first === "false") return createConstFormula("true");
+    if (first === "⊤") return createConstFormula("⊥");
+    if (first === "⊥") return createConstFormula("⊤");
     if (first === "¬") return nnf(getUnary(f));
 
     if (first === "∧") {
@@ -341,7 +341,7 @@ function mergeQuantifiers(q1: QuantifierTuple, q2: QuantifierTuple): QuantifierT
 function extractQuantifiers(f: Formula): [QuantifierTuple, Formula] {
     const first = getOrThrow(f, 0);
 
-    if (first === "true" || first === "false" || first === "¬") return [[], f];
+    if (first === "⊤" || first === "⊥" || first === "¬") return [[], f];
 
     if (first === "∧" || first === "∨") {
         const [left, right] = getBinary(f);
@@ -403,8 +403,8 @@ function skolemize(f: Formula, universalVars: VariableName[]): Formula {
 function cnf(f: Formula): CNF {
     const first = getOrThrow(f, 0);
 
-    if (first === "true") return new RecursiveSet();
-    if (first === "false") return new RecursiveSet(new RecursiveSet<Literal>());
+    if (first === "⊤") return new RecursiveSet();
+    if (first === "⊥") return new RecursiveSet(new RecursiveSet<Literal>());
     if (first === "¬") return new RecursiveSet(new RecursiveSet(f));
 
     if (first === "∧") {

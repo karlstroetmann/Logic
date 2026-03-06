@@ -14,7 +14,7 @@ export type FunTerm = Tuple<[FunctionSymbol, Tuple<Value[]>]>;
 export type Term = VarTerm | FunTerm;
 
 // --- FORMULA TYPES ---
-export type ConstFormula = Tuple<["true" | "false"]>;
+export type ConstFormula = Tuple<["⊤" | "⊥"]>;
 
 export type NotFormula = Tuple<["¬", Formula]>;
 
@@ -59,7 +59,7 @@ export function createPredFormula(
 	return new Tuple(symbol, argsTuple);
 }
 
-export function createConstFormula(value: "true" | "false"): ConstFormula {
+export function createConstFormula(value: "⊤" | "⊥"): ConstFormula {
 	return new Tuple(value);
 }
 
@@ -231,11 +231,11 @@ export class LogicParser {
 		// Konstanten
 		if (token === "⊤") {
 			this.consume();
-			return createConstFormula("true");
+			return createConstFormula("⊤");
 		}
 		if (token === "⊥") {
 			this.consume();
-			return createConstFormula("false");
+			return createConstFormula("⊥");
 		}
 
 		// Prädikat
