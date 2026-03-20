@@ -1,343 +1,416 @@
-import { Tuple, type Value } from "recursive-set";
+function tokenize(s: string): string[] {
+    const lexSpec = /\s*:?\s*(?:([()¬∧∨→↔⊤⊥∀∃,])|([a-zA-Z0-9_]+))/g;
+    const regex = lexSpec;
+    const tokens: string[] = [];
+    let match = regex.exec(s);
+    
+    while ((match) !== null) {
+        if (match[1]) tokens.push(match[1]);
+        else if (match[2]) tokens.push(match[2]);
+        match = regex.exec(s);
+    }
+    return tokens;
+}
 
-// =========================================================
-// 1. AST DEFINITIONEN (Tuple-Typen ohne Tag-Strings)
-// =========================================================
+import { RecursiveMap, RecursiveSet, Structural } from 'recursive-set';
 
-export type VariableName = string;
-export type FunctionSymbol = string;
-export type PredicateSymbol = string;
+type ValueOrStr = Structural | string;
 
-// --- TERM TYPES ---
-export type VarTerm = Tuple<[VariableName]>;
-export type FunTerm = Tuple<[FunctionSymbol, Tuple<Value[]>]>;
-export type Term = VarTerm | FunTerm;
+function hashStr(s: string): number {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) {
+        h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+    }
+    return h;
+}
 
-// --- FORMULA TYPES ---
-export type ConstFormula = Tuple<["⊤" | "⊥"]>;
+function hashVal(v: ValueOrStr): number {
+    return typeof v === 'string' ? hashStr(v) : v.hashCode;
+}
 
-export type NotFormula = Tuple<["¬", Formula]>;
+function hashArr(arr: ValueOrStr[]): number {
+    let h = 17;
+    for (const item of arr) {
+        h = (Math.imul(31, h) + hashVal(item)) | 0;
+    }
+    return h;
+}
 
-export type BinaryOp = "∧" | "∨" | "→" | "↔";
-export type BinaryFormula = Tuple<[BinaryOp, Formula, Formula]>;
+function valsEqual(a: ValueOrStr, b: ValueOrStr): boolean {
+    if (typeof a == 'string' || typeof b == 'string') {
+        return a == b;
+    }
+    return a.equals(b);
+}
 
-export type QuantifierOp = "∀" | "∃";
-export type QuantifierFormula = Tuple<[QuantifierOp, VariableName, Formula]>;
+function arrEquals(a: ValueOrStr[], b: ValueOrStr[]): boolean {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+        if (!valsEqual(a[i], b[i])) return false;
+    }
+    return true;
+}
 
-export type PredFormula = Tuple<[PredicateSymbol, Tuple<Value[]>]>;
+export type Term = string | FuncTerm;
 
-export type Formula =
-	| ConstFormula
-	| NotFormula
-	| BinaryFormula
-	| QuantifierFormula
-	| PredFormula;
+class FuncTerm implements Structural {
+    constructor(
+        public readonly symbol: string, 
+        public readonly args:   Term[]
+    ) {}
+
+    get hashCode(): number { 
+        return hashArr([this.symbol, ...this.args]); 
+    }
+
+    equals(other: unknown): boolean {
+        return other instanceof FuncTerm        && 
+               this.symbol == other.symbol      && 
+               arrEquals(this.args, other.args);
+    }
+    toString(): string { 
+        return `${this.symbol}(${this.args.join(', ')})`; 
+    }
+}
+
+export type Formula = ConstForm | PredForm | NotForm | BinaryForm | QuantifierForm;
+
+class ConstForm implements Structural {
+    constructor(
+        public readonly value: '⊤' | '⊥'
+    ) {}
+    
+    get hashCode(): number { 
+        return this.value === '⊤' ? 1 : 0; 
+    }
+    
+    equals(other: unknown): boolean { 
+        return other instanceof ConstForm && this.value == other.value; 
+    }
+    toString(): string { 
+        return this.value; 
+    }
+}
+
+class PredForm implements Structural {
+    constructor(
+        public readonly symbol: string, 
+        public readonly args: Term[]
+    ) {}
+    
+    get hashCode(): number { 
+        return hashArr([this.symbol, ...this.args]); 
+    }
+    
+    equals(other: unknown): boolean {
+        return other instanceof PredForm        && 
+               this.symbol == other.symbol      && 
+               arrEquals(this.args, other.args);
+    }
+    
+    toString(): string { 
+        return this.args.length > 0                          ? 
+                   `${this.symbol}(${this.args.join(', ')})` : 
+                   this.symbol; 
+    }
+}
+
+class NotForm implements Structural {
+    constructor(
+        public readonly body: Formula
+    ) {}
+
+    get hashCode(): number { 
+        return hashArr(['¬', this.body]); 
+    }
+    equals(other: unknown): boolean { 
+        return other instanceof NotForm     && 
+               this.body.equals(other.body); 
+    }
+    toString(): string { return `¬${this.body.toString()}`; }
+}
+
+class BinaryForm implements Structural {
+    constructor(
+        public readonly op:   '∧' | '∨' | '→' | '↔', 
+        public readonly left: Formula, 
+        public readonly right: Formula
+    ) {}
+    
+    get hashCode(): number { 
+        return hashArr([this.op, this.left, this.right]); 
+    }
+    
+    equals(other: unknown): boolean {
+        return other instanceof BinaryForm    && 
+               this.op == other.op            && 
+               this.left.equals(other.left)   && 
+               this.right.equals(other.right);
+    }
+    toString(): string { 
+        return `(${this.left.toString()} ${this.op} ${this.right.toString()})`; 
+    }
+}
+
+class QuantifierForm implements Structural {
+    constructor(
+        public readonly op:       '∀' | '∃', 
+        public readonly variable: string, 
+        public readonly body: Formula
+    ) {}
+    
+    get hashCode(): number { 
+        return hashArr([this.op, this.variable, this.body]); 
+    }
+    
+    equals(other: unknown): boolean {
+        return other instanceof QuantifierForm && 
+               this.op == other.op             && 
+               this.variable == other.variable && 
+               this.body.equals(other.body);
+    }
+    
+    toString(): string { 
+        return `${this.op}${this.variable}: ${this.body.toString()}`; 
+    }
+}
 
 export interface Signature {
-	functions: Map<string, number>;
-	predicates: Map<string, number>;
+    functions:  Set<string>;
+    predicates: Set<string>;
 }
-
-// =========================================================
-// 1.5 TYPE-SAFE FACTORY FUNCTIONS
-// =========================================================
-
-export function createVarTerm(name: VariableName): VarTerm {
-	return new Tuple(name);
-}
-
-export function createFunTerm(symbol: FunctionSymbol, args: Term[]): FunTerm {
-	const argsTuple = new Tuple(...args);
-	return new Tuple(symbol, argsTuple);
-}
-
-export function createPredFormula(
-	symbol: PredicateSymbol,
-	args: Term[],
-): PredFormula {
-	const argsTuple = new Tuple(...args);
-	return new Tuple(symbol, argsTuple);
-}
-
-export function createConstFormula(value: "⊤" | "⊥"): ConstFormula {
-	return new Tuple(value);
-}
-
-export function createNotFormula(operand: Formula): NotFormula {
-	return new Tuple("¬", operand);
-}
-
-export function createBinaryFormula(
-	op: BinaryOp,
-	left: Formula,
-	right: Formula,
-): BinaryFormula {
-	return new Tuple(op, left, right);
-}
-
-export function createQuantifierFormula(
-	op: QuantifierOp,
-	varName: VariableName,
-	body: Formula,
-): QuantifierFormula {
-	return new Tuple(op, varName, body);
-}
-
-// =========================================================
-// 2. TOKENIZER
-// =========================================================
-
-function tokenize(s: string): string[] {
-	const regex = /\s*(?:([()¬∧∨→↔⊤⊥∀∃,])|([a-zA-Z0-9_]+))/g;
-	const tokens: string[] = [];
-	let match = regex.exec(s);
-
-	while (match !== null) {
-		if (match[1]) tokens.push(match[1]);
-		else if (match[2]) tokens.push(match[2]);
-		match = regex.exec(s);
-	}
-	return tokens;
-}
-
-// =========================================================
-// 3. PARSER CLASS
-// =========================================================
 
 export class LogicParser {
-	private tokens: string[];
-	private pos: number = 0;
-	private signature: Signature;
+    private tokens:    string[];
+    private pos:       number = 0;
+    private signature: Signature;
 
-	constructor(input: string, signature: Signature) {
-		this.tokens = tokenize(input);
-		this.signature = signature;
-	}
+    constructor(input: string, signature: Signature) {
+        this.tokens    = tokenize(input);
+        this.signature = signature;
+    }
 
-	private current(): string {
-		return this.pos < this.tokens.length ? this.tokens[this.pos] : "EOF";
-	}
+    private current(): string {
+        return this.pos < this.tokens.length ? this.tokens[this.pos] : 'EOF';
+    }
 
-	private consume(expected?: string): string {
-		const token = this.current();
-		if (expected && token !== expected) {
-			throw new Error(
-				`Erwartet: '${expected}', Gefunden: '${token}' an Pos ${this.pos}`,
-			);
-		}
-		this.pos++;
-		return token;
-	}
+    private consume(expected?: string): string {
+        const token = this.current();
+        if (expected && token != expected) {
+            throw new Error(`expected: '${expected}', found: '${token}' at position ${this.pos}`);
+        }
+        this.pos++;
+        return token;
+    }
 
-	// --- Entry Points ---
-	public parseAll(): Formula {
-		const f = this.parseImplication();
-		if (this.current() !== "EOF") {
-			throw new Error(`Unerwartetes Token am Ende: ${this.current()}`);
-		}
-		return f;
-	}
+    // --- Entry Points ---
+    export public parseFOLFormula(): Formula {
+        const f = this.parseEquivalence(); // Start at the lowest precedence
+        if (this.current() != 'EOF') {
+            throw new Error(`unexpected token at end of string: ${this.current()}`);
+        }
+        return f;
+    }
 
-	public parseTermEntry(): Term {
-		const t = this.parseTerm();
-		if (this.current() !== "EOF") {
-			throw new Error(`Unerwartetes Token am Ende: ${this.current()}`);
-		}
-		return t;
-	}
+    public parseFOLTerm(): Term {
+        const t = this.parseTerm(); 
+        if (this.current() != 'EOF') {
+            throw new Error(`unexpected token at end of string: ${this.current()}`);
+        }
+        return t;
+    }
 
-	// --- Recursive Descent ---
+    // --- Recursive Descent ---
 
-	// LEVEL 1: Implikation & Äquivalenz (RECHTS-assoziativ)
-	private parseImplication(): Formula {
-		const left = this.parseOr();
-		const op = this.current();
+    // LEVEL 0: Equivalence (↔)
+    // Precedence: Lowest
+    // Associativity: NONE (Throws error on A ↔ B ↔ C)
+    private parseEquivalence(): Formula {
+        const left = this.parseImplication();
+        if (this.current() == '↔') {
+            this.consume();
+            const right = this.parseImplication();
+            // check for illegal chaining of '↔'
+            if (this.current() == '↔') {
+                throw new Error("The operator '↔' is not associative. Use parentheses.");
+            }
+            return new BinaryForm('↔', left, right);
+        }
+        return left;
+    }
+    
+    // LEVEL 1: Implication (→)
+    // Precedence: Higher than ↔, lower than ∨
+    // Associativity: RIGHT
+    private parseImplication(): Formula {
+        const left = this.parseOr();
+        if (this.current() == '→') {
+            this.consume();
+            // Right-associativity: recursively call parseImplication for the right side
+            const right = this.parseImplication(); 
+            return new BinaryForm('→', left, right);
+        }
+        return left;
+    }
 
-		if (op === "→") {
-			this.consume();
-			const right = this.parseImplication();
-			return createBinaryFormula("→", left, right);
-		} else if (op === "↔") {
-			this.consume();
-			const right = this.parseImplication();
-			return createBinaryFormula("↔", left, right);
-		}
+    // LEVEL 2: Disjunction (∨)
+    // Associativity: LEFT
+    private parseOr(): Formula {
+        let left = this.parseAnd();
+        while (this.current() == '∨') {
+            this.consume();
+            const right = this.parseAnd();
+            left = new BinaryForm('∨', left, right);
+        }
+        return left;
+    }
 
-		return left;
-	}
+    // LEVEL 3: Conjunction (∧)
+    // Associativity: LEFT
+    private parseAnd(): Formula {
+        let left = this.parseNot();
+        while (this.current() == '∧') {
+            this.consume();
+            const right = this.parseNot();
+            left = new BinaryForm('∧', left, right);
+        }
+        return left;
+    }
 
-	// LEVEL 2: Disjunktion (LINKS-assoziativ)
-	private parseOr(): Formula {
-		let left = this.parseAnd();
-		while (this.current() === "∨") {
-			this.consume();
-			const right = this.parseAnd();
-			left = createBinaryFormula("∨", left, right);
-		}
-		return left;
-	}
+    // LEVEL 4: Negation (¬) & Quantifiers (∀, ∃)
+    private parseNot(): Formula {
+        const token = this.current(); 
+        if (token == '¬') {
+            this.consume();
+            return new NotForm(this.parseNot());
+        }
+        if (token == '∀' || token == '∃') {
+            const op = token;
+            this.consume();
+            const varName = this.current();
+            if (!/^[a-zA-Z0-9_]+$/.test(varName) || varName == 'EOF') {
+                throw new Error("A quantifier must be followed by a variable.");
+            }
+            this.consume();
+            const body = this.parseNot();
+            return new QuantifierForm(op, varName, body);
+        }
+        return this.parseAtom();
+    }
 
-	// LEVEL 3: Konjunktion (LINKS-assoziativ)
-	private parseAnd(): Formula {
-		let left = this.parseNot();
-		while (this.current() === "∧") {
-			this.consume();
-			const right = this.parseNot();
-			left = createBinaryFormula("∧", left, right);
-		}
-		return left;
-	}
+    // LEVEL 5: Atoms
+    private parseAtom(): Formula {
+        const token = this.current();
+        if (token == '(') {
+            this.consume();
+            // Parentheses reset the parsing to the lowest precedence level
+            const f = this.parseEquivalence(); 
+            this.consume(')');
+            return f;
+        }
+        if (token == '⊤') { 
+            this.consume(); 
+            return new ConstForm('⊤'); 
+        }
+        if (token == '⊥') { 
+            this.consume(); 
+            return new ConstForm('⊥'); 
+        }
+        const name = token;
+        if (this.signature.predicates.has(name)) {
+            this.consume();
+            let args: Term[] = [];
+            if (this.current() == '(') {
+                this.consume();
+                if (this.current() != ')') {
+                    args = this.parseTermList();
+                }
+                this.consume(')');
+            }
+            return new PredForm(name, args);
+        }
+        if (this.signature.functions.has(name)) throw new Error(`Symbol '${name}' is a function name, predicate expected.`);
+        throw new Error(`Unexpected token or predicate symbol: '${name}'`);
+    }
 
-	// LEVEL 4: Negation & Quantoren
-	private parseNot(): Formula {
-		const token = this.current();
+    // --- Term Parsing ---
+    private parseTerm(): Term {
+        const name = this.current();
+        if (!/^[a-zA-Z0-9_]+$/.test(name)) {
+            throw new Error(`Ungültiger Term-Start: '${name}'`);
+        }
+        this.consume();
+        if (this.signature.functions.has(name)) {
+            let args: Term[] = [];
+            if (this.current() == '(') {
+                this.consume();
+                if (this.current() != ')') {
+                    args = this.parseTermList();
+                }
+                this.consume(')');
+            }
+            return new FuncTerm(name, args);
+        }
+        if (this.signature.predicates.has(name)) {
+            throw new Error(`Symbol '${name}' is a predicate symbol, it must not occur in a term.`);
+        }
+        return name; // It's a variable string
+    }
 
-		if (token === "¬") {
-			this.consume();
-			const operand = this.parseNot();
-			return createNotFormula(operand);
-		}
-
-		// Quantoren
-		if (token === "∀" || token === "∃") {
-			const op = token;
-			this.consume();
-
-			const varName = this.current();
-			if (!/^[a-zA-Z0-9_]+$/.test(varName) || varName === "EOF") {
-				throw new Error("Nach Quantor muss eine Variable folgen.");
-			}
-			this.consume();
-
-			const body = this.parseNot();
-			return createQuantifierFormula(op, varName, body);
-		}
-
-		return this.parseAtom();
-	}
-
-	// LEVEL 5: Atome
-	private parseAtom(): Formula {
-		const token = this.current();
-
-		// Klammern
-		if (token === "(") {
-			this.consume();
-			const f = this.parseImplication();
-			this.consume(")");
-			return f;
-		}
-
-		// Konstanten
-		if (token === "⊤") {
-			this.consume();
-			return createConstFormula("⊤");
-		}
-		if (token === "⊥") {
-			this.consume();
-			return createConstFormula("⊥");
-		}
-
-		// Prädikat
-		const name = token;
-
-		if (this.signature.predicates.has(name)) {
-			const expectedArity = this.signature.predicates.get(name);
-			this.consume();
-			let args: Term[] = [];
-
-			if (this.current() === "(") {
-				this.consume();
-				if (this.current() !== ")") {
-					args = this.parseTermList();
-				}
-				this.consume(")");
-			}
-
-			// Arität prüfen
-			if (args.length !== expectedArity) {
-				throw new Error(
-					`Prädikat '${name}' erwartet ${expectedArity} Argumente, aber ${args.length} gefunden.`,
-				);
-			}
-
-			return createPredFormula(name, args);
-		}
-
-		if (this.signature.functions.has(name)) {
-			throw new Error(
-				`Symbol '${name}' ist eine Funktion, wird aber als Formel genutzt (Prädikat erwartet).`,
-			);
-		}
-
-		throw new Error(`Unerwartetes Token oder unbekanntes Prädikat: '${name}'`);
-	}
-
-	// --- Term Parsing ---
-
-	private parseTerm(): Term {
-		const name = this.current();
-
-		if (!/^[a-zA-Z0-9_]+$/.test(name)) {
-			throw new Error(`Ungültiger Term-Start: '${name}'`);
-		}
-		this.consume();
-
-		// Funktion
-		if (this.signature.functions.has(name)) {
-			const expectedArity = this.signature.functions.get(name);
-			let args: Term[] = [];
-
-			if (this.current() === "(") {
-				this.consume();
-				if (this.current() !== ")") {
-					args = this.parseTermList();
-				}
-				this.consume(")");
-			}
-
-			// Arität prüfen
-			if (args.length !== expectedArity) {
-				throw new Error(
-					`Funktion '${name}' erwartet ${expectedArity} Argumente, aber ${args.length} gefunden.`,
-				);
-			}
-
-			return createFunTerm(name, args);
-		}
-
-		// Prädikat im Term nicht erlaubt
-		if (this.signature.predicates.has(name)) {
-			throw new Error(
-				`Symbol '${name}' ist ein Prädikat, darf nicht im Term stehen.`,
-			);
-		}
-
-		// Variable
-		return createVarTerm(name);
-	}
-
-	private parseTermList(): Term[] {
-		const args: Term[] = [];
-		args.push(this.parseTerm());
-		while (this.current() === ",") {
-			this.consume();
-			args.push(this.parseTerm());
-		}
-		return args;
-	}
+    private parseTermList(): Term[] {
+        const args: Term[] = [];
+        args.push(this.parseTerm());
+        while (this.current() === ',') {
+            this.consume();
+            args.push(this.parseTerm());
+        }
+        return args;
+    }
 }
 
-// =========================================================
-// 4. MAIN EXPORTS
-// =========================================================
+const testSig: Signature = {
+    functions: new Set(['F', 'G']), 
+    predicates: new Set(['P', 'Red', 'Happy'])
+};
 
-export function parse(input: string, signature: Signature): Formula {
-	const parser = new LogicParser(input, signature);
-	return parser.parseAll();
+function test(s: string, isTerm: boolean = false) {
+    const p = new LogicParser(s, testSig);
+    const parsed = isTerm ? p.parseFOLTerm() : p.parseFOLFormula();
+    console.log(`Input: ${s}`);
+    console.log(`Parsed Object toString: ${parsed.toString()}\n`);
 }
 
-export function parseTerm(input: string, signature: Signature): Term {
-	const parser = new LogicParser(input, signature);
-	return parser.parseTermEntry();
+console.log("--- Testing Terms ---");
+test('G(F(x,y),x)', true);
+
+console.log("--- Testing Formulas ---");
+test('P(F(x),G(z))');
+test('∀x:∃y:P(x,y)');
+test('∀x:∃y:P(x,y)→∃y:∀x:P(x,y)');
+test('¬∀x:(Red(x) → Happy(x))');
+test('∀x:∀y:(¬P(F(x),y)) ∨ ∀u:∀v:(¬P(u,G(v)))');
+
+// 1. Tests basic precedence: '→' should bind tighter than '↔'
+// Expected AST equivalent to: (Red(x) → Happy(x)) ↔ P(y)
+test('Red(x) → Happy(x) ↔ P(y)');
+
+// 2. Tests right-associativity of '→' combined with '↔'
+// Expected AST equivalent to: (P(x) → (Red(x) → Happy(x))) ↔ P(y)
+test('P(x) → Red(x) → Happy(x) ↔ P(y)');
+
+// 3. Tests parentheses overriding the default precedence
+// Expected AST equivalent to: Red(x) → (Happy(x) ↔ P(y))
+test('Red(x) → (Happy(x) ↔ P(y))');
+
+// 4. A complex formula mixing quantifiers, functions, implication, and equivalence
+// Expected AST equivalent to: (∀x: (Red(x) → Happy(F(x)))) ↔ (∃y: P(x,y))
+test('∀x: Red(x) → Happy(F(x)) ↔ ∃y: P(x,y)');
+
+try {
+    console.log("\n--- Testing Non-Associativity Error ---");
+    test('P(x) ↔ Red(x) ↔ Happy(x)');
+} catch (e) {
+    console.log(`Successfully caught error: ${(e as Error).message}`);
 }
+
+
