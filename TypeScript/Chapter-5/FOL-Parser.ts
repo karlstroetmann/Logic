@@ -1,18 +1,9 @@
 function tokenize(s: string): string[] {
-    const lexSpec = /\s*:?\s*(?:([()¬∧∨→↔⊤⊥∀∃,])|([a-zA-Z0-9_]+))/g;
-    const regex = lexSpec;
-    const tokens: string[] = [];
-    let match = regex.exec(s);
-    
-    while ((match) !== null) {
-        if (match[1]) tokens.push(match[1]);
-        else if (match[2]) tokens.push(match[2]);
-        match = regex.exec(s);
-    }
-    return tokens;
+    const regex = /\s*([:()¬∧∨→↔⊤⊥∀∃,]|[a-zA-Z][a-zA-Z0-9_]*)\s*/g;
+    return Array.from(s.matchAll(regex), match => match[1]);
 }
 
-import { RecursiveMap, RecursiveSet, Structural } from 'recursive-set';
+import { Structural } from 'recursive-set';
 
 type ValueOrStr = Structural | string;
 
@@ -25,7 +16,7 @@ function hashStr(s: string): number {
 }
 
 function hashVal(v: ValueOrStr): number {
-    return typeof v === 'string' ? hashStr(v) : v.hashCode;
+    return typeof v == 'string' ? hashStr(v) : v.hashCode;
 }
 
 function hashArr(arr: ValueOrStr[]): number {
@@ -38,22 +29,25 @@ function hashArr(arr: ValueOrStr[]): number {
 
 function valsEqual(a: ValueOrStr, b: ValueOrStr): boolean {
     if (typeof a == 'string' || typeof b == 'string') {
-        return a == b;
+        return a === b;
     }
     return a.equals(b);
 }
 
 function arrEquals(a: ValueOrStr[], b: ValueOrStr[]): boolean {
-    if (a.length !== b.length) return false;
+    if (a.length != b.length) {
+        return false;
+    }
     for (let i = 0; i < a.length; i++) {
         if (!valsEqual(a[i], b[i])) return false;
     }
     return true;
 }
 
-export type Term = string | FuncTerm;
+export type Variable = string;
+export type Term     = Variable | FuncTerm;
 
-class FuncTerm implements Structural {
+export class FuncTerm implements Structural {
     constructor(
         public readonly symbol: string, 
         public readonly args:   Term[]
@@ -68,34 +62,39 @@ class FuncTerm implements Structural {
                this.symbol == other.symbol      && 
                arrEquals(this.args, other.args);
     }
+    
     toString(): string { 
-        return `${this.symbol}(${this.args.join(', ')})`; 
+        if (this.args.length > 0) {
+            return `${this.symbol}(${this.args.join(', ')})`
+        } 
+        return this.symbol; 
     }
 }
 
 export type Formula = ConstForm | PredForm | NotForm | BinaryForm | QuantifierForm;
 
-class ConstForm implements Structural {
+export class ConstForm implements Structural {
     constructor(
         public readonly value: '⊤' | '⊥'
     ) {}
     
     get hashCode(): number { 
-        return this.value === '⊤' ? 1 : 0; 
+        return this.value == '⊤' ? 1 : 0; 
     }
     
     equals(other: unknown): boolean { 
         return other instanceof ConstForm && this.value == other.value; 
     }
+    
     toString(): string { 
         return this.value; 
     }
 }
 
-class PredForm implements Structural {
+export class PredForm implements Structural {
     constructor(
         public readonly symbol: string, 
-        public readonly args: Term[]
+        public readonly args:   Term[]
     ) {}
     
     get hashCode(): number { 
@@ -109,13 +108,14 @@ class PredForm implements Structural {
     }
     
     toString(): string { 
-        return this.args.length > 0                          ? 
-                   `${this.symbol}(${this.args.join(', ')})` : 
-                   this.symbol; 
+        if (this.args.length > 0) {
+            return `${this.symbol}(${this.args.join(', ')})`
+        } 
+        return this.symbol; 
     }
 }
 
-class NotForm implements Structural {
+export class NotForm implements Structural {
     constructor(
         public readonly body: Formula
     ) {}
@@ -123,14 +123,17 @@ class NotForm implements Structural {
     get hashCode(): number { 
         return hashArr(['¬', this.body]); 
     }
+    
     equals(other: unknown): boolean { 
-        return other instanceof NotForm     && 
-               this.body.equals(other.body); 
+        return other instanceof NotForm && this.body.equals(other.body); 
     }
-    toString(): string { return `¬${this.body.toString()}`; }
+    
+    toString(): string { 
+        return `¬${this.body.toString()}`; 
+    }
 }
 
-class BinaryForm implements Structural {
+export class BinaryForm implements Structural {
     constructor(
         public readonly op:   '∧' | '∨' | '→' | '↔', 
         public readonly left: Formula, 
@@ -147,16 +150,17 @@ class BinaryForm implements Structural {
                this.left.equals(other.left)   && 
                this.right.equals(other.right);
     }
+    
     toString(): string { 
         return `(${this.left.toString()} ${this.op} ${this.right.toString()})`; 
     }
 }
 
-class QuantifierForm implements Structural {
+export class QuantifierForm implements Structural {
     constructor(
         public readonly op:       '∀' | '∃', 
         public readonly variable: string, 
-        public readonly body: Formula
+        public readonly body:     Formula
     ) {}
     
     get hashCode(): number { 
@@ -165,7 +169,7 @@ class QuantifierForm implements Structural {
     
     equals(other: unknown): boolean {
         return other instanceof QuantifierForm && 
-               this.op == other.op             && 
+               this.op       == other.op       && 
                this.variable == other.variable && 
                this.body.equals(other.body);
     }
@@ -175,23 +179,24 @@ class QuantifierForm implements Structural {
     }
 }
 
-export interface Signature {
-    functions:  Set<string>;
-    predicates: Set<string>;
-}
+const startsWithLowercase = (token: string): boolean => {
+    return /^[a-z]/.test(token);
+};
+
+const startsWithUppercase = (token: string): boolean => {
+    return /^[A-Z]/.test(token);
+};
 
 export class LogicParser {
-    private tokens:    string[];
-    private pos:       number = 0;
-    private signature: Signature;
+    private tokens: string[];
+    private pos:    number = 0;
 
-    constructor(input: string, signature: Signature) {
-        this.tokens    = tokenize(input);
-        this.signature = signature;
+    constructor(input: string) {
+        this.tokens = tokenize(input);
     }
 
-    private current(): string {
-        return this.pos < this.tokens.length ? this.tokens[this.pos] : 'EOF';
+    private current(): string | null {
+        return this.pos < this.tokens.length ? this.tokens[this.pos] : null;
     }
 
     private consume(expected?: string): string {
@@ -204,17 +209,18 @@ export class LogicParser {
     }
 
     // --- Entry Points ---
-    export public parseFOLFormula(): Formula {
+    public parseFormula(): Formula {
         const f = this.parseEquivalence(); // Start at the lowest precedence
-        if (this.current() != 'EOF') {
+        if (this.current() !== null) {
             throw new Error(`unexpected token at end of string: ${this.current()}`);
         }
         return f;
     }
 
-    public parseFOLTerm(): Term {
+    // parse a term followed by end-of-sring
+    public parseTermEOS(): Term {
         const t = this.parseTerm(); 
-        if (this.current() != 'EOF') {
+        if (this.current() !== null) {
             throw new Error(`unexpected token at end of string: ${this.current()}`);
         }
         return t;
@@ -288,10 +294,11 @@ export class LogicParser {
             const op = token;
             this.consume();
             const varName = this.current();
-            if (!/^[a-zA-Z0-9_]+$/.test(varName) || varName == 'EOF') {
+            if (varName === null || !startsWithLowercase(varName)) {
                 throw new Error("A quantifier must be followed by a variable.");
             }
             this.consume();
+            this.consume(':');
             const body = this.parseNot();
             return new QuantifierForm(op, varName, body);
         }
@@ -317,7 +324,7 @@ export class LogicParser {
             return new ConstForm('⊥'); 
         }
         const name = token;
-        if (this.signature.predicates.has(name)) {
+        if (startsWithUppercase(name)) {
             this.consume();
             let args: Term[] = [];
             if (this.current() == '(') {
@@ -329,38 +336,36 @@ export class LogicParser {
             }
             return new PredForm(name, args);
         }
-        if (this.signature.functions.has(name)) throw new Error(`Symbol '${name}' is a function name, predicate expected.`);
         throw new Error(`Unexpected token or predicate symbol: '${name}'`);
     }
 
     // --- Term Parsing ---
-    private parseTerm(): Term {
+    public parseTerm(): Term {
         const name = this.current();
-        if (!/^[a-zA-Z0-9_]+$/.test(name)) {
-            throw new Error(`Ungültiger Term-Start: '${name}'`);
+        if (startsWithLowercase(name)) {
+            this.consume();
+            return name;  // It's a variable.
+        }
+        if (!startsWithUppercase(name)) {
+            throw new Error(`Invalid start of termStart: '${name}'`);
         }
         this.consume();
-        if (this.signature.functions.has(name)) {
-            let args: Term[] = [];
-            if (this.current() == '(') {
-                this.consume();
-                if (this.current() != ')') {
-                    args = this.parseTermList();
-                }
-                this.consume(')');
+        let args: Term[] = [];
+        if (this.current() == '(') {
+            this.consume();
+            if (this.current() != ')') {
+                args = this.parseTermList();
             }
+            this.consume(')');
             return new FuncTerm(name, args);
         }
-        if (this.signature.predicates.has(name)) {
-            throw new Error(`Symbol '${name}' is a predicate symbol, it must not occur in a term.`);
-        }
-        return name; // It's a variable string
+        return name; // It's a constant symbol.
     }
 
     private parseTermList(): Term[] {
         const args: Term[] = [];
         args.push(this.parseTerm());
-        while (this.current() === ',') {
+        while (this.current() == ',') {
             this.consume();
             args.push(this.parseTerm());
         }
@@ -368,49 +373,16 @@ export class LogicParser {
     }
 }
 
-const testSig: Signature = {
-    functions: new Set(['F', 'G']), 
-    predicates: new Set(['P', 'Red', 'Happy'])
-};
+// =========================================================
+// MAIN EXPORTS
+// =========================================================
 
-function test(s: string, isTerm: boolean = false) {
-    const p = new LogicParser(s, testSig);
-    const parsed = isTerm ? p.parseFOLTerm() : p.parseFOLFormula();
-    console.log(`Input: ${s}`);
-    console.log(`Parsed Object toString: ${parsed.toString()}\n`);
+export function parse(input: string): Formula {
+	const parser = new LogicParser(input);
+	return parser.parseFormula();
 }
 
-console.log("--- Testing Terms ---");
-test('G(F(x,y),x)', true);
-
-console.log("--- Testing Formulas ---");
-test('P(F(x),G(z))');
-test('∀x:∃y:P(x,y)');
-test('∀x:∃y:P(x,y)→∃y:∀x:P(x,y)');
-test('¬∀x:(Red(x) → Happy(x))');
-test('∀x:∀y:(¬P(F(x),y)) ∨ ∀u:∀v:(¬P(u,G(v)))');
-
-// 1. Tests basic precedence: '→' should bind tighter than '↔'
-// Expected AST equivalent to: (Red(x) → Happy(x)) ↔ P(y)
-test('Red(x) → Happy(x) ↔ P(y)');
-
-// 2. Tests right-associativity of '→' combined with '↔'
-// Expected AST equivalent to: (P(x) → (Red(x) → Happy(x))) ↔ P(y)
-test('P(x) → Red(x) → Happy(x) ↔ P(y)');
-
-// 3. Tests parentheses overriding the default precedence
-// Expected AST equivalent to: Red(x) → (Happy(x) ↔ P(y))
-test('Red(x) → (Happy(x) ↔ P(y))');
-
-// 4. A complex formula mixing quantifiers, functions, implication, and equivalence
-// Expected AST equivalent to: (∀x: (Red(x) → Happy(F(x)))) ↔ (∃y: P(x,y))
-test('∀x: Red(x) → Happy(F(x)) ↔ ∃y: P(x,y)');
-
-try {
-    console.log("\n--- Testing Non-Associativity Error ---");
-    test('P(x) ↔ Red(x) ↔ Happy(x)');
-} catch (e) {
-    console.log(`Successfully caught error: ${(e as Error).message}`);
+export function parseTerm(input: string): Term {
+	const parser = new LogicParser(input);
+	return parser.parseTermEOS();
 }
-
-
