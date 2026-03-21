@@ -8,16 +8,12 @@ export interface Assignment {
     [variableName: string]: number;
 }
 
-export interface Solution {
-    [variableName: string]: number;
-}
-
 interface AnnotatedConstraint {
     readonly formula: string;
     readonly vars:    ReadonlySet<string>;
 }
 
-function isComplete(assign: Assignment, vars: readonly string[]): assign is Solution {
+function isComplete(assign: Assignment, vars: readonly string[]): boolean {
     return Object.keys(assign).length == vars.length;
 }
 
@@ -53,22 +49,23 @@ function evaluateExpression(expr: string, context: Assignment): boolean {
     }
 }
 
+function isSubset<T>(A: ReadonlySet<T>, B: Set<T>): boolean {
+    return [...A].every(elem => B.has(elem));
+}
+
 function isConsistent(
-    variable: string,
-    value: number,
-    assignment: Assignment,
+    variable:    string,
+    value:       number,
+    assignment:  Assignment,
     constraints: readonly AnnotatedConstraint[]
 ): boolean {
     const newAssignment = Object.assign({}, assignment, { [variable]: value });
-    const assignedVars = new Set(Object.keys(newAssignment));
+    const assignedVars  = new Set(Object.keys(newAssignment));
     return constraints
         .every(({ formula, vars }) => 
                !(vars.has(variable) && isSubset(vars, assignedVars)) || 
                  evaluateExpression(formula, newAssignment)
               );
-}
-function isSubset<T>(subset: ReadonlySet<T>, superset: Set<T>): boolean {
-    return [...subset].every(elem => superset.has(elem));
 }
 
 function extendAssignment(asgnmnt: Assignment, variable: string, val: number): Assignment {
@@ -80,7 +77,7 @@ function backtrackSearch(
     variables:  readonly string[],
     values:     readonly number[],
     constraints: readonly AnnotatedConstraint[]
-): Solution | null {   
+): Assignment | null {   
     if (isComplete(assignment, variables)) {
         return assignment;
     }
@@ -100,7 +97,7 @@ function backtrackSearch(
     return null;
 }
 
-export function solve(csp: CSP): Solution | null {
+export function solve(csp: CSP): Assignment | null {
     const { Vars, Values, Constrs } = csp;
     const annotatedConstraints: AnnotatedConstraint[] = 
           Constrs.map(f => ({formula: f, vars: collectVariables(f)}));
