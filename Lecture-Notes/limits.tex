@@ -1,7 +1,11 @@
 \chapter{Limits of Computability}
+\epigraph{\blue{The only reliable way to test if a program will run forever is to run it \red{forever}.}}{
+— \calligfont Anonymous}
+
 Every discipline of the sciences has its limits: Students of the medical sciences soon realize that
 it is difficult to \href{http://www.wowhead.com/spell=61999}{raise the dead} and even religious zealots
 have trouble \href{http://www.youtube.com/watch?v=RUMX_b_m3Js}{to walk on water}.
+Only very experienced \href{https://youtu.be/3gLwE44yieY}{bishops} can do it.
 Similarly, computer science has its limits.  We will discuss 
 these limits next.
 First, we show that we cannot decide whether a computer program will eventually
@@ -71,8 +75,12 @@ Therefore, it should come as no surprise that such a procedure does not exist.
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm,
               ]{typescript}
+function range(n: number): number[] {
+    return Array.from({ length: n }, (_, t) => t + 1);
+}
+
 function divisors(k: number): number[] {
-    return Array.from({ length: k }, (_, t) => t + 1).filter(t => k % t == 0);
+    return range(k).filter(t => k % t == 0);
 }
 
 function isPrime(k: number): boolean {
@@ -112,7 +120,7 @@ function findCounterExample(n: number): void {
 Let us proceed to prove formally that the halting problem is not 
 solvable.  To this end, we need the
 following definition.
-\pagebreak
+
 
 \begin{Definition}[Test Function] 
 A string $t$ is a \blue{test function with name $f$} 
@@ -181,7 +189,7 @@ $\mathtt{name}(t) = f$.
 In order to be able to formalize the halting problem succinctly, we introduce three additional
 notations.
 \begin{Notation}[$\leadsto$, $\downarrow$, $\uparrow$]
-If $n$ is the name of a \textsl{Python} function that takes $k$ arguments $a_1$, $\cdots$, $a_k$,
+If $n$ is the name of a \textsl{TypeScript} function that takes $k$ arguments $a_1$, $\cdots$, $a_k$,
 then we write 
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -211,8 +219,8 @@ This notation is read as ``\emph{evaluation of $n(a_1, \cdots, a_k)$ \blue{diver
 \end{enumerate}
 
 \noindent
-The \blue{halting problem} \index{halting problem} for \textsl{Python} functions is the question whether there is a
-\textsl{Python} function \\[0.2cm]
+The \blue{halting problem} \index{halting problem} for \textsl{TypeScript} functions is the question whether there is a
+\textsl{TypeScript} function \\[0.2cm]
 \hspace*{1.3cm} \texttt{def stops($t$,$\;a$): } \\
 \hspace*{2.3cm} $\vdots$
 \\[0.2cm] 
@@ -231,8 +239,8 @@ If the first argument of \texttt{stops} is a test function with name $n$ but the
       diverges, then 
       \texttt{stops($t$, $a$)} returns the number $0$.
 \end{enumerate}
-If there was a \textsl{Python} function \texttt{stops} that did satisfy the specification given above,
-then the halting problem for \textsl{Python} would be \blue{decidable}.
+If there was a \textsl{TypeScript} function \texttt{stops} that did satisfy the specification given above,
+then the halting problem for \textsl{TypeScript} would be \blue{decidable}.
 \index{decidable}
 
 \begin{Theorem}[\href{http://en.wikipedia.org/wiki/Alan_Turing}{Alan Turing}, 1937]
@@ -250,7 +258,7 @@ exist and we will then show that this assumption leads to a contradiction.
 This contradiction will
 leave us with the conclusion that there can be no function \texttt{stops} that satisfies
 the specification given above and that, therefore, the halting problem is undecidable.
-In order to proceed, let us assume that a \textsl{Python} function \texttt{stops}
+In order to proceed, let us assume that a \textsl{TypeScript} function \texttt{stops}
 satisfying the specification given above exists and let us define the string
 \textsl{turing} as shown in Figure \ref{fig:turing-string} below.
 
@@ -361,7 +369,7 @@ As we have obtained contradictions in both cases, the assumption that there is a
 \textbf{Remark}:
 The proof of the fact that the halting problem is undecidable was published in 1937 by Alan Turing (1912 -- 1954)
 \cite{turing:1937}.
-Of course, Turing did not solve the problem for \textsl{Python} but rather
+Of course, Turing did not solve the problem for \textsl{TypeScript} but rather
 for the so called 
 \href{http://en.wikipedia.org/wiki/Indirect_proof}{\emph{Turing machines}}.
 A \blue{Turing machine} \index{turing machine} 
@@ -375,9 +383,9 @@ algorithm will always terminate.
 At this point you might wonder whether there might be another programming language
 that is more powerful so that it would be possible to solve the halting problem if we use this more powerful
 programming language.
-However, if you check the proof given for \textsl{Python} you will easily
+However, if you check the proof given for \textsl{TypeScript} you will easily
 see that this proof can be adapted to any other programming language that is as least as powerful as
-\textsl{Python}.
+\textsl{TypeScript}.
 \eox
 
 Of course, if a programming language is very restricted, then it might be possible to check the
@@ -472,7 +480,6 @@ A \textsl{TypeScript} function \texttt{equal} solves the
 \hspace*{2.1cm} \textsl{body}                                \\[0.2cm]
 \hspace*{1.3cm} \texttt{\}}                                \\[0.2cm]
 and, furthermore, it satisfies the following specification:
-\pagebreak
 
 \begin{enumerate}
 \item $p_1 \not\in T\!F \;\vee\; p_2 \not\in T\!F \quad\Leftrightarrow\quad \mathtt{equal}(p_1, p_2, a) \leadsto 2$.
@@ -518,7 +525,7 @@ Figure \ref{fig:stops} shows this construction of the function \texttt{stops}.
      function stops(t, a) {
          let l = `function loop(x) { 
                       while (true) {
-                          x = 1;`
+                          x = 1;
                       }
                  }`;
          let e = equal(l, t, a);
@@ -582,6 +589,7 @@ However, as the recently developed systems rely on both
 \href{http://en.wikipedia.org/wiki/Automated_theorem_proving}{\emph{automatic theorem proving}} and
 \href{http://en.wikipedia.org/wiki/Ramsey_theory}{\emph{Ramsey theory}} they are quite out of the
 scope of this lecture.
+\pagebreak
 
 \section{Chapter Review}
 You should be able to solve the following exercises.
@@ -589,7 +597,7 @@ You should be able to solve the following exercises.
 \item Define the notion of a test function.
 \item Define the halting problem.
 \item Prove that the halting problem is not decidable.
-\item How is the notion $\simeq$ defined.
+\item Show how the notion $\simeq$ is defined.
 \item Define the equivalence problem.
 \item Prove that the equivalence problem is not decidable.
 \item Define the notion of a countable set.
@@ -597,7 +605,6 @@ You should be able to solve the following exercises.
 \item Provide an example of an unsolved mathematical problem that could be easily solved if the halting problem
       was decidable.
 \end{enumerate}
-\pagebreak
 
 \section{Further Reading}
 The book ``\emph{Introduction to the Theory of Computation}'' by Michael Sipser \cite{sipser:1996}
