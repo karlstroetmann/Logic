@@ -5,7 +5,7 @@ Some of these notebooks have later been edited by myself.
 ## Setup
 First, you have to install `node`.
 
-This depends on yoiu operating system.
+This depends on your operating system.
 1. MacOS: provided you have installed homebrew, the following command works:
 
 brew install node
