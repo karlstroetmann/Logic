@@ -2,6 +2,18 @@ The TypeScript programs in this directory have been translated from the Jupyter 
 containing Python programs by Tobias Neithöfer und Leo Vatter.
 Some of these notebooks have later been edited by myself.
 
+## Experimental Setup with docker
+There is now an experimental docker setup which is much easier to set up:
+
+1. Install Docker on your system (see [here](https://www.docker.com/products/docker-desktop/) for Docker Desktop)
+2. Go into this directory
+3. Run the command `docker compose build` in a command line to build the image (only needs to run once)
+4. Run the command `docker compose up` in a command line to execute the container
+5. In the command line you will now see a link that looks like this: `http://localhost:8888/lab?token=...`
+6. Open it in your browser
+7. Click on the `00-TypeScript`-Folder to access the notebooks
+8. Once your done, hit Ctrl+C to stop the container
+
 ## Setup
 First, you have to install `node`.
 
