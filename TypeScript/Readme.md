@@ -15,6 +15,8 @@ There is now an experimental docker setup which is much easier to set up:
 8. Once your done, hit Ctrl+C to stop the container
 
 ## Setup
+Alternatively, you can use the following setup to install everything locally:
+
 First, you have to install `node`.
 
 This depends on your operating system.
