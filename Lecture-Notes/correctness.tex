@@ -25,7 +25,7 @@ the value $m^n$.  We will verify the correctness of this function.
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
-              ]{python3}
+              ]{typescript}
 function power(m: bigint, n: number): bigint {
     if (n == 0) {
         return 1n;
@@ -43,9 +43,9 @@ function power(m: bigint, n: number): bigint {
   \label{fig:power.py}
 \end{figure} 
 
-It is by no means obvious that the program shown in \ref{fig:power.py} does compute
+It is by no means obvious that the function shown in \ref{fig:power.py} does compute the value
 $m^n$.  We prove this claim by  \blue{computational induction}\index{computational induction}.
-\gls{ci} is an induction on the number of recursive invocations.
+Technically, \gls{ci} is an induction on the number of recursive invocations of a function that is defined recursively.
 This method is the method of choice to prove the correctness of a function if this function is defined recursively.
 A proof by computational induction consists of three parts:
 
@@ -143,7 +143,7 @@ $\lfloor x \rfloor := \mathtt{Math.floor}(x)$.
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
-                ]{python3}
+                ]{typescript}
 function divMod(m: number, n: number): [number, number] {
     if (m < n) {
         return [0, m];
@@ -171,7 +171,33 @@ $\mathtt{divMod}(m, n) = (q, r)  \rightarrow m = q \cdot n + r \;\wedge\; r < n$
 
 
 \proof
-Assume that $m,n \in \mathbb{N}$, where $n > 0$.  Furthermore, assume
+Before we start with the details of the proof, let us note that the following equation is valid for all $m\in\mathbb{N}$:
+\\[0.2cm]
+\hspace*{1.3cm}
+$2 \cdot \lfloor m / 2 \rfloor + m \mmod 2 = m$.
+\\[0.2cm]
+The easiest way to see this is to write the number $m$ in the binary system.  If the binary representation of
+$m$ is written with $k$ bits $b_0$, $b_1$, $\cdot$, $b_{k-1}$ where $b_0$ is the least significant bit, then we have
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds m = \sum\limits_{i=0}^{k-1} b_i \cdot 2^i$.
+\\[0.2cm] 
+But then it is easy to see that the following holds:
+\begin{enumerate}
+\item $\ds \lfloor m / 2 \rfloor =
+         \left\lfloor\sum\limits_{i=1}^{k-1} b_i \cdot 2^{i-1} + b_0 \cdot\frac{1}{2}\right\rfloor = 
+         \sum\limits_{i=1}^{k-1} b_i \cdot 2^{i-1} $,
+\item $m \mmod 2 = b_0$.
+\end{enumerate}
+Form this we get
+\\[0.2cm]
+\hspace*{1.3cm}
+$\ds 2 \cdot \lfloor m / 2 \rfloor + m \mmod 2 = 2 \cdot \sum\limits_{i=1}^{k-1} b_i \cdot 2^{i-1} + b_0 =
+\sum\limits_{i=0}^{k-1} b_i \cdot 2^i = m$.
+\\[0.2cm]
+
+Now we can start with the proof of the correctness of the function \texttt{divMod}. We assume
+that $m,n \in\mathbb{N}$, where $n > 0$.  Furthermore, assume 
 \\[0.2cm]
 \hspace*{1.3cm}
 $\bar{q}, \bar{r} = \mathtt{divMod}(m, n)$.
@@ -239,7 +265,7 @@ Since \texttt{divMod} is defined recursively, the proof of these formulas is don
     \hspace*{1.3cm}
     $2 \cdot r + m \mmod 2 < n$.
     \\[0.2cm]
-    However, this inequation is the condition of this case of the case distinction and is therefore valid. \mycheck
+    However, this inequation is the condition of this case of the case distinction and hence it is true. \mycheck
   \item $2 \cdot r + m \mmod 2 \geq n$
 
     In this case we have $\bar{q} = 2 \cdot q + 1$ and $\bar{r} = 2 \cdot r + m \mmod 2 - n$.
@@ -347,7 +373,7 @@ This concludes the proof. \qed
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
-                ]{python3}
+                ]{typescript}
 function ggt(a: number, b: number): number {
     while(b != 0) {
         [a, b] = [b, a % b];
@@ -374,7 +400,7 @@ of its arguments, i.e.~prove that $\mathtt{ggt}(a, b) = \mathtt{gcd}(a, b)$ hold
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
-                ]{python3}
+                ]{typescript}
 function root(n: bigint): bigint {
     if (n == 0n) {
         return 0n;
@@ -419,7 +445,7 @@ holds for every $n \in \mathbb{N}$.  You should use computational induction to v
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm,
-              ]{python3}
+              ]{typescript}
 function square(n: number): number {
     if (n == 0) {
         return 0;
@@ -455,7 +481,7 @@ holds for all $n \in \mathbb{N}$ and all $k \in \{ 0, \cdots, n \}$. \eox
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm,
-                ]{python3}
+                ]{typescript}
 function binomial(n: number, k: number): number {
     if (k == 0 || k == n) {
         return 1;
