@@ -65,7 +65,7 @@ above and can have an arbitrary complexity.
 Using propositional operators, the statement (1) can be written as follows:
  \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{sunny} \wedge \texttt{raining} \rightarrow \texttt{rainBow}$.
+$\texttt{sunny} \wedge \texttt{rainy} \rightarrow \texttt{rainBow}$.
 \\[0.2cm]
 Here, we have used  $\texttt{sunny}$, $\texttt{rainy}$ and $\texttt{rainBow}$ as propositional variables.
 
@@ -122,7 +122,7 @@ applications which I have seen myself during the years when I did work in indust
 \begin{enumerate}
 \item \href{https://en.wikipedia.org/wiki/Electronic_design_automation}{Analysis and design of electronic circuits}.
 
-      Modern digital circuits are comprised of hundreds of millions of logical gates.\footnote{The web page
+      Modern digital circuits are comprised of hundreds of billions of logical gates.\footnote{The web page
       \href{https://en.wikipedia.org/wiki/Transistor_count}{\texttt{https://en.wikipedia.org/wiki/Transistor\_count}}
       gives an overview of the complexity of modern processors.}
       A logical gate  is a building block, that represents a logical connective such as ``\blue{and}'',
@@ -161,7 +161,7 @@ In this section we first cover the \blue{syntax} of propositional formulas.  Aft
 and how we can combine formulas into a \blue{proof}.  The  \blue{semantics}\index{semantics} of propositional
 logic is concerned with the  \blue{meaning} of propositional formulas.
 We will first define the semantics of propositional logic with the help of set theory.
-Then, we implement this semantics in \textsl{Python}.
+Then, we implement this semantics in \textsl{TypeScript}.
 
 \subsection{The Syntax of Propositional Formulas}
 We define propositional formulas as strings.  To this end we assume a set  $\mathcal{P}$ \index{$\mathcal{P}$, set of propositional variables} 
@@ -232,11 +232,9 @@ In order to save parentheses we agree on the following rules:
       \hspace*{1.3cm} $p \wedge q \wedge r$ \quad instead of \quad $(p \wedge q) \wedge r$.
 \item \underline{\textbf{\red{In this lecture}}} the logical operators 
       $\wedge$ and $\vee$ have the \underline{same} precedence.  This is different from the programming
-      language  \textsl{Python}.  In \textsl{Python} the operator ``\texttt{and}'' has a higher precedence than
-      the  operator ``\texttt{or}''.
-      
-      In the programming languages  \texttt{C} and \textsl{Java} the operator ``\texttt{\&\&}'' also has a higher
-      precedence than the operator ``\texttt{||}''. 
+      language  \textsl{TypeScript}.  In the programming languages \textsl{TypeScript}, \texttt{C}, and
+      \textsl{Java} the operator ``\texttt{\&\&}'' has a higher precedence than 
+      the  operator ``\texttt{||}''.  
 \item The operator $\rightarrow$ is \underline{\red{ri}}\red{g}\underline{\red{ht associative}}, i.e.~we write \\[0.2cm]
       \hspace*{1.3cm} $p \rightarrow q \rightarrow r$ \quad instead of \quad $p \rightarrow (q \rightarrow r)$.
 \item The operators  $\vee$ and $\wedge$ have a higher precedence than the operator $\rightarrow$.  Therefore,
@@ -291,8 +289,8 @@ the connectives of propositional logic we agree on the following:
 \subsection{Semantics of Propositional Formulas}
 In this section we define the \blue{meaning} a.k.a.~the \blue{semantics}\index{semantics} of propositional
 formulas.  To this end we assign truth values to propositional formulas.  First, we define the set 
-$\mathbb{B}$ \index{$\mathcal{B} = \{ \texttt{True}, \texttt{False} \}$} of \blue{truth values}\index{truth values}:  \\[0.2cm] 
-\hspace*{1.3cm} $\mathbb{B} := \{ \texttt{True}, \texttt{False} \}$. \\[0.2cm]
+$\mathbb{B}$ \index{$\mathcal{B} = \{ \texttt{true}, \texttt{false} \}$} of \blue{truth values}\index{truth values}:  \\[0.2cm] 
+\hspace*{1.3cm} $\mathbb{B} := \{ \texttt{true}, \texttt{false} \}$. \\[0.2cm]
 Next, we define the notion of a \blue{propositional valuation}.
 
 \begin{Definition}[Propositional Valuation]
@@ -330,13 +328,13 @@ via the following \blue{truth table} \index{truth table} (Table \ref{tab:aussage
    \\
 \hline
 \hline
-   \texttt{True}  & \texttt{True}   & \texttt{False}  & \texttt{True}  & \texttt{True}  & \texttt{True}     & \texttt{True}  \\
+   \texttt{true}  & \texttt{true}   & \texttt{false}  & \texttt{true}  & \texttt{true}  & \texttt{true}     & \texttt{true}  \\
 \hline
-   \texttt{True}  & \texttt{False}  & \texttt{False}  & \texttt{True}  & \texttt{False} & \texttt{False}    & \texttt{False}  \\
+   \texttt{true}  & \texttt{false}  & \texttt{false}  & \texttt{true}  & \texttt{false} & \texttt{false}    & \texttt{false}  \\
 \hline
-   \texttt{False} & \texttt{True}   & \texttt{True}   & \texttt{True}  & \texttt{False} & \texttt{True}     & \texttt{False} \\
+   \texttt{false} & \texttt{true}   & \texttt{true}   & \texttt{true}  & \texttt{false} & \texttt{true}     & \texttt{false} \\
 \hline
-   \texttt{False} & \texttt{False}  & \texttt{True}   & \texttt{False} & \texttt{False} & \texttt{True}     & \texttt{True}  \\
+   \texttt{false} & \texttt{false}  & \texttt{true}   & \texttt{false} & \texttt{false} & \texttt{true}     & \texttt{true}  \\
 \hline
   \end{tabular}}
   \caption{Interpretation of the propositional operators.}
@@ -346,8 +344,8 @@ Then the truth value of a propositional formula $f$ under a given propositional 
 defined via induction of $f$.  We will denote the truth value as
 $\widehat{\mathcal{I}}(f)$ \index{$\widehat{\mathcal{I}}(f)$}.  We have
 \begin{enumerate}
-\item $\widehat{\mathcal{I}}(\falsum) := \texttt{False}$.
-\item $\widehat{\mathcal{I}}(\verum) := \texttt{True}$.
+\item $\widehat{\mathcal{I}}(\falsum) := \texttt{false}$.
+\item $\widehat{\mathcal{I}}(\verum) := \texttt{true}$.
 \item $\widehat{\mathcal{I}}(p) := \mathcal{I}(p)$ for all $p \in \mathcal{P}$.
 \item $\widehat{\mathcal{I}}(\neg f) := \circneg\;\bigl(\widehat{\mathcal{I}}(f)\bigr)$ for all $f \in \mathcal{F}$.
 \item $\widehat{\mathcal{I}}(f \wedge g) := \circwedge\;\bigl(\widehat{\mathcal{I}}(f), \widehat{\mathcal{I}}(g)\bigr)$ 
@@ -385,93 +383,87 @@ $
    \mathcal{I}\Bigl( (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q  \Bigr) 
    & = &  \circright\Bigl( \mathcal{I}\bigl( (p \rightarrow q) \bigr),\, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
    & = & \circright\Bigl( \circright\bigl( \mathcal{I}(p), \mathcal{I}(q) \bigr),\, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
-   & = & \circright\Bigl( \circright\bigl( \texttt{True}, \texttt{False} \bigr),\, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
-   & = & \circright\Bigl( \texttt{False}, \, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
-   & = & \texttt{True} 
+   & = & \circright\Bigl( \circright\bigl( \texttt{true}, \texttt{false} \bigr),\, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
+   & = & \circright\Bigl( \texttt{false}, \, \mathcal{I}\bigl((\neg p \rightarrow q) \rightarrow q\bigr) \Bigr) \\[0.2cm]
+   & = & \texttt{true} 
   \end{array}
 $ \eox
 \\[0.2cm]
 Note that we did just evaluate some parts of the formula.  The reason is that as soon as we know that the first
-argument of $\circright$ is \texttt{False} the value of the corresponding formula is already determined.
+argument of $\circright$ is \texttt{false} the value of the corresponding formula is already determined.
 Nevertheless, this approach is too cumbersome.  In practice, we do not evaluate large propositional formulas
 ourselves.  Instead, we will next implement a \textsl{Python} program that evaluates these formulas for us.
 
 \subsection{Implementation} 
-In this section we develop a \textsl{Python} program that can evaluate propositional formulas.
+In this section we develop a \textsl{TypeScript} program that can evaluate propositional formulas.
 Every time when we develop a program to compute something useful we have to decide which data structures are
 most appropriate to represent the information that is to be processed by the program.  In this case we want to
 process propositional formulas.  Therefore, we have to decide how to represent propositional formulas in
-\textsl{Python}.  One obvious possibility would be to use strings.  However, this would be a bad choice as it
+\textsl{TypeScript}.  One obvious possibility would be to use strings.  However, this would be a bad choice as it
 would then be difficult to access the parts of a given formula.  It is far more suitable to represent
 propositional formulas as \blue{nested tuples}.  A nested tuple is a tuple that contains both strings and
 nested tuples.  For example,
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{(\tsq{$\wedge$}, (\tsq{$\neg$}, \tsq{p}), \tsq{q})}
+\texttt{[\tsq{$\wedge$}, [\tsq{$\neg$}, \tsq{p}], \tsq{q}]}
 \\[0.2cm]
 is a nested tuple that represents the propositional formula $\neg p \wedge q$.
 
 Formally, the representation of propositional formulas is defined by a function 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\textsl{rep}: \mathcal{F} \rightarrow \textsl{Python}$
+$\textsl{rep}: \mathcal{F} \rightarrow \textsl{TypeScript}$
 \\[0.2cm]
 that maps a propositional formula $f$ to the corresponding nested tuple \index{nested tuple}
 $\textsl{rep}(f)$.  We define $\textsl{rep}(f)$ inductively by induction on $f$.
 \begin{enumerate}
-\item $\verum$ is represented as the tuple \texttt{(\tsq{$\top$},)}.
+\item $\verum$ is represented as the tuple \texttt{[\tsq{$\top$}]}.
   
-      This is possible because \texttt{\tsq{$\top$}} is a unicode symbol and \textsl{Python} supports the use of unicode
-      symbols in strings.   Alternatively, in \textsl{Python} the string \texttt{\tsq{$\top$}} can be written as
-      \texttt{\tsq{\symbol{92}N\{up tack\}}} since ``\texttt{up tack}'' is the name of the unicode symbol
-      ``$\top$'' and any unicode symbol that has the name  $u$ can be written 
-      as \texttt{\tsq{\symbol{92}N\{$u$\}}} in \textsl{Python}.  Therefore, we have
+      This is possible because \texttt{\tsq{$\top$}} is a unicode symbol and \textsl{TypeScript} supports the
+      use of unicode symbols in strings.  Therefore, we have  
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\textsl{rep}(\verum) := \texttt{(\tsq{\symbol{92}N\{up tack\}},)}$.
-\item $\falsum$  is represented as the tuple \texttt{(\tsq{$\falsum$},)}.
-      
-      The unicode symbol \texttt{\tsq{$\falsum$}} has the name ``\texttt{down tack}''.
+      $\textsl{rep}(\verum) := \texttt{[\tsq{$\top$}]}$.
+\item $\falsum$  is represented as the tuple \texttt{[\tsq{$\falsum$}]}.      
       Therefore, we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\textsl{rep}(\falsum) := \texttt{(\tsq{\symbol{92}N\{down tack\}},)}$.
+      $\textsl{rep}(\falsum) := \texttt{[\tsq{$\falsum$}]}$.
 \item Since propositional variables are strings we can represents these variables by themselves:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{rep}(p) := p$ \quad for all $p \in \mathcal{P}$.
 \item If $f$ is a propositional formula, the  negation $\neg f$ is represented as a pair where
       we put the unicode symbol \texttt{\tsq{$\neg$}} at the first position, while the representation of $f$ is put
-      at the second position.  As the name of the unicode symbol \texttt{\tsq{$\neg$}} is
-      ``\texttt{not sign}'' we have
+      at the second position.  We have
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(\neg f) := \bigl(\texttt{\tsq{$\neg$}}, \textsl{rep}(f)\bigr)$.
+      $\textsl{rep}(\neg f) := \texttt{[}\texttt{\tsq{$\neg$}}, \textsl{rep}(f)\texttt{]}$.
 \item If $f_1$ and $f_2$ are propositional formulas, we represent $f_1 \wedge f_2$ with the help of the
       unicode symbol \texttt{\tsq{$\wedge$}}.  This symbol has the name ``\texttt{logical and}''.  Hence we have
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(f \wedge g) := \bigl(\texttt{\tsq{$\wedge$}}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
+      $\textsl{rep}(f \wedge g) := \texttt{[\tsq{$\wedge$}}, \textsl{rep}(f), \textsl{rep}(g)\texttt{]}$.
 \item If $f_1$ and $f_2$ are propositional formulas, we represent $f_1 \vee f_2$ with the help of the unicode symbol
-      \texttt{'$\vee$'}. This symbol has the name ``\texttt{logical or}''.  Hence we have
+      \texttt{'$\vee$'}. Hence we have
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(f \vee g) := \bigl(\texttt{\tsq{$\vee$}}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
+      $\textsl{rep}(f \vee g) := \texttt{[\tsq{$\vee$}}, \textsl{rep}(f), \textsl{rep}(g)\texttt{]}$.
 \item If $f_1$ and $f_2$ are propositional formulas, we represent $f_1 \rightarrow f_2$ with the help of the
-      unicode symbol \texttt{\tsq{$\rightarrow$}}.  This symbol has the name ``\texttt{rightwards arrow}''.
+      unicode symbol \texttt{\tsq{$\rightarrow$}}.  
       Hence we have
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(f \rightarrow g) := \bigl(\texttt{\tsq{$\rightarrow$}}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
+      $\textsl{rep}(f \rightarrow g) := \texttt{[\tsq{$\rightarrow$}}, \textsl{rep}(f), \textsl{rep}(g)\texttt{]}$.
 \item If $f_1$ and $f_2$ are propositional formulas, we represent $f_1 \leftrightarrow f_2$ with the help of
-      the unicode symbol \texttt{\tsq{$\leftrightarrow$}}.  This symbol has the name ``\texttt{left right arrow}''.
+      the unicode symbol \texttt{\tsq{$\leftrightarrow$}}.  
       Hence we have
       \\[0.2cm]
       \hspace*{1.3cm} 
-      $\textsl{rep}(f \leftrightarrow g) := \bigl(\texttt{\tsq{$\leftrightarrow$}}, \textsl{rep}(f), \textsl{rep}(g)\bigr)$.
+      $\textsl{rep}(f \leftrightarrow g) := \texttt{[\tsq{$\leftrightarrow$}}, \textsl{rep}(f), \textsl{rep}(g)\texttt{]}$.
 \end{enumerate}
-When choosing the representation of a formula in \textsl{Python} we have a lot of freedom.
-We could as well have represented formulas as objects of different classes.  A good representation should have
+When choosing the representation of a formula in \textsl{TypeScript} we have a lot of freedom.
+We could as well have represented formulas as objects.  A good representation should have
 the following properties:
 \begin{enumerate}
 \item It should be intuitive, i.e.~we do not want to use any obscure encoding.
@@ -490,15 +482,15 @@ A \blue{propositional valuation} is a function
 \hspace*{1.3cm} ${\cal I}: {\cal P} \rightarrow \mathbb{B}$ \\[0.2cm]
 mapping the set of propositional variables ${\cal P}$ into the set of truth values
 $\mathbb{B} = \bigl\{ \mathtt{True}, \mathtt{False} \bigr\}$.
-We represent a propositional valuation $\mathcal{I}$ as the set of all propositional variables that are mapped
-to \texttt{True} by $\mathcal{I}$:
+We represent a propositional valuation $\mathcal{I}$ as a set of all propositional variables that are mapped
+to \texttt{true} by $\mathcal{I}$:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\textsl{rep}(\mathcal{I}) := \bigl\{ x \in \mathcal{P} \mid \mathcal{I}(x) = \texttt{True} \bigr\}$.
+$\textsl{rep}(\mathcal{I}) := \bigl\{ x \in \mathcal{P} \mid \mathcal{I}(x) = \texttt{true} \bigr\}$.
 \\[0.2cm]
 This enables us to implement a simple function that evaluates a propositional formula $f$ with a given
 propositional valuation $\mathcal{I}$.
-The \textsl{Python} function \mytt{evaluate} is shown in Figure \ref{fig:evaluate.py} on page
+The \textsl{TypeScript} function \mytt{evaluate} is shown in Figure \ref{fig:evaluate.py} on page
 \pageref{fig:evaluate.py}. 
 The function \texttt{evaluate} takes two arguments.
 \begin{enumerate}
@@ -517,18 +509,34 @@ The function \texttt{evaluate} takes two arguments.
                 numbersep     = -0.2cm,
                 xleftmargin   = 0.3cm,
                 xrightmargin  = 0.3cm
-                ]{python3}
-    def evaluate(F, I):
-        match F:
-            case p if isinstance(p, str): 
-                return p in I
-            case ('⊤', ):     return True
-            case ('⊥', ):     return False
-            case ('¬', G):    return not evaluate(G, I)
-            case ('∧', G, H): return     evaluate(G, I) and evaluate(H, I)
-            case ('∨', G, H): return     evaluate(G, I) or  evaluate(H, I)
-            case ('→', G, H): return     evaluate(G, I) <=  evaluate(H, I)
-            case ('↔', G, H): return     evaluate(G, I) ==  evaluate(H, I)
+                ]{typescript}
+    type Variable = string;
+    type Formula = Variable 
+                 | ['⊤' | '⊥'] 
+                 | ['¬', Formula] 
+                 | ['↔' | '→' | '∧' | '∨', Formula, Formula];
+    
+    function evaluate(F: Formula, I: string[]): boolean {
+        if (typeof F == 'string') { // F is a propositional variable
+            return I.includes(F);
+        }
+        switch (F[0]) {
+            case '⊤': 
+                return true;
+            case '⊥': 
+                return false;
+            case '¬': 
+                return !evaluate(F[1], I);
+            case '∧': 
+                return evaluate(F[1], I) && evaluate(F[2], I);
+            case '∨': 
+                return evaluate(F[1], I) || evaluate(F[2], I);
+            case '→': 
+                return evaluate(F[1], I) <= evaluate(F[2], I);
+            case '↔': 
+                return evaluate(F[1], I) == evaluate(F[2], I); 
+        }
+    }             
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Evaluation of a propositional formula.}
@@ -538,35 +546,36 @@ The function \texttt{evaluate} takes two arguments.
 \noindent
 Next, we discuss the implementation of the function \texttt{evaluate()}.
 \begin{enumerate}
-\item We make use of the \texttt{match} statement, which is available since \textsl{Python} $3.10$.
-      This control structure is explained in the tutorial ``PEP 636: Structural Pattern Matching''
-      available at
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \href{https://peps.python.org/pep-0636/}{https://peps.python.org/pep-0636/}.
-\item Line 3 deals with the case that the argument $F$ is a propositional variable.  We can recognize this by
-      the fact that $F$ is a string, which we can check with the predefined function
-      \texttt{isinstance}.
+\item First we define the type that we are going to use.
+      \begin{enumerate}[(a)]
+      \item A \texttt{Variable} is just a \texttt{string}.
+      \item A \texttt{Formula} is either a \texttt{Variable} or a nested tuple as discussed above.
+      \end{enumerate}
+\item Line 8 deals with the case that the argument $F$ is a propositional variable.  We can recognize this by
+      the fact that $F$ is a string, which we can check with the operator
+      \texttt{typeof}.
 
-      In this case we have to check whether the variable $p$ is an element of the set $I$, because $p$ is
-      interpreted as \texttt{True} if and only if $p \in I$.
-\item If $F$ is $\verum$, then evaluating $F$ always yields \texttt{True}.
-\item If $F$ is $\falsum$, then evaluating $F$ always yields \texttt{False}. 
+      In this case we have to check whether the variable $p$ is an element of the list $I$, because $p$ is
+      interpreted as \texttt{true} if and only if $p \in I$.  The method $L\mathtt{.has}(x)$
+      takes a set $L$ and checks, whether $x$ is an element of $L$.
+\item If $F$ is $\verum$, then evaluating $F$ always yields \texttt{true}.
+\item If $F$ is $\falsum$, then evaluating $F$ always yields \texttt{false}. 
 \item If $F$ has the form $\neg G$, we recursively evaluate $G$ given the evaluation $I$ and negate the result.
+      Since $F$ is a tuple of the form [\tsq{$\neg$}, $G$], the subformula $G$ satisfies $G = F[1]$.
 \item If $F$ has the form $G \wedge H$, we recursively evaluate
-      $G$ and $H$ using $I$.  The results are then combined with the \textsl{Python} operator
-      ``\texttt{and}''.
+      $G$ and $H$ using $I$.  The results are then combined with the \textsl{TypeScript} operator
+      ``\texttt{\&\&}''.
 \item If $F$ has the form $G \vee H$, we recursively evaluate
-      $G$ and $H$ using $I$.  The results are then combined with the \textsl{Python} operator
-      ``\texttt{or}''.
+      $G$ and $H$ using $I$.  The results are then combined with the \textsl{TypeScript} operator
+      ``\texttt{||}''.
 \item If $F$ has the form $G \rightarrow H$, we recursively evaluate
-      $G$ and $H$ using $I$.  Then we exploit the fact that in \textsl{Python} the values \texttt{True} and
-      \texttt{False} are ordered and we have
+      $G$ and $H$ using $I$.  Then we exploit the fact that in \textsl{TypeScript} the values \texttt{true} and
+      \texttt{false} are ordered and we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      \texttt{False < True}.
+      \texttt{false < true}.
       \\[0.2cm]
-      Now the evaluation of the formula $G \rightarrow H$ is only false if the evaluation of $G$ yields \texttt{True} but the
+      Now the evaluation of the formula $G \rightarrow H$ is only false if the evaluation of $G$ yields \texttt{true} but the
       evaluation of $H$ yields false.  Therefore, 
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -604,7 +613,7 @@ Their names are Aaron, Bernard, and Caine.  The evaluation of the files reveals 
 
       It is not straightforward to translate this statement into a propositional formula.
       One trick we can try is to negate the statement and then try to translate the negation.
-      Now the statement given above is wrong if Caine is innocent but both Aaron and Bernard are guilty.
+      Now the statement given above is wrong if and only if Caine is innocent but both Aaron and Bernard are guilty.
       Therefore we can translate this statement as follows: \\[0.2cm]
       \hspace*{1.3cm} $f_5 := \neg ( \neg c  \wedge a \wedge b )$ 
 \item \green{If Caine is innocent, then Aaron is guilty.} 
@@ -614,11 +623,11 @@ Their names are Aaron, Bernard, and Caine.  The evaluation of the files reveals 
 \end{enumerate}
 We now have a set $F = \{ f_1, f_2, f_3, f_4, f_5, f_6 \}$ of propositional formulas.
 The question then is to find all propositional valuations $\mathcal{I}$ that evaluate all formulas from $F$ as
-\texttt{True}.  If there is exactly one such propositional valuation, then this valuation gives us the culprits.
+\texttt{true}.  If there is exactly one such propositional valuation, then this valuation gives us the culprits.
 As it is too time consuming to try all possible valuations by hand we will write a program that performs the
 required computations.
 Figure \ref{fig:Usual-Suspects.ipynb} shows the program
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/02-Usual-Suspects.ipynb}{\texttt{02-Usual-Suspects.ipynb}}.
+\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/02-Usual-Suspects.ipynb}{\texttt{02-Usual-Suspects.ipynb}}.
 We discuss this program next.
 
 \begin{figure}[!ht]
@@ -630,32 +639,42 @@ We discuss this program next.
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
-              ]{python3}
-    %run Propositional-Logic-Parser.ipynb
-
-    def parse(s):
-        parser = LogicParser(s) 
-        return parser.parse()   
+              ]{typescript}
+    import { RecursiveSet, Value } from 'recursive-set';
     
-    P = { 'a', 'b', 'c' }
-    # Aaron, Bernard, or Caine is guilty.
-    f1 = 'a ∨ b ∨ c'
-    # If Aaron is guilty, he has exactly one accomplice.
-    f2 = 'a → b ∨ c'
-    f3 = 'a → ¬(b ∧ c)'
-    # If Bernard is innocent, then Caine is innocent, too.
-    f4 = '¬b → ¬c'
-    # If exactly two of the suspects are guilty, then Caine is one of them.
-    f5 = '¬(¬c ∧ a ∧ b)'
-    # If Caine is innocent, then Aaron is guilty.
-    f6 = '¬c → a'
-    Fs = { f1, f2, f3, f4, f5, f6 };
-    Fs = { parse(f) for f in Fs }
-
-    def allTrue(Fs, I):
-        return all({evaluate(f, I) for f in Fs})
-
-    print({ I for I in power(P) if allTrue(Fs, I) })
+    type RS<T extends Value> = RecursiveSet<T>;
+    const RS = RecursiveSet;
+    
+    const P = new RS('a', 'b', 'c');
+    
+    const f1 = 'a ∨ b ∨ c';
+    const f2 = 'a → b ∨ c';
+    const f3 = 'a → ¬(b ∧ c)';
+    const f4 = '¬b → ¬c';
+    const f5 = '¬(¬c ∧ a ∧ b)';
+    const f6 = '¬c → a';
+    const Fs = [f1, f2, f3, f4, f5, f6];
+    
+    import { LogicParser } from './PropositionalLogicParser'
+    
+    type Variable = string;
+    type Formula = Variable 
+                 | ['⊤' | '⊥'] 
+                 | ['¬', Formula] 
+                 | ['↔' | '→' | '∧' | '∨', Formula, Formula];
+    
+    function parse(s: string): Formula {
+        const parser = new LogicParser(s);
+        return parser.parse();
+    }
+    
+    const Gs = Fs.map(f => parse(f));
+        
+    function allTrue(Gs: Formula[], I: RS<Variable>): boolean {
+        return Gs.every(f => evaluate(f, I));
+    }
+    
+    const validAssignments = P.powerset().filter(I => allTrue(Gs, I));
 \end{minted}
 \vspace*{-0.3cm}
   \caption{A program to investigate the burglary.}
@@ -663,39 +682,42 @@ We discuss this program next.
 \end{figure}
 
 \begin{enumerate}
+  
 \item We input propositional formulas as strings.  However, the function \texttt{evaluate} needs nested tuples
       as input.  Therefore, we first import our parser for propositional formulas.
 \item Next, we define the function \texttt{transform}.  This function takes a propositional formula that is
       represented as a string and transforms it into a nested tuple.
-\item Line 7 defines the set $P$ of propositional variables.  We use the propositional variable \texttt{a} to
+\item Line 6 defines the set $P$ of propositional variables.  We use the propositional variable \texttt{a} to
       express that Aaron is guilty, \texttt{b} is short for Bernard is guilty and \texttt{c} is true if and
       only if Caine is guilty. 
 \item Next, we define the propositional formulas $f_1$, $\cdots$, $f_6$.
 \item \texttt{Fs} is the set of all propositional formulas.
-\item In line 20 these formulas are transformed into nested tuples.
+\item In line 29 these formulas are transformed into nested tuples.
 \item The function $\texttt{allTrue}(Fs, I)$ takes two inputs.
       \begin{enumerate}[(a)]
       \item \texttt{Fs} is a set of propositional formulas that are represented as nested tuples.
       \item \texttt{I} is a propositional evaluation that is represented as a set of propositional variables.
             Hence \texttt{I} is a subset of \texttt{P}
       \end{enumerate}
-      If all propositional formulas $f$ from the set \texttt{Fs} evaluate as \texttt{True} given the evaluation
-      \texttt{I}, then \texttt{allTrue} returns the result \texttt{True}, otherwise \texttt{False} is returned.
-\item Line 25 computes the set of all propositional variables that render all formulas from \texttt{Fs} true.
-      The function \texttt{power} takes a set $M$ and returns the power set of $M$, i.e.~it returns the set $2^M$.
+      If all propositional formulas $f$ from the set \texttt{Fs} evaluate as \texttt{true} given the evaluation
+      \texttt{I}, then \texttt{allTrue} returns the result \texttt{true}, otherwise \texttt{false} is returned.
+\item Line 35 computes the set of all propositional variables that render all formulas from \texttt{Fs} true.
+      The function \texttt{powerset} takes a set $M$ and returns the power set of $M$, i.e.~it returns the set $2^M$.
 \end{enumerate}
 When we run this program we see that there is just a single propositional valuation $I$ such that all formulas
-from \texttt{Fs} are rendered \texttt{True} under $I$.  This propositional valuation has the form
+from \texttt{Fs} are rendered \texttt{true} under $I$.  This propositional valuation has the form
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{\{'b', 'c'\}.}
 \\[0.2cm]
 Thus, the given problem is solvable and both Bernard and Caine are guilty, while Aaron is innocent.
-\pagebreak
 
 \exerciseEng
-Solve the following puzzle by editing the notebook \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/The-Visit.ipynb}{Python/Chapter-4/The-Visit.ipynb}.
-
+Solve the following puzzle by editing the notebook
+\\[0.2cm]
+\hspace*{1.3cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/02-Usual-Suspects.ipynb}{Chapter-4/02-Usual-Suspects.ipynb}.
+\\[0.2cm]
 \begin{minipage}{0.95\linewidth}
   A portion of the Smith family is visiting the Walton family. \textbf{John} Smith and his wife \textbf{Helen} have three
   children. Their oldest child is a boy named \textbf{Thomas}. Thomas has two younger sisters named \textbf{Amy} and
@@ -717,7 +739,7 @@ is true for every propositional valuation $\mathcal{I}$.  This property gives ri
 
 \begin{Definition}[Tautology]
   If $f$ is a propositional formula and we have  \\[0.2cm]
-  \hspace{1.3cm} $\mathcal{I}(f) = \texttt{True}$ \quad for every propositional valuation $\mathcal{I}$, \\[0.2cm]
+  \hspace{1.3cm} $\mathcal{I}(f) = \texttt{true}$ \quad for every propositional valuation $\mathcal{I}$, \\[0.2cm]
   then $f$ is a  \blue{tautology}.\index{tautology}  This is written as \\[0.2cm]
   \hspace*{1.3cm} $\models f$.\index{$\models f$}
   \eox
@@ -739,7 +761,7 @@ If $f$ is a tautology, then we say that $f$ is \blue{universally valid} \index{u
 One way to prove that a formula $F$ is universally valid is to evaluate it for every possible valuation.
 However, if there are $n$ propositional variables occurring in $f$, then there are $2^n$ different possible
 valuations. 
-Hence for values of $n$ that are greater than fourty this method is hopelessly inefficient.  Therefore, our
+Hence for values of $n$ that are greater than thirty this method is hopelessly inefficient.  Therefore, our
 goal in the rest of this chapter is to develop 
 a method that can often deal with hundreds of propositional variables.
 
@@ -795,7 +817,7 @@ interpretations.  Hence we have to compute the set of all propositional interpre
 propositional variables.  We have already seen that the propositional interpretations are in a 1-to-1
 correspondence with the subsets of the set $\mathcal{P}$ of all propositional variables because we can
 represent a propositional interpretation $\mathcal{I}$ as the set of all propositional variables that evaluate
-as \texttt{True}:
+as \texttt{true}:
 \\[0.2cm]
 \hspace*{1.3cm}
 $\bigl\{ q \in \mathcal{P} \mid \mathcal{I}(q) = \mathtt{True} \bigr\}$.
@@ -851,7 +873,7 @@ Now we are able to implement the function
 \hspace*{1.3cm}
 $\mathtt{tautology}: \mathcal{F} \rightarrow \mathbb{B}$
 \\[0.2cm]
-that takes a formula $f$ and returns \texttt{True} if and only if $\models f$ holds.
+that takes a formula $f$ and returns \texttt{true} if and only if $\models f$ holds.
 Figure \ref{fig:tautology.py} on page \pageref{fig:tautology.py}
 shows the implementation.
 \begin{enumerate}
@@ -870,8 +892,8 @@ shows the implementation.
       \item Adding $x$ to the subsets in $\mathcal{L}$ yields all those subsets of $M$ that do contain $x$. 
       \end{enumerate}  
 \item Then we try to find a propositional interpretation $\mathcal{I}$ such that $\mathcal{I}(f)$
-      \texttt{False}.  In this case $\mathcal{I}$ is returned. 
-\item Otherwise $f$ is a tautology and we return \texttt{True}.
+      \texttt{false}.  In this case $\mathcal{I}$ is returned. 
+\item Otherwise $f$ is a tautology and we return \texttt{true}.
 \end{enumerate}
 
 \begin{figure}[!ht]
@@ -1022,10 +1044,10 @@ $K = \{ \neg p_1, \cdots, \neg p_m, q_1, \cdots, q_n \}$ \quad with $p_i
 \\[0.2cm]
 Then we can define an propositional valuation $\mathcal{I}$ as follows:
 \begin{enumerate}
-\item $\mathcal{I}(p_i) = \texttt{True}$ for all $i = 1, \cdots, m$ and
-\item $\mathcal{I}(q_j) = \texttt{False}$ for all $j = 1, \cdots, n$,
+\item $\mathcal{I}(p_i) = \texttt{true}$ for all $i = 1, \cdots, m$ and
+\item $\mathcal{I}(q_j) = \texttt{false}$ for all $j = 1, \cdots, n$,
 \end{enumerate}
-We have $\mathcal{I}(K) = \texttt{False}$ with this valuation and therefore $K$ isn't a tautology.  So the
+We have $\mathcal{I}(K) = \texttt{false}$ with this valuation and therefore $K$ isn't a tautology.  So the
 assumption that $K$ is not trivial is false. 
 \hspace*{\fill}  $\Box$
 
@@ -1830,12 +1852,12 @@ The relation $\vdash$ has two important properties:
       holds.  Let $\mathcal{I}$ be a propositional interpretation such that
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathcal{I}(k_1 \wedge \cdots \wedge k_n) = \texttt{True}$  
+      $\mathcal{I}(k_1 \wedge \cdots \wedge k_n) = \texttt{true}$  
       \\[0.2cm]
       Then we need to show that we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathcal{I}(g) = \texttt{True}$ \quad or \quad $\mathcal{I}(h) = \texttt{True}$.
+      $\mathcal{I}(g) = \texttt{true}$ \quad or \quad $\mathcal{I}(h) = \texttt{true}$.
       \\[0.2cm]
       By the induction hypothesis, we know
       \\[0.2cm]
@@ -1844,36 +1866,36 @@ The relation $\vdash$ has two important properties:
          \models k_1 \wedge \cdots \wedge k_n \rightarrow h \vee \neg p
       $.
       \\[0.2cm]
-      Since $\mathcal{I}(k_1 \wedge \cdots \wedge k_n) = \texttt{True}$, it follows that
+      Since $\mathcal{I}(k_1 \wedge \cdots \wedge k_n) = \texttt{true}$, it follows that
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\mathcal{I}(g \vee p) = \texttt{True}$ \quad and \quad $\mathcal{I}(h \vee \neg p) = \texttt{True}$.
+      $\mathcal{I}(g \vee p) = \texttt{true}$ \quad and \quad $\mathcal{I}(h \vee \neg p) = \texttt{true}$.
       \\[0.2cm]
       Now there are two cases:
       \begin{enumerate}
-      \item Case: $\mathcal{I}(p) = \texttt{True}$.
+      \item Case: $\mathcal{I}(p) = \texttt{true}$.
 
-            Then $\mathcal{I}(\neg p) = \texttt{False}$ and hence from the fact that 
-            $\mathcal{I}(h \vee \neg p) = \texttt{True}$, we must have
+            Then $\mathcal{I}(\neg p) = \texttt{false}$ and hence from the fact that 
+            $\mathcal{I}(h \vee \neg p) = \texttt{true}$, we must have
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(h) = \texttt{True}$.
+            $\mathcal{I}(h) = \texttt{true}$.
             \\[0.2cm]
             This immediately implies
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(g \vee h) = \texttt{True}$.  $\color{green}{\surd}$
-      \item Case: $\mathcal{I}(p) = \texttt{False}$.
+            $\mathcal{I}(g \vee h) = \texttt{true}$.  $\color{green}{\surd}$
+      \item Case: $\mathcal{I}(p) = \texttt{false}$.
 
-            Since $\mathcal{I}(g \vee p) = \texttt{True}$ we must have
+            Since $\mathcal{I}(g \vee p) = \texttt{true}$ we must have
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(g) = \texttt{True}$.
+            $\mathcal{I}(g) = \texttt{true}$.
             \\[0.2cm]
             Thus, we also have
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\mathcal{I}(g \vee h) = \texttt{True}$.  $\color{green}{\surd}$ 
+            $\mathcal{I}(g \vee h) = \texttt{true}$.  $\color{green}{\surd}$ 
             \qed
       \end{enumerate}
 \end{enumerate}
@@ -1892,7 +1914,7 @@ the concept of \textcolor{blue}{satisfiability}, which we introduce next.
   If there exists a propositional interpretation $\mathcal{I}$ that satisfies all formulas from $M$, i.e.~we have
   \\[0.2cm]
   \hspace*{1.3cm}
-  $\mathcal{I}(f) = \texttt{True}$ \quad for all $f \in M$,
+  $\mathcal{I}(f) = \texttt{true}$ \quad for all $f \in M$,
   \\[0.2cm]
   then we call $M$ \textcolor{blue}{satisfiable}.\index{satisfiable}  In this case the propositional
   interpretation $\mathcal{I}$ is called a \blue{solution}\index{solution} of $M$.
@@ -1908,7 +1930,7 @@ the concept of \textcolor{blue}{satisfiability}, which we introduce next.
   \\[0.2cm]
   \hspace*{1.3cm}
   $\textcolor{blue}{M \models \falsum}$ \quad iff \quad 
-  $\forall \mathcal{I} \in \textsc{Ali}: \exists C \in M: \mathcal{I}(C) = \texttt{False}$.
+  $\forall \mathcal{I} \in \textsc{Ali}: \exists C \in M: \mathcal{I}(C) = \texttt{false}$.
   \\[0.2cm]
   If a set $M$ of propositional formulas is satisfiable, we also write
   \\[0.2cm]
@@ -2033,7 +2055,7 @@ $\mathtt{dom}(\mathcal{I}_k) = \{p_1, \cdots, p_k\}$.
           $\mathcal{I}_{k+1}$ and $\mathcal{I}_k$ agree on these variables.
     \item Case: $p_{k+1} \in D$.
           
-          Since we defined $\mathcal{I}_{k+1}(p_{k+1})$ as $\texttt{True}$, $\mathcal{I}_{k+1}(D) = \mathtt{True}$ holds.
+          Since we defined $\mathcal{I}_{k+1}(p_{k+1})$ as $\texttt{true}$, $\mathcal{I}_{k+1}(D) = \mathtt{True}$ holds.
     \item Case: $(\neg p_{k+1}) \in D$.
 
           Then $D$ has the form
@@ -2248,7 +2270,7 @@ We now explain the implementation of the function \texttt{saturate}.
 \begin{enumerate}
 \item The \texttt{while} loop that starts in line 28 is tasked with applying the cut rule
       as long as possible to derive new clauses from the given
-      clauses using the cut rule. Since this loop's condition has the value \texttt{True}, it can only be
+      clauses using the cut rule. Since this loop's condition has the value \texttt{true}, it can only be
       terminated by executing one of the two \texttt{return} commands in line 34 or line 37.
 \item In line 29, the set \texttt{Derived} is defined as the set of clauses that can be inferred using the
       cut rule from two of the clauses in the set \texttt{Clauses}.
@@ -2322,7 +2344,7 @@ line 28 will terminate after at most $2^{2 \cdot n}$ iterations.
 
 Next, we discuss the implementation of the function \texttt{findValuation}, which is shown in
 Figure \ref{fig:Completeness.ipynb-3}. This function receives a set \texttt{Clauses} of clauses as input.
-If this set is contradictory, the function should return the result \texttt{False}.
+If this set is contradictory, the function should return the result \texttt{false}.
 Otherwise, the function should compute a propositional valuation $\I$ that satisfies all clauses from the set
 \texttt{Clauses}. 
 In detail, the function \texttt{findValuation} works as follows.
@@ -2330,19 +2352,19 @@ In detail, the function \texttt{findValuation} works as follows.
 \item First, in line 41, we compute the set of all propositional variables that appear in the set
       \texttt{Clauses}. We need this set because in the
       propositional interpretation, which we want to return as a result, we must
-      map these variables to the set $\{ \texttt{True}, \texttt{False} \}$.
+      map these variables to the set $\{ \texttt{true}, \texttt{false} \}$.
 \item In line 42, we saturate the set \texttt{Clauses} and compute all clauses that can be derived from the
       original set of clauses using the cut rule. Here, two cases can occur:
       \begin{enumerate}
       \item If the empty clause can be derived, then it follows from the correctness of the cut rule,
-            that the original set of clauses is contradictory, and we return \texttt{False} instead of an assignment,
+            that the original set of clauses is contradictory, and we return \texttt{false} instead of an assignment,
             as a contradictory set of clauses is certainly not satisfiable.
       \item Otherwise, we now compute a propositional assignment under which all clauses from
             the set \texttt{Clauses} become true. For this purpose, we first compute a set of
             literals, which we store in the variable \texttt{Literals}. The idea is that we
             include the propositional variable \texttt{p} in the set \texttt{Literals} exactly when
             the sought-after assignment $\I$ evaluates the propositional
-            variable \texttt{p} to \texttt{True}. Otherwise, we include the
+            variable \texttt{p} to \texttt{true}. Otherwise, we include the
             literal $\neg \texttt{p}$ in the set \texttt{Literals}. As a result, in
             line 53, we return the set \texttt{Literals}. The sought-after propositional assignment
             $\mathcal{I}$ can then be computed according to the formula  
@@ -2350,8 +2372,8 @@ In detail, the function \texttt{findValuation} works as follows.
             \hspace*{1.3cm}
             $\mathcal{I}(\texttt{p}) = \left\{
              \begin{array}{ll}
-               \texttt{True}  & \mbox{if $\hspace*{0.25cm}\texttt{p} \in \texttt{Literals}$} \\
-               \texttt{False} & \mbox{if $\neg\texttt{p} \in \texttt{Literals}$.}
+               \texttt{true}  & \mbox{if $\hspace*{0.25cm}\texttt{p} \in \texttt{Literals}$} \\
+               \texttt{false} & \mbox{if $\neg\texttt{p} \in \texttt{Literals}$.}
              \end{array}\right.
             $
            
@@ -2359,25 +2381,25 @@ In detail, the function \texttt{findValuation} works as follows.
 \item The computation of the set \texttt{Literals} is done using a \texttt{for} loop.
       The idea is that for a propositional variable \texttt{p}, we add the literal
       $\texttt{p}$ to the set \texttt{Literals} exactly when the assignment $\I$ has to map the variable \texttt{p}
-      to \texttt{True} in order to satisfy the clauses. Otherwise, we add
+      to \texttt{true} in order to satisfy the clauses. Otherwise, we add
       the literal $\neg\texttt{p}$ to this set instead.
 
       The condition for adding the literal $p$ is as follows:
       Suppose we have already found values for the variables
       $p_1$, $\cdots$, $p_n$ in the set \texttt{Literals}.
       The values of these variables are determined by the literals $l_1$, $\cdots$, $l_n$ in the set \texttt{Literals}
-      as follows: If $l_i = p_i$, then $\I(p_i) = \texttt{True}$
-      and if $l_i = \neg p_i$, then we have $\I(p_i) = \texttt{False}$.
+      as follows: If $l_i = p_i$, then $\I(p_i) = \texttt{true}$
+      and if $l_i = \neg p_i$, then we have $\I(p_i) = \texttt{false}$.
       Now assume that a clause $C$ exists in the set \texttt{Clauses} such that
       \\[0.2cm]
       \hspace*{1.3cm}
       $C \backslash \{p\} \subseteq \{ \komplement{l_1}, \cdots, \komplement{l_n} \}$ \quad and \quad $\texttt{p} \in C$
       \\[0.2cm]
-      holds. If $\I(C) = \texttt{True}$ is to hold, then $\I(\texttt{p}) = \texttt{True}$ must hold, because
+      holds. If $\I(C) = \texttt{true}$ is to hold, then $\I(\texttt{p}) = \texttt{true}$ must hold, because
       by construction of $\I$ we have
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\I\bigl(\komplement{l_i}) = \texttt{False}$ \quad for all $i \in \{1,\cdots,n\}$
+      $\I\bigl(\komplement{l_i}) = \texttt{false}$ \quad for all $i \in \{1,\cdots,n\}$
       \\[0.2cm]
       and thus \texttt{p} is the only literal in the clause $C$ that we can still make true with the help of the assignment $\I$. In this case, we thus add the literal
       $\texttt{p}$ to the set \texttt{Literals}. Otherwise, the literal $\neg p$ is added to the set
@@ -2388,8 +2410,8 @@ $\mathcal{I}_k$ that we specified in the proof of refutation completeness.
 
 
 % Der entscheidende Punkt ist nun der Nachweis, dass die Funktion \texttt{findValuation} in dem Falle,
-% dass in Zeile 46 nicht der Wert \texttt{False} zurück gegeben wird, eine aussagenlogische Belegung $\I$ berechnet, bei der
-% alle Klauseln aus der Menge \texttt{Clauses} den Wert \texttt{True} erhalten.  Um diesen Nachweis zu
+% dass in Zeile 46 nicht der Wert \texttt{false} zurück gegeben wird, eine aussagenlogische Belegung $\I$ berechnet, bei der
+% alle Klauseln aus der Menge \texttt{Clauses} den Wert \texttt{true} erhalten.  Um diesen Nachweis zu
 % erbringen, nummerieren wie die aussagenlogischen Variablen, die in der Menge \texttt{Clauses}
 % auftreten, in derselben Reihenfolge durch, in der diese Variablen in der \texttt{for}-Schleife in Zeile
 % 48 betrachtet werden.  Wir bezeichnen diese Variablen als
@@ -2401,7 +2423,7 @@ $\mathcal{I}_k$ that we specified in the proof of refutation completeness.
 % in der nur die Variablen $p_1$, $\cdots$, $p_n$ vorkommen, 
 % \\[0.2cm]
 % \hspace*{1.3cm}
-% $\I(D) = \texttt{True}$
+% $\I(D) = \texttt{true}$
 % \\[0.2cm]
 % gilt.
 % \begin{enumerate}
@@ -2423,18 +2445,18 @@ $\mathcal{I}_k$ that we specified in the proof of refutation completeness.
 %                    \\[0.2cm]
 %                    Also ist die Bedingung in Zeile 50 erfüllt und wir haben $\texttt{p} \in
 %                    \texttt{Literals}$.
-%                    Damit gilt $\I(p) = \texttt{True}$ nach Definition von $\I$.
+%                    Damit gilt $\I(p) = \texttt{true}$ nach Definition von $\I$.
 %              \item $D = \{ \neg p \}$.
 
 %                    Würde es jetzt eine Klausel $E = \{ p\} \in \texttt{Clauses}$ geben, so könnten
 %                    wir aus den beiden Klauseln $D$ und $E$ sofort die leere Klausel $\{\}$
 %                    herleiten und die Funktion \texttt{findValuation} würde in Zeile 46 den Wert
-%                    \texttt{False} zurück geben.  Da wir aber vorausgesetzt haben, dass dies nicht
+%                    \texttt{false} zurück geben.  Da wir aber vorausgesetzt haben, dass dies nicht
 %                    passiert, kann es keine solche Klausel $E$ geben.  Damit ist die Bedingung in
 %                    Zeile 49 falsch und folglich gilt $\neg p \in \texttt{Literals}$.
-%                    Nach Definition von $\I$ folgt dann $\I(\neg p) = \texttt{True}$.
+%                    Nach Definition von $\I$ folgt dann $\I(\neg p) = \texttt{true}$.
 %              \end{enumerate}
-%              Damit haben wir in jedem Fall $\I(D) = \texttt{True}$.   
+%              Damit haben wir in jedem Fall $\I(D) = \texttt{true}$.   
 % \item[I.S.:] $n \mapsto n+1$.
 
 %              Wir setzen nun voraus, dass die Behauptung vor dem $(n\!+\!1)$-ten Durchlauf der
@@ -2450,12 +2472,12 @@ $\mathcal{I}_k$ that we specified in the proof of refutation completeness.
 %              Nun gibt es mehrere Möglichkeiten, die wir getrennt untersuchen.
 %              \begin{enumerate}
 %              \item Es gibt ein $i \in \{1,\cdots,n\}$, so dass $l_i \in D$ und  $\I(l_i) =
-%                \texttt{True}$ ist.  
+%                \texttt{true}$ ist.  
 
 %                    Da eine Klausel als Disjunktion ihrer Literale aufgefasst wird, gilt dann auch
-%                    $\I(D) = \texttt{True}$ unabhängig davon, ob $\I(p_{n+1})$ den Wert \texttt{True} oder
-%                    \texttt{False} hat.
-%              \item Für alle $i \in \{1,\cdots,n\}$ mit $l_i \in D$ gilt $\I(l_i) = \texttt{False}$ und es gilt $l_{n+1} = p_{n+1}$.
+%                    $\I(D) = \texttt{true}$ unabhängig davon, ob $\I(p_{n+1})$ den Wert \texttt{true} oder
+%                    \texttt{false} hat.
+%              \item Für alle $i \in \{1,\cdots,n\}$ mit $l_i \in D$ gilt $\I(l_i) = \texttt{false}$ und es gilt $l_{n+1} = p_{n+1}$.
                    
 %                    Dann gilt für die Klausel $D$ gerade die Bedingung
 %                    \\[0.2cm]
@@ -2469,10 +2491,10 @@ $\mathcal{I}_k$ that we specified in the proof of refutation completeness.
 %                    gerade, dass 
 %                    \\[0.2cm]
 %                    \hspace*{1.3cm}
-%                    $\I(p_{n+1}) = \texttt{True}$
+%                    $\I(p_{n+1}) = \texttt{true}$
 %                    \\[0.2cm]
-%                    ist und dann gilt natürlich auch $\I(D) = \texttt{True}$.
-%              \item Für alle $i \in \{1,\cdots,n\}$ mit $l_i \in D$ gilt $\I(l_i) = \texttt{False}$ und es gilt $l_{n+1} = \neg p_{n+1}$.
+%                    ist und dann gilt natürlich auch $\I(D) = \texttt{true}$.
+%              \item Für alle $i \in \{1,\cdots,n\}$ mit $l_i \in D$ gilt $\I(l_i) = \texttt{false}$ und es gilt $l_{n+1} = \neg p_{n+1}$.
 
 %                    An dieser Stelle ist eine weitere Fall-Unterscheidung notwendig.
 %                    \begin{enumerate}
@@ -2484,9 +2506,9 @@ $\mathcal{I}_k$ that we specified in the proof of refutation completeness.
 %                          \\[0.2cm]
 %                          gilt.  Hier sieht es zunächst so aus, als ob wir ein Problem hätten, denn
 %                          in diesem Fall würde um die Klausel $C$ wahr zu machen das Literal $p_{n+1}$ zur Menge
-%                          \texttt{Literals} hinzugefügt und damit wäre zunächst $\I(p_{n+1}) = \texttt{True}$ 
-%                          und damit $\I(\neg p_{n+1}) = \texttt{False}$, woraus insgesamt 
-%                          $\I(D) = \texttt{False}$ folgern würde.  In diesem Fall würden sich
+%                          \texttt{Literals} hinzugefügt und damit wäre zunächst $\I(p_{n+1}) = \texttt{true}$ 
+%                          und damit $\I(\neg p_{n+1}) = \texttt{false}$, woraus insgesamt 
+%                          $\I(D) = \texttt{false}$ folgern würde.  In diesem Fall würden sich
 %                          die Klauseln $C$ und $D$  in der Form
 %                          \\[0.2cm]
 %                          \hspace*{1.3cm}
@@ -2501,12 +2523,12 @@ $\mathcal{I}_k$ that we specified in the proof of refutation completeness.
 %                          gelten würde.  Daraus würde sowohl
 %                          \\[0.2cm]
 %                          \hspace*{1.3cm}
-%                          $\I(C') = \texttt{False}$ \quad als auch \quad $\I(D') = \texttt{False}$
+%                          $\I(C') = \texttt{false}$ \quad als auch \quad $\I(D') = \texttt{false}$
 %                          \\[0.2cm]
 %                          folgen und das würde auch
 %                          \\[0.2cm]
 %                          \hspace*{1.3cm}
-%                          $\I(C' \cup D') = \texttt{False}$ \hspace*{\fill} $(*)$
+%                          $\I(C' \cup D') = \texttt{false}$ \hspace*{\fill} $(*)$
 %                          \\[0.2cm]
 %                          implizieren.
 %                          Die entscheidende Beobachtung ist nun, dass die Klausel $C' \cup D'$ mit
@@ -2522,7 +2544,7 @@ $\mathcal{I}_k$ that we specified in the proof of refutation completeness.
 %                          Induktions-Voraussetzung 
 %                          \\[0.2cm]
 %                          \hspace*{1.3cm}
-%                          $\I(C' \cup D') = \texttt{True}$.
+%                          $\I(C' \cup D') = \texttt{true}$.
 %                          \\[0.2cm]
 %                          Dies steht aber im Widerspruch zu $(*)$.  Dieser Widerspruch zeigt, dass 
 %                          es keine Klausel $C \in \texttt{Clauses}$ mit 
@@ -2540,23 +2562,23 @@ $\mathcal{I}_k$ that we specified in the proof of refutation completeness.
 %                          \quad und \quad $p_{n+1} \in C$
 %                          \\[0.2cm]
 %                          gilt.  In diesem Fall wird das Literal $\neg p_{n+1}$ zur Menge \texttt{Literals}
-%                          hinzugefügt und damit gilt zunächst $\I(p_{n+1}) = \texttt{False}$ und folglich
-%                          $\I(\neg p_{n+1}) = \texttt{True}$, woraus schließlich $\I(D) = \texttt{True}$ folgt.
+%                          hinzugefügt und damit gilt zunächst $\I(p_{n+1}) = \texttt{false}$ und folglich
+%                          $\I(\neg p_{n+1}) = \texttt{true}$, woraus schließlich $\I(D) = \texttt{true}$ folgt.
 %                    \end{enumerate}
 %                    Wir sehen, dass der erste Fall der vorherigen Fall-Unterscheidung nicht
-%                    auftritt und dass im zweiten Fall $\I(D) = \texttt{True}$ gilt, womit wir insgesamt 
-%                    $\I(D) = \texttt{True}$ gezeigt haben.  Damit ist der Induktions-Schritt
+%                    auftritt und dass im zweiten Fall $\I(D) = \texttt{true}$ gilt, womit wir insgesamt 
+%                    $\I(D) = \texttt{true}$ gezeigt haben.  Damit ist der Induktions-Schritt
 %                    abgeschlossen.
 %              \end{enumerate}
 %              Da jede Klausel $C \in \texttt{Clauses}$ nur eine endliche Anzahl von Variablen
 %              enthält, haben wir insgesamt gezeigt, dass für alle diese Klauseln 
-%              $\I(C) = \texttt{True}$ gilt. \qed
+%              $\I(C) = \texttt{true}$ gilt. \qed
 % \end{enumerate}
 
 \section{The Algorithm of Davis and Putnam}
 In practice, we often have to compute a propositional assignment $\I$ for a given set of clauses $K$ such that
 \\[0.2cm]
-\hspace*{1.3cm} $\texttt{evaluate}(C,\I) = \texttt{True}$ \quad for all $C \in K$ \\[0.2cm]
+\hspace*{1.3cm} $\texttt{evaluate}(C,\I) = \texttt{true}$ \quad for all $C \in K$ \\[0.2cm]
 holds. In this case,  the assignment $\I$ is a \blue{solution}\index{solution} of the set of clauses $K$. In
 the last section, we have already introduced the function \texttt{findValuation} which can be used to compute
 such a solution of a set of clauses.  Unfortunately, this function is too inefficient to be useful in
@@ -2579,8 +2601,8 @@ $p \wedge \neg q \wedge r \wedge \neg s \wedge \neg t$.
 \\[0.2cm]
 Therefore, $K_1$ is solvable and the assignment  \\[0.2cm]
 \hspace*{1.3cm} 
-$\I = \bigl\{\; p \mapsto \texttt{True},\; q \mapsto \texttt{False},\; r \mapsto \texttt{True},\; s \mapsto
-\texttt{False},\; t \mapsto \texttt{False}\;\}$
+$\I = \bigl\{\; p \mapsto \texttt{true},\; q \mapsto \texttt{false},\; r \mapsto \texttt{true},\; s \mapsto
+\texttt{false},\; t \mapsto \texttt{false}\;\}$
 \\[0.2cm]
 is a solution of $K_1$. Consider another example: \\[0.2cm]
 \hspace*{1.3cm} 
@@ -2635,8 +2657,8 @@ definitions.
         \hspace*{1.3cm}
         $\I(p) = \left\{
                    \begin{array}{lcr}
-                     \texttt{True}  & \mbox{if} & \{p\}      \in K, \\[0.1cm]
-                     \texttt{False} & \mbox{if} & \{\neg p\} \in K.
+                     \texttt{true}  & \mbox{if} & \{p\}      \in K, \\[0.1cm]
+                     \texttt{false} & \mbox{if} & \{\neg p\} \in K.
                    \end{array}
                  \right.
         $
@@ -2743,7 +2765,7 @@ Such a simplification is \blue{case distinction}\index{case distinction}. This p
 \begin{enumerate}
 \item[``$\Rightarrow$'':] 
   If $K$ is satisfied by an assignment $\I$, then there are two possibilities for $\I(p)$, as 
-  $\mathcal{I}(p)$ is either true or false. If $\I(p) = \texttt{True}$, then the set $K \cup
+  $\mathcal{I}(p)$ is either true or false. If $\I(p) = \texttt{true}$, then the set $K \cup
   \bigl\{\{p\}\bigr\}$ is also satisfiable,
   otherwise $K \cup \bigl\{\{\neg p\}\bigr\}$
   is satisfiable.
@@ -2773,7 +2795,7 @@ we can perform both unit subsumptions and unit cuts, thereby simplifying these s
 We can now outline the Davis and Putnam algorithm \index{Davis-Putnam Algorithm}.
 Given a set of clauses $K$, the goal is to find a solution for $K$. We
 are looking for an assignment $\I$, such that: \\[0.2cm]
-\hspace*{1.3cm} $\I(C) = \texttt{True}$ \quad for all $C \in K$.\\[0.2cm]
+\hspace*{1.3cm} $\I(C) = \texttt{true}$ \quad for all $C \in K$.\\[0.2cm]
 The algorithm of Davis and Putnam consists of the following steps.
 \begin{enumerate}
 \item Perform all unit cuts and unit subsumptions that are possible with clauses from $K$.
@@ -3347,11 +3369,11 @@ can be reduced to the same basic pattern:
 Given a set of propositional variables \\[0.2cm]
 \hspace*{1.3cm} $V = \{ x_1, \cdots, x_n \}$ \\[0.2cm]
 we need a formula that states that \blue{at most} one of the variables in
-$V$ has the value \texttt{True}. This is equivalent to the statement that for every pair
+$V$ has the value \texttt{true}. This is equivalent to the statement that for every pair
 $x_i, x_j \in V$ with $x_i \neq x_j$, the following formula holds: \\[0.2cm]
 \hspace*{1.3cm} $\neg (x_i \wedge x_j)$. \\[0.2cm]
 This formula expresses that the variables $x_i$ and $x_j$ cannot both take the value
-\texttt{True} at the same time. According to De Morgan's laws, we have
+\texttt{true} at the same time. According to De Morgan's laws, we have
 \\[0.2cm]
 \hspace*{1.3cm}
 $\neg (x_i \wedge x_j) \Leftrightarrow \neg x_i \vee \neg x_j$
@@ -3391,7 +3413,7 @@ $\bigl\{\, \{ \neg p, \neg q \} \;|\; p \in V \wedge\ q \in V \wedge p \neq q \b
 We implement these ideas in a \textsl{Python} function. The function \texttt{atMostOne} shown in Figure
 \ref{fig:atMostOne} receives as input a set $S$ of propositional variables. The call $\texttt{atMostOne}(S)$
 calculates a set of clauses. These clauses are true if and only if at most one of the variables in $S$
-has the value \texttt{True}.
+has the value \texttt{true}.
 
 With the help of the function \texttt{atMostOne}, we can now implement the function
 \texttt{atMostOneInRow}. The call \\[0.2cm]
@@ -3737,7 +3759,7 @@ that the Englishman lives in the $i^\textrm{th}$ house we can use the variables
 \hspace*{1.3cm}
 $\texttt{English}\langle i \rangle$ \quad for $i=1,\cdots,5$.
 \\[0.2cm]
-The idea is that the variable $\texttt{English}\langle i \rangle$ is \texttt{True} iff the
+The idea is that the variable $\texttt{English}\langle i \rangle$ is \texttt{true} iff the
 Englishman lives in the  $i^\textrm{th}$ house.  In a similar way we use the
 variables
 \\[0.2cm]
@@ -4196,7 +4218,7 @@ set of propositional variables:
 \hspace*{1.3cm}
 $\mathcal{P} = \bigl\{ Q_{r,c,d} \mid r \in \{1,\cdots, 9\} \wedge c \in \{1,\cdots, 9\} \wedge r \in \{1,\cdots, 9\} \bigl\}$
 \\[0.2cm]
-The variable $Q_{r,c,d}$ is supposed to be \texttt{True} if $d$ is the digit in row $r$ and column $c$ of the
+The variable $Q_{r,c,d}$ is supposed to be \texttt{true} if $d$ is the digit in row $r$ and column $c$ of the
 Sudoku.  Note that this means that we have $9^3 = 729$ different propositional variables.  In our
 implementation we will use the function \texttt{var} shown in Figure \ref{fig:sudoku-var} to create these variables.
 
@@ -4255,17 +4277,17 @@ to be computed.
 
 In our implementation we will use functions \texttt{atMostOne} that we have already seen in Figure
 \ref{fig:atMostOne} on page \pageref{fig:atMostOne} that expresses that at most one of a given set of
-propositional variables is \texttt{True}.  Furthermore, we will use the auxiliary function
+propositional variables is \texttt{true}.  Furthermore, we will use the auxiliary function
 $\texttt{atLeastOne}(V)$ which takes a set of propositional variables $V$ and which returns a formula in
-conjunctive normal form in set notation that is \texttt{True} if and only if at least one of the variables in
-$V$ is \texttt{True}.  Note that in set notation we have
+conjunctive normal form in set notation that is \texttt{true} if and only if at least one of the variables in
+$V$ is \texttt{true}.  Note that in set notation we have
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{atLeastOne}(V) = \bigl\{ V \bigr\}$.
 \\[0.2cm]
 The reason is that in set notation  $V$ is interpreted as a clause, i.e.~as a disjunction of its variables.
 Using these two functions we can then define a function $\texttt{exactlyOne}(V)$ that
-takes a set of variables and returns \texttt{True} iff exactly one of the variables in $V$ is \texttt{True}.
+takes a set of variables and returns \texttt{true} iff exactly one of the variables in $V$ is \texttt{true}.
 The implementation is shown in Figure \ref{fig:sudoku-exactly}.
 
 \begin{figure}[!ht]
@@ -4328,7 +4350,7 @@ formula expressing that exactly one of the variables from the set
 \hspace*{1.3cm}
 $\bigl\{ Q_{r,c,d} \mid d \in \{1,\cdots, 9\} \bigr\}$
 \\[0.2cm]
-is \texttt{True}. The implementation is shown in Figure \ref{fig:sudoku-exactlyOneDigit}.
+is \texttt{true}. The implementation is shown in Figure \ref{fig:sudoku-exactlyOneDigit}.
 
 \begin{figure}[!ht]
 \centering
