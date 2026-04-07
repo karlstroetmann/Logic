@@ -853,15 +853,21 @@ this definition.  Note that we have been able to combine the last four cases.
                 bgcolor       = sepia,
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
-              ]{python3}
-    def collectVars(f):
-        "Collect all propositional variables occurring in the formula f."
-        match f:
-            case p if isinstance(p, str): return { p }
-            case ('⊤', ):   return set()
-            case ('⊥', ):   return set()
-            case ('¬', g):  return collectVars(g)
-            case (_, g, h): return collectVars(g) | collectVars(h) 
+              ]{typescript}
+    function collectVars(f: Formula): RS<Variable> {
+        if (typeof f == 'string') {
+            return new RS(f);
+        }
+        switch (f[0]) {
+            case '⊤':
+            case '⊥':
+                return new RS();
+            case '¬':
+                return collectVars(f[1]);
+            default: // case '↔', '→', '∧', '∨':
+                return collectVars(f[1]).union(collectVars(f[2]));
+        }
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Checking that a formula is a tautology.}
@@ -905,28 +911,21 @@ shows the implementation.
                 bgcolor       = sepia,
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
-              ]{python3}
-    def allSubsets(M: set[T]) -> list[set[T]]:
-        "Compute a list containing all subsets of the set M"
-        if M == set():
-            return [ set() ]
-        x = M.pop() # remove x from M and return x
-        L = allSubsets(M)
-        return L + [ A | { x } for A in L ]
-
-    def tautology(f):
-        "Check, whether the formula f is a tautology."
-        P = collectVars(f)
-        for I in allSubsets(P):
-            if not evaluate(f, I):
-                return I
-        return True
+              ]{typescript}
+    function tautology(f: Formula): true | RS<Variable> {
+        const P = collectVars(f);
+        for (const I of collectVars(f).powerset()) {
+            if (!evaluate(f, I)) {
+                return I;
+            }
+        }
+        return true;
+    }                
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Checking that $f$ is a tautology.}
   \label{fig:tautology.py}
 \end{figure}
-
 
 
 \section{Conjunctive Normal Form}
@@ -1167,7 +1166,7 @@ Next, we specify anumber of functions that can be used to convert a given formul
 formula $f$ into conjunctive normal form.  These functions are part of the Jupyter notebook
 \\[0.2cm]
 \hspace*{1.3cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/04-CNF.ipynb}{Python/Chapter-4/04-CNF.ipynb}.
+\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/04-CNF.ipynb}{TypeScript/Chapter-4/04-CNF.ipynb}.
 \\[0.2cm]
 We start with the
 function 
@@ -1226,19 +1225,34 @@ that describe the behavior of the function $\texttt{elimBiconditional}$:
                 bgcolor       = sepia,
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
-              ]{python3}
-    def eliminateBiconditional(f):
-        match f:
-            case p if isinstance(p, str):   # This case covers variables.
-                return p
-            case ('⊤', ) | ('⊥', ):
-                return f
-            case ('¬', g):
-                return ('¬', eliminateBiconditional(g))
-            case ('↔', g, h):
-                return eliminateBiconditional( ('∧', ('→', g, h), ('→', h, g)) )
-            case (op, g, h):   # This case covers '→', '∧', and '∨'.
-                return (op, eliminateBiconditional(g), eliminateBiconditional(h))
+              ]{typescript}
+    type Formula1 = Variable 
+                  | ['⊤' | '⊥']
+                  | ['¬', Formula1]
+                  | ['→' | '∧' | '∨', Formula1, Formula1];
+                
+    function eliminateBiconditional(f: Formula): Formula1 {
+        if (typeof f == 'string') {
+            return f;
+        }
+        switch (f[0]) {
+            case '↔': {
+                const [, g, h] = f;
+                return eliminateBiconditional(['∧', ['→', g, h], ['→', h, g]]);
+            }
+            case '⊤':
+            case '⊥':
+                return f;        
+            case '¬': 
+                return ['¬', eliminateBiconditional(f[1])];
+            case '→':
+            case '∧':
+            case '∨': {
+                const [op, g, h] = f;
+                return [op, eliminateBiconditional(g), eliminateBiconditional(h)];
+            }
+        }
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Elimination of $\leftrightarrow$}
@@ -1304,20 +1318,33 @@ This eliminates one case in the implementation.
                 bgcolor       = sepia,
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
-              ]{python3}
-    def eliminateConditional(f: Formula) -> Formula:
-        'Eliminate the logical operator "→" from f.'
-        match f:
-            case p if isinstance(p, str): 
-                return p
-            case ('⊤', ) | ('⊥', ):
-                return f
-            case ('¬', g):
-                return ('¬', eliminateConditional(g))
-            case ('→', g, h): 
-                return eliminateConditional(('∨', ('¬', g), h))
-            case (op, g, h):      # This case covers '∧' and '∨'.
-                return (op, eliminateConditional(g), eliminateConditional(h))
+              ]{typescript}
+    type Formula2 = Variable 
+                  | ['⊤' | '⊥'] 
+                  | ['¬', Formula2]
+                  | ['∧' | '∨', Formula2, Formula2];
+                  
+    function eliminateConditional(f: Formula1): Formula2 {
+        if (typeof f == 'string') { // f is a variable
+            return f; 
+        }
+        switch (f[0]) {
+            case '⊤':
+            case '⊥':
+                return f;
+            case '→': {
+                const [, g, h] = f;
+                return eliminateConditional(['∨', ['¬', g], h]);
+            }
+            case '¬': 
+                return ['¬', eliminateConditional(f[1])];
+            case '∧':
+            case '∨': {
+                const [op, g, h] = f;
+                return [op, eliminateConditional(g), eliminateConditional(h)];
+            }
+        }
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Elimination of $\rightarrow$}
@@ -1361,25 +1388,71 @@ the following equations: \index{\texttt{nnf}}
                   bgcolor       = sepia,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                ]{python3}
-    def nnf(f: Formula) -> Formula:
-        match f:
-            case p if isinstance(p, str): return p
-            case ('⊤', ) | ('⊥', ):      return f
-            case ('¬', g):                return neg(g)
-            case (op, g, h):               return (op, nnf(g), nnf(h))
-
-    def neg(f: Formula) -> Formula:
-        match f:
-            case p if isinstance(p, str): return ('¬', p)
-            case ('⊤', ):     return ('⊥', )
-            case ('⊥', ):     return ('⊤', )
-            case ('¬', g):    return nnf(g)
-            case ('∧', g, h): return ('∨', neg(g), neg(h))
-            case ('∨', g, h): return ('∧', neg(g), neg(h))
+                ]{typescript}
+    type NNF = Variable 
+             | ['⊤' | '⊥'] 
+             | ['¬', Variable] 
+             | ['∧' | '∨', NNF, NNF];
+    
+    function nnf(f: Formula2): NNF {
+        if (typeof f == 'string') {
+            return f;
+        }
+        switch (f[0]) {
+            case '⊤':
+            case '⊥':
+                return f;
+            case '¬': {
+                return neg(f[1]);
+            }
+            case '∧':
+            case '∨': {
+                const [op, g, h] = f;
+                return [op, nnf(g), nnf(h)];
+            }
+        }
+    }         
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Computing the negation normal form.}
+  \label{fig:nnf}
+\end{figure}
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                  bgcolor       = sepia,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                ]{typescript}
+    function neg(f: Formula2): NNF {
+        if (typeof f == 'string') {
+            return ['¬', f];
+        }
+        switch (f[0]) {
+            case '⊤':
+                return ['⊥'];
+            case '⊥':
+                return ['⊤'];
+            case '¬': {
+                return nnf(f[1]);
+            }
+            case '∧': {
+                const [, g, h] = f;
+                return ['∨', neg(g), neg(h)];
+            }
+            case '∨': {
+                const [, g, h] = f;
+                return ['∧', neg(g), neg(h)];
+            }
+        } 
+    }
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{Computing the negation normal form, the function \texttt{neg}.}
   \label{fig:nnf}
 \end{figure}
 
@@ -1503,21 +1576,31 @@ Figure \ref{fig:cnf} on page \pageref{fig:cnf} shows the implementation of the f
                   bgcolor       = sepia,
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
-                ]{python3}
-    def cnf(f: Formula) -> CNF:
-        match f:
-            case p if isinstance(p, str):         
-                return { frozenset({p}) }
-            case ('⊤', ):
-                return set()
-            case ('⊥', ):
-                return { frozenset() }
-            case ('¬', p):
-                return { frozenset({ ('¬', p) }) }
-            case ('∧', g, h):
-                return cnf(g) | cnf(h)
-            case ('∨', g, h):
-                return { k1 | k2 for k1 in cnf(g) for k2 in cnf(h) }
+                ]{typescript}
+    type CNF      = RecursiveSet<Clause>;
+    
+    function cnf(f: NNF): CNF {
+        if (typeof f == 'string') { 
+            return new RS<Clause>(new RS<Literal>(f));
+        }
+        switch (f[0]) {
+            case '⊤':
+                return new RS<Clause>();     
+            case '⊥':
+                return new RS<Clause>(new RS<Literal>());
+            case '¬': {
+                const clause = new RS<Literal>(new Tuple('¬', f[1]));
+                return new RS<Clause>(clause);
+            }            
+            case '∧': {
+                return cnf(f[1]).union(cnf(f[2]));
+            }
+            case '∨': {
+                const Pairs = cnf(f[1]).cartesianProduct(cnf(f[2]));
+                return Pairs.map(([c1, c2]) => c1.union(c2));
+            }
+        }
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Berechnung der konjunktiven Normalform. \index{\texttt{cnf}}}
@@ -1542,7 +1625,7 @@ how the functions that have been shown above interact.
 The complete program for calculating the conjunctive normal form can be found as the file
 \\[0.2cm]
 \hspace*{1.3cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/04-CNF.ipynb}{\texttt{Python/Chapter-4/04-CNF.ipynb}} 
+\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/04-CNF.ipynb}{\texttt{TypeScript/Chapter-4/04-CNF.ipynb}} 
 \\[0.2cm]
 on my \href{https://github.com/karlstroetmann/Logic}{GitHub repository}.
 
@@ -1556,19 +1639,30 @@ on my \href{https://github.com/karlstroetmann/Logic}{GitHub repository}.
                 bgcolor       = sepia,
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
-              ]{python3}
-    def normalize (f):
-        n1 = elimBiconditional(f)
-        n2 = elimConditional(n1)
-        n3 = nnf(n2)
-        n4 = cnf(n3)
-        return simplify(n4)
+                ]{typescript}
+    function getComplement(l: Literal): Literal {
+        if (typeof l == 'string') {
+            return new Tuple('¬', l);
+        } else {
+            return l.get(1);
+        }
+    }
     
-    def simplify(Clauses):
-        return { C for C in Clauses if not isTrivial(C) }
-    
-    def isTrivial(Clause):
-        return any(('¬', p) in Clause for p in Clause)
+    function isTrivial(clause: Clause): boolean {
+        return clause.some(l => clause.has(getComplement(l)));
+    }
+      
+    function simplify(clauses: CNF): CNF {
+        return clauses.filter(c => !isTrivial(c));
+    }                
+  
+    function normalize(f: Formula): CNF {
+        const n1 = eliminateBiconditional(f);
+        const n2 = eliminateConditional(n1);
+        const n3 = nnf(n2);
+        const n4 = cnf(n3);
+        return simplify(n4);
+    }
 \end{minted} 
 \vspace*{-0.3cm}
   \caption{Normalizing a Formula.}
@@ -2149,33 +2243,41 @@ online.
                 bgcolor       = sepia,
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm,
-              ]{python3}
-    def complement(l):
-        "Compute the complement of the literal l."
-        match l:
-            case p if isinstance(p, str):  return ('¬', p)
-            case ('¬', p):                 return p
-
-     def extractVariable(l):
-        "Extract the variable of the literal l."
-        match l:
-            case p if isinstance(p, str): return p           
-            case ('¬', p):                return p
-    
-    def collectVariables(M):
-        "Return the set of all variables occurring in M."
-        return { extractVariable(l) for C in M 
-                                    for l in C
-               }        
-        
-    def cutRule(C1, C2):
-        '''
-        Return the set of all clauses that can be deduced with the cut rule 
-        from the clauses C1 and C2.
-        '''
-        return { C1 - {l} | C2 - {complement(l)} for l in C1
-                                                 if  complement(l) in C2
-               }
+              ]{typescript}
+    function complement(l: Literal): Literal {
+        if (typeof l == 'string') {
+            return new Tuple('¬', l);
+        } else {
+            return l.get(1);
+        }
+    }
+    function extractVariable(l: Literal): Variable {
+        if (typeof l == 'string') {
+            return l;
+        } else {
+            return l.get(1);
+        }
+    }
+    function empty<T extends Value>(): RS<T> {
+        return new RecursiveSet<T>()
+    }
+    function single<T extends Value>(x: T): RS<T> {
+        return new RecursiveSet<T>(x)
+    }
+    function collectVariables(M: RS<Clause>): RS<Variable> {
+        const r = empty<Variable>();
+        return M.reduce((a, c) => a.union(c.map(extractVariable)), r);
+    }
+    function cutRule(C1: Clause, C2: Clause): RS<Clause> {
+        return C1.reduce((r, l) => {
+            const lBar = complement(l);
+            if (C2.has(lBar)) {
+                // (C1 \ {l}) U (C2 \ {lBar})
+                r.add(C1.difference(single(l)).union(C2.difference(single(lBar))));
+            }
+            return r;
+        }, empty<Clause>()); 
+    }  
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Auxiliary function that are used in Figure \ref{fig:Completeness.ipynb-2}.}
@@ -2231,19 +2333,27 @@ We first discuss the auxiliary procedures shown in Figure \ref{fig:Completeness.
                 bgcolor       = sepia,
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm,
-              ]{python3}
-    def saturate(Clauses):
-        while True:
-            Derived = { C for C1 in Clauses
-                          for C2 in Clauses
-                          for C in cutRule(C1, C2)
-                      }
-            if frozenset() in Derived:
-                return { frozenset() }  # This is the set notation of ⊥.
-            Derived -= Clauses
-            if Derived == set():        # no new clauses found
-                return Clauses
-            Clauses |= Derived
+              ]{typescript}
+    function saturate(Clauses: RS<Clause>): RS<Clause> {
+        let currentClauses = Clauses.clone(); 
+        while (true) {
+            const sizeBefore = currentClauses.size;
+            let newClauses = empty<Clause>();
+            for (const C1 of currentClauses) {
+                for (const C2 of currentClauses) {
+                    const derived = cutRule(C1, C2)
+                    if (derived.some(D => D.isEmpty())) {
+                        return single(empty<Literal>());
+                    }
+                    newClauses = newClauses.union(derived);
+                }
+            }
+            currentClauses = currentClauses.union(newClauses);
+            if (currentClauses.size === sizeBefore) {
+                return currentClauses;
+            }
+        }
+    }
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Die Funktion \texttt{saturate}}
@@ -2318,22 +2428,23 @@ line 28 will terminate after at most $2^{2 \cdot n}$ iterations.
                 bgcolor       = sepia,
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm,
-              ]{python3}
-    def findValuation(Clauses):
-        "Given a set of Clauses, find an interpretation satisfying all clauses."
-        Variables = collectVariables(Clauses)
-        Clauses   = saturate(Clauses)
-        if frozenset() in Clauses:  # The set Clauses is inconsistent.
-            return False
-        Literals = set()
-        for p in Variables:
-            if any(C for C in Clauses 
-                     if  p in C and C - {p} <= { complement(l) for l in Literals }
-                  ):
-                Literals |= { p }
-            else:
-                Literals |= { ('¬', p) }
-        return Literals
+              ]{typescript}
+    function findValuation(Clauses: RS<Clause>): false | RS<Literal> {
+        const saturated = saturate(Clauses);
+        if (saturated.some(c => c.isEmpty())) {
+            return false;
+        }        
+        const Variables = collectVariables(Clauses);
+        return Variables.reduce((Literals, p) => {
+            const Complements = Literals.map(complement);         
+            if (saturated.some(C => C.has(p) && restFalse(C, p, Complements))) {
+                Literals.add(p);
+            } else {
+                Literals.add(complement(p));
+            }        
+            return Literals;
+        }, empty<Literal>()); 
+    }
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Die Funktion \texttt{findValuation}.\index{\texttt{findValuation}}}
