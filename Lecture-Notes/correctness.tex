@@ -553,7 +553,7 @@ Here, in line 5 the variable \texttt{r} has the index $n$ on the right side of t
 while it has the index $n+1$ on the left side of the assignment in line 5.  The index $n$ denotes 
 the number of times that the test \texttt{y > 0} of the \texttt{while} loop has been executed.
 After the \texttt{while}-loop finishes, the variable $\texttt{r}$ is indexed as
-$\texttt{r}_N$ in line 8, where $N$ denotes the total number of times that the test \texttt{y > 0} has been executed.
+$\texttt{r}_N$ in line 10, where $N$ denotes the total number of times that the test \texttt{y > 0} has been executed.
 We show the correctness of the given program next.  Let us define
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -654,13 +654,13 @@ i.e. we assume that
 $a \leq 2^{128\,000}$,
 \\[0.2cm]
 since then we are sure that we can represent $\mathtt{isqrt}(a)$ with $64,000$ bits.
-In order to compute $\mathtt{isqrt}(a)$ we start with the last bit $b_{n-1}$.  If the square of $2^{n-1}$ is
-less than or equal to $a$, then we must have $b_{n-1} = 1$.  Otherwise we have $b_{n-1} = 0$.  Assume now that
-we have already computed the bits $b_{n-1}$, $b_{n-2}$, $\cdots$, $b_{n-k}$.  In order to compute $b_{n-(k+1)}$
+In order to compute $\mathtt{isqrt}(a)$ we start with the last bit $b_{n}$.  If the square of $2^{n}$ is
+less than or equal to $a$, then we must have $b_{n} = 1$.  Otherwise we have $b_{n} = 0$.  Assume now that
+we have already computed the bits $b_{n}$, $b_{n-1}$, $\cdots$, $b_{n-k}$.  In order to compute $b_{n-(k+1)}$
 we have to check whether 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\ds\left(\ds 2^{n-(k+1)} + \sum\limits_{i=n-k}^{n-1} b_i \cdot 2^i \right)^2 \leq a$.
+$\ds\left(\ds 2^{n-(k+1)} + \sum\limits_{i=n-k}^{n} b_i \cdot 2^i \right)^2 \leq a$.
 \\[0.2cm]
 If it is, then  $b_{n-(k+1)} = 1$, else $b_{n-(k+1)} = 0$.
 With this in mind, we can state the invariants that hold when the \texttt{while} loop in line 4 is entered:
@@ -717,7 +717,7 @@ We proceed to prove the first invariant $p_k = 2^{n-k}$ by induction.
    This shows that the body of the \texttt{while} loop is executed $n+1$ times.  This was to be expected, as
    each execution of this loop computes one bit of the result.
 \end{enumerate}
-We proceed to prove the second invariant $\ds r_k = \sum\limits_{i=n-(k+1)}^{n-1} b_i \cdot 2^i$ by induction.
+We proceed to prove the second invariant $\ds r_k = \sum\limits_{i=0}^{k-1} b_{n-i} \cdot 2^{n-i}$ by induction.
 \begin{enumerate}
 \item[B.C.:] $k = 0$
 
