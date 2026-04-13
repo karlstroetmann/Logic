@@ -401,30 +401,30 @@ most appropriate to represent the information that is to be processed by the pro
 process propositional formulas.  Therefore, we have to decide how to represent propositional formulas in
 \textsl{TypeScript}.  One obvious possibility would be to use strings.  However, this would be a bad choice as it
 would then be difficult to access the parts of a given formula.  It is far more suitable to represent
-propositional formulas as \blue{nested tuples}.  A nested tuple is a tuple that contains both strings and
-nested tuples.  For example,
+propositional formulas as \blue{nested lists}.  A nested list is a list that contains both strings and
+nested lists.  For example,
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{[\tsq{$\wedge$}, [\tsq{$\neg$}, \tsq{p}], \tsq{q}]}
 \\[0.2cm]
-is a nested tuple that represents the propositional formula $\neg p \wedge q$.
+is a nested list that represents the propositional formula $\neg p \wedge q$.
 
 Formally, the representation of propositional formulas is defined by a function 
 \\[0.2cm]
 \hspace*{1.3cm}
 $\textsl{rep}: \mathcal{F} \rightarrow \textsl{TypeScript}$
 \\[0.2cm]
-that maps a propositional formula $f$ to the corresponding nested tuple \index{nested tuple}
+that maps a propositional formula $f$ to the corresponding nested list \index{nested list}
 $\textsl{rep}(f)$.  We define $\textsl{rep}(f)$ inductively by induction on $f$.
 \begin{enumerate}
-\item $\verum$ is represented as the tuple \texttt{[\tsq{$\top$}]}.
+\item $\verum$ is represented as the list \texttt{[\tsq{$\top$}]}.
   
       This is possible because \texttt{\tsq{$\top$}} is a unicode symbol and \textsl{TypeScript} supports the
       use of unicode symbols in strings.  Therefore, we have  
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{rep}(\verum) := \texttt{[\tsq{$\top$}]}$.
-\item $\falsum$  is represented as the tuple \texttt{[\tsq{$\falsum$}]}.      
+\item $\falsum$  is represented as the list \texttt{[\tsq{$\falsum$}]}.      
       Therefore, we have
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -494,7 +494,7 @@ The \textsl{TypeScript} function \mytt{evaluate} is shown in Figure \ref{fig:eva
 \pageref{fig:evaluate.py}. 
 The function \texttt{evaluate} takes two arguments.
 \begin{enumerate}
-\item The first argument $F$ is a propositional formula that is represented as a nested tuple.
+\item The first argument $F$ is a propositional formula that is represented as a nested list.
 \item The second argument $I$ is a propositional evaluation.  This evaluation is represented as a set of
       propositional variables. Given a propositional variables $p$, the value of $\mathcal{I}(p)$ is computed
       by the expression  ``$p \;\mathtt{in}\; I$''.
@@ -549,7 +549,7 @@ Next, we discuss the implementation of the function \texttt{evaluate()}.
 \item First we define the type that we are going to use.
       \begin{enumerate}[(a)]
       \item A \texttt{Variable} is just a \texttt{string}.
-      \item A \texttt{Formula} is either a \texttt{Variable} or a nested tuple as discussed above.
+      \item A \texttt{Formula} is either a \texttt{Variable} or a nested list as discussed above.
       \end{enumerate}
 \item Line 8 deals with the case that the argument $F$ is a propositional variable.  We can recognize this by
       the fact that $F$ is a string, which we can check with the operator
@@ -561,7 +561,7 @@ Next, we discuss the implementation of the function \texttt{evaluate()}.
 \item If $F$ is $\verum$, then evaluating $F$ always yields \texttt{true}.
 \item If $F$ is $\falsum$, then evaluating $F$ always yields \texttt{false}. 
 \item If $F$ has the form $\neg G$, we recursively evaluate $G$ given the evaluation $I$ and negate the result.
-      Since $F$ is a tuple of the form [\tsq{$\neg$}, $G$], the subformula $G$ satisfies $G = F[1]$.
+      Since $F$ is a list of the form [\tsq{$\neg$}, $G$], the subformula $G$ satisfies $G = F[1]$.
 \item If $F$ has the form $G \wedge H$, we recursively evaluate
       $G$ and $H$ using $I$.  The results are then combined with the \textsl{TypeScript} operator
       ``\texttt{\&\&}''.
@@ -643,9 +643,12 @@ We discuss this program next.
     import { RecursiveSet, Value } from 'recursive-set';
     
     type RS<T extends Value> = RecursiveSet<T>;
-    const RS = RecursiveSet;
     
-    const P = new RS('a', 'b', 'c');
+    function set<T extends Value>(...elements: T[]): RS<T> {
+        return new RecursiveSet(...elements);
+    }
+    
+    const P = set('a', 'b', 'c');
     
     const f1 = 'a ∨ b ∨ c';
     const f2 = 'a → b ∨ c';
@@ -683,19 +686,19 @@ We discuss this program next.
 
 \begin{enumerate}
   
-\item We input propositional formulas as strings.  However, the function \texttt{evaluate} needs nested tuples
+\item We input propositional formulas as strings.  However, the function \texttt{evaluate} needs nested lists
       as input.  Therefore, we first import our parser for propositional formulas.
 \item Next, we define the function \texttt{transform}.  This function takes a propositional formula that is
-      represented as a string and transforms it into a nested tuple.
+      represented as a string and transforms it into a nested list.
 \item Line 6 defines the set $P$ of propositional variables.  We use the propositional variable \texttt{a} to
       express that Aaron is guilty, \texttt{b} is short for Bernard is guilty and \texttt{c} is true if and
       only if Caine is guilty. 
 \item Next, we define the propositional formulas $f_1$, $\cdots$, $f_6$.
 \item \texttt{Fs} is the set of all propositional formulas.
-\item In line 29 these formulas are transformed into nested tuples.
+\item In line 29 these formulas are transformed into nested lists.
 \item The function $\texttt{allTrue}(Fs, I)$ takes two inputs.
       \begin{enumerate}[(a)]
-      \item \texttt{Fs} is a set of propositional formulas that are represented as nested tuples.
+      \item \texttt{Fs} is a set of propositional formulas that are represented as nested lists.
       \item \texttt{I} is a propositional evaluation that is represented as a set of propositional variables.
             Hence \texttt{I} is a subset of \texttt{P}
       \end{enumerate}
@@ -856,12 +859,12 @@ this definition.  Note that we have been able to combine the last four cases.
               ]{typescript}
     function collectVars(f: Formula): RS<Variable> {
         if (typeof f == 'string') {
-            return new RS(f);
+            return set(f);
         }
         switch (f[0]) {
             case '⊤':
             case '⊥':
-                return new RS();
+                return set();
             case '¬':
                 return collectVars(f[1]);
             default: // case '↔', '→', '∧', '∨':
@@ -884,19 +887,6 @@ Figure \ref{fig:tautology.py} on page \pageref{fig:tautology.py}
 shows the implementation.
 \begin{enumerate}
 \item First, we compute the set $P$ of all propositional variables occurring in $f$.
-\item The function $\mathtt{allSubsets}(M)$ takes a set $M$ as its input and returns the list of all subsets of $M$.
-      The idea behind the definition of $\mathtt{allSubsets}(M)$ is as follows:
-      \begin{enumerate}[(a)]
-      \item Let $x$ be any element from the set $M$. 
-      \item Then there are two kinds of subsets of $M$:
-        \begin{itemize}
-        \item Those subsets $A \subseteq M$ that do not contain $x$.
-        \item Those subsets $B \subseteq M$ that do contain $x$.
-      \end{itemize}
-      The set $\mathcal{L}$ of those subsets $A$ of $M$ that do not contain $x$ can be calculated recursively:
-      $$ \mathcal{L} = \texttt{allSubsets}(M - \{x\}) $$
-      \item Adding $x$ to the subsets in $\mathcal{L}$ yields all those subsets of $M$ that do contain $x$. 
-      \end{enumerate}  
 \item Then we try to find a propositional interpretation $\mathcal{I}$ such that $\mathcal{I}(f)$
       \texttt{false}.  In this case $\mathcal{I}$ is returned. 
 \item Otherwise $f$ is a tautology and we return \texttt{true}.
@@ -1266,9 +1256,9 @@ function \texttt{elimBiconditional}.
       $f$ must be a propositional variable, because all other propositional formulas are represented as nested lists.
       Therefore, $f$ is returned unchanged in this case.
 \item In line 5 we deal with the cases where $f$ is equal to Verum or Falsum.
-      Note that these formulas are also represented as nested tuples.
-      For example, Verum is represented as the tuple \texttt{('⊤',)}, while Falsum is represented in
-      \textsl{Python} by the tuple \texttt{('⊥',)}.  In this case, $f$
+      Note that these formulas are also represented as nested lists.
+      For example, Verum is represented as the list \texttt{('⊤',)}, while Falsum is represented in
+      \textsl{Python} by the list \texttt{('⊥',)}.  In this case, $f$
       is returned unchanged.
 \item In line 7, we consider the case where $f$ is a negation.  Then $f$ has the form
       \\[0.2cm]
