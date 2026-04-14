@@ -496,8 +496,15 @@ The function \texttt{evaluate} takes two arguments.
 \begin{enumerate}
 \item The first argument $F$ is a propositional formula that is represented as a nested list.
 \item The second argument $I$ is a propositional evaluation.  This evaluation is represented as a set of
-      propositional variables. Given a propositional variables $p$, the value of $\mathcal{I}(p)$ is computed
-      by the expression  ``$p \;\mathtt{in}\; I$''.
+  propositional variables. Here, we use the type \texttt{RecursiveSet} from the library
+  \href{https://github.com/cstrerath/recursive-set}{\texttt{recursive-set}}.  For conciseness,  we abbreviate
+  this type as \texttt{RS}, i.e. we use the following type definition:
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  \texttt{type Set<T extends Value> = RecursiveSet<T>;}
+  \\[0.2cm]
+  Given a propositional variables $p$, the value of $\mathcal{I}(p)$ is then computed
+  by the expression  $I\mathtt{.has}(p)$.
 \end{enumerate}
 
 \begin{figure}[!ht]
@@ -516,9 +523,9 @@ The function \texttt{evaluate} takes two arguments.
                  | ['¬', Formula] 
                  | ['↔' | '→' | '∧' | '∨', Formula, Formula];
     
-    function evaluate(F: Formula, I: string[]): boolean {
+    function evaluate(F: Formula, I: Set<string>): boolean {
         if (typeof F == 'string') { // F is a propositional variable
-            return I.includes(F);
+            return I.has(F);
         }
         switch (F[0]) {
             case '⊤': 
@@ -642,9 +649,9 @@ We discuss this program next.
               ]{typescript}
     import { RecursiveSet, Value } from 'recursive-set';
     
-    type RS<T extends Value> = RecursiveSet<T>;
+    type Set<T extends Value> = RecursiveSet<T>;
     
-    function set<T extends Value>(...elements: T[]): RS<T> {
+    function set<T extends Value>(...elements: T[]): Set<T> {
         return new RecursiveSet(...elements);
     }
     
@@ -673,7 +680,7 @@ We discuss this program next.
     
     const Gs = Fs.map(f => parse(f));
         
-    function allTrue(Gs: Formula[], I: RS<Variable>): boolean {
+    function allTrue(Gs: Formula[], I: Set<Variable>): boolean {
         return Gs.every(f => evaluate(f, I));
     }
     
@@ -857,7 +864,7 @@ this definition.  Note that we have been able to combine the last four cases.
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
               ]{typescript}
-    function collectVars(f: Formula): RS<Variable> {
+    function collectVars(f: Formula): Set<Variable> {
         if (typeof f == 'string') {
             return set(f);
         }
@@ -902,7 +909,7 @@ shows the implementation.
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
               ]{typescript}
-    function tautology(f: Formula): true | RS<Variable> {
+    function tautology(f: Formula): true | Set<Variable> {
         const P = collectVars(f);
         for (const I of collectVars(f).powerset()) {
             if (!evaluate(f, I)) {
@@ -1571,16 +1578,16 @@ Figure \ref{fig:cnf} on page \pageref{fig:cnf} shows the implementation of the f
     
     function cnf(f: NNF): CNF {
         if (typeof f == 'string') { 
-            return new RS<Clause>(new RS<Literal>(f));
+            return new Set<Clause>(new Set<Literal>(f));
         }
         switch (f[0]) {
             case '⊤':
-                return new RS<Clause>();     
+                return new Set<Clause>();     
             case '⊥':
-                return new RS<Clause>(new RS<Literal>());
+                return new Set<Clause>(new Set<Literal>());
             case '¬': {
-                const clause = new RS<Literal>(new Tuple('¬', f[1]));
-                return new RS<Clause>(clause);
+                const clause = new Set<Literal>(new Tuple('¬', f[1]));
+                return new Set<Clause>(clause);
             }            
             case '∧': {
                 return cnf(f[1]).union(cnf(f[2]));
@@ -2248,17 +2255,17 @@ online.
             return l.get(1);
         }
     }
-    function empty<T extends Value>(): RS<T> {
+    function empty<T extends Value>(): Set<T> {
         return new RecursiveSet<T>()
     }
-    function single<T extends Value>(x: T): RS<T> {
+    function single<T extends Value>(x: T): Set<T> {
         return new RecursiveSet<T>(x)
     }
-    function collectVariables(M: RS<Clause>): RS<Variable> {
+    function collectVariables(M: Set<Clause>): Set<Variable> {
         const r = empty<Variable>();
         return M.reduce((a, c) => a.union(c.map(extractVariable)), r);
     }
-    function cutRule(C1: Clause, C2: Clause): RS<Clause> {
+    function cutRule(C1: Clause, C2: Clause): Set<Clause> {
         return C1.reduce((r, l) => {
             const lBar = complement(l);
             if (C2.has(lBar)) {
@@ -2324,7 +2331,7 @@ We first discuss the auxiliary procedures shown in Figure \ref{fig:Completeness.
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm,
               ]{typescript}
-    function saturate(Clauses: RS<Clause>): RS<Clause> {
+    function saturate(Clauses: Set<Clause>): Set<Clause> {
         let currentClauses = Clauses.clone(); 
         while (true) {
             const sizeBefore = currentClauses.size;
@@ -2419,7 +2426,7 @@ line 28 will terminate after at most $2^{2 \cdot n}$ iterations.
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm,
               ]{typescript}
-    function findValuation(Clauses: RS<Clause>): false | RS<Literal> {
+    function findValuation(Clauses: Set<Clause>): false | Set<Literal> {
         const saturated = saturate(Clauses);
         if (saturated.some(c => c.isEmpty())) {
             return false;
