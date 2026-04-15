@@ -498,7 +498,7 @@ The function \texttt{evaluate} takes two arguments.
 \item The second argument $I$ is a propositional evaluation.  This evaluation is represented as a set of
   propositional variables. Here, we use the type \texttt{RecursiveSet} from the library
   \href{https://github.com/cstrerath/recursive-set}{\texttt{recursive-set}}.  For conciseness,  we abbreviate
-  this type as \texttt{RS}, i.e. we use the following type definition:
+  this type as \texttt{Set}, i.e. we use the following type definition:
   \\[0.2cm]
   \hspace*{1.3cm}
   \texttt{type Set<T extends Value> = RecursiveSet<T>;}
@@ -692,17 +692,20 @@ We discuss this program next.
 \end{figure}
 
 \begin{enumerate}
-  
+\item We import the type \texttt{RecursiveSet} from the library \texttt{recursive-set} and abbreviate
+      this type as \texttt{Set}.
+\item Since it is rather tedious to write \texttt{new RecursiveSet($\cdots$)} whenever we want to create a new
+      set, we define the function \texttt{set}.  We will use this function in all ofthe following programs
 \item We input propositional formulas as strings.  However, the function \texttt{evaluate} needs nested lists
       as input.  Therefore, we first import our parser for propositional formulas.
 \item Next, we define the function \texttt{transform}.  This function takes a propositional formula that is
       represented as a string and transforms it into a nested list.
-\item Line 6 defines the set $P$ of propositional variables.  We use the propositional variable \texttt{a} to
+\item We define the set $P$ of propositional variables.  We use the propositional variable \texttt{a} to
       express that Aaron is guilty, \texttt{b} is short for Bernard is guilty and \texttt{c} is true if and
       only if Caine is guilty. 
-\item Next, we define the propositional formulas $f_1$, $\cdots$, $f_6$.
+\item Next, we define the propositional formulas $f_1$, $\cdots$, $f_6$ as strings.
 \item \texttt{Fs} is the set of all propositional formulas.
-\item In line 29 these formulas are transformed into nested lists.
+\item These formulas are transformed into nested lists.
 \item The function $\texttt{allTrue}(Fs, I)$ takes two inputs.
       \begin{enumerate}[(a)]
       \item \texttt{Fs} is a set of propositional formulas that are represented as nested lists.
