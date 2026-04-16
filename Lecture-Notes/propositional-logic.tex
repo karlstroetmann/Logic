@@ -737,11 +737,11 @@ Solve the following puzzle by editing the notebook
 \begin{minipage}{0.95\linewidth}
   A portion of the Smith family is visiting the Walton family. \textbf{John} Smith and his wife \textbf{Helen} have three
   children. Their oldest child is a boy named \textbf{Thomas}. Thomas has two younger sisters named \textbf{Amy} and
-  \textbf{Jennifer}. Jennifer is the youngest child. The following facts are given: 
+  \textbf{Xenia}. Xenia is the youngest child. The following facts are given: 
   \begin{enumerate}
   \item If John is going, he will take his wife Helen along.
   \item At least one of the two older children will visit the Waltons.
-  \item Either Helen or Jennifer will visit the Waltons.
+  \item Either Helen or Xenia will visit the Waltons.
   \item Either both daughters will visit the Waltons together or neither of them will.
   \item If Thomas visits the Waltons, both John and Amy will also visit.
   \end{enumerate}
@@ -1112,10 +1112,10 @@ seen above, we can then easily decide whether $F$ is a tautology.
 \begin{enumerate}
 \item Eliminate all occurrences of the junction ``$\leftrightarrow$'' using the equivalence \\[0.2cm]
       \hspace*{1.3cm} 
-      $(F \leftrightarrow G) \Leftrightarrow (F \rightarrow G) \wedge (G \rightarrow F)$.
+      $F \leftrightarrow G \Leftrightarrow (F \rightarrow G) \wedge (G \rightarrow F)$.
 \item Eliminate all occurrences of the junction ``$\rightarrow$'' using the equivalence \\[0.2cm]
       \hspace*{1.3cm} 
-      $(F \rightarrow G) \Leftrightarrow \neg F \vee G$.
+      $F \rightarrow G \Leftrightarrow \neg F \vee G$.
 \item Move the negation signs inwards as far as possible.  Use the following equivalences:
       \begin{enumerate}
       \item $\neg \falsum \Leftrightarrow \verum$
@@ -1142,14 +1142,20 @@ seen above, we can then easily decide whether $F$ is a tautology.
 \end{enumerate}
 We should note that the formula can grow considerably when using the distributive law.
 This is because the formula $F$ occurs twice on the right-hand side of the equivalence 
-$F \vee (G \wedge H) \leftrightarrow (F \vee G) \wedge (F \vee H)$, while it occurs only occurs once on the left. 
+$F \vee (G \wedge H) \leftrightarrow (F \vee G) \wedge (F \vee H)$, while it occurs only once on the left. 
 
 We demonstrate the procedure using the example of the formula\\[0.2cm]
 \hspace*{1.3cm} $(p \rightarrow q) \rightarrow (\neg p \rightarrow \neg q)$.
 \begin{enumerate}
 \item Since the formula does not contain the operator ``$\leftrightarrow$''
       there is nothing to do in the first step.
-\item The elimination of the operator ``$\rightarrow$'' yields \\[0.2cm]
+\item In order to eliminate the operator ``$\rightarrow$'' , we eliminate the inner occurrences of
+      ``$\rightarrow$'' first.  This yields
+      \\[0.2cm]
+      \hspace*{1.3cm} $(\neg p \vee q) \rightarrow (\neg \neg p \vee \neg q)$.
+      \\[0.2cm]
+      When we eliminate the remaining occurrence of ``$\rightarrow$''  we get
+      \\[0.2cm]
       \hspace*{1.3cm} $\neg (\neg p \vee q) \vee (\neg \neg p \vee \neg q)$.
 \item The conversion to negation normal form results in \\[0.2cm]
       \hspace*{1.3cm} $(p \wedge \neg q) \vee (p \vee \neg q)$.
@@ -1167,7 +1173,7 @@ We demonstrate the procedure using the example of the formula\\[0.2cm]
 The formula is now converted to CNF.
 
 \subsection{Computing the Conjunctive Normal Form in \textsl{TypeScript}}
-Next, we specify anumber of functions that can be used to convert a given formula
+Next, we specify a number of functions that can be used to convert a given formula
 formula $f$ into conjunctive normal form.  These functions are part of the Jupyter notebook
 \\[0.2cm]
 \hspace*{1.3cm}
