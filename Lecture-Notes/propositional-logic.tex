@@ -492,19 +492,27 @@ This enables us to implement a simple function that evaluates a propositional fo
 propositional valuation $\mathcal{I}$.
 The \textsl{TypeScript} function \mytt{evaluate} is shown in Figure \ref{fig:evaluate.py} on page
 \pageref{fig:evaluate.py}. 
-The function \texttt{evaluate} takes two arguments.
+
 \begin{enumerate}
-\item The first argument $F$ is a propositional formula that is represented as a nested list.
-\item The second argument $I$ is a propositional evaluation.  This evaluation is represented as a set of
-  propositional variables. Here, we use the type \texttt{RecursiveSet} from the library
-  \href{https://github.com/cstrerath/recursive-set}{\texttt{recursive-set}}.  For conciseness,  we abbreviate
-  this type as \texttt{Set}, i.e. we use the following type definition:
-  \\[0.2cm]
-  \hspace*{1.3cm}
-  \texttt{type Set<T extends Value> = RecursiveSet<T>;}
-  \\[0.2cm]
-  Given a propositional variables $p$, the value of $\mathcal{I}(p)$ is then computed
-  by the expression  $I\mathtt{.has}(p)$.
+\item First we define the type that we are going to use.
+      \begin{enumerate}[(a)]
+      \item A \texttt{Variable} is just a \texttt{string}.
+      \item A \texttt{Formula} is either a \texttt{Variable} or a nested list as discussed above.
+      \end{enumerate}
+\item The function \texttt{evaluate} takes two arguments.
+      \begin{enumerate}
+      \item The first argument $F$ is a propositional formula that is represented as a nested list.
+      \item The second argument $I$ is a propositional evaluation.  This evaluation is represented as a set of
+        propositional variables. Here, we use the type \texttt{RecursiveSet} from the library
+        \href{https://github.com/cstrerath/recursive-set}{\texttt{recursive-set}}.  For conciseness,  we abbreviate
+        this type as \texttt{Set}, i.e. we use the following type definition:
+        \\[0.2cm]
+        \hspace*{1.3cm}
+        \texttt{type Set<T extends Value> = RecursiveSet<T>;}
+        \\[0.2cm]
+        Given a propositional variables $p$, the value of $\mathcal{I}(p)$ is then computed
+        by the expression  $\mathcal{I}\mathtt{.has}(p)$.
+      \end{enumerate}
 \end{enumerate}
 
 \begin{figure}[!ht]
@@ -553,16 +561,11 @@ The function \texttt{evaluate} takes two arguments.
 \noindent
 Next, we discuss the implementation of the function \texttt{evaluate()}.
 \begin{enumerate}
-\item First we define the type that we are going to use.
-      \begin{enumerate}[(a)]
-      \item A \texttt{Variable} is just a \texttt{string}.
-      \item A \texttt{Formula} is either a \texttt{Variable} or a nested list as discussed above.
-      \end{enumerate}
 \item Line 8 deals with the case that the argument $F$ is a propositional variable.  We can recognize this by
       the fact that $F$ is a string, which we can check with the operator
       \texttt{typeof}.
 
-      In this case we have to check whether the variable $p$ is an element of the list $I$, because $p$ is
+      In this case we have to check whether the variable $p$ is an element of the set $I$, because $p$ is
       interpreted as \texttt{true} if and only if $p \in I$.  The method $L\mathtt{.has}(x)$
       takes a set $L$ and checks, whether $x$ is an element of $L$.
 \item If $F$ is $\verum$, then evaluating $F$ always yields \texttt{true}.
@@ -695,7 +698,7 @@ We discuss this program next.
 \item We import the type \texttt{RecursiveSet} from the library \texttt{recursive-set} and abbreviate
       this type as \texttt{Set}.
 \item Since it is rather tedious to write \texttt{new RecursiveSet($\cdots$)} whenever we want to create a new
-      set, we define the function \texttt{set}.  We will use this function in all ofthe following programs
+      set, we define the function \texttt{set}.  We will use this function in all of the following programs
 \item We input propositional formulas as strings.  However, the function \texttt{evaluate} needs nested lists
       as input.  Therefore, we first import our parser for propositional formulas.
 \item Next, we define the function \texttt{transform}.  This function takes a propositional formula that is
@@ -714,7 +717,7 @@ We discuss this program next.
       \end{enumerate}
       If all propositional formulas $f$ from the set \texttt{Fs} evaluate as \texttt{true} given the evaluation
       \texttt{I}, then \texttt{allTrue} returns the result \texttt{true}, otherwise \texttt{false} is returned.
-\item Line 35 computes the set of all propositional variables that render all formulas from \texttt{Fs} true.
+\item Line 38 computes the set of all propositional variables that render all formulas from \texttt{Fs} true.
       The function \texttt{powerset} takes a set $M$ and returns the power set of $M$, i.e.~it returns the set $2^M$.
 \end{enumerate}
 When we run this program we see that there is just a single propositional valuation $I$ such that all formulas
@@ -751,8 +754,10 @@ $$  (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $$
 is true for every propositional valuation $\mathcal{I}$.  This property gives rise to a definition.
 
 \begin{Definition}[Tautology]
-  If $f$ is a propositional formula and we have  \\[0.2cm]
-  \hspace{1.3cm} $\mathcal{I}(f) = \texttt{true}$ \quad for every propositional valuation $\mathcal{I}$, \\[0.2cm]
+  If $f$ is a propositional formula and we have
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  $\mathcal{I}(f) = \texttt{true}$ \quad for every propositional valuation $\mathcal{I}$, \\[0.2cm]
   then $f$ is a  \blue{tautology}.\index{tautology}  This is written as \\[0.2cm]
   \hspace*{1.3cm} $\models f$.\index{$\models f$}
   \eox
@@ -1577,20 +1582,19 @@ Figure \ref{fig:cnf} on page \pageref{fig:cnf} shows the implementation of the f
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
                 ]{typescript}
-    type CNF      = RecursiveSet<Clause>;
+    type CNF = Set<Clause>;
     
     function cnf(f: NNF): CNF {
         if (typeof f == 'string') { 
-            return new Set<Clause>(new Set<Literal>(f));
+            return set(set(f));
         }
         switch (f[0]) {
             case '⊤':
-                return new Set<Clause>();     
+                return set();     
             case '⊥':
-                return new Set<Clause>(new Set<Literal>());
+                return set(set());
             case '¬': {
-                const clause = new Set<Literal>(new Tuple('¬', f[1]));
-                return new Set<Clause>(clause);
+                return set(set(new Tuple('¬', f[1])));
             }            
             case '∧': {
                 return cnf(f[1]).union(cnf(f[2]));
