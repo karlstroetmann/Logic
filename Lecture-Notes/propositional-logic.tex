@@ -531,27 +531,25 @@ The \textsl{TypeScript} function \mytt{evaluate} is shown in Figure \ref{fig:eva
                  | ['¬', Formula] 
                  | ['↔' | '→' | '∧' | '∨', Formula, Formula];
     
-    function evaluate(F: Formula, I: Set<string>): boolean {
-        if (typeof F == 'string') { // F is a propositional variable
-            return I.has(F);
+    function evaluate(f: Formula, I: Set<Variable>): boolean {
+        if (typeof f == 'string') { return I.has(f); }
+        switch (f[0]) {
+            case '⊤': return true;
+            case '⊥': return false;
+            case '¬': { const [_, g] = f;
+                        return !evaluate(g, I); }
+            default:  { 
+                const [op, g, h] = f;
+                const [gs, hs] = [g, h].map(e => evaluate(e, I));
+                switch (op) {
+                    case '∧': return gs && hs;
+                    case '∨': return gs || hs;
+                    case '→': return gs <= hs;
+                    case '↔': return gs == hs;
+                }
+            }
         }
-        switch (F[0]) {
-            case '⊤': 
-                return true;
-            case '⊥': 
-                return false;
-            case '¬': 
-                return !evaluate(F[1], I);
-            case '∧': 
-                return evaluate(F[1], I) && evaluate(F[2], I);
-            case '∨': 
-                return evaluate(F[1], I) || evaluate(F[2], I);
-            case '→': 
-                return evaluate(F[1], I) <= evaluate(F[2], I);
-            case '↔': 
-                return evaluate(F[1], I) == evaluate(F[2], I); 
-        }
-    }             
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Evaluation of a propositional formula.}
@@ -561,39 +559,44 @@ The \textsl{TypeScript} function \mytt{evaluate} is shown in Figure \ref{fig:eva
 \noindent
 Next, we discuss the implementation of the function \texttt{evaluate()}.
 \begin{enumerate}
-\item Line 8 deals with the case that the argument $F$ is a propositional variable.  We can recognize this by
-      the fact that $F$ is a string, which we can check with the operator
+\item Line 8 deals with the case that the argument $f$ is a propositional variable.  We can recognize this by
+      the fact that $f$ is a string, which we can check with the operator
       \texttt{typeof}.
 
       In this case we have to check whether the variable $p$ is an element of the set $I$, because $p$ is
       interpreted as \texttt{true} if and only if $p \in I$.  The method $L\mathtt{.has}(x)$
       takes a set $L$ and checks, whether $x$ is an element of $L$.
-\item If $F$ is $\verum$, then evaluating $F$ always yields \texttt{true}.
-\item If $F$ is $\falsum$, then evaluating $F$ always yields \texttt{false}. 
-\item If $F$ has the form $\neg G$, we recursively evaluate $G$ given the evaluation $I$ and negate the result.
-      Since $F$ is a list of the form [\tsq{$\neg$}, $G$], the subformula $G$ satisfies $G = F[1]$.
-\item If $F$ has the form $G \wedge H$, we recursively evaluate
-      $G$ and $H$ using $I$.  The results are then combined with the \textsl{TypeScript} operator
-      ``\texttt{\&\&}''.
-\item If $F$ has the form $G \vee H$, we recursively evaluate
-      $G$ and $H$ using $I$.  The results are then combined with the \textsl{TypeScript} operator
-      ``\texttt{||}''.
-\item If $F$ has the form $G \rightarrow H$, we recursively evaluate
-      $G$ and $H$ using $I$.  Then we exploit the fact that in \textsl{TypeScript} the values \texttt{true} and
-      \texttt{false} are ordered and we have
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{false < true}.
-      \\[0.2cm]
-      Now the evaluation of the formula $G \rightarrow H$ is only false if the evaluation of $G$ yields \texttt{true} but the
-      evaluation of $H$ yields false.  Therefore, 
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{evaluate}($G \rightarrow H$, I) \quad has the same value as \quad
-      $\texttt{evaluate}(G), I) \leq \texttt{evaluate}(H, I)$.
-\item If $F$ has the form $G \leftrightarrow H$, we recursively evaluate
-      $G$ and $H$ using $I$.  Then we exploit the fact that the formula $G \leftrightarrow H$ is true if and
-      only if $G$ and $H$ have the same truth value.
+\item If $f$ is $\verum$, then evaluating $f$ always yields \texttt{true}.
+\item If $f$ is $\falsum$, then evaluating $f$ always yields \texttt{false}. 
+\item If $f$ has the form $\neg g$, we recursively evaluate $g$ given the evaluation $I$ and negate the result.
+\item If $f$ has the form $g \odot h$, where $\odot$ is some binary operator, i.e.~
+      $\odot \in \{\wedge, \vee, \rightarrow, \leftrightarrow\}$ we recursively evaluate
+      $g$ and $h$ using $I$.  The resulting Boolean values are stored in $gs$ and $hs$ and are
+      then combined according to the operator $\odot$.
+      \begin{enumerate}
+      \item If $\odot = \wedge$ we can use the \textsl{TypeScript} operator ``\texttt{\&\&}''
+            to combine $gs$ and $hs$.
+      \item If $\odot = \vee$ we can use the \textsl{TypeScript} operator ``\texttt{||}''
+            to combine $gs$ and $hs$.
+      \item If $\odot = \rightarrow$ then we exploit the fact that in \textsl{TypeScript} the values \texttt{true} and
+            \texttt{false} are ordered and we have
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            \texttt{false < true}.
+            \\[0.2cm]
+            Now the evaluation of the formula $g \rightarrow h$ is only false if the evaluation of $g$ yields \texttt{true} but the
+            evaluation of $H$ yields false.  Therefore, 
+            \\[0.2cm]
+            \hspace*{1.3cm}
+            \texttt{evaluate}($g \rightarrow h$, I) \quad has the same value as \quad
+            $\texttt{evaluate}(g), I) \leq \texttt{evaluate}(h, I)$.
+            \\[0.2cm]
+            Hence we combine $gs$ and $hs$ using the operator ``\texttt{<=}''.
+      \item If $\odot = \leftrightarrow$ we exploit the fact that the formula $g \leftrightarrow h$ is true if and
+            only if $g$ and $h$ have the same truth value.  Hence we
+            can use the \textsl{TypeScript} operator ``\texttt{==}''
+            to combine $gs$ and $hs$.
+      \end{enumerate}
 \end{enumerate}
 
 \subsection{An Application}
@@ -668,18 +671,13 @@ We discuss this program next.
     const f6 = '¬c → a';
     const Fs = [f1, f2, f3, f4, f5, f6];
     
-    import { LogicParser } from './PropositionalLogicParser'
+    import { parse } from './PropositionalLogicParser'
     
     type Variable = string;
     type Formula = Variable 
                  | ['⊤' | '⊥'] 
                  | ['¬', Formula] 
                  | ['↔' | '→' | '∧' | '∨', Formula, Formula];
-    
-    function parse(s: string): Formula {
-        const parser = new LogicParser(s);
-        return parser.parse();
-    }
     
     const Gs = Fs.map(f => parse(f));
         
@@ -701,13 +699,11 @@ We discuss this program next.
       set, we define the function \texttt{set}.  We will use this function in all of the following programs
 \item We input propositional formulas as strings.  However, the function \texttt{evaluate} needs nested lists
       as input.  Therefore, we first import our parser for propositional formulas.
-\item Next, we define the function \texttt{transform}.  This function takes a propositional formula that is
-      represented as a string and transforms it into a nested list.
 \item We define the set $P$ of propositional variables.  We use the propositional variable \texttt{a} to
       express that Aaron is guilty, \texttt{b} is short for Bernard is guilty and \texttt{c} is true if and
       only if Caine is guilty. 
 \item Next, we define the propositional formulas $f_1$, $\cdots$, $f_6$ as strings.
-\item \texttt{Fs} is the set of all propositional formulas.
+\item \texttt{Fs} is the list of all these propositional formulas.
 \item These formulas are transformed into nested lists.
 \item The function $\texttt{allTrue}(Fs, I)$ takes two inputs.
       \begin{enumerate}[(a)]
@@ -873,17 +869,16 @@ this definition.  Note that we have been able to combine the last four cases.
                 xrightmargin  = 0.0cm
               ]{typescript}
     function collectVars(f: Formula): Set<Variable> {
-        if (typeof f == 'string') {
-            return set(f);
-        }
+        if (typeof f == 'string') { return set(f); }
         switch (f[0]) {
             case '⊤':
-            case '⊥':
-                return set();
-            case '¬':
-                return collectVars(f[1]);
-            default: // case '↔', '→', '∧', '∨':
-                return collectVars(f[1]).union(collectVars(f[2]));
+            case '⊥': return set();
+            case '¬': { const [_, g] = f; return collectVars(g); }
+            default: {  // case '↔', '→', '∧', '∨':
+                const [_, g, h] = f;
+                const [gs, hs] = [g, h].map(collectVars);
+                return gs.union(hs);
+            }
         }
     }
 \end{minted}
@@ -919,7 +914,7 @@ shows the implementation.
               ]{typescript}
     function tautology(f: Formula): true | Set<Variable> {
         const P = collectVars(f);
-        for (const I of collectVars(f).powerset()) {
+        for (const I of P.powerset()) {
             if (!evaluate(f, I)) {
                 return I;
             }
@@ -1241,29 +1236,24 @@ that describe the behavior of the function $\texttt{elimBiconditional}$:
                   | ['⊤' | '⊥']
                   | ['¬', Formula1]
                   | ['→' | '∧' | '∨', Formula1, Formula1];
-                
+
     function eliminateBiconditional(f: Formula): Formula1 {
-        if (typeof f == 'string') {
-            return f;
-        }
+        'Eliminate the logical operator "↔" from f.'
+        if (typeof f == 'string') { return f; }
         switch (f[0]) {
-            case '↔': {
-                const [, g, h] = f;
-                return eliminateBiconditional(['∧', ['→', g, h], ['→', h, g]]);
-            }
+            case '↔': { const [_, g, h] = f;
+                        const [gs, hs] = [g, h].map(eliminateBiconditional);
+                        return ['∧', ['→', gs, hs], ['→', hs, gs]]; }
             case '⊤':
-            case '⊥':
-                return f;        
-            case '¬': 
-                return ['¬', eliminateBiconditional(f[1])];
-            case '→':
-            case '∧':
-            case '∨': {
-                const [op, g, h] = f;
-                return [op, eliminateBiconditional(g), eliminateBiconditional(h)];
-            }
+            case '⊥': return f;        
+            case '¬': { const [_, g] = f;
+                        const gs = eliminateBiconditional(g);
+                        return ['¬', gs];                     }
+            default:  { const [op, g, h] = f;
+                        const [gs, hs] = [g, h].map(eliminateBiconditional);
+                        return [op, gs, hs];                  }
         }
-    }
+    }                  
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Elimination of $\leftrightarrow$}
@@ -1336,24 +1326,19 @@ This eliminates one case in the implementation.
                   | ['∧' | '∨', Formula2, Formula2];
                   
     function eliminateConditional(f: Formula1): Formula2 {
-        if (typeof f == 'string') { // f is a variable
-            return f; 
-        }
+        if (typeof f == 'string') { return f; }
         switch (f[0]) {
             case '⊤':
-            case '⊥':
-                return f;
-            case '→': {
-                const [, g, h] = f;
-                return eliminateConditional(['∨', ['¬', g], h]);
-            }
-            case '¬': 
-                return ['¬', eliminateConditional(f[1])];
-            case '∧':
-            case '∨': {
-                const [op, g, h] = f;
-                return [op, eliminateConditional(g), eliminateConditional(h)];
-            }
+            case '⊥': return f;
+            case '→': { const [_, g, h] = f;
+                        const [gs, hs] = [g, h].map(eliminateConditional);
+                        return ['∨', ['¬', gs], hs];                       }
+            case '¬': { const [_, g] = f;
+                        const gs = eliminateConditional(g);
+                        return ['¬', gs];                                  }
+            default:  { const [op, g, h] = f;
+                        const [gs, hs] = [g, h].map(eliminateConditional);
+                        return [op, gs, hs];                               }
         }
     }
 \end{minted}
@@ -1406,23 +1391,14 @@ the following equations: \index{\texttt{nnf}}
              | ['∧' | '∨', NNF, NNF];
     
     function nnf(f: Formula2): NNF {
-        if (typeof f == 'string') {
-            return f;
-        }
+        if (typeof f == 'string') { return f; }
         switch (f[0]) {
             case '⊤':
-            case '⊥':
-                return f;
-            case '¬': {
-                return neg(f[1]);
-            }
-            case '∧':
-            case '∨': {
-                const [op, g, h] = f;
-                return [op, nnf(g), nnf(h)];
-            }
+            case '⊥': return f;
+            case '¬': { const [_, g] = f;     return neg(g);               }
+            default:  { const [op, g, h] = f; return [op, nnf(g), nnf(h)]; }
         }
-    }         
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Computing the negation normal form.}
@@ -1438,27 +1414,15 @@ the following equations: \index{\texttt{nnf}}
                   bgcolor       = sepia,
                   numbers       = left,
                   numbersep     = -0.2cm,
-                ]{typescript}
+                ]{typescript}    
     function neg(f: Formula2): NNF {
-        if (typeof f == 'string') {
-            return ['¬', f];
-        }
+        if (typeof f == 'string') { return ['¬', f]; }
         switch (f[0]) {
-            case '⊤':
-                return ['⊥'];
-            case '⊥':
-                return ['⊤'];
-            case '¬': {
-                return nnf(f[1]);
-            }
-            case '∧': {
-                const [, g, h] = f;
-                return ['∨', neg(g), neg(h)];
-            }
-            case '∨': {
-                const [, g, h] = f;
-                return ['∧', neg(g), neg(h)];
-            }
+            case '⊤': return ['⊥'];
+            case '⊥': return ['⊤'];
+            case '¬': { const [_, g] = f; return nnf(g); }
+            default:  { const [op, g, h] = f;
+                        return [op == '∧' ? '∨' : '∧', neg(g), neg(h)]; }         
         } 
     }
 \end{minted}
@@ -1589,26 +1553,22 @@ Figure \ref{fig:cnf} on page \pageref{fig:cnf} shows the implementation of the f
                   xrightmargin  = 0.0cm
                 ]{typescript}
     type CNF = Set<Clause>;
-    
+                
     function cnf(f: NNF): CNF {
-        if (typeof f == 'string') { 
-            return set(set(f));
-        }
+        if (typeof f == 'string') { return set(set(f)); }
         switch (f[0]) {
-            case '⊤':
-                return set();     
-            case '⊥':
-                return set(set());
-            case '¬': {
-                return set(set(new Tuple('¬', f[1])));
+            case '⊤': return set();     
+            case '⊥': return set(set());
+            case '¬': { const [_, g] = f; return set(set(tpl('¬', g))); } 
+            default: {
+                const [op, g, h] = f;
+                const [gs, hs] = [g, h].map(cnf); 
+                switch (op) { 
+                    case '∧': return gs.union(hs);
+                    case '∨': { const pairs = gs.cartesianProduct(hs);
+                                return pairs.map(([c, d]) => c.union(d)); }
+                }
             }            
-            case '∧': {
-                return cnf(f[1]).union(cnf(f[2]));
-            }
-            case '∨': {
-                const Pairs = cnf(f[1]).cartesianProduct(cnf(f[2]));
-                return Pairs.map(([c1, c2]) => c1.union(c2));
-            }
         }
     }
 \end{minted}
