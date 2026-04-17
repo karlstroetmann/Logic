@@ -110,3 +110,8 @@ export class LogicParser implements ILogicParser {
         return `${this._tokens.toString()} ${this._arguments.toString()} ${this._operators.toString()}`;
     }
 }
+
+export function parse(s: string): Formula {
+    const parser = new LogicParser(s);
+    return parser.parse();
+}
