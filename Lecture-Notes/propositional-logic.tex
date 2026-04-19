@@ -505,10 +505,10 @@ The \textsl{TypeScript} function \mytt{evaluate} is shown in Figure \ref{fig:eva
       \item The second argument $I$ is a propositional evaluation.  This evaluation is represented as a set of
         propositional variables. Here, we use the type \texttt{RecursiveSet} from the library
         \href{https://github.com/cstrerath/recursive-set}{\texttt{recursive-set}}.  For conciseness,  we abbreviate
-        this type as \texttt{Set}, i.e. we use the following type definition:
+        this type as \texttt{Set}.  In order to do so, we import the type \texttt{RecursiveSet} as follows:
         \\[0.2cm]
         \hspace*{1.3cm}
-        \texttt{type Set<T extends Value> = RecursiveSet<T>;}
+        \texttt{import { RecursiveSet as Set } from 'recursive-set';}
         \\[0.2cm]
         Given a propositional variables $p$, the value of $\mathcal{I}(p)$ is then computed
         by the expression  $\mathcal{I}\mathtt{.has}(p)$.
@@ -564,14 +564,14 @@ Next, we discuss the implementation of the function \texttt{evaluate()}.
       \texttt{typeof}.
 
       In this case we have to check whether the variable $p$ is an element of the set $I$, because $p$ is
-      interpreted as \texttt{true} if and only if $p \in I$.  The method $L\mathtt{.has}(x)$
-      takes a set $L$ and checks, whether $x$ is an element of $L$.
-\item If $f$ is $\verum$, then evaluating $f$ always yields \texttt{true}.
-\item If $f$ is $\falsum$, then evaluating $f$ always yields \texttt{false}. 
-\item If $f$ has the form $\neg g$, we recursively evaluate $g$ given the evaluation $I$ and negate the result.
+      interpreted as \texttt{true} if and only if $p \in I$.  The method $I\mathtt{.has}(x)$
+      takes a set $I$ and an element $x$ and checks, whether $x$ is an element of $I$.
+\item If $f$ is $\verum$, then evaluating $f$ yields \texttt{true}.
+\item If $f$ is $\falsum$, then evaluating $f$ yields \texttt{false}. 
+\item If $f$ has the form $\neg g$, we recursively evaluate $g$  and negate the result.
 \item If $f$ has the form $g \odot h$, where $\odot$ is some binary operator, i.e.~
       $\odot \in \{\wedge, \vee, \rightarrow, \leftrightarrow\}$ we recursively evaluate
-      $g$ and $h$ using $I$.  The resulting Boolean values are stored in $gs$ and $hs$ and are
+      $g$ and $h$.  The resulting Boolean values are stored in $gs$ and $hs$ and are
       then combined according to the operator $\odot$.
       \begin{enumerate}
       \item If $\odot = \wedge$ we can use the \textsl{TypeScript} operator ``\texttt{\&\&}''
@@ -585,13 +585,13 @@ Next, we discuss the implementation of the function \texttt{evaluate()}.
             \texttt{false < true}.
             \\[0.2cm]
             Now the evaluation of the formula $g \rightarrow h$ is only false if the evaluation of $g$ yields \texttt{true} but the
-            evaluation of $H$ yields false.  Therefore, 
+            evaluation of $h$ yields false.  Therefore, 
             \\[0.2cm]
             \hspace*{1.3cm}
             \texttt{evaluate}($g \rightarrow h$, I) \quad has the same value as \quad
-            $\texttt{evaluate}(g), I) \leq \texttt{evaluate}(h, I)$.
+            $\texttt{evaluate}(g, I) \leq \texttt{evaluate}(h, I)$.
             \\[0.2cm]
-            Hence we combine $gs$ and $hs$ using the operator ``\texttt{<=}''.
+            Hence we combine $gs$ and $hs$ using the \emph{less-or-equal} operator ``\texttt{<=}''.
       \item If $\odot = \leftrightarrow$ we exploit the fact that the formula $g \leftrightarrow h$ is true if and
             only if $g$ and $h$ have the same truth value.  Hence we
             can use the \textsl{TypeScript} operator ``\texttt{==}''
@@ -653,13 +653,13 @@ We discuss this program next.
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
               ]{typescript}
-    import { RecursiveSet, Value } from 'recursive-set';
-    
-    type Set<T extends Value> = RecursiveSet<T>;
+    import { RecursiveSet as Set, Value } from 'recursive-set';
     
     function set<T extends Value>(...elements: T[]): Set<T> {
-        return new RecursiveSet(...elements);
+        return new Set(...elements);
     }
+    
+    import { parse } from './PropositionalLogicParser'
     
     const P = set('a', 'b', 'c');
     
@@ -670,8 +670,6 @@ We discuss this program next.
     const f5 = '¬(¬c ∧ a ∧ b)';
     const f6 = '¬c → a';
     const Fs = [f1, f2, f3, f4, f5, f6];
-    
-    import { parse } from './PropositionalLogicParser'
     
     type Variable = string;
     type Formula = Variable 
@@ -695,7 +693,7 @@ We discuss this program next.
 \begin{enumerate}
 \item We import the type \texttt{RecursiveSet} from the library \texttt{recursive-set} and abbreviate
       this type as \texttt{Set}.
-\item Since it is rather tedious to write \texttt{new RecursiveSet($\cdots$)} whenever we want to create a new
+\item Since it is rather tedious to write \texttt{new Set($\cdots$)} whenever we want to create a new
       set, we define the function \texttt{set}.  We will use this function in all of the following programs
 \item We input propositional formulas as strings.  However, the function \texttt{evaluate} needs nested lists
       as input.  Therefore, we first import our parser for propositional formulas.
@@ -713,7 +711,7 @@ We discuss this program next.
       \end{enumerate}
       If all propositional formulas $f$ from the set \texttt{Fs} evaluate as \texttt{true} given the evaluation
       \texttt{I}, then \texttt{allTrue} returns the result \texttt{true}, otherwise \texttt{false} is returned.
-\item Line 38 computes the set of all propositional variables that render all formulas from \texttt{Fs} true.
+\item Finally we compute the set of all propositional variables that render all formulas from \texttt{Fs} true.
       The function \texttt{powerset} takes a set $M$ and returns the power set of $M$, i.e.~it returns the set $2^M$.
 \end{enumerate}
 When we run this program we see that there is just a single propositional valuation $I$ such that all formulas
@@ -1263,32 +1261,30 @@ that describe the behavior of the function $\texttt{elimBiconditional}$:
 Figure \ref{fig:elimBiconditional} on page \pageref{fig:elimBiconditional} shows the implementation of the
 function \texttt{elimBiconditional}.
 \begin{enumerate}
-\item In line 3, the function call $\texttt{isinstance}(p, \mathtt{str})$ checks whether $p$ is a string.  In this case
+\item In line 8, we check whether $p$ is a string.  In this case
       $f$ must be a propositional variable, because all other propositional formulas are represented as nested lists.
       Therefore, $f$ is returned unchanged in this case.
-\item In line 5 we deal with the cases where $f$ is equal to verum or falsum.
-      Note that these formulas are also represented as nested lists.
-      For example, verum is represented as the list \texttt{('⊤',)}, while falsum is represented in
-      \textsl{TypeScript} by the list \texttt{('⊥',)}.  In this case, $f$
-      is returned unchanged.
-\item In line 7, we consider the case where $f$ is a negation.  Then $f$ has the form
-      \\[0.2cm]
-      \hspace*{1.3cm}
-      \texttt{('¬', $g$)}  
-      \\[0.2cm]
-      and we have to recursively remove the operator ``$\leftrightarrow$'' from $g$.
-\item In line 9 we check the case that $f$ has the form $g \leftrightarrow h$.
-      In this case, we use the equivalence
+\item In line 10 we check the case that $f$ has the form $g \leftrightarrow h$.
+      First, we eliminate the operator ``$\leftrightarrow$'' from $g$ and $h$ by recursively
+      calling the function function \texttt{elimBiconditional}.  Then we use the equivalence
       \\[0.2cm]
       \hspace*{1.3cm}
       $(g \leftrightarrow h) \Leftrightarrow (g \rightarrow h) \wedge (h \rightarrow g)$.
+\item In line 13 and 14 we deal with the cases where $f$ is equal to verum or falsum.
+      Note that these formulas are also represented as nested lists.
+      For example, verum is represented as the list \texttt{['⊤']}, while falsum is represented in
+      \textsl{TypeScript} as the list \texttt{['⊥']}.  In this case, $f$
+      is returned unchanged.
+\item In line 15, we consider the case where $f$ is a negation.  Then $f$ has the form
       \\[0.2cm]
-      Furthermore, we have to eliminate the operator ``$\leftrightarrow$'' from $g$ and $h$ by recursively
-      calling the function function \texttt{elimBiconditional}.
+      \hspace*{1.3cm}
+      \texttt{['¬', $g$]}  
+      \\[0.2cm]
+      and we have to recursively remove the operator ``$\leftrightarrow$'' from $g$.
 \item In the remaining cases, $f$ has the form
       \\[0.2cm]
       \hspace*{1.3cm}
-      \texttt{('$o$', $g$, $h$)}  \quad with $o \in \{\rightarrow, \wedge, \vee\}$.
+      \texttt{['$o$', $g$, $h$]}  \quad with $o \in \{\rightarrow, \wedge, \vee\}$.
       \\[0.2cm]
       In these cases, the operator ``$\leftrightarrow$'' has to be removed recursively from the subformulas $g$ and $h$. 
 \end{enumerate}
@@ -1328,11 +1324,11 @@ This eliminates one case in the implementation.
     function eliminateConditional(f: Formula1): Formula2 {
         if (typeof f == 'string') { return f; }
         switch (f[0]) {
-            case '⊤':
-            case '⊥': return f;
             case '→': { const [_, g, h] = f;
                         const [gs, hs] = [g, h].map(eliminateConditional);
                         return ['∨', ['¬', gs], hs];                       }
+            case '⊤':
+            case '⊥': return f;
             case '¬': { const [_, g] = f;
                         const gs = eliminateConditional(g);
                         return ['¬', gs];                                  }
