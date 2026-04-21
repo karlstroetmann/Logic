@@ -100,7 +100,7 @@ The rest of this chapter is structured as follows:
       propositional formulas.
 
       This is known as the \blue{syntax} of propositional formulas.
-\item Next, we discuss the \blue{evaluation} of propositional formulas and implement the evaluation in \textsl{Python}.
+\item Next, we discuss the \blue{evaluation} of propositional formulas and implement the evaluation in \textsl{TypeScript}.
 
       This is known as the \blue{semantics} of propositional formulas.
 \item Then we formally define the notions \blue{tautology} and \blue{satisfiability} for propositional formulas.   
@@ -392,7 +392,7 @@ $ \eox
 Note that we did just evaluate some parts of the formula.  The reason is that as soon as we know that the first
 argument of $\circright$ is \texttt{false} the value of the corresponding formula is already determined.
 Nevertheless, this approach is too cumbersome.  In practice, we do not evaluate large propositional formulas
-ourselves.  Instead, we will next implement a \textsl{Python} program that evaluates these formulas for us.
+ourselves.  Instead, we will next implement a \textsl{TypeScript} program that evaluates these formulas for us.
 
 \subsection{Implementation} 
 In this section we develop a \textsl{TypeScript} program that can evaluate propositional formulas.
@@ -1208,7 +1208,7 @@ that describe the behavior of the function $\texttt{elimBiconditional}$:
 \item If $f$ has the form $f = g_1 \leftrightarrow g_2$, we use the
       equivalence \\[0.2cm]
       \hspace*{1.3cm} 
-      $(g_1 \Leftrightarrow g_2) \leftrightarrow \bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr)$.
+      $(g_1 \leftrightarrow g_2) \Leftrightarrow \bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr) $.
       \\[0.2cm]
       This leads to the equation:
       \\[0.2cm]
@@ -1236,7 +1236,6 @@ that describe the behavior of the function $\texttt{elimBiconditional}$:
                   | ['→' | '∧' | '∨', Formula1, Formula1];
 
     function eliminateBiconditional(f: Formula): Formula1 {
-        'Eliminate the logical operator "↔" from f.'
         if (typeof f == 'string') { return f; }
         switch (f[0]) {
             case '↔': { const [_, g, h] = f;
@@ -1244,9 +1243,7 @@ that describe the behavior of the function $\texttt{elimBiconditional}$:
                         return ['∧', ['→', gs, hs], ['→', hs, gs]]; }
             case '⊤':
             case '⊥': return f;        
-            case '¬': { const [_, g] = f;
-                        const gs = eliminateBiconditional(g);
-                        return ['¬', gs];                     }
+            case '¬': { const [_, g] = f; return ['¬', eliminateBiconditional(g)]; }
             default:  { const [op, g, h] = f;
                         const [gs, hs] = [g, h].map(eliminateBiconditional);
                         return [op, gs, hs];                  }
