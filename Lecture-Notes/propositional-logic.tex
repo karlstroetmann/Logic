@@ -1234,21 +1234,19 @@ that describe the behavior of the function $\texttt{elimBiconditional}$:
                   | ['⊤' | '⊥']
                   | ['¬', Formula1]
                   | ['→' | '∧' | '∨', Formula1, Formula1];
-
     function eliminateBiconditional(f: Formula): Formula1 {
         if (typeof f == 'string') { return f; }
         switch (f[0]) {
-            case '↔': { const [_, g, h] = f;
-                        const [gs, hs] = [g, h].map(eliminateBiconditional);
-                        return ['∧', ['→', gs, hs], ['→', hs, gs]]; }
             case '⊤':
             case '⊥': return f;        
-            case '¬': { const [_, g] = f; return ['¬', eliminateBiconditional(g)]; }
-            default:  { const [op, g, h] = f;
-                        const [gs, hs] = [g, h].map(eliminateBiconditional);
-                        return [op, gs, hs];                  }
-        }
-    }                  
+            case '¬': const [_, g] = f; return ['¬', eliminateBiconditional(g)];
+            default: 
+                const [op, h, k] = f;
+                const [hs, ks] = [h, k].map(eliminateBiconditional);
+                switch (op) {   
+                    case '↔': return ['∧', ['→', hs, ks], ['→', ks, hs]]; 
+                    default: return [op, hs, ks]; 
+    }}}
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Elimination of $\leftrightarrow$}
@@ -1321,19 +1319,16 @@ This eliminates one case in the implementation.
     function eliminateConditional(f: Formula1): Formula2 {
         if (typeof f == 'string') { return f; }
         switch (f[0]) {
-            case '→': { const [_, g, h] = f;
-                        const [gs, hs] = [g, h].map(eliminateConditional);
-                        return ['∨', ['¬', gs], hs];                       }
             case '⊤':
             case '⊥': return f;
-            case '¬': { const [_, g] = f;
-                        const gs = eliminateConditional(g);
-                        return ['¬', gs];                                  }
-            default:  { const [op, g, h] = f;
-                        const [gs, hs] = [g, h].map(eliminateConditional);
-                        return [op, gs, hs];                               }
-        }
-    }
+            case '¬': const [_, g] = f; return ['¬', eliminateConditional(g)]; 
+            default: 
+                const [op, h, k] = f;
+                const [hs, ks] = [h, k].map(eliminateConditional);
+                switch (op) {
+                    case '→': return ['∨', ['¬', hs], ks];
+                    default:  return [op, hs, ks];                              
+    }}}
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Elimination of $\rightarrow$}
@@ -1367,62 +1362,6 @@ the following equations: \index{\texttt{nnf}}
 \item $\texttt{nnf}(f_1 \wedge f_2) = \texttt{nnf}(f_1) \wedge \texttt{nnf}(f_2)$,
 \item $\texttt{nnf}(f_1 \vee f_2) = \texttt{nnf}(f_1) \vee \texttt{nnf}(f_2)$.
 \end{enumerate}
-
-\begin{figure}[!ht]
-  \centering
-\begin{minted}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm,
-                  bgcolor       = sepia,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                ]{typescript}
-    type NNF = Variable 
-             | ['⊤' | '⊥'] 
-             | ['¬', Variable] 
-             | ['∧' | '∨', NNF, NNF];
-    
-    function nnf(f: Formula2): NNF {
-        if (typeof f == 'string') { return f; }
-        switch (f[0]) {
-            case '⊤':
-            case '⊥': return f;
-            case '¬': { const [_, g] = f;     return neg(g);               }
-            default:  { const [op, g, h] = f; return [op, nnf(g), nnf(h)]; }
-        }
-    }
-\end{minted}
-\vspace*{-0.3cm}
-  \caption{Computing the negation normal form.}
-  \label{fig:nnf}
-\end{figure}
-
-\begin{figure}[!ht]
-  \centering
-\begin{minted}[ frame         = lines, 
-                  framesep      = 0.3cm, 
-                  xleftmargin   = 0.0cm,
-                  xrightmargin  = 0.0cm,
-                  bgcolor       = sepia,
-                  numbers       = left,
-                  numbersep     = -0.2cm,
-                ]{typescript}    
-    function neg(f: Formula2): NNF {
-        if (typeof f == 'string') { return ['¬', f]; }
-        switch (f[0]) {
-            case '⊤': return ['⊥'];
-            case '⊥': return ['⊤'];
-            case '¬': { const [_, g] = f; return nnf(g); }
-            default:  { const [op, g, h] = f;
-                        return [op == '∧' ? '∨' : '∧', neg(g), neg(h)]; }         
-        } 
-    }
-\end{minted}
-\vspace*{-0.3cm}
-  \caption{Computing the negation normal form, the function \texttt{neg}.}
-  \label{fig:nnf}
-\end{figure}
 
 The auxiliary procedure \texttt{neg}, which calculates the negation normal form of $\neg f$,
 is also specified by recursive equations: \index{\texttt{neg}}
@@ -1458,6 +1397,46 @@ is also specified by recursive equations: \index{\texttt{neg}}
       \hspace*{1.3cm}
       $\texttt{neg}\bigl(f_1 \vee f_2 \bigr) = \texttt{neg}(f_1) \wedge \texttt{neg}(f_2)$.
 \end{enumerate}
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                  framesep      = 0.3cm, 
+                  xleftmargin   = 0.0cm,
+                  xrightmargin  = 0.0cm,
+                  bgcolor       = sepia,
+                  numbers       = left,
+                  numbersep     = -0.2cm,
+                ]{typescript}
+    type NNF = Variable 
+             | ['⊤' | '⊥'] 
+             | ['¬', Variable] 
+             | ['∧' | '∨', NNF, NNF];
+    
+    function nnf(f: Formula2): NNF {
+        if (typeof f == 'string') { return f; }
+        switch (f[0]) {
+            case '⊤':
+            case '⊥': return f;
+            case '¬': const [_, g] = f; return neg(g);    
+            default:  const [op, h, k] = f; return [op, nnf(h), nnf(k)]; 
+    }}
+    
+    function neg(f: Formula2): NNF {
+        if (typeof f == 'string') { return ['¬', f]; }
+        switch (f[0]) {
+            case '⊤': return ['⊥'];
+            case '⊥': return ['⊤'];
+            case '¬': const [_, g] = f; return nnf(g);    
+            default:  const [op, h, k] = f;
+                      return [op == '∧' ? '∨' : '∧', neg(h), neg(k)]; 
+    }}
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{Computing the negation normal form.}
+  \label{fig:nnf}
+\end{figure}
+
 
 Finally, we present the function \texttt{cnf} that allows us to transform a propositional formula $f$
 from negation normal form into conjunctive normal form.
@@ -1552,18 +1531,15 @@ Figure \ref{fig:cnf} on page \pageref{fig:cnf} shows the implementation of the f
         switch (f[0]) {
             case '⊤': return set();     
             case '⊥': return set(set());
-            case '¬': { const [_, g] = f; return set(set(tpl('¬', g))); } 
-            default: {
-                const [op, g, h] = f;
-                const [gs, hs] = [g, h].map(cnf); 
+            case '¬': const [_, g] = f; return set(set(tpl('¬', g))); 
+            default: 
+                const [op, h, k] = f;
+                const [hs, ks] = [h, k].map(cnf); 
                 switch (op) { 
-                    case '∧': return gs.union(hs);
-                    case '∨': { const pairs = gs.cartesianProduct(hs);
-                                return pairs.map(([c, d]) => c.union(d)); }
-                }
-            }            
-        }
-    }
+                    case '∧': return hs.union(ks);
+                    case '∨': const pairs = hs.cartesianProduct(ks);
+                               return pairs.map(([c, d]) => c.union(d)); 
+    }}}
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Berechnung der konjunktiven Normalform. \index{\texttt{cnf}}}
@@ -1716,7 +1692,9 @@ given formulas. The concept of an inference rule is based on the following defin
 \hspace*{1.3cm}            
 \begin{tabular}[t]{|c|c|c|}
 \hline
-\rule{0pt}{15pt} \href{https://en.wikipedia.org/wiki/Modus_ponens}{Modus Ponens} & \href{https://en.wikipedia.org/wiki/Modus_tollens}{Modus Tollens} & \textcolor{blue}{Denying the Antecedent} \\[0.3cm]
+\rule{0pt}{15pt} \href{https://en.wikipedia.org/wiki/Modus_ponens}{Affirming the Antecedent} & 
+ \href{https://en.wikipedia.org/wiki/Modus_tollens}{Denying the Consequent} &
+ \href{https://en.wikipedia.org/wiki/Denying_the_antecedent}{Denying the Antecedent} \\[0.3cm]
 \hline
 $
 \rule[-15pt]{0pt}{40pt}\schluss{f \quad\quad f \rightarrow g}{g}$ &
@@ -1743,15 +1721,15 @@ inference rules in proofs, they should be \textcolor{blue}{correct} in the sense
 
 \end{Definition}
 With this definition, we see that
-the rules of inference referred to above as ``\textcolor{blue}{Modus Ponens}'' and ``\textcolor{blue}{Modus Tollens}''
+the rules of inference referred to above as ``\textcolor{blue}{Affirming the Antecedent}'' and
+``\textcolor{blue}{Denying the Consequent}''
 are correct, while the one called ``\textcolor{blue}{Denying the Antecedent}''
 is, in fact, a \href{https://en.wikipedia.org/wiki/List_of_fallacies}{logical fallacy}.\index{fallacy}
 
 From now on, we assume that all formulas are clauses. On one hand, this is
 not a real restriction, as we can transform any formula into an equivalent set of
-clauses. On the other hand, the formulas in many practical propositional
-logic problems are already in the form of clauses. Therefore, we now present an inference rule where
-both the premises and the conclusion are clauses.
+clauses. On the other hand, in many practical problems the formulas are already in the form of
+clauses. Therefore, we now present an inference rule where both the premises and the conclusion are clauses.
      
 \begin{Definition}[Cut Rule]\index{Cut Rule}
     If $p$ is a propositional variable and $k_1$ and $k_2$ are sets of literals,
@@ -1790,7 +1768,7 @@ $$
 \Leftrightarrow  & 
     \neg (k_1 \vee p) \vee \neg (\neg p \vee k_2) \vee k_1 \vee k_2 \\[0.2cm]
 \Leftrightarrow  & 
-     (\neg k_1 \wedge \neg p) \vee  (p \wedge \neg k_2) \vee k_1 \vee k_2 \\[0.2cm]
+     (\neg k_1 \stackrel{\blue{+}}{\wedge} \neg p) \stackrel{\blue{*}}{\vee}  (p \stackrel{\blue{+}}{\wedge} \neg k_2) \stackrel{\blue{*}}{\vee} k_1 \stackrel{\blue{*}}{\vee} k_2 \\[0.2cm]
 \Leftrightarrow  & 
      (\neg k_1 \vee p \vee k_1 \vee k_2)  \wedge 
      (\neg k_1 \vee \neg k_2 \vee k_1 \vee k_2)  \wedge 
@@ -1960,7 +1938,8 @@ The relation $\vdash$ has two important properties:
 \noindent
 The converse of this theorem only holds in a weakened form, specifically when $k$
 is the empty clause, which corresponds to falsum. Therefore, we say that the cut rule
-is \textcolor{blue}{refutation-complete}.
+is \textcolor{blue}{refutation-complete}.  We will prove this later, but first we need to introduce the concept
+of \blue{satisfiability}.
 
 \subsection{Satisfiability}
 To succinctly state the theorem of refutation completeness in propositional logic, we need
@@ -2029,12 +2008,12 @@ propositional variables, this process must terminate, and the set of formulas we
 \subsection{Refutational Completeness}
 We are now ready to state and proof the refutational completeness of the cut rule for propositional logic.
 
-\begin{Satz}[\textcolor{blue}{Refutation Completeness}] \label{widerlegungs-vollstaendig} \hspace*{\fill} \linebreak
+\begin{Theorem}[\textcolor{blue}{Refutational Completeness}] \label{widerlegungs-vollstaendig} \hspace*{\fill} \linebreak
   Assume $M$ is a set of clauses that is unsatisfiable.  Then $M$ derives the empty clause:
   \\[0.2cm]
   \hspace*{1.3cm} 
   If $M \models \falsum$, then $M \vdash \{\}$.
-\end{Satz}
+\end{Theorem}
 
 \noindent
 \textbf{Proof}: We prove this by contraposition. Assume that $M$ is a finite set of clauses such that
@@ -2191,7 +2170,7 @@ $M\, {\not}\!\vdash \{\}$,
 then it returns a propositional valuation $\mathcal{I}$ that satisfies all clauses in $M$.
 This program is shown in Figures \ref{fig:Completeness.ipynb-1}, \ref{fig:Completeness.ipynb-2}, and \ref{fig:Completeness.ipynb-3} on the following pages. You can find this program at the address
 \\[0.2cm]
-\hspace*{0.3cm}
+\hspace*{-0.1cm}
 \href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/05-Completeness.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/05-Completeness.ipynb}}
 \\[0.2cm]
 online.
@@ -2208,39 +2187,30 @@ online.
                 xrightmargin  = 0.0cm,
               ]{typescript}
     function complement(l: Literal): Literal {
-        if (typeof l == 'string') {
-            return new Tuple('¬', l);
-        } else {
-            return l.get(1);
-        }
+        if (typeof l == 'string') { return tpl('¬', l); } 
+        return l.get(1);
     }
+    
     function extractVariable(l: Literal): Variable {
-        if (typeof l == 'string') {
-            return l;
-        } else {
-            return l.get(1);
-        }
+        if (typeof l == 'string') { return l; } 
+        return l.get(1);
     }
-    function empty<T extends Value>(): Set<T> {
-        return new RecursiveSet<T>()
-    }
-    function single<T extends Value>(x: T): Set<T> {
-        return new RecursiveSet<T>(x)
-    }
+      
     function collectVariables(M: Set<Clause>): Set<Variable> {
-        const r = empty<Variable>();
-        return M.reduce((a, c) => a.union(c.map(extractVariable)), r);
+        let result = set<Variable>();
+        return result.flatMap(M, cl => cl.map(extractVariable));
     }
+    
     function cutRule(C1: Clause, C2: Clause): Set<Clause> {
-        return C1.reduce((r, l) => {
-            const lBar = complement(l);
-            if (C2.has(lBar)) {
+        return C1.filterMap(
+            l => C2.has(complement(l)),
+            l => {
+                const lBar = complement(l);
                 // (C1 \ {l}) U (C2 \ {lBar})
-                r.add(C1.difference(single(l)).union(C2.difference(single(lBar))));
+                return C1.difference(set(l)).union(C2.difference(set(lBar)));
             }
-            return r;
-        }, empty<Clause>()); 
-    }  
+        );
+    }
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Auxiliary function that are used in Figure \ref{fig:Completeness.ipynb-2}.}
@@ -2268,9 +2238,8 @@ We first discuss the auxiliary procedures shown in Figure \ref{fig:Completeness.
 \item The function \texttt{collectVars} takes as an argument a set $M$ of clauses, where each
       clause \mbox{$C \!\in\! M$} is represented as a set of literals. The task of the
       function \texttt{collectVars} is to compute the set of all propositional variables
-      that occur in any of the clauses $C$ from $M$. During the implementation, we first iterate
-      over the clauses $C$ of the set $M$ and then for each clause $C$ over the literals $l$ occurring in $C$,
-      where the literals are transformed into propositional variables using the function \texttt{extractVariable}.
+      that occur in any of the clauses $C$ from $M$. We compute the union of the sets of variables occurring
+      in any clause $C$ of $M$ using the method \texttt{flatMap}.
 \item The function \texttt{cutRule} takes two clauses $C_1$ and $C_2$ as its arguments and calculates
       the set of all clauses that can be derived using an application of the cut rule from $C_1$ and $C_2$.
       For example, from the two clauses
@@ -2292,31 +2261,26 @@ We first discuss the auxiliary procedures shown in Figure \ref{fig:Completeness.
                 framesep      = 0.3cm, 
                 firstnumber   = last,
                 numbers       = left,
-                numbersep     = -0.2cm,
+                numbersep     = 0.2cm,
                 bgcolor       = sepia,
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm,
               ]{typescript}
-    function saturate(Clauses: Set<Clause>): Set<Clause> {
-        let currentClauses = Clauses.clone(); 
-        while (true) {
-            const sizeBefore = currentClauses.size;
-            let newClauses = empty<Clause>();
-            for (const C1 of currentClauses) {
-                for (const C2 of currentClauses) {
-                    const derived = cutRule(C1, C2)
-                    if (derived.some(D => D.isEmpty())) {
-                        return single(empty<Literal>());
-                    }
-                    newClauses = newClauses.union(derived);
-                }
-            }
-            currentClauses = currentClauses.union(newClauses);
-            if (currentClauses.size === sizeBefore) {
-                return currentClauses;
-            }
+function saturate(Clauses: Set<Clause>): Set<Clause> {
+    let currentClauses = Clauses.clone(); 
+    while (true) {
+        const sizeBefore = currentClauses.size;
+        // 1. Generate all possible pairs of clauses (C1, C2)
+        const pairs = currentClauses.cartesianProduct(currentClauses);
+        // 2. Map each pair through the cutRule, flattening the results into one set
+        const derived = set<Clause>().flatMap(pairs, ([C1, C2]) => cutRule(C1, C2));
+        if (derived.some(D => D.isEmpty())) {
+            return set(set());
         }
-    }
+        currentClauses = currentClauses.union(derived);
+        if (currentClauses.size == sizeBefore) {
+            return currentClauses;
+}}}
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Die Funktion \texttt{saturate}}
@@ -2344,40 +2308,34 @@ We now explain the implementation of the function \texttt{saturate}.
 \item The \texttt{while} loop that starts in line 28 is tasked with applying the cut rule
       as long as possible to derive new clauses from the given
       clauses using the cut rule. Since this loop's condition has the value \texttt{true}, it can only be
-      terminated by executing one of the two \texttt{return} commands in line 34 or line 37.
-\item In line 29, the set \texttt{Derived} is defined as the set of clauses that can be inferred using the
-      cut rule from two of the clauses in the set \texttt{Clauses}.
-\item If the set \texttt{Derived} contains the empty clause, then the set
+      terminated by executing one of the two \texttt{return} commands in line 35 or line 39.
+\item In line 33, the set \texttt{derived} is defined as the set of clauses that can be inferred using the
+      cut rule from two of the clauses in the set \texttt{currentClauses}.
+\item If the set \texttt{derived} contains the empty clause, then the set
       \texttt{Clauses} is contradictory, and the function \texttt{saturate} returns as a result the
       set $\bigl\{ \{\} \bigr\}$, where the inner set must be represented as \texttt{frozenset}. Note that the set $\bigl\{ \{\} \bigr\}$ corresponds to falsum.
-\item Otherwise, in line 35, we first subtract from the set \texttt{Derived} the clauses
-      that were already present in the set \texttt{Clauses}, as we are concerned
-      with determining whether we actually found 
-      \underline{new} clauses in the last step in line 31, or whether all clauses that we derived in the last step were already known.
-\item If we find in line 36 that we have not derived any new clauses,
-      then the set \texttt{Clauses} is \blue{saturated} and we return this set in line 37.
-\item Otherwise, we add the newly found clauses to the set
-      \texttt{Clauses} in line 38  and continue the \texttt{while} loop.
+\item We add the newly found clauses to the set \texttt{currentClauses} in line 37.
+\item If we find in line 38 that we have not derived any new clauses,
+      then the set \texttt{currentClauses} is \blue{saturated} and we return this set in line 39.
 \end{enumerate}
 At this point, we must verify that the \texttt{while} loop will eventually
 terminate. This is due to two reasons:
 \begin{enumerate}
-\item In each iteration of the loop, the number of elements of the set \texttt{Clauses}
-      is increased by at least one, as we know that the set \texttt{Derived}, which we add to the
-      set \texttt{Clauses} in line 38, is neither empty nor does it contains only
-      clauses that are already present in \texttt{Clauses}.
+\item In each iteration of the loop, the number of elements of the set \texttt{currentClauses}
+      is increased by at least one, since we check that the size has changed.
 \item The set \texttt{Clauses}, with which we originally start, contains a certain number $n$
       of propositional variables. However, the application of the cut rule does not generate any new
       variables. Therefore, the number of propositional variables that appear in
-      \texttt{Clauses} always remains the same. This limits the number of literals
+      \texttt{currentClauses} always remains the same. This limits the number of literals
       that can appear in \texttt{Clauses}: If there are only $n$ propositional variables,
-      then there can be at most $2 \cdot n$ different literals.  However, each clause from \texttt{Clauses} is
+      then there can be at most $2 \cdot n$ different literals.  However, each clause from \texttt{currentClauses} is
       a subset of the set of all literals.  Since a set with $k$ elements has a total of $2^k$
       subsets, there can be at most $2^{2 \cdot n}$ different clauses that can appear in
-      \texttt{Clauses}.
+      \texttt{currentClauses}.
 \end{enumerate}
 From the two reasons given above, we can conclude that the \texttt{while} loop that starts in
-line 28 will terminate after at most $2^{2 \cdot n}$ iterations.
+line 28 will terminate after at most $2^{2 \cdot n}$ iterations.  Fortunately, it will require much less
+iterations in practical applications.
 
 
 
@@ -2393,20 +2351,21 @@ line 28 will terminate after at most $2^{2 \cdot n}$ iterations.
                 xrightmargin  = 0.0cm,
               ]{typescript}
     function findValuation(Clauses: Set<Clause>): false | Set<Literal> {
-        const saturated = saturate(Clauses);
-        if (saturated.some(c => c.isEmpty())) {
-            return false;
-        }        
+        const Saturated = saturate(Clauses);
+        if (Saturated.some(c => c.isEmpty())) { return false; }        
         const Variables = collectVariables(Clauses);
-        return Variables.reduce((Literals, p) => {
-            const Complements = Literals.map(complement);         
-            if (saturated.some(C => C.has(p) && restFalse(C, p, Complements))) {
-                Literals.add(p);
-            } else {
-                Literals.add(complement(p));
-            }        
-            return Literals;
-        }, empty<Literal>()); 
+        const Literals = set<Literal>(); 
+        for (const p of Variables) {
+            // A clause forces 'p' to be true if it contains 'p', 
+            // AND all OTHER literals in the clause evaluate to false.
+            // (i.e., their complements are already in our Literals set)
+            const forcesP = Saturated.some(
+                C => C.has(p) && 
+                     C.difference(set(p)).every(l => Literals.has(complement(l)))
+            );
+            Literals.add(forcesP ? p : complement(p));
+        }    
+        return Literals;
     }
 \end{minted}
 \vspace*{-0.3cm}
@@ -2423,35 +2382,32 @@ Otherwise, the function should compute a propositional valuation $\I$ that satis
 \texttt{Clauses}. 
 In detail, the function \texttt{findValuation} works as follows.
 \begin{enumerate}
-\item First, in line 41, we compute the set of all propositional variables that appear in the set
+\item In line 42, we saturate the set \texttt{Clauses} and compute all clauses that can be derived from the
+      original set of clauses using the cut rule.
+\item If the empty clause can be derived, then it follows from the correctness of the cut rule,
+      that the original set of clauses is contradictory, and we return \texttt{false} instead of an assignment,
+      as a contradictory set of clauses is certainly not satisfiable.
+\item In line 44, we compute the set of all propositional variables that appear in the set
       \texttt{Clauses}. We need this set because in the
       propositional interpretation, which we want to return as a result, we must
       map these variables to the set $\{ \texttt{true}, \texttt{false} \}$.
-\item In line 42, we saturate the set \texttt{Clauses} and compute all clauses that can be derived from the
-      original set of clauses using the cut rule. Here, two cases can occur:
-      \begin{enumerate}
-      \item If the empty clause can be derived, then it follows from the correctness of the cut rule,
-            that the original set of clauses is contradictory, and we return \texttt{false} instead of an assignment,
-            as a contradictory set of clauses is certainly not satisfiable.
-      \item Otherwise, we now compute a propositional assignment under which all clauses from
-            the set \texttt{Clauses} become true. For this purpose, we first compute a set of
-            literals, which we store in the variable \texttt{Literals}. The idea is that we
-            include the propositional variable \texttt{p} in the set \texttt{Literals} exactly when
-            the sought-after assignment $\I$ evaluates the propositional
-            variable \texttt{p} to \texttt{true}. Otherwise, we include the
-            literal $\neg \texttt{p}$ in the set \texttt{Literals}. As a result, in
-            line 53, we return the set \texttt{Literals}. The sought-after propositional assignment
-            $\mathcal{I}$ can then be computed according to the formula  
-            \\[0.2cm]
-            \hspace*{1.3cm}
-            $\mathcal{I}(\texttt{p}) = \left\{
+\item Next, we now compute a propositional assignment under which all clauses from
+      the set \texttt{Clauses} become true. For this purpose, we first compute a set of
+      literals, which we store in the variable \texttt{Literals}. The idea is that we
+      include the propositional variable \texttt{p} in the set \texttt{Literals} exactly when
+      the sought-after assignment $\I$ evaluates the propositional
+      variable \texttt{p} to \texttt{true}. Otherwise, we include the
+      literal $\neg \texttt{p}$ in the set \texttt{Literals}.  We return this set \texttt{Literals} as result.
+      The sought-after propositional assignment
+      $\mathcal{I}$ can then be computed according to the formula  
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\mathcal{I}(\texttt{p}) = \left\{
              \begin{array}{ll}
                \texttt{true}  & \mbox{if $\hspace*{0.25cm}\texttt{p} \in \texttt{Literals}$} \\
                \texttt{false} & \mbox{if $\neg\texttt{p} \in \texttt{Literals}$.}
              \end{array}\right.
             $
-           
-      \end{enumerate}
 \item The computation of the set \texttt{Literals} is done using a \texttt{for} loop.
       The idea is that for a propositional variable \texttt{p}, we add the literal
       $\texttt{p}$ to the set \texttt{Literals} exactly when the assignment $\I$ has to map the variable \texttt{p}
@@ -2828,11 +2784,11 @@ the unit clause $\{l\}$ is contained in the set $K$.
 A calculus that only uses unit cuts and subsumption is not refutation-complete. Therefore, we need another method to simplify sets of clauses.
 Such a simplification is \blue{case distinction}\index{case distinction}. This principle is based on the following theorem.
 
-\begin{Satz}
+\begin{Proposition}
   If $K$ is a set of clauses and $p$ is a propositional variable,
   then $K$ is satisfiable if and only if $K \cup \bigl\{\{p\}\bigr\}$ or
   $K \cup \bigl\{\{\neg p\}\bigr\}$ is satisfiable.
-\end{Satz}
+\end{Proposition}
 
 \noindent
 \textbf{Proof}:
