@@ -9,7 +9,7 @@
 start with, we define the notion of an \blue{atomic propositions}: An
 \blue{atomic proposition}\index{atomic proposition} is a sentence  that 
 \begin{itemize}
-\item expresses a fact that is either true or false and
+\item expresses a fact that is either \texttt{true} or \texttt{false} and
 \item that does not contain any logical connectives.
 
       This last property is the reason for calling the proposition \blue{atomic}.
@@ -69,21 +69,21 @@ $\texttt{sunny} \wedge \texttt{rainy} \rightarrow \texttt{rainBow}$.
 \\[0.2cm]
 Here, we have used  $\texttt{sunny}$, $\texttt{rainy}$ and $\texttt{rainBow}$ as propositional variables.
 
-Some propositional formulas are always true, no matter how the propositional variables are interpreted.
+Some propositional formulas are always \texttt{true}, no matter how the propositional variables are interpreted.
 For example, the propositional formula 
 \\[0.2cm]
 \hspace*{1.3cm}
 $p \vee \neg p$
 \\[0.2cm]
-is always true, it does not matter whether the proposition denoted by $p$ is true or false.  A propositional
-formula that is always true is known as a  \blue{tautology}\index{tautology}.  There are also propositional
-formulas that are never true.  For example, the propositional formula
+is always \texttt{true}, it does not matter whether the proposition denoted by $p$ is \texttt{true} or \texttt{false}.  A propositional
+formula that is always \texttt{true} is known as a  \blue{tautology}\index{tautology}.  There are also propositional
+formulas that are never \texttt{true}.  For example, the propositional formula
 \\[0.2cm]
 \hspace*{1.3cm}
 $p \wedge \neg p$
 \\[0.2cm]
-is always false.  A propositional formula is called \blue{satisfiable}\index{satisfiable}, if there is at least
-one way to assign truth values to the variables such that the formula is true.  Otherwise the formula is called
+is always \texttt{false}.  A propositional formula is called \blue{satisfiable}\index{satisfiable}, if there is at least
+one way to assign truth values to the variables such that the formula is \texttt{true}.  Otherwise the formula is called
 \blue{unsatisfiable}\index{unsatisfiable}.  In this lecture we will discuss a number of different algorithms to
 check whether a formula is satisfiable.  These algorithms are very important in a number of industrial
 applications.  For example, a very important application is the design of digital circuits.
@@ -184,13 +184,13 @@ by induction:
 \begin{enumerate}
 \item $\verum \in \mathcal{F}$ and $\falsum \in \mathcal{F}$.
 
-      Here $\verum$ \index{$\verum$, verum} \index{verum} denotes the formula that is always true, while $\falsum$
-      \index{$\falsum$, falsum} \index{falsum} denotes the formula that is always false.
+      Here $\verum$ \index{$\verum$, verum} \index{verum} denotes the formula that is always \texttt{true}, while $\falsum$
+      \index{$\falsum$, falsum} \index{falsum} denotes the formula that is always \texttt{false}.
       The formula $\verum$ is called
       ``\blue{verum}''\footnote{``\href{https://translate.google.com/?sl=la&tl=en&text=falsum&op=translate&hl=en}{verum}''
-        is the Latin word for ``true''.},  while $\falsum$ is called 
+        is the Latin word for ``\texttt{true}''.},  while $\falsum$ is called 
       ``\blue{falsum}''\footnote{``\href{https://translate.google.com/?sl=la&tl=en&text=falsum&op=translate&hl=en}{falsum}''
-        is the Latin word for ``false''.}.  
+        is the Latin word for ``\texttt{false}''.}.  
 \item If $p \in \mathcal{P}$, then  $p \in \mathcal{F}$.
 
       Every propositional variable is also a propositional formula.
@@ -584,15 +584,15 @@ Next, we discuss the implementation of the function \texttt{evaluate()}.
             \hspace*{1.3cm}
             \texttt{false < true}.
             \\[0.2cm]
-            Now the evaluation of the formula $g \rightarrow h$ is only false if the evaluation of $g$ yields \texttt{true} but the
-            evaluation of $h$ yields false.  Therefore, 
+            Now the evaluation of the formula $g \rightarrow h$ is only \texttt{false} if the evaluation of $g$ yields \texttt{true} but the
+            evaluation of $h$ yields \texttt{false}.  Therefore, 
             \\[0.2cm]
             \hspace*{1.3cm}
             \texttt{evaluate}($g \rightarrow h$, I) \quad has the same value as \quad
             $\texttt{evaluate}(g, I) \leq \texttt{evaluate}(h, I)$.
             \\[0.2cm]
             Hence we combine $gs$ and $hs$ using the \emph{less-or-equal} operator ``\texttt{<=}''.
-      \item If $\odot = \leftrightarrow$ we exploit the fact that the formula $g \leftrightarrow h$ is true if and
+      \item If $\odot = \leftrightarrow$ we exploit the fact that the formula $g \leftrightarrow h$ is \texttt{true} if and
             only if $g$ and $h$ have the same truth value.  Hence we
             can use the \textsl{TypeScript} operator ``\texttt{==}''
             to combine $gs$ and $hs$.
@@ -698,7 +698,7 @@ We discuss this program next.
 \item We input propositional formulas as strings.  However, the function \texttt{evaluate} needs nested lists
       as input.  Therefore, we first import our parser for propositional formulas.
 \item We define the set $P$ of propositional variables.  We use the propositional variable \texttt{a} to
-      express that Aaron is guilty, \texttt{b} is short for Bernard is guilty and \texttt{c} is true if and
+      express that Aaron is guilty, \texttt{b} is short for Bernard is guilty and \texttt{c} is \texttt{true} if and
       only if Caine is guilty. 
 \item Next, we define the propositional formulas $f_1$, $\cdots$, $f_6$ as strings.
 \item \texttt{Fs} is the list of all these propositional formulas.
@@ -711,7 +711,7 @@ We discuss this program next.
       \end{enumerate}
       If all propositional formulas $f$ from the set \texttt{Fs} evaluate as \texttt{true} given the evaluation
       \texttt{I}, then \texttt{allTrue} returns the result \texttt{true}, otherwise \texttt{false} is returned.
-\item Finally we compute the set of all propositional variables that render all formulas from \texttt{Fs} true.
+\item Finally we compute the set of all propositional variables that render all formulas from \texttt{Fs} \texttt{true}.
       The function \texttt{powerset} takes a set $M$ and returns the power set of $M$, i.e.~it returns the set $2^M$.
 \end{enumerate}
 When we run this program we see that there is just a single propositional valuation $I$ such that all formulas
@@ -745,7 +745,7 @@ What part of the Smith family will visit the Walton family?
 \section{Tautologies}
 Using the program to evaluate a propositional formula we can see that the formula
 $$  (p \rightarrow q) \rightarrow (\neg p \rightarrow q) \rightarrow q $$
-is true for every propositional valuation $\mathcal{I}$.  This property gives rise to a definition.
+is \texttt{true} for every propositional valuation $\mathcal{I}$.  This property gives rise to a definition.
 
 \begin{Definition}[Tautology]
   If $f$ is a propositional formula and we have
@@ -1045,7 +1045,7 @@ Then we can define an propositional valuation $\mathcal{I}$ as follows:
 \item $\mathcal{I}(q_j) = \texttt{false}$ for all $j = 1, \cdots, n$,
 \end{enumerate}
 We have $\mathcal{I}(K) = \texttt{false}$ with this valuation and therefore $K$ isn't a tautology.  So the
-assumption that $K$ is not trivial is false. 
+assumption that $K$ is not trivial is \texttt{false}. 
 \hspace*{\fill}  $\Box$
 
 \begin{Definition}[Conjunctive Normal Form]  
@@ -2028,7 +2028,7 @@ We are now ready to state and proof the refutational completeness of the cut rul
       $M \not\,\vdash \{\}$.
 \end{enumerate}
 We will show that then there has to exist a propositional interpretation $\mathcal{I}$ under which all clauses
-from $M$ become true, which contradicts the unsatisfiability of $M$. 
+from $M$ become \texttt{true}, which contradicts the unsatisfiability of $M$. 
 
 Following the previous remark, we saturate the set $M$ to obtain the saturated set $\overline{M}$. Let
 \\[0.2cm]
@@ -2153,9 +2153,9 @@ $\mathtt{dom}(\mathcal{I}_k) = \{p_1, \cdots, p_k\}$.
     \end{enumerate}
     
     Through the induction, we have thus shown that the propositional interpretation
-    $\mathcal{I}_{N}$ renders all clauses $C \in \overline{M}$ true, as only the
+    $\mathcal{I}_{N}$ renders all clauses $C \in \overline{M}$ \texttt{true}, as only the
     propositional variables $p_1$, $\cdots$, $p_N$ occur in $\overline{M}$.
-    Since $M \subseteq \overline{M}$, $\mathcal{I}_{N}$ also renders all clauses from $M$ true, 
+    Since $M \subseteq \overline{M}$, $\mathcal{I}_{N}$ also renders all clauses from $M$ \texttt{true}, 
     contradicting the assumption $M \models \falsum$. \qed
   \end{enumerate}
 \end{enumerate}
@@ -2392,7 +2392,7 @@ In detail, the function \texttt{findValuation} works as follows.
       propositional interpretation, which we want to return as a result, we must
       map these variables to the set $\{ \texttt{true}, \texttt{false} \}$.
 \item Next, we now compute a propositional assignment under which all clauses from
-      the set \texttt{Clauses} become true. For this purpose, we first compute a set of
+      the set \texttt{Clauses} become \texttt{true}. For this purpose, we first compute a set of
       literals, which we store in the variable \texttt{Literals}. The idea is that we
       include the propositional variable \texttt{p} in the set \texttt{Literals} exactly when
       the sought-after assignment $\I$ evaluates the propositional
@@ -2431,7 +2431,7 @@ In detail, the function \texttt{findValuation} works as follows.
       \hspace*{1.3cm}
       $\I\bigl(\komplement{l_i}) = \texttt{false}$ \quad for all $i \in \{1,\cdots,n\}$
       \\[0.2cm]
-      and thus \texttt{p} is the only literal in the clause $C$ that we can still make true with the help of the assignment $\I$. In this case, we thus add the literal
+      and thus \texttt{p} is the only literal in the clause $C$ that we can still make \texttt{true} with the help of the assignment $\I$. In this case, we thus add the literal
       $\texttt{p}$ to the set \texttt{Literals}. Otherwise, the literal $\neg p$ is added to the set
       \texttt{Literals}.
 \end{enumerate}
@@ -2653,7 +2653,7 @@ This clause set encodes the formula
 $p \wedge \neg q \wedge \neg p $
 \\[0.2cm]
 and is obviously also unsolvable, as a solution $\I$ would have to make the propositional variable $p$ both
-true and false simultaneously. We take the observations made in the last three examples as the basis for two
+\texttt{true} and \texttt{false} simultaneously. We take the observations made in the last three examples as the basis for two
 definitions.
 
 \begin{Definition}[Unit Clause]
@@ -2704,9 +2704,7 @@ There are three ways to simplify a set of clauses:
 \item \blue{Subsumption}, and
 \item \blue{Case Distinction}.
 \end{enumerate}
-We are already familiar with the first of the two
-possibilities, and we will explain the other two in more detail later.
-Next, we will consider these possibilities in turn.
+We are already familiar with the cut rule.  We will explain the other two methods in more detail later.
 
 \subsection{Simplification with the Cut Rule}
 A typical application of the resolution rule has the form: \\[0.2cm]
@@ -2741,7 +2739,7 @@ Note that the set $\texttt{unitCut}(K,l)$ contains the same number of clauses as
 $K$. However, those clauses from the set $K$ that contain the literal $\komplement{l}$
 have been reduced. All other clauses from $K$ remain unchanged.
 
-Of course, we only simplify a set of clauses $K$ using the expression $\texttt{unitCut}(K, l)$ if
+Of course, we may only simplify a set of clauses $K$ using the expression $\texttt{unitCut}(K, l)$ if
 the unit clause $\{l\}$ is an element of the set $K$.
 
 \subsection{Simplification via Subsumption}
@@ -2770,14 +2768,16 @@ by deleting all clauses subsumed by $\{l\}$ from $K$.
 The unit clause $\{l\}$ itself is, of course, retained. Therefore, we define:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{subsume}(K, l) := 
-\bigl(K \backslash \bigl\{ C \in K \mid l \in C \bigr\}\bigr) \cup \bigl\{\{l\}\bigr\} = 
-\bigl\{ C \in K \mid l \not\in C \bigr\} \cup \bigl\{\{l\}\bigr\}$.
+$\texttt{subsume}(K, l) := \bigl\{ C \in K \mid l \not\in C \bigr\} \cup \bigl\{\{l\}\bigr\}$.
 \\[0.2cm]
-In the above definition, the unit clause $\{l\}$ must be included in the result because the set
-\mbox{$\bigl\{ C \in K \mid l \not\in C \bigr\}$} does not contain the unit clause $\{l\}$. The two sets of clauses
+In the above definition, the unit clause $\{l\}$ has to be included in the result since the set
+\\[0.2cm]
+\hspace*{1.3cm}
+$\bigl\{ C \in K \mid l \not\in C \bigr\}$
+\\[0.2cm]
+does not contain the unit clause $\{l\}$. The two sets of clauses
 $\mathtt{subsume}(K,l)$ and $K$ are equivalent if and only if $\{l\} \in K$.
-Therefore, a set of clauses $K$ will only be simplified using the expression $\texttt{subsume}(K, l)$ if
+Therefore, a set of clauses $K$ is only simplified using the expression $\texttt{subsume}(K, l)$ if
 the unit clause $\{l\}$ is contained in the set $K$.
 
 \subsection{Simplification through Case Distinction}
@@ -2795,7 +2795,7 @@ Such a simplification is \blue{case distinction}\index{case distinction}. This p
 \begin{enumerate}
 \item[``$\Rightarrow$'':] 
   If $K$ is satisfied by an assignment $\I$, then there are two possibilities for $\I(p)$, as 
-  $\mathcal{I}(p)$ is either true or false. If $\I(p) = \texttt{true}$, then the set $K \cup
+  $\mathcal{I}(p)$ is either \texttt{true} or \texttt{false}. If $\I(p) = \texttt{true}$, then the set $K \cup
   \bigl\{\{p\}\bigr\}$ is also satisfiable,
   otherwise $K \cup \bigl\{\{\neg p\}\bigr\}$
   is satisfiable.
@@ -2816,7 +2816,7 @@ this is also a solution for the original set of clauses $K$, and we have achieve
 Otherwise, we recursively investigate whether $K_2$ is satisfiable.
 If we find a solution, this is also a solution for $K$. If we find no solution
 for either $K_1$ or $K_2$, then $K$ cannot have a solution either,
-since any solution $\mathcal{I}$ for $K$ must make the variable $p$ either true or false.
+since any solution $\mathcal{I}$ for $K$ must make the variable $p$ either \texttt{true} or \texttt{false}.
 The recursive examination of $K_1$ or $K_2$ is easier than the examination of $K$,
 because in $K_1$ and $K_2$, with the unit clauses $\{p\}$ and $\{\neg p\}$,
 we can perform both unit subsumptions and unit cuts, thereby simplifying these sets.
@@ -2869,7 +2869,7 @@ $
 \\[0.2cm]
 Thus, the set contains the results of cuts with
 the unit clause $\{l\}$ and we have removed those clauses that are subsumed by the unit clause $\{l\}$.
-The two sets $K$ and $\texttt{reduce}(K,l)$ are logically equivalent, if $\{l\} \in K$.
+The two sets $K$ and $\texttt{reduce}(K,l)$ are logically equivalent if and only if $\{l\} \in K$.
 Therefore, $K$ will only be replaced by $\mathtt{reduce}(K, l)$ if $\{l\} \in K$.
 
 \subsection{An Example}
@@ -2972,23 +2972,41 @@ You might wonder why we need the set \texttt{Variables} in the function \texttt{
                 bgcolor       = sepia,
                 xleftmargin   = 0.2cm,
                 xrightmargin  = 0.2cm
-              ]{python3}
-    def solve(Clauses, Variables):
-        S      = saturate(Clauses)
-        Empty  = frozenset()
-        Falsum = { Empty }
-        if Empty in S:                  # S is inconsistent
-            return Falsum           
-        if all(len(C) == 1 for C in S): # S is trivial
-            return S
-        l       = selectLiteral(S, Variables)
-        lBar    = complement(l)
-        p       = extractVariable(l)
-        newVars = Variables | { p }
-        Result  = solve(S | { frozenset({l}) }, newVars)
-        if Result != Falsum:
-            return Result
-        return solve(S | { frozenset({lBar}) }, newVars)
+              ]{typescript}
+    function solve(Clauses: Set<Clause>): Set<Clause> {
+        const Variables = flatMap(Clauses, clause => clause.map(extractVariable));
+        return solveRecursive(Clauses, Variables, set<Variable>());
+    }
+    
+    function solveRecursive(
+        Clauses: Clauses, 
+        Variables: Set<Variable>, 
+        UsedVars:  Set<Variable>
+    ): Clauses {
+        const S = saturate(Clauses);
+        const EmptyClause = set<Literal>();
+        if (S.has(EmptyClause)) { // S is inconsistent
+            return set(EmptyClause);
+        }
+        if (S.every(C => C.size == 1)) { // S is trivial
+            return S;  
+        }
+        const p = selectVariable(Variables, UsedVars);
+        if (!p) {
+            return S; 
+        }
+        const nextUsedVars = UsedVars.union(set(p));
+        const Result1 = solveRecursive(S.union(set(set(p))), 
+                                       Variables, 
+                                       nextUsedVars);
+        if (!Result1.has(EmptyClause)) {
+            return Result1;
+        }
+        const pBar = complement(p);
+        return solveRecursive(S.union(set(set(pBar))), 
+                              Variables, 
+                              nextUsedVars);
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{solve}.}
@@ -3040,18 +3058,21 @@ The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pa
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
-              ]{python3}
-    def saturate(Clauses):
-        S     = Clauses.copy()
-        Units = { C for C in S if len(C) == 1 }
-        Used  = set()
-        while len(Units) > 0:
-            unit  = Units.pop()
-            Used |= { unit }
-            l     = arb(unit)
-            S     = reduce(S, l)
-            Units = { C for C in S if len(C) == 1 } - Used        
-        return S
+              ]{typescript}
+    function saturate(Clauses: Clauses): Clauses {
+        let S = Clauses;
+        const Used = set<Clause>(); 
+        while (true) {
+            const Units = S.filter(C => C.size == 1 && !Used.has(C));
+            const unit  = arb(Units);
+            if (!unit) {
+                break; 
+            }
+            Used.add(unit);
+            S = reduce(S, arb(unit)!);
+        }
+        return S;
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{saturate}. \index{\texttt{saturate}}}
@@ -3435,14 +3456,14 @@ and the clause on the right side of this equivalence can be written in set notat
 
 \noindent
 Therefore, the formula for a set of variables $V$ that expresses that no two different
-variables are simultaneously true can be written as a set of clauses in the form
+variables are simultaneously \texttt{true} can be written as a set of clauses in the form
 \\[0.2cm]
 \hspace*{1.3cm}
 $\bigl\{\, \{ \neg p, \neg q \} \;|\; p \in V \wedge\ q \in V \wedge p \neq q \bigr\}$
 \\[0.2cm]
 We implement these ideas in a \textsl{TypeScript} function. The function \texttt{atMostOne} shown in Figure
 \ref{fig:atMostOne} receives as input a set $S$ of propositional variables. The call $\texttt{atMostOne}(S)$
-calculates a set of clauses. These clauses are true if and only if at most one of the variables in $S$
+calculates a set of clauses. These clauses are \texttt{true} if and only if at most one of the variables in $S$
 has the value \texttt{true}.
 
 With the help of the function \texttt{atMostOne}, we can now implement the function
@@ -4148,13 +4169,13 @@ with a tiger behind it, it would probably be his last mistake.
 
 The king went on to say that there were signs on all the doors with statements on them. These statements behave as follows:
 \begin{enumerate}
-\item In the rooms where there is a tiger, the statement on the sign is false.
-\item In the room where the princess is, the statement is true.
+\item In the rooms where there is a tiger, the statement on the sign is \texttt{false}.
+\item In the room where the princess is, the statement is \texttt{true}.
 \item With regards to the the empty rooms, the situation is a bit more
       complicated, because there are two possibilities:
       \begin{itemize}
-      \item Either all the inscriptions on the empty rooms are true,
-      \item or all the inscriptions on the empty rooms are false.
+      \item Either all the inscriptions on the empty rooms are \texttt{true},
+      \item or all the inscriptions on the empty rooms are \texttt{false}.
       \end{itemize}
 
 \end{enumerate}
@@ -4163,18 +4184,18 @@ The prince then read the inscriptions. These were as follows:
 \item Room: The princess is in a room with an odd number and
       there is no tiger in the rooms with an even number.
 \item Room: This room is empty.
-\item Room: The inscription on Room No. 5 is true, the inscription on Room No. 7 is false,
+\item Room: The inscription on Room No. 5 is \texttt{true}, the inscription on Room No. 7 is \texttt{false},
       and there is a tiger in Room No. 3.
-\item Room: The inscription on Room No. 1 is false, there is no tiger in Room No. 8,
-      and the inscription on Room No. 9 is true.
-\item Room: If the inscription on Room No. 2 or on Room No. 4 is true,
+\item Room: The inscription on Room No. 1 is \texttt{false}, there is no tiger in Room No. 8,
+      and the inscription on Room No. 9 is \texttt{true}.
+\item Room: If the inscription on Room No. 2 or on Room No. 4 is \texttt{true},
       then there is no tiger in Room No. 1.
-\item Room: The inscription on Room No. 3 is false, the princess is in Room No. 2,
+\item Room: The inscription on Room No. 3 is \texttt{false}, the princess is in Room No. 2,
       and there is no tiger in Room No. 2.
-\item Room: The princess is in Room No. 1 and the inscription on Room No. 5 is true.
+\item Room: The princess is in Room No. 1 and the inscription on Room No. 5 is \texttt{true}.
 \item Room: There is no tiger in this room and Room No. 9 is empty.
 \item Room: Neither in this room nor in Room No. 1 is there a tiger, and moreover, the
-      inscription on Room No. 6 is true.
+      inscription on Room No. 6 is \texttt{true}.
 \end{enumerate} 
 I have provided the framework of a notebook at the following address:
 \\[0.2cm]

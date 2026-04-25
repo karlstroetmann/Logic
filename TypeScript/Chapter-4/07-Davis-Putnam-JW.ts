@@ -1,66 +1,48 @@
-import { RecursiveSet, Value, Tuple, flatMap } from 'recursive-set';
+import { RecursiveSet as Set, Value, Tuple, flatMap } from 'recursive-set';
 
 type Variable = string;
 type Literal  = Variable 
               | Tuple<['¬', Variable]>;
-type Clause   = RecursiveSet<Literal>;
-type Clauses  = RecursiveSet<Clause>;
+type Clause   = Set<Literal>;
+type Clauses  = Set<Clause>;
 
-type RS<T extends Value> = RecursiveSet<T>;
-
-const RS = RecursiveSet;
-
-function single<T extends Value>(x: T): RS<T> {
-    return new RecursiveSet<T>(x)
+function set<T extends Value>(...elements: T[]): Set<T> {
+    return new Set(...elements);
 }
 
-export function complement(l: Literal): Literal {
-    if (typeof l === 'string') {
-        return new Tuple('¬', l);
-    } else {
-        return l.get(1);
-    }
+function first<T extends Value>(S: Set<T>): T {
+    for (let x of S) { return x; }
+}
+
+function tpl<T extends Value[]>(...elements: T): Tuple<T> {
+    return new Tuple(...elements);
+}
+
+function complement(l: Literal): Literal {
+    if (typeof l === 'string') { return new Tuple('¬', l); } 
+    return l.get(1);
 }
 
 function extractVariable(l: Literal): Variable {
-    if (typeof l === 'string') {
-        return l;
-    } else {
-        return l.get(1);
-    }
-}
-
-function sameLiteral(a: Literal, b: Literal): boolean {
-    if (typeof a == 'string') {
-        return typeof b == 'string' && a == b;
-    } else {
-        return typeof b != 'string' && a.equals(b);
-    }
-}
-
-function arb<T extends Value>(S: RecursiveSet<T>): T | null {
-    if (S.isEmpty()) {
-        return null;
-    }
-    const val = S.pickRandom();
-    return val ?? null;
+    if (typeof l === 'string') { return l; }
+    return l.get(1);
 }
 
 function scoreLiteral(Cls: Clauses, l: Literal): number {
-    return Cls.reduce((s, c) => c.has(l) ? s + Math.pow(2, -c.size) : s, 0);
+    return Cls.reduce((s, c) => c.has(l) ? s + 1 / 2 ** c.size: s, 0);
 }
 
 function selectLiteral(
     Clauses:   Clauses,
-    Variables: RS<Variable>,
-    UsedVars:  RS<Variable>
+    Variables: Set<Variable>,
+    UsedVars:  Set<Variable>
 ): Literal {
-    let maxLiteral: Literal = arb(Variables) ?? 'x';
+    let maxLiteral: Literal = first(Variables);
     let maxScore = -Infinity;
     for (const variable of Variables) {
-        if (UsedVars.has(variable)) continue;
+	if (UsedVars.has(variable)) { continue; }
         const pos: Literal = variable;
-        const neg: Literal = new Tuple('¬', variable);
+        const neg: Literal = tpl('¬', variable);
         for (const literal of [pos, neg]) {
             const score = scoreLiteral(Clauses, literal);
             if (score > maxScore) {
@@ -74,101 +56,51 @@ function selectLiteral(
 
 function reduce(Clauses: Clauses, l: Literal): Clauses {
     const lBar          = complement(l);
-    const singletonLBar = single(lBar);
     const result = Clauses.filterMap(
-        (clause) => !clause.has(l),
-        (clause) => clause.has(lBar) ? clause.difference(singletonLBar) : clause
+        cl => !cl.has(l),
+        cl => cl.has(lBar) ? cl.difference(set(lBar)) : cl
     );
-    result.add(new RecursiveSet<Literal>(l));    
+    result.add(set(l));    
     return result;
 }
 
 function saturate(Clauses: Clauses): Clauses {
     let S = Clauses;
-    const Used = new RS<Clause>(); 
+    const Used = set<Clause>(); 
     while (true) {
         const Units = S.filter(C => C.size == 1 && !Used.has(C));
-        const unit  = arb(Units);
-        if (!unit) {
-            break; 
-        }
+        if (Units.size == 0) { break; }
+        const unit  = first(Units);
         Used.add(unit);
-        S = reduce(S, arb(unit)!);
+        S = reduce(S, first(unit));
     }
     return S;
 }
 
 function solveRecursive(
     Clauses:   Clauses, 
-    Variables: RS<Variable>, 
-    UsedVars:  RS<Variable>): Clauses 
+    Variables: Set<Variable>, 
+    UsedVars:  Set<Variable>): Clauses 
 {
     const S = saturate(Clauses);
-    const EmptyClause = new RS<Literal>();
-    if (S.has(EmptyClause)) { // S is inconsistent
-        return single(EmptyClause);
-    }
-    if (S.every(C => C.size == 1)) { // S is trivial
-        return S;  
-    }
+    const EmptyClause = set<Literal>();
+    if (S.has(EmptyClause)) { return set(EmptyClause);  }
+    if (S.every(C => C.size == 1)) { return S; }
     const l = selectLiteral(Clauses, Variables, UsedVars);
-    if (!l) {
-        return S; 
-    }
-    const nextUsedVars = UsedVars.union(single(extractVariable(l)));
-    const Result1 = solveRecursive(S.union(single(single(l))), Variables, nextUsedVars);
-    if (!Result1.has(EmptyClause)) {
-        return Result1;
-    }
+    const nextUsedVars = UsedVars.union(set(extractVariable(l)));
+    const Result1 = solveRecursive(
+	S.union(set(set(l))),
+	Variables,
+	nextUsedVars);
+    if (!Result1.has(EmptyClause)) { return Result1; }
     const lBar = complement(l);
-    return solveRecursive(S.union(single(single(lBar))), Variables, nextUsedVars);
+    return solveRecursive(
+	S.union(set(set(lBar))),
+	Variables,
+	nextUsedVars);
 }
 
-export function solve(Clauses: RS<Clause>): RS<Clause> {
+export function solve(Clauses: Set<Clause>): Set<Clause> {
     const Variables = flatMap(Clauses, clause => clause.map(extractVariable));
-    return solveRecursive(Clauses, Variables, new RS<Variable>());
+    return solveRecursive(Clauses, Variables, set());
 }
-
-function literal_to_str(C: Clause): string {
-    const val = arb(C);
-    if (val === null) return "{}";   
-    if (typeof val === 'string') {
-        return `${val} ↦ True`;
-    } else {
-        return `${val.get(1)} ↦ False`;
-    }
-}
-
-function prettify(Clauses: RecursiveSet<Clause>): string {
-  const res: string[] = [];
-  for (const C of Clauses) res.push(C.toString());
-  return `{${res.join(', ')}}`;
-}
-function prettifyClauses(M: Clauses): string {
-    const clauseStrings: string[] = [];
-    for (const clause of M) {
-        const literalStrings: string[] = [];
-        for (const lit of clause) {
-            if (typeof lit === 'string') {
-                literalStrings.push(lit);
-            } else {
-                literalStrings.push(`${lit.get(0)}${lit.get(1)}`);
-            }
-        }
-        clauseStrings.push(`{${literalStrings.join(', ')}}`);
-    }
-    return `{${clauseStrings.join(', ')}}`;
-}
-
-function toString(S: Clauses, Simplified: Clauses): string {
-    const EmptyClause = new RecursiveSet<Literal>();
-    if (Simplified.has(EmptyClause)) {
-        return `${prettifyClauses(S)} is unsolvable`;
-    }
-    const parts: string[] = [];
-    for (const C of Simplified) {
-        parts.push(literal_to_str(C));
-    }
-    return '{ ' + parts.join(', ') + ' }';
-}
-
