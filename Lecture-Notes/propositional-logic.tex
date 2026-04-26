@@ -3106,7 +3106,7 @@ $
                   bgcolor       = sepia,
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
-                ]{python3}
+                ]{typescript}
     function reduce(Clauses: Clauses, l: Literal): Clauses {
         const lBar   = complement(l);
         const result = Clauses.filterMap(
@@ -3155,7 +3155,7 @@ $
                 bgcolor       = sepia,
                 xleftmargin   = 0.3cm,
                 xrightmargin  = 0.3cm
-              ]{python3}
+              ]{typescript}
     function complement(l: Literal): Literal {
         if (typeof l == 'string') { return new Tuple('¬', l); } 
         return l.get(1);
@@ -3414,9 +3414,10 @@ $r$ and column $c$.
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm,
-              ]{python3}
-    def var(row, col):
-        return 'Q<' + str(row) + ',' + str(col) + '>'
+              ]{typescript}
+    function varName(row: number, col: number): Variable {
+        return `Q<${row},${col}>`;
+    }
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{var} to compute a propositional variable.}
@@ -3552,12 +3553,12 @@ and the clause on the right side of this equivalence can be written in set notat
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
-              ]{python3}
-    def atMostOne(S): 
-        return { frozenset({('¬',p), ('¬', q)}) for p in S
-                                                 for q in S 
-                                                 if  p != q 
-               }
+              ]{typescript}
+    function atMostOne(V: Set<Variable>): Set<Clause> {
+        return V.cartesianProduct(V)
+                .filterMap(([p, q]) => p != q,
+                           ([p, q]) => set(tpl('¬', p), tpl('¬', q)));
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{atMostOne}.}
@@ -3569,11 +3570,11 @@ Therefore, the formula for a set of variables $V$ that expresses that no two dif
 variables are simultaneously \texttt{true} can be written as a set of clauses in the form
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bigl\{\, \{ \neg p, \neg q \} \;|\; p \in V \wedge\ q \in V \wedge p \neq q \bigr\}$
+$\bigl\{\, \{ \neg p, \neg q \} \;|\; \langle p, q \rangle \in V \times V \wedge p \neq q \bigr\}$
 \\[0.2cm]
 We implement these ideas in a \textsl{TypeScript} function. The function \texttt{atMostOne} shown in Figure
-\ref{fig:atMostOne} receives as input a set $S$ of propositional variables. The call $\texttt{atMostOne}(S)$
-calculates a set of clauses. These clauses are \texttt{true} if and only if at most one of the variables in $S$
+\ref{fig:atMostOne} receives as input a set $V$ of propositional variables. The call $\texttt{atMostOne}(V)$
+calculates a set of clauses. These clauses are \texttt{true} if and only if at most one of the variables in $V$
 has the value \texttt{true}.
 
 With the help of the function \texttt{atMostOne}, we can now implement the function
@@ -3587,7 +3588,7 @@ function \texttt{atMostOneInRow}: We collect all the variables of the row specif
 in the set 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bigl\{ \texttt{var}(\texttt{row},j) \mid j \in \{1, \cdots, n \} \bigr\}$
+$\bigl\{ \texttt{var}(\texttt{row}, \mathtt{col}) \mid \mathtt{col} \in \{1, \cdots, n \} \bigr\}$
 \\[0.2cm]
 and call the function $\texttt{atMostOne}$ with this set, which delivers the result
 as a set of clauses.
@@ -3601,9 +3602,10 @@ as a set of clauses.
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
-              ]{python3}
-    def atMostOneInRow(row, n):
-        return atMostOne({ var(row, col) for col in range(1,n+1) })
+              ]{typescript}
+    function atMostOneInRow(row: number, n: number): Set<Clause> {
+        return atMostOne(range(1, n).map(col => varName(row, col)));
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{atMostOneInRow}.}
@@ -3642,9 +3644,10 @@ works with a set of clauses.
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
-              ]{python3}
-    def oneInColumn(col, n):
-        return { frozenset({ var(row, col) for row in range(1,n+1) }) }
+              ]{typescript}
+    function oneInColumn(col: number, n: number): Set<Clause> {
+        return set(range(1, n).map(row => varName(row, col)));
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The Function \texttt{oneInColumn}}
@@ -3653,7 +3656,7 @@ works with a set of clauses.
 
 At this point, you might expect us to provide formulas that express that there is at most one queen in a given column and that there is at least one queen in every row.
 However, such formulas are unnecessary because if we know that there is at least one queen in every column, we already know that there are at least 8 queens on the board.
-If we additionally know that there is at most one queen in each row, it is automatically clear that there are at most 8 queens on the board. Thus, there are exactly
+If we additionally know that there is at most one queen in each row, it follows that there are at most 8 queens on the board. Thus, there are exactly
 8 queens on the board. Therefore, there can only be at most one queen per column, otherwise, we would have more than 8 queens on the board, and similarly, there must be at least one queen in each row, otherwise, we would not reach a total of 8 queens.
 
 Next, let's consider how we can characterize the variables that are on the same \blue{diagonal}.
@@ -3685,13 +3688,14 @@ function \texttt{atMostOneInRisingDiagonal}. This function is shown in Figure
                 bgcolor       = sepia,
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
-              ]{python3}
-    def atMostOneInRisingDiagonal(k, n):
-        S = { var(row, col) for row in range(1, n+1)
-                            for col in range(1, n+1) 
-                            if  row + col == k 
-            }
-        return atMostOne(S)
+              ]{typescript}
+    function atMostOneInRisingDiagonal(k: number, n: number): Set<Clause> {
+        const Numbers = range(1, n);
+        return atMostOne( Numbers.cartesianProduct(Numbers)
+                         .filterMap(
+                             ([row, col]) => row + col == k,
+                             ([row, col]) => varName(row, col)));
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{atMostOneInUpperDiagonal}}
@@ -3722,13 +3726,14 @@ function \texttt{atMostOneInLowerDiagonal}. This function is shown in Figure
                 bgcolor       = sepia,
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
-            ]{python3}
-    def atMostOneInFallingDiagonal(k, n):
-        S = { var(row, col) for row in range(1, n+1)
-                            for col in range(1, n+1) 
-                            if  row - col == k 
-            }
-        return atMostOne(S)
+            ]{typescript}
+    function atMostOneInFallingDiagonal(k: number, n: number): Set<Clause> {
+        const Numbers = range(1, n);
+        return atMostOne( Numbers.cartesianProduct(Numbers)
+                         .filterMap(
+                             ([row, col]) => row - col == k,
+                             ([row, col]) => varName(row, col)));
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{atMostOneInLowerDiagonal}.}
@@ -3743,14 +3748,16 @@ computes for a chessboard of size $n$ a set of clauses that
 are satisfied if and only if on the chessboard
 \begin{enumerate}
 \item there is at most one queen in each row (line 2),
-\item there is at most one queen in each descending diagonal (line 3),
-\item there is at most one queen in each ascending diagonal (line 4), and
+\item there is at most one queen in each rising diagonal (line 3),
+\item there is at most one queen in each falling diagonal (line 4), and
 \item there is at least one queen in each column (line 5).
 \end{enumerate}
-The expressions in the individual lines yield lists, whose elements
-are sets of clauses. What we need as a result, however, is a set of clauses
-and not a list of sets of clauses. Therefore, in line 6 we convert the list \texttt{All} into a set of
-clauses.
+The expressions in the individual lines yield set of clauses.  This is achieved by \texttt{flatMap}.
+In each line, \texttt{flatMap} takes a set as its first argument.  The second argument is a function that maps
+each of the arguments of the set to a set of clauses.  \texttt{flatMap} then takes the union of these sets of
+clauses so that the end result is a set of clauses.  The nice thing about \texttt{flatMap} is that it can be
+chained since it is a method of the class \texttt{Set}.  It starts with the empty set of clauses and then each
+call of \texttt{flatMap} adds more sets of clauses to build up the resulting set.
 
 \begin{figure}[!ht]
   \centering
@@ -3761,13 +3768,14 @@ clauses.
                 bgcolor       = sepia,
                 xleftmargin   = 0.3cm,
                 xrightmargin  = 0.3cm
-              ]{python3}
-    def allClauses(n):
-        All = [ atMostOneInRow(row, n)           for row in range(1, n+1)        ] \
-            + [ atMostOneInFallingDiagonal(k, n) for k in range(-(n-2), (n-2)+1) ] \
-            + [ atMostOneInRisingDiagonal(k, n)  for k in range(3, (2*n-1)+1)    ] \
-            + [ oneInColumn(col, n)              for col in range(1, n+1)        ]
-        return { clause for S in All for clause in S }
+                ]{typescript}
+    function allClauses(n: number): Set<Clause> {
+        return set<Clause>()
+              .flatMap(range(   1,   n), row => atMostOneInRow(row, n))
+              .flatMap(range(   3, 2*n), k   => atMostOneInRisingDiagonal(k, n))
+              .flatMap(range(-n+2, n-2), k   => atMostOneInFallingDiagonal(k, n))
+              .flatMap(range(   1,   n), col => oneInColumn(col, n));
+    }                
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{allClauses}.}
@@ -3781,15 +3789,11 @@ Finally, we show in Figure \ref{fig:solve:queens} the function
       only if the problem has a solution.
 \item Then, we compute the solution using the function \texttt{solve} from the notebook
       that implements the algorithm of Davis and Putnam.
-\item Finally, the computed solution is printed using the function \texttt{printBoard}.
-
-      Here, \texttt{printBoard} is a function that prints the solution in a more readable format.
-      However, this only works properly if a font is used where all characters have the same width.
-      This function is shown for completeness in Figure \ref{fig:printBoard}, but we will not discuss the implementation further.
+\item If the problem is solvable, the solution is returned.
 \end{enumerate}
 The complete program is available as a Jupyter Notebook on GitHub as
 \\[0.2cm]
-\hspace*{0.0cm}
+\hspace*{1.3cm}
 \href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/08-N-Queens.ipynb}{\texttt{karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/08-N-Queens.ipynb}}.
 
 
@@ -3805,56 +3809,26 @@ The complete program is available as a Jupyter Notebook on GitHub as
                 bgcolor       = sepia,
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm,
-              ]{python3}
-    def queens(n):
-        "Solve the n queens problem."
-        Clauses  = allClauses(n)
-        Solution = solve(Clauses, set())
-        if Solution != { frozenset() }:
-            return Solution
-        else:
-            print(f'The problem is not solvable for {n} queens!')
-\end{minted}
+              ]{typescript}
+    function queens(n: number): Set<Clause> {
+        const Clauses     = allClauses(n);
+        const Solution    = solve(Clauses);
+        const EmptyClause = set<Literal>();
+        if (Solution.has(EmptyClause)) {
+            console.log(`The problem is not solvable for ${n} queens!`); 
+        }
+        return Solution;
+    }
+\end{minted} %$
 \vspace*{-0.3cm}
 \caption{The function \texttt{queens} that solves the $n$-queens-problem.}
 \label{fig:solve:queens}
 \end{figure}
 
 
-\begin{figure}[!ht]
-\centering
-\begin{minted}[ frame         = lines, 
-                framesep      = 0.3cm, 
-                numbers       = left,
-                numbersep     = -0.2cm,
-                bgcolor       = sepia,
-                xleftmargin   = 0.8cm,
-                xrightmargin  = 0.8cm,
-              ]{python3}
-    import chess
-                
-    def show_solution(Solution, n):
-        board = chess.Board(None)  # create empty chess board
-        queen = chess.Piece(chess.QUEEN, true)
-        for row in range(1, n+1):
-            for col in range(1, n+1):
-                field_number = (row - 1) * 8 + col - 1
-                if frozenset({ var(row, col) }) in Solution:
-                    board.set_piece_at(field_number, queen)
-        display(board)        
-\end{minted}
-\vspace*{-0.3cm}
-\caption{The function $\texttt{show\_solution}()$.}
-\label{fig:printBoard}
-\end{figure}
 
-The set \texttt{solution} calculated by the call $\texttt{solve}(\textsl{Clauses}, \{\})$ contains for each of the variables $\texttt{Q<}r\texttt{,}c\texttt{>}$
-either the unit clause $\{\texttt{Q<}r\texttt{,}c\texttt{>}\}$ (if there is a queen on this square) or
-the unit clause $\{ \texttt{(¬, Q<}r\texttt{,}c\texttt{>)}\}$ (if the square remains empty).
 A graphical representation of a computed solution can be seen in Figure \ref{fig:8-queens.pdf}.
-This graphical representation was generated using the library
-\href{https://python-chess.readthedocs.io/en/latest/}{\texttt{python-chess}} and the function
-\texttt{show\_solution}, which is shown in Figure \ref{fig:printBoard}.
+
 
 Jessica Roth and Koen Loogman (who are two former DHBW students) implemented an animation of the Davis and Putnam procedure. You can find and try this animation at the address
 \\[0.2cm]
@@ -3880,7 +3854,55 @@ The efficient solution of such problems is a subject of current research.
   \label{fig:8-queens.pdf}
 \end{figure}
 \FloatBarrier
-\pagebreak
+
+
+\exerciseEng
+The following exercise is taken from the book 
+\href{https://www.amazon.de/Logeleien-Zweistein-ihren-Antworten-Wegner/dp/B006YF0VUE}{99 Logeleien von Zweistein}.
+This book has been published 1968.  It is written by 
+\href{http://de.wikipedia.org/wiki/Thomas_von_Randow}{Thomas von Randow}.
+
+\begin{minipage}{0.95\linewidth}
+  {\sl
+    The gentlemen \emph{Amann}, \emph{Bemann}, \emph{Cemann} and \emph{Demann} are called --- not
+    necessarily in the same order --- by their 
+    first names \emph{Erich}, \emph{Fritz}, \emph{Gustav} and \emph{Heiner}. They are all married to
+    exactly one woman. We also know the following about them and their wives: 
+    \begin{enumerate}
+    \item Either \emph{Amann's} first name is \emph{Heiner}, or \emph{Bemann's} wife is \emph{Inge}.
+    \item If \emph{Cemann} is married to \emph{Josefa}, then --- \textbf{and only in this case} ---
+          \emph{Klara's} husband is \textbf{not} called \emph{Fritz}.
+    \item If \emph{Josefa's} husband is \textbf{not} called \emph{Erich}, then \emph{Inge} is married to
+          \emph{Fritz}. 
+    \item If \emph{Luise's} husband is called \emph{Fritz}, then \emph{Klara's} husband's first name is
+          \textbf{not} \emph{Gustav}. 
+    \item If the wife of \emph{Fritz} is called \emph{Inge}, then \emph{Erich} is \textbf{not} married to
+          \emph{Josefa}. 
+    \item If \emph{Fritz} is \textbf{not} married to \emph{Luise}, then \emph{Gustav's} wife's name is \emph{Klara}.
+    \item Either \emph{Demann} is married to \emph{Luise}, or \emph{Cemann} is called \emph{Gustav}.
+    \end{enumerate}
+    What are the full names of these gentlemen, and what are their wives' first names?}
+\end{minipage}
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Hint}: You should use the following propositional variables to solve the problem.
+\begin{enumerate}
+\item $\texttt{MaleName<}x\texttt{,}z\texttt{>}$ for any male first name $x$ and any surname $z$ expresses
+  that the gentleman with first name $x$ has surname $z$.
+\item $\texttt{Married<}x\texttt{,}y\texttt{>}$ for any male first name $x$ and any female first name $y$ expresses
+  that the gentleman with first name $x$ is married to the lady with first name $y$.
+\item $\texttt{FemaleName<}y\texttt{,}z\texttt{>}$ for any female first name $y$ and any last name $z$ expresses
+  that the lady with first name $y$ has surname $z$. \eox
+\end{enumerate}
+I have provided the framework of a notebook at the following address:
+\\[0.2cm]
+\hspace*{1.3cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/Zweistein-Frame.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/Zweistein-frame.ipynb}}
+\\[0.2cm]
+You should edit this notebook in order to solve the given problem. \eox
+\vspace*{1cm}
+
 
 \subsection{The \href{https://en.wikipedia.org/wiki/Zebra_Puzzle}{Zebra Puzzle} \label{section:zebra}} 
 The following logical puzzle appeared in the magazine
@@ -3975,7 +3997,7 @@ normal parenthesis.
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-                 ]{python3}
+                 ]{typescript}
     def var(f, i):
         return f + "<" + str(i) + ">" 
 \end{minted}
@@ -4002,7 +4024,7 @@ integer $i \in \{1,\cdots,5\}$ and returns the string $f\langle i\rangle$.
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
     def somewhere(x):
         return frozenset({ var(x, i) for i in range(1, 5+1) })
 \end{minted}
@@ -4031,7 +4053,7 @@ as a \texttt{frozenset}.
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
     def atMostOneAt(S, i):
         return atMostOne({var(x, i) for x in S})
 \end{minted}
@@ -4063,7 +4085,7 @@ makes use of the function \texttt{atMostOne} that is shown in Figure
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-                 ]{python3}
+                 ]{typescript}
     def onePerHouse(S):
         Clauses  = { somewhere(x) for x in S } 
         Clauses |= { C for i in range(1, 5+1) for C in atMostOneAt(S, i) }
@@ -4093,7 +4115,7 @@ clauses that express the fact that these five persons live in different houses.
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
     def sameHouse(a, b):
         return { C for i in range(1,5+1)
                    for C in parseKNF(f"{var(a, i)} ↔ {var(b, i)}") 
@@ -4123,7 +4145,7 @@ it into a formula from propositional logic, and finally converts this formula in
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.0cm,
                  xrightmargin  = 0.0cm,
-               ]{python3}
+               ]{typescript}
   def nextTo(a, b):
       Result  = parseKNF(f"{var(a,1)} → {var(b,2)}")
       Result |= { C for i in [2,3,4]
@@ -4151,7 +4173,7 @@ specifies that the Japanese guy lives next to the guy who keeps a dog.
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
     def leftTo(a, b):
         Result = set()
         for i in [1, 2, 3, 4]:
@@ -4180,7 +4202,7 @@ Japanese guy lives in the house to the left of the house where there is a dog.
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.3cm,
                  xrightmargin  = 0.3cm,
-               ]{python3}
+               ]{typescript}
   Nations  = { "English", "Spanish", "Ukrainian", "Norwegian", "Japanese" }
   Drinks   = { "Coffee", "Tea", "Milk", "OrangeJuice", "Water" }
   Pets     = { "Dog", "Snails", "Horse", "Fox", "Zebra" }
@@ -4205,7 +4227,7 @@ shown in Figure \ref{fig:properties}.
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
     def allClauses():
         # Every house has exactly one inhabitant.  This inhabitant has exactly one
         # nationality, one pet, smokes one brand of cigarettes, and has one type
@@ -4315,44 +4337,6 @@ I have provided the framework of a notebook at the following address:
 You should edit this notebook in order to solve the given problem. \eox
 \vspace*{1cm}
 
-\exerciseEng
-The following exercise is taken from the book 
-\href{https://www.amazon.de/Logeleien-Zweistein-ihren-Antworten-Wegner/dp/B006YF0VUE}{99 Logeleien von Zweistein}.
-This book has been published 1968.  It is written by 
-\href{http://de.wikipedia.org/wiki/Thomas_von_Randow}{Thomas von Randow}.
-
-\begin{minipage}{0.95\linewidth}
-  {\sl
-    The gentlemen \emph{Amann}, \emph{Bemann}, \emph{Cemann} and \emph{Demann} are called - not
-    necessarily in the same order - by their 
-    first names \emph{Erich}, \emph{Fritz}, \emph{Gustav} and \emph{Heiner}. They are all married to
-    exactly one woman. We also know the following about them and their wives: 
-    \begin{enumerate}
-    \item Either \emph{Amann's} first name is \emph{Heiner}, or \emph{Bemann's} wife is \emph{Inge}.
-    \item If \emph{Cemann} is married to \emph{Josefa}, then - \textbf{and only in this case} -
-          \emph{Klara's} husband is \textbf{not} called \emph{Fritz}.
-    \item If \emph{Josefa's} husband is \textbf{not} called \emph{Erich}, then \emph{Inge} is married to
-          \emph{Fritz}. 
-    \item If \emph{Luise's} husband is called \emph{Fritz}, then \emph{Klara's} husband's first name is
-          \textbf{not} \emph{Gustav}. 
-    \item If the wife of \emph{Fritz} is called \emph{Inge}, then \emph{Erich} is \textbf{not} married to
-          \emph{Josefa}. 
-    \item If \emph{Fritz} is \textbf{not} married to \emph{Luise}, then \emph{Gustav's} wife's name is \emph{Klara}.
-    \item Either \emph{Demann} is married to \emph{Luise}, or \emph{Cemann} is called \emph{Gustav}.
-    \end{enumerate}
-    What are the full names of these gentlemen, and what are their wives' first names?}
-\end{minipage}
-\vspace*{0.3cm}
-
-\noindent
-I have provided the framework of a notebook at the following address:
-\\[0.2cm]
-\hspace*{1.3cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/Zweistein.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/Zweistein.ipynb}}
-\\[0.2cm]
-You should edit this notebook in order to solve the given problem.
-
-\pagebreak
 
 \section{Sudoku and PicoSat}
 As a final example we will solve a \href{https://en.wikipedia.org/wiki/Sudoku}{Sudoku} puzzle.  In particular,
@@ -4393,7 +4377,7 @@ implementation we will use the function \texttt{var} shown in Figure \ref{fig:su
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
     def var(row, col, digit):
         return f'Q<{row},{col},{digit}>'
 \end{minted}
@@ -4418,7 +4402,7 @@ to be computed.
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
     def create_puzzle():
         return [ [ 8 , "*", "*", "*", "*", "*", "*", "*", "*"], 
                  ["*", "*",  3 ,  6 , "*", "*", "*", "*", "*"],
@@ -4461,7 +4445,7 @@ The implementation is shown in Figure \ref{fig:sudoku-exactly}.
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
     def atLeastOne(S):
         return { frozenset(S) }
     
@@ -4493,7 +4477,7 @@ $\texttt{exactlyOnce}(L) = \bigcup\limits_{d \in \{1,\cdots,9\}} \mathtt{exactly
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
     def exactlyOnce(L):
         Clauses = set()
         for digit in range(1, 10):
@@ -4523,7 +4507,7 @@ is \texttt{true}. The implementation is shown in Figure \ref{fig:sudoku-exactlyO
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
     def exactlyOneDigit(row, col):
         return exactlyOne({ var(row, col, digit) for digit in range(1, 10) })
 \end{minted}
@@ -4557,7 +4541,7 @@ in TypeScript list indices start with $0$.
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.0cm,
                  xrightmargin  = 0.0cm,
-                 ]{python3}
+                 ]{typescript}
     def constraintsFromPuzzle():
         Puzzle = create_puzzle()
         Variables = [ var(row+1, col+1, Puzzle[row][col]) for row in range(9)
@@ -4584,7 +4568,7 @@ Finally, we have to combine all constraints of the puzzle.  This is done with th
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
 def allConstraints(): 
     L = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     # the constraints from the puzzle have to be satisfied
@@ -4679,7 +4663,7 @@ occurring in this set.
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
     def findVariables(Clauses):
         Variables = set()
         for Clause in Clauses:
@@ -4712,7 +4696,7 @@ The function \texttt{numberVariables(Clauses)} takes a set of clauses as input. 
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
     def numberVariables(Clauses):
         Variables = findVariables(Clauses)
         count     = 1
@@ -4755,7 +4739,7 @@ formula represented as a set of clauses into the format of PicoSat.
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{python3}
+               ]{typescript}
     def literal2int(literal, Var2Int):
         match literal:
             case ('¬', var): return -Var2Int[var]
