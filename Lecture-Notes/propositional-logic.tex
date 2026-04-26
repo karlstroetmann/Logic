@@ -2941,16 +2941,15 @@ In this example, we were fortunate as we only had to make a single case distinct
 In more complex examples, it is often necessary to perform more than one case distinction.
 
 \subsection{Implementation}
-Next, we provide the implementation of the function 
-\href{https://github.com/karlstroetmann/Logic/blob/master/SetlX/davis-putnam.stlx}{\texttt{solve}}, 
+Next, we provide the implementation of the function \texttt{solve}, 
 which can answer the question of whether a set of clauses is satisfiable. The
 implementation is shown in Figure \ref{fig:solve} on page \pageref{fig:solve}.
-The function receives two arguments: The sets \texttt{Clauses} and \texttt{Variables}.
-Here, \texttt{Clauses} is a set of clauses and \texttt{Variables} is a set of
-variables. If the set \texttt{Clauses} is satisfiable, then the call
+The function receives one argument: The sets \texttt{Clauses}.
+Here, \texttt{Clauses} is the set of clauses that needs to be solved. If the set \texttt{Clauses} is
+satisfiable, then the call 
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{solve(Clauses, Variables)} \index{\texttt{solve}}
+\texttt{solve(Clauses)} \index{\texttt{solve}}
 \\[0.2cm]
 returns a set of unit clauses \texttt{Result}, such
 that any assignment $\I$, which satisfies all unit clauses from \texttt{Result}, also satisfies all clauses from
@@ -2960,9 +2959,7 @@ the set $\texttt{Clauses}$. If the set $\texttt{Clauses}$ is not satisfiable, th
 \texttt{solve(Clauses, Variables)} 
 \\[0.2cm]
 returns the set $\bigl\{ \{\} \bigr\}$, as the empty clause represents the unsatisfiable formula $\falsum$.
-
-You might wonder why we need the set \texttt{Variables} in the function \texttt{solve}. The reason is that we need to keep track of which variables we have already used for case distinctions during the recursive calls. These variables are collected in the set \texttt{Variables}.
-
+ 
 \begin{figure}[!ht]
   \centering
 \begin{minted}[ frame         = lines, 
@@ -2975,9 +2972,9 @@ You might wonder why we need the set \texttt{Variables} in the function \texttt{
               ]{typescript}
     function solve(Clauses: Set<Clause>): Set<Clause> {
         const Variables = flatMap(Clauses, clause => clause.map(extractVariable));
-        return solveRecursive(Clauses, Variables, set<Variable>());
+        return solveRecursive(Clauses, Variables, set());
     }
-    
+
     function solveRecursive(
         Clauses: Clauses, 
         Variables: Set<Variable>, 
@@ -2985,23 +2982,14 @@ You might wonder why we need the set \texttt{Variables} in the function \texttt{
     ): Clauses {
         const S = saturate(Clauses);
         const EmptyClause = set<Literal>();
-        if (S.has(EmptyClause)) { // S is inconsistent
-            return set(EmptyClause);
-        }
-        if (S.every(C => C.size == 1)) { // S is trivial
-            return S;  
-        }
-        const p = selectVariable(Variables, UsedVars);
-        if (!p) {
-            return S; 
-        }
+        if (S.has(EmptyClause))        { return set(EmptyClause); }
+        if (S.every(C => C.size == 1)) { return S;                }
+        const p = arb(Variables.difference(UsedVars));
         const nextUsedVars = UsedVars.union(set(p));
         const Result1 = solveRecursive(S.union(set(set(p))), 
                                        Variables, 
                                        nextUsedVars);
-        if (!Result1.has(EmptyClause)) {
-            return Result1;
-        }
+        if (!Result1.has(EmptyClause)) { return Result1; }
         const pBar = complement(p);
         return solveRecursive(S.union(set(set(pBar))), 
                               Variables, 
@@ -3012,34 +3000,41 @@ You might wonder why we need the set \texttt{Variables} in the function \texttt{
   \caption{The function \texttt{solve}.}
   \label{fig:solve}
 \end{figure} 
-\begin{enumerate}
-\item In line 2, we reduce the given set of clauses \texttt{Clauses} as much as possible using the method \texttt{saturate},
-      applying unit cuts and removing all clauses that are subsumed by unit clauses.
-\item Next, we test in line 5 if the simplified set of clauses \texttt{S}
-      contains the empty clause, and if so, we return the set 
-      $\bigl\{\{\}\bigr\}$ as the result.
-\item Then, in line 7, we check if all clauses $C$ from the set
-      \texttt{S} are unit clauses. If this is the case,
-      the set \texttt{S} is trivial and we return this set as the result.
-\item Otherwise, in line 9 we select a literal $l$ that appears in a clause from the set \texttt{S} 
-      but has not yet been used.
-      We then recursively investigate in line 13 whether the set \\[0.2cm]
-      \hspace*{1.3cm} 
-      $\texttt{S} \cup \bigl\{\{\texttt{l}\}\bigr\}$ 
-      \\[0.2cm]
-      is solvable. There are two cases:
-      \begin{enumerate}
-      \item If this set is solvable, we return the solution of this set as the result.
 
-      \item Otherwise, we recursively check whether the set 
-            \\[0.2cm]
-            \hspace*{1.3cm}
-            $\texttt{S} \cup \Bigl\{ \bigl\{ \komplement{\texttt{l}} \bigr\} \Bigr\}$ 
-            \\[0.2cm]
-            is solvable. If this set is solvable, then this solution is also a
-            solution of the set $\texttt{Clauses}$, and we return this solution. If the
-            set is unsolvable, then the set $\texttt{Clauses}$ must also be unsolvable.
-      \end{enumerate}
+The implementations of \texttt{solve} and the auxiliary function \texttt{solveRecursive} are shown in Figure
+\ref{fig:solve} on page \pageref{fig:solve}.
+\begin{enumerate}
+\item The function \texttt{solve} serves as the entry point. In line 2, it first computes the set
+  \texttt{Variables} containing all propositional variables that occur in the given set of \texttt{Clauses}. It
+  does this by mapping \texttt{extractVariable} over all literals and computing the union of these sets. 
+\item In line 3, it calls the helper function \texttt{solveRecursive}, passing the original \texttt{Clauses},
+  the complete set of \texttt{Variables}, and an empty set \texttt{set()} to initialize \texttt{UsedVars}.
+  This is the set of variables that have already been used in case distinctions.  Initially, this set is empty.
+\item The real work is done in the function \texttt{solveRecursive}. In line 11, we reduce the given set of
+  clauses as much as possible by calling the function \texttt{saturate}. This applies all possible unit cuts
+  and removes clauses subsumed by unit clauses, storing the result in \texttt{S}. 
+\item In line 12, we define \texttt{EmptyClause} to represent an empty set of literals.
+\item In line 13, we check whether the saturated set \texttt{S} contains the empty clause. If it does, the set
+  is contradictory, and we return the set containing the empty clause (which represents $\falsum$). 
+\item In line 14, we check if all clauses in \texttt{S} are unit clauses (i.e., their size is exactly 1). If
+  this is the case, the set \texttt{S} is trivial and represents a valid solution, so we return \texttt{S}. 
+\item If the set is neither contradictory nor a trivial solution, we must make a case distinction. In line 15,
+  we select an arbitrary variable \texttt{p} from the set of \texttt{Variables} that has not yet been used
+  (i.e., it is not in \texttt{UsedVars}).  It is very important to use the function \texttt{arb} here, as
+  \texttt{arb} picks a random element from a set.  If we would instead use a function that always picks the
+  first element of a given set, the performance of the implementation would degrade seriously.
+\item In line 16, we create the set \texttt{nextUsedVars} by adding the chosen variable \texttt{p} to the set
+  of \texttt{UsedVars}. 
+\item In lines 17--19, we recursively try to solve the set of clauses assuming \texttt{p} is \texttt{true}. We
+  do this by adding the unit clause \texttt{\{p\}} to \texttt{S} and calling \texttt{solveRecursive}. The
+  result is stored in \texttt{Result1}. 
+\item In line 20, we check if this first attempt was successful. If \texttt{Result1} does not contain the empty
+  clause, we have found a valid solution and we return \texttt{Result1}. 
+\item If the first attempt failed, we must try the opposite assignment. In line 21, we compute the complement
+  of \texttt{p} (which is $\neg p$) and store it in \texttt{pBar}. 
+\item Finally, in lines 22--24, we recursively call \texttt{solveRecursive} again, this time adding the unit
+  clause \texttt{\{pBar\}} to \texttt{S} to simulate the assignment where \texttt{p} is \texttt{false}. We
+  return the result of this call; if this alternative also fails, the set of clauses is unsatisfiable. 
 \end{enumerate}
 
 We now discuss the auxiliary procedures used in the implementation of the function
@@ -3064,12 +3059,10 @@ The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pa
         const Used = set<Clause>(); 
         while (true) {
             const Units = S.filter(C => C.size == 1 && !Used.has(C));
-            const unit  = arb(Units);
-            if (!unit) {
-                break; 
-            }
+            if (Units.size == 0) { break; }
+            const unit = first(Units);
             Used.add(unit);
-            S = reduce(S, arb(unit)!);
+            S = reduce(S, first(unit));
         }
         return S;
     }
@@ -3079,32 +3072,21 @@ The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pa
   \label{fig:saturate}
 \end{figure} 
 \begin{enumerate}
-\item Initially, we copy the set \texttt{Clauses} into the variable \texttt{S}.
-      This is necessary because we will later modify the set \texttt{S}. The function
-      \texttt{saturate} should not alter the argument \texttt{Clauses} and therefore
-      it has to create a copy of the set \texttt{S}.
-\item Then, in line 3, we compute the set \texttt{Units} of all unit clauses.
-\item Next, in line 4, we initialize the set \texttt{Used} as an empty set.
-      In this set, we record which unit clauses we have already used for unit cuts and
-      subsumptions.
-\item As long as the set \texttt{Units} of unit clauses is not empty, we select in line 6
-      an arbitrary unit clause \texttt{unit} from the set \texttt{Units} using the function $\texttt{pop}$, and remove this unit clause from the set \texttt{Units}.
-\item In line 7, we add the clause \texttt{unit} to the set
-      \texttt{Used} of used clauses.
-\item In line 8, we extract the literal \texttt{l} from the clause
-      \texttt{Unit} using the function \texttt{arb}. The function $\texttt{arb}$ returns an arbitrary element of the set passed to it as an argument. If this set contains only one element, then
-      that element is returned.
-\item In line 9, the actual work is done by a call to the function
-      \texttt{reduce}. This function performs all possible unit cuts with the
-      unit clause $\{\texttt{l}\}$ and also removes all clauses that
-      are subsumed by the unit clause $\{\texttt{l}\}$.
-\item When the unit cuts with the unit clause $\{\texttt{l}\}$ are computed, new
-      unit clauses can emerge, which we collect in line 10.  Of course, we collect only those unit clauses
-      that have not yet been used.
-\item The loop in lines 5 -- 10 is continued as long as we
-      find unit clauses that have not been used.
-\item At the end,  return the remaining set of clauses is returned.
+\item In line 2, we initially copy the set \texttt{Clauses} into the variable \texttt{S}. This is necessary
+  because we will later modify the set \texttt{S}, but we do not want to change the original set \texttt{Clauses}.
+\item In line 3, we initialize the set \texttt{Used} as an empty set. In this set, we record which unit clauses
+  we have already used for unit cuts and subsumptions. 
+\item In line 4, we begin a \texttt{while} loop that is continued as long as we find unit clauses that have not been used.
+\item In line 5, we compute the set \texttt{Units} of all unit clauses. We collect only those unit clauses that have a size of 1 and have not yet been used.
+\item In line 6, we check if the set \texttt{Units} is empty, and if so, we break out of the loop.
+\item In line 7, we select an arbitrary unit clause from the set \texttt{Units} and store it in the variable \texttt{unit}.
+\item In line 8, we add the clause \texttt{unit} to the set \texttt{Used} of used clauses.
+\item In line 9, the actual work is done by a call to the function \texttt{reduce}. By extracting the literal with \texttt{first(unit)}, this function performs all possible unit cuts with the unit clause and also removes all clauses that are subsumed by the unit clause.
+\item At the end, in line 11, the remaining set of clauses \texttt{S} is returned.
 \end{enumerate}
+
+
+
 The function $\texttt{reduce}$  is shown in Figure \ref{fig:reduce}.
 In the previous section, we defined the function $\textsl{reduce}(S, l)$, which reduces a
 set of clauses $\texttt{Cs}$ using the literal $l$, as
@@ -3115,8 +3097,6 @@ $\textsl{reduce}(\texttt{Cs},l)  =
        \,\cup\, \Bigl\{\, C \in \texttt{Cs} \mid \komplement{l} \not\in C \wedge l \not\in C \Bigr\} \cup \Bigl\{\{l\}\Bigr\}
 $
 \\[0.2cm]
-The code is an immediate implementation of this definition.
-
 \begin{figure}[!ht]
   \centering
 \begin{minted}[ frame         = lines, 
@@ -3127,16 +3107,43 @@ The code is an immediate implementation of this definition.
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]{python3}
-    def reduce(Clauses, l):
-        lBar = complement(l)
-        return   { C - { lBar } for C in Clauses if lBar in C }          \
-               | { C for C in Clauses if lBar not in C and l not in C }  \
-               | { frozenset({l}) }
+    function reduce(Clauses: Clauses, l: Literal): Clauses {
+        const lBar   = complement(l);
+        const result = Clauses.filterMap(
+            cl => !cl.has(l),
+            cl => cl.has(lBar) ? cl.difference(set(lBar)) : cl
+        );
+        result.add(set(l));    
+        return result;
+    }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{reduce}. \index{\texttt{reduce}}}
   \label{fig:reduce}
 \end{figure} 
+\begin{enumerate}
+\item The function \texttt{reduce} takes a set of clauses \texttt{Clauses} and a literal \texttt{l} as arguments.
+\item In line 2, it computes the complement of the literal \texttt{l} using the helper function
+  \texttt{complement} and stores it in the constant \texttt{lBar}. 
+\item In lines 3 to 6, the method \texttt{filterMap} is applied to the set \texttt{Clauses} to perform both
+  unit subsumptions and unit cuts simultaneously. 
+\item The first argument to \texttt{filterMap}, \texttt{cl => !cl.has(l)}, acts as a filter. It retains only
+  those clauses that do not contain the literal \texttt{l}. This implements unit subsumption, as any clause
+  containing \texttt{l} is already satisfied and can be discarded. 
+\item The second argument, 
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  \texttt{cl => cl.has(lBar) ?\;cl.difference(set(lBar)) :\;cl}, 
+  \\[0.2cm]
+  maps the remaining clauses. If a clause contains the complementary literal \texttt{lBar}, this literal is
+  removed using the \texttt{difference} method, which implements the unit cut. Otherwise, the clause remains
+  unchanged. The modified set of clauses is stored in the constant \texttt{result}. 
+\item In line 7, the unit clause containing just the literal \texttt{l} is explicitly added back to the
+  \texttt{result} set. 
+\item Finally, in line 8, the function returns the fully reduced set of clauses \texttt{result}.
+\end{enumerate}
+
+
 
 
 \begin{figure}[!ht]
@@ -3149,73 +3156,176 @@ The code is an immediate implementation of this definition.
                 xleftmargin   = 0.3cm,
                 xrightmargin  = 0.3cm
               ]{python3}
-    def selectLiteral(Clauses, Forbidden):
-        Variables = { extractVariable(l) for C in Clauses for l in C } - Forbidden
-        Scores    = {} 
-        for var in Variables:
-            cmp = ('¬', var)
-            Scores[var] = 0.0
-            Scores[cmp] = 0.0
-            for C in Clauses:
-                if var in C:
-                    Scores[var] += 2 ** -len(C)
-                if cmp in C: 
-                    Scores[cmp] += 2 ** -len(C)
-        return max(Scores, key=Scores.get)
+    function complement(l: Literal): Literal {
+        if (typeof l == 'string') { return new Tuple('¬', l); } 
+        return l.get(1);
+    }
 
-    def extractVariable(l):
-        match l:
-            case ('¬', p): return p
-            case p       : return p
-\end{minted}
+    function extractVariable(l: Literal): Variable {
+        if (typeof l == 'string') { return l; }
+        return l.get(1);
+    }
+  \end{minted}
 \vspace*{-0.3cm}
-  \caption{The functions \texttt{select} and \texttt{negateLiteral}.}
+  \caption{The functions \texttt{complement} and \texttt{extractVariable}.}
   \label{fig:solve-aux}
 \end{figure}
+
+Figure \ref{fig:solve-aux} shows the implementation of the auxiliary functions \texttt{complement} and
+\texttt{extractVariable}.
 \begin{enumerate}
-\item The function \texttt{selectLiteral} selects a literal from 
-a given set $\texttt{Clauses}$ of clauses, where the variable of the literal must not appear in the set
-\texttt{Forbidden} of variables that have already been used.
-To do this, we first iterate over all clauses $C$ from the set $\texttt{Clauses}$ and then over all literals $l$
-in the clause $C$. From these literals, we extract the variable contained within using the function
-\texttt{extractVariable}. Subsequently, we return the literal for which the value of the
-\blue{Jeroslow-Wang Heuristic} \index{Jeroslow-Wang Heuristic} \cite{jeroslow:1990} is maximal. For a
-set of clauses $K$ and a 
-literal $l$, we define the Jeroslow-Wang heuristic $\texttt{jw}(K, l)$ as follows:
+\item The first function, \texttt{complement}, takes a literal \texttt{l} as its argument and computes its complement.
+\item In line 2, it checks whether the literal \texttt{l} is a positive propositional variable by checking if
+  its type is a string. If so, it returns the negated literal by creating a new \texttt{Tuple} containing the
+  negation symbol `¬' and the variable \texttt{l}. 
+\item In line 3, if \texttt{l} is not a string, it is a negated literal represented as a tuple. The function
+  returns the positive complement by extracting the second element of the tuple using \texttt{l.get(1)}, which
+  corresponds to the underlying propositional variable. 
+\item The second function, \texttt{extractVariable}, takes a literal \texttt{l} as its argument and extracts
+  the base propositional variable it contains. 
+\item In line 7, it checks if \texttt{l} is a string. If it is, the literal is already a positive propositional
+  variable, so it simply returns \texttt{l} unchanged. 
+\item In line 8, if \texttt{l} is a negated literal (a tuple), it extracts and returns the underlying
+  propositional variable by accessing the second element of the tuple using \texttt{l.get(1)}. 
+\end{enumerate}
+You can find the Jupyter notebook implementing the Davis-Putnam algorithm at:
+\\[0.2cm]
+\hspace*{-0.1cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/06-Davis-Putnam.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/06-Davis-Putnam.ipynb}}.
+
+
+\subsection{The Jeroslow-Wang Heuristic}
+In our previous implementation of the Davis-Putnam algorithm, we selected the variable for the case distinction
+arbitrarily. However, the choice of the splitting variable has a significant impact on the efficiency of the
+algorithm. To minimize the search tree, it is highly advantageous to choose a literal that frequently occurs in
+short clauses, as this quickly leads to unit clauses and triggers further simplifications via unit propagation. 
+ 
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{typescript}
+    function scoreLiteral(Cls: Clauses, l: Literal): number {
+        return Cls.reduce((s, c) => c.has(l) ? s + 1 / 2 ** c.size: s, 0);
+    }
+    
+    function selectLiteral(
+        Clauses:   Clauses,
+        Variables: Set<Variable>,
+        UsedVars:  Set<Variable>
+    ): Literal {
+        let maxLiteral: Literal = first(Variables);
+        let maxScore = -Infinity;
+        for (const variable of Variables) {
+            if (UsedVars.has(variable)) { continue; }
+            for (const literal of [variable, tpl('¬', variable)]) {
+                const score = scoreLiteral(Clauses, literal);
+                if (score > maxScore) {
+                    maxScore   = score;
+                    maxLiteral = literal;
+        }}}    
+        return maxLiteral;
+    }
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{Selecting a literal using the Jeroslow-Wang heuristic.}
+  \label{fig:selectLiteral}
+\end{figure}
+The \blue{Jeroslow-Wang heuristic} assigns a weight to each literal based on its occurrences in the current set of clauses. For a set of clauses $\texttt{Clauses}$ and a literal $l$, the score $\texttt{JW}(\texttt{Clauses}, l)$ is defined as:
+$$ \texttt{JW}(\texttt{Clauses}, l) = \sum\limits_{\bigl\{\,C \in \texttt{Clauses}\;\mid\; l \in C\;\bigr\}} \frac{1}{\;2^{|C|}\;} $$
+Here, $|C|$ denotes the number of literals in the clause $C$.
+The idea is to choose a literal that occurs in many clauses and therefore subsumes a lot of clauses.  Clauses
+with fewer literals are much more important than clauses with many literals, as it is much easier to satify a
+clause with many literals.  If a clause has $n$ different literals, then the probability that the clause is
+`false` is only $\displaystyle\frac{1}{2^n}$ if the propositional variables are assigned randomly. 
+
+
+Figure \ref{fig:selectLiteral} shows the \textsl{TypeScript} implementation of the functions
+\texttt{scoreLiteral} and \texttt{selectLiteral}, which compute this heuristic.  The function \texttt{selectLiteral} works as follows:
+\begin{enumerate}
+\item The helper function \texttt{scoreLiteral} (lines 1--3) computes the Jeroslow-Wang score for a given
+  literal \texttt{l}. It uses the \texttt{reduce} method to iterate over all clauses. If the literal is present
+  in the clause \texttt{c}, it adds $1 / 2^{|C|}$ to the running sum \texttt{s}; otherwise, it leaves
+  \texttt{s} unchanged. 
+\item In lines 10 and 11, we initialize \texttt{maxLiteral} with an arbitrary variable and \texttt{maxScore}
+  with negative infinity to keep track of the literal that achieves the highest score. 
+\item In line 12, we iterate over all \texttt{Variables}.
+\item In line 13, we immediately skip the variable if it has already been assigned (i.e., it is present in
+  \texttt{UsedVars}). 
+\item In line 14, we loop over both the positive literal \texttt{variable} and the negative literal
+  \texttt{tpl('¬', variable)}. 
+\item In line 15, we calculate the score for the current \texttt{literal} using the \texttt{scoreLiteral}
+  helper function. 
+\item In lines 16--19, if the computed \texttt{score} is greater than \texttt{maxScore}, we update both
+  \texttt{maxScore} and \texttt{maxLiteral} to reflect the new highest-scoring candidate. 
+\item Finally, in line 20, the function returns the literal that accumulated the maximum score. 
+\end{enumerate}
+
+\FloatBarrier
+
+To utilize this heuristic, we must integrate it into our main recursive solving procedure. Figure
+\ref{fig:solve_recursive_jw} displays the updated \textsl{TypeScript} implementation of
+\texttt{solveRecursive}. 
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{typescript}
+    function solveRecursive(
+        Clauses:   Clauses, 
+        Variables: Set<Variable>, 
+        UsedVars:  Set<Variable>): Clauses 
+    {
+        const S = saturate(Clauses);
+        const EmptyClause = set<Literal>();
+        if (S.has(EmptyClause)) { return set(EmptyClause);  }
+        if (S.every(C => C.size == 1)) { return S; }
+        const l = selectLiteral(Clauses, Variables, UsedVars);
+        const nextUsedVars = UsedVars.union(set(extractVariable(l)));
+        const Result1 = solveRecursive(
+            S.union(set(set(l))),
+            Variables,
+            nextUsedVars);
+        if (!Result1.has(EmptyClause)) { return Result1; }
+        const lBar = complement(l);
+        return solveRecursive(
+            S.union(set(set(lBar))),
+            Variables,
+            nextUsedVars);
+    }
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{The updated \texttt{solveRecursive} function using the heuristic.}
+  \label{fig:solve_recursive_jw}
+\end{figure}
+
+The base cases for handling contradiction and trivial solutions remain identical to our previous implementation. The significant changes occur during the case distinction phase:
+\begin{enumerate}
+\item In line 10, instead of picking an arbitrary variable, we now call \texttt{selectLiteral} to find the most
+  promising literal \texttt{l} based on the Jeroslow-Wang score. 
+\item In line 11, we compute the set \texttt{nextUsedVars}. Since \texttt{selectLiteral} returns a literal, we must extract the underlying propositional variable using \texttt{extractVariable(l)} before adding it to \texttt{UsedVars}.
+\item In lines 12--15, we perform the first recursive descent. We add the unit clause \texttt{set(l)} to the saturated set \texttt{S}. Because \texttt{selectLiteral} returns a specific literal (which could already be negative), we directly enforce this literal rather than simply assuming a positive variable.
+\item In line 16, we check if the first recursive call yielded a valid solution. If it did, we return it.
+\item In line 17, if the first path failed to find a solution, we compute the complement of our chosen literal, storing it in \texttt{lBar}.
+\item Finally, in lines 18--21, we recursively explore the alternative path by enforcing the complementary literal \texttt{lBar}.
+\end{enumerate}
+You can find the Jupyter notebook implementing the Davis-Putnam algorithm with the Jeroslow-Wang heuristic at:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\ds\mathtt{jw}(K, l) := \sum\limits_{\{C \in K \,\mid\, l \in C\}} \frac{1}{2^{|C|}}$
-\\[0.2cm]
-Here, $|C|$ denotes the number of literals appearing in the clause $C$. The idea is that we
-want to select a literal $l$ that appears in as many clauses as possible, as these clauses are then
-subsumed by the literal. However, it is more important to subsume clauses that contain as few
-literals as possible, as these clauses are harder to satisfy. This is because a clause
-is satisfied if even a single literal from the clause is satisfied. The more literals the
-clause contains, the easier it is to satisfy this clause.
-\end{enumerate}
-The implementation of the other auxiliary function discussed here, \texttt{extractVariable}, is
-straightforward.
+\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/07-Davis-Putnam-JW.ipynb}{\texttt{github.com/karlstroetmann/.../Chapter-4/07-Davis-Putnam-JW.ipynb}}.
 
-The version of the Davis and Putnam procedure presented above can be improved in many ways.
-Due to time constraints, we cannot discuss these improvements. Interested readers are
-referred to the following paper by Moskewicz et.al.~\cite{moskewicz:2001}: 
-\\[0.2cm]
-\hspace*{1.3cm} \textsl{Chaff: Engineering an Efficient SAT Solver} \\
-\hspace*{1.3cm} by \blue{M. Moskewicz, C. Madigan, Y. Zhao, L. Zhang, S. Malik} 
-
-\exerciseEng
-The set of clauses $M$ is given as follows: \\[0.2cm]
-\hspace*{1.3cm} $M := \bigl\{ \; \{ r, p, s \},
-                         \{r, s \}, \{ q, p, s \},
-                         \{ \neg p,  \neg q\},
-                         \{ \neg p, s,  \neg r\},
-                         \{p,  \neg q, r \},$ \\[0.2cm]
-\hspace*{2.6cm} $\{ \neg r,  \neg s, q\},
-                         \{p, q, r, s \},
-                         \{r,  \neg s, q\},
-                         \{ \neg r,  s, \neg q\},
-                         \{s, \neg r\} \bigr\}$ \\[0.2cm]
-Check whether the set $M$ is contradictory.  \eox
 
 \section{Solving Logical Puzzles}
 In this section, we demonstrate how certain combinatorial problems can be reduced to the satisfiablity of a
