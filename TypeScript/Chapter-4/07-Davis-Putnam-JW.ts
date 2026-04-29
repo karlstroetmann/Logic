@@ -18,7 +18,7 @@ function tpl<T extends Value[]>(...elements: T): Tuple<T> {
     return new Tuple(...elements);
 }
 
-function complement(l: Literal): Literal {
+export function complement(l: Literal): Literal {
     if (typeof l === 'string') { return new Tuple('¬', l); } 
     return l.get(1);
 }
