@@ -3986,7 +3986,7 @@ The cigarette brands are encoded as
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{OldGold}\langle i \rangle$,\; $\texttt{Kools}\langle i \rangle$,\;
-$\texttt{Chesterfields}\langle i \rangle$,\; $\texttt{LuckyStrike}\langle i \rangle$,\; and
+$\texttt{Chesterfields}\langle i \rangle$,\; $\texttt{Luckies}\langle i \rangle$,\; and
 $\texttt{Parliaments}\langle i \rangle$.
 \\[0.2cm]
 We are using the angular brackets "$\langle$" and "$\rangle$" as part of the
@@ -4005,11 +4005,12 @@ normal parenthesis.
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
                  ]{typescript}
-    def var(f, i):
-        return f + "<" + str(i) + ">" 
+    function variable(f: string, i: number): string {
+        return `${f}<${i}>`;
+    }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{The function $\texttt{var}(f, i)$.}
+\caption{The function $\texttt{variable}(f, i)$.}
 \label{fig:var_f_i}
 \end{figure}
 
@@ -4032,8 +4033,9 @@ integer $i \in \{1,\cdots,5\}$ and returns the string $f\langle i\rangle$.
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
                ]{typescript}
-    def somewhere(x):
-        return frozenset({ var(x, i) for i in range(1, 5+1) })
+    function somewhere(x: string): Set<Literal> {
+        return range(1, 5).map(i => variable(x, i))
+    }
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{somewhere}.}
@@ -4061,8 +4063,9 @@ as a \texttt{frozenset}.
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
                ]{typescript}
-    def atMostOneAt(S, i):
-        return atMostOne({var(x, i) for x in S})
+    function atMostOneAt(S: Set<string>, i: number): Set<Clause> {
+        return atMostOne(S.map(x => variable(x, i)));
+    }
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{atMostOneAt}(S, i)}
@@ -4093,10 +4096,10 @@ makes use of the function \texttt{atMostOne} that is shown in Figure
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
                  ]{typescript}
-    def onePerHouse(S):
-        Clauses  = { somewhere(x) for x in S } 
-        Clauses |= { C for i in range(1, 5+1) for C in atMostOneAt(S, i) }
-        return Clauses
+    function onePerHouse(S: Set<Variable>): Set<Clause> {
+        const Result = S.map(x => somewhere(x));
+        return Result.flatMap(range(1, 5), i => atMostOneAt(S, i));
+    }
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{onePerHouse}.}
@@ -4123,10 +4126,12 @@ clauses that express the fact that these five persons live in different houses.
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
                ]{typescript}
-    def sameHouse(a, b):
-        return { C for i in range(1,5+1)
-                   for C in parseKNF(f"{var(a, i)} ↔ {var(b, i)}") 
-               }
+    function sameHouse(a: Variable, b: Variable): Set<Clause> {
+        const Result = new Set<Clause>();
+        return Result
+            .flatMap(range(1, 5),
+                     i => parseKNF(`${variable(a, i)} ↔ ${variable(b, i)}`));
+    }
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function $\texttt{sameHouse}(a, b)$.}
@@ -4149,19 +4154,23 @@ it into a formula from propositional logic, and finally converts this formula in
                  firstnumber   = 1,
                  bgcolor       = sepia,
                  numbers       = left,
-                 numbersep     = -0.2cm,
+                 numbersep     = 0.3cm,
                  xleftmargin   = 0.0cm,
                  xrightmargin  = 0.0cm,
                ]{typescript}
-  def nextTo(a, b):
-      Result  = parseKNF(f"{var(a,1)} → {var(b,2)}")
-      Result |= { C for i in [2,3,4]
-                    for C in parseKNF(f"{var(a,i)} → {var(b,i-1)} ∨ {var(b,i+1)}") }
-      Result |= parseKNF(f"{var(a,5)} → {var(b,4)}")
-      return Result
+function nextTo(a: Variable, b: Variable): Set<Clause> {
+    const Formulas = [
+        `${variable(a, 1)} → ${variable(b, 2)}`, // House 1
+        ...[2, 3, 4].map(
+          i => `${variable(a, i)} → ${variable(b, i-1)} ∨ ${variable(b, i+1)}`), 
+        `${variable(a, 5)} → ${variable(b, 4)}`  // House 5
+    ];
+    const Result = set<Clause>();
+    return Result.flatMap(Formulas, formula => parseKNF(formula));
+}
 \end{minted}
 \vspace*{-0.3cm}
-\caption{nextTo}
+\caption{nextTo} %$
 \label{fig:nextTo}
 \end{figure}
 Given to properties $a$ and $b$ the function $\texttt{nextTo}(a, b)$ computes a
@@ -4181,15 +4190,17 @@ specifies that the Japanese guy lives next to the guy who keeps a dog.
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
                ]{typescript}
-    def leftTo(a, b):
-        Result = set()
-        for i in [1, 2, 3, 4]:
-            Result |= parseKNF(f"{var(a,i)} ↔ {var(b,i+1)}")
-        Result |= parseKNF(f"¬{var(a,5)}")
-        return Result
+    function leftTo(a: Variable, b: Variable): Set<Clause> {
+        const Formulas = [
+            ...[1, 2, 3, 4].map(i => `${variable(a, i)} ↔ ${variable(b, i+1)}`),
+            `¬${variable(a, 5)}`
+        ];
+        const Result = set<Clause>();
+        return Result.flatMap(Formulas, formula => parseKNF(formula));
+    }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{The function \texttt{leftTo}.}
+\caption{The function \texttt{leftTo}.} %$
 \label{fig:leftTo}
 \end{figure}
 
@@ -4206,15 +4217,15 @@ Japanese guy lives in the house to the left of the house where there is a dog.
                  firstnumber   = 1,
                  bgcolor       = sepia,
                  numbers       = left,
-                 numbersep     = -0.2cm,
-                 xleftmargin   = 0.3cm,
-                 xrightmargin  = 0.3cm,
+                 numbersep     = 0.3cm,
+                 xleftmargin   = -0.1cm,
+                 xrightmargin  = -0.1cm,
                ]{typescript}
-  Nations  = { "English", "Spanish", "Ukrainian", "Norwegian", "Japanese" }
-  Drinks   = { "Coffee", "Tea", "Milk", "OrangeJuice", "Water" }
-  Pets     = { "Dog", "Snails", "Horse", "Fox", "Zebra" }
-  Brands   = { "LuckyStrike", "Parliaments", "Kools", "Chesterfields", "OldGold" }
-  Colours  = { "Red", "Green", "Ivory", "Yellow", "Blue" }                
+const Nations = set("English", "Spanish", "Ukrainian", "Norwegian", "Japanese");
+const Drinks  = set("Coffee", "Tea", "Milk", "OrangeJuice", "Water");
+const Pets    = set("Dog", "Snails", "Horse", "Fox", "Zebra");
+const Brands = set("Luckies", "Parliaments", "Kools", "Chesterfields", "OldGold");
+const Colours = set("Red", "Green", "Ivory", "Yellow", "Blue");
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Definition of the properties.}
@@ -4231,49 +4242,40 @@ shown in Figure \ref{fig:properties}.
                  firstnumber   = 1,
                  bgcolor       = sepia,
                  numbers       = left,
-                 numbersep     = -0.2cm,
-                 xleftmargin   = 0.8cm,
-                 xrightmargin  = 0.8cm,
+                 numbersep     = 0.2cm,
+                 xleftmargin   = 0.0cm,
+                 xrightmargin  = 0.0cm,
                ]{typescript}
-    def allClauses():
-        # Every house has exactly one inhabitant.  This inhabitant has exactly one
-        # nationality, one pet, smokes one brand of cigarettes, and has one type
-        # of drink.  Furthermore, every house has exactly one color.
-        Clauses  = onePerHouse(Nations)
-        Clauses |= onePerHouse(Drinks)
-        Clauses |= onePerHouse(Pets)
-        Clauses |= onePerHouse(Brands)
-        Clauses |= onePerHouse(Colours)
-        # The Englishman lives in the red house.
-        Clauses |= sameHouse("English", "Red")
-        # The Spaniard owns the dog.
-        Clauses |= sameHouse("Spanish", "Dog")
-        # Coffee is drunk in the green house.
-        Clauses |= sameHouse("Coffee", "Green")
-        # The Ukrainian drinks tea.
-        Clauses |= sameHouse("Ukrainian", "Tea")
-        # The green house is immediately to the right of the ivory house.
-        Clauses |= leftTo("Ivory", "Green")
-        # The Old Gold smoker owns snails.
-        Clauses |= sameHouse("OldGold", "Snails")
-        # Kools are smoked in the yellow house.
-        Clauses |= sameHouse("Kools", "Yellow")
-        # Milk is drunk in the middle house.
-        Clauses |= parseKNF("Milk<3>")
-        # The Norwegian lives in the first house.
-        Clauses |= parseKNF("Norwegian<1>")
-        # The man who smokes Chesterfields lives in the house next 
-        # to the man with the fox.
-        Clauses |= nextTo("Chesterfields", "Fox")
-        # Kools are smoked in the house next to the house where the horse is kept.
-        Clauses |= nextTo("Kools", "Horse")
-        # The Lucky Strike smoker drinks orange juice.
-        Clauses |= sameHouse("LuckyStrike", "OrangeJuice")
-        # The Japanese smokes Parliaments.
-        Clauses |= sameHouse("Japanese", "Parliaments")
-        # The Norwegian lives next to the blue house.
-        Clauses |= nextTo("Norwegian", "Blue")
-        return Clauses\end{minted}
+function allClauses(): Set<Clause> {
+    const Result = set<Clause>();
+    // 1. Base constraints: Every property category gets exactly one house
+    Result.flatMap(
+        [Nations, Drinks, Pets, Brands, Colours],
+        S => onePerHouse(S)
+    );
+    // 2. The specific puzzle clues
+    const puzzleClues = [
+        sameHouse("English", "Red"), // The Englishman lives in the red house.
+        sameHouse("Spanish", "Dog"), // The Spaniard owns the dog.
+        sameHouse("Coffee", "Green"), // Coffee is drunk in the green house.
+        sameHouse("Ukrainian", "Tea"), // The Ukrainian drinks tea.
+        leftTo("Ivory", "Green"), // The green house is immediately to the right of
+                                  // the ivory house.
+        sameHouse("OldGold", "Snails"), // The Old Gold smoker owns snails.
+        sameHouse("Kools", "Yellow"), // Kools are smoked in the yellow house.
+        parseKNF(variable("Milk", 3)), // Milk is drunk in the middle house.
+        parseKNF(variable("Norwegian", 1)), // The Norwegian lives in the first house.
+        nextTo("Chesterfields", "Fox"), // Chesterfields smoker lives next to the
+                                        // fox owner.
+        nextTo("Kools", "Horse"), // Kools are smoked next to the horse.
+        sameHouse("Luckies", "OrangeJuice"), // The Lucky Strike smoker drinks
+                                             // orange juice.
+        sameHouse("Japanese", "Parliaments"), // The Japanese smokes Parliaments.
+        nextTo("Norwegian", "Blue") // The Norwegian lives next to the blue house.
+    ];
+    return Result.flatMap(puzzleClues, S => S);
+}
+\end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{allClauses}.}
 \label{fig:allClauses}
@@ -4338,7 +4340,7 @@ The prince then read the inscriptions. These were as follows:
 \end{enumerate} 
 I have provided the framework of a notebook at the following address:
 \\[0.2cm]
-\hspace*{1.3cm}
+\hspace*{0.3cm}
 \href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/Prince-Tiger.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/Prince-Tiger.ipynb}}
 \\[0.2cm]
 You should edit this notebook in order to solve the given problem. \eox
