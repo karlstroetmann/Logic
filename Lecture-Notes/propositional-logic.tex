@@ -3409,7 +3409,7 @@ row is represented by the string
 We number the rows from top to bottom, while the columns are numbered from left to right. Figure
 \ref{fig:queens-assign} on 
 page \pageref{fig:queens-assign} shows the assignment of variables to the squares. The function shown in
-Figure \ref{fig:var} $\texttt{var}(r,c)$ calculates the variable that expresses that there is a queen in row
+Figure \ref{fig:var} $\texttt{varName}(r,c)$ calculates the variable that expresses that there is a queen in row
 $r$ and column $c$.
 
 
@@ -3429,7 +3429,7 @@ $r$ and column $c$.
     }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{The function \texttt{var} to compute a propositional variable.}
+\caption{The function \texttt{varName} to compute a propositional variable.}
 \label{fig:var}
 \end{figure}
 
@@ -3597,7 +3597,7 @@ function \texttt{atMostOneInRow}: We collect all the variables of the row specif
 in the set 
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bigl\{ \texttt{var}(\texttt{row}, \mathtt{col}) \mid \mathtt{col} \in \{1, \cdots, n \} \bigr\}$
+$\bigl\{ \texttt{varName}(\texttt{row}, \mathtt{col}) \mid \mathtt{col} \in \{1, \cdots, n \} \bigr\}$
 \\[0.2cm]
 and call the function $\texttt{atMostOne}$ with this set, which delivers the result
 as a set of clauses.
@@ -4005,17 +4005,17 @@ normal parenthesis.
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
                  ]{typescript}
-    function variable(f: string, i: number): string {
+    function varName(f: string, i: number): string {
         return `${f}<${i}>`;
     }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{The function $\texttt{variable}(f, i)$.}
+\caption{The function $\texttt{varName}(f, i)$.}
 \label{fig:var_f_i}
 \end{figure}
 
 In order to be able to write the conditions concisely, we introduce the function
-$\texttt{var}(f, i)$, which is shown in Figure \ref{fig:var_f_i}.  This function
+$\texttt{varName}(f, i)$, which is shown in Figure \ref{fig:var_f_i}.  This function
 takes a string $f$, where $f$ is a property like, e.g.~\texttt{Japanese} and an
 integer $i \in \{1,\cdots,5\}$ and returns the string $f\langle i\rangle$.
 
@@ -4034,7 +4034,7 @@ integer $i \in \{1,\cdots,5\}$ and returns the string $f\langle i\rangle$.
                  xrightmargin  = 0.8cm,
                ]{typescript}
     function somewhere(x: string): Set<Literal> {
-        return range(1, 5).map(i => variable(x, i))
+        return range(1, 5).map(i => varName(x, i))
     }
 \end{minted}
 \vspace*{-0.3cm}
@@ -4064,7 +4064,7 @@ as a \texttt{frozenset}.
                  xrightmargin  = 0.8cm,
                ]{typescript}
     function atMostOneAt(S: Set<string>, i: number): Set<Clause> {
-        return atMostOne(S.map(x => variable(x, i)));
+        return atMostOne(S.map(x => varName(x, i)));
     }
 \end{minted}
 \vspace*{-0.3cm}
@@ -4123,14 +4123,12 @@ clauses that express the fact that these five persons live in different houses.
                  bgcolor       = sepia,
                  numbers       = left,
                  numbersep     = -0.2cm,
-                 xleftmargin   = 0.8cm,
-                 xrightmargin  = 0.8cm,
+                 xleftmargin   = 0.3cm,
+                 xrightmargin  = 0.3cm,
                ]{typescript}
     function sameHouse(a: Variable, b: Variable): Set<Clause> {
-        const Result = new Set<Clause>();
-        return Result
-            .flatMap(range(1, 5),
-                     i => parseKNF(`${variable(a, i)} ↔ ${variable(b, i)}`));
+        return flatMap(range(1, 5),
+                       i => parseKNF(`${varName(a, i)} ↔ ${varName(b, i)}`));
     }
 \end{minted}
 \vspace*{-0.3cm}
@@ -4146,24 +4144,23 @@ example, $\texttt{sameHouse}(\texttt{"Japanese"}, \texttt{"Dog"})$ specifies
 that the Japanese guy keeps a dog.  The function \texttt{parseKNF} that is used here takes a string, converts
 it into a formula from propositional logic, and finally converts this formula into \textsc{Cnf}.
 
-
 \begin{figure}[!ht]
 \centering
 \begin{minted}[ frame         = lines, 
-                 framesep      = 0.2cm, 
-                 firstnumber   = 1,
-                 bgcolor       = sepia,
-                 numbers       = left,
-                 numbersep     = 0.3cm,
-                 xleftmargin   = 0.0cm,
-                 xrightmargin  = 0.0cm,
-               ]{typescript}
+                framesep      = 0.2cm, 
+                firstnumber   = 1,
+                bgcolor       = sepia,
+                numbers       = left,
+                numbersep     = 0.3cm,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm,
+              ]{typescript}
 function nextTo(a: Variable, b: Variable): Set<Clause> {
     const Formulas = [
-        `${variable(a, 1)} → ${variable(b, 2)}`, // House 1
+        `${varName(a, 1)} → ${varName(b, 2)}`, // House 1
         ...[2, 3, 4].map(
-          i => `${variable(a, i)} → ${variable(b, i-1)} ∨ ${variable(b, i+1)}`), 
-        `${variable(a, 5)} → ${variable(b, 4)}`  // House 5
+          i => `${varName(a, i)} → ${varName(b, i-1)} ∨ ${varName(b, i+1)}`), 
+        `${varName(a, 5)} → ${varName(b, 4)}`  // House 5
     ];
     const Result = set<Clause>();
     return Result.flatMap(Formulas, formula => parseKNF(formula));
@@ -4177,7 +4174,15 @@ Given to properties $a$ and $b$ the function $\texttt{nextTo}(a, b)$ computes a
 set of clauses that specifies that the inhabitants with properties $a$ and $b$
 are direct neighbours.  For example, $\texttt{nextTo}(\texttt{'Japanese'}, \texttt{'Dog'})$
 specifies that the Japanese guy lives next to the guy who keeps a dog. 
-
+This is specified as follows:
+\begin{enumerate}
+\item If the person with property $a$ lives in the first house, then the person with property $b$ has to live
+      in the second house.
+\item If the person with property $a$ lives in one of the houses $i$ where $i \in \{ 2, 3, 4 \}$, then
+      the person with property $b$ either lives to the left in house $i-1$ or to the right in house $i+1$.
+\item If the person with property $a$ lives in the fifth house, then the person with property $b$ has to live
+      in the fourth house.
+\end{enumerate}
 
 \begin{figure}[!ht]
 \centering
@@ -4187,13 +4192,13 @@ specifies that the Japanese guy lives next to the guy who keeps a dog.
                  bgcolor       = sepia,
                  numbers       = left,
                  numbersep     = -0.2cm,
-                 xleftmargin   = 0.8cm,
-                 xrightmargin  = 0.8cm,
+                 xleftmargin   = 0.0cm,
+                 xrightmargin  = 0.0cm,
                ]{typescript}
     function leftTo(a: Variable, b: Variable): Set<Clause> {
         const Formulas = [
-            ...[1, 2, 3, 4].map(i => `${variable(a, i)} ↔ ${variable(b, i+1)}`),
-            `¬${variable(a, 5)}`
+            ...[1, 2, 3, 4].map(i => `${varName(a, i)} → ${varName(b, i + 1)}`),
+            `¬${varName(a, 5)}`
         ];
         const Result = set<Clause>();
         return Result.flatMap(Formulas, formula => parseKNF(formula));
@@ -4224,7 +4229,7 @@ Japanese guy lives in the house to the left of the house where there is a dog.
 const Nations = set("English", "Spanish", "Ukrainian", "Norwegian", "Japanese");
 const Drinks  = set("Coffee", "Tea", "Milk", "OrangeJuice", "Water");
 const Pets    = set("Dog", "Snails", "Horse", "Fox", "Zebra");
-const Brands = set("Luckies", "Parliaments", "Kools", "Chesterfields", "OldGold");
+const Brands  = set("Luckies", "Parliaments", "Kools", "Chesterfields", "OldGold");
 const Colours = set("Red", "Green", "Ivory", "Yellow", "Blue");
 \end{minted}
 \vspace*{-0.3cm}
@@ -4248,30 +4253,37 @@ shown in Figure \ref{fig:properties}.
                ]{typescript}
 function allClauses(): Set<Clause> {
     const Result = set<Clause>();
-    // 1. Base constraints: Every property category gets exactly one house
-    Result.flatMap(
-        [Nations, Drinks, Pets, Brands, Colours],
-        S => onePerHouse(S)
-    );
-    // 2. The specific puzzle clues
+    // Every property category gets exactly one house
+    Result.flatMap([Nations, Drinks, Pets, Brands, Colours], S => onePerHouse(S));
     const puzzleClues = [
-        sameHouse("English", "Red"), // The Englishman lives in the red house.
-        sameHouse("Spanish", "Dog"), // The Spaniard owns the dog.
-        sameHouse("Coffee", "Green"), // Coffee is drunk in the green house.
-        sameHouse("Ukrainian", "Tea"), // The Ukrainian drinks tea.
-        leftTo("Ivory", "Green"), // The green house is immediately to the right of
-                                  // the ivory house.
-        sameHouse("OldGold", "Snails"), // The Old Gold smoker owns snails.
-        sameHouse("Kools", "Yellow"), // Kools are smoked in the yellow house.
-        parseKNF(variable("Milk", 3)), // Milk is drunk in the middle house.
-        parseKNF(variable("Norwegian", 1)), // The Norwegian lives in the first house.
-        nextTo("Chesterfields", "Fox"), // Chesterfields smoker lives next to the
-                                        // fox owner.
-        nextTo("Kools", "Horse"), // Kools are smoked next to the horse.
-        sameHouse("Luckies", "OrangeJuice"), // The Lucky Strike smoker drinks
-                                             // orange juice.
-        sameHouse("Japanese", "Parliaments"), // The Japanese smokes Parliaments.
-        nextTo("Norwegian", "Blue") // The Norwegian lives next to the blue house.
+        // The Englishman lives in the red house.
+        sameHouse("English", "Red"),
+        // The Spaniard owns the dog.
+        sameHouse("Spanish", "Dog"), 
+        // Coffee is drunk in the green house.
+        sameHouse("Coffee", "Green"),
+        // The Ukrainian drinks tea.
+        sameHouse("Ukrainian", "Tea"),
+        // The green house is immediately to the right of the ivory house.
+        leftTo("Ivory", "Green"), 
+        // The Old Gold smoker owns snails.
+        sameHouse("OldGold", "Snails"), 
+        // Kools are smoked in the yellow house.
+        sameHouse("Kools", "Yellow"), 
+        // Milk is drunk in the middle house.
+        parseKNF(varName("Milk", 3)), 
+        // The Norwegian lives in the first house.
+        parseKNF(varName("Norwegian", 1)), 
+        // Chesterfields smoker lives next to the fox owner.
+        nextTo("Chesterfields", "Fox"),                                         
+        // Kools are smoked next to the horse.
+        nextTo("Kools", "Horse"), 
+        // The Lucky Strike smoker drinks orange juice.
+        sameHouse("Luckies", "OrangeJuice"),                                              
+        // The Japanese smokes Parliaments.
+        sameHouse("Japanese", "Parliaments"), 
+        // The Norwegian lives next to the blue house.
+        nextTo("Norwegian", "Blue") 
     ];
     return Result.flatMap(puzzleClues, S => S);
 }
@@ -4281,7 +4293,7 @@ function allClauses(): Set<Clause> {
 \label{fig:allClauses}
 \end{figure}
 The function \texttt{allClauses} in Figure \ref{fig:allClauses} computes a set of clauses that encodes the
-conditions of the zebra puzzle.  I we solve these clauses with the algorithm of
+conditions of the zebra puzzle.  If we solve these clauses with the algorithm of
 Davis and Putnam, we get the solution that is shown in Figure \ref{fig:zebra}.
 
 \begin{figure}[!ht]
@@ -4291,35 +4303,50 @@ Davis and Putnam, we get the solution that is shown in Figure \ref{fig:zebra}.
   \label{fig:zebra}
 \end{figure}
 
+\pagebreak
+\vspace*{\fill}
 
 \pagebreak
 
-\FloatBarrier
-
-
 \exerciseEng
-Once upon a time, there was a king who wanted to marry his daughter to a
-prince. He had it proclaimed throughout the land that he was seeking a husband
-for his daughter. One day, a prince came by to apply for the position. 
+\textbf{\large The Trial of the Nine Portals} \\
+In an era of high-stakes romantic gambles and questionable parenting, there reigned a King—a man whose passion
+for discrete mathematics far outweighed his concern for his daughter’s emotional well-being.  
 
-Since the king did not want to marry his daughter to some dullard, he led the
-prince into a room with nine doors. The king told the prince that the princess
-was in one of the rooms, but that there were other rooms behind which hungry
-tigers were waiting. Some rooms were also empty. If the prince opened a door
-with a tiger behind it, it would probably be his last mistake. 
+Determined that his heir-in-law be a man of cold, calculating intellect rather than mere royal vibes, the
+King broadcast a decree across the realm. It was essentially a LinkedIn job posting for a Prince, but with
+significantly higher mortality rates. 
 
-The king went on to say that there were signs on all the doors with statements on them. These statements behave as follows:
+Eventually, a Prince arrived. The King led him to a corridor containing \textbf{nine identical doors}, behind
+which lay one of three fates: 
 \begin{enumerate}
-\item In the rooms where there is a tiger, the statement on the sign is \texttt{false}.
-\item In the room where the princess is, the statement is \texttt{true}.
-\item With regards to the the empty rooms, the situation is a bit more
-      complicated, because there are two possibilities:
-      \begin{itemize}
-      \item Either all the inscriptions on the empty rooms are \texttt{true},
-      \item or all the inscriptions on the empty rooms are \texttt{false}.
-      \end{itemize}
-
+\item \textbf{The Princess}:     The ultimate prize (and a lifetime of complex family dinners).
+\item \textbf{A Ravenous Tiger}: An immediate career change to \href{https://www.whiskas.de/}{cat food}.
+\item \textbf{Void \& Dust}:     Empty rooms for those who enjoy the solace of disappointment.
 \end{enumerate}
+
+\noindent
+\textbf{\large The Royal Logic Protocol} \\
+The King, smirking with the malice of a tenured professor, pointed to the cryptic signs etched into each
+door. ``To ensure you aren't a total dullard," he barked, ``you must navigate this gauntlet using the
+\textbf{Infallible Laws of Logic}:'' 
+\begin{enumerate}
+\item \textbf{The Path of Teeth}: If a room contains a \blue{Tiger}, the inscription on that door is a
+      \blue{bold-faced lie}, as blatantly false as the answer you get when you asked a tenured professor the stupid
+      question ``Was kommt in der Klausur?''.
+\item \textbf{The Path of Matrimony:} If the room contains the \blue{Princess}, the inscription is
+      \blue{absolute truth}.
+\item \textbf{The Path of the Void}: If the room is empty, we enter the realm of bureaucratic inconsistency.
+      Either \textbf{all} signs on empty rooms are true, or \textbf{all} of them are false. There is no middle
+      ground, only total logical uniformity or total deception. 
+\end{enumerate}
+``Choose \href{https://www.youtube.com/watch?v=c3RN9zz77Cs}{wisely},'' the King added, adjusting his crown.
+``For in this kingdom, love isn't just a battlefield—it's a multi-choice logic exam where the penalty for a 'C'
+is being digested.''  
+
+The Prince looked at the doors. The doors looked back. Somewhere, a tiger sharpened its claws, and the Princess
+wondered if she should have just joined a convent.
+
 The prince then read the inscriptions. These were as follows:
 \begin{enumerate}
 \item Room: The princess is in a room with an odd number and
@@ -4372,9 +4399,11 @@ set of propositional variables:
 \hspace*{1.3cm}
 $\mathcal{P} = \bigl\{ Q_{r,c,d} \mid r \in \{1,\cdots, 9\} \wedge c \in \{1,\cdots, 9\} \wedge r \in \{1,\cdots, 9\} \bigl\}$
 \\[0.2cm]
-The variable $Q_{r,c,d}$ is supposed to be \texttt{true} if $d$ is the digit in row $r$ and column $c$ of the
-Sudoku.  Note that this means that we have $9^3 = 729$ different propositional variables.  In our
-implementation we will use the function \texttt{var} shown in Figure \ref{fig:sudoku-var} to create these variables.
+For a given digit $d \in \{1, \cdots, 9\}$, a given row $r \in \{1, \cdots, 9\}$, and a given column
+$c \in \in \{1, \cdots, 9\}$, the variable $Q_{r,c,d}$ is supposed to be \texttt{true} if $d$ is the digit in
+row $r$ and column $c$ of the Sudoku.  Note that this means that we have $9^3 = 729$ different propositional
+variables.  In our implementation we will use the function \texttt{varName} shown in
+Figure \ref{fig:sudoku-var} to create these variables.
 
 \begin{figure}[!ht]
 \centering
@@ -4387,18 +4416,19 @@ implementation we will use the function \texttt{var} shown in Figure \ref{fig:su
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
                ]{typescript}
-    def var(row, col, digit):
-        return f'Q<{row},{col},{digit}>'
+    function varName(row: number, col: number, digit: number): string {
+        return `Q<${row},${col},${digit}>`;
+    }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{The function \texttt{var}.}
+\caption{The function \texttt{varName}.}
 \label{fig:sudoku-var}
-\end{figure}
+\end{figure} %$
 
 The Sudoku itself is created by the function \texttt{create\_puzzle} shown in Figure
 \ref{fig:sudoku-create-puzzle} on page \pageref{fig:sudoku-create-puzzle}.  In this function, the puzzle is
 represented as a list of lists.  Each of these lists represents a row.  The inner lists contain digits and the
-characters \texttt{"*"}.  These characters represent the digits that are initially unknown and whose value have
+character \texttt{"*"}.  This character represent those digits that are initially unknown and whose value have
 to be computed.
 
 \begin{figure}[!ht]
@@ -4412,17 +4442,18 @@ to be computed.
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
                ]{typescript}
-    def create_puzzle():
-        return [ [ 8 , "*", "*", "*", "*", "*", "*", "*", "*"], 
-                 ["*", "*",  3 ,  6 , "*", "*", "*", "*", "*"],
-                 ["*",  7 , "*", "*",  9 , "*",  2 , "*", "*"],
-                 ["*",  5 , "*", "*", "*",  7 , "*", "*", "*"],
-                 ["*", "*", "*", "*",  4 ,  5 ,  7 , "*", "*"],
-                 ["*", "*", "*",  1 , "*", "*", "*",  3 , "*"],
-                 ["*", "*",  1 , "*", "*", "*", "*",  6 ,  8 ],
-                 ["*", "*",  8 ,  5 , "*", "*", "*",  1 , "*"],
-                 ["*",  9 , "*", "*", "*", "*",  4 , "*", "*"]
-               ]
+function createPuzzle(): (number | '*')[][] {
+    return [[ 8 , '*', '*', '*', '*', '*', '*', '*', '*'],
+            ['*', '*',  3,   6 , '*', '*', '*', '*', '*'],
+            ['*',  7 , '*', '*',  9 , '*',  2 , '*', '*'],
+            ['*',  5 , '*', '*', '*',  7 , '*', '*', '*'],
+            ['*', '*', '*', '*',  4 ,  5 ,  7 , '*', '*'],
+            ['*', '*', '*',  1 , '*', '*', '*',  3 , '*'],
+            ['*', '*',  1 , '*', '*', '*', '*',  6 ,  8 ],
+            ['*', '*',  8 ,  5 , '*', '*', '*',  1 , '*'],
+            ['*',  9 , '*', '*', '*', '*',  4 , '*', '*']
+    ];
+}
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{create\_puzzle}.}
@@ -4454,26 +4485,19 @@ The implementation is shown in Figure \ref{fig:sudoku-exactly}.
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{typescript}
-    def atLeastOne(S):
-        return { frozenset(S) }
-    
-    def exactlyOne(S):
-        return atMostOne(S) | atLeastOne(S)
+                 ]{typescript}
+    function atLeastOne(S: Set<Variable>): Set<Clause> {
+        return set(S);
+    }
+    function exactlyOne(S: Set<Variable>): Set<Clause> {
+        return atMostOne(S).union(atLeastOne(S));
+    }
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The functions \texttt{atLeastOne} and \texttt{exactlyOne}.}
 \label{fig:sudoku-exactly}
 \end{figure}
 
-Figure \ref{fig:sudoku-exactlyOnce} show the implementation of the function
-$\texttt{exactlyOnce}(L)$.  This function takes a set $L$ of pairs as arguments.  Every pair $(r,c) \in L$ is
-interpreted as a position in the Sudoku grid whre $r$ specifies the row and $c$ specifies the column of the
-position.  The function $\texttt{exactlyOnce}$ computes a set of formulas that express that every digit
-$d \in \{1,\cdots,9\}$ occurs exactly once in the set of coordinates $L$: 
-\\[0.2cm]
-\hspace*{1.3cm}
-$\texttt{exactlyOnce}(L) = \bigcup\limits_{d \in \{1,\cdots,9\}} \mathtt{exactlyOne}\bigl(\bigl\{ Q_{r,c,d} \mid (r,c) \in L \bigl\}\bigr)$
 
 
 \begin{figure}[!ht]
@@ -4484,27 +4508,31 @@ $\texttt{exactlyOnce}(L) = \bigcup\limits_{d \in \{1,\cdots,9\}} \mathtt{exactly
                  bgcolor       = sepia,
                  numbers       = left,
                  numbersep     = -0.2cm,
-                 xleftmargin   = 0.8cm,
-                 xrightmargin  = 0.8cm,
+                 xleftmargin   = 0.3cm,
+                 xrightmargin  = 0.3cm,
                ]{typescript}
-    def exactlyOnce(L):
-        Clauses = set()
-        for digit in range(1, 10):
-            Clauses |= exactlyOne({ var(col, row, digit)  for col, row in L })
-        return Clauses
+    type Position = Tuple<[number, number]>;
+               
+    function exactlyOneForDigit(L: Set<Position>, digit: number): Set<Clause> {
+        return exactlyOne(L.map(([row, col]) => varName(row, col, digit)));
+    }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{The function \texttt{exactlyOnce}.}
-\label{fig:sudoku-exactlyOnce}
+\caption{The function \texttt{exactlyOneForDigit}.}
+\label{fig:sudoku-exactlyOneForDigit}
 \end{figure}
 
-The function $\texttt{exactlyOneDigit}(r, c)$ takes a row $r$ and a column $c$ as its argument.  It returns a
-formula expressing that exactly one of the variables from the set
-\\[0.2cm]
-\hspace*{1.3cm}
-$\bigl\{ Q_{r,c,d} \mid d \in \{1,\cdots, 9\} \bigr\}$
-\\[0.2cm]
-is \texttt{true}. The implementation is shown in Figure \ref{fig:sudoku-exactlyOneDigit}.
+Figure \ref{fig:sudoku-exactlyOneForDigit} show the implementation of the function
+$\texttt{exactlyOneForDigit}(L, d)$.
+
+First, we define the type \texttt{Position}, which is a pair of the form $(r, c)$, where $r \in \{1,\cdots,9\}$
+specifies the row, while $c \in \{1,\cdots,9\}$ specifies the column of the position.
+
+The function $\texttt{exactlyOneForDigit}(L, d)$ takes a set $L$ of Positions and a digit $d$ as its arguments.
+The function $\texttt{exactlyOnce}$ computes a set of formulas $L$ that express that the digit $d$ 
+occurs in exactly one of the positions in $L$.
+
+
 
 \begin{figure}[!ht]
 \centering
@@ -4516,15 +4544,41 @@ is \texttt{true}. The implementation is shown in Figure \ref{fig:sudoku-exactlyO
                  numbersep     = -0.2cm,
                  xleftmargin   = 0.8cm,
                  xrightmargin  = 0.8cm,
-               ]{typescript}
-    def exactlyOneDigit(row, col):
-        return exactlyOne({ var(row, col, digit) for digit in range(1, 10) })
+                 ]{typescript}
+    function exactlyOneForEveryDigit(L: Set<Position>): Set<Clause> {
+        return flatMap(range(1, 9), d => exactlyOneForDigit(L, d));
+    }
+\end{minted}
+\vspace*{-0.3cm}
+\caption{The function \texttt{exactlyOneForEveryDigit}.}
+\label{fig:sudoku-exactlyOneDigit}
+\end{figure}
+
+The function $\texttt{exactlyOneForEveryDigit}(L)$ takes a set $L$ cell positions as its argument.  
+It returns a set of formulas expressing that all of the nine digits occurs at exactly one position in the list `L`.
+
+\begin{figure}[!ht]
+\centering
+\begin{minted}[ frame         = lines, 
+                 framesep      = 0.3cm, 
+                 firstnumber   = 1,
+                 bgcolor       = sepia,
+                 numbers       = left,
+                 numbersep     = -0.2cm,
+                 xleftmargin   = 0.8cm,
+                 xrightmargin  = 0.8cm,
+                 ]{typescript}
+    function exactlyOneDigit(row: number, col: number): Set<Clause> {
+        return exactlyOne(range(1, 9).map(d => varName(row, col, d)));
+    }
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{exactlyOneDigit}.}
 \label{fig:sudoku-exactlyOneDigit}
 \end{figure}
 
+The function $\mathtt{exactlyOneDigit}(r, c)$ takes a row $r$ and a column $c$ as its arguments.
+It returns a set of clauses expressing that there is exactly one digit in the given cell.
 
 Furthermore, we need a function encoding the constraints form the puzzle itself.
 This function is called \texttt{constraintsFromPuzzle} and its implementation is shown in Figure
@@ -4537,7 +4591,7 @@ $\bigl\{ \{Q_{2,3,6}\} \bigr\}$.
 \\[0.2cm]
 Of course, we have to take the union of all these formula.  This leads to the code shown in Figure
 \ref{fig:sudoku-constraintsFromPuzzle} on page \pageref{fig:sudoku-constraintsFromPuzzle}.
-Note that we have to provide \texttt{row+1} and \texttt{col+1} as arguments to the function \texttt{var} since
+Note that we have to provide \texttt{row+1} and \texttt{col+1} as arguments to the function \texttt{varName} since
 in TypeScript list indices start with $0$.
 
 \begin{figure}[!ht]
@@ -4551,13 +4605,13 @@ in TypeScript list indices start with $0$.
                  xleftmargin   = 0.0cm,
                  xrightmargin  = 0.0cm,
                  ]{typescript}
-    def constraintsFromPuzzle():
-        Puzzle = create_puzzle()
-        Variables = [ var(row+1, col+1, Puzzle[row][col]) for row in range(9)
-                                                          for col in range(9)
-                                                          if  Puzzle[row][col] != '*'
-                    ]
-        return { frozenset({ var }) for var in Variables }                 
+    function constraintsFromPuzzle(): Set<Clause> {
+        const Puzzle  = createPuzzle();
+        const Indices = range(1, 9);    
+        return Indices.cartesianProduct(Indices).filterMap(
+            ([r, c]) => Puzzle[r-1][c-1] != '*',
+            ([r, c]) => set(varName(r, c, Puzzle[r-1][c-1] as number)));
+    }
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{constraintsFromPuzzle}}
@@ -4575,32 +4629,39 @@ Finally, we have to combine all constraints of the puzzle.  This is done with th
                  bgcolor       = sepia,
                  numbers       = left,
                  numbersep     = -0.2cm,
-                 xleftmargin   = 0.8cm,
-                 xrightmargin  = 0.8cm,
+                 xleftmargin   = 0.0cm,
+                 xrightmargin  = 0.0cm,
                ]{typescript}
-def allConstraints(): 
-    L = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    # the constraints from the puzzle have to be satisfied
-    Clauses = constraints_from_puzzle()
-    # there is exactly one digit in every field
-    for row in L:
-        for col in L:
-            Clauses |= exactlyOneDigit(row, col) 
-    # all entries in a row are unique
-    for row in L:
-        Clauses |= exactlyOnce([ (row, col) for col in L ]) 
-    # all entries in a column are unique
-    for col in L:
-        Clauses |= exactlyOnce([ (row, col) for row in L ])
-    # all entries in a 3x3 box are unique    
-    for r in range(3):
-        for c in range(3):
-            S = [ (r * 3 + row, c * 3 + col) for row in range(1, 4)
-                                             for col in range(1, 4) 
-                ]
-            Clauses |= exactlyOnce(S)
-    return Clauses
- \end{minted}
+    function getBlockCells(r: number, c: number): Set<Tuple<[number, number]>> {
+        return range(1, 3).cartesianProduct(range(1, 3)).map(
+            ([row, col]) => tpl(r * 3 + row, c * 3 + col)
+        );
+    }
+    function allConstraints(): Set<Clause> {
+        // 1. Start with constraints from the puzzle
+        const Clauses = constraintsFromPuzzle();
+        // 2. There is exactly one digit in every field
+        Clauses.flatMap(
+            range(1, 9).cartesianProduct(range(1, 9)), 
+            ([row, col]) => exactlyOneDigit(row, col)
+        );
+        // 3. All entries in a row are unique
+        Clauses.flatMap(
+            range(1, 9), 
+            row => exactlyOneForEveryDigit(range(1, 9).map(col => tpl(row, col)))
+        );
+        // 4. All entries in a column are unique
+        Clauses.flatMap(
+            range(1, 9), 
+            col => exactlyOneForEveryDigit(range(1, 9).map(row => tpl(row, col)))
+        );
+        // 5. All entries in a 3 times 3 square are unique
+        const block = range(0, 2).cartesianProduct(range(0, 2));
+        Clauses.flatMap(block,
+                        ([r, c]) => exactlyOneForEveryDigit(getBlockCells(r, c)));
+        return Clauses;
+    }  
+\end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{allConstraints}.}
 \label{fig:sudoku-allConstraints}
@@ -4608,51 +4669,38 @@ def allConstraints():
 The Jupyter notebook showing the resulting program is available at:
 \\[0.2cm]
 \hspace*{1.3cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/10-Sudoku.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/10-Sudoku.ipynb}}
+\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/10-Sudoku.ipynb}{\texttt{Chapter-4/10-Sudoku.ipynb}}
 
+\FloatBarrier
 
-\pagebreak
+\subsection{Logic Solver}
+Unfortunately, solving the resulting set of clauses takes about 21 minutes.  Fortunately, there is a version
+of the Davis-Putnam algorithm that is implemented in \texttt{JavaScript}.  This solver is called
+\href{https://github.com/meteor/logic-solver}{Logic Solver} and is based on \href{http://minisat.se/}{MiniSat}.
 
-\hspace*{\fill}
-\pagebreak
+In \textsl{MiniSat} formulas are represented as follows:
+\begin{itemize}
+    \item \textbf{Boolean variables} are implicitly declared by using strings (e.g., \texttt{"p"}, \texttt{"q"}, \texttt{"r"}).
+    \item \textbf{Negations} are represented by a preceding minus sign in the string (e.g., \texttt{"-q"} for $\neg q$). Alternatively, \texttt{Logic.not(...)} could be used.
+    \item \textbf{Clauses} are constructed using \texttt{Logic.or(...)}, with strings serving as literals.
+    \item The problem is built as a set of clauses (Conjunctive Normal Form, CNF) by adding each clause
+      individually using \texttt{solver.require(...)}. This corresponds to a large conjunction of all clauses.
+    \item The solver is initialized with \texttt{new Logic.Solver()}.
+    \item The satisfiability check is performed using \texttt{solver.solve()}.
+    \item If the formula is satisfiable, \texttt{solve()} returns a solution object, from which the array of
+          true variables can be retrieved using \texttt{getTrueVars()}. Otherwise, \texttt{null} is returned. 
+\end{itemize}
+As an example, the formula 
+$$ (\neg p \vee  q \vee \neg r) \wedge (p \vee \neg q \vee r) \wedge (p \vee q \vee \neg r) \wedge (p \vee q \vee r), $$
+which is in conjunctive normal form, is represented by the following code:
+\begin{verbatim}
+    const solver = new Logic.Solver();
+    solver.require(Logic.or("-p", "q", "-r"));
+    solver.require(Logic.or("p", "-q", "r"));
+    solver.require(Logic.or("p", "q", "-r"));
+    solver.require(Logic.or("p", "q", "r"));
+\end{verbatim}
 
-\subsection{PicoSat}
-Unfortunately, solving the resulting set of clauses takes about 10 minutes.  Fortunately, there is a version
-of the Davis-Putnam algorithm that is implemented in \texttt{C} and that, furthermore, incorporates a number of
-improvements to the original algorithm.  This solver is called \href{https://fmv.jku.at/picosat/}{PicoSat}
-and has been implemented by \href{https://cca.informatik.uni-freiburg.de/biere/}{Armine Biere}.
-A \href{https://github.com/conda/pycosat}{TypeScript API} to this solver is available as
-\href{https://pypi.org/project/pycosat/}{pycosat}.  We can install it via \texttt{pip} using the following command:
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{pip install pycosat}
-\\[0.2cm]
-In \textsl{PicoSat} propositional variables are represented as follows:
-\begin{enumerate}
-\item A propositional variable $p$ is represented as a positive natural number.
-\item If $n$ is the natural number representing the propositional variable $p$, then $\neg p$ is represented as
-      the integer $-n$. 
-\item A clause is represented as a list of integers.
-\item A formula in CNF is represented as a list of clauses and hence as a list of list of integers.
-\end{enumerate}
-For example, if the propositional variables $p$, $q$, and $r$ are represented as the natural numbers
-$1$, $2$, and $3$ respectively, then
-\begin{enumerate}
-\item $p \vee \neg q \vee r$ is represented as the list \texttt{[1, -2, 3]},
-\item $\neg p \vee q \vee \neg r$ is represented as the list \texttt{[-1, 2, -3]},
-\item $\neg p \vee \neg q \vee r$ is represented as the list \texttt{[-1, -2, 3]}, and
-\item $p \vee q \vee \neg r$ is represented as the list \texttt{[1, 2, -3]}.
-\end{enumerate}
-Finally, the formula 
-$$ f = (p \vee \neg q \vee r) \wedge (\neg p \vee q \vee \neg r) \wedge (\neg p \vee \neg q \vee r) \wedge (p \vee q \vee \neg r), $$
-which is in conjunctive normal form, is represented as follows:
-\\[0.2cm]
-\hspace*{1.3cm}
-\texttt{f = [ [1, -2, 3], [-1, 2, -3], [-1, -2, 3], [1, 2, -3] ]}
-\\[0.2cm]
-In order so find a solution to this formula we can call $\texttt{pycosat.solve}(f)$.
-
-\pagebreak
 \subsubsection{Transforming Clauses into PyCoSat Format}
 In order to use \textsl{PicoSat} to solve the Sudoku discussed earlier, we need a function that transforms a
 formula that is in conjunctive normal form into the format of \textsl{PicoSat}.  Furthermore, we need  a function that can translate a solution found by \textsl{PicoSat} back into our format.

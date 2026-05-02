@@ -1,10 +1,9 @@
 import { RecursiveSet as Set, Value, Tuple, flatMap } from 'recursive-set';
 
-type Variable = string;
-type Literal  = Variable 
-              | Tuple<['¬', Variable]>;
-type Clause   = Set<Literal>;
-type Clauses  = Set<Clause>;
+export type Variable = string;
+export type Literal  = Variable | Tuple<['¬', Variable]>;
+export type Clause   = Set<Literal>;
+export type Clauses  = Set<Clause>;
 
 function set<T extends Value>(...elements: T[]): Set<T> {
     return new Set(...elements);
