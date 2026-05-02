@@ -4374,8 +4374,8 @@ You should edit this notebook in order to solve the given problem. \eox
 \vspace*{1cm}
 
 
-\section{Sudoku and PicoSat}
-As a final example we will solve a \href{https://en.wikipedia.org/wiki/Sudoku}{Sudoku} puzzle.  In particular,
+\section{Sudoku}
+As another example we will solve a \href{https://en.wikipedia.org/wiki/Sudoku}{Sudoku} puzzle.  In particular,
 we will solve an instance of a Sudoku puzzle that was created by Arto Inkala.  He claims that this is the
 \href{https://abcnews.go.com/blogs/headlines/2012/06/can-you-solve-the-hardest-ever-sudoku}{hardest solvable instance}
 of a Sudoku puzzle.  Figure \ref{fig:sudoku.png} shows the Sudoku created by Arto Inkala.
@@ -4673,162 +4673,329 @@ The Jupyter notebook showing the resulting program is available at:
 
 \FloatBarrier
 
-\subsection{Logic Solver}
-Unfortunately, solving the resulting set of clauses takes about 21 minutes.  Fortunately, there is a version
-of the Davis-Putnam algorithm that is implemented in \texttt{JavaScript}.  This solver is called
-\href{https://github.com/meteor/logic-solver}{Logic Solver} and is based on \href{http://minisat.se/}{MiniSat}.
+\section{Sudoku and Logic-Solver}
+In our previous examples, we modeled the Sudoku puzzle using propositional logic and solved it using our own
+implementation of the Davis-Putnam algorithm in the notebook. Although our algorithm
+is logically correct, solving the resulting set of over 10,000 clauses takes about 21 minutes on a modern
+computer. To solve such problems efficiently, we can rely on industrial-strength SAT solvers. 
 
-In \textsl{MiniSat} formulas are represented as follows:
-\begin{itemize}
-    \item \textbf{Boolean variables} are implicitly declared by using strings (e.g., \texttt{"p"}, \texttt{"q"}, \texttt{"r"}).
-    \item \textbf{Negations} are represented by a preceding minus sign in the string (e.g., \texttt{"-q"} for $\neg q$). Alternatively, \texttt{Logic.not(...)} could be used.
-    \item \textbf{Clauses} are constructed using \texttt{Logic.or(...)}, with strings serving as literals.
-    \item The problem is built as a set of clauses (Conjunctive Normal Form, CNF) by adding each clause
-      individually using \texttt{solver.require(...)}. This corresponds to a large conjunction of all clauses.
-    \item The solver is initialized with \texttt{new Logic.Solver()}.
-    \item The satisfiability check is performed using \texttt{solver.solve()}.
-    \item If the formula is satisfiable, \texttt{solve()} returns a solution object, from which the array of
-          true variables can be retrieved using \texttt{getTrueVars()}. Otherwise, \texttt{null} is returned. 
-\end{itemize}
-As an example, the formula 
-$$ (\neg p \vee  q \vee \neg r) \wedge (p \vee \neg q \vee r) \wedge (p \vee q \vee \neg r) \wedge (p \vee q \vee r), $$
-which is in conjunctive normal form, is represented by the following code:
-\begin{verbatim}
-    const solver = new Logic.Solver();
-    solver.require(Logic.or("-p", "q", "-r"));
-    solver.require(Logic.or("p", "-q", "r"));
-    solver.require(Logic.or("p", "q", "-r"));
-    solver.require(Logic.or("p", "q", "r"));
-\end{verbatim}
+As described in the \texttt{README.md} file provided with its distribution,
+\href{https://github.com/meteor/logic-solver}{\texttt{Logic-Solver}} is a boolean satisfiability solver
+available as an \texttt{npm} package. It serves as a JavaScript wrapper around
+\href{http://minisat.se/}{MiniSat}, an advanced C++ solver compiled to JavaScript via
+Emscripten. \texttt{Logic-Solver} abstract away the manual conversion to Conjunctive Normal Form (CNF) by
+allowing us to build formulas using high-level methods like \texttt{Logic.or}, \texttt{Logic.and}, and
+\texttt{Logic.exactlyOne}. 
 
-\subsubsection{Transforming Clauses into PyCoSat Format}
-In order to use \textsl{PicoSat} to solve the Sudoku discussed earlier, we need a function that transforms a
-formula that is in conjunctive normal form into the format of \textsl{PicoSat}.  Furthermore, we need  a function that can translate a solution found by \textsl{PicoSat} back into our format.
+This section extends the concepts previously discussed in \texttt{propositional-logic.tex} by demonstrating how
+to encode and solve the same Sudoku puzzle using this optimized library. We will explore the implementation
+found in the notebook \texttt{11-Logic-Solver-Sudoku.ipynb}. 
 
-The function \texttt{findVariables(Clauses)} in Figure \ref{fig:sudoku-findVariables} on page
-\pageref{fig:sudoku-findVariables} takes a set of clauses and returns the set of all propositional variables
-occurring in this set.
+\subsection{Implementation of the Sudoku Solver}
 
+We begin by defining the basic types and a utility function to generate sequences of numbers. This is shown in Figure \ref{fig:logicsolver-range}.
 
 \begin{figure}[!ht]
-\centering
+  \centering
 \begin{minted}[ frame         = lines, 
-                 framesep      = 0.3cm, 
-                 firstnumber   = 1,
-                 bgcolor       = sepia,
-                 numbers       = left,
-                 numbersep     = -0.2cm,
-                 xleftmargin   = 0.8cm,
-                 xrightmargin  = 0.8cm,
-               ]{typescript}
-    def findVariables(Clauses):
-        Variables = set()
-        for Clause in Clauses:
-            for literal in Clause:
-                match literal:
-                    case ('¬', var): Variables |= { var }
-                    case var       : Variables |= { var }
-        return Variables
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{typescript}
+    type Variable        = string;
+    type NegatedVariable = `-${string}`; 
+    type Literal         = Variable | NegatedVariable;
+    type Clause          = Literal[];
+    
+    function range(start: number, stop: number): number[] {
+        return Array.from({ length: stop - start + 1 }, (_, index) => start + index);
+    }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{The function \texttt{findVariables}.}
-\label{fig:sudoku-findVariables}
+  \caption{Type definitions and the \texttt{range} function.}
+  \label{fig:logicsolver-range}
+\end{figure} %$
+
+The TypeScript types \texttt{Variable}, \texttt{NegatedVariable}, \texttt{Literal}, and \texttt{Clause} establish how boolean logic primitives are formatted as strings. The \texttt{range} function acts as a helper to easily generate arrays of numbers, such as $[1, \dots, 9]$, which we need for iterating over the Sudoku grid.
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{typescript}
+    function createPuzzle(): (number | string)[][] {
+      return [[ 8 , "*", "*", "*", "*", "*", "*", "*", "*"], 
+              ["*", "*",  3 ,  6 , "*", "*", "*", "*", "*"],
+              ["*",  7 , "*", "*",  9 , "*",  2 , "*", "*"],
+              ["*",  5 , "*", "*", "*",  7 , "*", "*", "*"],
+              ["*", "*", "*", "*",  4 ,  5 ,  7 , "*", "*"],
+              ["*", "*", "*",  1 , "*", "*", "*",  3 , "*"],
+              ["*", "*",  1 , "*", "*", "*", "*",  6 ,  8 ],
+              ["*", "*",  8 ,  5 , "*", "*", "*",  1 , "*"],
+              ["*",  9 , "*", "*", "*", "*",  4 , "*", "*"]
+             ];
+    }
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{The function \texttt{createPuzzle}.}
+  \label{fig:logicsolver-createPuzzle}
 \end{figure}
 
-The function \texttt{numberVariables(Clauses)} takes a set of clauses as input.  It returns two dictionaries:
+The \texttt{createPuzzle} function (Figure \ref{fig:logicsolver-createPuzzle}) returns the puzzle as a
+two-dimensional array. Given numbers are integers, and unknown fields are marked with a \texttt{"*"}.  
+
+To encode the board in propositional logic, we generate variable names using the \texttt{varName} function, and
+we can negate them using the \texttt{complement} function, both shown in Figure \ref{fig:logicsolver-varName}. 
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{typescript}
+    function varName(row: number, col: number, digit: number): string {
+        return `Q<${row},${col},${digit}>`;
+    }
+
+    function complement(l: Literal): Literal {
+        return l.startsWith('-') ? l.substring(1) :  '-' + l;
+    }
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{The functions \texttt{varName} and \texttt{complement}.}
+  \label{fig:logicsolver-varName}
+\end{figure} %$
+
+The \texttt{varName} function creates strings like \texttt{"Q<1,2,3>"} to represent the boolean variable stating that row 1, column 2 holds the digit 3. The \texttt{complement} function returns the logical negation of a literal by either adding or removing a leading minus sign (\texttt{-}), satisfying the format expected by \texttt{Logic-Solver}.
+
+We now define the logical constraints, starting with the requirement that a specific digit must appear exactly once within a given set of board positions.
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{typescript}
+    type Position = [number, number];
+
+    function exactlyOneForDigit(L: Position[], digit: number): Logic.Formula {
+        return Logic.exactlyOne(
+            L.map(([row, col]) => varName(row, col, digit))
+        ) as Logic.Formula;
+    }
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{The function \texttt{exactlyOneForDigit}.}
+  \label{fig:logicsolver-exactlyOneForDigit}
+\end{figure}
+
+In Figure \ref{fig:logicsolver-exactlyOneForDigit}, we define \texttt{Position} as a tuple of row and column. The \texttt{exactlyOneForDigit} function leverages \texttt{Logic.exactlyOne}, a powerful cardinality constraint built directly into \texttt{Logic-Solver}. It takes a list of positions \texttt{L} and ensures that the specified \texttt{digit} is placed in exactly one of those positions.
+
+To apply this to all digits, we use the function \texttt{exactlyOneForEveryDigit}.
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{typescript}
+    function exactlyOneForEveryDigit(L: Position[]): Logic.Formula[] {
+        return range(1, 9).map(d => exactlyOneForDigit(L, d));
+    }
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{The function \texttt{exactlyOneForEveryDigit}.}
+  \label{fig:logicsolver-exactlyOneForEveryDigit}
+\end{figure}
+
+The \texttt{exactlyOneForEveryDigit} function (Figure \ref{fig:logicsolver-exactlyOneForEveryDigit}) maps over the numbers 1 through 9, returning an array of formulas. This effectively states that within the given set of coordinates \texttt{L} (which will later represent a full row, column, or block), every digit from 1 to 9 must occur exactly once.
+
+Similarly, we must ensure that every single cell contains exactly one digit.
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{typescript}
+    function exactlyOneDigit(row: number, col: number): Logic.Formula {
+        return Logic.exactlyOne(
+            range(1, 9).map(d => varName(row, col, d))
+        ) as Logic.Formula;
+    }
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{The function \texttt{exactlyOneDigit}.}
+  \label{fig:logicsolver-exactlyOneDigit}
+\end{figure}
+
+The \texttt{exactlyOneDigit} function in Figure \ref{fig:logicsolver-exactlyOneDigit} enforces that for a fixed \texttt{row} and \texttt{col}, exactly one of the variables corresponding to digits 1 through 9 evaluates to \texttt{true}.
+
+We must also convert the initial numbers from the puzzle grid into logical facts.
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{typescript}
+    function constraintsFromPuzzle(): Logic.Formula {
+        const Puzzle = createPuzzle();
+        const Facts  = [];
+        for (let r = 1; r <= 9; ++r) { 
+            for (let c = 1; c <= 9; ++c) {
+                if (Puzzle[r-1][c-1] != '*') {
+                    Facts.push(varName(r, c, Puzzle[r-1][c-1] as number));
+                }
+            }
+        }
+        return Logic.and(Facts) as Logic.Formula;
+    }
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{The function \texttt{constraintsFromPuzzle}.}
+  \label{fig:logicsolver-constraintsFromPuzzle}
+\end{figure}
+
+The \texttt{constraintsFromPuzzle} function (Figure \ref{fig:logicsolver-constraintsFromPuzzle}) iterates over the $9 \times 9$ array. For every non-asterisk entry, it generates the corresponding variable string and adds it to the \texttt{Facts} array. It then combines all these facts using \texttt{Logic.and}, creating a single formula that anchors the starting state of the board.
+
+To validate the $3 \times 3$ macro-blocks, we need a helper function to calculate coordinate translations.
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{typescript}
+    function getBlockCells(r: number, c: number): Position[] {
+        let Result = [];
+        for (let row = 1; row <= 3; ++row) {
+            for (let col = 1; col <= 3; ++col) {
+                Result.push([r * 3 + row, c * 3 + col]);
+            }
+        }
+        return Result;
+    }
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{The function \texttt{getBlockCells}.}
+  \label{fig:logicsolver-getBlockCells}
+\end{figure}
+
+The \texttt{getBlockCells} function in Figure \ref{fig:logicsolver-getBlockCells} takes the 0-based index of a macro-block (\texttt{r} and \texttt{c}, both spanning 0 to 2) and returns the nine 1-based coordinates \texttt{[row, col]} on the board that belong to that block.
+
+With all helpers in place, we construct the master function that binds everything together.
+
+\begin{figure}[!ht]
+  \centering
+\begin{minted}[ frame         = lines, 
+                framesep      = 0.3cm, 
+                firstnumber   = 1,
+                numbers       = left,
+                numbersep     = -0.2cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.0cm,
+                xrightmargin  = 0.0cm
+              ]{typescript}
+    function allConstraints(solver: Logic.Solver): Logic.Solution {
+        // 1. Start with constraints from the puzzle
+        solver.require(constraintsFromPuzzle());
+        // 2. There is exactly one digit in every field
+        for (let row = 1; row <= 9; ++row) {
+            for (let col = 1; col <= 9; ++col) {
+                solver.require(exactlyOneDigit(row, col));
+            }
+        }
+        // 3. All entries in a row are unique
+        for (let row = 1; row <= 9; ++row) {
+            solver.require(
+                exactlyOneForEveryDigit(range(1, 9).map(col => [row, col]))
+            );
+        }
+        // 4. All entries in a column are unique
+        for (let col = 1; col <= 9; ++col) {
+            solver.require(
+                exactlyOneForEveryDigit(range(1, 9).map(row => [row, col]))
+            );
+        }
+        // 5. All entries in a 3x3 square are unique
+        for (let row = 0; row <= 2; ++row) {
+            for (let col = 0; col <= 2; ++col) {
+                solver.require(
+                    exactlyOneForEveryDigit(getBlockCells(row, col))
+                );
+            }
+        }
+        return solver.solve();
+    }
+\end{minted}
+\vspace*{-0.3cm}
+  \caption{The function \texttt{allConstraints}.}
+  \label{fig:logicsolver-allConstraints}
+\end{figure}
+
+The \texttt{allConstraints} function (Figure \ref{fig:logicsolver-allConstraints}) takes a \texttt{Logic.Solver} instance and sequentially feeds it all our rules via \texttt{solver.require(...)}. It ensures:
 \begin{enumerate}
-\item The dictionary \texttt{Var2Int} maps every propositional variable occurring in \texttt{Clauses} to a
-      unique natural number. 
-\item The dictionary \texttt{Int2Var} is the mapping that is inverse to the dictionary \texttt{Var2Int}.
-      Hence it maps the natural numbers back to propositional variables.
+    \item The initial grid values are respected.
+    \item Each cell contains exactly one digit.
+    \item Rows contain no duplicates.
+    \item Columns contain no duplicates.
+    \item $3 \times 3$ macro-blocks contain no duplicates.
 \end{enumerate}
+Finally, it calls \texttt{solver.solve()}, executing MiniSat internally, and returns the \texttt{Logic.Solution} object. 
 
-\begin{figure}[!ht]
-\centering
-\begin{minted}[ frame         = lines, 
-                 framesep      = 0.3cm, 
-                 firstnumber   = 1,
-                 bgcolor       = sepia,
-                 numbers       = left,
-                 numbersep     = -0.2cm,
-                 xleftmargin   = 0.8cm,
-                 xrightmargin  = 0.8cm,
-               ]{typescript}
-    def numberVariables(Clauses):
-        Variables = findVariables(Clauses)
-        count     = 1
-        Var2Int   = {}
-        Int2Var   = {}
-        for variable in Variables:
-            Var2Int[variable] = count
-            Int2Var[count   ] = variable
-            count += 1
-        return Var2Int, Int2Var             
-\end{minted}
-\vspace*{-0.3cm}
-\caption{The function \texttt{numberVariables}}
-\label{fig:sudoku-numberVariables}
-\end{figure}
-
-\pagebreak
-Figure \ref{fig:sudoku-format} shows the remaining auxiliary functions that are necessary to transform a
-formula represented as a set of clauses into the format of PicoSat.
-\begin{enumerate}
-\item The function \texttt{literal2int} takes a literal and transforms this literal into an integer
-      representing the literal. If the literal is a negated variable, the integer is negative, else it is
-      positive. \texttt{Var2Int} is a dictionary mapping propositional variables to natural numbers.
-\item The function \texttt{clause2pyco(Clause, Var2Int)} transforms a set of literals into a list of integers.
-      \texttt{Var2Int} is a dictionary mapping the propositional variables to natural numbers. 
-\item The function \texttt{clauses2pyco(Clauses, Var2Int)} transforms a set of clauses into a list of lists of
-      integers. \texttt{Var2Int} is a dictionary mapping the propositional variables to natural numbers.  
-\item The function \texttt{int2var(Numbers, Int2Var)} takes a list of numbers representing a set of literals and returns
-      the associated list of literals.  \texttt{Int2Var} is a dictionary mapping natural numbers to
-      propositional variables.     
-\end{enumerate}
-
-\begin{figure}[!ht]
-\centering
-\begin{minted}[ frame         = lines, 
-                 framesep      = 0.3cm, 
-                 firstnumber   = 1,
-                 bgcolor       = sepia,
-                 numbers       = left,
-                 numbersep     = -0.2cm,
-                 xleftmargin   = 0.8cm,
-                 xrightmargin  = 0.8cm,
-               ]{typescript}
-    def literal2int(literal, Var2Int):
-        match literal:
-            case ('¬', var): return -Var2Int[var]
-            case var       : return  Var2Int[var]
-    
-    def clause2pyco(Clause, Var2Int):
-        return [literal2int(literal, Var2Int) for literal in Clause]
-    
-    def clauses2pyco(Clauses, Var2Int):
-        return [clause2pyco(clause, Var2Int) for clause in Clauses ]
-    
-    def int2var(Numbers, Int2Var):
-        Result = set()
-        for n in Numbers:
-            if n > 0:
-                Result |= {frozenset({Int2Var[n]})}
-            else: 
-                Result |= {frozenset({ ('¬', Int2Var[-n]) })}
-        return Result
-\end{minted}
-\vspace*{-0.3cm}
-\caption{Some axilliary functions to transform clauses into the format of PicoSat.}
-\label{fig:sudoku-format}
-\end{figure}
+Executing this entire program yields an astonishing performance improvement.  While the Davis-Putnam
+alternating spent 21 minutes laboring through the SAT derivation, \texttt{11-Logic-Solver-Sudoku.ipynb}
+accomplishes the same goal in roughly 60 milliseconds. 
 
 The Jupyter notebook showing the resulting program is available at:
 \\[0.2cm]
-\hspace*{0.3cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/11-PicoSat-Sudoku.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/11-PicoSat-Sudoku.ipynb}}
-
+\hspace*{1.3cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-4/11-Logic-Solver-Sudoku.ipynb}{\texttt{Chapter-4/11-Logic-Solver-Sudoku.ipynb}}
 \pagebreak
 
+\vspace*{\fill}
+\pagebreak
 
 \section{Check Your Comprehension}
 \begin{enumerate}[(a)]
