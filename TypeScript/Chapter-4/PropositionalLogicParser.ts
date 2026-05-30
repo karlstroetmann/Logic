@@ -1,5 +1,8 @@
 export type Variable = string
-export type Formula  = Variable | ['⊤' | '⊥'] | ['¬', Formula] | ['↔' | '→' | '∧' | '∨', Formula, Formula];
+export type Formula  = Variable
+                     | ['⊤' | '⊥']
+                     | ['¬', Formula]
+                     | ['↔' | '→' | '∧' | '∨', Formula, Formula];
 
 export function tokenize(s: string): string[] {
     const lexSpec = /([ \t]+)|([A-Za-z][A-Za-z0-9<>,]*)|([⊤⊥∧∨¬→↔()])/g;
