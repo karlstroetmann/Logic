@@ -1,10 +1,12 @@
+export { normalize };
+// If you plan to reuse the types directly, also export:
+export type { Clause, Literal };
+
 function range(n: number): number[] {
     return Array.from({ length: n + 1 }, (_, i) => i);
 }
 
-range(4)
-
-import { parseFormula as parse, Formula, Term, Variable, PredicateSymbol } from "./FOL-Parser";
+import { parseFormula as parse, Formula, Term, Variable, PredicateSymbol, FunctionSymbol } from "./FOL-Parser";
 import { Tuple, RecursiveSet as Set, Value, flatMap } from "recursive-set";
 
 function set<T extends Value>(...elements: T[]): Set<T> {
@@ -15,26 +17,22 @@ function tpl<T extends Value[]>(...elements: T): Tuple<T> {
     return new Tuple(...elements);
 }
 
-const s = '∀G:∀C:(grandparent(G, C) ↔ ∃P: (parent(G, P) ∧ parent(P, C)))';
-const f1 = parse(s);
-console.dir(f1, { depth: null });
-
 type Substitution = Map<Variable, Term>;
 
 function applyTerm(t: Term, sigma: Substitution): Term {
-    if (typeof t == 'string') {
+    if (typeof t === 'string') {
         const mapped = sigma.get(t);
         return mapped !== undefined ? mapped : t;
     }
-    const  [f, ...args] = t;
+    const [f, ...args] = t;
     return [f, ...args.map(arg => applyTerm(arg, sigma))];
 }
 
 function applyFormula(f: Formula, sigma: Substitution): Formula {
     switch (f[0]) {
         case '⚛️': {
-            const  [_, pred, ...args] = f;
-            return ['⚛️', pred, ...args.map(arg => applyTerm(arg, sigma))];
+            const [tag, pred, ...args] = f;
+            return [tag, pred, ...args.map(arg => applyTerm(arg, sigma))];
         }
         case '⊤':
         case '⊥':
@@ -54,20 +52,11 @@ function applyFormula(f: Formula, sigma: Substitution): Formula {
         case '∃': {
             const [op, x, g] = f;
             const mapped = sigma.get(x);
-            const newX = typeof mapped == 'string' ? mapped : x;
+            const newX = typeof mapped === 'string' ? mapped : x;
             return [op, newX, applyFormula(g, sigma)];
         }
     }
 }
-
-console.dir(f1, { depth: null });
-
-const sigma1: Substitution = new Map([
-    ['G', 'X'],
-    ['P', 'Y'],
-    ['C', 'Z']
-]);
-console.dir(applyFormula(f1, sigma1), { depth: null });
 
 function boundVariables(f: Formula): Set<string> {
     switch (f[0]) {
@@ -94,21 +83,17 @@ function boundVariables(f: Formula): Set<string> {
     }
 }
 
-console.dir(f1, { depth: null });
-
-console.log([...boundVariables(f1)]);
-
 function allVariablesTerm(t: Term): Set<string> {
-    if (typeof t == 'string') return set(t);
+    if (typeof t === 'string') return set(t);
     const [_, ...args] = t;
-    return flatMap(args, t => allVariablesTerm(t));
+    return flatMap(args, arg => allVariablesTerm(arg));
 }
 
 function allVariables(f: Formula): Set<string> {
     switch(f[0]) {
         case '⚛️': {
             const [_, pred, ...args] = f;
-            return flatMap(args, t => allVariablesTerm(t));
+            return flatMap(args, arg => allVariablesTerm(arg));
         }
         case '⊤':
         case '⊥':
@@ -132,36 +117,19 @@ function allVariables(f: Formula): Set<string> {
     }
 }
 
-console.dir(f1, { depth: null });
-
-console.log([...allVariables(f1)]);
-
-const g1: Formula = ['↔', 
-    ['⚛️', 'grandparent', 'G', 'C'],
-    ['∃', 'P', ['∧', ['⚛️', 'parent', 'G', 'P'], ['⚛️', 'parent', 'P', 'C']]]
-];
-
-console.log([...allVariables(g1)]);
-
 const ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 ascii_uppercase
 
 const ascii_set = set(...ascii_uppercase);
-console.log(ascii_set.size);
 
 function renameBoundVariables(f: Formula): Formula {
     const boundVs = [...boundVariables(f)];
     const allVs   = allVariables(f);
     const newVars = ascii_uppercase.filter(x => !allVs.has(x)).sort();
-    const sigma   = new Map(boundVs.map((bv, i) => [bv, newVars[i]]));    
+    const mappingPairs = boundVs.map((bv, i) => [bv, newVars[i]] as const);
+    const sigma: Substitution = new Map(mappingPairs);    
     return applyFormula(f, sigma);
 }
-
-console.log(['A', 'B', 'C'].map((x, i) => [i, x]));
-
-console.dir(f1, { depth: null });
-
-console.dir(renameBoundVariables(f1), { depth: null });
 
 function eliminateBiconditional(f: Formula): Formula {
     switch (f[0]) {
@@ -195,11 +163,6 @@ function eliminateBiconditional(f: Formula): Formula {
     }
 }
 
-console.dir(f1, { depth: null });
-
-const f2 = eliminateBiconditional(f1);
-console.dir(f2, { depth: null });
-
 function eliminateConditional(f: Formula): Formula {
     switch (f[0]) {
         case '⚛️':
@@ -227,11 +190,6 @@ function eliminateConditional(f: Formula): Formula {
         }
     }
 }
-
-console.dir(f2, { depth: null });
-
-const f3 = eliminateConditional(f2);
-console.dir(f3, { depth: null });
 
 function nnf(f: Formula): Formula {
     switch (f[0]) {
@@ -289,22 +247,17 @@ function neg(f: Formula): Formula {
     }
 }
 
-console.dir(f3, { depth: null });
-
-const f4 = nnf(f3);
-console.dir(f4, { depth: null });
-
-type QuantifierList = string[];
+type Quantifier = '∀' | '∃';
+type QuantifierPrefix = [Quantifier, Variable];
+type QuantifierList = QuantifierPrefix[];
 
 function mergeQuantifiers(Q1: QuantifierList, Q2: QuantifierList): QuantifierList {
-    if (Q1.length == 0) return Q2;
-    if (Q2.length == 0) return Q1;
-    if (Q1[0] == '∃') return [Q1[0], Q1[1], ...mergeQuantifiers(Q1.slice(2), Q2)];
-    if (Q2[0] == '∃') return [Q2[0], Q2[1], ...mergeQuantifiers(Q1, Q2.slice(2))];
-    return [Q1[0], Q1[1], ...mergeQuantifiers(Q1.slice(2), Q2)];
+    if (Q1.length === 0) return Q2;
+    if (Q2.length === 0) return Q1;
+    if (Q1[0][0] === '∃') return [Q1[0], ...mergeQuantifiers(Q1.slice(1), Q2)];
+    if (Q2[0][0] === '∃') return [Q2[0], ...mergeQuantifiers(Q1, Q2.slice(1))];
+    return [Q1[0], ...mergeQuantifiers(Q1.slice(1), Q2)];
 }
-
-console.log(mergeQuantifiers(['∀', 'X', '∃', 'Y'], ['∃', 'U', '∀', 'V']));
 
 function extractQuantifiers(f: Formula): [QuantifierList, Formula] {
     switch (f[0]) {
@@ -326,30 +279,16 @@ function extractQuantifiers(f: Formula): [QuantifierList, Formula] {
         case '∃': {
             const [op, x, g] = f;
             const [qg, gm] = extractQuantifiers(g);
-            return [[op, x, ...qg], gm];
+            return [[[op, x], ...qg], gm];
         }
     }
 }
 
-console.dir(f4, { depth: null });
-
-const [Qs, f5] = extractQuantifiers(f4);
-console.log(Qs);
-console.dir(f5, { depth: null });
-
 function attachQuantifiers(Qs: QuantifierList, m: Formula): Formula {
-    if (Qs.length == 0) return m;
-    const Q = Qs[0] as '∀' | '∃';
-    const x = Qs[1];
-    return [Q, x, attachQuantifiers(Qs.slice(2), m)];
+    if (Qs.length === 0) return m;
+    const [Q, x] = Qs[0];
+    return [Q, x, attachQuantifiers(Qs.slice(1), m)];
 }
-
-console.log(Qs);
-
-console.dir(f5, { depth: null });
-
-const f6 = attachQuantifiers(Qs, f5);
-console.dir(f6, { depth: null });
 
 let skolemCounter = 0;
 
@@ -376,27 +315,42 @@ function skolemize(f: Formula, Vs: string[]): Formula {
     }
 }
 
-console.dir(f6, { depth: null });
+type TupleTerm = string | Tuple<[FunctionSymbol, ...TupleTerm[]]>;
+type TupleAtom = Tuple<['⚛️', PredicateSymbol, ...TupleTerm[]]>;
 
-const f7 = skolemize(f6, []);
-console.dir(f7, { depth: null });
-
-// Helper to convert array structure to recursive-set Tuple for structural equality
-function toTuple(f: any): any {
-    if (typeof f == 'string') return f;
-    if (Array.isArray(f)) return tpl(...f.map(toTuple));
-    return f;
-}
-
-type Literal = Tuple<any>;
+type Literal = TupleAtom | Tuple<['¬', TupleAtom]>;
 type Clause = Set<Literal>;
 type CNFSet = Set<Clause>;
 
+function termToTuple(t: Term): TupleTerm {
+    if (typeof t == 'string') return t;
+    const [f, ...args] = t;
+    return tpl(f, ...args.map(termToTuple));
+}
+
+function literalToTuple(f: Formula): Literal {
+    if (f[0] == '⚛️') {
+        const [tag, pred, ...args] = f;
+        return tpl(tag, pred, ...args.map(termToTuple));
+    }
+    if (f[0] == '¬') {
+        const [_, g] = f;
+        if (g[0] == '⚛️') {
+            const [_, pred, ...args] = g;
+            return tpl('¬', tpl('⚛️', pred, ...args.map(termToTuple)));
+        }
+    }
+}
+
 function cnf(f: Formula): CNFSet {
     switch (f[0]) {
-        case '⊤': return set<Clause>();
-        case '⊥': return set<Clause>(set<Literal>());
-        case '¬': return set<Clause>(set<Literal>(toTuple(f)));
+        case '⊤': 
+            return set<Clause>();
+        case '⊥': 
+            return set(set<Literal>());
+        case '¬': 
+        case '⚛️':
+            return set(set(literalToTuple(f)));
         case '∧': {
             const [_, g, h] = f;
             return cnf(g).union(cnf(h));
@@ -409,18 +363,9 @@ function cnf(f: Formula): CNFSet {
             const [_, x, g] = f;
             return cnf(g);
         }
-        case '⚛️':
-            return set(set(toTuple(f)));
         default:
-            return set(set(toTuple(f)));
+            throw new Error(`Unexpected operator in CNF conversion: ${f[0]}`);
     }
-}
-
-console.dir(f7, { depth: null });
-
-const f8 = cnf(f7);
-for (let cl of f8) {
-    console.log(cl.toString());
 }
 
 function normalize(f: Formula): CNFSet {
@@ -431,10 +376,6 @@ function normalize(f: Formula): CNFSet {
     const f5 = attachQuantifiers(Qs, f4);
     const f6 = skolemize(f5, []);
     return cnf(f6);
-}
-
-for (let cl of normalize(f1)) {
-    console.log(cl.toString());
 }
 
 function prettify(M: CNFSet): string {
@@ -455,14 +396,5 @@ function prettify(M: CNFSet): string {
     return result;
 }
 
-function test(s: string): void {
-    const f = parse(s);
-    console.log(`The knf of ${s} is:`);
-    console.log(prettify(normalize(f)));
-}
-
-test(s);
-
-test('¬(∃Y:∀X:p(X,Y)→∀U:∃V:p(U,V))');
 
 

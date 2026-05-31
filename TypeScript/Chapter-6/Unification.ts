@@ -1,3 +1,6 @@
+export      { unify };
+export type { Term, Substitution };
+
 import { LogicParser, isTerm } from "./FOL-Parser";
 
 type Variable = string;
@@ -10,8 +13,6 @@ function parseTerm(s: string): Term {
     if (isTerm(ast)) return ast as Term;
     throw new Error(`Parsed AST is not a valid Term: ${JSON.stringify(ast)}`);
 }
-
-console.dir(parseTerm('f(g(X),Y)'), { depth: null });
 
 // We separate apply into typed variants to avoid monolithic 'any' processing
 function applyTerm(t: Term, sigma: Substitution): Term {
@@ -32,20 +33,6 @@ function applyEquations(E: Equation[], sigma: Substitution): Equation[] {
     return E.map(eq => applyEquation(eq, sigma));
 }
 
-const s1 = parseTerm('g(Z)');
-const s2 = parseTerm('h(U, V)');
-
-const sigma: Substitution = new Map([
-    ['X', s1],
-    ['Y', s2]
-]);
-console.log(sigma);
-
-const tTerm = parseTerm('f(X,h(Y,X),g(Z))');
-console.dir(tTerm, { depth: null });
-
-console.dir(applyTerm(tTerm, sigma), { depth: null });
-
 function compose(sigma: Substitution, tau: Substitution): Substitution {
     const appliedSigma = [...sigma.entries()].map(
         ([x, s]): [Variable, Term] => [x, applyTerm(s, tau)]
@@ -53,25 +40,12 @@ function compose(sigma: Substitution, tau: Substitution): Substitution {
     return new Map([...appliedSigma, ...tau]);
 }
 
-const tau: Substitution = new Map([
-    ['Z', s1], 
-    ['U', s2]
-]);
-
-console.log("Sigma:", sigma);
-console.log("Tau:", tau);
-console.log("Composed:", compose(sigma, tau));
-
 function occurs(x: Variable, t: Term): boolean {
     if (x == t)               { return true; }
     if (typeof t == 'string') { return false; }
     const [_, ...args] = t;
     return args.some(arg => occurs(x, arg));
 }
-
-console.dir(tTerm, { depth: null });
-console.log("Occurs 'U':", occurs('U', tTerm));
-console.log("Occurs 'X':", occurs('X', tTerm));
 
 function solve(E: Equation[], sigma: Substitution): Substitution | null {
     if (E.length == 0) { return sigma; }
@@ -104,11 +78,5 @@ function unify(s: Term, t: Term): Substitution | null {
     return solve([['≐', s, t]], new Map());
 }
 
-const t1 = parseTerm('p(X1,f(X1))');
-const t2 = parseTerm('p(g(X2),X3)');
-console.dir([t1, t2], { depth: null });
-
-const mu = unify(t1, t2);
-console.log(mu);
 
 
