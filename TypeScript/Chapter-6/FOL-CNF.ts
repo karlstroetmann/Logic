@@ -1,1228 +1,468 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function range(n: number): number[] {\n",
-    "    return Array.from({ length: n + 1 }, (_, i) => i);\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "range(4)"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "# Computing the Conjunctive Normal Form in First Order Logic"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "In order to convert a formula $f$ from first order logic into a set of clauses that is satisfiable if and only if $f$ is satisfiable,\n",
-    "we have to perform the following steps in order:\n",
-    "- eliminate biconditionals,\n",
-    "- eliminate conditionals,\n",
-    "- transform the formula into *negation normal form*,\n",
-    "  i.e. we push the negation symbol inwards,\n",
-    "- rename bound variables to avoid clashes, \n",
-    "- transform the formula into *prenex normal form*,\n",
-    "  i.e. we move the quantifieres outside,\n",
-    "  \n",
-    "- eliminate existential quantifiers by *skolemizing* the formula, and\n",
-    "- transform the formula into *clauses* in set notation."
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "When converting formulas into conjunctive normal form, we <u>assume</u> that the formulas are \n",
-    "*pure*, where we define a formula $f$ as *pure* if all quantifiers appearing in $f$ bind **different** variables.  For example, the formula\n",
-    "$$ \\bigl(\\forall X: p(X)\\bigr) \\vee \\bigl(\\forall X: q(X)\\bigr)$$\n",
-    "is **not** *pure*, because there are two different universal quantifiers that both bind the same variable $X$.  We can rewrite this formulas as a *pure* formula by *renaming* all occurrences of $X$ that are bound by the second quantifier as follows:\n",
-    "$$ \\bigl(\\forall X: p(X)\\bigr) \\vee \\bigl(\\forall Y: q(Y)\\bigr)$$"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Auxilliary Functions"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "Formulas are represented as nested tuples.  In order to convert a string into a nested tuple we use the parser that is found in the module `FOL-Parser`.  Our parser distinguishes variables and function symbol as follows:\n",
-    "- A word starting with an *upper* case letter is interpreted as a *variable*.\n",
-    "- A word starting with a *lower* case letter is assumed to be a *function* or *predicate symbol*."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import { parseFormula as parse, Formula, Term, Variable, PredicateSymbol } from \"./FOL-Parser\";\n",
-    "import { Tuple, RecursiveSet as Set, Value, flatMap } from \"recursive-set\";"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function set<T extends Value>(...elements: T[]): Set<T> {\n",
-    "    return new Set(...elements);\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function tpl<T extends Value[]>(...elements: T): Tuple<T> {\n",
-    "    return new Tuple(...elements);\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "For testing purposes, the following formula is used.  This formula specifies the notion of a *grandparent*."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "const s = '∀G:∀C:(grandparent(G, C) ↔ ∃P: (parent(G, P) ∧ parent(P, C)))';\n",
-    "const f1 = parse(s);\n",
-    "console.dir(f1, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "A `Substitution` maps variables to terms. "
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "type Substitution = Map<Variable, Term>;"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The function $\\texttt{applyTerm}(t, σ)$ takes a term $t$ and a *variable substitution* \n",
-    "$\\sigma = \\{ x_1 \\mapsto s_1, \\cdots, x_n \\mapsto s_n\\}$ which is represented as a `Map` and replaces every occurrence of the variable $x_i$ in the object $f$ with the corresponding term $s_i$."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function applyTerm(t: Term, sigma: Substitution): Term {\n",
-    "    if (typeof t == 'string') {\n",
-    "        const mapped = sigma.get(t);\n",
-    "        return mapped !== undefined ? mapped : t;\n",
-    "    }\n",
-    "    const  [f, ...args] = t;\n",
-    "    return [f, ...args.map(arg => applyTerm(arg, sigma))];\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The function $\\texttt{applyFormula}(t, σ)$ takes a Formula $t$ and a *variable substitution* \n",
-    "$\\sigma = \\{ x_1 \\mapsto s_1, \\cdots, x_n \\mapsto s_n\\}$ which is represented as a `Map` and replaces every occurrence of the variable $x_i$ in the formula $f$ with the corresponding term $s_i$."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function applyFormula(f: Formula, sigma: Substitution): Formula {\n",
-    "    switch (f[0]) {\n",
-    "        case '⚛️': {\n",
-    "            const  [_, pred, ...args] = f;\n",
-    "            return ['⚛️', pred, ...args.map(arg => applyTerm(arg, sigma))];\n",
-    "        }\n",
-    "        case '⊤':\n",
-    "        case '⊥':\n",
-    "            return f;\n",
-    "        case '¬': {\n",
-    "            const [op, g] = f;\n",
-    "            return [op, applyFormula(g, sigma)];\n",
-    "        }\n",
-    "        case '∧':\n",
-    "        case '∨':\n",
-    "        case '→':\n",
-    "        case '↔': {\n",
-    "            const [op, g, h] = f;\n",
-    "            return [op, applyFormula(g, sigma), applyFormula(h, sigma)];\n",
-    "        }\n",
-    "        case '∀':\n",
-    "        case '∃': {\n",
-    "            const [op, x, g] = f;\n",
-    "            const mapped = sigma.get(x);\n",
-    "            const newX = typeof mapped == 'string' ? mapped : x;\n",
-    "            return [op, newX, applyFormula(g, sigma)];\n",
-    "        }\n",
-    "    }\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.dir(f1, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "const sigma1: Substitution = new Map([\n",
-    "    ['G', 'X'],\n",
-    "    ['P', 'Y'],\n",
-    "    ['C', 'Z']\n",
-    "]);\n",
-    "console.dir(applyFormula(f1, sigma1), { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The function $\\texttt{boundVariables}(f)$ computes the set of variables that are *bound* in the formula $f$. "
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function boundVariables(f: Formula): Set<string> {\n",
-    "    switch (f[0]) {\n",
-    "        case '⚛️':\n",
-    "        case '⊤':\n",
-    "        case '⊥':\n",
-    "            return set<string>();\n",
-    "        case '¬': {\n",
-    "            const [_, g] = f;\n",
-    "            return boundVariables(g);\n",
-    "        }\n",
-    "        case '∧':\n",
-    "        case '∨':\n",
-    "        case '→':\n",
-    "        case '↔': {\n",
-    "            const [_, g, h] = f;\n",
-    "            return boundVariables(g).union(boundVariables(h));\n",
-    "        }\n",
-    "        case '∀':\n",
-    "        case '∃': {\n",
-    "            const [_, x, g] = f;\n",
-    "            return boundVariables(g).union(set(x));\n",
-    "        }\n",
-    "    }\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.dir(f1, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.log([...boundVariables(f1)]);"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The function `allVariablesTerm` computes the set of all variables that occur in the given term."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function allVariablesTerm(t: Term): Set<string> {\n",
-    "    if (typeof t == 'string') return set(t);\n",
-    "    const [_, ...args] = t;\n",
-    "    return flatMap(args, t => allVariablesTerm(t));\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The function `allVariables` computes the set of all variables that occur in the given formula."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function allVariables(f: Formula): Set<string> {\n",
-    "    switch(f[0]) {\n",
-    "        case '⚛️': {\n",
-    "            const [_, pred, ...args] = f;\n",
-    "            return flatMap(args, t => allVariablesTerm(t));\n",
-    "        }\n",
-    "        case '⊤':\n",
-    "        case '⊥':\n",
-    "            return set<string>();\n",
-    "        case '¬': {\n",
-    "            const [_, g] = f;\n",
-    "            return allVariables(g);\n",
-    "        }\n",
-    "        case '∧':\n",
-    "        case '∨':\n",
-    "        case '→':\n",
-    "        case '↔': {\n",
-    "            const [_, g, h] = f;\n",
-    "            return allVariables(g).union(allVariables(h));\n",
-    "        }\n",
-    "        case '∀':\n",
-    "        case '∃': {\n",
-    "            const [_, x, g] = f;\n",
-    "            return allVariables(g).union(set(x));\n",
-    "        }\n",
-    "    }\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.dir(f1, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.log([...allVariables(f1)]);"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "const g1: Formula = ['↔', \n",
-    "    ['⚛️', 'grandparent', 'G', 'C'],\n",
-    "    ['∃', 'P', ['∧', ['⚛️', 'parent', 'G', 'P'], ['⚛️', 'parent', 'P', 'C']]]\n",
-    "];"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.log([...allVariables(g1)]);"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "Below we construct a list of all upper case characters to generate new variables."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "const ascii_uppercase = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\".split(\"\");\n",
-    "ascii_uppercase"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "const ascii_set = set(...ascii_uppercase);\n",
-    "console.log(ascii_set.size);"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The function $\\texttt{renameBoundVariables}(f)$ takes a first order formula $f$ and replaces all bound variables by **new** variables.  This only works if the set of characters `set(string.ascii_uppercase)` has enough characters that do not already occur in $f$.  This approach would not be good enough for a production quality program,\n",
-    "but for the case of a demonstration it is sufficient.  The alternative would be to rename the variables as `X1`, `X2`, `X3`, $\\cdots$, but that becomes unreadable very fast."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function renameBoundVariables(f: Formula): Formula {\n",
-    "    const boundVs = [...boundVariables(f)];\n",
-    "    const allVs   = allVariables(f);\n",
-    "    const newVars = ascii_uppercase.filter(x => !allVs.has(x)).sort();\n",
-    "    const sigma   = new Map(boundVs.map((bv, i) => [bv, newVars[i]]));    \n",
-    "    return applyFormula(f, sigma);\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.log(['A', 'B', 'C'].map((x, i) => [i, x]));"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.dir(f1, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.dir(renameBoundVariables(f1), { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Elimination Biconditionals"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The function $\\texttt{eliminateBiconditional}(f)$ takes a formula $f$ from first order logic and eliminates all occurrences of the operator '↔' from this formula.  This is done by using the following equivalence:\n",
-    "$$(f \\leftrightarrow g) \\;\\Leftrightarrow\\; (f \\rightarrow g) \\wedge (g \\rightarrow f)$$\n",
-    "In order to ensure that the resulting formula is <em style=\"color:blue\">pure</em>, we have to rename the bound variables in the formula $g \\rightarrow f$."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function eliminateBiconditional(f: Formula): Formula {\n",
-    "    switch (f[0]) {\n",
-    "        case '⚛️':\n",
-    "        case '⊤':\n",
-    "        case '⊥':\n",
-    "            return f;\n",
-    "        case '¬': {\n",
-    "            const [op, g] = f;\n",
-    "            return [op, eliminateBiconditional(g)];\n",
-    "        }\n",
-    "        case '∧':\n",
-    "        case '∨':\n",
-    "        case '→': {\n",
-    "            const [op, g, h] = f;\n",
-    "            return [op, eliminateBiconditional(g), eliminateBiconditional(h)];\n",
-    "        }\n",
-    "        case '↔': {\n",
-    "            const [_, g, h] = f;\n",
-    "            const ge = eliminateBiconditional(g);\n",
-    "            const he = eliminateBiconditional(h);\n",
-    "            const left: Formula = ['→', ge, he];\n",
-    "            const right = renameBoundVariables(['→', he, ge]);\n",
-    "            return ['∧', left, right];\n",
-    "        }\n",
-    "        case '∀':\n",
-    "        case '∃': {\n",
-    "            const [op, x, g] = f;\n",
-    "            return [op, x, eliminateBiconditional(g)];\n",
-    "        }\n",
-    "    }\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.dir(f1, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "const f2 = eliminateBiconditional(f1);\n",
-    "console.dir(f2, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Eliminating Conditionals"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The function $\\texttt{eliminateConditional}(f)$ takes a formula $f$ from first order logic and eliminates all occurrences of the operator '→' from this formula.  This is done by using the following equivalence:\n",
-    "$$(f \\rightarrow g) \\;\\Leftrightarrow\\; (\\neg f \\vee g)$$\n",
-    "The implementation of this function is similar to the implementation of the function `eliminateConditional` that we had used in propositional logic."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function eliminateConditional(f: Formula): Formula {\n",
-    "    switch (f[0]) {\n",
-    "        case '⚛️':\n",
-    "        case '⊤':\n",
-    "        case '⊥':\n",
-    "            return f;\n",
-    "        case '¬': {\n",
-    "            const [op, g] = f;\n",
-    "            return [op, eliminateConditional(g)];\n",
-    "        }\n",
-    "        case '∧':\n",
-    "        case '∨':\n",
-    "        case '↔': {\n",
-    "            const [op, g, h] = f;\n",
-    "            return [op, eliminateConditional(g), eliminateConditional(h)];\n",
-    "        }\n",
-    "        case '→': {\n",
-    "            const [_, g, h] = f;\n",
-    "            return ['∨', ['¬', eliminateConditional(g)], eliminateConditional(h)];\n",
-    "        }\n",
-    "        case '∀':\n",
-    "        case '∃': {\n",
-    "            const [op, x, g] = f;\n",
-    "            return [op, x, eliminateConditional(g)];\n",
-    "        }\n",
-    "    }\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.dir(f2, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "const f3 = eliminateConditional(f2);\n",
-    "console.dir(f3, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Negation Normal Form"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The function $\\texttt{nnf}(f)$ computes the <em style=\"color:blue;\">negation normal form</em> of $f$, while $\\texttt{neg}(f)$ computes the *negation normal form* of $\\neg f$. "
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The auxiliary function $\\texttt{neg}$ is also defined recursively:\n",
-    "<ol>\n",
-    "    <li> $\\texttt{neg}(p) = \\texttt{nnf}(\\neg p) = \\neg p$ for all propositional variables $p$,</li>\n",
-    "    <li> $\\texttt{neg}(\\neg F) = \\texttt{nnf}(\\neg \\neg F) = \\texttt{nnf}(F)$,</li>\n",
-    "    <li> $$\\begin{array}[t]{cl}\n",
-    "         & \\texttt{neg}\\bigl(F_1 \\wedge F_2 \\bigr) \\\\[0.1cm]\n",
-    "       = & \\texttt{nnf}\\bigl(\\neg(F_1 \\wedge F_2)\\bigr) \\\\[0.1cm]\n",
-    "       = & \\texttt{nnf}\\bigl(\\neg F_1 \\vee \\neg F_2\\bigr) \\\\[0.1cm]\n",
-    "       = & \\texttt{nnf}\\bigl(\\neg F_1\\bigr) \\vee \\texttt{nnf}\\bigl(\\neg F_2\\bigr) \\\\[0.1cm]\n",
-    "       = & \\texttt{neg}(F_1) \\vee \\texttt{neg}(F_2).\n",
-    "       \\end{array}\n",
-    "      $$\n",
-    "      Therefore we have $\\texttt{neg}\\bigl(F_1 \\wedge F_2 \\bigr) = \\texttt{neg}(F_1) \\vee \\texttt{neg}(F_2)$.</li>\n",
-    "    <li> $$\\begin{array}[t]{cl}\n",
-    "         & \\texttt{neg}\\bigl(F_1 \\vee F_2 \\bigr)        \\\\[0.1cm]\n",
-    "       = & \\texttt{nnf}\\bigl(\\neg(F_1 \\vee F_2) \\bigr)  \\\\[0.1cm]\n",
-    "       = & \\texttt{nnf}\\bigl(\\neg F_1 \\wedge \\neg F_2 \\bigr)  \\\\[0.1cm]\n",
-    "       = & \\texttt{nnf}\\bigl(\\neg F_1\\bigr) \\wedge \\texttt{nnf}\\bigl(\\neg F_2 \\bigr)  \\\\[0.1cm]\n",
-    "       = & \\texttt{neg}(F_1) \\wedge \\texttt{neg}(F_2). \n",
-    "       \\end{array}\n",
-    "      $$\n",
-    "      Therefore we have $\\texttt{neg}\\bigl(F_1 \\vee F_2 \\bigr) = \\texttt{neg}(F_1) \\wedge \\texttt{neg}(F_2)$.</li>\n",
-    "    <li> $$\\begin{array}[t]{cl}\n",
-    "         & \\texttt{neg}\\bigl(\\forall x: F \\bigr) \\\\[0.1cm]\n",
-    "       = & \\texttt{nnf}\\bigl(\\neg \\forall x: F\\bigr) \\\\[0.1cm]\n",
-    "       = & \\texttt{nnf}\\bigl(\\exists x: \\neg F\\bigr) \\\\[0.1cm]\n",
-    "       = & \\exists x: \\texttt{nnf}(\\neg F)           \\\\[0.1cm]\n",
-    "       = & \\exists x: \\texttt{neg}(F).\n",
-    "       \\end{array}\n",
-    "      $$\n",
-    "      Therefore we have $\\texttt{neg}\\bigl(\\forall x: F \\bigr) = \\exists x: \\texttt{neg}(F)$.</li>\n",
-    "      <li> $$\\begin{array}[t]{cl}\n",
-    "         & \\texttt{neg}\\bigl(\\exists x: F \\bigr) \\\\[0.1cm]\n",
-    "       = & \\texttt{nnf}\\bigl(\\neg \\exists x: F\\bigr) \\\\[0.1cm]\n",
-    "       = & \\texttt{nnf}\\bigl(\\forall x: \\neg F\\bigr) \\\\[0.1cm]\n",
-    "       = & \\forall x: \\texttt{nnf}(\\neg F)           \\\\[0.1cm]\n",
-    "       = & \\forall x: \\texttt{neg}(F).\n",
-    "       \\end{array}\n",
-    "      $$\n",
-    "      Therefore we have $\\texttt{neg}\\bigl(\\exists x: F \\bigr) = \\forall x: \\texttt{neg}(F)$.</li>\n",
-    "</ol>"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function nnf(f: Formula): Formula {\n",
-    "    switch (f[0]) {\n",
-    "        case '⚛️':\n",
-    "        case '⊤':\n",
-    "        case '⊥':\n",
-    "            return f;\n",
-    "        case '¬': {\n",
-    "            const [_, g] = f;\n",
-    "            return neg(g);\n",
-    "        }\n",
-    "        case '∧':\n",
-    "        case '∨':\n",
-    "        case '→':\n",
-    "        case '↔': {\n",
-    "            const [op, g, h] = f;\n",
-    "            return [op, nnf(g), nnf(h)];\n",
-    "        }\n",
-    "        case '∀':\n",
-    "        case '∃': {\n",
-    "            const [op, x, g] = f;\n",
-    "            return [op, x, nnf(g)];\n",
-    "        }\n",
-    "    }\n",
-    "}\n",
-    "\n",
-    "function neg(f: Formula): Formula {\n",
-    "    switch (f[0]) {\n",
-    "        case '⊤': return ['⊥'];\n",
-    "        case '⊥': return ['⊤'];\n",
-    "        case '¬': {\n",
-    "            const [_, g] = f;\n",
-    "            return nnf(g);\n",
-    "        }\n",
-    "        case '∧': {\n",
-    "            const [_, g, h] = f;\n",
-    "            return ['∨', neg(g), neg(h)];\n",
-    "        }\n",
-    "        case '∨': {\n",
-    "            const [_, g, h] = f;\n",
-    "            return ['∧', neg(g), neg(h)];\n",
-    "        }\n",
-    "        case '→':\n",
-    "        case '↔':\n",
-    "        case '⚛️':\n",
-    "            return ['¬', f];\n",
-    "        case '∀': {\n",
-    "            const [_, x, g] = f;\n",
-    "            return ['∃', x, neg(g)];\n",
-    "        }\n",
-    "        case '∃': {\n",
-    "            const [_, x, g] = f;\n",
-    "            return ['∀', x, neg(g)];\n",
-    "        }\n",
-    "    }\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.dir(f3, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "const f4 = nnf(f3);\n",
-    "console.dir(f4, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Prenex Normal Form"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "In the following we assume that all quantifiers that occur in a formula bind **different** variables, i.e. we assume that the formulas are *pure*.  If this assumption is not satisfied, then the functions given below will produce <u>garbage</u>."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "type QuantifierList = string[];"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "A *quantifier tuple* is a tuple of the following form:\n",
-    "$$ (Q_1, x_1, \\cdots, Q_n, x_n) $$\n",
-    "Here, the $Q_i$ denote quantifiers, i.e. we have $Q_i \\in \\{\\forall, \\exists\\}$, while the $x_i$ are variables.  The function $\\texttt{mergeQuantifiers}(T_1, T_2)$ takes two quantifier tuples $T_1$ and $T_2$ as arguments and merges them into a new quantifier tuple such that the relative order of the quantifiers remains the same, i.e. if both $Q_1, x_1$ and $Q_2, x_2$ occur in $T_1$ and $Q_1, x_1$ occurs before $Q_2, x_2$, then $Q_1, x_1$ will occur before $Q_2, x_2$ in the result."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function mergeQuantifiers(Q1: QuantifierList, Q2: QuantifierList): QuantifierList {\n",
-    "    if (Q1.length == 0) return Q2;\n",
-    "    if (Q2.length == 0) return Q1;\n",
-    "    if (Q1[0] == '∃') return [Q1[0], Q1[1], ...mergeQuantifiers(Q1.slice(2), Q2)];\n",
-    "    if (Q2[0] == '∃') return [Q2[0], Q2[1], ...mergeQuantifiers(Q1, Q2.slice(2))];\n",
-    "    return [Q1[0], Q1[1], ...mergeQuantifiers(Q1.slice(2), Q2)];\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.log(mergeQuantifiers(['∀', 'X', '∃', 'Y'], ['∃', 'U', '∀', 'V']));"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "Given a formula $f$, the function $\\texttt{extractQuantifiers}(f)$ returns a pairs $(T, m)$, where $T$ is a quantifier tuple and $m$ is the <em style=\"color:blue;\">matrix</em> of the formula $f$, where the matrix of a formula is defined as the part that remains when all quantifiers have been extracted."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function extractQuantifiers(f: Formula): [QuantifierList, Formula] {\n",
-    "    switch (f[0]) {\n",
-    "        case '⚛️':\n",
-    "        case '⊤':\n",
-    "        case '⊥':\n",
-    "        case '¬':\n",
-    "            return [[], f];\n",
-    "        case '∧':\n",
-    "        case '∨':\n",
-    "        case '→':\n",
-    "        case '↔': {\n",
-    "            const [op, g, h] = f;\n",
-    "            const [qg, gm] = extractQuantifiers(g);\n",
-    "            const [qh, hm] = extractQuantifiers(h);\n",
-    "            return [mergeQuantifiers(qg, qh), [op, gm, hm]];\n",
-    "        }\n",
-    "        case '∀':\n",
-    "        case '∃': {\n",
-    "            const [op, x, g] = f;\n",
-    "            const [qg, gm] = extractQuantifiers(g);\n",
-    "            return [[op, x, ...qg], gm];\n",
-    "        }\n",
-    "    }\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.dir(f4, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "const [Qs, f5] = extractQuantifiers(f4);\n",
-    "console.log(Qs);\n",
-    "console.dir(f5, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "Given a qantifier tuple $\\texttt{Qs}$ and a matrix $m$, the call $\\texttt{attachQuantifiers}(Qs, m)$ combines the quantifiers $\\texttt{Qs}$ and the matrix $m$ into a quantified formula."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function attachQuantifiers(Qs: QuantifierList, m: Formula): Formula {\n",
-    "    if (Qs.length == 0) return m;\n",
-    "    const Q = Qs[0] as '∀' | '∃';\n",
-    "    const x = Qs[1];\n",
-    "    return [Q, x, attachQuantifiers(Qs.slice(2), m)];\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.log(Qs);"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.dir(f5, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "const f6 = attachQuantifiers(Qs, f5);\n",
-    "console.dir(f6, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Skolemization (Eliminating Existential Quantifiers)"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The variable $\\texttt{skolemCounter}$ is a global variable that is needed to create unique Skolem constants.  "
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "let skolemCounter = 0;"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function skolemConstant(): string {\n",
-    "    skolemCounter += 1;\n",
-    "    return 'sk' + skolemCounter.toString();\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The function $\\texttt{skolemize}(f, \\texttt{Vs})$ takes a formula $f$ and a tuple of variables $\\texttt{Vs}$ and \n",
-    "<em style=\"color:blue\">skolemizes</em> the formula $f$, i.e. it replaces all existentially quantified variables by appropriate <em style=\"color:blue\">Skolem functions</em>.  The tuple $\\texttt{Vs}$ is a tuple of variables that are \n",
-    "assumed to be universally quantified.  The formula $f$ is assumed to be in <em style=\"color:blue\">prenex normal form</em>.\n",
-    "\n",
-    "For skolemization to work correctly, we have to assume that \n",
-    "<font size=\"4\" style=\"color:darkgreen; size:125%\">$f$ does not contain free variables</font>!"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function skolemize(f: Formula, Vs: string[]): Formula {\n",
-    "    switch (f[0]) {\n",
-    "        case '∃': {\n",
-    "            const [_, x, g] = f;\n",
-    "            const t: Term = [skolemConstant(), ...Vs];\n",
-    "            const sigma: Substitution = new Map();\n",
-    "            sigma.set(x, t);\n",
-    "            return skolemize(applyFormula(g, sigma), Vs);\n",
-    "        }\n",
-    "        case '∀': {\n",
-    "            const [op, x, g] = f;\n",
-    "            return [op, x, skolemize(g, [...Vs, x])];\n",
-    "        }\n",
-    "        default:\n",
-    "            return f;\n",
-    "    }\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.dir(f6, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "const f7 = skolemize(f6, []);\n",
-    "console.dir(f7, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Conversion to Clauses"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "// Helper to convert array structure to recursive-set Tuple for structural equality\n",
-    "function toTuple(f: any): any {\n",
-    "    if (typeof f == 'string') return f;\n",
-    "    if (Array.isArray(f)) return tpl(...f.map(toTuple));\n",
-    "    return f;\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "type Literal = Tuple<any>;\n",
-    "type Clause = Set<Literal>;\n",
-    "type CNFSet = Set<Clause>;"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The function $\\texttt{cnf}(f)$ takes a <em style=\"color:blue\">skolemized</em> formula $f$ from first order logic that is in <em style=\"color:blue\">negation normal form</em> and returns the <em style=\"color:blue\">conjunctive normal form</em> of $f$ in <em style=\"color:blue\">set notation</em>.  This works the same way as in propositional logic."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function cnf(f: Formula): CNFSet {\n",
-    "    switch (f[0]) {\n",
-    "        case '⊤': return set<Clause>();\n",
-    "        case '⊥': return set<Clause>(set<Literal>());\n",
-    "        case '¬': return set<Clause>(set<Literal>(toTuple(f)));\n",
-    "        case '∧': {\n",
-    "            const [_, g, h] = f;\n",
-    "            return cnf(g).union(cnf(h));\n",
-    "        }\n",
-    "        case '∨': {\n",
-    "            const [_, g, h] = f;\n",
-    "            return flatMap(cnf(g), k1 => cnf(h).map(k2 => k1.union(k2)));\n",
-    "        }\n",
-    "        case '∀': {\n",
-    "            const [_, x, g] = f;\n",
-    "            return cnf(g);\n",
-    "        }\n",
-    "        case '⚛️':\n",
-    "            return set(set(toTuple(f)));\n",
-    "        default:\n",
-    "            return set(set(toTuple(f)));\n",
-    "    }\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "console.dir(f7, { depth: null });"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "const f8 = cnf(f7);\n",
-    "for (let cl of f8) {\n",
-    "    console.log(cl.toString());\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Putting Everything Together"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "The function $f$ takes a <em style=\"color:blue\">pure</em> formula $f$ from first order logic and transforms $f$ into a set of first order clauses.  Furthermore, $f$ **must not** contain free variables."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function normalize(f: Formula): CNFSet {\n",
-    "    const f1 = eliminateBiconditional(f);\n",
-    "    const f2 = eliminateConditional(f1);\n",
-    "    const f3 = nnf(f2);\n",
-    "    const [Qs, f4] = extractQuantifiers(f3);\n",
-    "    const f5 = attachQuantifiers(Qs, f4);\n",
-    "    const f6 = skolemize(f5, []);\n",
-    "    return cnf(f6);\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "for (let cl of normalize(f1)) {\n",
-    "    console.log(cl.toString());\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function prettify(M: CNFSet): string {\n",
-    "    if (M.size === 0) return '{}';\n",
-    "    let result = \"{\\n\";\n",
-    "    const clauses = [...M];\n",
-    "    for (let i = 0; i < clauses.length; i++) {\n",
-    "        const A = clauses[i];\n",
-    "        if (A.size === 0) {\n",
-    "            result += \"    {},\\n\";\n",
-    "        } else {\n",
-    "            result += \"    {\" + [...A].map(lit => lit.toString()).join(\", \") + \"}\";\n",
-    "            if (i < clauses.length - 1) result += \",\\n\";\n",
-    "            else result += \"\\n\";\n",
-    "        }\n",
-    "    }\n",
-    "    result += \"}\";\n",
-    "    return result;\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "function test(s: string): void {\n",
-    "    const f = parse(s);\n",
-    "    console.log(`The knf of ${s} is:`);\n",
-    "    console.log(prettify(normalize(f)));\n",
-    "}"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test(s);"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "test('¬(∃Y:∀X:p(X,Y)→∀U:∃V:p(U,V))');"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": []
-  }
- ],
- "metadata": {
-  "hide_input": false,
-  "kernelspec": {
-   "display_name": "TypeScript",
-   "language": "typescript",
-   "name": "tslab"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "mode": "typescript",
-    "name": "javascript",
-    "typescript": true
-   },
-   "file_extension": ".ts",
-   "mimetype": "text/typescript",
-   "name": "typescript",
-   "version": "3.7.2"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 4
+function range(n: number): number[] {
+    return Array.from({ length: n + 1 }, (_, i) => i);
 }
+
+range(4)
+
+import { parseFormula as parse, Formula, Term, Variable, PredicateSymbol } from "./FOL-Parser";
+import { Tuple, RecursiveSet as Set, Value, flatMap } from "recursive-set";
+
+function set<T extends Value>(...elements: T[]): Set<T> {
+    return new Set(...elements);
+}
+
+function tpl<T extends Value[]>(...elements: T): Tuple<T> {
+    return new Tuple(...elements);
+}
+
+const s = '∀G:∀C:(grandparent(G, C) ↔ ∃P: (parent(G, P) ∧ parent(P, C)))';
+const f1 = parse(s);
+console.dir(f1, { depth: null });
+
+type Substitution = Map<Variable, Term>;
+
+function applyTerm(t: Term, sigma: Substitution): Term {
+    if (typeof t == 'string') {
+        const mapped = sigma.get(t);
+        return mapped !== undefined ? mapped : t;
+    }
+    const  [f, ...args] = t;
+    return [f, ...args.map(arg => applyTerm(arg, sigma))];
+}
+
+function applyFormula(f: Formula, sigma: Substitution): Formula {
+    switch (f[0]) {
+        case '⚛️': {
+            const  [_, pred, ...args] = f;
+            return ['⚛️', pred, ...args.map(arg => applyTerm(arg, sigma))];
+        }
+        case '⊤':
+        case '⊥':
+            return f;
+        case '¬': {
+            const [op, g] = f;
+            return [op, applyFormula(g, sigma)];
+        }
+        case '∧':
+        case '∨':
+        case '→':
+        case '↔': {
+            const [op, g, h] = f;
+            return [op, applyFormula(g, sigma), applyFormula(h, sigma)];
+        }
+        case '∀':
+        case '∃': {
+            const [op, x, g] = f;
+            const mapped = sigma.get(x);
+            const newX = typeof mapped == 'string' ? mapped : x;
+            return [op, newX, applyFormula(g, sigma)];
+        }
+    }
+}
+
+console.dir(f1, { depth: null });
+
+const sigma1: Substitution = new Map([
+    ['G', 'X'],
+    ['P', 'Y'],
+    ['C', 'Z']
+]);
+console.dir(applyFormula(f1, sigma1), { depth: null });
+
+function boundVariables(f: Formula): Set<string> {
+    switch (f[0]) {
+        case '⚛️':
+        case '⊤':
+        case '⊥':
+            return set<string>();
+        case '¬': {
+            const [_, g] = f;
+            return boundVariables(g);
+        }
+        case '∧':
+        case '∨':
+        case '→':
+        case '↔': {
+            const [_, g, h] = f;
+            return boundVariables(g).union(boundVariables(h));
+        }
+        case '∀':
+        case '∃': {
+            const [_, x, g] = f;
+            return boundVariables(g).union(set(x));
+        }
+    }
+}
+
+console.dir(f1, { depth: null });
+
+console.log([...boundVariables(f1)]);
+
+function allVariablesTerm(t: Term): Set<string> {
+    if (typeof t == 'string') return set(t);
+    const [_, ...args] = t;
+    return flatMap(args, t => allVariablesTerm(t));
+}
+
+function allVariables(f: Formula): Set<string> {
+    switch(f[0]) {
+        case '⚛️': {
+            const [_, pred, ...args] = f;
+            return flatMap(args, t => allVariablesTerm(t));
+        }
+        case '⊤':
+        case '⊥':
+            return set<string>();
+        case '¬': {
+            const [_, g] = f;
+            return allVariables(g);
+        }
+        case '∧':
+        case '∨':
+        case '→':
+        case '↔': {
+            const [_, g, h] = f;
+            return allVariables(g).union(allVariables(h));
+        }
+        case '∀':
+        case '∃': {
+            const [_, x, g] = f;
+            return allVariables(g).union(set(x));
+        }
+    }
+}
+
+console.dir(f1, { depth: null });
+
+console.log([...allVariables(f1)]);
+
+const g1: Formula = ['↔', 
+    ['⚛️', 'grandparent', 'G', 'C'],
+    ['∃', 'P', ['∧', ['⚛️', 'parent', 'G', 'P'], ['⚛️', 'parent', 'P', 'C']]]
+];
+
+console.log([...allVariables(g1)]);
+
+const ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+ascii_uppercase
+
+const ascii_set = set(...ascii_uppercase);
+console.log(ascii_set.size);
+
+function renameBoundVariables(f: Formula): Formula {
+    const boundVs = [...boundVariables(f)];
+    const allVs   = allVariables(f);
+    const newVars = ascii_uppercase.filter(x => !allVs.has(x)).sort();
+    const sigma   = new Map(boundVs.map((bv, i) => [bv, newVars[i]]));    
+    return applyFormula(f, sigma);
+}
+
+console.log(['A', 'B', 'C'].map((x, i) => [i, x]));
+
+console.dir(f1, { depth: null });
+
+console.dir(renameBoundVariables(f1), { depth: null });
+
+function eliminateBiconditional(f: Formula): Formula {
+    switch (f[0]) {
+        case '⚛️':
+        case '⊤':
+        case '⊥':
+            return f;
+        case '¬': {
+            const [op, g] = f;
+            return [op, eliminateBiconditional(g)];
+        }
+        case '∧':
+        case '∨':
+        case '→': {
+            const [op, g, h] = f;
+            return [op, eliminateBiconditional(g), eliminateBiconditional(h)];
+        }
+        case '↔': {
+            const [_, g, h] = f;
+            const ge = eliminateBiconditional(g);
+            const he = eliminateBiconditional(h);
+            const left: Formula = ['→', ge, he];
+            const right = renameBoundVariables(['→', he, ge]);
+            return ['∧', left, right];
+        }
+        case '∀':
+        case '∃': {
+            const [op, x, g] = f;
+            return [op, x, eliminateBiconditional(g)];
+        }
+    }
+}
+
+console.dir(f1, { depth: null });
+
+const f2 = eliminateBiconditional(f1);
+console.dir(f2, { depth: null });
+
+function eliminateConditional(f: Formula): Formula {
+    switch (f[0]) {
+        case '⚛️':
+        case '⊤':
+        case '⊥':
+            return f;
+        case '¬': {
+            const [op, g] = f;
+            return [op, eliminateConditional(g)];
+        }
+        case '∧':
+        case '∨':
+        case '↔': {
+            const [op, g, h] = f;
+            return [op, eliminateConditional(g), eliminateConditional(h)];
+        }
+        case '→': {
+            const [_, g, h] = f;
+            return ['∨', ['¬', eliminateConditional(g)], eliminateConditional(h)];
+        }
+        case '∀':
+        case '∃': {
+            const [op, x, g] = f;
+            return [op, x, eliminateConditional(g)];
+        }
+    }
+}
+
+console.dir(f2, { depth: null });
+
+const f3 = eliminateConditional(f2);
+console.dir(f3, { depth: null });
+
+function nnf(f: Formula): Formula {
+    switch (f[0]) {
+        case '⚛️':
+        case '⊤':
+        case '⊥':
+            return f;
+        case '¬': {
+            const [_, g] = f;
+            return neg(g);
+        }
+        case '∧':
+        case '∨':
+        case '→':
+        case '↔': {
+            const [op, g, h] = f;
+            return [op, nnf(g), nnf(h)];
+        }
+        case '∀':
+        case '∃': {
+            const [op, x, g] = f;
+            return [op, x, nnf(g)];
+        }
+    }
+}
+
+function neg(f: Formula): Formula {
+    switch (f[0]) {
+        case '⊤': return ['⊥'];
+        case '⊥': return ['⊤'];
+        case '¬': {
+            const [_, g] = f;
+            return nnf(g);
+        }
+        case '∧': {
+            const [_, g, h] = f;
+            return ['∨', neg(g), neg(h)];
+        }
+        case '∨': {
+            const [_, g, h] = f;
+            return ['∧', neg(g), neg(h)];
+        }
+        case '→':
+        case '↔':
+        case '⚛️':
+            return ['¬', f];
+        case '∀': {
+            const [_, x, g] = f;
+            return ['∃', x, neg(g)];
+        }
+        case '∃': {
+            const [_, x, g] = f;
+            return ['∀', x, neg(g)];
+        }
+    }
+}
+
+console.dir(f3, { depth: null });
+
+const f4 = nnf(f3);
+console.dir(f4, { depth: null });
+
+type QuantifierList = string[];
+
+function mergeQuantifiers(Q1: QuantifierList, Q2: QuantifierList): QuantifierList {
+    if (Q1.length == 0) return Q2;
+    if (Q2.length == 0) return Q1;
+    if (Q1[0] == '∃') return [Q1[0], Q1[1], ...mergeQuantifiers(Q1.slice(2), Q2)];
+    if (Q2[0] == '∃') return [Q2[0], Q2[1], ...mergeQuantifiers(Q1, Q2.slice(2))];
+    return [Q1[0], Q1[1], ...mergeQuantifiers(Q1.slice(2), Q2)];
+}
+
+console.log(mergeQuantifiers(['∀', 'X', '∃', 'Y'], ['∃', 'U', '∀', 'V']));
+
+function extractQuantifiers(f: Formula): [QuantifierList, Formula] {
+    switch (f[0]) {
+        case '⚛️':
+        case '⊤':
+        case '⊥':
+        case '¬':
+            return [[], f];
+        case '∧':
+        case '∨':
+        case '→':
+        case '↔': {
+            const [op, g, h] = f;
+            const [qg, gm] = extractQuantifiers(g);
+            const [qh, hm] = extractQuantifiers(h);
+            return [mergeQuantifiers(qg, qh), [op, gm, hm]];
+        }
+        case '∀':
+        case '∃': {
+            const [op, x, g] = f;
+            const [qg, gm] = extractQuantifiers(g);
+            return [[op, x, ...qg], gm];
+        }
+    }
+}
+
+console.dir(f4, { depth: null });
+
+const [Qs, f5] = extractQuantifiers(f4);
+console.log(Qs);
+console.dir(f5, { depth: null });
+
+function attachQuantifiers(Qs: QuantifierList, m: Formula): Formula {
+    if (Qs.length == 0) return m;
+    const Q = Qs[0] as '∀' | '∃';
+    const x = Qs[1];
+    return [Q, x, attachQuantifiers(Qs.slice(2), m)];
+}
+
+console.log(Qs);
+
+console.dir(f5, { depth: null });
+
+const f6 = attachQuantifiers(Qs, f5);
+console.dir(f6, { depth: null });
+
+let skolemCounter = 0;
+
+function skolemConstant(): string {
+    skolemCounter += 1;
+    return 'sk' + skolemCounter.toString();
+}
+
+function skolemize(f: Formula, Vs: string[]): Formula {
+    switch (f[0]) {
+        case '∃': {
+            const [_, x, g] = f;
+            const t: Term = [skolemConstant(), ...Vs];
+            const sigma: Substitution = new Map();
+            sigma.set(x, t);
+            return skolemize(applyFormula(g, sigma), Vs);
+        }
+        case '∀': {
+            const [op, x, g] = f;
+            return [op, x, skolemize(g, [...Vs, x])];
+        }
+        default:
+            return f;
+    }
+}
+
+console.dir(f6, { depth: null });
+
+const f7 = skolemize(f6, []);
+console.dir(f7, { depth: null });
+
+// Helper to convert array structure to recursive-set Tuple for structural equality
+function toTuple(f: any): any {
+    if (typeof f == 'string') return f;
+    if (Array.isArray(f)) return tpl(...f.map(toTuple));
+    return f;
+}
+
+type Literal = Tuple<any>;
+type Clause = Set<Literal>;
+type CNFSet = Set<Clause>;
+
+function cnf(f: Formula): CNFSet {
+    switch (f[0]) {
+        case '⊤': return set<Clause>();
+        case '⊥': return set<Clause>(set<Literal>());
+        case '¬': return set<Clause>(set<Literal>(toTuple(f)));
+        case '∧': {
+            const [_, g, h] = f;
+            return cnf(g).union(cnf(h));
+        }
+        case '∨': {
+            const [_, g, h] = f;
+            return flatMap(cnf(g), k1 => cnf(h).map(k2 => k1.union(k2)));
+        }
+        case '∀': {
+            const [_, x, g] = f;
+            return cnf(g);
+        }
+        case '⚛️':
+            return set(set(toTuple(f)));
+        default:
+            return set(set(toTuple(f)));
+    }
+}
+
+console.dir(f7, { depth: null });
+
+const f8 = cnf(f7);
+for (let cl of f8) {
+    console.log(cl.toString());
+}
+
+function normalize(f: Formula): CNFSet {
+    const f1 = eliminateBiconditional(f);
+    const f2 = eliminateConditional(f1);
+    const f3 = nnf(f2);
+    const [Qs, f4] = extractQuantifiers(f3);
+    const f5 = attachQuantifiers(Qs, f4);
+    const f6 = skolemize(f5, []);
+    return cnf(f6);
+}
+
+for (let cl of normalize(f1)) {
+    console.log(cl.toString());
+}
+
+function prettify(M: CNFSet): string {
+    if (M.size === 0) return '{}';
+    let result = "{\n";
+    const clauses = [...M];
+    for (let i = 0; i < clauses.length; i++) {
+        const A = clauses[i];
+        if (A.size === 0) {
+            result += "    {},\n";
+        } else {
+            result += "    {" + [...A].map(lit => lit.toString()).join(", ") + "}";
+            if (i < clauses.length - 1) result += ",\n";
+            else result += "\n";
+        }
+    }
+    result += "}";
+    return result;
+}
+
+function test(s: string): void {
+    const f = parse(s);
+    console.log(`The knf of ${s} is:`);
+    console.log(prettify(normalize(f)));
+}
+
+test(s);
+
+test('¬(∃Y:∀X:p(X,Y)→∀U:∃V:p(U,V))');
+
+
