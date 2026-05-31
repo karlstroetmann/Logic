@@ -13,14 +13,18 @@ This chapter is structured as follows:
 \section{\textsc{Fol} Conjunctive Normal Form}
 In order to perform automatic theorem proving for first order logic (abbreviated as \textsc{Fol} in the
 following), it is necessary to transform \textsc{Fol} formulas in conjunctive normal form.
-\blue{\textsc{Fol} conjunctive normal form} (abbreviated as \textsc{Cnf}) provides a standardized
+\blue{\textsc{Fol} conjunctive normal form} (abbreviated as \textsc{Fol-Cnf}) provides a standardized
 representation for logical formulas. Its structure is defined as follows: 
 \begin{itemize}
 \item A \blue{literal} is an atomic formula (a predicate applied to terms) or the negation of an
       atomic formula. For example, $p(x, f(a))$ and $\neg q(y)$ are literals. 
 \item A \blue{clause} is a disjunction of one or more literals. For example,
-      $p(x) \lor \neg q(y) \lor r(a,z)$ is a clause. 
-\item A formula in \blue{\textsc{Cnf}} is a conjunction of clauses. It is often represented as a set of its clauses
+      $p(x) \lor \neg q(y) \lor r(a,z)$ is a clause.
+
+      As we have done in propositional logic, we will use set notation to represent clauses.
+\item A formula in \blue{\textsc{Cnf}} is a conjunction of clauses.
+
+      Again, we will use set notation and represent the formula as a set of its clauses
       where the clauses itself are represented as sets of literals.
 \end{itemize}
 A critical characteristic of clausal form in \textsc{Fol} is that \textbf{all variables appearing in the clauses are implicitly universally quantified}. The scope of these quantifiers is the individual clause in which the variable appears. Explicit universal quantifiers are typically dropped for conciseness.
@@ -205,7 +209,7 @@ Once the matrix is in \textsc{Cnf}, it has the form $C_1 \land C_2 \land \dots \
 Consider the First-Order Logic formula:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\phi := \forall x: \bigl(R(x) \rightarrow (\exists y: (P(x,y) \land \neg Q(y)) \land \forall z: S(x,z)))$.
+$\phi := \forall x: \bigl(r(x) \rightarrow (\exists y: (p(x,y) \land \neg q(y)) \land \forall z: s(x,z)))$.
 \\[0.2cm]
 The transformation proceeds as follows:
 \begin{enumerate}
@@ -213,8 +217,8 @@ The transformation proceeds as follows:
       Replace $A \rightarrow B$ with $\neg A \lor B$. 
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\phi \quad\Leftrightarrow\quad \forall x: \bigl(\neg R(x) \lor \bigl(\exists y: (P(x,y) \land \neg
-      Q(y)\bigr) \land \forall z: S(x,z)\bigr)\bigr)$ 
+      $\phi \quad\Leftrightarrow\quad \forall x: \Bigl(\neg r(x) \lor \bigl(\exists y: (p(x,y) \land \neg
+      q(y)\bigr) \land \forall z: s(x,z)\bigr)\Bigr)$ 
 \item \textbf{Step 2: Moving Negations Inwards (NNF)} \\
       The previous formula is already in NNF as all negations ($\neg R(x)$, $\neg Q(y)$) apply directly to atomic formulas.
 
@@ -225,8 +229,8 @@ The transformation proceeds as follows:
       Move all quantifiers to the front. We get
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\phi \quad\Leftrightarrow\quad
-       \forall x: \exists y: \forall z: \Bigl(\neg R(x) \lor \bigl(P(x,y) \land \neg Q(y) \land S(x,z)\bigr)\Bigr)$
+      $\phi \quad\leftrightarrow\quad
+       \forall x: \exists y: \forall z: \Bigl(\neg r(x) \lor \bigl(p(x,y) \land \neg q(y) \land s(x,z)\bigr)\Bigr)$
     \item \textbf{Step 5: Skolemization}
     \begin{itemize}
         \item The existential quantifier $\exists y$ is in the scope of the universal quantifier $\forall x$.
@@ -234,25 +238,25 @@ The transformation proceeds as follows:
           $\exists y$.   This yields
           \\[0.2cm]
           \hspace*{1.3cm}
-          $\phi \approx_e \forall x: \forall z: \Bigl(\neg R(x) \lor \bigl(P(x,f(x)) \land \neg Q(f(x)) \land S(x,z)\bigr)\Bigr)$
+          $\phi \approx_e \forall x: \forall z: \Bigl(\neg r(x) \lor \bigl(p(x,f(x)) \land \neg q(f(x)) \land s(x,z)\bigr)\Bigr)$
        \end{itemize}
   \item \textbf{Step 6: Drop the Universal Quantifiers} \\
     Remove $\forall x$ and $\forall z$. Variables $x$ and $z$ are now implicitly universally quantified.  Therefore
     \\[0.2cm]
     \hspace*{1.3cm}
-    $\phi \approx_e \neg R(x) \lor \bigl(P(x,f(x)) \land \neg Q(f(x)) \land S(x,z)\bigr)$ 
+    $\phi \approx_e \neg r(x) \lor \bigl(p(x,f(x)) \land \neg q(f(x)) \land s(x,z)\bigr)$ 
 
     \item \textbf{Step 7: Conversion of the Matrix to Conjunctive Normal Form (\textsc{Cnf})} 
           Applying the distributive law yields 
           \\[0.2cm]
           \hspace*{1.3cm}
-    $\phi \approx_e \bigl(\neg R(x) \lor P(x,f(x))\bigr) \land \bigl(\neg R(x) \lor \neg Q(f(x))\bigr) \land \bigl(\neg R(x) \lor S(x,z)\bigr)$
+    $\phi \approx_e \bigl(\neg r(x) \lor p(x,f(x))\bigr) \land \bigl(\neg r(x) \lor \neg q(f(x))\bigr) \land \bigl(\neg r(x) \lor s(x,z)\bigr)$
 
     \item \textbf{Step 8: Set Notation} \\
     The last formula  is a conjunction of three clauses. The set of clauses is: 
     \\[0.2cm]
     \hspace*{1.3cm}
-    $\Bigl\{\bigl\{\neg R(x), P(x,f(x))\bigr\}, \bigl\{\neg R(x), \neg Q(f(x))\bigr\}, \bigl\{\neg R(x), S(x,z)\bigl\} \Bigl\}$
+    $\Bigl\{\bigl\{\neg r(x), p(x,f(x))\bigr\}, \bigl\{\neg r(x), \neg q(f(x))\bigr\}, \bigl\{\neg r(x), s(x,z)\bigl\} \Bigl\}$
 \end{enumerate}
 
 \exerciseEng
@@ -270,8 +274,8 @@ Transform the following formulas from first-order logic into sets of first-order
 The Jupyter notebook linked below contains a \textsl{Python} programm that we can use to transform predicate
 logic formulae into a satisfiability-equivalent set of first-order clauses. 
 \\[0.2cm]
-\hspace*{0.3cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/09-FOL-CNF.ipynb}{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/09-FOL-CNF.ipynb}.
+\hspace*{1.3cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-6/01-FOL-CNF.ipynb}{Chapter-6/01-FOL-CNF.ipynb}.
 \vspace*{0.2cm}
 
 Next, our goal is to develop a method that can be used to verify that a first-order formula

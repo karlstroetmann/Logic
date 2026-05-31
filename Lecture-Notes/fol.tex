@@ -809,7 +809,7 @@ definition follows.
 
 \begin{Definition}[CSP] \index{CSP} \hspace*{\fill} \linebreak
 A \blue{constraint satisfaction problem} \index{constraint satisfaction problem} (abbreviated as
-\textsc{Csp}) is defined as a triple
+\Gls{csp}) is defined as a triple
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathbb{P} := \langle \Sigma, \mathcal{S}, \mathcal{C} \rangle$
@@ -833,7 +833,7 @@ problem is given as the triple
 \hspace*{1.3cm}
 $\mathbb{P} = \langle \mathcal{V}, \mathcal{U}, \mathcal{C} \rangle$.
 \\[0.2cm]
-Given a \textsc{Csp}
+Given a \Gls{csp}
 \\[0.2cm]
 \hspace*{1.3cm}
  $\mathbb{P} = \langle \mathcal{V}, \mathcal{U}, \mathcal{C} \rangle$, 
@@ -843,8 +843,8 @@ a \blue{variable assignment} for $\mathbb{P}$ is a function
 \hspace*{1.3cm}
 $\mathcal{I}: \mathcal{V} \rightarrow \mathcal{U}$.
 \\[0.2cm]
-A variable assignment $\mathcal{I}$ is a \blue{solution} of the \textsc{Csp}
-$\mathbb{P}= \langle \mathcal{V}, \mathcal{U}, \mathcal{C} \rangle$ \index{solution of a \textsc{Csp}}
+A variable assignment $\mathcal{I}$ is a \blue{solution} of the \Gls{csp}
+$\mathbb{P}= \langle \mathcal{V}, \mathcal{U}, \mathcal{C} \rangle$ \index{solution of a \Gls{csp}}
 if, given the assignment $\mathcal{I}$, all constraints from $\mathcal{C}$ are satisfied, i.e.~we have
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1020,7 +1020,7 @@ in \myFig{eight-queens.txt}.
   \caption{A solution of the eight queens problem.}
   \label{fig:eight-queens.txt}
 \end{figure}
-Later, when we implement procedures to solve  \textsc{Csp}s, we will represent variable assignments and partial
+Later, when we implement procedures to solve  \Gls{csp}s, we will represent variable assignments and partial
 variable assignments as dictionaries.  For example, the variable assignment $\mathcal{I}$ defined above would
 then be represented in \textsl{TypeScript} as the \texttt{Map} 
 \\[0.2cm]
@@ -1060,7 +1060,7 @@ partial assignment is shown in \myFig{eight-queens-partial.txt}.
 
 
 \myFig{queens-csp.stlx} shows a \textsl{TypeScript} program that can be used to create the eight queens puzzle as a
-\textsc{Csp}.  
+\Gls{csp}.  
 
 \begin{figure}[!ht]
 \centering
@@ -1093,7 +1093,7 @@ partial assignment is shown in \myFig{eight-queens-partial.txt}.
 
 
 \subsection{A Backtracking Constraint Solver}
-One approach to solve a \textsc{Csp} that is both conceptually simple and reasonable efficient is
+One approach to solve a \Gls{csp} that is both conceptually simple and reasonable efficient is
 \blue{backtracking}.\index{backtracking}  The idea is to try to build variable assignments incrementally:  We start with
 an empty dictionary and pick a variable $x_1$ that needs to have a value assigned.  For this variable, we
 choose a value $v_1$ and assign it to this variable.  This yields the partial assignment $\{ x_1 \mapsto v_1 \}$.
@@ -1173,7 +1173,7 @@ is shown in  Figure \ref{fig:CSP-Solver.ipynb-1} on page \pageref{fig:CSP-Solver
     }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{A backtracking \textsc{Csp} solver, part 1.}
+\caption{A backtracking \Gls{csp} solver, part 1.}
 \label{fig:CSP-Solver.ipynb-1}
 \end{figure} %$
 
@@ -1308,7 +1308,7 @@ is shown in  Figure \ref{fig:CSP-Solver.ipynb-1} on page \pageref{fig:CSP-Solver
     }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{A backtracking \textsc{Csp} solver, part 2.}
+\caption{A backtracking \Gls{csp} solver, part 2.}
 \label{fig:CSP-Solver.ipynb-2}
 \end{figure}
 
@@ -1332,7 +1332,7 @@ is shown in  Figure \ref{fig:CSP-Solver.ipynb-1} on page \pageref{fig:CSP-Solver
   \begin{enumerate}
   \item It checks if the size of the current \texttt{assignment} equals the total length of the
     \texttt{variables} array.  If they are equal, the assignment is complete.  Since it is also consistent, it
-    is a solution of our \textsc{Csp} and hence is returned.
+    is a solution of our \Gls{csp} and hence is returned.
   \item It selects the next unassigned variable, \texttt{nextVar}, by finding the first variable in the
     \texttt{variables} list that is not present in the \texttt{assignedVars} set. 
   \item It loops through every possible \texttt{value} in the \texttt{values} array. For each value:
@@ -1435,7 +1435,7 @@ In order to solve this problem via constraint programming, we first introduce th
 \blue{symbolic transition system}.
 
 \begin{Definition}[Symbolic Transition System]
-  A symbolic transition system is a 6-tuple
+  A \Gls{sts}) is a 6-tuple
   \\[0.2cm]
   \hspace*{1.3cm}
   $\mathcal{T} = \langle \mathcal{V}, \mathcal{U}, \mathtt{Start}, \mathtt{Goal}, \mathtt{Invariant}, \mathtt{Transition} \rangle$
@@ -1602,7 +1602,7 @@ a symbolic transition system.
     }        
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Turning the symbolic transition system into a \textsc{Csp}.}
+\caption{Turning the symbolic transition system into a \Gls{csp}.}
 \label{fig:Missionaries-STS.ipynb}
 \end{figure} %$
 
@@ -1610,7 +1610,7 @@ Figure \ref{fig:Missionaries-STS.ipynb} shows how the \emph{missionaries and can
 represented as a symbolic transition system in \textsl{TypeScript}.
 
 
-\textsc{Csp}.
+\Gls{csp}.
 \begin{enumerate}
 \item The function \texttt{invariant} checks that the invariant
       \\[0.2cm]
@@ -1624,7 +1624,7 @@ represented as a symbolic transition system in \textsl{TypeScript}.
       variables from the set $\mathcal{V}$, while we append $\mathtt{b}$ to these names to get the primed versions of the
       corresponding variable.
 \item The function $\mathtt{missionaries\_CSP}(n)$ receives a natural number $n$ as its argument.
-       It returns a \textsc{Csp} that has a solution iff there is a solution of the \emph{missionaries and cannibals}
+       It returns a \Gls{csp} that has a solution iff there is a solution of the \emph{missionaries and cannibals}
        problem that crosses the river exactly $n$ times.  It uses the variables
        \\[0.2cm]
        \hspace*{1.3cm}
@@ -2115,8 +2115,8 @@ Finally, the function \texttt{solve} that is shown in Figure \ref{fig:Knight's T
 \pageref{fig:Knight's Tour with Z3.ipynb-2} can be used to solve the puzzle.
 The auxiliary function \texttt{parseVal} takes a bit vector and extracts the value as an integer.
 
-The purpose of the function \texttt{solve} is to construct a \textsc{Csp} encoding the puzzle and to find a
-solution of this \textsc{Csp} unsing \texttt{Z3}.
+The purpose of the function \texttt{solve} is to construct a \Gls{csp} encoding the puzzle and to find a
+solution of this \Gls{csp} unsing \texttt{Z3}.
 If successful, it returns a list of the form
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -2199,8 +2199,8 @@ $v_1$, $\cdots$, $v_n$ and creates a constraint that specifies that these variab
 
 \subsection{Solving Search Problems with \texttt{Z3}}
 In this subsection we show how to solve a search problem using \texttt{Z3}.  The idea is to formulate the
-search problem as a symbolic transition system, convert the symbolic transition system into a \textsc{Csp}, and
-then solve the \textsc{Csp} using \texttt{Z3}.
+search problem as a symbolic transition system, convert the symbolic transition system into a \Gls{csp}, and
+then solve the \Gls{csp} using \texttt{Z3}.
 We will explain our method by solving the
 \href{https://en.wikipedia.org/wiki/Missionaries_and_cannibals_problem}{missionaries and cannibals problem}
 that has already been discussed earlier.  
@@ -2389,7 +2389,7 @@ async function findSolution(): Promise<Map<string, number>> {
 
 Figure \ref{fig:Missionaries-Z3.ipynb-2} on page \pageref{fig:Missionaries-Z3.ipynb-2} show the implementation
 of the function \texttt{missionariesCSP} that takes a natural number $n$ as its input and then creates a
-\textsc{Csp} that is solvable if and only if the symbolic transition system shown in
+\Gls{csp} that is solvable if and only if the symbolic transition system shown in
 \myfig{Missionaries-Z3.ipynb-1} has a solution involving $n$ transitions.
 \begin{enumerate}
 \item Line 4 creates the solver object.
@@ -2402,7 +2402,7 @@ of the function \texttt{missionariesCSP} that takes a natural number $n$ as its 
   \item Every intermediate state has to satisfy the invariant.
   \item Every transition from a state to the successor state has to satisfy the transition formula.
   \end{enumerate}
-\item Line 13 checks whether the resulting \textsc{Csp} is solvable.
+\item Line 13 checks whether the resulting \Gls{csp} is solvable.
 \item If it is solvable, we return a \texttt{Map} that associates every variable $\texttt{M}_i$,  $\texttt{C}_i$,
       $\texttt{B}_i$ with the corresponding value of the solution.
 \item The function \texttt{find\_solution} searches for a value of $n \in \mathbb{N}$ such that the problem is
