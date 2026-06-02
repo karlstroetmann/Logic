@@ -118,8 +118,8 @@ later stages, such as quantifier movement or quantifier elimination.
 \subsection{Step 4: Conversion to \blue{Prenex Normal Form}}
 The goal of this step is to restructure the formula so that all quantifiers appear at the beginning of the
 formula, forming a ``prefix.'' The remainder of the formula, which is quantifier-free, is called the
-\blue{matrix}.  Every \textsc{Fol} formula in classical logic is logically equivalent to a formula in prenex
-normal form (abbreviated as \textsc{Pnf}). 
+\blue{matrix}.  Every \textsc{Fol} formula in classical logic is logically equivalent to a formula in
+\blue{prenex normal form} \index{prenex normal form} (abbreviated as \textsc{Pnf}). 
 The conversion involves applying rules to move quantifiers outwards, past logical connectives. Assuming $x$ is
 not a free variable in the subformula $\psi$ (a condition ensured by prior variable standardization if
 necessary): 
@@ -141,8 +141,8 @@ is the quantifier-free matrix.
 \subsection{Step 5: Skolemization: Eliminating Existential Quantifiers}
 \blue{Skolemization} is a pivotal step that eliminates all existential quantifiers from the formula. This
 transformation is unique because it does not preserve logical equivalence; instead, it preserves
-\blue{equisatisfiability}. The original formula and the Skolemized formula are either both satisfiable or
-both unsatisfiable. 
+\blue{equisatisfiability} \index{equisatisfiability}. The original formula and the Skolemized formula are
+either both satisfiable or both unsatisfiable. 
 The process involves replacing existentially quantified variables with Skolem terms (constants or functions):
 \begin{enumerate}[(a)]
 \item \textbf{Skolem Constant:} If an existential quantifier $\exists y$ is not within the scope of any
@@ -193,7 +193,7 @@ The quantifier-free matrix $M$ obtained from the previous step must now be conve
 These rules are applied repeatedly until the matrix is a conjunction of disjunctions. It is important to note
 that this step can, in the worst case, lead to an exponential increase in the size of the formula. For example,
 converting $(A_1 \land B_1) \lor (A_2 \land B_2) \lor \dots \lor (A_n \land B_n)$ to \textsc{Cnf} results in
-$2^n$ clauses. However, for many practical applications, this explosion is manageable. 
+$2^n$ clauses. However, for many practical applications, the worst case does not occur. 
 
 
 \subsection{Step 8: Using Set Notation}
@@ -271,22 +271,23 @@ Transform the following formulas from first-order logic into sets of first-order
 \vspace*{-0.1cm}
 
 \noindent
-The Jupyter notebook linked below contains a \textsl{Python} programm that we can use to transform predicate
+The Jupyter notebook linked below contains a \textsl{TypeScript} programm that we can use to transform predicate
 logic formulae into a satisfiability-equivalent set of first-order clauses. 
 \\[0.2cm]
 \hspace*{1.3cm}
 \href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-6/01-FOL-CNF.ipynb}{Chapter-6/01-FOL-CNF.ipynb}.
 \vspace*{0.2cm}
 
+\subsection{Refutational Theorem Proving}
 Next, our goal is to develop a method that can be used to verify that a first-order formula
-$f$ is universally valid, i.e.~we want to be able to prove that \\[0.2cm]
+$f$ that contains no free variables is universally valid, i.e.~we want to be able to prove that \\[0.2cm]
 \hspace*{1.3cm}
 $\models f$
 \\[0.2cm]
 holds.  We know that \\[0.2cm]
 \hspace*{1.3cm}
 $\models f$ \quad if and only if \quad $\{\neg f\} \models \falsum$, \\[0.2cm]
-because the formula $f$ is universally valid iff there is no $\Sigma$-structure $\mathcal{S}$ such that
+because the closed formula $f$ is universally valid iff there is no $\Sigma$-structure $\mathcal{S}$ such that
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{S} \models \neg f$,
@@ -635,8 +636,8 @@ of the system of syntactical equations given above.
 \noindent
 The Jupyter notebook
 \\[0.2cm]
-\hspace*{0.0cm}
-\href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/10-Unification.ipynb}{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/10-Unification.ipynb}.
+\hspace*{1.3cm}
+\href{https://github.com/karlstroetmann/Logic/blob/master/TypeScript/Chapter-6/02-Unification.ipynb}{Chapter-6/03-Unification.ipynb}.
 \\[0.2cm]
 implements the algorithm that has been described above.
 
