@@ -1541,15 +1541,14 @@ Figure \ref{fig:cnf} on page \pageref{fig:cnf} shows the implementation of the f
         switch (f[0]) {
             case '⊤': return set();     
             case '⊥': return set(set());
-            case '¬': const [_, g] = f; return set(set(tpl('¬', g))); 
+            case '¬': const [_, p] = f; return set(set(tpl('¬', p))); 
             default: 
-                const [op, h, k] = f;
-                const [hs, ks] = [h, k].map(cnf); 
+                const [op, g, h] = f;
+                const [gs, hs] = [g, h].map(cnf)
                 switch (op) { 
-                    case '∧': return hs.union(ks);
-                    case '∨': const pairs = hs.cartesianProduct(ks);
-                               return pairs.map(([c, d]) => c.union(d)); 
-    }}}
+                    case '∧': return gs.union(hs);
+                    case '∨': return flatMap(gs, c => hs.map(d => c.union(d)));
+    }}} 
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Berechnung der konjunktiven Normalform. \index{\texttt{cnf}}}

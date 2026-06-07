@@ -412,8 +412,7 @@ by induction on $t$:
 \item $f(t_1, \cdots, t_n) \sigma := f\bigl(t_1\sigma, \cdots, t_n\sigma\bigr)$.
 \end{enumerate}
 
-
-
+\noindent
 Next, we define the composition of two $\Sigma$-substitutions.
 
 \begin{Definition}[Composition of Substitutions] \index{Composition von Substitutions}
@@ -471,10 +470,10 @@ This proposition may be proven by induction on $t$.
 \end{Definition}
 
 \noindent
-If $E = \{ s_1 \doteq t_1, \cdots, s_n \doteq t_n \}$ is a system of syntactical equations and $\sigma$ is a
+If $E = \{ s_1 \doteq t_1,\; \cdots,\; s_n \doteq t_n \}$ is a system of syntactical equations and $\sigma$ is a
 substitution, then we define
 \\[0.2cm]
-\hspace*{1.3cm}  $E\sigma := \{ s_1\sigma \doteq t_1\sigma, \cdots, s_n\sigma \doteq t_n\sigma \}$.
+\hspace*{1.3cm}  $E\sigma := \{ s_1\sigma \doteq t_1\sigma,\; \cdots,\; s_n\sigma \doteq t_n\sigma \}$.
 \vspace{0.3cm}
 
 \exampleEng
@@ -532,54 +531,67 @@ pair of the form $\langle \{\}, \mu \rangle$.  In this case  $\mu$ is a unifier 
 syntactical equations $E$.  The reduction rules are as follows:
 \begin{enumerate}
 \item If  $y\in\mathcal{V}$ is a variable that does  \underline{\color{red}not} occur in the term $t$, then
-      we can perform the following reduction: 
-      \[ \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \quad\leadsto\quad 
-         \Big\langle E\{y \mapsto t\}, \sigma\{ y \mapsto t \} \Big\rangle \qquad\mbox{if $y \in \mathcal{V}$
-           and $y \not\in \mathtt{var}(t)$} 
-      \]
+      we can perform the following reduction:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $ \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \quad\leadsto\quad 
+         \Big\langle E\{y \mapsto t\},\; \sigma\{ y \mapsto t \} \Big\rangle \qquad\mbox{if $y \in \mathcal{V}$
+           and $y \not\in \mathtt{var}(t)$}
+      $
+      \\[0.2cm] 
       This reduction rule can be understood as follows: If the system of syntactical equations that is to be
       solved contains a syntactical equation of the form $y \doteq t$, where the variable $y$ does not occur in
       the term $t$, then the syntactical equation $y \doteq t$ can be removed if we apply the substitution
       $\{ y \mapsto t \}$ to both components of the pair
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle$.
+      $\Big\langle E \cup \big\{ y \doteq t \big\},\; \sigma \Big\rangle$.
 \item If the variable $y$ occurs in the term $t$, i.e.~if  $y \in \textsl{Var}(t)$
       and, furthermore, $t \not= y$, then the system of syntactical equations
       $E \cup \big\{ y \doteq t \big\}$ has no solution.  We write this as
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle\;\leadsto\; \Omega$ \quad
+      $\Big\langle E \cup \big\{ y \doteq t \big\},\; \sigma \Big\rangle\;\leadsto\; \Omega$ \quad
       if $y \in \texttt{var}(t)$ and $y \not=t$.
 \item If $y\in\mathcal{V}$ and  $t \not\in \mathcal{V}$, then we have:
-      \[ \Big\langle E \cup \big\{ t \doteq y \big\}, \sigma \Big\rangle \quad\leadsto\quad 
-         \Big\langle E \cup \big\{ y \doteq t \big\}, \sigma \Big\rangle \qquad\mbox{if $y \in \mathcal{V}$ and
-           $t \not\in \mathcal{V}$.}
-      \]   
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\Big\langle E \cup \big\{ t \doteq y \big\},\; \sigma \Big\rangle \quad\leadsto\quad 
+      \Big\langle E \cup \big\{ y \doteq t \big\},\; \sigma \Big\rangle$ \qquad
+      \mbox{if $y \in \mathcal{V}$ and $t \not\in \mathcal{V}$}.   
+      \\[0.2cm]
       After we apply this rule, we can apply either the first or the second reduction rule thereafter.
 \item Trivial syntactical equations can be deleted:
-      \[ \Big\langle E \cup \big\{ x \doteq x \big\}, \sigma \Big\rangle \quad\leadsto\quad
-         \Big\langle E, \sigma \Big\rangle \qquad\mbox{if $x \in \mathcal{V}$.}
-      \]   
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\Big\langle E \cup \big\{ x \doteq x \big\},\; \sigma \Big\rangle \quad\leadsto\quad
+        \Big\langle E,\; \sigma \Big\rangle \qquad\mbox{if $x \in \mathcal{V}$.}
+      $  
 \item If $f$ is an  $n$-ary function symbol we have 
-      \[ \Big\langle E \cup \big\{ f(s_1,\cdots,s_n) \doteq f(t_1,\cdots,t_n) \big\}, \sigma \Big\rangle 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\Big\langle E \cup \big\{ f(s_1,\cdots,s_n) \doteq f(t_1,\cdots,t_n) \big\},\; \sigma \Big\rangle 
          \;\leadsto\; 
-         \Big\langle E \cup \big\{ s_1 \doteq t_1, \cdots, s_n \doteq t_n\}, \sigma \Big\rangle.
-      \]   
-
+         \Big\langle E \cup \big\{ s_1 \doteq t_1, \cdots, s_n \doteq t_n\},\; \sigma \Big\rangle.
+      $   
+      \\[0.2cm]
       This rule is the reason that we have to work with a system of syntactical equations, because even if we
       start with a single syntactical equation the rule given above can increase the number of syntactical
       equations. 
 
-      A special case of this rule is the following:  
-      \[ \Big\langle E \cup \big\{ c \doteq c \big\}, \sigma \Big\rangle \;\leadsto\; 
-         \Big\langle E, \sigma \Big\rangle.
-      \]
+      A special case of this rule is the following: 
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\Big\langle E \cup \big\{ c \doteq c \big\},\; \sigma \Big\rangle \;\leadsto\; 
+       \Big\langle E,\; \sigma \Big\rangle$.
+      \\[0.2cm]
       Here $c$ is a nullary function symbol.
 \item The system of syntactical equations $E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\}$ has
       no solution if the function symbols $f$ and $g$ are different.  Hence we have
-      \[ \Big\langle E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\},
-      \sigma \Big\rangle \;\leadsto\; \Omega \qquad \mbox{provided $f \not= g$}. \]
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\Big\langle E \cup \big\{ f(s_1,\cdots,s_m) \doteq g(t_1,\cdots,t_n) \big\},\;
+      \sigma \Big\rangle \;\leadsto\; \Omega \qquad \mbox{provided $f \not= g$}$. 
 \end{enumerate}
 If a system of syntactical equations $E$ is given and we start with the pair 
 $\langle E, \{\}\rangle$, then we can apply the rules given above until one of the following two cases happens: 
@@ -598,14 +610,14 @@ We show how to solve the syntactical equation \\[0.2cm]
 We have the following reductions:
 $$
 \begin{array}{ll}
-          &  \big\langle \big\{ p(x_1, f(x_4)) \doteq p( x_2, x_3) \big\}, \{ \} \big\rangle \\[0.2cm]
- \leadsto &  \big\langle \big\{ x_1 \doteq x_2, f(x_4) \doteq x_3 \big\}, \{ \} \big\rangle \\[0.2cm]
- \leadsto &  \big\langle \big\{ f(x_4) \doteq x_3 \big\}, \{ x_1 \mapsto x_2 \} \big\rangle \\[0.2cm]
- \leadsto &  \big\langle \big\{ x_3 \doteq f(x_4) \big\}, \{ x_1 \mapsto x_2 \} \big\rangle \\[0.2cm]
+          &  \big\langle \big\{ p(x_1, f(x_4)) \doteq p( x_2, x_3) \big\},\; \{ \} \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{ x_1 \doteq x_2, f(x_4) \doteq x_3 \big\},\; \{ \} \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{ f(x_4) \doteq x_3 \big\},\; \{ x_1 \mapsto x_2 \} \big\rangle \\[0.2cm]
+ \leadsto &  \big\langle \big\{ x_3 \doteq f(x_4) \big\},\; \{ x_1 \mapsto x_2 \} \big\rangle \\[0.2cm]
  \leadsto &  \big\langle \big\{\big\}, \{ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \} \big\rangle \\[0.2cm]
 \end{array}
 $$
-Hence the method is successful and we have that the substitution
+Hence the method is successful and the substitution
 \\[0.2cm]
 \hspace*{1.3cm}
 $\{ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \}$ \\[0.2cm]
@@ -617,23 +629,21 @@ Next we try to solve the following system of syntactical equations:
 We have the following reductions:
 $$
 \begin{array}{ll}
-          & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; q(x_2, d) \doteq q(h(d,c),x_4) \big\}, \{ \} \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c), \; d \doteq x_4 \big\}, \{ \} \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c), \; x_4 \doteq d \big\}, \{ \} \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c) \big\}, \{ x_4 \mapsto d \} \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(h(d,c)) \big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ h(x_1,c) \doteq h(d,c) \big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ x_1 \doteq d,\; c \doteq c \big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{ x_1 \doteq d,\big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
- \leadsto & \big\langle \big\{\big\}, \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \} \big\rangle \\[0.2cm]
+          & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; q(x_2, d) \doteq q(h(d,c),x_4) \big\},\; \{ \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c), \; d \doteq x_4 \big\},\; \{ \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c), \; x_4 \doteq d \big\},\; \{ \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(x_2),\; x_2 \doteq h(d,c) \big\},\; \{ x_4 \mapsto d \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ p(h(x_1,c)) \doteq p(h(d,c)) \big\},\; \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ h(x_1,c) \doteq h(d,c) \big\},\; \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ x_1 \doteq d,\; c \doteq c \big\},\; \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{ x_1 \doteq d\big\},\; \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c) \} \big\rangle \\[0.2cm]
+ \leadsto & \big\langle \big\{\big\},\; \{ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \} \big\rangle \\[0.2cm]
 \end{array}
 $$
 Hence the  substitution  $\{ x_4 \mapsto d,\; x_2 \mapsto h(d,c),\; x_1 \mapsto d \}$ is a solution
 of the system of syntactical equations given above.
 \eox
 
-
-\noindent
 The Jupyter notebook
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -656,7 +666,7 @@ lecture notes.
     \item the syntactic equation $p(s_1,\cdots,s_n) \doteq p(t_1,\cdots,t_n)$ is solvable with most general unifier
           \\[0.2cm]
           \hspace*{1.3cm}
-          $\mu = \mathtt{mgu}\bigl(p(s_1,\cdots,s_n), p(t_1,\cdots,t_n)\bigr)$. 
+          $\mu = \mathtt{mgu}\bigl(p(s_1,\cdots,s_n),\; p(t_1,\cdots,t_n)\bigr)$. 
     \end{enumerate}
      Then the following deduction rule
      \\[0.2cm]
@@ -677,11 +687,11 @@ $\schluss{k}{k\sigma}$.
 Here, $k$ is a first-order logic clause and $\sigma$ is a substitution.
 In some cases, we may need to rename the variables in one of the two clauses before we can apply the resolution rule. Let us consider an example.
 The set of clauses
-\[ M = \Bigl\{ \bigl\{ p(x) \bigr\}, \bigl\{ \neg p(f(x)) \bigr\} \Bigr\} \]
+\[ M = \Bigl\{ \bigl\{ p(x) \bigr\},\; \bigl\{ \neg p(f(x)) \bigr\} \Bigr\} \]
 is contradictory. However, we cannot immediately apply the resolution rule because the syntactic equation
 \[ p(x) \doteq p(f(x)) \]
 is unsolvable. This is because the same variable happens to be used in both clauses. If we rename the variable $x$ in the second clause to $y$, we get the set of clauses
-\[ \Bigl\{ \bigl\{ p(x) \bigr\}, \bigl\{ \neg p(f(y)) \bigr\} \Bigr\}. \]
+\[ \Bigl\{ \bigl\{ p(x) \bigr\},\; \bigl\{ \neg p(f(y)) \bigr\} \Bigr\}. \]
 Here, we can apply the resolution rule because the syntactic equation
 \[ p(x) \doteq p(f(y)) \]
 has the solution $\{ x \mapsto f(y) \}$. Then we obtain
@@ -691,7 +701,7 @@ and thus we have proven the inconsistency of the clause set $M$.
 
 The resolution rule by itselft is not sufficient to derive the empty clause from a clause set $M$ that is
 inconsistent in every case: we need a second rule. To see this, consider following set of clauses:
-\[ M = \Bigl\{ \bigl\{p(f(x),y), p(u,g(v))\bigr\}, 
+\[ M = \Bigl\{ \bigl\{p(f(x),y), p(u,g(v))\bigr\},\; 
                \bigl\{\neg p(f(x),y), \neg p(u,g(v))\bigr\} \Bigr\} 
 \]
 We will soon show that the set $M$ is contradictory. It can be shown that the resolution rule is not
@@ -704,7 +714,7 @@ However, we will soon see that $M$ is contradictory.
   \item $k$ is a first-order logic clause,
   \item $p(s_1,\cdots,s_n)$ and $p(t_1,\cdots,t_n)$ are atomic formulas,
   \item the syntactic equation $p(s_1,\cdots,s_n) \doteq p(t_1,\cdots,t_n)$ is solvable,
-  \item $\mu = \mathtt{mgu}\bigl(p(s_1,\cdots,s_n), p(t_1,\cdots,t_n)\bigr)$.
+  \item $\mu = \mathtt{mgu}\bigl(p(s_1,\cdots,s_n),\; p(t_1,\cdots,t_n)\bigr)$.
   \end{enumerate}
   Then the following rules \\[0.3cm]
   \hspace*{0.8cm}
@@ -773,7 +783,7 @@ The converse of the above correctness theorem holds only for the empty clause. I
 A.~Robinson \cite{robinson:1965}. 
 \begin{Satz}[{\color{blue}Refutational Completeness} (Robinson, 1965)]
   \index{Refutational Completeness of the Resolution Calculus} \hspace*{\fill} \\
-  If $M = \{k_1,\cdots,k_n\}$ is a set of clauses and $M$ is unsatisfiable, i.e.~we have
+  If $M = \{k_1,\;\cdots,\; k_n\}$ is a set of clauses and $M$ is unsatisfiable, i.e.~we have
   \\[0.2cm]
   \hspace*{1.3cm}
   $\models \forall(k_1) \wedge \cdots \wedge \forall(k_n) \rightarrow \falsum$, 
@@ -818,7 +828,10 @@ start with the following axioms \cite{schoening:2008}:
 \item Red dragons can fly.
 \item The children of a red dragon are always red.
 \end{enumerate}
-We will show that these axioms imply that all red dragons are happy.
+We will show that these axioms imply that
+\begin{enumerate}
+\item[4.] all red dragons are happy.
+\end{enumerate}
 First, we formalize the axioms and the claim in first-order logic.
 We choose the signature \\[0.2cm]
 \hspace*{1.3cm}

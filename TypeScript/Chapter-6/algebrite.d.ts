@@ -16,7 +16,7 @@ declare module 'algebrite' {
   export function simplify(expression: string | AlgebriteResult): AlgebriteResult;
   export function expand(expression: string | AlgebriteResult): AlgebriteResult;
   export function subst(newVal: string | AlgebriteResult, oldVar: string | AlgebriteResult, expression: string | AlgebriteResult): AlgebriteResult;
-
+~
   // Calculus
   export function derivative(expression: string | AlgebriteResult): AlgebriteResult;
   export function integral(expression: string | AlgebriteResult): AlgebriteResult;
