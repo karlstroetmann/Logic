@@ -1,0 +1,74 @@
+// Take a term produced by the function parse and transform it into
+// a term that has a much simpler structure.
+toTerm := procedure(t) {
+    if (isVariable(t) || !isTerm(t)) {
+        return t;
+    }
+    fctSymbol := fct(t);
+    arguments := args(t);
+    if (fctSymbol == "@@@call") {
+        fctName         := args(arguments[1])[1];
+        transformedArgs := toTermList(arguments[2]);
+        extraArgs       := arguments[3];
+        if (extraArgs == "nil") {
+            return makeTerm(fctName, transformedArgs);
+        } else {
+            transformedArgs += toTermList(extraArgs);
+            return makeTerm(fctName, transformedArgs);
+        }
+    }
+    argList := toTermList(arguments);
+    return makeTerm(fctSymbol, argList); 
+};
+
+toTermList := procedure(ts) {
+    match (ts) {
+        case []       : return [];
+        case [ t | r ]: return [ toTerm(t) | toTermList(r) ];
+    }
+    abort("toTerm() does not fully support calls using list expansion. E.g. a := [1]; sin(*a);");
+};
+
+parseTerm := procedure(s) {
+    return toTerm(parse(s));
+};
+
+// Extract the name of a term representing a variable.
+varName := procedure(v) {
+    return args(v)[1];
+};
+
+// Take a simple term produced by the function toTerm and transform it
+// back into a term that represents the internal structure required by
+// setlX. This way it can be evaluated using evalTerm().
+fromTerm := procedure(t) {
+    if (isVariable(t) || !isTerm(t)) {
+        return t;
+    }
+    fctSymbol := fct(t);
+    arguments := fromTermList(args(t));
+
+    if (!startsWith(fctSymbol, "@@@")) {
+        return makeTerm(
+            "@@@call",
+            [
+                makeTerm("@@@variable", [fctSymbol]),
+                arguments,
+                "nil"
+            ]
+        );
+    }
+
+    return makeTerm(fctSymbol, arguments); 
+};
+
+fromTermList := procedure(ts) {
+    match (ts) {
+        case []       : return [];
+        case [ t | r ]: return [ fromTerm(t) | fromTermList(r) ];
+    }
+    abort("fromTerm() does not support this term");
+};
+
+
+
