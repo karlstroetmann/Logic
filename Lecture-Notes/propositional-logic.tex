@@ -6,7 +6,7 @@
 (a.k.a. \blue{simple statements}) through 
 \blue{logical connectives}.  Here, logical connectives are words like ``\blue{and}'', ``\blue{or}'',
 ``\blue{not}'', ``\blue{if $\cdots$, then}'', and ``\blue{exactly if}''.  To
-start with, we define the notion of an \blue{atomic propositions}: An
+start with, we define the notion of an \blue{atomic proposition}: An
 \blue{atomic proposition}\index{atomic proposition} is a sentence  that 
 \begin{itemize}
 \item expresses a fact that is either \texttt{true} or \texttt{false} and
@@ -89,7 +89,7 @@ check whether a formula is satisfiable.  These algorithms are very important in 
 applications.  For example, a very important application is the design of digital circuits.
 Furthermore, a number of \href{https://en.wikipedia.org/wiki/Category:Logic_puzzles}{logic puzzles} can be
 translated into propositional formulas and finding a solution to these 
-puzzles amounts to checking the satisfiable of these formulas.  For example, we will solve the
+puzzles amounts to checking the satisfiability of these formulas.  For example, we will solve the
 \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{eight queens puzzle} in this way.
 
 The rest of this chapter is structured as follows:
@@ -510,7 +510,7 @@ The \textsl{TypeScript} function \mytt{evaluate} is shown in Figure \ref{fig:eva
         \hspace*{1.3cm}
         \texttt{import { RecursiveSet as Set } from 'recursive-set';}
         \\[0.2cm]
-        Given a propositional variables $p$, the value of $\mathcal{I}(p)$ is then computed
+        Given a propositional variable $p$, the value of $\mathcal{I}(p)$ is then computed
         by the expression  $\mathcal{I}\mathtt{.has}(p)$.
       \end{enumerate}
 \end{enumerate}
@@ -732,7 +732,7 @@ Solve this puzzle by editing the notebook
 \begin{center}
 \begin{minipage}{0.95\linewidth}
 We all know \blue{Alice} and \blue{Bob} from Cryptography.  However, little did
-we now about their difficult family relations, which might be the reason for
+we know about their difficult family relations, which might be the reason for
 their secrecy.  
 
 Unfortunately, things have escalated recently:
@@ -905,7 +905,7 @@ Figure \ref{fig:tautology.py} on page \pageref{fig:tautology.py}
 shows the implementation.
 \begin{enumerate}
 \item First, we compute the set $P$ of all propositional variables occurring in $f$.
-\item Then we try to find a propositional interpretation $\mathcal{I}$ such that $\mathcal{I}(f)$
+\item Then we try to find a propositional interpretation $\mathcal{I}$ such that $\mathcal{I}(f) =$
       \texttt{false}.  In this case $\mathcal{I}$ is returned. 
 \item Otherwise $f$ is a tautology and we return \texttt{true}.
 \end{enumerate}
@@ -1049,7 +1049,7 @@ $K$ cannot contain any complementary literals.  Thus $K$ must have the form
 $K = \{ \neg p_1, \cdots, \neg p_m, q_1, \cdots, q_n \}$ \quad with $p_i
 \not= q_j$ for all $i \in \{ 1,\cdots,m\}$ and $j \in \{1, \cdots, n\}$.
 \\[0.2cm]
-Then we can define an propositional valuation $\mathcal{I}$ as follows:
+Then we can define a propositional valuation $\mathcal{I}$ as follows:
 \begin{enumerate}
 \item $\mathcal{I}(p_i) = \texttt{true}$ for all $i = 1, \cdots, m$ and
 \item $\mathcal{I}(q_j) = \texttt{false}$ for all $j = 1, \cdots, n$,
@@ -1266,7 +1266,7 @@ that describe the behavior of the function $\texttt{elimBiconditional}$:
 Figure \ref{fig:elimBiconditional} on page \pageref{fig:elimBiconditional} shows the implementation of the
 function \texttt{elimBiconditional}.
 \begin{enumerate}
-\item In line 8, we check whether $p$ is a string.  In this case
+\item In line 6, we check whether $f$ is a string.  In this case
       $f$ must be a propositional variable, because all other propositional formulas are represented as nested lists.
       Therefore, $f$ is returned unchanged in this case.
 \item In line 10 we check the case that $f$ has the form $g \leftrightarrow h$.
@@ -1275,12 +1275,12 @@ function \texttt{elimBiconditional}.
       \\[0.2cm]
       \hspace*{1.3cm}
       $(g \leftrightarrow h) \Leftrightarrow (g \rightarrow h) \wedge (h \rightarrow g)$.
-\item In line 13 and 14 we deal with the cases where $f$ is equal to verum or falsum.
+\item In line 8 and 9 we deal with the cases where $f$ is equal to verum or falsum.
       Note that these formulas are also represented as nested lists.
       For example, verum is represented as the list \texttt{['⊤']}, while falsum is represented in
       \textsl{TypeScript} as the list \texttt{['⊥']}.  In this case, $f$
       is returned unchanged.
-\item In line 15, we consider the case where $f$ is a negation.  Then $f$ has the form
+\item In line 10, we consider the case where $f$ is a negation.  Then $f$ has the form
       \\[0.2cm]
       \hspace*{1.3cm}
       \texttt{['¬', $g$]}  
@@ -1365,7 +1365,7 @@ $\neg (f \vee g) \Leftrightarrow \neg f \wedge \neg g$
 are applied.  We describe the transformation into negation normal form by 
 the following equations: \index{\texttt{nnf}}
 \begin{enumerate}
-\item $\texttt{nnf}(p) = p$ \quad für alle $p \in \mathcal{P}$,
+\item $\texttt{nnf}(p) = p$ \quad for all $p \in \mathcal{P}$,
 \item $\texttt{nnf}(\verum) = \verum$,
 \item $\texttt{nnf}(\falsum) = \falsum$,
 \item $\texttt{nnf}(\neg \texttt{f}) = \texttt{neg}(\texttt{f})$,
@@ -1376,7 +1376,7 @@ the following equations: \index{\texttt{nnf}}
 The auxiliary procedure \texttt{neg}, which calculates the negation normal form of $\neg f$,
 is also specified by recursive equations: \index{\texttt{neg}}
 \begin{enumerate}
-\item $\texttt{neg}(p) = \texttt{nnf}(\neg p) = \neg p$ für alle Aussage-Variablen $p$.
+\item $\texttt{neg}(p) = \texttt{nnf}(\neg p) = \neg p$ for all propositional variables $p$.
 \item $\texttt{neg}(\verum) = \texttt{nnf}(\neg\verum) = \texttt{nnf}(\falsum) = \falsum$, 
 \item $\texttt{neg}(\falsum) = \texttt{nnf}(\neg\falsum) = \texttt{nnf}(\verum) = \verum$,
 \item $\texttt{neg}(\neg f) = \texttt{nnf}(\neg \neg f) = \texttt{nnf}(f)$.
@@ -1452,7 +1452,7 @@ Finally, we present the function \texttt{cnf} that allows us to transform a prop
 from negation normal form into conjunctive normal form.
 Furthermore, \texttt{cnf} converts the resulting formula
 into set notation, i.e.~the formulas are represented as sets of sets of literals. 
-of literals.  We interpret a set of literals as a
+We interpret a set of literals as a
 disjunction of the literals and a set of clauses is interpreted as a conjunction
 of the clauses.  Mathematically, our goal is therefore to find a function
 \\[0.2cm]
@@ -1551,7 +1551,7 @@ Figure \ref{fig:cnf} on page \pageref{fig:cnf} shows the implementation of the f
     }}} 
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Berechnung der konjunktiven Normalform. \index{\texttt{cnf}}}
+  \caption{Computing the Conjunctive Normal Form. \index{\texttt{cnf}}}
   \label{fig:cnf}
 \end{figure}
 Lastly, we show in figure \ref{fig:normalize} on page \pageref{fig:normalize}
@@ -2015,7 +2015,7 @@ Since there is only a limited number of clauses in set notation that can be form
 propositional variables, this process must terminate, and the set of formulas we then obtain is saturated. \eox 
 
 \subsection{Refutational Completeness}
-We are now ready to state and proof the refutational completeness of the cut rule for propositional logic.
+We are now ready to state and prove the refutational completeness of the cut rule for propositional logic.
 
 \begin{Theorem}[\textcolor{blue}{Refutational Completeness}] \label{widerlegungs-vollstaendig} \hspace*{\fill} \linebreak
   Assume $M$ is a set of clauses that is unsatisfiable.  Then $M$ derives the empty clause:
@@ -2222,7 +2222,7 @@ online.
     }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Auxiliary function that are used in Figure \ref{fig:Completeness.ipynb-2}.}
+\caption{Auxiliary functions that are used in Figure \ref{fig:Completeness.ipynb-2}.}
 \label{fig:Completeness.ipynb-1}
 \end{figure}
 
@@ -2292,7 +2292,7 @@ function saturate(Clauses: Set<Clause>): Set<Clause> {
 }}}
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Funktion \texttt{saturate}}
+\caption{The Function \texttt{saturate}}
 \label{fig:Completeness.ipynb-2}
 \end{figure}
 Figure \ref{fig:Completeness.ipynb-2} shows the function \texttt{saturate}. This function takes
@@ -2378,7 +2378,7 @@ iterations in practical applications.
     }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Funktion \texttt{findValuation}.\index{\texttt{findValuation}}}
+\caption{The Function \texttt{findValuation}.\index{\texttt{findValuation}}}
 \label{fig:Completeness.ipynb-3}
 \end{figure}
 
@@ -2953,7 +2953,7 @@ In more complex examples, it is often necessary to perform more than one case di
 Next, we provide the implementation of the function \texttt{solve}, 
 which can answer the question of whether a set of clauses is satisfiable. The
 implementation is shown in Figure \ref{fig:solve} on page \pageref{fig:solve}.
-The function receives one argument: The sets \texttt{Clauses}.
+The function receives one argument: The set \texttt{Clauses}.
 Here, \texttt{Clauses} is the set of clauses that needs to be solved. If the set \texttt{Clauses} is
 satisfiable, then the call 
 \\[0.2cm]
@@ -3250,7 +3250,7 @@ The \blue{Jeroslow-Wang heuristic} assigns a weight to each literal based on its
 $$ \texttt{JW}(\texttt{Clauses}, l) = \sum\limits_{\bigl\{\,C \in \texttt{Clauses}\;\mid\; l \in C\;\bigr\}} \frac{1}{\;2^{|C|}\;} $$
 Here, $|C|$ denotes the number of literals in the clause $C$.
 The idea is to choose a literal that occurs in many clauses and therefore subsumes a lot of clauses.  Clauses
-with fewer literals are much more important than clauses with many literals, as it is much easier to satify a
+with fewer literals are much more important than clauses with many literals, as it is much easier to satisfy a
 clause with many literals.  If a clause has $n$ different literals, then the probability that the clause is
 `false` is only $\displaystyle\frac{1}{2^n}$ if the propositional variables are assigned randomly. 
 
@@ -3400,7 +3400,7 @@ the fields marked with arrows, and thus can attack pieces that are placed on the
 First, let us consider how we can represent a chessboard with queens placed on it in propositional logic. One
 possibility is to introduce a propositional logic variable for each square. This variable expresses
 that there is a queen on the corresponding square. We assign names to these variables as
-follows: The variable that denotes the $j$-th column of the the $i$-th
+follows: The variable that denotes the $j$-th column of the $i$-th
 row is represented by the string
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -3939,7 +3939,7 @@ Furthermore, each of the five houses is painted in a different colour, their
 inhabitants are of different nationalities, own different pets, drink different
 beverages, and smoke different brands of cigarettes.  
 
-Our task is to answers the following questions:
+Our task is to answer the following questions:
 \begin{enumerate}
 \item Who drinks water?
 \item Who owns the zebra?
@@ -4081,7 +4081,7 @@ person living in house number $i$ has at most one of the properties from the set
 $S$.  For example, if  
 \\[0.2cm]
 \hspace*{1.3cm}
-$S = \{\texttt{"Japanese"}, \texttt{"Englishman"}, \texttt{"Spaniard"}, \texttt{"Norwegian"}, \texttt{"Ukranian"}\}$, 
+$S = \{\texttt{"Japanese"}, \texttt{"Englishman"}, \texttt{"Spaniard"}, \texttt{"Norwegian"}, \texttt{"Ukrainian"}\}$,
 \\[0.2cm]
 then $\texttt{atMostOne}(S, 3)$ specifies that the inhabitant of house number 3
 has at most one of the nationalities from the set $S$.   The implementation
@@ -4114,7 +4114,7 @@ example, $S$ could be the set of the five nationalities.
 In this case, the function would create a set of clauses that expresses that
 there has to be a house where the Japanese lives, a house where the Englishman
 lives, a house where the Spaniard lives, a house where the Norwegian lives, and
-a house where the Ukranian lives.  Furthermore, the set of clauses would contain
+a house where the Ukrainian lives.  Furthermore, the set of clauses would contain
 clauses that express the fact that these five persons live in different houses.
 
 
@@ -4173,7 +4173,7 @@ function nextTo(a: Variable, b: Variable): Set<Clause> {
 \caption{nextTo} %$
 \label{fig:nextTo}
 \end{figure}
-Given to properties $a$ and $b$ the function $\texttt{nextTo}(a, b)$ computes a
+Given two properties $a$ and $b$ the function $\texttt{nextTo}(a, b)$ computes a
 set of clauses that specifies that the inhabitants with properties $a$ and $b$
 are direct neighbours.  For example, $\texttt{nextTo}(\texttt{'Japanese'}, \texttt{'Dog'})$
 specifies that the Japanese guy lives next to the guy who keeps a dog. 
@@ -4212,8 +4212,8 @@ This is specified as follows:
 \label{fig:leftTo}
 \end{figure}
 
-Given to properties $a$ and $b$ the function $\texttt{leftTo}(a, b)$ computes a
-list of clauses that specifies that the inhabitants with properties $a$ lives in
+Given two properties $a$ and $b$ the function $\texttt{leftTo}(a, b)$ computes a
+list of clauses that specifies that the inhabitant with property $a$ lives in
 the house to the left of the inhabitant who has property $b$.  For example,
 $\texttt{livesTo}(\texttt{'Japanese'}, \texttt{'Dog'})$ specifies that the
 Japanese guy lives in the house to the left of the house where there is a dog.
@@ -4403,7 +4403,7 @@ set of propositional variables:
 $\mathcal{P} = \bigl\{ Q_{r,c,d} \mid r \in \{1,\cdots, 9\} \wedge c \in \{1,\cdots, 9\} \wedge r \in \{1,\cdots, 9\} \bigl\}$
 \\[0.2cm]
 For a given digit $d \in \{1, \cdots, 9\}$, a given row $r \in \{1, \cdots, 9\}$, and a given column
-$c \in \in \{1, \cdots, 9\}$, the variable $Q_{r,c,d}$ is supposed to be \texttt{true} if $d$ is the digit in
+$c \in \{1, \cdots, 9\}$, the variable $Q_{r,c,d}$ is supposed to be \texttt{true} if $d$ is the digit in
 row $r$ and column $c$ of the Sudoku.  Note that this means that we have $9^3 = 729$ different propositional
 variables.  In our implementation we will use the function \texttt{varName} shown in
 Figure \ref{fig:sudoku-var} to create these variables.
@@ -4431,7 +4431,7 @@ Figure \ref{fig:sudoku-var} to create these variables.
 The Sudoku itself is created by the function \texttt{create\_puzzle} shown in Figure
 \ref{fig:sudoku-create-puzzle} on page \pageref{fig:sudoku-create-puzzle}.  In this function, the puzzle is
 represented as a list of lists.  Each of these lists represents a row.  The inner lists contain digits and the
-character \texttt{"*"}.  This character represent those digits that are initially unknown and whose value have
+character \texttt{"*"}.  This character represents those digits that are initially unknown and whose value has
 to be computed.
 
 \begin{figure}[!ht]
@@ -4525,7 +4525,7 @@ The implementation is shown in Figure \ref{fig:sudoku-exactly}.
 \label{fig:sudoku-exactlyOneForDigit}
 \end{figure}
 
-Figure \ref{fig:sudoku-exactlyOneForDigit} show the implementation of the function
+Figure \ref{fig:sudoku-exactlyOneForDigit} shows the implementation of the function
 $\texttt{exactlyOneForDigit}(L, d)$.
 
 First, we define the type \texttt{Position}, which is a pair of the form $(r, c)$, where $r \in \{1,\cdots,9\}$
@@ -4557,8 +4557,8 @@ occurs in exactly one of the positions in $L$.
 \label{fig:sudoku-exactlyOneDigit}
 \end{figure}
 
-The function $\texttt{exactlyOneForEveryDigit}(L)$ takes a set $L$ cell positions as its argument.  
-It returns a set of formulas expressing that all of the nine digits occurs at exactly one position in the list `L`.
+The function $\texttt{exactlyOneForEveryDigit}(L)$ takes a set $L$ of cell positions as its argument.
+It returns a set of formulas expressing that all of the nine digits occur at exactly one position in the list \texttt{L}.
 
 \begin{figure}[!ht]
 \centering
@@ -4583,7 +4583,7 @@ It returns a set of formulas expressing that all of the nine digits occurs at ex
 The function $\mathtt{exactlyOneDigit}(r, c)$ takes a row $r$ and a column $c$ as its arguments.
 It returns a set of clauses expressing that there is exactly one digit in the given cell.
 
-Furthermore, we need a function encoding the constraints form the puzzle itself.
+Furthermore, we need a function encoding the constraints from the puzzle itself.
 This function is called \texttt{constraintsFromPuzzle} and its implementation is shown in Figure
 \ref{fig:sudoku-constraintsFromPuzzle} on page \pageref{fig:sudoku-constraintsFromPuzzle}.
 For example, the given puzzle demands that the digit in row 2 and column 4 is the digit $6$.
@@ -4686,7 +4686,7 @@ As described in the \texttt{README.md} file provided with its distribution,
 \href{https://github.com/meteor/logic-solver}{\texttt{Logic-Solver}} is a boolean satisfiability solver
 available as an \texttt{npm} package. It serves as a JavaScript wrapper around
 \href{http://minisat.se/}{MiniSat}, an advanced C++ solver compiled to JavaScript via
-Emscripten. \texttt{Logic-Solver} abstract away the manual conversion to Conjunctive Normal Form (CNF) by
+Emscripten. \texttt{Logic-Solver} abstracts away the manual conversion to Conjunctive Normal Form (CNF) by
 allowing us to build formulas using high-level methods like \texttt{Logic.or}, \texttt{Logic.and}, and
 \texttt{Logic.exactlyOne}. 
 
@@ -5007,7 +5007,7 @@ ensures:
 Finally, it calls \texttt{solver.solve()}, executing MiniSat internally, and returns the \texttt{Logic.Solution} object. 
 
 Executing this entire program yields a huge performance improvement.  While the Davis-Putnam
-alternating spent 21 minutes laboring through the SAT derivation, the Jupyter notebook that uses \texttt{Logic-Solver}
+algorithm spent 21 minutes laboring through the SAT derivation, the Jupyter notebook that uses \texttt{Logic-Solver}
 accomplishes the same goal in roughly 60 milliseconds.  
 The Jupyter notebook showing the resulting program is available at:
 \\[0.2cm]
@@ -5027,7 +5027,7 @@ The Jupyter notebook showing the resulting program is available at:
 \item How can we transform propositional logic formula into conjunctive normal
       form?
 \item Define the notion of an inference rule.
-\item when is  an inference rule correct?
+\item When is an inference rule correct?
 \item Define the cut rule.
 \item How did we define the proof concept $M \vdash C$?
 \item What is a saturated set of clauses?
