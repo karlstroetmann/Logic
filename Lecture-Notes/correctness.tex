@@ -58,8 +58,8 @@ A proof by computational induction consists of three parts:
 
       In the induction step we have to prove that the function definition works in all those cases where
       the function does invoke itself recursively.  In order to carry out this proof we may
-      assume that the results computed by the recursively invocations are correct.
-      This assumption is called the \blue{induction hypotheses}.
+      assume that the results computed by the recursive invocations are correct.
+      This assumption is called the \blue{induction hypothesis}.
 \item The \blue{termination proof}.
 
       In this final step we have to show that the recursive definition of the function is \blue{well founded},
@@ -87,7 +87,7 @@ $\lfloor x \rfloor := \mathtt{Math.floor}(x)$.
 \item \textbf{Induction step}:
 
       The recursive invocation of $\mathtt{power}$ has the form
-      $\mathtt{power}(m, \lfloor n / 2 \rfloor)$.  By the induction hypotheses we may assume that 
+      $\mathtt{power}(m, \lfloor n / 2 \rfloor)$.  By the induction hypothesis we may assume that
       \\[0.2cm]
       \hspace*{1.3cm}
       $\displaystyle \mathtt{power}\bigr(m, \lfloor n / 2 \rfloor)\bigr) = m^{\lfloor n/2 \rfloor}$ 
@@ -177,7 +177,7 @@ Before we start with the details of the proof, let us note that the following eq
 $2 \cdot \lfloor m / 2 \rfloor + m \mmod 2 = m$.
 \\[0.2cm]
 The easiest way to see this is to write the number $m$ in the binary system.  If the binary representation of
-$m$ is written with $k$ bits $b_0$, $b_1$, $\cdot$, $b_{k-1}$ where $b_0$ is the least significant bit, then we have
+$m$ is written with $k$ bits $b_0$, $b_1$, $\cdots$, $b_{k-1}$ where $b_0$ is the least significant bit, then we have
 \\[0.2cm]
 \hspace*{1.3cm}
 $\ds m = \sum\limits_{i=0}^{k-1} b_i \cdot 2^i$.
@@ -225,7 +225,7 @@ Since \texttt{divMod} is defined recursively, the proof of these formulas is don
   Here $m < n$ is true because this condition is the assumption of the base case.
 \item[I.S.:] $\lfloor m / 2 \rfloor \mapsto m$
 
-  By induction hypotheses we know that our claim is true for the recursive invocation of \texttt{divMod} in
+  By induction hypothesis we know that our claim is true for the recursive invocation of \texttt{divMod} in
   line 5.  Therefore we have the following:
   \begin{eqnarray}
     \lfloor m / 2 \rfloor &\!=\! & q \cdot n + r \label{divmod3} \\
@@ -535,7 +535,7 @@ Consider the program shown in Figure \ref{fig:power-iterative-annotated.stlx}.
     \colorbox{sepia}{\}}  
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{An annotated programm to compute powers.}
+\caption{An annotated program to compute powers.}
 \label{fig:power-iterative-annotated.stlx}
 \end{figure} % $
 
@@ -574,7 +574,7 @@ This claim is proven by induction on the number of loop iterations.
             $r_n \cdot x_n^{y_n} = r_0 \cdot x_0^{y_0} = 1 \cdot a^{b} = a^b$. \mycheck
 \item[I.S.:] $n \mapsto n + 1$.
 
-            We proof proceeds by a case distinction with respect to the expression $y_n \mmod 2$:
+            Our proof proceeds by a case distinction with respect to the expression $y_n \mmod 2$:
             \begin{enumerate}
             \item $y_n \mmod 2 = 1$.
 
@@ -695,7 +695,7 @@ With this in mind, we can state the invariants that hold when the \texttt{while}
     \colorbox{sepia}{\}                                  }
 \end{Verbatim}
 \vspace*{-0.3cm}
-\caption{An annotated programm to compute powers.}
+\caption{An annotated program to compute the integer square root.}
 \label{fig:Integer-Square-Root-Iterative.ipynb}
 \end{figure} % $
 
@@ -780,7 +780,7 @@ Use the method of symbolic program execution to prove the correctness of the imp
 \href{https://en.wikipedia.org/wiki/Euclidean_algorithm}{Euclidean algorithm} that is shown in Figure
 \ref{fig:gcd.stlx} on page \pageref{fig:gcd.stlx}.  During the proof 
 you should make use of the fact that for all positive natural numbers $x$ and $y$ the function $\mathtt{gcd}$
-that computes the greatest common divisor of $x$ and $x$ satisfies the equation
+that computes the greatest common divisor of $x$ and $y$ satisfies the equation
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathtt{gcd}(x, y) = \mathtt{gcd}(y, x \,\mathtt{\%}\, y)$.
