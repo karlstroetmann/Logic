@@ -1,0 +1,695 @@
+\documentclass{article}
+\usepackage{ngerman}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{fancyvrb}
+\usepackage{alltt}
+\usepackage{fleqn}
+\usepackage{epsfig}
+\usepackage{theorem}
+
+\newcommand{\next}{\vspace*{0.2cm}
+
+\noindent}
+
+\newcommand{\exercise}{\vspace*{0.1cm}
+\stepcounter{aufgabe}
+
+\noindent
+\textbf{Aufgabe \arabic{aufgabe}}: }
+
+\newcommand{\solution}{\vspace*{0.1cm}
+
+\noindent
+\textbf{L\"{o}sung}: }
+
+\newcommand{\example}{\vspace*{0.2cm}
+
+\noindent
+\textbf{Beispiel}: \ }
+
+\newcommand{\el}{\!\in\!}
+\newcommand{\verum}{\top}
+\newcommand{\falsum}{\bot}
+\newcommand{\dx}{\,\textrm{d}}
+\newcommand{\schluss}[2]{\frac{\displaystyle\quad \rule[-6pt]{0pt}{12pt}#1 \quad}{\displaystyle\quad \rule{0pt}{10pt}#2 \quad}}
+\newcommand{\vschlus}[1]{{\displaystyle\rule[-6pt]{0pt}{12pt} \atop \rule{0pt}{10pt}#1}}
+\newcommand{\bruch}[2]{\frac{\displaystyle#1}{\displaystyle #2}}
+\newcommand{\folge}[1]{\bigl(#1\bigr)_{n\in\mathbb{N}}}
+\def\pair(#1,#2){\langle #1, #2 \rangle}
+\newcommand{\qed}{\hspace*{\fill} $\Box$}
+\newcommand{\var}{\mathrm{Var}}
+
+{\theorembodyfont{\rm}
+\newtheorem{Definition}{Definition}
+\newtheorem{Satz}[Definition]{Satz}
+\newtheorem{Lemma}[Definition]{Lemma}
+}
+
+\newcounter{aufgabe}
+
+\title{Informatik-I \\
+       {\Large Logik und Mengenlehre} \\
+{\large \"{u}bersicht: Formeln und Definitionen}}
+\author{Karl Stroetmann}
+
+\begin{document}
+\maketitle
+\section{Mengen}
+Mengen werden definiert durch das Pr\"{a}dikats-Zeichen ``$\in$'' 
+\\[0.1cm]
+\hspace*{1.3cm}
+Schreibweise: $x \in M$ \quad (gelesen $x$ Element der Menge $M$)
+\\[0.1cm] 
+\textbf{Extensionalit\"{a}ts-Axiom}: \quad $M=N \;\leftrightarrow\; \forall x: \bigl( x \in M \leftrightarrow x \in N)$
+Mengen-Bildung
+\begin{enumerate}
+\item Explizite Aufz\"{a}hlung aller Elemente 
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      Beispiel:\quad  $M := \{1,2,3\}$.
+\item Menge der nat\"{u}rlichen Zahlen 
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      $\mathbb{N} := \{0,1,2,3, \cdots \}$
+\item Auswahl-Prinzip 
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      $M := \{ x \in N \;|\; p(x) \}$
+\item Potenz-Menge 
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      $2^M: = \{ x \;|\; x \subseteq M \}$
+\item Vereinigungs-Menge 
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      $M \cup N := \{ x | x \in M \vee x \in N \}$
+      \\[0.1cm]
+      Verallgemeinerung:  Sei $M$ Menge von Mengen
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      $\bigcup M :=  \{ y \;|\; \exists x \in M: y \in x \}$.
+\item Schnitt-Menge 
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      $M \cap N := \{ x | x \in M \wedge x \in N \}$
+      \\[0.1cm]
+      Verallgemeinerung:  Sei $M$ Menge von Mengen
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      $\bigcap M :=  \{ y \;|\; \forall x \in M: y \in x \}$.
+\item Differenz-Menge \\[0.1cm]
+      \hspace*{1.3cm} $M \backslash N := \{ x \mid x \in M \wedge x \not\in N \}$. 
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      Schreibweise: $x \not\in N$ steht f\"{u}r $\neg\, x \in N$.
+\item Bild-Mengen 
+
+      Seien $M$, $N$ Mengen, $f:M \rightarrow N$ Funktion 
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      $f(M) := \{ y \;|\; \exists x \in M: y = f(x) \}$
+
+      Alternative Schreibweise: 
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      $f(M) := \bigl\{ f(x) \;|\; x \in M \}$
+\item Geordnetes Paar: $\pair(x,y)$ 
+      \begin{enumerate}
+      \item $x$ ist erste  Komponente von $\pair(x,y)$
+      \item $x$ ist zweite Komponente von $\pair(x,y)$
+      \end{enumerate}
+      Paare sind genau dann gleich, wenn Sie dieselben Komponenten haben: 
+      \\[0.1cm]
+      \hspace*{1.3cm} 
+      $\pair(x,y) = \pair(u,v) \;\leftrightarrow\; x = u \wedge y = v$
+\item kartesisches Produkt zweier Mengen 
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      $M \times N := \bigl\{ \pair(x,y) \;|\; x \in M \wedge y \in N \}$
+\item Verallgemeninerung des geordneten Paares: $n$-Tupel: \quad $\langle x_1, x_2, \cdots, x_n \rangle$
+
+      Liste aus $n$ Elementen.  Alternative Schreibweise: $[x_1,x_2,\cdots,x_n]$
+\item Allgemeines kartesisches Produkt 
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      $M_1 \times \cdots \times M_n := \bigl\{ \langle x_1, \cdots, x_n \rangle \;\big|\; x_1 \in M_1 \wedge \cdots \wedge x_n \in M_n \bigr\}$
+\end{enumerate}
+
+\noindent
+Mengen-Algebra: Rechenregeln f\"{u}r das Arbeiten mit Mengen 
+\\[0.3cm]
+$\begin{array}{rlcl}
+\quad 1. & M \cup \emptyset = M         & \hspace*{0.1cm} & M \cap \emptyset = \emptyset \\
+2. & M \cup M = M         & \hspace*{0.1cm} & M \cap M = M          \\
+3. & M \cup N = N \cup M  &  & M \cap N = N \cap M  \\
+4. & (K \cup M) \cup N = K \cup (M \cup N) &  & (K \cap M) \cap N = K \cap (M \cap N) \\
+5. & (K \cup M) \cap N = (K \cap N) \cup (M \cap N) &  & (K \cap M) \cup N = (K \cup N) \cap (M \cup N)  \\
+6. & M \backslash \emptyset = M & & M \backslash M = \emptyset \\
+7. & K \backslash (M \cup N) = (K \backslash M) \cap (K \backslash N) &&
+     K \backslash (M \cap N) = (K \backslash M) \cup (K \backslash N) \\
+8. & (K \cup M) \backslash N = (K \backslash N) \cup (M \backslash N) &&
+     (K \cap M) \backslash N = (K \backslash N) \cap (M \backslash N) \\
+9. & K \backslash (M \backslash N) = (K \backslash M) \cup (K \cap N) &&
+     (K \backslash M) \backslash N = K \backslash (M \cup N) \\
+10. & M \cup (N \backslash M) = M \cup N &&
+      M \cap (N \backslash M) = \emptyset  \\
+11. & M \cup (M \cap N) = M  &&
+      M \cap (M \cup N) = M 
+
+\end{array}$
+
+\noindent
+\begin{Definition}[Bin\"{a}re Relation] \hspace*{\fill} \\[-0.5cm]
+  \begin{enumerate}
+  \item $M$, $N$: Mengen
+  \item $R \subseteq M \times N$
+  \end{enumerate}
+  Dann ist $R$ bin\"{a}re Relation.
+  \begin{enumerate}
+  \item Definitions-Bereich: \quad $\textsl{dom}(R) := \{ x \mid \exists y \in N \colon \langle x, y \rangle \in R \}$
+  \item Werte-Bereich: \hspace*{1cm} $\textsl{rng}(R) := \{ y \mid \exists x \in M \colon \langle x, y \rangle \in R\}$ 
+  \end{enumerate} 
+\end{Definition}
+
+\begin{Definition}[rechts-eindeutig,links-eindeutig] \hspace*{\fill} \\[-0.5cm]
+  \begin{enumerate}
+  \item $R \subseteq M \times N$ \emph{rechts-eindeutig} g.d.w. \\[0.1cm]
+        \hspace*{1.3cm} 
+        $\forall x \colon \forall y_1 \colon \forall y_2 \colon \bigl(\langle x, y_1 \rangle \in R \wedge \langle x, y_2 \rangle \in R \rightarrow y_1 = y_2\bigr)$
+  \item $R \subseteq M \times N$ \emph{links-eindeutig} g.d.w.  \\[0.1cm]
+        \hspace*{1.3cm} 
+        $\forall y \colon \forall x_1 \colon \forall x_2 \colon \bigl(\langle x_1, y \rangle \in R \wedge \langle x_2, y \rangle \in R \rightarrow x_1 = x_2\bigr)$
+  \end{enumerate}
+\end{Definition}
+
+\begin{Definition}[links-total, rechts-total] \hspace*{\fill} \\[-0.5cm]
+  \begin{enumerate}
+  \item $R \subseteq M \times N$ \emph{links-total auf $M$} g.d.w. \\[0.1cm]
+        \hspace*{1.3cm} $\forall x \in M \colon \exists y \in N \colon \pair(x,y) \in R$ 
+  \item $R \subseteq M \times N$  \emph{rechts-total auf $N$} g.d.w. \\[0.1cm]
+        \hspace*{1.3cm} $\forall y \in N \colon \exists x \in M \colon \pair(x,y) \in R$
+  \end{enumerate}
+\end{Definition}
+
+\begin{Definition}[Funktionale Relationen] \hspace*{\fill} \\[0.1cm]
+ $R \subseteq M \times N$ funktional g.d.w. \\[0.1cm]
+\hspace*{1.3cm} $R$ links-total auf $M$  und \\[0.1cm]
+\hspace*{1.3cm} $R$ rechts-eindeutig \\[0.2cm]
+Falls $R$ funktional definiere Funktion 
+\\[0.1cm]
+\hspace*{1.3cm} $f_R\colon M \rightarrow N$ \\[0.1cm]
+\hspace*{1.3cm} $f_R(x) := y \;\stackrel{de\!f}{\Longleftrightarrow}\; \pair(x,y) \in R$
+\end{Definition}
+
+
+\begin{Definition}[$\textsl{graph}(f)$] \hspace*{\fill} \\[-0.5cm]
+  \begin{tabbing}
+    \textbf{Vor.:} \quad \=  $f:M \rightarrow N$ \quad Funktion \\[0.1cm]
+    \textbf{Setze:} \>  $\textsl{graph}(f) := \bigl\{ \pair(x,f(x)) \mid  x\in M \bigr\}$   \\[0.1cm]
+    \textbf{Dann:}  \>  $\textsl{graph}(f)$ funktionale Relation
+  \end{tabbing}
+\end{Definition}
+
+\begin{Definition}[Bild von $X$ unter $R$] \hspace*{\fill} \\[-0.5cm]
+  \begin{tabbing}
+    \textbf{Geg.:}  \quad \= $R \subseteq M \times N$ bin\"{a}re Relation \\[0.1cm]
+                    \>  $X \subseteq M$                               \\[0.1cm]
+    \textbf{Setze:} \>  $R(X) := \{ y \mid \exists x \in X \colon \pair(x,y) \in R \}$. 
+  \end{tabbing}
+\end{Definition}
+
+\begin{Definition}[Inverse Relation] \hspace*{\fill} \\[-0.5cm]
+  \begin{tabbing}
+    \textbf{Geg.:} \quad \=  $R \subseteq M \times N$ bin\"{a}re Relation \\[0.1cm]
+    \textbf{Setze:} \> $R^{-1} := \bigl\{ \pair(y,x) \mid \pair(x,y) \in R  \bigr\}$. \\[0.1cm]
+  \end{tabbing}
+\end{Definition}
+
+\begin{Definition}[Komposition von Relationen] \hspace*{\fill} \\[-0.5cm]
+  \begin{tabbing}
+  \textbf{Geg.:}  \quad \= $L$, $M$, $N$: Mengen \\[0.1cm]
+                  \> $R \subseteq L \times M$  \\[0.1cm]
+                  \> $Q \subseteq M \times N$  \\[0.1cm]
+  \textbf{Setze:} \> $R \circ Q := \bigl\{ \pair(x,z) \mid \exists y \in M \colon \pair(x,y) \in R \wedge \pair(y,z) \in Q \bigr\}$ \\[0.1cm]
+                  \>   $R \circ Q$: relationales Produkt von $R$ und $Q$, auch: Komposition von $R$ und $Q$
+  \end{tabbing}
+\end{Definition}
+\begin{tabbing} 
+Beispiel: \= $R$ Zuordnung \textsl{Name} zu \textsl{Telefon-Nr.}, \\[0.1cm]
+          \> $Q$ Zuordnung \textsl{Telefon-Nr.} zu \textsl{Adresse}\\[0.1cm]
+          \> $R \circ Q$ Zuordnung \textsl{Name} zu \textsl{Adresse}\\[0.1cm]
+          \> $R = \bigl\{ \pair(\mathrm{Mayer}, \mathrm{1234}), \pair(\mathrm{Weber}, \mathrm{4567}), \cdots \bigr\}$  \\
+          \> $Q = \bigl\{ \pair(\mathrm{1234}, \mathrm{Krumme\ Gasse}\;7), \pair(4567, \mathrm{Schlo\3allee}\; 3), \cdots \bigr\}$  \\
+          \> $R \circ Q = \bigl\{ \pair(\textsl{Mayer}, \textsl{Krumme\ Gasse}\;7), \cdots \bigr\}$ 
+\end{tabbing}
+
+
+\begin{Satz}[Assoziativ-Gesetz f\"{u}r das relationale Produkt] \hspace*{\fill} \\[-0.5cm]
+  \begin{tabbing}
+    \textbf{Geg.:} \quad \= $K$, $L$, $M$, $N$: Mengen \\[0.1cm]
+                  \> $R \subseteq K \times L$  \\[0.1cm]
+                  \> $Q \subseteq L \times M$  \\[0.1cm]
+                  \> $P \subseteq M \times N$  \\[0.1cm]
+    \textbf{Beh.:} \> $\bigl(R \circ Q\bigr) \circ P = R \circ (Q \circ P)$
+  \end{tabbing}
+\end{Satz}
+
+
+\begin{Satz}[Inverse eines relationalen Produkts] \hspace*{\fill} \\[-0.5cm]
+  \begin{tabbing}
+    \textbf{Geg.:} \quad \= $L$, $M$, $N$: Mengen \\[0.1cm]
+                  \> $R \subseteq L \times M$  \\[0.1cm]
+                  \> $Q \subseteq M \times N$  \\[0.1cm]
+    \textbf{Beh.:} \> $\bigl(R \circ Q\bigr)^{-1}  = Q^{-1} \circ R^{-1}$
+  \end{tabbing}
+\end{Satz}
+
+\begin{Satz}[Distributiv-Gesetz f\"{u}r relationale Produkte] \hspace*{\fill} \\[-0.5cm]
+  \begin{tabbing}
+    \textbf{Geg.:} \quad \= $L$, $M$, $N$: Mengen \\[0.1cm]
+                   \> $R_1 \subseteq L \times M$  \\[0.1cm]
+                   \> $R_2 \subseteq L \times M$  \\[0.1cm]
+                   \> $Q \subseteq M \times N$  \\[0.1cm]
+    \textbf{Beh.:} \> $\bigl(R_1 \cup R_2\bigr) \circ Q  = \bigl(R_1 \circ Q\bigr) \cup \bigl(R_2 \circ Q\bigr)$
+  \end{tabbing}
+\end{Satz}
+
+\noindent
+\textbf{Bemerkung}: Im allgemeinen gilt 
+\\[0.1cm]
+\hspace*{1.3cm}  $\bigl(R_1 \cap R_2\bigr) \circ Q \not= \bigl(R_1 \circ Q\bigr) \cap \bigl(R_2 \circ Q\bigr)$.
+
+\section{Setl2}
+Mengenbildung in \textsc{Setl2}:
+\begin{enumerate}
+\item Explizites Auflisten der Elemente 
+
+      \texttt{\{ 1, 5, 7 \}}
+\item Arithmetische Aufz\"{a}hlung
+
+      \texttt{\{ 1 .. 100 \}}
+
+      entspricht: \quad $\{ n \in \mathbb{N} : 1 \leq n \wedge n \leq 100 \}$
+\item Arithmetische Aufz\"{a}hlung mit Angabe der Schrittweite
+
+      \texttt{\{ 3, 8 .. 100 \}}
+
+      entspricht: \quad $\{ 3 + n \cdot 5 : n \in \mathbb{N} \wedge 3 + n \cdot 5 \leq 100 \}$
+\item Definition von Mengen durch Iteratoren (Bildmengen)
+      
+      Beispiel: Menge aller Produkte $n \cdot m$ mit $2 \leq n, m \leq 100$
+
+      \texttt{\{ n * m : n in \{2..10\}, m in \{2..10\} \}}
+\item Mengenbildung durch Auswahl
+
+      Beispiel: Menge aller Teiler von $p$
+
+      \texttt{\{ x : x in \{ 1 .. p \} | p mod x = 0 \}}
+
+      Einfachere Schreibweise:
+
+      \texttt{\{ x in \{1..p\} | p mod x = 0 \}}
+\item Mengenbildung durch Iteratoren und zus\"{a}tzliche Auswahl
+
+      Beispiel: Menge aller Produkte $m \cdot n$ f\"{u}r die gilt
+      \\[0.1cm]
+      \hspace*{1.3cm} $m + n = 16$
+
+      \texttt{\{ n * m : n in \{ 0 .. 16 \}, m in \{ 0 .. 16 \} | m + n = 16 \}}
+
+      allgemeine Form
+
+      \texttt{M := \{ $\textsl{expr}(x_1,\cdots,x_n)$ : $x_1$ in $S_1$, $\cdots$, $x_n \in S_n$ | $\textsl{cond}(x_1,\cdots,x_n)$ \}}
+      \begin{enumerate}
+      \item $\textsl{expr}(x_1,\cdots,x_n)$: Ausdruck, in dem die Variablen $x_1$, $\cdots$ $x_n$ vorkommen.
+      \item $S_1$, $\cdots$ $S_n$: Mengen
+      \item $\textsl{cond}(x_1, \cdots, x_n)$: Ausdruck, dessen Auswertung ``\texttt{true}'' 
+            oder ``\texttt{false}'' liefert.
+      \item $M$: Menge, die alle Elemente  $\textsl{expr}(x_1,\cdots,x_n)$ 
+            enth\"{a}lt, f\"{u}r die $x_i \in S_i$ gilt und $\textsl{cond}(x_1, \cdots, x_n)$
+            den Wert ``\texttt{true}'' liefert.
+      \end{enumerate}
+\end{enumerate}
+
+\subsection{Paare und Funktionen}
+\begin{enumerate}
+\item Paar: \quad \texttt{[ x, y ]} \quad statt \quad $\langle x, y \rangle$ 
+\item Tupel: \quad \texttt{[ $x_1$, $x_2$, $\cdots$, $x_n$ ]} \quad statt \quad $\langle x_1, x_2, \cdots, x_n \rangle$ 
+\item Definitions-Bereich einer Relation: \quad \texttt{domain(R)} \quad statt \quad $\textsl{dom}(R)$
+\item Werte-Bereich einer Relation: \quad \texttt{range(R)} \quad statt \quad $\textsl{rng}(R)$
+\item funktionale Relationen
+
+      $R$ Relation, links-total und rechts-eindeutig: $R$ Funktion 
+
+      dann: \quad $y = R(x)$ \quad g.d.w. \quad $[x,y] \in R$
+\item Falls $\textsl{card}(\{ y | \pair(x,y) \in R \}\bigr) \not= 1$, dann 
+      \\[0.1cm]
+      \hspace*{1.3cm} \texttt{R(x) = <om>}
+
+      \texttt{<om>}: gelesen $\Omega$, undefinierter Wert
+\item Alternative: \texttt{R\{x\}}
+
+      $R\{x\} := \{ y \mid \pair(x,y) \in R \}$
+\end{enumerate}
+
+\subsection{Tupel als ``\emph{geordnete Mengen}''}
+\begin{enumerate}
+\item Explizites Auflisten der Elemente 
+
+      \texttt{[ 1, 5, 7 ]}
+\item Arithmetische Aufz\"{a}hlung
+
+      \texttt{[ 1 .. 100 ]}
+
+      geordnete Liste mit den Elementen 1, 2, $\cdots$, bis $100$
+
+\item Definition von Listen durch Iteratoren 
+      
+      Beispiel: Liste aller Produkte $n \cdot m$ mit $2 \leq n, m \leq 100$
+
+      \texttt{[ [ n, m ] : n in [2..4], m in  [2..4] ]}
+
+      liefert
+
+      \texttt{[[2, 2], [2, 3], [2, 4], [3, 2], [3, 3], [3, 4], [4, 2], [4, 3], [4, 4]]}
+      
+      letzte Variable entspricht innerster Schleife
+      
+\item Listenbildung durch Auswahl
+
+      Beispiel: Menge aller Teiler von $p$
+
+      \texttt{[ x : x in [ 1 .. p ] | p mod x = 0 ]}
+
+      Einfachere Schreibweise:
+
+      \texttt{[ x in [1..p] | p mod x = 0 ]}
+\end{enumerate}
+
+\subsection{Mengen-Operatoren}
+\begin{enumerate}
+\item Summe aller Elemente einer Menge 
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      \texttt{+/ \{ 1, 2, 3 \} = 1 + 2 + 3}
+\item Produkt aller Elemente einer Menge 
+      \\[0.1cm]
+      \hspace*{1.3cm}
+      \texttt{*/ \{ 1, 2, 3 \} = 1 * 2 * 3}
+
+      Berechnung der Fakult\"{a}t $n! = 1 * 2 * 3 * \cdots * (n-1) *n$
+
+      \texttt{n\_fakultaet := */ \{1 .. n\}}
+\item Allgemein: $\textsl{op}$ bin\"{a}rer Operator \quad $\mapsto$ \quad \textsl{op/} Mengen-Operator
+
+\item Problem: \quad \texttt{+/{} = <om>}
+
+      L\"{o}sung: \quad \texttt{x +/{} = x} \quad (meist $x = 0$)
+\item \texttt{min/ S}: Minimum der Menge $S$
+\item \texttt{max/ S}: Minimum der Menge $S$
+\item \texttt{x from S;}
+
+      Danach gilt:
+      \begin{enumerate}
+      \item \texttt{x} ist beliebiges Element von \texttt{S}
+      \item \texttt{S} enth\"{a}lt \texttt{x} nicht mehr
+      \end{enumerate}
+\item \texttt{arb(S)}: beliebiges Element aus Menge \texttt{S}, Menge wird nicht ver\"{a}ndert
+\item \texttt{x fromb L;} \quad (\texttt{L} List)
+
+      Danach gilt:
+      \begin{enumerate}
+      \item \texttt{x} ist erstes Element von \texttt{L}
+      \item erstes Element von \texttt{L} wird entfernt
+      \end{enumerate}
+\item \texttt{x frome L;} \quad (\texttt{L} List)
+
+      Danach gilt:
+      \begin{enumerate}
+      \item \texttt{x} ist letztes Element von \texttt{L}
+      \item erstes Element von \texttt{L} wird entfernt
+      \end{enumerate}
+\item Anzahl der Elemente einer Menge $S$ , L\"{a}nge einer Liste $L$
+
+      \texttt{\#S = $\textsl{card}(S)$} \quad und \quad
+      \texttt{\#[}$x_1,\cdots,x_n$\texttt{]} $ = n$
+\item Indizierung von Elementen: 
+
+      $L(k)$: \quad $k$-tes Element der Liste $L$
+\end{enumerate}
+
+\section{Aussagenlogik}    
+\begin{itemize}
+\item \textbf{Anwendung}:
+  \begin{enumerate}
+  \item Entwicklung digitaler Schaltungen
+  \item Grundlage der Pr\"{a}dikaten-Logik
+  \item kann zur L\"{o}sung kombinatorischer Probleme eingesetzt werden
+
+        Beispiele: 8-Damen-Problem, Stundenplan-Erstellung
+  \end{enumerate}
+\item \textbf{Aufgaben}: 
+  \begin{enumerate}
+  \item Analyse der Verkn\"{u}pfung \emph{atomarer} Aussagen durch \emph{Junktoren}.  
+  \item \textbf{Herleitungsbegriff}:
+        Folgerung neuer Aussagen aus gegebenen Axiomen.
+  \end{enumerate}
+\item \textbf{Junktoren}:  ``\emph{und}'', ``\emph{oder}'', ``\emph{nicht}'', ``\emph{wenn $\cdots$, dann}'',
+        ``\emph{genau dann, wenn}''.
+\item \textbf{atomare} Aussagen
+      \begin{enumerate}
+      \item wahr oder falsch 
+      \item enthalten keine Junktoren 
+      \end{enumerate}
+\end{itemize}
+Beispiele f\"{u}r atomare Aussagen:
+\begin{enumerate}
+\item ``{\em Die Sonne scheint.}''
+\item ``{\em Es regnet.}''
+\item ``{\em Am Himmel ist ein Regenbogen.}''
+\end{enumerate}
+Beispiel f\"{u}r \textbf{zusammengesetzte} Aussage:
+\\[0.3cm]
+\hspace*{0.3cm} {\em Wenn die Sonne scheint und es regnet, dann ist ein Regenbogen am Himmel.} 
+\\[0.3cm]
+Beispiel f\"{u}r \textbf{Folgerung}: Aus den Axiomen
+\begin{enumerate}
+\item ``{\em Die Sonne scheint.}''
+\item ``{\em Es regnet.}'' 
+\item ``{\em Wenn die Sonne scheint und es regnet, dann ist ein Regenbogen am Himmel.} 
+\end{enumerate}
+folgt logisch die Behauptung \\[0.3cm]
+\hspace*{1.3cm} ``{\em Am Himmel ist ein Regenbogen.}'' 
+\\[0.3cm]
+Verallgemeinerung von logischen Schl\"{u}ssen durch \textbf{Aussage-Variablen}
+$$ \schluss{p \quad\quad q \quad\quad p \wedge q \rightarrow r}{r} $$
+\textbf{Schluss-Regel} mit \textbf{Pr\"{a}missen}  ``$p$'', ``$q$'', ``$p \wedge q \rightarrow r$''
+und \textbf{Konklusion} ``$r$''.
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Aufgabe:} Formalisieren Sie die folgende Schluss-Regel:
+\begin{center}
+\begin{minipage}[c]{8.2cm}
+{\em  Wenn es regnet, ist die Stra\3e na\3.  Es regnet nicht.  Also ist die Stra\3e nicht na\3.}
+\end{minipage}  
+\end{center}
+
+\noindent
+\textbf{Herleitungsbegriff}: 
+\\[0.3cm]
+\hspace*{1.3cm}
+ $M \vdash r$ \qquad wird gelesen als \qquad ``\emph{$M$ leitet $r$ her}''.
+\\[0.3cm]
+\textbf{Herleitung}: Aneinanderreihen von logischen Schl\"{u}ssen, Beispiel: 
+\\[0.3cm]
+\hspace*{1.3cm}
+$\displaystyle \schluss{\schluss{p \quad\quad q \quad\quad p \wedge q \rightarrow r}{r} \qquad
+  \schluss{\neg s \rightarrow \neg r}{r \rightarrow s}}{s}$
+\\[0.3cm]
+Herleitungs-Begriff \emph{syntaktisch}, Spielregeln zum Aufbau von Beweisen
+\vspace*{0.3cm}
+
+\emph{Folgerungs-Begriff}: inhaltliche Aussage
+\\[0.3cm]
+\hspace*{1.3cm} $M \models r$ \qquad ``\emph{$M$ folgt aus $r$}'' 
+\\[0.3cm]
+Interpretation: Immer wenn alle Formeln aus $M$ wahr sind, dann ist aus $r$ wahr.
+\vspace*{0.3cm}
+
+\noindent
+\textbf{Ziel} der Aussagenlogik: Herleitungsbegriff mit folgenden Eigenschaften
+\begin{enumerate}
+\item Korrektheit: \\[0.3cm]
+      \hspace*{1.3cm} Aus $M \vdash r$ folgt $M \models r$. 
+\item Vollst\"{a}ndigkeit: \\[0.3cm]
+      \hspace*{1.3cm} Aus $M \models r$ folgt $M \vdash r$. 
+      \\[0.1cm]
+      Wenn die Aussage $r$ aus $M$ folgt, dann soll $r$ auch aus der Menge $M$
+      hergeleitet werden k\"{o}nnen.
+\end{enumerate}
+\vspace*{0.3cm}
+
+
+\noindent
+\textbf{Def.:} Aussagenlogische Formeln \\
+\textbf{Geg.:} $\mathcal{P}$; Menge von  \emph{Aussage-Variablen} 
+\\[0.3cm]
+\hspace*{1.3cm} $\mathcal{P} = \{ p, q, r, \cdots \}$
+\\[0.3cm]
+\hspace*{1.3cm} Alphabet
+\\[0.3cm]
+\hspace*{1.3cm} $\mathcal{A} := \mathcal{P} \cup \bigl\{ \verum, \falsum, \neg, \vee, \wedge,
+                   \rightarrow, \leftrightarrow, (, ) \bigr\}$
+\\[0.3cm]
+Induktive Definition der aussagenlogischen Formeln:
+\begin{enumerate}
+\item $\verum \in \mathcal{F}$ und $\mathtt{\falsum} \in \mathcal{F}$.
+
+      Hier steht $\verum$ f\"{u}r die Formel, die immer wahr ist, w\"{a}hrend $\falsum$ f\"{u}r die 
+      Formel steht, die immer falsch ist.  Die Formel $\verum$ tr\"{a}gt auch den Namen \emph{Verum},
+      f\"{u}r $\falsum$ sagen wir auch \emph{Falsum}.
+\item Ist $p \in \mathcal{P}$, so gilt auch $p \in \mathcal{F}$.
+\item Ist $f \in \mathcal{F}$, so gilt auch $\neg f \in \mathcal{F}$.
+\item Sind $f_1, f_2 \in \mathcal{F}$, so gilt auch
+      \begin{enumerate}
+      \item  $(f_1 \vee f_2) \in \mathcal{F}$,
+      \item  $(f_1 \wedge f_2) \in \mathcal{F}$,
+      \item  $(f_1 \rightarrow f_2) \in \mathcal{F}$,
+      \item  $(f_1 \leftrightarrow f_2) \in \mathcal{F}$.
+      \end{enumerate}
+\end{enumerate}
+
+
+\noindent
+{\large Aussagenlogische \"{a}quivalenzen: (Boole'sche Algebra)} \\[0.3cm]
+\hspace*{0.3cm} 
+$\begin{array}{lll}
+\models \neg \falsum \leftrightarrow \verum & \models \neg \verum \leftrightarrow \falsum &  \\[0.1cm]
+ \models p \vee   \neg p \leftrightarrow \verum & \models p \wedge \neg p \leftrightarrow \falsum & \mbox{Tertium-non-Datur} \\[0.1cm]
+ \models p \vee   \falsum \leftrightarrow p & \models p \wedge \verum  \leftrightarrow p & \mbox{Neutrales Element}\\[0.1cm]
+ \models p \vee   \verum  \leftrightarrow \verum & \models p \wedge \falsum \leftrightarrow \falsum &  \\[0.1cm]
+ \models p \wedge p \leftrightarrow p  & \models p \vee p \leftrightarrow p &  \mbox{Idempotenz} \\[0.1cm]
+ \models p \wedge q \leftrightarrow q \wedge p & \models p \vee   q \leftrightarrow q \vee p & \mbox{Kommutativit\"{a}t} \\[0.1cm]
+ \models (p \wedge q) \wedge r \leftrightarrow p \wedge (q \wedge r) & \models (p \vee   q) \vee r \leftrightarrow p \vee   (q \vee r)  &
+ \mbox{Assoziativit\"{a}t} \\[0.1cm]
+ \models \neg \neg p \leftrightarrow p & & \mbox{Elimination von $\neg \neg$} \\[0.1cm]
+ \models p \wedge (p \vee q)   \leftrightarrow p & \models p \vee   (p \wedge q) \leftrightarrow p &  \mbox{Absorption} \\[0.1cm]
+ \models p \wedge (q \vee r)   \leftrightarrow (p \wedge q) \vee   (p \wedge r) & 
+ \models p \vee   (q \wedge r) \leftrightarrow (p \vee q)   \wedge (p \vee   r) & \mbox{Distributivit\"{a}t} \\[0.1cm]
+ \models \neg (p \wedge q) \leftrightarrow  \neg p \vee   \neg q &  \models \neg (p \vee   q) \leftrightarrow  \neg p \wedge \neg q &
+ \mbox{DeMorgan'sche Regeln}  \\[0.1cm]
+ \models (p \rightarrow q) \leftrightarrow \neg p \vee q & &  \mbox{Elimination von $\rightarrow$} \\[0.1cm]
+ \models (p \leftrightarrow q) \leftrightarrow (\neg p \vee q) \wedge (\neg q \vee p) & & \mbox{Elimination von $\leftrightarrow$}
+\end{array}$ \\[0.3cm]
+
+\begin{center}
+{\Large Pr\"{a}dikaten-Logik}
+\end{center}
+
+\noindent
+analysiert Aufbau \textsl{atomarer Formeln} aus \textsl{Pr\"{a}dikaten} und \textsl{Termen}
+
+\begin{enumerate}
+\item \emph{Terme}:  Bezeichnungen f\"{u}r Objekte.
+
+      zusammengesetzte aus \emph{Variablen} und \emph{Funktions-Zeichen}: 
+      \[ \textsl{vater}(x),\quad \textsl{mutter}(\textsl{issac}), \quad x+7, \quad \cdots \]
+\item \emph{Pr\"{a}dikats-Zeichen} erm\"{o}glichen Aussagen \"{u}ber Objekte:
+      \[ \textsl{istBruder}\bigl(\textsl{albert},
+         \textsl{vater}(\textsl{bruno})\bigr),\quad x+7 < x*7,\quad n \in \mathbb{N},
+         \quad \cdots \]
+      keine Junktoren: \emph{atomare} Formeln.
+\item Verkn\"{u}pfung atomare Formeln mit  aussagenlogische Junktoren liefern Formeln:
+      \[ x > 1 \rightarrow x + 7 < x * 7 \]
+\item \emph{Quantoren}: differenzieren Bedeutung von Variablen:
+      \[ \forall x \in \mathbb{R}: \exists n \in \mathbb{N}: x < n \]
+\end{enumerate}
+
+\noindent
+\textbf{Vorgehen}:
+\begin{enumerate}
+\item \textsl{Syntax}: Aufbau von Formeln
+\item \textsl{Sematik}: Bedeutung von Formeln
+\end{enumerate}
+
+\begin{center}
+{\Large  Syntax der Pr\"{a}dikaten-Logik}
+\end{center}
+
+\begin{Definition}[Signatur]
+
+  Signatur: 4-Tupel \\[0.1cm]
+  \hspace*{1.3cm} $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ 
+  \begin{enumerate}
+  \item $\mathcal{V}$:  Menge der Variablen
+  \item $\mathcal{F}$:  Menge der Funktions-Zeichen
+  \item $\mathcal{P}$:  Menge der Pr\"{a}dikats-Zeichen.
+  \item $\textsl{arity}$: \emph{Stelligkeit} 
+         
+        $\textsl{arity}: \mathcal{F} \cup \mathcal{P} \rightarrow \mathbb{N}$. 
+
+        $\textsl{arity}(f) = n$: \quad $f$ $n$-stellig
+  \item  $\mathcal{V}$, $\mathcal{F}$, $\mathcal{P}$  paarweise disjunkt: \quad
+         $\mathcal{V} \cap \mathcal{F} = \emptyset$, \quad $\mathcal{V} \cap \mathcal{P} = \emptyset$, \quad und \quad $\mathcal{F} \cap \mathcal{P} = \emptyset$.
+  \end{enumerate}
+
+\end{Definition}
+\quad
+
+\begin{Definition}[Terme] \hspace*{\fill} \\[-0.5cm]
+  \begin{tabbing}
+  \qquad \= \textbf{Geg.:} \quad \= $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity}\rangle$: \quad \= Signatur \\[0.1cm]
+         \> \textbf{Def.:}       \> $\mathcal{T}_\Sigma$:  \> Menge der $\Sigma$-Terme, induktive Definition    
+  \end{tabbing}
+  \begin{enumerate}
+  \item $x \el \mathcal{T}_\Sigma$ falls $x \in \mathcal{V}$
+  \item $f(t_1,\cdots,t_n) \el \mathcal{T}_\Sigma$ \quad falls
+    \begin{enumerate}
+    \item $f \in \mathcal{F}$ 
+    \item $\textsl{arity}(f) = n$
+    \item $t_1,\cdots,t_n \el \mathcal{T}_\Sigma$
+    \end{enumerate}
+  \item $c \el \mathcal{T}_\Sigma$ \quad falls $f \el \mathcal{F}$ und $\textsl{arity}(f) = 0$.
+  \end{enumerate}
+\end{Definition}
+
+\noindent
+\textbf{Beispiel}: Gegeben
+\begin{enumerate}
+\item $\mathcal{V} = \{ x, y, z \}$: \quad Menge der Variablen
+\item $\mathcal{F} = \{ 0, 1, \mathtt{+}, \mathtt{-}, \mathtt{*} \}$: \quad Menge der Funktions-Zeichen
+\item $\mathcal{P} = \{\mathtt{=}, \leq\}$: \quad  Menge der Pr\"{a}dikats-Zeichen    
+
+\item   $\textsl{arity} = \bigl\{ \pair(0,0), \pair(1,0), \pair(\mathtt{+},2), \pair(\mathtt{-},2), \pair(\mathtt{*},2)
+\bigr\}$: Stelligkeit
+\item $\Sigma_\mathrm{arith} := \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$:
+      \quad Signatur  
+\end{enumerate}
+Beispiele f\"{u}r $\Sigma_{\mathrm{arith}}$-Terme:
+\begin{enumerate}
+\item $x, y, z \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$
+\item $0, 1 \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$
+\item $\mathtt{+}(0,x) \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$
+\item $\mathtt{*}(\mathtt{+}(0,x),1) \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$
+\end{enumerate}
+
+\begin{Definition}[Atomare Formeln] (Keine Junktoren, keine Quantoren)
+  \begin{tabbing}
+  \qquad \= \textbf{Geg.:} \quad \= $\Sigma = \langle \mathcal{V}, \mathcal{F}, \mathcal{P}, \textsl{arity} \rangle$ \quad \= Signatur \\[0.2cm]
+         \> \textbf{Def.:}       \>  $p(t_1,\cdots,t_n) \in \mathcal{A}_\Sigma$ \quad \> atomaren $\Sigma$-Formel falls\\[0.1cm]
+         \>                      \>             \> $p \in \mathcal{P}$, \\[0.1cm]
+         \>                      \>             \> $\textsl{arity}(p) = n$, \\[0.1cm]
+         \>                      \>             \> $t_i \in \mathcal{T}_{\Sigma_{\mathrm{arith}}}$ f\"{u}r $i=1,\cdots,n$. \\[0.1cm]
+ \end{tabbing}
+\end{Definition}
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "overview"
+%%% End: 
