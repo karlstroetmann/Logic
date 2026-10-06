@@ -3,12 +3,12 @@
     --- \calligfont Alan Perlis}
 
 \noindent
-In this chapter we will show two different methods that can be used to prove the correctness of a \textsl{Python}
+In this chapter we will show two different methods that can be used to prove the correctness of a \textsl{TypeScript}
 function.
 \begin{enumerate}[(a)]
-\item The method of \gls{ci} can be used to verify the correctness of a \textsl{Python}
+\item The method of \gls{ci} can be used to verify the correctness of a \textsl{TypeScript}
       function that is defined recursively.
-\item In order to establish the correctness of a \textsl{Python} function that is defined iteratively we use
+\item In order to establish the correctness of a \textsl{TypeScript} function that is defined iteratively we use
       \gls{se}. 
 \end{enumerate}
 
@@ -43,7 +43,7 @@ function power(m: bigint, n: number): bigint {
   \label{fig:power.py}
 \end{figure} 
 
-It is by no means obvious that the function shown in \ref{fig:power.py} does compute the value
+It is by no means obvious that the function shown in Figure \ref{fig:power.py} does compute the value
 $m^n$.  We prove this claim by  \blue{computational induction}\index{computational induction}.
 Technically, \gls{ci} is an induction on the number of recursive invocations of a function that is defined recursively.
 This method is the method of choice to prove the correctness of a function if this function is defined recursively.
@@ -225,7 +225,7 @@ Since \texttt{divMod} is defined recursively, the proof of these formulas is don
   Here $m < n$ is true because this condition is the assumption of the base case.
 \item[I.S.:] $\lfloor m / 2 \rfloor \mapsto m$
 
-  By induction hypothesis we know that our claim is true for the recursive invocation of \texttt{divMod} in
+  By the induction hypothesis we know that our claim is true for the recursive invocation of \texttt{divMod} in
   line 5.  Therefore we have the following:
   \begin{eqnarray}
     \lfloor m / 2 \rfloor &\!=\! & q \cdot n + r \label{divmod3} \\
@@ -498,14 +498,14 @@ function binomial(n: number, k: number): number {
 
 
 \section{Symbolic Execution}
-In the last chapter we have seen how to prove the correctness of a recursive function via
+In the previous section we saw how to prove the correctness of a recursive function via
 \blue{computational induction}.  If a function is instead implemented via loops,
 then the method of computational induction is not applicable.   Instead, the method of 
 \blue{symbolic execution} \index{symbolic execution} is used.
 We introduce this method via two examples.
 
 \subsection{Iterative Squaring}
-In the previous section we have implemented a recursive version of \blue{iterative squaring} and verified its
+In the previous section we implemented a recursive version of \blue{iterative squaring} and verified its
 correctness via \blue{computational induction}.  In this section we implement an iterative version of
 \blue{iterative squaring} and verify its correctness via \blue{symbolic execution}.
 Consider the program shown in Figure \ref{fig:power-iterative-annotated.stlx}. 
@@ -646,8 +646,8 @@ represent $\texttt{isqrt}(a)$ in the binary system, we have
 $\ds \mathtt{isqrt}(a) = \sum\limits_{i=0}^{n} b_i \cdot 2^i$, \quad where $b_i \in \{0,1\}$
 \\[0.2cm]
 and $n+1$ is the number of bits that are needed to represent $\mathtt{isqrt}(a)$.  Note that then the binary
-representation of the number $a$ needs at most twice as much bits.  In the program below we have $n+1 = 64\,000$.
-Therefore, we assume that the argument $a$ of $\mathtt{isqrt}$ is less or equal than $2^{2\cdot (n+1)}$,
+representation of the number $a$ needs at most twice as many bits.  In the program below we have $n+1 = 64\,000$.
+Therefore, we assume that the argument $a$ of $\mathtt{isqrt}$ is less than or equal to $2^{2\cdot (n+1)}$,
 i.e. we assume that
 \\[0.2cm]
 \hspace*{1.3cm}
