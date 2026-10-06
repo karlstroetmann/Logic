@@ -45,7 +45,7 @@ write integer division as $n \dv 2$ in order to distinguish it from the division
   \label{fig:power.py}
 \end{figure} 
 
-It is by no means obvious that the program shown in \ref{fig:power.py} does compute
+It is by no means obvious that the program shown in Figure \ref{fig:power.py} does compute
 $m^n$.  We prove this claim by  \blue{computational induction}\index{computational induction}.
 Computational induction is an induction on the number of recursive invocations.
 This method is the method of choice to prove the correctness of a function if this function is defined recursively.
@@ -60,8 +60,8 @@ A proof by computational induction consists of three parts:
 
       In the induction step we have to prove that the function definition works in all those cases where
       the function does invoke itself recursively.  In order to carry out this proof we may
-      assume that the results computed by the recursively invocations are correct.
-      This assumption is called the \blue{induction hypotheses}.
+      assume that the results computed by the recursive invocations are correct.
+      This assumption is called the \blue{induction hypothesis}.
 \item The \blue{termination proof}.
 
       In this final step we have to show that the recursive definition of the function is \blue{well founded},
@@ -84,7 +84,7 @@ by computational induction.
 \item \textbf{Induction step}:
 
       The recursive invocation of $\mytt{power}$ has the form
-      $\mytt{power}(m,n \dv 2)$.  By the induction hypotheses we may assume that 
+      $\mytt{power}(m,n \dv 2)$.  By the induction hypothesis we may assume that 
       \\[0.2cm]
       \hspace*{1.3cm}
       $\displaystyle \mytt{power}(m,n \dv 2) = m^{n \dvv 2}$ 
@@ -193,7 +193,7 @@ Since \mytt{divMod} is defined recursively, the proof of these formulas is done 
   Here $m < n$ is true because this condition is the assumption of the base case.
 \item[I.S.:] $m \dv 2 \mapsto m$
 
-  By induction hypotheses we know that our claim is true for the recursive invocation of \mytt{divMod} in
+  By the induction hypothesis we know that our claim is true for the recursive invocation of \mytt{divMod} in
   line 5.  Therefore we have the following:
   \begin{eqnarray}
     m \dv 2 &\!=\! & q \cdot n + r \label{divmod3} \\
@@ -459,19 +459,19 @@ holds for all $n \in \mathbb{N}$ and all $k \in \{ 0, \cdots, n \}$. \eox
 
 
 \section{Symbolic Execution}
-In the last chapter we have seen how to prove the correctness of a recursive function via
+In the previous section we saw how to prove the correctness of a recursive function via
 \blue{computational induction}.  If a function is implemented iteratively via loops instead of recursively,
 then the method of computational induction is not applicable.   Instead, the method of 
 \blue{symbolic execution} \index{symbolic execution} is then used.
 We introduce this method via two examples.
 
 \subsection{Iterative Squaring}
-In the previous section we have implemented a recursive version of \blue{iterative squaring} and verified its
+In the previous section we implemented a recursive version of \blue{iterative squaring} and verified its
 correctness via \blue{computational induction}.  In this section we implement an iterative version of
 \blue{iterative squaring} and verify its correctness via \blue{symbolic execution}.
 Consider the program shown in Figure \ref{fig:power-iterative-annotated.stlx}.  In \textsl{F\#}, variables that
 are changed by assignments have to be declared as \texttt{mutable} and assignments are written with the operator
-``\texttt{<-}''.  As the parameters of a function can not be changed, the implementation in the notebook
+``\texttt{<-}''.  As the parameters of a function cannot be changed, the implementation in the notebook
 \texttt{Power-Iterative.ipynb} copies the parameters into mutable variables of the same name.  In the annotated
 version shown below, we have omitted these declarations. 
 
@@ -536,7 +536,7 @@ This claim is proven by induction on the number of loop iterations.
             $r_n \cdot x_n^{y_n} = r_0 \cdot x_0^{y_0} = 1 \cdot a^{b} = a^b$. \mycheck
 \item[I.S.:] $n \mapsto n + 1$.
 
-            We proof proceeds by a case distinction with respect to the expression $y_n \mmod 2$:
+            The proof proceeds by a case distinction with respect to the expression $y_n \mmod 2$:
             \begin{enumerate}
             \item $y_n \mmod 2 = 1$.
 
@@ -608,12 +608,12 @@ $\ds \mathtt{isqrt}(a) = \sum\limits_{i=0}^{31} b_i \cdot 2^i$, \quad where $b_i
 \\[0.2cm]
 In order to compute $\mathtt{isqrt}(a)$ we start with the last bit $b_{31}$.  If the square of $2^{31}$ is less
 than $a$, then we must have $b_{31} = 1$.  Otherwise we have $b_{31} = 0$.  Assume now that we have already computed the
-bits $b_{31}$, $b_{30}$, $\cdots$, $b_{31-n)}$.  In order to compute $b_{31-(n+1)}$ we have to check whether
+bits $b_{31}$, $b_{30}$, $\cdots$, $b_{31-n}$.  In order to compute $b_{31-(n+1)}$ we have to check whether
 \\[0.2cm]
 \hspace*{1.3cm}
 $\ds\left(\ds 2^{32-{n+1}} + \sum\limits_{i=31-n}^{31} b_i \cdot 2^i \right)^2 \leq a$.
 \\[0.2cm]
-If it is, then  $b_{31-{n+1}} = 1$, else $b_{31-(n+1)} = 0$.
+If it is, then  $b_{31-(n+1)} = 1$, else $b_{31-(n+1)} = 0$.
 With this in mind, we can state the invariants that hold when the \texttt{while} loop in line 4 is entered:
 \begin{enumerate}
 \item $\ds p_n = 2^{31 - n}$ \quad for $n=0,\cdots,31$ and $p_{32} = 0$.
@@ -724,7 +724,7 @@ Use the method of symbolic program execution to prove the correctness of the imp
 \href{https://en.wikipedia.org/wiki/Euclidean_algorithm}{Euclidean algorithm} that is shown in Figure
 \ref{fig:gcd.stlx} on page \pageref{fig:gcd.stlx}.  During the proof 
 you should make use of the fact that for all positive natural numbers $x$ and $y$ the function $\mytt{gcd}$
-that computes the greatest common divisor of $x$ and $x$ satisfies the equation
+that computes the greatest common divisor of $x$ and $y$ satisfies the equation
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mytt{gcd}(x, y) = \mytt{gcd}(y, x \,\mytt{\%}\, y)$.
