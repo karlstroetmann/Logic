@@ -1,7 +1,7 @@
 # F# Notebooks for the Lecture on Logic
 
 This directory contains F# translations of the Python notebooks in `../Python`.
-The subdirectories `Chapter-2`, …, `Chapter-5` correspond to the chapters of the lecture notes.
+The subdirectories `Chapter-2`, …, `Chapter-6` correspond to the chapters of the lecture notes.
 
 ## Running the notebooks
 
@@ -58,8 +58,9 @@ available in the `PATH`.
 
 - `Chapter-4/Propositional-Logic-Parser.ipynb` defines the type `Formula` of propositional formulas.
 - `Chapter-4/04-CNF.ipynb` defines the types `Literal`, `Clause`, and `CNF`.
-- `Chapter-5/FOL-Parser.ipynb` defines the types `Term` and `Formula` of first order logic.
-- `Chapter-5/09-FOL-CNF.ipynb` defines the first order types `Literal` and `Clause`.
+- `Chapter-5/FOL-Parser.ipynb` defines the types `Term` and `Formula` of first order logic
+  (`Chapter-6` contains a copy of this notebook).
+- `Chapter-6/01-FOL-CNF.ipynb` defines the first order types `Literal` and `Clause`.
 - `Chapter-5/02-Backtracking-Constraint-Solver.ipynb` defines the types `Constraint<'V>` and
   `CSP<'V>` used by the backtracking constraint solver.
 
