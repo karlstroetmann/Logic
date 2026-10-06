@@ -1,4 +1,4 @@
-\documentclass[11pt]{report}
+\documentclass[11pt,twoside]{report}
 
 %\usepackage{atkinson}
 \usepackage[T1]{fontenc}
@@ -97,8 +97,10 @@
 \fancyheadoffset{0.1cm}
 \renewcommand{\chaptermark}[1]{\markboth{\chaptername \ \thechapter.\ #1}{}}
 \renewcommand{\sectionmark}[1]{\markright{\thesection. \ #1}{}}
-\fancyhead[R]{\leftmark}
-\fancyhead[L]{\rightmark}
+% Chapter on the outer edge of even pages, section on the outer edge of odd pages.
+\fancyhead{}
+\fancyhead[LE]{\leftmark}
+\fancyhead[RO]{\rightmark}
 
 \definecolor{amethyst}{rgb}{1.0, 0.7, 0.4}
 \definecolor{orange}{rgb}{1, 0.9, 0.0}
@@ -106,9 +108,12 @@
 
 \setlength{\mathindent}{1.3cm}
 \setlength{\textwidth}{17cm}
-\addtolength{\oddsidemargin}{-1cm}
-\addtolength{\evensidemargin}{-1cm}
+% Two-sided layout for print: the wider margin is always on the binding side.
+\setlength{\oddsidemargin}{\dimexpr 2.6cm - 1in\relax}
+\setlength{\evensidemargin}{\dimexpr \paperwidth - \textwidth - 2.6cm - 1in\relax}
 \addtolength{\topmargin}{-1cm}
+\setlength{\headheight}{14pt}
+\addtolength{\topmargin}{-2pt}
 
 
 \setlength{\mathindent}{1.3cm}
@@ -116,6 +121,10 @@
 \setlength{\partopsep}{0.0cm plus0.1cm minus 0.0cm}
 \setlength{\parsep}{0.1cm plus0.1cm minus 0.0cm}
 \setlength{\parskip}{0.1cm plus0.1cm minus 0.0cm}
+% Allow slightly looser lines instead of letting long code words stick into the margin.
+\setlength{\emergencystretch}{2em}
+% Twoside would switch to \flushbottom; keep pages with large listings from being stretched.
+\raggedbottom
 \newfont{\chess}{chess20}
 \newfont{\bigchess}{chess30}
 \newcommand{\chf}{\baselineskip20pt\lineskip0pt\chess}
