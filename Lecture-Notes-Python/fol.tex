@@ -1,6 +1,6 @@
 \chapter{First-Order Logic}
 In \textcolor{blue}{propositional logic}, we have studied the combination of atomic propositions using
-the propositional \textcolor{blue}{connectives} ``$\neg$'', ``$\vee$'', ``$\wedge$'', ``$\rightarrow$" and
+the propositional \textcolor{blue}{connectives} ``$\neg$'', ``$\vee$'', ``$\wedge$'', ``$\rightarrow$'' and
 ``$\leftrightarrow$''.  In \blue{first-order logic}\index{first-order logic} we additionally 
 examine the structure of these atomic propositions. The following additional concepts are introduced in
 first-order logic: 
@@ -25,7 +25,7 @@ first-order logic:
       \\[0.2cm]
       The resulting formulas are referred to as \textcolor{blue}{atomic formulas} \index{atomic formulas},
       since they do not contain subformulas. 
-\item Atomic formulas can be combined using the propositional connectives as shown the following example:
+\item Atomic formulas can be combined using the propositional connectives as shown in the following example:
       \\[0.2cm]
       \hspace*{1.3cm}
       $x > 1 \rightarrow x + 7 < x \cdot  7$.
@@ -52,7 +52,7 @@ This chapter is structured as follows:
 \item As an application of first-order logic we discuss \textcolor{blue}{constraint programming}.
       In constraint programming, a given problem is described using first-order logic formulas.
       To solve the problem, a so-called \textcolor{blue}{constraint solver} is used.
-\item We develop a simple constraint solver that works by the means of \blue{backtracking}.
+\item We develop a simple constraint solver that works by means of \blue{backtracking}.
 \item Then we discuss the constraint solver \texttt{Z3}, which is a state-of-the-art constraint solver
       developed by Microsoft Corporation.
 \item Furthermore, we consider normal forms of first-order logic formulas and show how formulas
@@ -335,7 +335,7 @@ is a formula from $\mathbb{F}_{\Sigma_{\mathrm{arith}}}$.
 The set of bound variables is $\{x\}$, the set of free variables is 
 $\{ y \}$. \eox
 
-If we would always write formulas in the prefix notation defined above, then readability would suffer
+If we always wrote formulas in the prefix notation defined above, then readability would suffer
 disproportionately.  
 To abbreviate, we agree that in first-order logic the same rules for saving parentheses apply that we have
 already used in propositional logic. In addition, the same quantifiers are combined: for example, we write   
@@ -440,7 +440,7 @@ function and predicate symbols of the signature $\Sigma$ are to be interpreted.
         \item $\mathcal{J}$ is the \blue{interpretation} \index{interpretation} of the function and predicate symbols.
               Formally, we define $\mathcal{J}$ as a mapping with the following properties:
         \begin{enumerate}
-        \item Every function symbol $c \in \mathcal{F}$ with $\textsl{arity}(f) = 0$ is mapped to an element
+        \item Every function symbol $c \in \mathcal{F}$ with $\textsl{arity}(c) = 0$ is mapped to an element
               of $\mathcal{U}$, i.e.~we have $\mathcal{J}(c) \in \mathcal{U}$.  Instead of writing
               $\mathcal{J}(c)$ we will write $c^{\mathcal{J}}$.
         \item Every function symbol $f \in \mathcal{F}$ with $\textsl{arity}(f) = m$ and $m > 0$ is mapped to
@@ -780,7 +780,7 @@ where:
         
             $\forall x: \forall y: x \circ y = y \circ x$
 
-            This is know as the law of \blue{commutativity}.
+            This is known as the law of \blue{commutativity}.
             \eox
       \end{enumerate}
       Note that the law of commutativity does not have to hold in a group.  It is only required for
@@ -788,7 +788,7 @@ where:
 \end{enumerate}
 
 \subsection{Representation of Formulas in \textsl{Python}}
-In the last section, we have defined the signature $\Sigma_G$ of
+In the last section, we defined the signature $\Sigma_G$ of
 group theory as follows:
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -796,7 +796,7 @@ $\Sigma_G =
    \bigl\langle \{x,y,z\},\; \{\mathrm{e},\circ\},\; \{=\},\; \{ \pair(\mathrm{e},0), \pair(\circ,2), \pair(=,2) \} \bigr\rangle 
 $.
 \\[0.2cm]
-Here, ``$\mathrm{e}$'' is a 0-arity function symbol representing the identity element, ``$\circ$'' is
+Here, ``$\mathrm{e}$'' is a nullary function symbol representing the identity element, ``$\circ$'' is
 the binary function symbol representing the group multiplication, and ``$=$'' is the binary predicate symbol to 
 denote equality. 
 We will use a parser for first-order logic formulas that does not support binary infix operators like
@@ -939,7 +939,7 @@ implement this structure using the code shown in Figure \ref{fig:Group.ipynb} on
 \begin{enumerate}
 \item The universe $U$ defined in line 1 consists of the two numbers $0$ and $1$.
       
-\item In line 2, we define the interpretation of the zero-arity function symbol $\mytt{E}$
+\item In line 2, we define the interpretation of the nullary function symbol $\mytt{E}$
       as the \textsl{Python} dictionary that maps the empty tuple to the number $0$.
 \item In line 3, we define a function $\mytt{Product}$ as a \textsl{Python} dictionary.  We have
       \\[0.2cm]
@@ -1181,7 +1181,7 @@ line 2.  This copy is then modified in line 3 and returned in line 4.
 
 
 The  script shown in Figure \ref{fig:isGroup.ipynb} can check whether the $\Sigma$-structure defined in
-\ref{fig:isGroup.ipynb} on page \pageref{fig:isGroup.ipynb} is a group. The output shown in Figure
+Figure \ref{fig:Group.ipynb} on page \pageref{fig:Group.ipynb} is a group. The output shown in Figure
 \ref{fig:isGroup.out} allows us to conclude that this structure is indeed a commutative group. 
 
 
@@ -1232,9 +1232,9 @@ The  script shown in Figure \ref{fig:isGroup.ipynb} can check whether the $\Sigm
 \hspace*{0.0cm}
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/01-FOL-Evaluation.ipynb}{\mytt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/01-FOL-Evaluation.ipynb}}
 \\[0.2cm]
-With this program we can check, whether a
+With this program we can check whether a
 first-order formula is satisfied in a given finite structure. However, we cannot use it to check whether a
-formula is universally valid because, on one hand, we cannot apply the program if the $\Sigma$-structure has an
+formula is universally valid because, on the one hand, we cannot apply the program if the $\Sigma$-structure has an
 infinite universe, and on the other hand, even the number of different finite $\Sigma$-structures we would need
 to test is infinitely large. \eox 
 
@@ -1254,7 +1254,7 @@ that $\mathcal{S}(F) = \mathtt{False}$.
 \exerciseEng
 \begin{enumerate}[(a)]
 \item How many different structures exist for the signature of group theory if we assume that the
-      universe is of the form $\{1, \cdots, n\}$.
+      universe is of the form $\{1, \cdots, n\}$?
 \item Provide a \underline{satisfiable} first-order formula $F$ that is always false in a 
       $\Sigma$-structure $\mathcal{S} = \pair(\mathcal{U},\mathcal{J})$ if  the universe $\mathcal{U}$ is finite.
 
@@ -1340,7 +1340,7 @@ if, given the assignment $\mathcal{I}$, all constraints from $\mathcal{C}$ are s
 \hspace*{1.3cm}
 $\mathcal{S}(\mathcal{I}, f) = \mathtt{True}$ \quad for all $f \in \mathcal{C}$.
 \\[0.2cm]
-Finally, a \blue{partial variable assignment} \index{partial variable assignment} $\mathcal{B}$ for $\mathcal{P}$ is a function
+Finally, a \blue{partial variable assignment} \index{partial variable assignment} $\mathcal{B}$ for $\mathbb{P}$ is a function
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{B}: \mathcal{V} \rightarrow \mathcal{U} \cup \{ \Omega \}$ \quad where $\Omega$ denotes the undefined value.
@@ -1409,7 +1409,7 @@ If we define the assignment $\mathcal{I}$ such that
 \item $\mathcal{I}(\mathtt{V}) = \mytt{red}$,
 \item $\mathcal{I}(\mathtt{T}) = \mytt{green}$,
 \end{enumerate}
-then you can check that the assignment $\mathcal{I}$ is indeed a solution to the constraint satisfaction problem $\mathcal{P}$.
+then you can check that the assignment $\mathcal{I}$ is indeed a solution to the constraint satisfaction problem $\mathbb{P}$.
 Figure \ref{fig:australia-solution.png} on page \pageref{fig:australia-solution.png} shows this solution.
 
 \begin{figure}[!ht]
@@ -1427,8 +1427,8 @@ chessboard such that no queen can attack another queen.  We have already discuss
 chapter.  Let us recapitulate: In \href{https://en.wikipedia.org/wiki/Chess}{chess},
 a queen can attack all pieces that are either in the same row, the same column, or the same diagonal.  If we
 want to put 8 queens on a chessboard such that no two queens can attack each other, we have to put exactly one
-queen in every row:  If we would put more than one queen in a row, the queens in that row can attack each other.
-If we would leave a row empty, then, given that the other rows contain at most one queen, there would be less
+queen in every row:  If we put more than one queen in a row, the queens in that row could attack each other.
+If we left a row empty, then, given that the other rows contain at most one queen, there would be fewer
 than 8 queens on the board.  Therefore, in order to model the eight queens problem as a constraint satisfaction
 problem, we will use the following set of variables:
 \\[0.2cm]
@@ -1542,7 +1542,7 @@ partial assignment is shown in \myFig{eight-queens-partial.txt}.
          \vrule width1pt}
    \hrule height1pt}
 
-  \caption{The partial assignment $\bigl\{ \mytt{Q}_1 \mapsto 4, \mytt{Q}_2 \mapsto 8, \mytt{Q}_3 \mapsto 1) \bigr\}$.}
+  \caption{The partial assignment $\bigl\{ \mytt{Q}_1 \mapsto 4, \mytt{Q}_2 \mapsto 8, \mytt{Q}_3 \mapsto 1 \bigr\}$.}
   \label{fig:eight-queens-partial.txt}
 \end{figure}
 
@@ -1578,7 +1578,7 @@ partial assignment is shown in \myFig{eight-queens-partial.txt}.
 
 
 \subsection{A Backtracking Constraint Solver}
-One approach to solve a \textsc{Csp} that is both conceptually simple and reasonable efficient is
+One approach to solve a \textsc{Csp} that is both conceptually simple and reasonably efficient is
 \blue{backtracking}.\index{backtracking}  The idea is to try to build variable assignments incrementally:  We start with
 an empty dictionary and pick a variable $x_1$ that needs to have a value assigned.  For this variable, we
 choose a value $v_1$ and assign it to this variable.  This yields the partial assignment $\{ x_1:v_1 \}$.
@@ -1657,7 +1657,7 @@ def solve(CSP):
       \item Next, for every constraint $\mytt{f}$ of the given $\mytt{CSP}$, we compute the set of variables that
             are used in $\mytt{f}$.  This is done using the procedure $\mytt{collect\_variables}$.
             Of these variables we keep only those variables that also occur in the set $\mytt{Variables}$
-            because we assume that any other \textsl{Python} variable occurring in a constraint $f$ has already
+            because we assume that any other \textsl{Python} variable occurring in a constraint $f$ already has
             a value assigned to it and can therefore be regarded as a constant.
 
             The variables occurring in a constraint $\mytt{f}$ are then paired with the constraint $\mytt{f}$ and
@@ -1776,7 +1776,7 @@ occurring in $\mathtt{Constraints}$ such that
 $\mytt{vars}(\mytt{f}) \subseteq \mytt{dom}(\mytt{Assignment})$
 \\[0.2cm]
 holds, the formula $\mytt{f}$ evaluates to $\mytt{True}$ given the $\mytt{Assignment}$.  The purpose of
-$\mytt{isConsistent}$ is to check, whether the extended assignment
+$\mytt{isConsistent}$ is to check whether the extended assignment
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mytt{NewAssign} \;\mytt{:=}\;\mytt{Assignment} \cup \{ \pair(\mytt{var}, \mytt{value}) \}$
@@ -1796,7 +1796,7 @@ $\mytt{NewAssign}$.  The reasoning is as follows:
       $\mytt{Assignment}$ cannot change the result of evaluating $\mytt{Formula}$: As
       $\mytt{Assignment}$ is assumed to be partially consistent with respect to $\mytt{Formula}$, 
       $\mytt{NewAssign}$ is also partially consistent with respect to $\mytt{Formula}$.
-\item If the formula $\mathtt{f}$ contains variables that have not been assigned yet, then \texttt{f} can not
+\item If the formula $\mathtt{f}$ contains variables that have not been assigned yet, then \texttt{f} cannot
       be evaluated anyway.
 \end{enumerate}
 If we use backtracking, we can solve the 8 queens puzzle in less than a second.
@@ -1806,14 +1806,14 @@ can be \red{very important}.  The general strategy is that variables that are st
 be grouped together in the list $\mytt{Variables}$.
 
 \exerciseEng
-We have already discussed the \href{https://en.wikipedia.org/wiki/Zebra_puzzle}{Zebra Puzzle} in section
+We have already discussed the \href{https://en.wikipedia.org/wiki/Zebra_puzzle}{Zebra Puzzle} in Section
 \ref{section:zebra} of the previous chapter.  Your task is to reformulate this puzzle as a constraint
 programming problem.  You should start from the following notebook:
 \\[0.2cm]
 \hspace*{1.3cm}
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/Prince-Tiger.ipynb}{\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/Zebra-CSP.ipynb}}
 \\[0.2cm]
-While it is important to order the variables in a sensible way, you shouldn't spend to much time with this
+While it is important to order the variables in a sensible way, you shouldn't spend too much time with this
 task.
 \eox
 
@@ -1829,7 +1829,7 @@ i.e.~it is interpreted as the number
 \hspace*{1.3cm}
 $\texttt{S} \cdot 10^3 + \texttt{E} \cdot 10^2 + \texttt{N} \cdot 10^1 + \texttt{D} \cdot 10^0$.
 \\[0.2cm]
-The strings ``$\texttt{MORE}$ and ``$\texttt{MONEY}$'' are interpreted similarly. To make the problem
+The strings ``$\texttt{MORE}$'' and ``$\texttt{MONEY}$'' are interpreted similarly. To make the problem
 interesting, the assumption is that different variables have different values.  Furthermore, the
 digits at the beginning of a number should be different from $0$.
 
@@ -1856,9 +1856,9 @@ We will explain our method by solving the
 \href{https://en.wikipedia.org/wiki/Missionaries_and_cannibals_problem}{missionaries and cannibals problem},
 which is explained in the following:
 Three missionaries and three infidels have to cross a river in order to get to a church where the infidels can
-be baptized.  According to ancient catholic mythology, baptizing the infidels is necessary to save them from
+be baptized.  According to ancient Catholic mythology, baptizing the infidels is necessary to save them from
 the eternal tortures of hell fire. In order to cross the river, the missionaries and infidels have a small boat
-available that can take at most two passengers. If at any moments at any shore there are more infidels than
+available that can take at most two passengers. If at any moment on either shore there are more infidels than
 missionaries, then the missionaries have a problem, since the infidels have a diet that is rather unhealthy for
 the missionaries. 
 
@@ -1895,7 +1895,7 @@ In order to solve this problem via constraint programming, we first introduce th
         state transition.
   \end{enumerate}
 \end{Definition}
-Every \blue{state} of a transition system is a mapping of the variable to values.
+Every \blue{state} of a transition system is a mapping of the variables to values.
 The idea is that the formula \texttt{Start} describes the start state of our search problem, \texttt{Goal}
 describes the state that we want to reach, while \texttt{Invariant} is a formula that must be true initially
 and that has to remain true after every transition of our system.
@@ -1919,7 +1919,7 @@ a symbolic transition system.
       missionaries, infidels, and boats on the western shore will be $0$.
 \item $\texttt{Invariant} := \bigl((\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = \mathtt{C}) \;\wedge\; \mathtt{B} \leq 1\bigr)$.
 
-      The first part of the invariant, i.e.~the formulas $\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = \mathtt{C}$,
+      The first part of the invariant, i.e.~the formula $\mathtt{M} = 3 \vee \mathtt{M} = 0 \vee \mathtt{M} = \mathtt{C}$,
       describes those states where the missionaries are not threatened by the infidels.
       \begin{itemize}
       \item $\mathtt{M} = 3$: All missionaries are on the western shore.
@@ -1927,8 +1927,8 @@ a symbolic transition system.
       \item $\mathtt{M} = \mathtt{C}$: On both shores the numbers of missionaries and cannibals are the same.
 
             If neither $\mathtt{M} = 3$ nor $\mathtt{M} = 0$ holds, then the number of missionaries and
-            cannibals have to be the same on the western shore, because if, for example, there were more
-            missionaries on the western shore than cannibals, then there would be less missionaries than
+            cannibals has to be the same on the western shore, because if, for example, there were more
+            missionaries on the western shore than cannibals, then there would be fewer missionaries than
             cannibals on the eastern shore and hence there would be a problem.
       \end{itemize}
       The condition $\mathtt{B} \leq 1$ is needed because there is just one boat, but the set $\mathcal{U}$ of
@@ -1958,11 +1958,11 @@ a symbolic transition system.
             If the boat is initially on the western shore, then afterwards the number of missionaries and
             infidels will decrease, as they leave for the eastern shore.  In this case $\texttt{M} - \texttt{M}'$
             is the number of missionaries on the boat, while $\texttt{C} - \texttt{C}'$ is the number of
-            infidels.  The sum of these numbers has to be between $1$ and $2$ because the boat can not travel
+            infidels.  The sum of these numbers has to be between $1$ and $2$ because the boat cannot travel
             empty and can take at most two passengers.
 
             The condition $\mathtt{M}' \leq \mathtt{M}$ is true because when missionaries are traveling from
-            the western shore to the eastern shore, the number of missionaries on the western shore can not
+            the western shore to the eastern shore, the number of missionaries on the western shore cannot
             increase.  Similarly,  $\mathtt{C}' \leq \mathtt{C}$ has to be true.
       \item $\mathtt{B} = 0 \;\rightarrow\; 1 \leq \mathtt{M}' - \mathtt{M}  + \mathtt{C}' - \mathtt{C} \leq 2 \;\wedge\;
             \mathtt{M}' \geq \mathtt{M} \;\wedge\; \mathtt{C}' \geq \mathtt{C}$
@@ -2075,7 +2075,7 @@ Figure \ref{fig:Missionaries-STS.ipynb-2} shows how we can turn the symbolic tra
        \hspace*{1.3cm}
        $L_1 + \cdots + L_k$,
        \\[0.2cm]
-       i.e.~it concatenates the lists that are elements of \texttt{Lol} and returns the resulting list.
+       i.e.~it concatenates the lists that are elements of \texttt{LoL} and returns the resulting list.
 \item The function $\mathtt{missionaries\_CSP}(n)$ receives a natural number $n$ as its argument.
        It returns a \textsc{Csp} that has a solution iff there is a solution of the \emph{missionaries and cannibals}
        problem that crosses the river exactly $n$ times.  It uses the variables
@@ -2089,7 +2089,7 @@ Figure \ref{fig:Missionaries-STS.ipynb-2} shows how we can turn the symbolic tra
 
        Line 12 ensures that the invariant of the transition system is valid after every crossing of the boat.
        Line 13 describes the mechanics of the crossing.
-\item The function \texttt{find\_solution} tries to find a natural number $n$ such that problem can be solved
+\item The function \texttt{find\_solution} tries to find a natural number $n$ such that the problem can be solved
        with $n$ crossings. As the number of crossings has to be odd, we increment $n$ by
        two at the end of the \texttt{while} loop.
 
@@ -2098,7 +2098,7 @@ Figure \ref{fig:Missionaries-STS.ipynb-2} shows how we can turn the symbolic tra
 
 \exerciseEng
 An agricultural economist has to sell a \blue{wolf}, a \blue{goat}, and a \blue{cabbage}
-on a market place.  In order to reach the market place, she has to cross a river.  The
+at a market place.  In order to reach the market place, she has to cross a river.  The
 boat that she can use is so small that it can only accommodate either the goat, the wolf,
 or the cabbage in addition to the agricultural economist herself.  Now if the agricultural
 economist leaves the wolf alone with the goat, the wolf will eat the goat.  If, instead,
@@ -2112,8 +2112,8 @@ If you want to solve the puzzle yourself, you can do so at the following link:
 \href{http://www.mathcats.com/explore/river/crossing.html}{http://www.mathcats.com/explore/river/crossing.html}
 \\[0.2cm]
 Encode this problem as a \blue{symbolic transition system} and then solve it with the help
-of the constraints solver developed earlier.  Assume that the
-problem can be solved with $n\in\mathbb{N}$ crossing of the river.  Use the following
+of the constraint solver developed earlier.  Assume that the
+problem can be solved with $n\in\mathbb{N}$ crossings of the river.  Use the following
 variables:
 \begin{itemize}
 \item $\texttt{F}i$ for $i\in\{0,\cdots,n\}$ is the number of farmers on the western shore after the 
@@ -2148,9 +2148,9 @@ The following is a simple text problem from my old $8^{\textrm{th}}$ grade math 
 In order to solve this puzzle we need two additional assumptions.
 \begin{enumerate}
 \item My father has no illegitimate children.
-\item All of my fathers children identify themselves as either male or female.
+\item All of my father's children identify themselves as either male or female.
 \end{enumerate}
-Strangely, in my old math book these assumptions have not been mentioned.
+Strangely, in my old math book these assumptions were not mentioned.
 
 We can now infer the number of children.
 If we denote the number of \blue{boys} by the variable $b$ and the number of \blue{girls}
@@ -2212,7 +2212,7 @@ interface of Z3.
       \\[0.2cm]
       However, there is no need for you to consult this documentation as we will only use a very small part of
       the \textsc{Api} of \texttt{Z3} in this lecture. 
-\item Lines 3 and 4 creates the \texttt{Z3} variables \mytt{boys} and \mytt{girls} as integer valued variables.
+\item Lines 3 and 4 create the \texttt{Z3} variables \mytt{boys} and \mytt{girls} as integer valued variables.
       The function \mytt{Int} takes one argument, which has to be a string.  This string is the name of the
       variable.  We store these variables in Python variables of the same name.  It would be possible to use
       different names for the Python variables, but that would be very confusing.
@@ -2313,7 +2313,7 @@ denotes the corresponding column.
 Next, we have to formulate the constraints.  In this case, there are two kinds of constraints:
 \begin{enumerate}
 \item We have to specify that the move from the position $\langle \mathtt{R}_i, \mathtt{C}_i \rangle$
-      to the position $\langle \mathtt{R}_{i+1}, \mathtt{C}_{i+1} \rangle$ is legal move for a knight.
+      to the position $\langle \mathtt{R}_{i+1}, \mathtt{C}_{i+1} \rangle$ is a legal move for a knight.
       In chess, there are two ways for a knight to move:
       \begin{enumerate}[(a)]
       \item The knight can move two squares horizontally left or right followed by moving vertically
@@ -2399,7 +2399,7 @@ Figure \ref{fig:Knight's Tour with Z3.ipynb-1} shows how we can formulate the pu
 \begin{enumerate}
 \item In line 1 we import the library \texttt{z3}.
  
-\item We define the auxiliary functions \texttt{row} and \texttt{col} in line 3 and 4.
+\item We define the auxiliary functions \texttt{row} and \texttt{col} in lines 3 and 4.
       Given a natural number $i$, the expression $\mathtt{row}(i)$ returns the string $\texttt{'R}i\texttt{'}$
       and  $\mathtt{col}(i)$ returns the string  $\texttt{'C}i\texttt{'}$.  These strings are the names of the
       variables $\mathtt{R}_i$ and $\mathtt{C}_i$.
@@ -2506,14 +2506,14 @@ solution of this \textsc{Csp} using \texttt{Z3}.
 If successful, it returns a dictionary that maps every variable name to the corresponding value of the solution
 that has been found.
 \begin{enumerate}
-\item In line 2 and 3 we create the \texttt{Z3} variables that specify the positions of the knight after its
-      $i^{\mathrm{th}}$ move.  $\texttt{Rows}[i]$ specifies the row of the knight after the its
+\item In lines 2 and 3 we create the \texttt{Z3} variables that specify the positions of the knight after its
+      $i^{\mathrm{th}}$ move.  $\texttt{Rows}[i]$ specifies the row of the knight after its
       $i^{\mathrm{th}}$ move, while $\texttt{Cols}[i]$ specifies the column.
 \item We compute the set of all constraints in line 4.   
 \item We create a solver object in line 5 and add the constraints to this solver in the following line.
 \item The function \texttt{check} tries to build a model satisfying the constraints, while the function
       \texttt{model} extracts this model if it exists.
-\item Finally, in line 10 and 11 we create a dictionary that maps all of our variables to the corresponding
+\item Finally, in lines 10 and 11 we create a dictionary that maps all of our variables to the corresponding
       values that are found in the model.  Note that $\texttt{row}(i)$ returns the name of the
       \texttt{Z3} variable $\texttt{Rows}[i]$ and similarly $\mathtt{col}(i)$ returns the name of the
       \texttt{Z3} variable $\texttt{Cols}[i]$.
@@ -2629,19 +2629,19 @@ that has already been discussed earlier.
 Figure \ref{fig:Missionaries-Z3.ipynb-1} on page \pageref{fig:Missionaries-Z3.ipynb-1} shows how we can define
 the associated symbolic transition system using the constraint solver \texttt{Z3}.
 \begin{enumerate}
-\item In line 1 -- 3 we define the variables \texttt{M}, \texttt{C}, and \texttt{B}.  These represent the
+\item In lines 1--3 we define the variables \texttt{M}, \texttt{C}, and \texttt{B}.  These represent the
       number of missionaries, cannibals, and boats on the eastern shore.  We have defined these variables as
       integers, although the set of values really is the set $\{0,1,2,3\}$.  We will later add appropriate
       inequalities to restrict these variables to this set.
-\item The definition of \texttt{start} and \texttt{goal} in line 6 and 9 are analogous the corresponding
-      definitions in \myfig{Missionaries-STS.ipynb}.  They describe that initially everybody and the boat is on
+\item The definitions of \texttt{start} and \texttt{goal} in lines 6 and 9 are analogous to the corresponding
+      definitions in \myfig{Missionaries-STS.ipynb}.  They describe that initially everybody and the boat are on
       the eastern shore, while in the end everybody is on the western shore.
 
       Note that we have to use the \texttt{Z3} function \texttt{And} to form the conjunction of the conditions.
       The function takes an arbitrary number of arguments.  The constraint solver \texttt{Z3} also provides the
       functions \texttt{Or} and \texttt{Implies}.  The function \texttt{Or} computes the disjunction of its
       arguments, while the function $\texttt{Implies}(A, B)$ represents the formula $A \rightarrow B$.
-\item The definition of the invariant in 11 -- 15 has become more complicated because in addition to the
+\item The definition of the invariant in lines 11--15 has become more complicated because in addition to the
       formula 
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -2701,13 +2701,13 @@ the associated symbolic transition system using the constraint solver \texttt{Z3
 \label{fig:Missionaries-Z3.ipynb-2}
 \end{figure}
 
-Figure \ref{fig:Missionaries-Z3.ipynb-2} on page \pageref{fig:Missionaries-Z3.ipynb-2} show the implementation
+Figure \ref{fig:Missionaries-Z3.ipynb-2} on page \pageref{fig:Missionaries-Z3.ipynb-2} shows the implementation
 of the function \texttt{missionaries\_CSP} that takes a natural number $n$ as its input and then creates a
 \textsc{Csp} that is solvable if and only if the symbolic transition system shown in
 \myfig{Missionaries-Z3.ipynb-1} has a solution involving $n$ transitions.
 \begin{enumerate}
 \item Line 2 creates the solver object \texttt{S}.
-\item Line 3--5 create the associated variables.
+\item Lines 3--5 create the associated variables.
 \item Line 6 creates the constraint corresponding to the initial state of the symbolic transition system.
 \item Line 7 creates the constraint corresponding to the goal state.
 \item The \texttt{for}-loop in line 8 ensures two things:
@@ -2725,7 +2725,7 @@ of the function \texttt{missionaries\_CSP} that takes a natural number $n$ as it
 At this point you might well ask whether there is any benefit if we solve this problem with \texttt{Z3}.  The
 answer is that it is about efficiency.  While our simple backtracking solver took 1.5 seconds to solve this
 problem, \texttt{Z3} takes only 0.113 seconds to compute the solution.  In the following exercise you will
-solve a more complicated search problem which would take much too long to solve if we would only use backtracking.
+solve a more complicated search problem which would take much too long to solve if we only used backtracking.
 \pagebreak
 \vspace*{\fill}
 
@@ -2742,7 +2742,7 @@ During the crossing, the following conditions have to be observed:
 \item The father is not allowed to be on a shore with one of the daughters if the mother is on the other shore.
 \item The mother is not allowed to be on a shore with one of the sons if the father is on the other shore.
 \item If the convict is not alone, then the policeman must watch him.
-\item However the convict can be alone on a shore, as his shackles prevent him from running away.
+\item However, the convict can be alone on a shore, as his shackles prevent him from running away.
 \item Only the father, the mother, and the policeman are able to steer the boat.
 \end{enumerate}}
 \end{minipage}

@@ -12,7 +12,7 @@ This chapter is structured as follows:
 
 \section{\textsc{Fol} Conjunctive Normal Form}
 In order to perform automatic theorem proving for first order logic (abbreviated as \textsc{Fol} in the
-following), it is necessary to transform \textsc{Fol} formulas in conjunctive normal form.
+following), it is necessary to transform \textsc{Fol} formulas into conjunctive normal form.
 \blue{\textsc{Fol} conjunctive normal form} (abbreviated as \textsc{Cnf}) provides a standardized
 representation for logical formulas. Its structure is defined as follows: 
 \begin{itemize}
@@ -21,7 +21,7 @@ representation for logical formulas. Its structure is defined as follows:
 \item A \blue{clause} is a disjunction of one or more literals. For example,
       $p(x) \lor \neg q(y) \lor r(a,z)$ is a clause. 
 \item A formula in \blue{\textsc{Cnf}} is a conjunction of clauses. It is often represented as a set of its clauses
-      where the clauses itself are represented as sets of literals.
+      where the clauses themselves are represented as sets of literals.
 \end{itemize}
 A critical characteristic of clausal form in \textsc{Fol} is that \textbf{all variables appearing in the clauses are implicitly universally quantified}. The scope of these quantifiers is the individual clause in which the variable appears. Explicit universal quantifiers are typically dropped for conciseness.
 
@@ -41,7 +41,7 @@ processing by automated deduction systems. These systems often aim to determine 
 unsatisfiability of a set of formulas. Specifically, for theorem proving, the goal is frequently to show that a
 conclusion logically follows from a set of premises. This is often achieved through
 a \textbf{proof by refutation}: to prove a theorem $T$ from some axioms $A_1$, $\cdots$, $A_n$
-we show that the formula $A_1 \land \cdots A_n \land \neg T$ is unsatisfiable.  
+we show that the formula $A_1 \land \cdots \land A_n \land \neg T$ is unsatisfiable.  
 
 The conversion process yields a set of clauses that is \textbf{equisatisfiable} with the original formula (or
 the set of formulas including the negated theorem). This means the original formula is satisfiable if and only
@@ -260,7 +260,7 @@ The transformation proceeds as follows:
 \end{enumerate}
 
 \exerciseEng
-Transform the following formulas from first-order logic into sets of first-order clause normal form:
+Transform the following formulas from first-order logic into sets of first-order clauses:
 \begin{enumerate}[(a)]
 \item $\forall x, y: \Bigl(\mathtt{uncle}(x,y) \leftrightarrow
        \exists z: \bigl(\mathtt{brother}(x,z) \wedge \mathtt{parent}(z,y)\bigr)\Bigr)$,
@@ -272,7 +272,7 @@ Transform the following formulas from first-order logic into sets of first-order
 
 \noindent
 The Jupyter notebook linked below contains a \textsl{Python} program that we can use to transform predicate
-logic formulae into a satisfiability-equivalent set of first-order clauses. 
+logic formulas into a satisfiability-equivalent set of first-order clauses. 
 \\[0.2cm]
 \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/09-FOL-CNF.ipynb}{\small\texttt{github.com/karlstroetmann/Logic/blob/master/Python/Chapter-5/09-FOL-CNF.ipynb}}.
 \vspace*{0.2cm}
@@ -291,7 +291,7 @@ because the formula $f$ is universally valid iff there is no $\Sigma$-structure 
 $\mathcal{S} \models \neg f$,
 \\[0.2cm]
 i.e.~$f$ is universally valid iff $\neg f$ is unsatisfiable. 
-Therefore, in oder to prove that $f$ is universally valid, we transform the formula $\neg f$  into 
+Therefore, in order to prove that $f$ is universally valid, we transform the formula $\neg f$  into 
 first-order normal form.  By doing this we obtain clauses $k_1, \cdots, k_n$ such that \\[0.2cm]
 \hspace*{1.3cm} $\neg f \approx_e k_1 \wedge \cdots \wedge k_n$ \\[0.2cm]
 holds.  Next,  we try to
@@ -301,7 +301,7 @@ If this succeeds, then we know that the set $\{k_1, \cdots, k_n\}$ is unsatisfia
 This means that $\neg f$ is also unsatisfiable and hence $f$ must be universally valid.
 In order to derive a contradiction from the clauses $k_1,\cdots,k_n$
 we need a calculus $\vdash$ that works with first-order clauses. 
-We will present this calculus in section \ref{sec:fol-calculus}.
+We will present this calculus in Section \ref{sec:fol-calculus}.
 
 To explain the procedure in more detail, we will demonstrate it using an example. 
 We want to investigate whether 
@@ -313,7 +313,7 @@ holds. We know that this is equivalent to  \\[0.2cm]
 $\Big\{ \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow  \big(\forall y\colon \exists
 x\colon p(x,y)\big)\Big)\Big\} \models \falsum$.
 \\[0.2cm]
-Therefore we transform the negated formula in prenex normal form.
+Therefore we transform the negated formula into prenex normal form.
 $$
 \begin{array}{ll}
                   & \neg \Big(\big(\exists x\colon \forall y\colon  p(x,y)\big) \rightarrow \big(\forall y\colon \exists x\colon p(x,y)\big)\Big) \\
@@ -396,7 +396,7 @@ First, we define the notion of a $\Sigma$-substitution.
   \hspace*{1.3cm}
   $\sigma = \{ x_1 \mapsto t_1, \cdots, x_n \mapsto t_n \}$.
   \\[0.2cm]
-  The set of all $\Sigma$-Substitutions is denoted as $\mathtt{Subst}(\Sigma)$.
+  The set of all $\Sigma$-substitutions is denoted as $\mathtt{Subst}(\Sigma)$.
   \eox
 \end{Definition}
 
@@ -414,7 +414,7 @@ by induction on $t$:
 
 Next, we define the composition of two $\Sigma$-substitutions.
 
-\begin{Definition}[Composition of Substitutions] \index{Composition von Substitutions}
+\begin{Definition}[Composition of Substitutions] \index{Composition of Substitutions}
     Assume that \\[0.2cm]
     \hspace*{1.3cm}
     $\sigma = \{ x_1 \mapsto s_1, \cdots, x_m \mapsto s_m \}$
@@ -464,7 +464,7 @@ This proposition may be proven by induction on $t$.
 \begin{Definition}[Unifier]
   A substitution $\sigma$ \blue{solves} a syntactical equation $s \doteq t$ iff we have $s\sigma = t\sigma$.
   If $E$ is a system of syntactical equations and $\sigma$ is a substitution that solves
-  every syntactical equations in $E$, then $\sigma$ is a  \blue{unifier} \index{unifier} of $E$.
+  every syntactical equation in $E$, then $\sigma$ is a  \blue{unifier} \index{unifier} of $E$.
   \eox
 \end{Definition}
 
@@ -489,7 +489,7 @@ $\sigma := \{ x_1 \mapsto x_2,\; x_3 \mapsto f(x_4) \}$.
 Then $\sigma$ solves the given syntactical equation because we have
 \\[0.2cm]
 \hspace*{1.3cm}
-$p(x_1, f(x_4))\sigma = p(x_2, f(x_4))$ \quad und \quad \\[0.2cm]
+$p(x_1, f(x_4))\sigma = p(x_2, f(x_4))$ \quad and \quad \\[0.2cm]
 \hspace*{1.3cm}
 $p(x_2, x_3)\sigma \;\quad = p(x_2, f(x_4))$.  \eox
 
@@ -504,12 +504,12 @@ There are two cases: A syntactical equation of the form
 $f(s_1,\cdots,s_m) \doteq g(t_1,\cdots, t_n)$ \\[0.2cm]
 is certainly unsolvable if  $f$ and $g$ are different function symbols. The reason is that for any substitution
 $\sigma$ we have that \\[0.2cm]
-\hspace*{1.0cm} $f(s_1,\cdots,s_m)\sigma = f(s_1\sigma,\cdots,s_m\sigma)$ \quad und \quad
+\hspace*{1.0cm} $f(s_1,\cdots,s_m)\sigma = f(s_1\sigma,\cdots,s_m\sigma)$ \quad and \quad
                 $g(t_1,\cdots, t_n)\sigma = g(t_1\sigma,\cdots,t_n\sigma)$. \\[0.2cm]
 If $f \not = g$, then the terms  $f(s_1,\cdots,s_m)\sigma$ and $g(t_1,\cdots, t_n)\sigma$ start with different
 function symbols and hence they can't be identical.
 
-The other case where a syntactical equation is unsolvable, is a syntactical equation of the following form:
+The other case where a syntactical equation is unsolvable is a syntactical equation of the following form:
 \\[0.2cm]
 \hspace*{1.3cm}
 $x \doteq f(t_1,\cdots,t_n)$  \quad where $x \in \texttt{var}\big(f(t_1,\cdots,t_n)\big)$.
@@ -687,7 +687,7 @@ and thus we have proven the inconsistency of the clause set $M$.
 
 
 The resolution rule by itself is not sufficient to derive the empty clause from a clause set $M$ that is
-inconsistent in every case: we need a second rule. To see this, consider following set of clauses:
+inconsistent in every case: we need a second rule. To see this, consider the following set of clauses:
 \[ M = \Bigl\{ \bigl\{p(f(x),y), p(u,g(v))\bigr\}, 
                \bigl\{\neg p(f(x),y), \neg p(u,g(v))\bigr\} \Bigr\} 
 \]
@@ -1024,7 +1024,7 @@ such that
       \item $\forall x: \forall y: \forall z: (x \circ y) \circ z = x \circ (y \circ z)$. \hspace*{\fill} ($\circ$ is \blue{associative})
       \end{enumerate}
 \end{enumerate}
-It is a well known fact that these axioms imply the following:
+It is a well-known fact that these axioms imply the following:
 \begin{enumerate}
 \item The element $\mathrm{e}$ is also a \blue{right identity}, i.e.~we have
       \\[0.2cm]
@@ -1073,7 +1073,7 @@ the left identity element $\mathrm{e}$ is also a right identity.  We discuss thi
       \item \textsl{type} is either the string ``\texttt{axiom}'' or the string ``\texttt{conjecture}''.
             Every file must hold exactly one conjecture.  The conjecture is the formula that has to be proven from the
             axioms.
-      \item \textsl{formula} is first-order formula.  The precise syntax of formulas will be described below.
+      \item \textsl{formula} is a first-order formula.  The precise syntax of formulas will be described below.
       \end{itemize}
 \item Line 2 states the axiom $\forall x: \exists y: y \circ x = \mathrm{e}$.
 \item Line 3 states the axiom $\forall x: \forall y: \forall z: (x \circ y) \circ z = x \circ (y \circ z)$.
@@ -1190,7 +1190,7 @@ suspects who could have killed Agatha, we proceed with a case distinction.
 \item Charles killed Agatha.
   \begin{enumerate}[(a)]
   \item As a killer always hates its victim, Charles must then have hated Agatha.
-  \item As Charles hates no one that Agatha hates, Agatha can not have hated herself.
+  \item As Charles hates no one that Agatha hates, Agatha cannot have hated herself.
   \item But Agatha hates everybody with the exception of the butler and since Agatha is not the
         butler, she must have hated herself.
 
@@ -1198,13 +1198,13 @@ suspects who could have killed Agatha, we proceed with a case distinction.
   \end{enumerate}
 \item The butler killed Agatha.
   \begin{enumerate}
-  \item As a killer is never richer than his victim, the butler can then not be not richer than Agatha.
-  \item But as the butler hates every one not richer than Agatha, he would then hate himself.
+  \item As a killer is never richer than his victim, the butler can then not be richer than Agatha.
+  \item But as the butler hates everyone not richer than Agatha, he would then hate himself.
   \item As the butler also hates everyone that Agatha hates and Agatha hates everyone except the butler,
         the butler would then hate everyone.
   \item However, we know that no one hates everyone.
 
-        This contradiction shows, that the butler has not killed Agatha.      
+        This contradiction shows that the butler has not killed Agatha.      
   \end{enumerate}
 \item Hence we must conclude that Agatha has killed herself.
 \end{enumerate}
@@ -1522,10 +1522,10 @@ will change in the future.
 \section{Check Your Comprehension}
 \begin{enumerate}
 \item What are \textcolor{blue}{first-order logic clauses} and what steps have to be taken in order to convert
-      a given first-order logic formula into a set of first-order clauses that is satisfiability-equivalent ?
-\item Define the notion of a \textcolor{blue}{substitution}?
+      a given first-order logic formula into a set of first-order clauses that is satisfiability-equivalent?
+\item Define the notion of a \textcolor{blue}{substitution}.
 \item What is a \textcolor{blue}{unifier}?
-\item State the rules of \textcolor{blue}{Martelli-Montanari algorithm} for unification!
+\item State the rules of the \textcolor{blue}{Martelli-Montanari algorithm} for unification!
 \item How is the \textcolor{blue}{resolution rule} defined and why might it be necessary to rename variables
       before the resolution rule can be applied?
 \item What is the \textcolor{blue}{factorization rule}?

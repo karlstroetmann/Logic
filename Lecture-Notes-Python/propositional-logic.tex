@@ -6,7 +6,7 @@
 (a.k.a. \blue{simple statements}) through 
 \blue{logical connectives}.  Here, logical connectives are words like ``\blue{and}'', ``\blue{or}'',
 ``\blue{not}'', ``\blue{if $\cdots$, then}'', and ``\blue{exactly if}''.  To
-start with, we define the notion of an \blue{atomic propositions}: An
+start with, we define the notion of an \blue{atomic proposition}: An
 \blue{atomic proposition}\index{atomic proposition} is a sentence  that 
 \begin{itemize}
 \item expresses a fact that is either true or false and
@@ -21,8 +21,8 @@ Examples of atomic propositions are the following:
 \item ``\textsl{There is a rainbow in the sky.}''
 \end{enumerate}
 Atomic propositions can be combined by means of logical connectives
-into \blue{composite propositions}\index{composite propositions}.  An example for a
-composite propositions would be
+into \blue{composite propositions}\index{composite propositions}.  An example of a
+composite proposition would be
 \\[0.2cm] 
 \hspace*{1.3cm}
 \textsl{\blue{If} the sun is shining \blue{and} it is raining, \blue{then} there is a rainbow in the sky.} 
@@ -43,7 +43,7 @@ In order to analyze the structure of complex statements we introduce
 \blue{propositional variables}\index{propositional variables}.
 These propositional variables are just names that denote atomic propositions.
 Furthermore, we introduce symbols serving as mathematical operators for the logical connectives
-``\blue{not}'', ``\blue{and}'', ``\blue{or}'', ``\blue{if, $\cdots$ then}'', and 
+``\blue{not}'', ``\blue{and}'', ``\blue{or}'', ``\blue{if $\cdots$, then}'', and 
 ``\blue{if and only if}''.
 \begin{enumerate}
 \item $\neg a$ \index{$\neg a$}\quad\quad\ is read as \quad \blue{not} $a$ 
@@ -89,7 +89,7 @@ check whether a formula is satisfiable.  These algorithms are very important in 
 applications.  For example, a very important application is the design of digital circuits.
 Furthermore, a number of \href{https://en.wikipedia.org/wiki/Category:Logic_puzzles}{logic puzzles} can be
 translated into propositional formulas and finding a solution to these 
-puzzles amounts to checking the satisfiable of these formulas.  For example, we will solve the
+puzzles amounts to checking the satisfiability of these formulas.  For example, we will solve the
 \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{eight queens puzzle} in this way.
 
 The rest of this chapter is structured as follows:
@@ -132,8 +132,8 @@ applications which I have seen myself during the years when I did work in indust
       computer-aided verification methods.  The methods used are applications of propositional logic. 
       A very concrete application is \blue{circuit comparison}.  Here two
       digital circuits are represented as propositional formulas.
-      Afterwards it is tried to show the equivalence of these formulas by means of propositional logic.
-      Software tools, which are used for the verification of digital
+      Afterwards, one tries to show the equivalence of these formulas by means of propositional logic.
+      Software tools that are used for the verification of digital
       circuits sometimes cost more than $100\,000\,\symbol{36}$.
       For example, the company Magma offers the \blue{equivalence checker}
       \href{https://www.eetimes.com/document.asp?doc_id=1217672}{Quartz Formal} at a price
@@ -165,7 +165,7 @@ Then, we implement this semantics in \textsl{Python}.
 
 \subsection{The Syntax of Propositional Formulas}
 We define propositional formulas as strings.  To this end we assume a set  $\mathcal{P}$ \index{$\mathcal{P}$, set of propositional variables} 
-of so called \blue{propositional variables}\index{propositional variables} as given. 
+of so-called \blue{propositional variables}\index{propositional variables} as given. 
 Typically, $\mathcal{P}$ is the set of all lower case Latin characters, which additionally may be indexed.
 For example, we will use 
 \\[0.2cm]
@@ -343,7 +343,7 @@ via the following \blue{truth table} \index{truth table} (Table \ref{tab:aussage
   \label{tab:aussagen-logik}
 \end{table}
 Then the truth value of a propositional formula $f$ under a given propositional valuation $\mathcal{I}$ is
-defined via induction of $f$.  We will denote the truth value as
+defined by induction on $f$.  We will denote the truth value as
 $\widehat{\mathcal{I}}(f)$ \index{$\widehat{\mathcal{I}}(f)$}.  We have
 \begin{enumerate}
 \item $\widehat{\mathcal{I}}(\falsum) := \texttt{False}$.
@@ -391,14 +391,14 @@ $
   \end{array}
 $ \eox
 \\[0.2cm]
-Note that we did just evaluate some parts of the formula.  The reason is that as soon as we know that the first
+Note that we only evaluated some parts of the formula.  The reason is that as soon as we know that the first
 argument of $\circright$ is \texttt{False} the value of the corresponding formula is already determined.
 Nevertheless, this approach is too cumbersome.  In practice, we do not evaluate large propositional formulas
 ourselves.  Instead, we will next implement a \textsl{Python} program that evaluates these formulas for us.
 
 \subsection{Implementation} 
 In this section we develop a \textsl{Python} program that can evaluate propositional formulas.
-Every time when we develop a program to compute something useful we have to decide which data structures are
+Every time we develop a program to compute something useful we have to decide which data structures are
 most appropriate to represent the information that is to be processed by the program.  In this case we want to
 process propositional formulas.  Therefore, we have to decide how to represent propositional formulas in
 \textsl{Python}.  One obvious possibility would be to use strings.  However, this would be a bad choice as it
@@ -436,7 +436,7 @@ $\textsl{rep}(f)$.  We define $\textsl{rep}(f)$ inductively by induction on $f$.
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{rep}(\falsum) := \texttt{(\tsq{\symbol{92}N\{down tack\}},)}$.
-\item Since propositional variables are strings we can represents these variables by themselves:
+\item Since propositional variables are strings we can represent these variables by themselves:
       \\[0.2cm]
       \hspace*{1.3cm}
       $\textsl{rep}(p) := p$ \quad for all $p \in \mathcal{P}$.
@@ -503,8 +503,8 @@ The \textsl{Python} function \mytt{evaluate} is shown in Figure \ref{fig:evaluat
 The function \texttt{evaluate} takes two arguments.
 \begin{enumerate}
 \item The first argument $F$ is a propositional formula that is represented as a nested tuple.
-\item The second argument $I$ is a propositional evaluation.  This evaluation is represented as a set of
-      propositional variables. Given a propositional variables $p$, the value of $\mathcal{I}(p)$ is computed
+\item The second argument $I$ is a propositional valuation.  This valuation is represented as a set of
+      propositional variables. Given a propositional variable $p$, the value of $\mathcal{I}(p)$ is computed
       by the expression  ``$p \;\mathtt{in}\; I$''.
 \end{enumerate}
 
@@ -552,7 +552,7 @@ Next, we discuss the implementation of the function \texttt{evaluate()}.
       interpreted as \texttt{True} if and only if $p \in I$.
 \item If $F$ is $\verum$, then evaluating $F$ always yields \texttt{True}.
 \item If $F$ is $\falsum$, then evaluating $F$ always yields \texttt{False}. 
-\item If $F$ has the form $\neg G$, we recursively evaluate $G$ given the evaluation $I$ and negate the result.
+\item If $F$ has the form $\neg G$, we recursively evaluate $G$ given the valuation $I$ and negate the result.
 \item If $F$ has the form $G \wedge H$, we recursively evaluate
       $G$ and $H$ using $I$.  The results are then combined with the \textsl{Python} operator
       ``\texttt{and}''.
@@ -676,10 +676,10 @@ We discuss this program next.
 \item The function $\texttt{allTrue}(Fs, I)$ takes two inputs.
       \begin{enumerate}[(a)]
       \item \texttt{Fs} is a set of propositional formulas that are represented as nested tuples.
-      \item \texttt{I} is a propositional evaluation that is represented as a set of propositional variables.
+      \item \texttt{I} is a propositional valuation that is represented as a set of propositional variables.
             Hence \texttt{I} is a subset of \texttt{P}
       \end{enumerate}
-      If all propositional formulas $f$ from the set \texttt{Fs} evaluate as \texttt{True} given the evaluation
+      If all propositional formulas $f$ from the set \texttt{Fs} evaluate as \texttt{True} given the valuation
       \texttt{I}, then \texttt{allTrue} returns the result \texttt{True}, otherwise \texttt{False} is returned.
 \item Line 25 computes the set of all propositional variables that render all formulas from \texttt{Fs} true.
       The function \texttt{power} takes a set $M$ and returns the power set of $M$, i.e.~it returns the set $2^M$.
@@ -739,7 +739,7 @@ If $f$ is a tautology, then we say that $f$ is \blue{universally valid} \index{u
 One way to prove that a formula $F$ is universally valid is to evaluate it for every possible valuation.
 However, if there are $n$ propositional variables occurring in $f$, then there are $2^n$ different possible
 valuations. 
-Hence for values of $n$ that are greater than fourty this method is hopelessly inefficient.  Therefore, our
+Hence for values of $n$ that are greater than forty this method is hopelessly inefficient.  Therefore, our
 goal in the rest of this chapter is to develop 
 a method that can often deal with hundreds of propositional variables.
 
@@ -791,10 +791,10 @@ $\models f \leftrightarrow g$ \quad and \quad  $\models g \leftrightarrow h$. \e
 \subsection{\textsl{Python} Implementation}
 In this section we develop a \textsl{Python} program that is able to decide whether a given propositional
 formula $f$ is a tautology.  The idea is that the program evaluates $f$ for all possible propositional
-interpretations.  Hence we have to compute the set of all propositional interpretations for a given set of
-propositional variables.  We have already seen that the propositional interpretations are in a 1-to-1
+valuations.  Hence we have to compute the set of all propositional valuations for a given set of
+propositional variables.  We have already seen that the propositional valuations are in a 1-to-1
 correspondence with the subsets of the set $\mathcal{P}$ of all propositional variables because we can
-represent a propositional interpretation $\mathcal{I}$ as the set of all propositional variables that evaluate
+represent a propositional valuation $\mathcal{I}$ as the set of all propositional variables that evaluate
 as \texttt{True}:
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -869,7 +869,7 @@ shows the implementation.
       $$ \mathcal{L} = \texttt{allSubsets}(M - \{x\}) $$
       \item Adding $x$ to the subsets in $\mathcal{L}$ yields all those subsets of $M$ that do contain $x$. 
       \end{enumerate}  
-\item Then we try to find a propositional interpretation $\mathcal{I}$ such that $\mathcal{I}(f)$
+\item Then we try to find a propositional valuation $\mathcal{I}$ such that $\mathcal{I}(f)$ is
       \texttt{False}.  In this case $\mathcal{I}$ is returned. 
 \item Otherwise $f$ is a tautology and we return \texttt{True}.
 \end{enumerate}
@@ -922,12 +922,12 @@ formulas into conjunctive normal form.
         In this case $f$ is a \blue{positive} literal.\index{positive literal}
   \item $f = \neg p$, where $p$ is a propositional variable. 
 
-        In this case $f$ is a \blue{negative} literal.\index{negatives literal}
+        In this case $f$ is a \blue{negative} literal.\index{negative literal}
   \end{enumerate}
   The set of all literals is denoted as  $\blue{\mathcal{L}}$.\index{$\mathcal{L}$, set of all literals}  \eox
 \end{Definition}
 
-If  $l$ is a literal, then the \blue{complement}\index{complement} $l$ of is denoted as $\komplement{l}$.
+If  $l$ is a literal, then the \blue{complement}\index{complement} of $l$ is denoted as $\komplement{l}$.
 It is defined by a case distinction.
 \begin{enumerate}
 \item $\komplement{\verum} = \falsum$ \quad and \quad $\komplement{\falsum} = \verum$. 
@@ -983,7 +983,7 @@ into set notation.  We get
 \hspace*{1.3cm}
 $\{ l_1, \cdots, l_r, \falsum \} \;\Leftrightarrow\; \{ l_1, \cdots, l_r \}$.
 \\[0.2cm]
-This shows, that the element $\falsum$ can be discarded from a clause.  If we write this equivalence for $r=0$,
+This shows that the element $\falsum$ can be discarded from a clause.  If we write this equivalence for $r=0$,
 we get
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1037,7 +1037,7 @@ assumption that $K$ is not trivial is false.
 \end{Definition}
 
 \noindent
-The following is an immediately corollary of the definition of a CNF.
+The following is an immediate corollary of the definition of a CNF.
 \begin{Corollary} \label{corollary:knf}
   If $F = K_1 \wedge \cdots \wedge K_n$ is in conjunctive normal form, then\\[0.2cm]
   \hspace*{1.3cm} $\models F$ \quad if and only if \quad $\models K_i$ \quad for all $i=1,\cdots,n$. \qed
@@ -1047,7 +1047,7 @@ Thus, for a formula $F = K_1 \wedge \cdots \wedge K_n$ in conjunctive normal for
 $F$ is a tautology, because $F$ is a tautology iff all clauses $K_i$ are trivial.
 \vspace*{0.2cm}
 
-Since the associative, commutative and idempotent law applies to a conjunction in the same way as to a
+Since the associative, commutative and idempotent laws apply to a conjunction in the same way as to a
 disjunction it is beneficial to also use a
 \blue{set notation}\index{set notation for formulas in CNF}:  If the formula
 \\[0.2cm]
@@ -1084,10 +1084,10 @@ $\bigl\{ \{\} \bigr\} \Leftrightarrow \falsum$.
 Next, we present a method that can be used to transform any propositional formula $F$ into CNF.  As we have
 seen above, we can then easily decide whether $F$ is a tautology. 
 \begin{enumerate}
-\item Eliminate all occurrences of the junction ``$\leftrightarrow$'' using the equivalence \\[0.2cm]
+\item Eliminate all occurrences of the operator ``$\leftrightarrow$'' using the equivalence \\[0.2cm]
       \hspace*{1.3cm} 
       $(F \leftrightarrow G) \Leftrightarrow (F \rightarrow G) \wedge (G \rightarrow F)$.
-\item Eliminate all occurrences of the junction ``$\rightarrow$'' using the equivalence \\[0.2cm]
+\item Eliminate all occurrences of the operator ``$\rightarrow$'' using the equivalence \\[0.2cm]
       \hspace*{1.3cm} 
       $(F \rightarrow G) \Leftrightarrow \neg F \vee G$.
 \item Move the negation signs inwards as far as possible.  Use the following equivalences:
@@ -1099,9 +1099,9 @@ seen above, we can then easily decide whether $F$ is a tautology.
       \item $\neg (F \vee G) \Leftrightarrow \neg F \wedge \neg G$ 
       \end{enumerate}
       In the result that we obtain after this step, the negation signs
-      occurs only immediately before propositional variables.  Formulas with this
+      occur only immediately before propositional variables.  Formulas with this
       property are also referred to as formulas in \blue{negation-normal-form}.\index{negation-normal-form}
-\item If the formula contains ``$\vee$'' junctors on top of ``$\wedge$'' junctors, we use the distributive law \\[0.2cm]
+\item If the formula contains ``$\vee$'' operators on top of ``$\wedge$'' operators, we use the distributive law \\[0.2cm]
       \hspace*{1.3cm} 
       $
       \begin{array}{cl}
@@ -1116,7 +1116,7 @@ seen above, we can then easily decide whether $F$ is a tautology.
 \end{enumerate}
 We should note that the formula can grow considerably when using the distributive law.
 This is because the formula $F$ occurs twice on the right-hand side of the equivalence 
-$F \vee (G \wedge H) \leftrightarrow (F \vee G) \wedge (F \vee H)$, while it occurs only occurs once on the left. 
+$F \vee (G \wedge H) \leftrightarrow (F \vee G) \wedge (F \vee H)$, while it only occurs once on the left. 
 
 We demonstrate the procedure using the example of the formula\\[0.2cm]
 \hspace*{1.3cm} $(p \rightarrow q) \rightarrow (\neg p \rightarrow \neg q)$.
@@ -1141,7 +1141,7 @@ We demonstrate the procedure using the example of the formula\\[0.2cm]
 The formula is now converted to CNF.
 
 \subsection{Computing the Conjunctive Normal Form in \textsl{Python}}
-Next, we specify anumber of functions that can be used to convert a given formula
+Next, we specify a number of functions that can be used to convert a given
 formula $f$ into conjunctive normal form.  These functions are part of the Jupyter notebook
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1227,7 +1227,7 @@ Figure \ref{fig:elimBiconditional} on page \pageref{fig:elimBiconditional} shows
 function \texttt{elimBiconditional}.
 \begin{enumerate}
 \item In line 3, the function call $\texttt{isinstance}(p, \mathtt{str})$ checks whether $p$ is a string.  In this case
-      $f$ must be a propositional variable, because all other propositional formulas are represented as nested lists.
+      $f$ must be a propositional variable, because all other propositional formulas are represented as nested tuples.
       Therefore, $f$ is returned unchanged in this case.
 \item In line 5 we deal with the cases where $f$ is equal to Verum or Falsum.
       Note that these formulas are also represented as nested tuples.
@@ -1247,7 +1247,7 @@ function \texttt{elimBiconditional}.
       $(g \leftrightarrow h) \Leftrightarrow (g \rightarrow h) \wedge (h \rightarrow g)$.
       \\[0.2cm]
       Furthermore, we have to eliminate the operator ``$\leftrightarrow$'' from $g$ and $h$ by recursively
-      calling the function function \texttt{elimBiconditional}.
+      calling the function \texttt{elimBiconditional}.
 \item In the remaining cases, $f$ has the form
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -1322,7 +1322,7 @@ $\neg (f \vee g) \Leftrightarrow \neg f \wedge \neg g$
 are applied.  We describe the transformation into negation normal form by 
 the following equations: \index{\texttt{nnf}}
 \begin{enumerate}
-\item $\texttt{nnf}(p) = p$ \quad für alle $p \in \mathcal{P}$,
+\item $\texttt{nnf}(p) = p$ \quad for all $p \in \mathcal{P}$,
 \item $\texttt{nnf}(\verum) = \verum$,
 \item $\texttt{nnf}(\falsum) = \falsum$,
 \item $\texttt{nnf}(\neg \texttt{f}) = \texttt{neg}(\texttt{f})$,
@@ -1364,7 +1364,7 @@ the following equations: \index{\texttt{nnf}}
 The auxiliary procedure \texttt{neg}, which calculates the negation normal form of $\neg f$,
 is also specified by recursive equations: \index{\texttt{neg}}
 \begin{enumerate}
-\item $\texttt{neg}(p) = \texttt{nnf}(\neg p) = \neg p$ für alle Aussage-Variablen $p$.
+\item $\texttt{neg}(p) = \texttt{nnf}(\neg p) = \neg p$ for all propositional variables $p$.
 \item $\texttt{neg}(\verum) = \texttt{nnf}(\neg\verum) = \texttt{nnf}(\falsum) = \falsum$, 
 \item $\texttt{neg}(\falsum) = \texttt{nnf}(\neg\falsum) = \texttt{nnf}(\verum) = \verum$,
 \item $\texttt{neg}(\neg f) = \texttt{nnf}(\neg \neg f) = \texttt{nnf}(f)$.
@@ -1441,7 +1441,7 @@ is equivalent to $f$.  The definition of $\texttt{cnf}(f)$ is given recursively.
 \item If $f$ is a conjunction and therefore $f = g \wedge h$, then we 
       first transform the formulas $g$ and $h$ into CNF.  We then obtain sets of clauses 
       $\texttt{cnf}(g)$ and $\texttt{cnf}(h)$.  Since we interpret a set of clauses as a conjunction of the clauses contained in the set,
-      it is sufficient to form the union of the sets $\texttt{cnf}(f)$ and $\texttt{cnf}(g)$,
+      it is sufficient to form the union of the sets $\texttt{cnf}(g)$ and $\texttt{cnf}(h)$,
       so we have \\[0.2cm]
       \hspace*{1.3cm} $\texttt{cnf}(g \wedge h) = \texttt{cnf}(g) \cup \texttt{cnf}(h)$.
 \item If $f = g \vee h$, we first transform $g$ and $h$ into CNF.
@@ -1498,10 +1498,10 @@ Figure \ref{fig:cnf} on page \pageref{fig:cnf} shows the implementation of the f
                 return { k1 | k2 for k1 in cnf(g) for k2 in cnf(h) }
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Berechnung der konjunktiven Normalform. \index{\texttt{cnf}}}
+  \caption{Computing the conjunctive normal form. \index{\texttt{cnf}}}
   \label{fig:cnf}
 \end{figure}
-Lastly, we show in figure \ref{fig:normalize} on page \pageref{fig:normalize}
+Lastly, we show in Figure \ref{fig:normalize} on page \pageref{fig:normalize}
 how the functions that have been shown above interact.
 \begin{enumerate}
 \item The function \texttt{normalize} first eliminates the operators ``$\leftrightarrow$''
@@ -1555,7 +1555,7 @@ on my \href{https://github.com/karlstroetmann/Logic}{GitHub repository}.
 \pagebreak
 
 \exerciseEng
-Calculate the conjunctive normal forms of the following formulae and state your result in set notation.
+Calculate the conjunctive normal forms of the following formulas and state your result in set notation.
 \begin{enumerate}[(a)]
 \item $p \vee q \rightarrow r$,
 \item $p \vee q \leftrightarrow r$,
@@ -1566,7 +1566,7 @@ Calculate the conjunctive normal forms of the following formulae and state your 
 
 \section{The Concept of a Derivation}
 Logic is concerned with the validity of \blue{proofs}. In order to build an automatic theorem prover that can 
-help us with the verification of digital circuit or a program we need to investigate the concept of a proof.\index{proof}
+help us with the verification of a digital circuit or a program we need to investigate the concept of a proof.\index{proof}
 In mathematics, a proof is a conclusive argument that starts from given axioms and applies certain rules of
 derivation to these axioms in order to derive theorems.  Our aim is to formalize this process so that we are
 able to implement it. The formalized version of a proof will be called a \blue{derivation}.\index{derivation}
@@ -1668,7 +1668,7 @@ the rules of inference referred to above as ``\textcolor{blue}{Modus Ponens}'' a
 are correct, while the one called ``\textcolor{blue}{Denying the Antecedent}''
 is, in fact, a \href{https://en.wikipedia.org/wiki/List_of_fallacies}{logical fallacy}.\index{fallacy}
 
-From now on, we assume that all formulas are clauses. On one hand, this is
+From now on, we assume that all formulas are clauses. On the one hand, this is
 not a real restriction, as we can transform any formula into an equivalent set of
 clauses. On the other hand, the formulas in many practical propositional
 logic problems are already in the form of clauses. Therefore, we now present an inference rule where
@@ -1827,7 +1827,7 @@ The relation $\vdash$ has two important properties:
       \hspace*{1.3cm}
       $\models k_1 \wedge \cdots \wedge k_n \rightarrow g \vee h$
       \\[0.2cm]
-      holds.  Let $\mathcal{I}$ be a propositional interpretation such that
+      holds.  Let $\mathcal{I}$ be a propositional valuation such that
       \\[0.2cm]
       \hspace*{1.3cm}
       $\mathcal{I}(k_1 \wedge \cdots \wedge k_n) = \texttt{True}$  
@@ -1889,21 +1889,21 @@ the concept of \textcolor{blue}{satisfiability}, which we introduce next.
 
 \begin{Definition}[Satisfiability] \index{satisfiable} \hspace*{\fill} \linebreak
   Let $M$ be a set of propositional formulas.
-  If there exists a propositional interpretation $\mathcal{I}$ that satisfies all formulas from $M$, i.e.~we have
+  If there exists a propositional valuation $\mathcal{I}$ that satisfies all formulas from $M$, i.e.~we have
   \\[0.2cm]
   \hspace*{1.3cm}
   $\mathcal{I}(f) = \texttt{True}$ \quad for all $f \in M$,
   \\[0.2cm]
   then we call $M$ \textcolor{blue}{satisfiable}.\index{satisfiable}  In this case the propositional
-  interpretation $\mathcal{I}$ is called a \blue{solution}\index{solution} of $M$.
+  valuation $\mathcal{I}$ is called a \blue{solution}\index{solution} of $M$.
   Furthermore, we say that $M$ is \textcolor{blue}{unsatisfiable}\index{unsatisfiable}
   and write 
   \\[0.2cm]
   \hspace*{1.3cm}
   $\textcolor{blue}{M \models \falsum}$, \index{$M \models \falsum$}
   \\[0.2cm]
-  if there is no propositional interpretation $\mathcal{I}$ that simultaneously satisfies all formulas from $M$.
-  Denoting the set of propositional interpretations as
+  if there is no propositional valuation $\mathcal{I}$ that simultaneously satisfies all formulas from $M$.
+  Denoting the set of propositional valuations as
   \textsc{\textcolor{blue}{Ali}}, we formally write
   \\[0.2cm]
   \hspace*{1.3cm}
@@ -1948,7 +1948,7 @@ Since there is only a limited number of clauses in set notation that can be form
 propositional variables, this process must terminate, and the set of formulas we then obtain is saturated. \eox 
 
 \subsection{Refutational Completeness}
-We are now ready to state and proof the refutational completeness of the cut rule for propositional logic.
+We are now ready to state and prove the refutational completeness of the cut rule for propositional logic.
 
 \begin{Satz}[\textcolor{blue}{Refutation Completeness}] \label{widerlegungs-vollstaendig} \hspace*{\fill} \linebreak
   Assume $M$ is a set of clauses that is unsatisfiable.  Then $M$ derives the empty clause:
@@ -1969,7 +1969,7 @@ We are now ready to state and proof the refutational completeness of the cut rul
       \hspace*{1.3cm}
       $M \not\,\vdash \{\}$.
 \end{enumerate}
-We will show that then there has to exist a propositional interpretation $\mathcal{I}$ under which all clauses
+We will show that then there has to exist a propositional valuation $\mathcal{I}$ under which all clauses
 from $M$ become true, which contradicts the unsatisfiability of $M$. 
 
 Following the previous remark, we saturate the set $M$ to obtain the saturated set $\overline{M}$. Let
@@ -1979,8 +1979,8 @@ $\{ p_1, \cdots, p_N \}$
 \\[0.2cm]
 be the set of all propositional variables appearing in clauses from $M$. We denote the set of propositional variables appearing in a clause $C$ by $\mathtt{var}(C)$.
 For all $k=0,1,\cdots,N$
-we now define a propositional interpretation $\mathcal{I}_k$ by induction on $k$.  For all $k=0,1,\cdots,N$ the
-propositional interpretations $\mathcal{I}_k$ has the property that for each clause $C \in \overline{M}$,
+we now define a propositional valuation $\mathcal{I}_k$ by induction on $k$.  For all $k=0,1,\cdots,N$ the
+propositional valuation $\mathcal{I}_k$ has the property that for each clause $C \in \overline{M}$,
 which contains only the variables $p_1,\cdots,p_k$, we have that
 $\mathcal{I}_k(C) = \mathtt{True}$ holds. This is formally written as follows:
 \\[0.2cm]
@@ -1988,7 +1988,7 @@ $\mathcal{I}_k(C) = \mathtt{True}$ holds. This is formally written as follows:
 $\forall C \in \overline{M}:\Bigl(\mathtt{var}(C) \subseteq \{p_1, \cdots, p_k\} \Rightarrow \mathcal{I}_k(C) =
 \mathtt{True}\Bigl)$. \hspace*{\fill} $(*)$
 \\[0.2cm]
-Additionally, the propositional interpretation $\mathcal{I}_k$ only defines values for the variables
+Additionally, the propositional valuation $\mathcal{I}_k$ only defines values for the variables
 $p_1,\cdots,p_k$, so
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1996,7 +1996,7 @@ $\mathtt{dom}(\mathcal{I}_k) = \{p_1, \cdots, p_k\}$.
 \begin{enumerate}
 \item[I.A.:] $k=0$.
  
-  We define $\mathcal{I}_0$ as the empty propositional interpretation, which assigns no
+  We define $\mathcal{I}_0$ as the empty propositional valuation, which assigns no
   values to any variables. To prove $(*)$, we must show that for each clause $C \in \overline{M}$ that contains
   no propositional variable, $\mathcal{I}_0(C) = \mathtt{True}$ holds. The only clause that contains
   no variable is the empty clause. Since we assumed that $M \not\,\vdash \{\}$,
@@ -2029,7 +2029,7 @@ $\mathtt{dom}(\mathcal{I}_k) = \{p_1, \cdots, p_k\}$.
     \begin{enumerate}[1.]
     \item Case: $\mathtt{var}(D) \subseteq \{p_1,\cdots,p_k\}$
 
-          Then the claim holds by the induction hypothesis, since the interpretations
+          Then the claim holds by the induction hypothesis, since the valuations
           $\mathcal{I}_{k+1}$ and $\mathcal{I}_k$ agree on these variables.
     \item Case: $p_{k+1} \in D$.
           
@@ -2082,11 +2082,11 @@ $\mathtt{dom}(\mathcal{I}_k) = \{p_1, \cdots, p_k\}$.
     \begin{enumerate}[1.]
     \item $D$ does not contain the variable $p_{k+1}$.
       
-          In this case, $\mathcal{I}_{k+1} = \mathtt{True}$ already holds by the induction hypothesis.        
+          In this case, $\mathcal{I}_{k+1}(D) = \mathtt{True}$ already holds by the induction hypothesis.        
     \item $D = E \cup \{ p_{k+1} \}$.
 
           Then we must have $\mathcal{I}_k(E) = \mathtt{True}$ since otherwise we would be in case (a) of the
-          outer case distinction.  Obviously, $\mathcal{I}_k(E) = \mathtt{True}$ implies $\mathtt{I}_k(D) = \mathtt{True}$.
+          outer case distinction.  Obviously, $\mathcal{I}_k(E) = \mathtt{True}$ implies $\mathcal{I}_k(D) = \mathtt{True}$.
     \item $D = E \cup \{ \neg p_{k+1} \}$.
 
           In this case, by definition of $\mathcal{I}$, $\mathcal{I}_{k+1}(p_{k+1}) = \mathtt{False}$
@@ -2094,7 +2094,7 @@ $\mathtt{dom}(\mathcal{I}_k) = \{p_1, \cdots, p_k\}$.
           $\mathcal{I}_{k+1}(D) = \mathtt{True}$.
     \end{enumerate}
     
-    Through the induction, we have thus shown that the propositional interpretation
+    Through the induction, we have thus shown that the propositional valuation
     $\mathcal{I}_{N}$ renders all clauses $C \in \overline{M}$ true, as only the
     propositional variables $p_1$, $\cdots$, $p_N$ occur in $\overline{M}$.
     Since $M \subseteq \overline{M}$, $\mathcal{I}_{N}$ also renders all clauses from $M$ true, 
@@ -2156,7 +2156,7 @@ online.
                }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Auxiliary function that are used in Figure \ref{fig:Completeness.ipynb-2}.}
+\caption{Auxiliary functions that are used in Figure \ref{fig:Completeness.ipynb-2}.}
 \label{fig:Completeness.ipynb-1}
 \end{figure}
 
@@ -2164,7 +2164,7 @@ The basic idea
 of this program is that we attempt to derive \underline{all} clauses from a given set $M$ of clauses
 that can be derived from $M$ by using the cut rule.  Let us call this set $\widetilde{M}$.  If $\widetilde{M}$ contains the empty clause,
 then, due to the correctness of the cut rule, $M$ has to be unsatisfiable. However, if we fail to derive the empty clause from $M$,
-we construct a propositional interpretation
+we construct a propositional valuation
 $\I$ from $\widetilde{M}$ such that $\mathcal{I}$ satisfies all clauses from $M$.
 We first discuss the auxiliary procedures shown in Figure \ref{fig:Completeness.ipynb-1}.
 \begin{enumerate}
@@ -2269,7 +2269,7 @@ terminate. This is due to two reasons:
 \begin{enumerate}
 \item In each iteration of the loop, the number of elements of the set \texttt{Clauses}
       is increased by at least one, as we know that the set \texttt{Derived}, which we add to the
-      set \texttt{Clauses} in line 38, is neither empty nor does it contains only
+      set \texttt{Clauses} in line 38, is neither empty nor does it contain only
       clauses that are already present in \texttt{Clauses}.
 \item The set \texttt{Clauses}, with which we originally start, contains a certain number $n$
       of propositional variables. However, the application of the cut rule does not generate any new
@@ -2314,7 +2314,7 @@ line 28 will terminate after at most $2^{2 \cdot n}$ iterations.
         return Literals
 \end{minted}
 \vspace*{-0.3cm}
-\caption{Die Funktion \texttt{findValuation}.\index{\texttt{findValuation}}}
+\caption{The function \texttt{findValuation}.\index{\texttt{findValuation}}}
 \label{fig:Completeness.ipynb-3}
 \end{figure}
 
@@ -2329,22 +2329,22 @@ In detail, the function \texttt{findValuation} works as follows.
 \begin{enumerate}
 \item First, in line 41, we compute the set of all propositional variables that appear in the set
       \texttt{Clauses}. We need this set because in the
-      propositional interpretation, which we want to return as a result, we must
+      propositional valuation, which we want to return as a result, we must
       map these variables to the set $\{ \texttt{True}, \texttt{False} \}$.
 \item In line 42, we saturate the set \texttt{Clauses} and compute all clauses that can be derived from the
       original set of clauses using the cut rule. Here, two cases can occur:
       \begin{enumerate}
-      \item If the empty clause can be derived, then it follows from the correctness of the cut rule,
-            that the original set of clauses is contradictory, and we return \texttt{False} instead of an assignment,
+      \item If the empty clause can be derived, then it follows from the correctness of the cut rule
+            that the original set of clauses is contradictory, and we return \texttt{False} instead of a valuation,
             as a contradictory set of clauses is certainly not satisfiable.
-      \item Otherwise, we now compute a propositional assignment under which all clauses from
+      \item Otherwise, we now compute a propositional valuation under which all clauses from
             the set \texttt{Clauses} become true. For this purpose, we first compute a set of
             literals, which we store in the variable \texttt{Literals}. The idea is that we
             include the propositional variable \texttt{p} in the set \texttt{Literals} exactly when
-            the sought-after assignment $\I$ evaluates the propositional
+            the sought-after valuation $\I$ evaluates the propositional
             variable \texttt{p} to \texttt{True}. Otherwise, we include the
             literal $\neg \texttt{p}$ in the set \texttt{Literals}. As a result, in
-            line 53, we return the set \texttt{Literals}. The sought-after propositional assignment
+            line 53, we return the set \texttt{Literals}. The sought-after propositional valuation
             $\mathcal{I}$ can then be computed according to the formula  
             \\[0.2cm]
             \hspace*{1.3cm}
@@ -2358,7 +2358,7 @@ In detail, the function \texttt{findValuation} works as follows.
       \end{enumerate}
 \item The computation of the set \texttt{Literals} is done using a \texttt{for} loop.
       The idea is that for a propositional variable \texttt{p}, we add the literal
-      $\texttt{p}$ to the set \texttt{Literals} exactly when the assignment $\I$ has to map the variable \texttt{p}
+      $\texttt{p}$ to the set \texttt{Literals} exactly when the valuation $\I$ has to map the variable \texttt{p}
       to \texttt{True} in order to satisfy the clauses. Otherwise, we add
       the literal $\neg\texttt{p}$ to this set instead.
 
@@ -2379,11 +2379,11 @@ In detail, the function \texttt{findValuation} works as follows.
       \hspace*{1.3cm}
       $\I\bigl(\komplement{l_i}) = \texttt{False}$ \quad for all $i \in \{1,\cdots,n\}$
       \\[0.2cm]
-      and thus \texttt{p} is the only literal in the clause $C$ that we can still make true with the help of the assignment $\I$. In this case, we thus add the literal
+      and thus \texttt{p} is the only literal in the clause $C$ that we can still make true with the help of the valuation $\I$. In this case, we thus add the literal
       $\texttt{p}$ to the set \texttt{Literals}. Otherwise, the literal $\neg p$ is added to the set
       \texttt{Literals}.
 \end{enumerate}
-The definition of the function \texttt{findValuation} implements the inductive definition of the assignments
+The definition of the function \texttt{findValuation} implements the inductive definition of the valuations
 $\mathcal{I}_k$ that we specified in the proof of refutation completeness.
 
 
@@ -2554,11 +2554,11 @@ $\mathcal{I}_k$ that we specified in the proof of refutation completeness.
 % \end{enumerate}
 
 \section{The Algorithm of Davis and Putnam}
-In practice, we often have to compute a propositional assignment $\I$ for a given set of clauses $K$ such that
+In practice, we often have to compute a propositional valuation $\I$ for a given set of clauses $K$ such that
 \\[0.2cm]
 \hspace*{1.3cm} $\texttt{evaluate}(C,\I) = \texttt{True}$ \quad for all $C \in K$ \\[0.2cm]
-holds. In this case,  the assignment $\I$ is a \blue{solution}\index{solution} of the set of clauses $K$. In
-the last section, we have already introduced the function \texttt{findValuation} which can be used to compute
+holds. In this case,  the valuation $\I$ is a \blue{solution}\index{solution} of the set of clauses $K$. In
+the last section, we introduced the function \texttt{findValuation} which can be used to compute
 such a solution of a set of clauses.  Unfortunately, this function is too inefficient to be useful in
 practice.
 Therefore, in this section, we will introduce an algorithm that enables us to compute a solution for a
@@ -2567,7 +2567,7 @@ large. This procedure is based on Davis and Putnam \cite{davis:1960, davis:1962}
 \cite{moskewicz:2001} are used, for example, to verify the correctness of digital electronic circuits. 
 
 To motivate the algorithm, let us first consider those cases where
-it is immediately clear whether there is an assignment that solves a set of clauses $K$.
+it is immediately clear whether there is a valuation that solves a set of clauses $K$.
 Consider the following example: \\[0.2cm]
 \hspace*{1.3cm} 
 $K_1 = \bigl\{\; \{p\},\; \{\neg q\},\; \{r\},\; \{\neg s\}, \; \{\neg t\} \;\bigr\}$ 
@@ -2577,7 +2577,7 @@ The clause set $K_1$ corresponds to the propositional formula
 \hspace*{1.3cm}
 $p \wedge \neg q \wedge r \wedge \neg s \wedge \neg t$.
 \\[0.2cm]
-Therefore, $K_1$ is solvable and the assignment  \\[0.2cm]
+Therefore, $K_1$ is solvable and the valuation  \\[0.2cm]
 \hspace*{1.3cm} 
 $\I = \bigl\{\; p \mapsto \texttt{True},\; q \mapsto \texttt{False},\; r \mapsto \texttt{True},\; s \mapsto
 \texttt{False},\; t \mapsto \texttt{False}\;\}$
@@ -2630,7 +2630,7 @@ definitions.
               \hspace*{1.3cm}
               $\{p\} \in K$ \quad and \quad $\{\neg p\} \in K$.
         \end{enumerate}
-        In this case, we can define the propositional assignment $\I$ as follows:
+        In this case, we can define the propositional valuation $\I$ as follows:
         \\[0.2cm]
         \hspace*{1.3cm}
         $\I(p) = \left\{
@@ -2652,7 +2652,7 @@ There are three ways to simplify a set of clauses:
 \item \blue{Subsumption}, and
 \item \blue{Case Distinction}.
 \end{enumerate}
-We are already familiar with the first of the two
+We are already familiar with the first of these three
 possibilities, and we will explain the other two in more detail later.
 Next, we will consider these possibilities in turn.
 
@@ -2742,7 +2742,7 @@ Such a simplification is \blue{case distinction}\index{case distinction}. This p
 \textbf{Proof}:
 \begin{enumerate}
 \item[``$\Rightarrow$'':] 
-  If $K$ is satisfied by an assignment $\I$, then there are two possibilities for $\I(p)$, as 
+  If $K$ is satisfied by a valuation $\I$, then there are two possibilities for $\I(p)$, as 
   $\mathcal{I}(p)$ is either true or false. If $\I(p) = \texttt{True}$, then the set $K \cup
   \bigl\{\{p\}\bigr\}$ is also satisfiable,
   otherwise $K \cup \bigl\{\{\neg p\}\bigr\}$
@@ -2772,15 +2772,15 @@ we can perform both unit subsumptions and unit cuts, thereby simplifying these s
 \subsection{The Algorithm}
 We can now outline the Davis and Putnam algorithm \index{Davis-Putnam Algorithm}.
 Given a set of clauses $K$, the goal is to find a solution for $K$. We
-are looking for an assignment $\I$, such that: \\[0.2cm]
+are looking for a valuation $\I$, such that: \\[0.2cm]
 \hspace*{1.3cm} $\I(C) = \texttt{True}$ \quad for all $C \in K$.\\[0.2cm]
 The algorithm of Davis and Putnam consists of the following steps.
 \begin{enumerate}
 \item Perform all unit cuts and unit subsumptions that are possible with clauses from $K$.
-\item Then, If $K$ is trivial, the procedure ends.
+\item Then, if $K$ is trivial, the procedure ends.
      \begin{enumerate}
      \item If $\{\} \in K$, then $K$ is unsolvable.
-     \item Otherwise, the propositional interpretation
+     \item Otherwise, the propositional valuation
            \\[0.2cm]
            \hspace*{1.3cm}
            $\mathcal{I} := \bigl\{ p \mapsto \mathtt{True}  \mid p \in \mathcal{P} \wedge \{p\}\in K\bigr\} \cup
@@ -2817,7 +2817,7 @@ $
 \\[0.2cm]
 Thus, the set contains the results of cuts with
 the unit clause $\{l\}$ and we have removed those clauses that are subsumed by the unit clause $\{l\}$.
-The two sets $K$ and $\texttt{reduce}(K,l)$ are logically equivalent, if $\{l\} \in K$.
+The two sets $K$ and $\texttt{reduce}(K,l)$ are logically equivalent if $\{l\} \in K$.
 Therefore, $K$ will only be replaced by $\mathtt{reduce}(K, l)$ if $\{l\} \in K$.
 
 \subsection{An Example}
@@ -2903,7 +2903,7 @@ variables. If the set \texttt{Clauses} is satisfiable, then the call
 \texttt{solve(Clauses, Variables)} \index{\texttt{solve}}
 \\[0.2cm]
 returns a set of unit clauses \texttt{Result}, such
-that any assignment $\I$, which satisfies all unit clauses from \texttt{Result}, also satisfies all clauses from
+that any valuation $\I$, which satisfies all unit clauses from \texttt{Result}, also satisfies all clauses from
 the set $\texttt{Clauses}$. If the set $\texttt{Clauses}$ is not satisfiable, the call
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -3011,7 +3011,7 @@ The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pa
 \item Initially, we copy the set \texttt{Clauses} into the variable \texttt{S}.
       This is necessary because we will later modify the set \texttt{S}. The function
       \texttt{saturate} should not alter the argument \texttt{Clauses} and therefore
-      it has to create a copy of the set \texttt{S}.
+      it has to create a copy of the set \texttt{Clauses}.
 \item Then, in line 3, we compute the set \texttt{Units} of all unit clauses.
 \item Next, in line 4, we initialize the set \texttt{Used} as an empty set.
       In this set, we record which unit clauses we have already used for unit cuts and
@@ -3032,7 +3032,7 @@ The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pa
       that have not yet been used.
 \item The loop in lines 5 -- 10 is continued as long as we
       find unit clauses that have not been used.
-\item At the end,  return the remaining set of clauses is returned.
+\item At the end, the remaining set of clauses is returned.
 \end{enumerate}
 The function $\texttt{reduce}$  is shown in Figure \ref{fig:reduce}.
 In the previous section, we defined the function $\textsl{reduce}(S, l)$, which reduces a
@@ -3127,7 +3127,7 @@ straightforward.
 
 The version of the Davis and Putnam procedure presented above can be improved in many ways.
 Due to time constraints, we cannot discuss these improvements. Interested readers are
-referred to the following paper by Moskewicz et.al.~\cite{moskewicz:2001}: 
+referred to the following paper by Moskewicz et al.~\cite{moskewicz:2001}: 
 \\[0.2cm]
 \hspace*{1.3cm} \textsl{Chaff: Engineering an Efficient SAT Solver} \\
 \hspace*{1.3cm} by \blue{M. Moskewicz, C. Madigan, Y. Zhao, L. Zhang, S. Malik} 
@@ -3489,7 +3489,7 @@ the equation \\[0.2cm]
 In general, the indices of the variables of an ascending diagonal that contains more than one square satisfy the
 equation \\[0.2cm] 
 \hspace*{1.3cm} $r + c = k$, \\[0.2cm]
-where $k$ for an $8 \times 8$ chess board takes a value from the set $\{3, \cdots, 15 \}$. We pass the value $k$ as an argument in the
+where $k$ for an $8 \times 8$ chess board takes a value from the set $\{3, \cdots, 15 \}$. We pass the value $k$ as an argument to the
 function \texttt{atMostOneInRisingDiagonal}. This function is shown in Figure
 \ref{fig:atMostOneInUpperDiagonal}.
 
@@ -3527,7 +3527,7 @@ the equation \\[0.2cm]
 \hspace*{1.3cm} $r - c = 0$. \\[0.2cm]
 Generally, the indices of the variables on a descending diagonal satisfy the equation \\[0.2cm]
 \hspace*{1.3cm} $r - c = k$, \\[0.2cm]
-where $k$ takes a value from the set $\{-6, \cdots, 6 \}$. We pass the value $k$ as an argument in the
+where $k$ takes a value from the set $\{-6, \cdots, 6 \}$. We pass the value $k$ as an argument to the
 function \texttt{atMostOneInLowerDiagonal}. This function is shown in Figure
 \ref{fig:atMostOneInLowerDiagonal}.
 
@@ -3703,7 +3703,7 @@ The efficient solution of such problems is a subject of current research.
 \subsection{The \href{https://en.wikipedia.org/wiki/Zebra_Puzzle}{Zebra Puzzle} \label{section:zebra}} 
 The following logical puzzle appeared in the magazine
 \href{https://en.wikipedia.org/wiki/Life_(magazine)}{Life International} 
-on  December, $17^\textrm{th}$  in the year 1962:
+on December $17^\textrm{th}$, 1962:
 \begin{itemize}
 \item There are five houses.
 \item The Englishman lives in the red house.
@@ -3725,7 +3725,7 @@ Furthermore, each of the five houses is painted in a different colour, their
 inhabitants are of different nationalities, own different pets, drink different
 beverages, and smoke different brands of cigarettes.  
 
-Our task is to answers the following questions:
+Our task is to answer the following questions:
 \begin{enumerate}
 \item Who drinks water?
 \item Who owns the zebra?
@@ -3780,8 +3780,8 @@ $\texttt{Parliaments}\langle i \rangle$.
 \\[0.2cm]
 We are using the angular brackets "$\langle$" and "$\rangle$" as part of the
 variable names because our parser for propositional logic accepts these symbols
-as part of variable names.  The parser would be confused if we would use the
-normal parenthesis.  
+as part of variable names.  The parser would be confused if we used
+normal parentheses.  
 
 \begin{figure}[!ht]
 \centering
@@ -3983,9 +3983,9 @@ specifies that the Japanese guy lives next to the guy who keeps a dog.
 \end{figure}
 
 Given two properties $a$ and $b$ the function $\texttt{leftTo}(a, b)$ computes a
-list of clauses that specifies that the inhabitants with properties $a$ lives in
+list of clauses that specifies that the inhabitant with property $a$ lives in
 the house to the left of the inhabitant who has property $b$.  For example,
-$\texttt{livesTo}(\texttt{'Japanese'}, \texttt{'Dog'})$ specifies that the
+$\texttt{leftTo}(\texttt{'Japanese'}, \texttt{'Dog'})$ specifies that the
 Japanese guy lives in the house to the left of the house where there is a dog.
 
 \begin{figure}[!ht]
@@ -4068,7 +4068,7 @@ shown in Figure \ref{fig:properties}.
 \label{fig:allClauses}
 \end{figure}
 The function \texttt{allClauses} in Figure \ref{fig:allClauses} computes a set of clauses that encodes the
-conditions of the zebra puzzle.  I we solve these clauses with the algorithm of
+conditions of the zebra puzzle.  If we solve these clauses with the algorithm of
 Davis and Putnam, we get the solution that is shown in Figure \ref{fig:zebra}.
 
 \begin{figure}[!ht]
@@ -4099,7 +4099,7 @@ The king went on to say that there were signs on all the doors with statements o
 \begin{enumerate}
 \item In the rooms where there is a tiger, the statement on the sign is false.
 \item In the room where the princess is, the statement is true.
-\item With regards to the empty rooms, the situation is a bit more
+\item With regard to the empty rooms, the situation is a bit more
       complicated, because there are two possibilities:
       \begin{itemize}
       \item Either all the inscriptions on the empty rooms are true,
@@ -4135,7 +4135,7 @@ You should edit this notebook in order to solve the given problem. \eox
 \exerciseEng
 The following exercise is taken from the book 
 \href{https://www.amazon.de/Logeleien-Zweistein-ihren-Antworten-Wegner/dp/B006YF0VUE}{99 Logeleien von Zweistein}.
-This book has been published 1968.  It is written by 
+This book was published in 1968.  It was written by 
 \href{http://de.wikipedia.org/wiki/Thomas_von_Randow}{Thomas von Randow}.
 
 \begin{minipage}{0.95\linewidth}
@@ -4186,7 +4186,7 @@ of a Sudoku puzzle.  Figure \ref{fig:sudoku.png} shows the Sudoku created by Art
 
 A Sudoku puzzle is a logic-based, combinatorial number-placement puzzle. The objective is to fill a
 $9 \times 9$ grid with digits from the set $\{1, \cdots, 9\}$ so that each column, each row, and each of the
-nine $3 \times 3$ subgrids that compose the grid (also called "boxes") contain all of these digits exactly
+nine $3 \times 3$ subgrids that compose the grid (also called "boxes") contains all of these digits exactly
 once.  The puzzle is given as a partially completed grid.  A well-posed puzzle must have a single unique
 solution.
 
@@ -4222,7 +4222,7 @@ implementation we will use the function \texttt{var} shown in Figure \ref{fig:su
 The Sudoku itself is created by the function \texttt{create\_puzzle} shown in Figure
 \ref{fig:sudoku-create-puzzle} on page \pageref{fig:sudoku-create-puzzle}.  In this function, the puzzle is
 represented as a list of lists.  Each of these lists represents a row.  The inner lists contain digits and the
-characters \texttt{"*"}.  These characters represent the digits that are initially unknown and whose value have
+characters \texttt{"*"}.  These characters represent the digits that are initially unknown and whose values have
 to be computed.
 
 \begin{figure}[!ht]
@@ -4253,7 +4253,7 @@ to be computed.
 \label{fig:sudoku-create-puzzle}
 \end{figure}
 
-In our implementation we will use functions \texttt{atMostOne} that we have already seen in Figure
+In our implementation we will use the function \texttt{atMostOne} that we have already seen in Figure
 \ref{fig:atMostOne} on page \pageref{fig:atMostOne} that expresses that at most one of a given set of
 propositional variables is \texttt{True}.  Furthermore, we will use the auxiliary function
 $\texttt{atLeastOne}(V)$ which takes a set of propositional variables $V$ and which returns a formula in
@@ -4290,8 +4290,8 @@ The implementation is shown in Figure \ref{fig:sudoku-exactly}.
 \label{fig:sudoku-exactly}
 \end{figure}
 
-Figure \ref{fig:sudoku-exactlyOnce} show the implementation of the function
-$\texttt{exactlyOnce}(L)$.  This function takes a set $L$ of pairs as arguments.  Every pair $(r,c) \in L$ is
+Figure \ref{fig:sudoku-exactlyOnce} shows the implementation of the function
+$\texttt{exactlyOnce}(L)$.  This function takes a set $L$ of pairs as its argument.  Every pair $(r,c) \in L$ is
 interpreted as a position in the Sudoku grid where $r$ specifies the row and $c$ specifies the column of the
 position.  The function $\texttt{exactlyOnce}$ computes a set of formulas that express that every digit
 $d \in \{1,\cdots,9\}$ occurs exactly once in the set of coordinates $L$: 
@@ -4322,7 +4322,7 @@ $\texttt{exactlyOnce}(L) = \bigcup\limits_{d \in \{1,\cdots,9\}} \mathtt{exactly
 \label{fig:sudoku-exactlyOnce}
 \end{figure}
 
-The function $\texttt{exactlyOneDigit}(r, c)$ takes a row $r$ and a column $c$ as its argument.  It returns a
+The function $\texttt{exactlyOneDigit}(r, c)$ takes a row $r$ and a column $c$ as its arguments.  It returns a
 formula expressing that exactly one of the variables from the set
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -4350,16 +4350,16 @@ is \texttt{True}. The implementation is shown in Figure \ref{fig:sudoku-exactlyO
 \end{figure}
 
 
-Furthermore, we need a function encoding the constraints form the puzzle itself.
+Furthermore, we need a function encoding the constraints from the puzzle itself.
 This function is called \texttt{constraintsFromPuzzle} and its implementation is shown in Figure
 \ref{fig:sudoku-constraintsFromPuzzle} on page \pageref{fig:sudoku-constraintsFromPuzzle}.
 For example, the given puzzle demands that the digit in row 2 and column 4 is the digit $6$.
-This can be expressed as the formula $Q_{2,3,6}$.  In set notation this formula takes the form
+This can be expressed as the formula $Q_{2,4,6}$.  In set notation this formula takes the form
 \\[0.2cm]
 \hspace*{1.3cm}
 $\bigl\{ \{Q_{2,3,6}\} \bigr\}$.
 \\[0.2cm]
-Of course, we have to take the union of all these formula.  This leads to the code shown in Figure
+Of course, we have to take the union of all these formulas.  This leads to the code shown in Figure
 \ref{fig:sudoku-constraintsFromPuzzle} on page \pageref{fig:sudoku-constraintsFromPuzzle}.
 Note that we have to provide \texttt{row+1} and \texttt{col+1} as arguments to the function \texttt{var} since
 in Python list indices start with $0$.
@@ -4389,7 +4389,7 @@ in Python list indices start with $0$.
 \end{figure}
 
 Finally, we have to combine all constraints of the puzzle.  This is done with the function \\
-\texttt{allConstraints} shown in Figure \ref{fig:sudoku-allConstraints} shown on page \pageref{fig:sudoku-allConstraints}.
+\texttt{allConstraints} shown in Figure \ref{fig:sudoku-allConstraints} on page \pageref{fig:sudoku-allConstraints}.
 
 \begin{figure}[!ht]
 \centering
@@ -4444,7 +4444,7 @@ The Jupyter notebook showing the resulting program is available at:
 Unfortunately, solving the resulting set of clauses takes about 10 minutes.  Fortunately, there is a version
 of the Davis-Putnam algorithm that is implemented in \texttt{C} and that, furthermore, incorporates a number of
 improvements to the original algorithm.  This solver is called \href{https://fmv.jku.at/picosat/}{PicoSat}
-and has been implemented by \href{https://cca.informatik.uni-freiburg.de/biere/}{Armine Biere}.
+and has been implemented by \href{https://cca.informatik.uni-freiburg.de/biere/}{Armin Biere}.
 A \href{https://github.com/conda/pycosat}{Python API} to this solver is available as
 \href{https://pypi.org/project/pycosat/}{pycosat}.  We can install it via \texttt{pip} using the following command:
 \\[0.2cm]
@@ -4457,7 +4457,7 @@ In \textsl{PicoSat} propositional variables are represented as follows:
 \item If $n$ is the natural number representing the propositional variable $p$, then $\neg p$ is represented as
       the integer $-n$. 
 \item A clause is represented as a list of integers.
-\item A formula in CNF is represented as a list of clauses and hence as a list of list of integers.
+\item A formula in CNF is represented as a list of clauses and hence as a list of lists of integers.
 \end{enumerate}
 For example, if the propositional variables $p$, $q$, and $r$ are represented as the natural numbers
 $1$, $2$, and $3$ respectively, then
@@ -4474,7 +4474,7 @@ which is in conjunctive normal form, is represented as follows:
 \hspace*{1.3cm}
 \texttt{f = [ [1, -2, 3], [-1, 2, -3], [-1, -2, 3], [1, 2, -3] ]}
 \\[0.2cm]
-In order so find a solution to this formula we can call $\texttt{pycosat.solve}(f)$.
+In order to find a solution to this formula we can call $\texttt{pycosat.solve}(f)$.
 
 \pagebreak
 \subsubsection{Transforming Clauses into PyCoSat Format}
@@ -4611,15 +4611,15 @@ The Jupyter notebook showing the resulting program is available at:
 \item How have we defined the semantics of propositional logic formulas?
 \item How do we represent propositional logic formulas in \textsl{Python}?
 \item What is a tautology?
-\item How can we transform propositional logic formula into conjunctive normal
+\item How can we transform a propositional logic formula into conjunctive normal
       form?
 \item Define the notion of an inference rule.
-\item when is  an inference rule correct?
+\item When is an inference rule correct?
 \item Define the cut rule.
 \item How did we define the proof concept $M \vdash C$?
 \item What is a saturated set of clauses?
 \item What are the two most important properties of the proof concept $\vdash$?
-\item Assume that $M$ is a saturated set of clauses. How can we define a propositional interpretation
+\item Assume that $M$ is a saturated set of clauses. How can we define a propositional valuation
       $\mathcal{I}$ such that $\mathcal{I}(C) = \mathtt{True}$ for all $C \in M$?
 \item How did we define the notion of a set of clauses being solvable?
 \item Do you know how the algorithm of Davis and Putnam works?
