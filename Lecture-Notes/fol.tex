@@ -2137,7 +2137,7 @@ that contains the positions of the knight after each of its 63 moves.
 
 \begin{figure}[!ht]
   \centering
-  \framebox{\epsfig{file=Figures/knights-problem.png, scale=0.59}} 
+  \framebox{\epsfig{file=Figures/knights-problem.png, scale=0.58}} 
   \caption{A solution of the knight's problem.}
   \label{fig:knights-problem.png}
 \end{figure}
@@ -2243,8 +2243,8 @@ function boatOK(Ma: Arith, Ca: Arith, Ba: Arith,
 {
     const numMis = Ma.sub(Mb);           // Ma - Mb
     const numCan = Ca.sub(Cb);           // Ca - Cb
-    const all    = numMis.add(numCan);   // Ma - Mb + Ma - Mb
-    // B = 1 → 1 ≤ Ma - Mb + Ma - Mb ≤ 2 ∧ Mb ≤ Ma ∧ Cb ≤ Ca
+    const all    = numMis.add(numCan);   // Ma - Mb + Ca - Cb
+    // B = 1 → 1 ≤ Ma - Mb + Ca - Cb ≤ 2 ∧ Mb ≤ Ma ∧ Cb ≤ Ca
     return Z3.Implies(Ba.eq(1),
                       Z3.And(all.ge(1), all.le(2), Mb.le(Ma), Cb.le(Ca)));
 }
@@ -2266,7 +2266,7 @@ Figure \ref{fig:Missionaries-Z3.ipynb-1} on page \pageref{fig:Missionaries-Z3.ip
 the associated symbolic transition system using the constraint solver \texttt{Z3}.
 \begin{enumerate}
 \item In lines 1--3 we define the variables \texttt{M}, \texttt{C}, and \texttt{B}.  These represent the
-      number of missionaries, cannibals, and boats on the eastern shore.  We have defined these variables as
+      number of missionaries, cannibals, and boats on the western shore.  We have defined these variables as
       integers, although the set of values really is the set $\{0,1,2,3\}$.  We will later add appropriate
       inequalities to restrict these variables to this set.
 
@@ -2278,7 +2278,7 @@ the associated symbolic transition system using the constraint solver \texttt{Z3
       \hspace*{1.3cm}
       $M = 3 \wedge C = 3 \wedge B = 1$
       \\[0.2cm]
-      specifying that there are 3 missionaries, 3 cannibals, and 1 boat on the left shore.
+      specifying that there are 3 missionaries, 3 cannibals, and 1 boat on the western shore.
 
       Note that we have to use the \texttt{Z3} function \texttt{And} to form the conjunction of the conditions.
       The function takes an arbitrary number of arguments.  The constraint solver \texttt{Z3} also provides the
@@ -2289,7 +2289,7 @@ the associated symbolic transition system using the constraint solver \texttt{Z3
       \hspace*{1.3cm}
       $M = 0 \wedge C = 0 \wedge B = 0$
       \\[0.2cm]
-      specifying that there are 0 missionaries, 0 cannibals, and 0 boats on the left shore.
+      specifying that there are 0 missionaries, 0 cannibals, and 0 boats on the western shore.
 \item The definition of the invariant in lines 13--19 has become more complicated because in addition to the
       formula 
       \\[0.2cm]
@@ -2300,18 +2300,18 @@ the associated symbolic transition system using the constraint solver \texttt{Z3
       while $B$ has to be an element of the set $\{0,1\}$.
 \item The function \texttt{boatOK} takes 6 arguments:
       \begin{enumerate}[(a)]
-      \item \texttt{Ma} is the number of missionaries on the eastern shore before the crossing.
-      \item \texttt{Ca} is the number of infidels on the eastern shore before the crossing.
-      \item \texttt{Ba} is the number of boats on the eastern shore before the crossing. 
-      \item \texttt{Mb} is the number of missionaries on the eastern shore after the crossing.
-      \item \texttt{Cb} is the number of infidels on the eastern shore after the crossing.
-      \item \texttt{Bb} is the number of boats on the eastern shore after the crossing.
+      \item \texttt{Ma} is the number of missionaries on the western shore before the crossing.
+      \item \texttt{Ca} is the number of infidels on the western shore before the crossing.
+      \item \texttt{Ba} is the number of boats on the western shore before the crossing. 
+      \item \texttt{Mb} is the number of missionaries on the western shore after the crossing.
+      \item \texttt{Cb} is the number of infidels on the western shore after the crossing.
+      \item \texttt{Bb} is the number of boats on the western shore after the crossing.
       \end{enumerate}
 
       The function returns a formula that checks that the following condition holds when the boat 
       crosses the river from the western shore to the eastern shore:
       $$ \mathtt{Ba} = 1 \rightarrow 1 \leq \mathtt{Ma} - \mathtt{Mb} + \mathtt{Ca} - \mathtt{Cb} \leq 2 $$
-      Here \texttt{Ma - Mb} is the number of missionaries on the boat and  \texttt{Cb - Ca} is the number of
+      Here \texttt{Ma - Mb} is the number of missionaries on the boat and  \texttt{Ca - Cb} is the number of
       infidels on the boat.  The formula expresses that there is at least one but not more than two passengers
       on the boat. 
       The condition $\texttt{Ba} = 1$ ensures that the boat is initially on the western shore, so we are
