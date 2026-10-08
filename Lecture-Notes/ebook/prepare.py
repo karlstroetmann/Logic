@@ -112,13 +112,39 @@ def epsfig_to_includegraphics(s):
         return f'\\includegraphics{{{path}}}'
     return re.sub(r'\\epsfig\{\s*file=([^,}]+)[^}]*\}', repl, s)
 
+def needs_image(fig):
+    """Figures that pandoc cannot convert: chess diagrams, pictures, and annotated programs
+    (Verbatim with commandchars) whose variables carry subscripts like r$_{n+1}$."""
+    if 'minted' in fig:
+        return False
+    if re.search(r'\\begin\{picture\}|\\vbox|\\chess|\\bigchess', fig):
+        return True
+    return 'commandchars' in fig and '$_' in fig
+
+def plain_verbatim(s):
+    """Verbatim blocks with commandchars but without subscripts become plain code blocks:
+    the sepia boxes and colors are removed, and Greek letters are written as Unicode."""
+    def repl(m):
+        block = m.group(0)
+        if 'commandchars' not in block or '$_' in block:
+            return block
+        lines = re.sub(r'^\\begin\{Verbatim\}\[.*?\]\s*\n', '', block, flags=re.S).splitlines()[:-1]
+        out = []
+        for line in lines:
+            line = re.sub(r'\\colorbox\{\w+\}\{(.*)\}\s*$', r'\1', line)
+            line = re.sub(r'\\(?:green|blue|red)\{([^{}]*)\}', r'\1', line)
+            line = line.replace('$\\alpha$', 'α').replace('$\\beta$', 'β')
+            out.append(line.rstrip())
+        return '\\begin{Verbatim}\n' + '\n'.join(out) + '\n\\end{Verbatim}'
+    return re.sub(r'\\begin\{Verbatim\}.*?\\end\{Verbatim\}', repl, s, flags=re.S)
+
 def special_figures(s, chapter):
-    """Replace the bodies of figures with chess diagrams or pictures by rendered images."""
+    """Replace the bodies of figures that pandoc cannot convert by rendered images."""
     count = 0
     def repl(m):
         nonlocal count
         fig = m.group(0)
-        if 'minted' in fig or not re.search(r'\\begin\{picture\}|\\vbox|\\chess|\\bigchess', fig):
+        if not needs_image(fig):
             return fig
         count += 1
         caption = re.search(r'\\caption\{.*?\}\s*\\label\{[^}]*\}', fig, re.S).group(0)
@@ -224,6 +250,7 @@ def main():
         s = open(SRC / f'{chapter}.tex', encoding='utf8').read()
         s = expand_acronyms(s, acronyms, used_acronyms)
         s = special_figures(s, chapter)
+        s = plain_verbatim(s)
         s = epsfig_to_includegraphics(s)
         s = re.sub(r'\\(?:framebox|fbox)\{\s*(\\includegraphics\{[^}]*\})\s*\}', r'\1', s)
         s = number_floats(s, chapter_no, literal_refs)
