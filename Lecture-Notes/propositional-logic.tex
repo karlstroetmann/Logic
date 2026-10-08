@@ -1457,7 +1457,7 @@ disjunction of the literals and a set of clauses is interpreted as a conjunction
 of the clauses.  Mathematically, our goal is therefore to find a function
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{cnf}: \texttt{NNF} \rightarrow \texttt{KNF}$
+$\texttt{cnf}: \texttt{NNF} \rightarrow \texttt{CNF}$
 \\[0.2cm]
 so that $\texttt{cnf}(f)$ for a formula $f$, which is in negation normal form, returns a set of clauses as a result whose conjunction
 is equivalent to $f$.  The definition of $\texttt{cnf}(f)$ is given recursively.
@@ -4075,14 +4075,14 @@ as a \texttt{Set}.
 \end{figure}
 
 Given a set of properties $S$ and a house number $i$, the function
-$\texttt{atMostOne}(S, i)$ returns a set of clauses that specifies that the
+$\texttt{atMostOneAt}(S, i)$ returns a set of clauses that specifies that the
 person living in house number $i$ has at most one of the properties from the set
 $S$.  For example, if  
 \\[0.2cm]
 \hspace*{1.3cm}
 $S = \{\texttt{"Japanese"}, \texttt{"Englishman"}, \texttt{"Spaniard"}, \texttt{"Norwegian"}, \texttt{"Ukrainian"}\}$,
 \\[0.2cm]
-then $\texttt{atMostOne}(S, 3)$ specifies that the inhabitant of house number 3
+then $\texttt{atMostOneAt}(S, 3)$ specifies that the inhabitant of house number 3
 has at most one of the nationalities from the set $S$.   The implementation
 makes use of the function \texttt{atMostOne} that is shown in Figure
 \ref{fig:atMostOne} on page \pageref{fig:atMostOne}.
@@ -4292,9 +4292,9 @@ function allClauses(): Set<Clause> {
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{allClauses}.}
-\label{fig:allClauses}
+\label{fig:zebra-allClauses}
 \end{figure}
-The function \texttt{allClauses} in Figure \ref{fig:allClauses} computes a set of clauses that encodes the
+The function \texttt{allClauses} in Figure \ref{fig:zebra-allClauses} computes a set of clauses that encodes the
 conditions of the zebra puzzle.  If we solve these clauses with the algorithm of
 Davis and Putnam, we get the solution that is shown in Figure \ref{fig:zebra}.
 
@@ -4399,7 +4399,7 @@ In order to formulate a Sudoku as a satisfiability problem from propositional lo
 set of propositional variables:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{P} = \bigl\{ Q_{r,c,d} \mid r \in \{1,\cdots, 9\} \wedge c \in \{1,\cdots, 9\} \wedge r \in \{1,\cdots, 9\} \bigl\}$
+$\mathcal{P} = \bigl\{ Q_{r,c,d} \mid r \in \{1,\cdots, 9\} \wedge c \in \{1,\cdots, 9\} \wedge d \in \{1,\cdots, 9\} \bigl\}$
 \\[0.2cm]
 For a given digit $d \in \{1, \cdots, 9\}$, a given row $r \in \{1, \cdots, 9\}$, and a given column
 $c \in \{1, \cdots, 9\}$, the variable $Q_{r,c,d}$ is supposed to be \texttt{true} if $d$ is the digit in
@@ -4427,7 +4427,7 @@ Figure \ref{fig:sudoku-var} to create these variables.
 \label{fig:sudoku-var}
 \end{figure} %$
 
-The Sudoku itself is created by the function \texttt{create\_puzzle} shown in Figure
+The Sudoku itself is created by the function \texttt{createPuzzle} shown in Figure
 \ref{fig:sudoku-create-puzzle} on page \pageref{fig:sudoku-create-puzzle}.  In this function, the puzzle is
 represented as a list of lists.  Each of these lists represents a row.  The inner lists contain digits and the
 character \texttt{"*"}.  This character represents those digits that are initially unknown and whose value has
@@ -4458,7 +4458,7 @@ function createPuzzle(): (number | '*')[][] {
 }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{The function \texttt{create\_puzzle}.}
+\caption{The function \texttt{createPuzzle}.}
 \label{fig:sudoku-create-puzzle}
 \end{figure}
 
@@ -4553,7 +4553,7 @@ occurs in exactly one of the positions in $L$.
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{exactlyOneForEveryDigit}.}
-\label{fig:sudoku-exactlyOneDigit}
+\label{fig:sudoku-exactlyOneForEveryDigit}
 \end{figure}
 
 The function $\texttt{exactlyOneForEveryDigit}(L)$ takes a set $L$ of cell positions as its argument.
@@ -4589,12 +4589,12 @@ For example, the given puzzle demands that the digit in row 2 and column 4 is th
 This can be expressed as the formula $Q_{2,4,6}$.  In set notation this formula takes the form
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bigl\{ \{Q_{2,3,6}\} \bigr\}$.
+$\bigl\{ \{Q_{2,4,6}\} \bigr\}$.
 \\[0.2cm]
 Of course, we have to take the union of all these formulas.  This leads to the code shown in Figure
 \ref{fig:sudoku-constraintsFromPuzzle} on page \pageref{fig:sudoku-constraintsFromPuzzle}.
-Note that we have to provide \texttt{row+1} and \texttt{col+1} as arguments to the function \texttt{varName} since
-in TypeScript list indices start with $0$.
+Note that we have to subtract $1$ from the row $r$ and the column $c$ when we access the array
+\texttt{Puzzle}, since in TypeScript array indices start with $0$.
 
 \begin{figure}[!ht]
 \centering
@@ -4833,9 +4833,8 @@ To apply this to all digits, we use the function \texttt{exactlyOneForEveryDigit
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
               ]{typescript}
-    function exactlyOneDigit(row: number, col: number): Logic.Formula {
-        const variables = range(1, 9).map(d => varName(row, col, d));
-        return Logic.exactlyOne(variables) as Logic.Formula;
+    function exactlyOneForEveryDigit(L: Position[]): Logic.Formula[] {
+        return range(1, 9).map(d => exactlyOneForDigit(L, d));
     }
 \end{minted}
 \vspace*{-0.3cm}

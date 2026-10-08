@@ -1405,7 +1405,7 @@ disjunction of the literals and a set of clauses is interpreted as a conjunction
 of the clauses.  Mathematically, our goal is therefore to find a function
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{cnf}: \texttt{NNF} \rightarrow \texttt{KNF}$
+$\texttt{cnf}: \texttt{NNF} \rightarrow \texttt{CNF}$
 \\[0.2cm]
 so that $\texttt{cnf}(f)$ for a formula $f$, which is in negation normal form, returns a set of clauses as a result whose conjunction
 is equivalent to $f$.  The definition of $\texttt{cnf}(f)$ is given recursively.
@@ -3859,14 +3859,14 @@ as a \texttt{frozenset}.
 \end{figure}
 
 Given a set of properties $S$ and a house number $i$, the function
-$\texttt{atMostOne}(S, i)$ returns a set of clauses that specifies that the
+$\texttt{atMostOneAt}(S, i)$ returns a set of clauses that specifies that the
 person living in house number $i$ has at most one of the properties from the set
 $S$.  For example, if  
 \\[0.2cm]
 \hspace*{1.3cm}
 $S = \{\texttt{"Japanese"}, \texttt{"Englishman"}, \texttt{"Spaniard"}, \texttt{"Norwegian"}, \texttt{"Ukrainian"}\}$, 
 \\[0.2cm]
-then $\texttt{atMostOne}(S, 3)$ specifies that the inhabitant of house number 3
+then $\texttt{atMostOneAt}(S, 3)$ specifies that the inhabitant of house number 3
 has at most one of the nationalities from the set $S$.   The implementation
 makes use of the function \texttt{atMostOne} that is shown in Figure
 \ref{fig:atMostOne} on page \pageref{fig:atMostOne}.
@@ -4065,9 +4065,9 @@ shown in Figure \ref{fig:properties}.
         return Clauses\end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{allClauses}.}
-\label{fig:allClauses}
+\label{fig:zebra-allClauses}
 \end{figure}
-The function \texttt{allClauses} in Figure \ref{fig:allClauses} computes a set of clauses that encodes the
+The function \texttt{allClauses} in Figure \ref{fig:zebra-allClauses} computes a set of clauses that encodes the
 conditions of the zebra puzzle.  If we solve these clauses with the algorithm of
 Davis and Putnam, we get the solution that is shown in Figure \ref{fig:zebra}.
 
@@ -4194,7 +4194,7 @@ In order to formulate a Sudoku as a satisfiability problem from propositional lo
 set of propositional variables:
 \\[0.2cm]
 \hspace*{1.3cm}
-$\mathcal{P} = \bigl\{ Q_{r,c,d} \mid r \in \{1,\cdots, 9\} \wedge c \in \{1,\cdots, 9\} \wedge r \in \{1,\cdots, 9\} \bigl\}$
+$\mathcal{P} = \bigl\{ Q_{r,c,d} \mid r \in \{1,\cdots, 9\} \wedge c \in \{1,\cdots, 9\} \wedge d \in \{1,\cdots, 9\} \bigl\}$
 \\[0.2cm]
 The variable $Q_{r,c,d}$ is supposed to be \texttt{True} if $d$ is the digit in row $r$ and column $c$ of the
 Sudoku.  Note that this means that we have $9^3 = 729$ different propositional variables.  In our
@@ -4357,7 +4357,7 @@ For example, the given puzzle demands that the digit in row 2 and column 4 is th
 This can be expressed as the formula $Q_{2,4,6}$.  In set notation this formula takes the form
 \\[0.2cm]
 \hspace*{1.3cm}
-$\bigl\{ \{Q_{2,3,6}\} \bigr\}$.
+$\bigl\{ \{Q_{2,4,6}\} \bigr\}$.
 \\[0.2cm]
 Of course, we have to take the union of all these formulas.  This leads to the code shown in Figure
 \ref{fig:sudoku-constraintsFromPuzzle} on page \pageref{fig:sudoku-constraintsFromPuzzle}.

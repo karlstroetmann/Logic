@@ -991,7 +991,7 @@ If we define the assignment $\mathcal{I}$ such that
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{I}(\mytt{Q}_1) := 4,\; \mathcal{I}(\mytt{Q}_2) := 8,\; \mathcal{I}(\mytt{Q}_3) := 1,\;
-\mathcal{I}(\mytt{Q}_4) := 2,\; \mathcal{I}(\mytt{Q}_5) := 6,\; \mathcal{I}(\mytt{Q}_6) := 2$,
+\mathcal{I}(\mytt{Q}_4) := 3,\; \mathcal{I}(\mytt{Q}_5) := 6,\; \mathcal{I}(\mytt{Q}_6) := 2$,
 \\[0.2cm]
 \hspace*{1.3cm}
 $\mathcal{I}(\mytt{Q}_7) := 7,\; \mathcal{I}(\mytt{Q}_8) := 5$,
@@ -1623,7 +1623,7 @@ represented as a symbolic transition system in \textsl{TypeScript}.
       \textsl{TypeScript} we append the character $\mathtt{a}$ to the names of the original
       variables from the set $\mathcal{V}$, while we append $\mathtt{b}$ to these names to get the primed versions of the
       corresponding variable.
-\item The function $\mathtt{missionaries\_CSP}(n)$ receives a natural number $n$ as its argument.
+\item The function $\mathtt{missionariesCSP}(n)$ receives a natural number $n$ as its argument.
        It returns a \Gls{csp} that has a solution iff there is a solution of the \emph{missionaries and cannibals}
        problem that crosses the river exactly $n$ times.  It uses the variables
        \\[0.2cm]
@@ -1636,11 +1636,11 @@ represented as a symbolic transition system in \textsl{TypeScript}.
 
        Line 25 ensures that the invariant of the transition system is valid after every crossing of the boat.
        Line 26 and line 27 describe the mechanics of the crossing.
-\item The function \texttt{find\_solution} tries to find a natural number $n$ such that the problem can be solved
+\item The function \texttt{findSolution} tries to find a natural number $n$ such that the problem can be solved
        with $n$ crossings. As the number of crossings has to be odd, we increment $n$ by
        two at the end of the \texttt{while} loop.
 
-       The function \texttt{find\_solution} takes about 4 seconds to find the solution.
+       The function \texttt{findSolution} takes about 4 seconds to find the solution.
 \end{enumerate}
 
 \exerciseEng
@@ -1999,7 +1999,7 @@ Figure \ref{fig:Knight's Tour with Z3.ipynb-1} shows how we can formulate the pu
       these values could be represented with $4$ bits, we need to be able to add the numbers $1$ and $2$ to
       these values later.  If we had only $3$ bits, this would result in an overflow. 
       
-\item The function \texttt{is\_knight\_move} takes four parameters:
+\item The function \texttt{isKnightMove} takes four parameters:
       \begin{enumerate}
       \item \texttt{row} is a \texttt{Z3} variable that specifies the row of the position of the knight before
             the move. 
@@ -2050,8 +2050,8 @@ Figure \ref{fig:Knight's Tour with Z3.ipynb-1} shows how we can formulate the pu
       Note that the position $\langle \mathtt{R}_i, \mathtt{C}_i \rangle$ is different from the position
       $\langle \mathtt{R}_j, \mathtt{C}_j \rangle$ iff $R_i$ is different from $R_j$ or $C_i$ is different from
       $C_j$.
-\item The function \texttt{all\_constraints} computes the set of all constraints.
-      The parameters for this function are the same as those for the function \texttt{all\_different}.
+\item The function \texttt{allConstraints} computes the set of all constraints.
+      The parameters for this function are the same as those for the function \texttt{allDifferent}.
       In addition to the constraints already discussed this function specifies that the knight starts
       its tour at the upper left corner of the board.
 
@@ -2404,10 +2404,10 @@ of the function \texttt{missionariesCSP} that takes a natural number $n$ as its 
   \item Every intermediate state has to satisfy the invariant.
   \item Every transition from a state to the successor state has to satisfy the transition formula.
   \end{enumerate}
-\item Line 13 checks whether the resulting \Gls{csp} is solvable.
+\item Line 17 checks whether the resulting \Gls{csp} is solvable.
 \item If it is solvable, we return a \texttt{Map} that associates every variable $\texttt{M}_i$,  $\texttt{C}_i$,
       $\texttt{B}_i$ with the corresponding value of the solution.
-\item The function \texttt{find\_solution} searches for a value of $n \in \mathbb{N}$ such that the problem is
+\item The function \texttt{findSolution} searches for a value of $n \in \mathbb{N}$ such that the problem is
       solvable in $n$ steps.
 \end{enumerate}
 At this point you might well ask whether there is any benefit if we solve this problem with \texttt{Z3}.  The
