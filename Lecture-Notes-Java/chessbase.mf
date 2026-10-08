@@ -1,0 +1,286 @@
+% This is `chessbase.mf' version 1.0 as of 8/90
+% METAfounded by Piet Tutelaers (internet: rcpt@urc.tue.nl)
+
+% In this file all pieces are defined.
+% The points defining a piece are all in the unitsquare
+%   (0,0)--(0,1)--(1,1)--cycle.
+
+def dark_square(expr D) =
+  clearit; L:=min(D/4, 9); delta:=1/L;
+  pickup fine_pen;
+  for i=1 upto min(D/4,9):
+     draw (0,delta*i*D)--(D-delta*i*D,D);
+     draw (delta*i*D,0)--(D,D-delta*i*D);
+     endfor;
+  draw (0,0)--(D,D);
+  enddef;
+  
+def erase_square(expr D, col, row) =
+  currentpicture:=board;
+  erase fill (0,0)--(0,1)--(1,1)--(1,0)--cycle scaled D shifted(col*D, row*D);
+  board:=currentpicture;
+  enddef;
+  
+def empty_board(expr D) =
+   picture board; path border;
+   border = ((0,0)--(1,0)--(1,1)--(0,1)--cycle);
+   dark_square(D); board:=nullpicture;
+   for i=0 upto M-1:
+   for j=0 upto M-1:
+      if not odd(i+j): addto board also currentpicture shifted (D*i,D*j) fi;
+      endfor
+      endfor;
+   clearit;
+   pickup border_pen;
+   draw  border scaled (M*D);
+   addto board also currentpicture;
+   currentpicture:=board;
+   enddef;
+   
+def reflect(text t) =
+   forsuffixes $=t: z$'=z$ reflectedabout (z1,z2); endfor;
+   enddef;
+
+def opr(suffix $) = (x$+thick#/d#, y$) enddef; % one point right
+def opl(suffix $) = (x$-thick#/d#, y$) enddef; % one point left
+def opu(suffix $) = (x$, y$+thick#/d#) enddef; % one point up
+def opd(suffix $) = (x$, y$-thick#/d#) enddef; % one point down
+    
+vardef K(expr D, col, row) =
+  clearxy;
+  path cross_bar, crown, crown_top, crown_left, crown_right, crown_lower,
+      crown_top_inner, crown_left_inner, crown_right_inner;
+  def moved = scaled D shifted (col*D, row*D) enddef;
+
+  pickup thick_pen;
+% draw cross 
+  z1=(.5,.96); z2=(.5,.8); z11=(.42,.9); reflect(11);
+  cutdraw (z1--z2) moved; cutdraw (z11--z11') moved;
+% top part of crown
+  z3=(.5,.38); z21=(.475,.5); z22=(.45,.575); z23=(.45,.775);
+  reflect(21,22,23);
+  crown_top= ((z3..z21..z22..z23..z2..z23'..z22'..z21'..z3) & cycle);
+% left and right part
+  z31=z21; z32=z22; z33=(.32,.67); z34=(.13,.69); z35=(.07,.55);
+  z36=(.13,.45); z37=(.2,.34);
+  reflect(31, 32, 33, 34, 35, 36, 37);
+  crown_left=(z3..z31..z33..z34..z35..z36..z37);
+  crown_right=(z37'..z36'..z35'..z34'..z33'..z31'..z3);
+% lower part of the crown
+  z6=(.5,.095); z61=(.27,.12); z62=(.2,.15); z63=(.21,.23);
+  reflect(61, 62, 63);
+  crown_lower= ((z37--z63) & (z63--z62) & (z62..z61..z6..z61'..z62') &
+   (z62'--z63') & (z63'--z37') & (z37'..z3..z37) & cycle);
+% draw contour of crown
+  pickup thin_pen;
+  crown= crown_left & z37..z3..z37' & crown_right & cycle;
+  if background=dark: erase fill crown moved;
+    erase fill crown_top moved;
+    erase fill crown_lower moved;fi;
+  draw crown moved;  draw crown_top moved;
+  if color=black: 
+     z121=(.5,.5); z123=(.45,.675); z102=(.5,.77);
+     reflect(123);
+     crown_top_inner = (z121{curl 0}..z123..z102..z123'..{curl 0}z121 & cycle);
+     z131=(.45,.5); z133=(.32,.64); z134=(.13,.66); z135=(.10,.55);
+     z136=(.16,.45); z137=(.22,.36); z103=(.475,.4);
+     crown_left_inner= ((z103..z131..z133..z134..z135..z136..z137)
+        & (z137..{right}z103) & cycle);
+     crown_right_inner=crown_left_inner reflectedabout (z1,z2);
+     fill crown_top_inner moved;
+     fill crown_left_inner moved;
+     fill crown_right_inner moved;
+     fill crown_lower moved;
+  else: draw crown_lower moved;
+  fi;
+% draw inner parts
+  z4=(.5,.28); z5=(.5,.21);
+  if color=white:
+     draw (z37..z3..z37') moved;
+     draw (z63..z4..z63') moved;
+     draw (z62..z5..z62') moved;
+  else: pickup thick_pen;
+     erase draw (opr(37)..z3..opl(37')) moved;
+     erase draw (opr(63)..z4..opl(63')) moved;
+     erase draw (opr(62)..z5..opl(62')) moved;
+  fi;
+  enddef;
+  
+vardef Q(expr D, col, row) =
+  clearxy;
+  path crown_top, crown, crown_lower;
+  def moved = scaled D shifted (col*D, row*D) enddef;
+  
+  pickup thin_pen;
+% top part of crown
+  z1=(.5,.92); z2=(.5,.5); z11=(.42,.46); z12=(.275,.88);
+  z13=(.25,.44); z14=(.075,.8); z15=(.125,.4); 
+  reflect(11,12,13,14,15);
+  crown_top = (z15'--z14'--z13'--z12'--z11'--z1--z11--z12--z13--z14--z15);
+% lower part of the crown
+  z6=(.5,.0775); z61=(.25,.1); z62=(.2,.125); z63=(.24,y62+1/3(y15-y62));
+  z64=(.2,y62+2/3(y15-y62));
+  reflect(61,62,63,64);
+  crown_lower= ((z15--z64) & (z64--z63) & (z63--z62) &
+   (z62..z61..z6..z61'..z62') & (z62'--z63') & (z63'--z64') &
+   (z64'--z15'));
+% draw contour of crown
+  crown= (crown_top & crown_lower & cycle);
+  if background=dark:
+     if color=white: erase fill crown moved; fi; fi;
+  if color=white: draw crown moved;
+     forsuffixes $:=1,12,12',14,14':
+        erase fill (fullcircle scaled .1 shifted z$) moved; 
+        draw (fullcircle scaled .1 shifted z$) moved; endfor;
+  else: fill crown moved;
+     forsuffixes $:=1,12,12',14,14':
+        fill (fullcircle scaled .1 shifted z$) moved; endfor; fi;
+% draw inner parts
+  z3=(.5,y5+(y64-y62)); z4=(.5,y5+(y63-y62)); z5=(.5,.18);
+  if color=white: draw (z64..z3..z64') moved; draw (z63..z4..z63') moved;
+     draw (z62..z5..z62') moved;
+     z21=z11; z22=(.325,.475); z23=z13; z24=(.175,.44); z25=z15;
+     reflect(21,22,23,24,25);
+     draw ((z2..z21..z22) & (z22..z23..z24) & (z24--z25)) moved;
+     draw ((z2..z21'..z22') & (z22'..z23'..z24') & (z24'--z25')) moved;
+  else: pickup thick_pen;
+     erase draw (opr(64)..z3..opl(64')) moved;
+     erase draw (opr(63)..z4..opl(63')) moved;
+     erase draw (opr(62)..z5..opl(62')) moved;
+  fi;
+  enddef;
+  
+vardef R(expr D, col, row) =
+  clearxy;
+  path rook;
+  def moved = scaled D shifted (col*D, row*D) enddef;
+  
+  pickup thin_pen;
+% top part of rook
+  z1=(.5,.86); y15=y14=y11=y1; x15=x16=.21; x19=x20=.225; y13=y12=.8;
+  y16=.725; y17=.65; y18=.35; y19=.26; y20=y21=.175; y22=.1;
+  x22=x21=.175; x17=x18=.31; x13=x14=.325; x11=x12=.43; z2=(.5,.1);
+  reflect(11,12,13,14,15,16,17,18,19,20,21,22);
+  rook = (z11--z12--z13--z14--z15--z16--z17--z18--z19--z20--z21--z22--z22'
+     --z21'--z20'--z19'--z18'--z17'--z16'--z15'--z14'--z13'--z12'--z11'--cycle);
+% draw contour of rook
+  if background=dark:
+     if color=white: erase fill rook moved; fi; fi;
+  if color=white: draw rook moved; else: fill rook moved; fi;
+% draw inner parts
+  if color=white: draw (z16--z16') moved; draw (z17--z17') moved;
+     draw (z18--z18') moved; draw (z19--z19') moved;
+     draw (z20--z20') moved;
+  else: pickup thick_pen;
+     erase draw (opr(16)--opl(16')) moved;
+     erase draw (opr(17)--opl(17')) moved;
+     erase draw (opr(18)--opl(18')) moved;
+     erase draw (opr(19)--opl(19')) moved;
+     erase draw (opr(20)--opl(20')) moved; fi;
+  enddef;
+  
+vardef N(expr D, col, row) =
+  clearxy;
+  path knight, ear, eye, nose, mouth, neck;
+  def moved = scaled D shifted (col*D, row*D) enddef;
+  
+  pickup thin_pen;
+% the knight's contour
+  z1=(.5,.82); z2=(.5,.075); z11=(.45,.93); z12=(.375,.85); z13=(.25,.925);
+  z14=(.26,.8); z15=(.22,.75); z16=(.18,.7); z17=(.18,.66); z18=(.07,.42);
+  z19=(.07,.36); z20=(.14,.3); z21=(.17,.3); z22=(.175,.275); z23=(.225,.28);
+  z24=(.29,.38); z25=(.41,.46); z26=(.49,.51); z27=(.435,.295); z28=(.32,.165);
+  z29=(.31,y2); z30=(.93,y2); z31=(.87,.5); z32=(.7,.78);
+  knight = ((z1--z11--z12--z13--z14) &
+     (z14..z15..z16..z17..z18..z19..z20..z21) &
+     (z21..z22..z23..z24..z25..z26) &
+     (z26..z27..z28..z29) & (z29--z30) &
+     (z30..z31..z32..z1) &cycle);
+% draw contour of knight
+  if color=white: erase fill knight moved;
+     draw knight moved;
+  else: fill knight moved; fi;
+% draw inner parts
+  z4=(.22,.62); z41=(.25,.67); z42=(.29,.705); z43=(.31,.7); z44=(.3,.68);
+  eye = (z4..z41..z42..z43 & z43..z44..z4 & cycle);
+  z5=(.1,.36); z51=(.1,.39); z52=(.135,.43); z53=(.15,.4); z54=(.13,.38);
+  nose = (z5..z51..z52..z53..z54..z5 &cycle);
+  if color=white: z21'=(.2,.34); draw (z21'--z21) moved; %mouth
+     z26'=(.54,.63); draw (z26'..z26{z24-z26}) moved; %neck
+     draw (z12--z14) moved; % ear
+     fill eye moved; fill nose moved;
+  else: erase fill eye moved; erase fill nose moved;
+     z30'=z30 + (-thick#/d#,thick#/d#); pickup thick_pen
+     erase draw (opd(1)..opd(32)..opl(31)..z30') moved; % mane 
+  fi;
+  enddef;
+  
+vardef B(expr D, col, row) =
+  clearxy;
+  path top, hat, brim, mitre, stole;
+  def moved = scaled D shifted (col*D, row*D) enddef;
+  
+  pickup thin_pen;
+% the top circle
+  z1=(.5,.85); z2=(.5,.8);
+  top = (fullcircle scaled .1 shifted z1);
+  if color=white: erase fill top moved; draw top moved;
+  else: fill top moved; fi;
+% the hat
+  z3=(.5,.43); z21=(.27,.57); z31=(.35,.4); reflect(21,31);
+  hat = (z31'..z21'..z2{(-1,1)}) & (z2{(-1,-1)}..z21..z31);
+% the brim
+  z4=(.5,.33); z5=(.5,.23);
+  z41=(.32,.28); reflect(41);
+  brim = ((z31--z41) & (z41..z5..z41') & (z41'--z31'));
+% the stole
+  z6=(.5,.15); z7=(.5,.3); z61=(.44,.12); z62=(.25,.1); z63=(.15,.05);
+  z64=(.09,.11); z65=(.25,.18); z66=(.44,.2);
+  reflect(61,62,63,64,65,66);
+  stole = ((z7..z66..z65..z64) & (z64--z63) & (z63..z62..z61..z6) &
+     (z6..z61'..z62'..z63') & (z63'--z64') & (z64'..z65'..z66'..z7) &cycle);
+% the mitre
+  mitre = (hat & brim & cycle);
+  if background=dark:
+     if color=white: erase fill mitre moved;  
+        erase fill stole moved; fi; fi;
+  if color=black: fill mitre moved; fill stole moved;
+  else: draw mitre moved; draw stole moved;
+     erase fill mitre moved; draw mitre moved; fi; 
+  
+% inner parts of mitre
+  center:=.59; width:=.065;
+  if color=white:  draw (z31..z3..z31') moved;  draw (z41..z4..z41') moved;
+     draw ((.5,center-width)--(.5,center+width)) moved;
+     draw ((.5-width,center)--(.5+width,center)) moved;
+  else: pickup thick_pen;
+     erase cutdraw (opr(31)..z3..opl(31')) moved;
+     erase cutdraw (opr(41)..z4..opl(41')) moved;
+     erase cutdraw ((.5,center-width)--(.5,center+width)) moved;
+     erase cutdraw ((.5-width,center)--(.5+width,center)) moved;
+  fi;
+  enddef;
+  
+vardef p(expr D, col, row) =
+  clearxy;
+  path pawn;
+  def moved = scaled D shifted (col*D, row*D) enddef;
+  
+  pickup thin_pen;
+% the pawn's contour
+  z1=(.5,.9); z2=(.5,.1); z11=(.41,.85); z12=(.46,.73); z13=(.32,.6);
+  z14=(.41,.46); z15=(.3,.4); z16=(.2,.1);
+  reflect(11,12,13,14,15,16);
+  pawn = ((z12'..z11'..z1..z11..z12) &
+     (z12..z13..z14) &
+     (z14..z15..z16) &
+     (z16--z16') &
+     (z16'..z15'..z14') &
+     (z14'..z13'..z12') & cycle);
+
+% draw contour of pawn
+  if background=dark:
+     if color=white: erase fill pawn moved;  fi; fi;
+  if color=black: fill pawn moved;
+  else: draw pawn moved; fi; 
+  enddef;
