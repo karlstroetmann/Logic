@@ -175,23 +175,17 @@ def number_floats(s, chapter_no, literal_refs):
         return text.replace('\\caption{', f'\\caption{{{env.capitalize()} {number}: ', 1)
     return re.sub(r'\\begin\{(figure|table|equation)\}.*?\\end\{\1\}', repl, s, flags=re.S)
 
-COPYRIGHT = r"""
-\chapter*{Copyright}
-Copyright \copyright\ 2018--2026 Karl Stroetmann
-
-The text of these lecture notes is licensed under the
-\href{https://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative Commons
-Attribution-NonCommercial-ShareAlike 4.0 International License} (CC BY-NC-SA 4.0).
-You may copy, distribute, and adapt the text for non-commercial purposes, provided that
-you give appropriate credit and distribute your contributions under the same license.
-
-The programs discussed in these lecture notes are licensed under the
-\href{https://opensource.org/license/mit}{MIT License}.  They are provided ``as is'',
-without warranty of any kind.
-
-The sources of these lecture notes and the programs are available at
-\href{https://github.com/karlstroetmann/Logic}{\texttt{https://github.com/karlstroetmann/Logic}}.
-"""
+def copyright_page():
+    """The copyright page of logic.tex up to the paragraph about the sources, which is written here
+    without the centering (the paperback's ISBN after it does not belong in the e-book)."""
+    s = open(SRC / 'logic.tex', encoding='utf8').read()
+    start = s.index('Copyright \\copyright')
+    end = s.index('The sources of these lecture notes', start)
+    text = re.sub(r'\n\\\\\[0\.3cm\]\n', '\n\n', s[start:end])
+    return ('\n\\chapter*{Copyright}\n' + text
+            + 'The sources of these lecture notes and the programs are available at\n'
+            + '\\href{https://github.com/karlstroetmann/Logic}'
+            + '{\\texttt{https://github.com/karlstroetmann/Logic}}.\n')
 
 def read_acronyms():
     """The acronyms defined in acronyms.tex (TypeScript notes only) as {label: (short, long)}."""
@@ -245,7 +239,7 @@ def main():
     exercise = ExerciseCounter()
     literal_refs = {}
     acronyms, used_acronyms = read_acronyms(), set()
-    parts = [COPYRIGHT, acronym_list(acronyms)]
+    parts = [copyright_page(), acronym_list(acronyms)]
     for chapter_no, chapter in enumerate(CHAPTERS, 1):
         s = open(SRC / f'{chapter}.tex', encoding='utf8').read()
         s = expand_acronyms(s, acronyms, used_acronyms)
