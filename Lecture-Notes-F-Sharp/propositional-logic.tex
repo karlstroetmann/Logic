@@ -1178,159 +1178,190 @@ Here, \texttt{Pos "p"} represents the literal $p$, while \texttt{Neg "p"} repres
 \texttt{Clause} and \texttt{CNF} are \blue{type abbreviations}, i.e.~\texttt{Clause} is just another name for the
 type \texttt{Set<Literal>}.
 
-We start with the
-function 
+The first two steps of the transformation into conjunctive normal form eliminate the operators
+``$\leftrightarrow$'' and ``$\rightarrow$''.  Our type \texttt{Formula} also contains the operator
+``$\oplus$''.  As the \textsl{F\#} compiler checks that a pattern match covers all constructors of a type, we
+have to eliminate this operator, too.  We call a formula \blue{pure}\index{pure formula} if it is
+built from propositional variables and the constants $\verum$ and $\falsum$ using only the operators
+``$\neg$'', ``$\wedge$'', and ``$\vee$''.  In \textsl{F\#}, pure formulas are represented by the following type:
+
+\begin{minted}[ frame         = lines,
+                framesep      = 0.3cm,
+                bgcolor       = sepia,
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm
+              ]{fsharp}
+    [<RequireQualifiedAccess>]
+    type PureFormula =
+        | Var    of string                     // propositional variable
+        | Verum                                // ⊤
+        | Falsum                               // ⊥
+        | Not    of PureFormula                // ¬
+        | And    of PureFormula * PureFormula  // ∧
+        | Or     of PureFormula * PureFormula  // ∨
+\end{minted}
+
+\noindent
+The constructors of \texttt{PureFormula} are the constructors of the type \texttt{Formula} except for
+\texttt{Imp}, \texttt{Iff}, and \texttt{Xor}.  Hence, the type checker of \textsl{F\#} guarantees that a value of
+type \texttt{PureFormula} contains none of the operators ``$\rightarrow$'', ``$\leftrightarrow$'', and
+``$\oplus$''.  The attribute \texttt{[<RequireQualifiedAccess>]} requires that the constructors of
+\texttt{PureFormula} are always qualified with the name of the type, e.g.~we have to write
+\texttt{PureFormula.And (f, g)} instead of \texttt{And (f, g)}.  Without this attribute, the constructors of
+\texttt{PureFormula} would hide the constructors of \texttt{Formula} that have the same names.  Then
+\texttt{And (f, g)} would no longer denote a value of type \texttt{Formula}.
+
+Next, we define the function
 \\[0.2cm]
 \hspace*{1.3cm}
-$\texttt{elimBiconditional}: \mathcal{F} \rightarrow \mathcal{F}$
+$\texttt{purify}: \texttt{Formula} \rightarrow \texttt{PureFormula}$
 \\[0.2cm]
-which has the task of transforming a given propositional formula $f$ into an equivalent formula
-which no longer contains the operator ``$\leftrightarrow$''.  The function
-$\texttt{elimBiconditional}(f)$ is defined by induction with respect to the propositional formula $f$.
+which has the task of transforming a given propositional formula $f$ into an equivalent pure formula.
+The function $\texttt{purify}(f)$ is defined by induction with respect to the propositional formula $f$.
 In order to present this inductive definition, we set up recursive equations
-that describe the behavior of the function $\texttt{elimBiconditional}$:
+that describe the behavior of the function $\texttt{purify}$:
 \begin{enumerate}
 \item If $f$ is a propositional variable $p$, there is nothing to do:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{elimBiconditional}(p) = p$ \quad for all $p \in \mathcal{P}$.
+      $\texttt{purify}(p) = p$ \quad for all $p \in \mathcal{P}$.
 \item The cases in which $f$ is equal to Verum or  Falsum are also trivial:
       \\[0.2cm]
       \hspace*{1.3cm}
-      $\texttt{elimBiconditional}(\verum) = \verum$ \quad and \quad
-      $\texttt{elimBiconditional}(\falsum) = \falsum$.
-\item If $f$ has the form $f = \neg g$, we eliminate the operator
-      ``$\leftrightarrow$'' recursively from the formula $g$ and negate the resulting formula: \\[0.2cm]
-      \hspace*{1.3cm} 
-      $\texttt{elimBiconditional}(\neg g) = \neg \texttt{elimBiconditional}(g)$.
-\item In the cases $f = g_1 \wedge g_2$, $f = g_1 \vee g_2$ and $f = g_1 \rightarrow g_2$ we 
-      recursively eliminate the operator ``$\leftrightarrow$'' from the formulas $g_1$ and $g_2$ and then reassemble the formula
-      together again: 
+      $\texttt{purify}(\verum) = \verum$ \quad and \quad
+      $\texttt{purify}(\falsum) = \falsum$.
+\item If $f$ has the form $f = \neg g$, we recursively transform $g$ into a pure formula and negate the
+      resulting formula: \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{purify}(\neg g) = \neg \texttt{purify}(g)$.
+\item In the cases $f = g_1 \wedge g_2$ and $f = g_1 \vee g_2$ we recursively transform the formulas $g_1$
+      and $g_2$ into pure formulas and then reassemble the formula:
       \begin{enumerate}
-      \item $\texttt{elimBiconditional}(g_1 \wedge g_2) = \texttt{elimBiconditional}(g_1) \wedge \texttt{elimBiconditional}(g_2)$.
-      \item $\texttt{elimBiconditional}(g_1 \vee g_2) = \texttt{elimBiconditional}(g_1) \vee \texttt{elimBiconditional}(g_2)$.
-      \item $\texttt{elimBiconditional}(g_1 \rightarrow g_2) = \texttt{elimBiconditional}(g_1) \rightarrow \texttt{elimBiconditional}(g_2)$.
+      \item $\texttt{purify}(g_1 \wedge g_2) = \texttt{purify}(g_1) \wedge \texttt{purify}(g_2)$.
+      \item $\texttt{purify}(g_1 \vee g_2) = \texttt{purify}(g_1) \vee \texttt{purify}(g_2)$.
       \end{enumerate}
-\item If $f$ has the form $f = g_1 \leftrightarrow g_2$, we use the
+\item If $f$ has the form $f = g_1 \rightarrow g_2$, we use the
       equivalence \\[0.2cm]
-      \hspace*{1.3cm} 
-      $(g_1 \Leftrightarrow g_2) \leftrightarrow \bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr)$.
+      \hspace*{1.3cm}
+      $(g_1 \rightarrow g_2) \Leftrightarrow (\neg g_1 \vee g_2)$.
       \\[0.2cm]
       This leads to the equation:
       \\[0.2cm]
-      \hspace*{1.3cm} 
-      $\texttt{elimBiconditional}(g_1 \leftrightarrow g_2) = \texttt{elimBiconditional}\bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr)$. 
+      \hspace*{1.3cm}
+      $\texttt{purify}(g_1 \rightarrow g_2) = \texttt{purify}(\neg g_1 \vee g_2)$.
       \\[0.2cm]
-      It is necessary to call the function \texttt{elimBiconditional} on the right-hand side of the equation,
-      because the operator ``$\leftrightarrow$'' can still occur in $g_1$ and $g_2$.
-\item Our type \texttt{Formula} also contains the operator ``$\oplus$''.  As the \textsl{F\#} compiler checks
-      that a pattern match covers all constructors of a type, we have to deal with this operator, too.  We use
-      the equivalence
+      It is necessary to call the function \texttt{purify} on the right-hand side of the equation,
+      because the operators ``$\rightarrow$'', ``$\leftrightarrow$'', and ``$\oplus$'' can still occur in
+      $g_1$ and $g_2$.
+\item If $f$ has the form $f = g_1 \leftrightarrow g_2$, we use the
+      equivalence \\[0.2cm]
+      \hspace*{1.3cm}
+      $(g_1 \leftrightarrow g_2) \Leftrightarrow \bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr)$.
       \\[0.2cm]
-      \hspace*{1.3cm} 
+      This leads to the equation:
+      \\[0.2cm]
+      \hspace*{1.3cm}
+      $\texttt{purify}(g_1 \leftrightarrow g_2) = \texttt{purify}\bigl( (g_1 \rightarrow g_2) \wedge (g_2 \rightarrow g_1)\bigr)$.
+\item Finally, if $f$ has the form $f = g_1 \oplus g_2$, we use the equivalence
+      \\[0.2cm]
+      \hspace*{1.3cm}
       $(g_1 \oplus g_2) \Leftrightarrow \neg(g_1 \leftrightarrow g_2)$
       \\[0.2cm]
       which leads to the equation
       \\[0.2cm]
-      \hspace*{1.3cm} 
-      $\texttt{elimBiconditional}(g_1 \oplus g_2) = \texttt{elimBiconditional}\bigl(\neg(g_1 \leftrightarrow g_2)\bigr)$. 
+      \hspace*{1.3cm}
+      $\texttt{purify}(g_1 \oplus g_2) = \texttt{purify}\bigl(\neg(g_1 \leftrightarrow g_2)\bigr)$.
 \end{enumerate}
+In the last three equations, the argument of \texttt{purify} on the right-hand side is bigger than the
+argument on the left-hand side.  Nevertheless, the recursion terminates: Starting with a formula $f$ of the form
+$g_1 \rightarrow g_2$, $g_1 \leftrightarrow g_2$, or $g_1 \oplus g_2$, at most three of these rewriting steps are
+performed before \texttt{purify} is applied to the subformulas $g_1$ and $g_2$ of $f$.
 
 
 \begin{figure}[!ht]
   \centering
-\begin{minted}[ frame         = lines, 
-                framesep      = 0.3cm, 
+\begin{minted}[ frame         = lines,
+                framesep      = 0.3cm,
                 numbers       = left,
                 numbersep     = -0.2cm,
                 bgcolor       = sepia,
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
               ]{fsharp}
-    let rec eliminateBiconditional (f: Formula) : Formula =
+    let rec purify (f: Formula) : PureFormula =
         match f with
-        | Var _ | Verum | Falsum -> f
-        | Iff (g, h) -> eliminateBiconditional (And (Imp (g, h), Imp (h, g)))
-        | Xor (g, h) -> eliminateBiconditional (Not (Iff (g, h)))
-        | Not g      -> Not (eliminateBiconditional g)
-        | And (g, h) -> And (eliminateBiconditional g, eliminateBiconditional h)
-        | Or  (g, h) -> Or  (eliminateBiconditional g, eliminateBiconditional h)
-        | Imp (g, h) -> Imp (eliminateBiconditional g, eliminateBiconditional h)
+        | Var p      -> PureFormula.Var p
+        | Verum      -> PureFormula.Verum
+        | Falsum     -> PureFormula.Falsum
+        | Not g      -> PureFormula.Not (purify g)
+        | And (g, h) -> PureFormula.And (purify g, purify h)
+        | Or  (g, h) -> PureFormula.Or  (purify g, purify h)
+        | Imp (g, h) -> purify (Or (Not g, h))
+        | Iff (g, h) -> purify (And (Imp (g, h), Imp (h, g)))
+        | Xor (g, h) -> purify (Not (Iff (g, h)))
 \end{minted}
 \vspace*{-0.3cm}
-  \caption{Elimination of $\leftrightarrow$}
-  \label{fig:elimBiconditional}
-\end{figure} 
+  \caption{Transforming a formula into an equivalent pure formula.}
+  \label{fig:purify}
+\end{figure}
 
-Figure \ref{fig:elimBiconditional} on page \pageref{fig:elimBiconditional} shows the implementation of the
-function \texttt{elimBiconditional}, which is called \texttt{eliminateBiconditional} in the notebook.
+Figure \ref{fig:purify} on page \pageref{fig:purify} shows the implementation of the
+function \texttt{purify}. \index{\texttt{purify}}
 \begin{enumerate}
-\item In line 3 we deal with the cases where $f$ is a propositional variable, Verum, or Falsum.
-      The pattern \texttt{Var \_} matches every propositional variable, as the \blue{wildcard} ``\texttt{\_}''
-      matches any value.  In these cases, $f$ is returned unchanged.
-\item In line 4 we check the case that $f$ has the form $g \leftrightarrow h$.
-      In this case, we use the equivalence
+\item In lines 3, 4, and 5 we deal with the cases where $f$ is a propositional variable, Verum, or Falsum.
+      Note that in line 3 the expression \texttt{Var p} on the left-hand side of the arrow ``\texttt{->}'' is a
+      value of type \texttt{Formula}, while \texttt{PureFormula.Var p} on the right-hand side is a value of type
+      \texttt{PureFormula}.  Therefore, we can not simply return $f$ but have to translate it into the
+      corresponding value of type \texttt{PureFormula}.
+\item In lines 6, 7, and 8 we deal with the cases where $f$ is a negation $\neg g$, a conjunction
+      $g \wedge h$, or a disjunction $g \vee h$.  In these cases, the subformulas $g$ and $h$ are recursively
+      transformed into pure formulas.  The results are combined using the corresponding constructor of
+      \texttt{PureFormula}.
+\item In line 9 we deal with the case that $f$ has the form $g \rightarrow h$.  We use the equivalence
       \\[0.2cm]
       \hspace*{1.3cm}
-      $(g \leftrightarrow h) \Leftrightarrow (g \rightarrow h) \wedge (h \rightarrow g)$.
+      $(g \rightarrow h) \Leftrightarrow (\neg g \vee h)$.
       \\[0.2cm]
-      Furthermore, we have to eliminate the operator ``$\leftrightarrow$'' from $g$ and $h$ by recursively
-      calling the function \texttt{eliminateBiconditional}.
-\item Line 5 deals with the exclusive or $g \oplus h$, which is equivalent to $\neg(g \leftrightarrow h)$.
-\item In line 6, we consider the case where $f$ is a negation $\neg g$.
-      Then we have to recursively remove the operator ``$\leftrightarrow$'' from $g$.
-\item In the remaining cases, $f$ has the form $g \wedge h$, $g \vee h$, or $g \rightarrow h$.
-      In these cases, the operator ``$\leftrightarrow$'' has to be removed recursively from the subformulas $g$ and $h$. 
+      The formula \texttt{Or (Not g, h)} is again a value of type \texttt{Formula}.  Hence, \texttt{purify}
+      can be applied to it.
+\item Line 10 deals with the biconditional $g \leftrightarrow h$, which is equivalent to
+      $(g \rightarrow h) \wedge (h \rightarrow g)$.
+\item Line 11 deals with the exclusive or $g \oplus h$, which is equivalent to $\neg(g \leftrightarrow h)$.
 \end{enumerate}
 \FloatBarrier
 
-Next, we look at the function for eliminating the ``$\rightarrow$'' operator. 
-Figure
-\ref{fig:eliminate-folgt} on page \pageref{fig:eliminate-folgt} shows the
-implementation of the function
-\texttt{eliminateConditional}.
-The underlying idea of the implementation is the same as for the elimination of the
-operator ``$\leftrightarrow$''.  The only difference is that we now use the
-equivalence \\[0.2cm]
-\hspace*{1.3cm}
-$g \rightarrow h \Leftrightarrow \neg g \vee h$. \\[0.2cm]
-Furthermore, when implementing this function, we can assume that the operator ``$\leftrightarrow$''
-has already been eliminated from the propositional formula \texttt{f}, which is passed as an argument.
-This eliminates one case in the implementation.  If the function is nevertheless called with a formula that
-contains ``$\leftrightarrow$'' or ``$\oplus$'', an exception is raised using the function \texttt{failwith}. 
+Next, we present the functions for calculating the negation normal form.  A formula is in negation normal form
+if it is pure and the negation operator ``$\neg$'' is only applied to propositional variables.  Hence, a
+formula in negation normal form is built from literals and the constants $\verum$ and $\falsum$ using the
+operators ``$\wedge$'' and ``$\vee$''.  In \textsl{F\#}, these formulas are represented by the following type:
 
-
-
-\begin{figure}[!ht]
-  \centering
-\begin{minted}[ frame         = lines, 
-                framesep      = 0.3cm, 
-                numbers       = left,
-                numbersep     = -0.2cm,
+\begin{minted}[ frame         = lines,
+                framesep      = 0.3cm,
                 bgcolor       = sepia,
-                xleftmargin   = 0.0cm,
-                xrightmargin  = 0.0cm
+                xleftmargin   = 0.8cm,
+                xrightmargin  = 0.8cm
               ]{fsharp}
-    let rec eliminateConditional (f: Formula) : Formula =
-        match f with
-        | Var _ | Verum | Falsum -> f
-        | Imp (g, h) -> eliminateConditional (Or (Not g, h))
-        | Not g      -> Not (eliminateConditional g)
-        | And (g, h) -> And (eliminateConditional g, eliminateConditional h)
-        | Or  (g, h) -> Or  (eliminateConditional g, eliminateConditional h)
-        | Iff _ | Xor _ -> failwith "eliminateConditional: ↔ and ⊕ have to be eliminated first"
+    [<RequireQualifiedAccess>]
+    type NNF =
+        | Lit    of Literal    // p or ¬p
+        | Verum                // ⊤
+        | Falsum               // ⊥
+        | And    of NNF * NNF  // ∧
+        | Or     of NNF * NNF  // ∨
 \end{minted}
-\vspace*{-0.3cm}
-  \caption{Elimination of $\rightarrow$}
-  \label{fig:eliminate-folgt}
-\end{figure}
-\pagebreak
-Next, we present the functions for calculating the negation normal form.
+
+\noindent
+The type \texttt{NNF} has no constructor for negation.  Instead, the literals $p$ and $\neg p$ are represented
+as \texttt{NNF.Lit (Pos "p")} and \texttt{NNF.Lit (Neg "p")}.  Therefore, a value of type \texttt{NNF} can
+contain the negation operator only in front of a propositional variable.  The attribute
+\texttt{[<RequireQualifiedAccess>]} is needed for the same reason as for the type \texttt{PureFormula}.
+
 Figure
 \ref{fig:nnf} on page \pageref{fig:nnf} shows the implementation of the functions
 \texttt{nnf} and \texttt{neg},
 which call each other.  In \textsl{F\#}, \blue{mutually recursive} functions have to be defined together
-using the keywords ``\texttt{let rec} $\cdots$ \texttt{and} $\cdots$''.  Here, \texttt{nnf($f$)} calculates the negation normal form of $f$, while  
+using the keywords ``\texttt{let rec} $\cdots$ \texttt{and} $\cdots$''.  Here, \texttt{nnf($f$)} calculates the
+negation normal form of the pure formula $f$, while
 \texttt{neg($f$)} calculates the negation normal form of $\neg f$, so the following holds
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1364,23 +1395,23 @@ the following equations: \index{\texttt{nnf}}
                   numbers       = left,
                   numbersep     = -0.2cm,
                 ]{fsharp}
-    let rec nnf (f: Formula) : Formula =
+    let rec nnf (f: PureFormula) : NNF =
         match f with
-        | Var _ | Verum | Falsum -> f
-        | Not g      -> neg g
-        | And (g, h) -> And (nnf g, nnf h)
-        | Or  (g, h) -> Or  (nnf g, nnf h)
-        | Imp _ | Iff _ | Xor _ -> failwith "nnf: →, ↔, and ⊕ have to be eliminated first"
+        | PureFormula.Var p      -> NNF.Lit (Pos p)
+        | PureFormula.Verum      -> NNF.Verum
+        | PureFormula.Falsum     -> NNF.Falsum
+        | PureFormula.Not g      -> neg g
+        | PureFormula.And (g, h) -> NNF.And (nnf g, nnf h)
+        | PureFormula.Or  (g, h) -> NNF.Or  (nnf g, nnf h)
 
-    and neg (f: Formula) : Formula =
+    and neg (f: PureFormula) : NNF =
         match f with
-        | Var _      -> Not f
-        | Verum      -> Falsum
-        | Falsum     -> Verum
-        | Not g      -> nnf g
-        | And (g, h) -> Or  (neg g, neg h)
-        | Or  (g, h) -> And (neg g, neg h)
-        | Imp _ | Iff _ | Xor _ -> failwith "neg: →, ↔, and ⊕ have to be eliminated first"
+        | PureFormula.Var p      -> NNF.Lit (Neg p)
+        | PureFormula.Verum      -> NNF.Falsum
+        | PureFormula.Falsum     -> NNF.Verum
+        | PureFormula.Not g      -> nnf g
+        | PureFormula.And (g, h) -> NNF.Or  (neg g, neg h)
+        | PureFormula.Or  (g, h) -> NNF.And (neg g, neg h)
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Computing the negation normal form.}
@@ -1421,6 +1452,10 @@ is also specified by recursive equations: \index{\texttt{neg}}
       \hspace*{1.3cm}
       $\texttt{neg}\bigl(f_1 \vee f_2 \bigr) = \texttt{neg}(f_1) \wedge \texttt{neg}(f_2)$.
 \end{enumerate}
+In the implementation shown in Figure \ref{fig:nnf}, a propositional variable $p$ is mapped to the literal
+\texttt{NNF.Lit (Pos p)} by the function \texttt{nnf} (line 3) and to the literal \texttt{NNF.Lit (Neg p)} by
+the function \texttt{neg} (line 12).  As the arguments of \texttt{nnf} and \texttt{neg} are pure formulas, the
+operators ``$\rightarrow$'', ``$\leftrightarrow$'', and ``$\oplus$'' need not be considered.
 
 Finally, we present the function \texttt{cnf} that allows us to transform a propositional formula $f$
 from negation normal form into conjunctive normal form.
@@ -1496,8 +1531,11 @@ is equivalent to $f$.  The definition of $\texttt{cnf}(f)$ is given recursively.
 Figure \ref{fig:cnf} on page \pageref{fig:cnf} shows the implementation of the function
 \texttt{cnf}.
 (The name \texttt{cnf} is the abbreviation of \blue{\underline{c}onjunctive \underline{n}ormal \underline{f}orm}).
-The type \texttt{Formula} cannot express that a formula is in negation normal form.  Therefore, the last case of
-the pattern match raises an exception if \texttt{cnf} is called with a formula that is not in negation normal form.
+The type of this function is exactly the type $\texttt{NNF} \rightarrow \texttt{CNF}$ given above.
+As propositional variables and negated propositional variables are both represented as literals
+\texttt{NNF.Lit l}, the first and the fourth of the equations given above are both implemented in line 3.
+Since every value of the type \texttt{NNF} is in negation normal form, the pattern match covers all possible
+cases and the function \texttt{cnf} can not fail.
 The operator ``\texttt{+}'' computes the union of two sets.
 
 \begin{figure}[!ht]
@@ -1510,15 +1548,13 @@ The operator ``\texttt{+}'' computes the union of two sets.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
                 ]{fsharp}
-    let rec cnf (f: Formula) : CNF =
+    let rec cnf (f: NNF) : CNF =
         match f with
-        | Var p       -> set [ set [ Pos p ] ]
-        | Verum       -> Set.empty
-        | Falsum      -> set [ Set.empty ]
-        | Not (Var p) -> set [ set [ Neg p ] ]
-        | And (g, h)  -> cnf g + cnf h
-        | Or  (g, h)  -> set [ for k1 in cnf g do for k2 in cnf h -> k1 + k2 ]
-        | _           -> failwith "cnf: formula is not in negation normal form"
+        | NNF.Lit l      -> set [ set [ l ] ]
+        | NNF.Verum      -> Set.empty
+        | NNF.Falsum     -> set [ Set.empty ]
+        | NNF.And (g, h) -> cnf g + cnf h
+        | NNF.Or  (g, h) -> set [ for k1 in cnf g do for k2 in cnf h -> k1 + k2 ]
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Computing the conjunctive normal form. \index{\texttt{cnf}}}
@@ -1527,21 +1563,23 @@ The operator ``\texttt{+}'' computes the union of two sets.
 Lastly, we show in Figure \ref{fig:normalize} on page \pageref{fig:normalize}
 how the functions that have been shown above interact.
 \begin{enumerate}
-\item The function \texttt{normalize} first eliminates the operators ``$\leftrightarrow$''
-       with the help of the function \linebreak
-      \texttt{eliminateBiconditional}.
-\item The operator ``$\rightarrow$'' is then replaced with the help of the function
-      \texttt{eliminateConditional}.
-\item Calling \texttt{nnf} converts the formula to negation-normal form.
+\item The function \texttt{normalize} first eliminates the operators ``$\leftrightarrow$'', ``$\oplus$'',
+      and ``$\rightarrow$'' with the help of the function \texttt{purify}.
+\item Calling \texttt{nnf} converts the resulting pure formula to negation-normal form.
 \item The negation normal form is now converted to conjunctive normal form using the function \texttt{cnf},
-      whereby the formula is simultaneously converted to set notation.  
-\item Finally, the function \texttt{simplify} removes all clauses from the set \texttt{n4} that are trivial.
+      whereby the formula is simultaneously converted to set notation.
+\item Finally, the function \texttt{simplify} removes all clauses from the set \texttt{n3} that are trivial.
 \item The function \texttt{isTrivial} checks whether a clause $C$, which is in set notation,
       contains a literal together with its complement, because then this
       clause is equivalent to $\verum$ and can be omitted.  The function \texttt{complement} maps the literal
       \texttt{Pos p} to \texttt{Neg p} and vice versa.  The function \texttt{Set.exists} checks whether some
       element of a set satisfies the given predicate.
 \end{enumerate}
+The types of the functions \texttt{purify}, \texttt{nnf}, and \texttt{cnf} guarantee that they are applied in
+the right order: \texttt{purify} maps a \texttt{Formula} to a \texttt{PureFormula}, \texttt{nnf} maps a
+\texttt{PureFormula} to an \texttt{NNF}, and \texttt{cnf} maps an \texttt{NNF} to a \texttt{CNF}.  For example,
+if we forgot to call \texttt{nnf}, the \textsl{F\#} compiler would reject the function \texttt{normalize}.
+
 The complete program for calculating the conjunctive normal form can be found as the file
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -1572,11 +1610,10 @@ on my \href{https://github.com/karlstroetmann/Logic}{GitHub repository}.
         Set.filter (fun C -> not (isTrivial C)) Clauses
 
     let normalize (f: Formula) : CNF =
-        let n1 = eliminateBiconditional f
-        let n2 = eliminateConditional n1
-        let n3 = nnf n2
-        let n4 = cnf n3
-        simplify n4
+        let n1 = purify f
+        let n2 = nnf n1
+        let n3 = cnf n2
+        simplify n3
 \end{minted} 
 \vspace*{-0.3cm}
   \caption{Normalizing a Formula.}

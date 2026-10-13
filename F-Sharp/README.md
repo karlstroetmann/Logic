@@ -57,7 +57,8 @@ available in the `PATH`.
 ## Shared types
 
 - `Chapter-4/Propositional-Logic-Parser.ipynb` defines the type `Formula` of propositional formulas.
-- `Chapter-4/04-CNF.ipynb` defines the types `Literal`, `Clause`, and `CNF`.
+- `Chapter-4/04-CNF.ipynb` defines the types `Literal`, `Clause`, and `CNF`, as well as the types
+  `PureFormula` and `NNF` of pure formulas and of formulas in negation normal form.
 - `Chapter-5/FOL-Parser.ipynb` defines the types `Term` and `Formula` of first order logic
   (`Chapter-6` contains a copy of this notebook).
 - `Chapter-6/01-FOL-CNF.ipynb` defines the first order types `Literal` and `Clause`.
