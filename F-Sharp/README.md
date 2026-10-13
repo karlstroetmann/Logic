@@ -61,7 +61,8 @@ available in the `PATH`.
   `PureFormula` and `NNF` of pure formulas and of formulas in negation normal form.
 - `Chapter-5/FOL-Parser.ipynb` defines the types `Term` and `Formula` of first order logic
   (`Chapter-6` contains a copy of this notebook).
-- `Chapter-6/01-FOL-CNF.ipynb` defines the first order types `Literal` and `Clause`.
+- `Chapter-6/01-FOL-CNF.ipynb` defines the first order types `Literal` and `Clause`, as well as the
+  types `PureFormula`, `NNF`, and `Matrix` of the intermediate forms of the transformation into clauses.
 - `Chapter-5/02-Backtracking-Constraint-Solver.ipynb` defines the types `Constraint<'V>` and
   `CSP<'V>` used by the backtracking constraint solver.
 
