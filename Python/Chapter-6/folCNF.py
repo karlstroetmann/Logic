@@ -57,11 +57,28 @@ def allVariables(f):
 import string
 
 def renameBoundVariables(f):
-    BoundVs = boundVariables(f)
-    NewVars = set(string.ascii_lowercase) - BoundVs - allVariables(f)
-    NewVars = sorted(list(NewVars))
-    sigma   = { x: NewVars[i] for (i, x) in enumerate(BoundVs) }
-    return apply(f, sigma)
+    "Rename the bound variables of the formula f, which is in negation normal form, so that f becomes pure."
+    Vars  = allVariables(f) | boundVariables(f)
+    Bound = set()
+    def newVariable(x):
+        if x not in Bound:
+            return x
+        return min(set(string.ascii_lowercase) - Vars - Bound)
+    def rename(g, sigma):
+        if g[0] in ('∀', '∃'):
+            Q, x, h = g
+            y = newVariable(x)
+            Bound.add(y)
+            return (Q, y, rename(h, { **sigma, x: y }))
+        if g[0] in ('⊤', '⊥'):
+            return g
+        if g[0] == '¬':
+            return ('¬', rename(g[1], sigma))
+        if g[0] in ('∧', '∨'):
+            op, g1, g2 = g
+            return (op, rename(g1, sigma), rename(g2, sigma))
+        return apply(g, sigma)  # g must be an atomic formula
+    return rename(f, {})
 
 def eliminateBiconditional(f):
     "Eliminate the logical operator '↔' from the formula f."
@@ -69,7 +86,7 @@ def eliminateBiconditional(f):
         g, h = f[1:]
         ge   = eliminateBiconditional(g)
         he   = eliminateBiconditional(h)
-        return ('∧', ('→', ge, he), renameBoundVariables(('→', he, ge)))
+        return ('∧', ('→', ge, he), ('→', he, ge))
     if f[0] == '⊤':
         return f
     if f[0] == '⊥':
@@ -227,11 +244,12 @@ def normalize(f):
     f1     = eliminateBiconditional(f)
     f2     = eliminateConditional(f1)
     f3     = nnf(f2)
-    Qs, f4 = extractQuantifiers(f3)
-    f5     = attachQuantifiers(Qs, f4)
-    f6     = skolemize(f5, ())
-    f7     = cnf(f6)
-    return f7
+    f4     = renameBoundVariables(f3)
+    Qs, f5 = extractQuantifiers(f4)
+    f6     = attachQuantifiers(Qs, f5)
+    f7     = skolemize(f6, ())
+    f8     = cnf(f7)
+    return f8
 
 def test(s):
     f = fp.LogicParser(s).parse()

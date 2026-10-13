@@ -58,31 +58,6 @@ function applyFormula(f: Formula, sigma: Substitution): Formula {
     }
 }
 
-function boundVariables(f: Formula): Set<string> {
-    switch (f[0]) {
-        case '⚛️':
-        case '⊤':
-        case '⊥':
-            return set<string>();
-        case '¬': {
-            const [_, g] = f;
-            return boundVariables(g);
-        }
-        case '∧':
-        case '∨':
-        case '→':
-        case '↔': {
-            const [_, g, h] = f;
-            return boundVariables(g).union(boundVariables(h));
-        }
-        case '∀':
-        case '∃': {
-            const [_, x, g] = f;
-            return boundVariables(g).union(set(x));
-        }
-    }
-}
-
 function allVariablesTerm(t: Term): Set<string> {
     if (typeof t === 'string') return set(t);
     const [_, ...args] = t;
@@ -122,13 +97,48 @@ ascii_uppercase
 
 const ascii_set = set(...ascii_uppercase);
 
+// Rename the bound variables of the formula f, which is in negation normal form, so that f
+// becomes pure: a quantifier that binds a variable that has already been bound by a quantifier
+// further to the left gets a new variable that does not occur anywhere in f.
 function renameBoundVariables(f: Formula): Formula {
-    const boundVs = [...boundVariables(f)];
-    const allVs   = allVariables(f);
-    const newVars = ascii_uppercase.filter(x => !allVs.has(x)).sort();
-    const mappingPairs = boundVs.map((bv, i) => [bv, newVars[i]] as const);
-    const sigma: Substitution = new Map(mappingPairs);    
-    return applyFormula(f, sigma);
+    const vars = allVariables(f);
+    const bound: Variable[] = [];
+    function newVariable(x: Variable): Variable {
+        if (!bound.includes(x)) return x;
+        const y = ascii_uppercase.find(v => !vars.has(v) && !bound.includes(v));
+        if (y === undefined) throw new Error('renameBoundVariables: not enough new variables');
+        return y;
+    }
+    function rename(g: Formula, sigma: Substitution): Formula {
+        switch (g[0]) {
+            case '⚛️':
+                return applyFormula(g, sigma);
+            case '⊤':
+            case '⊥':
+                return g;
+            case '¬': {
+                const [_, h] = g;
+                return ['¬', rename(h, sigma)];
+            }
+            case '∧':
+            case '∨':
+            case '→':
+            case '↔': {
+                const [op, g1, g2] = g;
+                const r1 = rename(g1, sigma);   // g1 has to be renamed before g2
+                const r2 = rename(g2, sigma);
+                return [op, r1, r2];
+            }
+            case '∀':
+            case '∃': {
+                const [op, x, h] = g;
+                const y = newVariable(x);
+                bound.push(y);
+                return [op, y, rename(h, new Map<Variable, Term>([...sigma, [x, y]]))];
+            }
+        }
+    }
+    return rename(f, new Map());
 }
 
 function eliminateBiconditional(f: Formula): Formula {
@@ -152,7 +162,7 @@ function eliminateBiconditional(f: Formula): Formula {
             const ge = eliminateBiconditional(g);
             const he = eliminateBiconditional(h);
             const left: Formula = ['→', ge, he];
-            const right = renameBoundVariables(['→', he, ge]);
+            const right: Formula = ['→', he, ge];
             return ['∧', left, right];
         }
         case '∀':
@@ -372,10 +382,11 @@ function normalize(f: Formula): CNFSet {
     const f1 = eliminateBiconditional(f);
     const f2 = eliminateConditional(f1);
     const f3 = nnf(f2);
-    const [Qs, f4] = extractQuantifiers(f3);
-    const f5 = attachQuantifiers(Qs, f4);
-    const f6 = skolemize(f5, []);
-    return cnf(f6);
+    const f4 = renameBoundVariables(f3);
+    const [Qs, f5] = extractQuantifiers(f4);
+    const f6 = attachQuantifiers(Qs, f5);
+    const f7 = skolemize(f6, []);
+    return cnf(f7);
 }
 
 function prettify(M: CNFSet): string {
