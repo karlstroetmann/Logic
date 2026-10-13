@@ -48,7 +48,7 @@ This chapter is structured as follows:
 \item In the following section, we deal with the
       \href{https://en.wikipedia.org/wiki/Semantics}{semantics} of these formulas, that is we specify the 
       meaning of first-order formulas.
-\item After that, we show how to implement syntax and semantics in \textsl{F\#}.
+\item After that, we show how to implement syntax and semantics in \Fsharp.
 \item As an application of first-order logic we discuss \textcolor{blue}{constraint programming}.
       In constraint programming, a given problem is described using first-order logic formulas.
       To solve the problem, a so-called \textcolor{blue}{constraint solver} is used.
@@ -736,17 +736,17 @@ we will never know for sure that there are no odd perfect numbers.
   \label{fig:Find-Perfect.ipynb}
 \end{figure} 
 
-\section{Implementing $\Sigma$-Structures in \textsl{F\#}}
+\section{Implementing $\Sigma$-Structures in \texorpdfstring{\Fsharp}{F\#}}
 The concept of a $\Sigma$-structure that has been presented in the last section is quite abstract. In this
-section, we implement $\Sigma$-structures in \textsl{F\#}. This helps to illustrate the concept. As a
+section, we implement $\Sigma$-structures in \Fsharp. This helps to illustrate the concept. As a
 concrete example, we will consider $\Sigma$-structures related to
 \href{https://en.wikipedia.org/wiki/Group_theory}{group theory}. 
 We proceed in four steps:
 \begin{enumerate}
 \item First, we define the concept of a \href{https://en.wikipedia.org/wiki/Group_(mathematics)}{group}.
-\item Then, we discuss how the formulas of group theory are represented in \textsl{F\#}.
+\item Then, we discuss how the formulas of group theory are represented in \Fsharp.
 \item Next, we define a $\Sigma$-structure in which the formulas of group theory are valid.
-\item Finally, we show how to evaluate formulas from first-order logic in \textsl{F\#}.
+\item Finally, we show how to evaluate formulas from first-order logic in \Fsharp.
 \end{enumerate}
 
 \subsection{Group Theory}
@@ -785,7 +785,7 @@ where:
       \blue{commutative groups}. 
 \end{enumerate}
 
-\subsection{Representation of Formulas in \textsl{F\#}}
+\subsection{Representation of Formulas in \texorpdfstring{\Fsharp}{F\#}}
 In the last section, we defined the signature $\Sigma_G$ of
 group theory as follows:
 \\[0.2cm]
@@ -798,7 +798,7 @@ Here, ``$\mathrm{e}$'' is a nullary function symbol representing the identity el
 the binary function symbol representing the group multiplication, and ``$=$'' is the binary predicate symbol to 
 denote equality. 
 
-In first-order logic, we have to distinguish between \blue{terms} and \blue{formulas}.  In \textsl{F\#}, we represent
+In first-order logic, we have to distinguish between \blue{terms} and \blue{formulas}.  In \Fsharp, we represent
 them by the two discriminated unions \texttt{Term} and \texttt{Formula} that are shown in Figure
 \ref{fig:fol-types}.  These types are defined in the notebook
 \href{https://github.com/karlstroetmann/Logic/blob/master/F-Sharp/Chapter-5/FOL-Parser.ipynb}{\texttt{FOL-Parser.ipynb}}.
@@ -811,7 +811,7 @@ them by the two discriminated unions \texttt{Term} and \texttt{Formula} that are
       \texttt{Exists ("x", f)}.
 \item The remaining constructors are the same as in propositional logic.
 \end{enumerate}
-Using two different types has the advantage that the \textsl{F\#} compiler can check that, for example, a
+Using two different types has the advantage that the \Fsharp{} compiler can check that, for example, a
 function symbol is never applied to a formula.
 
 \begin{figure}[!ht]
@@ -949,10 +949,10 @@ of this transformation is displayed in Figure \ref{fig:group-theory-tupel}.
 \end{figure}
 
 
-\subsection{Representation of $\Sigma$-Structures in \textsl{F\#}}
+\subsection{Representation of $\Sigma$-Structures in \texorpdfstring{\Fsharp}{F\#}}
 In the section defining  the semantics of first-order logic in Section \ref{sec:semantik}, we
 have already specified  a $\Sigma$-structure $\mathcal{Z}$ for group theory.  The universe of $\mathcal{Z}$
-consists of the set $\{ 0, 1 \}$.  In \textsl{F\#}, we represent a $\Sigma$-structure as a \blue{record}.  A record
+consists of the set $\{ 0, 1 \}$.  In \Fsharp, we represent a $\Sigma$-structure as a \blue{record}.  A record
 is a type with named fields.  The type \texttt{Structure} has three fields:
 \begin{enumerate}
 \item \texttt{Universe} is the set $\mathcal{U}$.  We use integers as the elements of the universe.
@@ -1159,7 +1159,7 @@ variable assignment $\mathcal{I}$ at position $x$ to return $c$, hence
 $\mytt{modify}\;\mathcal{I}\;x\;c = \mathcal{I}[x/c]$. 
 \\[0.2cm]
 The implementation of this function is shown in Figure \ref{fig:modify.ipynb} on page \pageref{fig:modify.ipynb}.
-In the evaluation of a universal quantifier, we can take advantage of the fact that \textsl{F\#} 
+In the evaluation of a universal quantifier, we can take advantage of the fact that \Fsharp{} 
 supports the quantifier ``$\forall$'' through the function \mytt{Seq.forall}. Thus, we can directly test whether the 
 formula is true for all possible values $c$ that we can substitute for the variable $x$.
 For a predicate $P$ and a set $M$, the expression
@@ -1186,7 +1186,7 @@ fact that we now have to use the function \mytt{Seq.exists} instead of the funct
 The expression $\mytt{Seq.exists}\;P\;M$ is true iff $P(c)$ is true for some element $c$ of $M$.
 
 In the implementation of the function $\mytt{modify}$, which calculates the variable assignment
-$\mathcal{I}[x/c]$, we take advantage of the fact that \textsl{F\#} maps are immutable:  The method \texttt{Add}
+$\mathcal{I}[x/c]$, we take advantage of the fact that \Fsharp{} maps are immutable:  The method \texttt{Add}
 returns a new map that maps $x$ to $c$ and agrees with $\mathcal{I}$ on all other arguments, while the map
 $\mathcal{I}$ itself remains unchanged.
 
@@ -1542,7 +1542,7 @@ in \myFig{eight-queens.txt}.
 \end{figure}
 Later, when we implement procedures to solve  \textsc{Csp}s, we will represent variable assignments and partial
 variable assignments as maps.  For example, the variable assignment $\mathcal{I}$ defined above would
-then be represented in \textsl{F\#} as the map 
+then be represented in \Fsharp{} as the map 
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{Map [("Q1", 4); ("Q2", 8); ("Q3", 1); ("Q4", 3);}
@@ -1581,9 +1581,9 @@ partial assignment is shown in \myFig{eight-queens-partial.txt}.
 
 
 
-In order to implement constraint satisfaction problems in \textsl{F\#}, we have to decide how to represent
+In order to implement constraint satisfaction problems in \Fsharp, we have to decide how to represent
 constraints.  In \textsl{Python}, constraints can be represented as strings that contain \textsl{Python}
-expressions, since these strings can be evaluated using the function \texttt{eval}.  \textsl{F\#} is a compiled
+expressions, since these strings can be evaluated using the function \texttt{eval}.  \Fsharp{} is a compiled
 language and therefore has no function \texttt{eval}.  Instead, we represent a constraint as a \blue{record} with
 three fields:
 \begin{enumerate}
@@ -1642,7 +1642,7 @@ constraints of the form $x \not= y$ occur very often, the function \texttt{diffe
 \label{fig:CSP-types}
 \end{figure}
 
-\myFig{queens-csp.stlx} shows an \textsl{F\#} function that creates the eight queens puzzle as a
+\myFig{queens-csp.stlx} shows an \Fsharp{} function that creates the eight queens puzzle as a
 \textsc{Csp}.  The function \texttt{abs} computes the absolute value of a number.
 
 \begin{figure}[!ht]
@@ -1673,7 +1673,7 @@ constraints of the form $x \not= y$ occur very often, the function \texttt{diffe
           Constraints = DifferentColumns @ DifferentDiagonals }
 \end{minted}
 \vspace*{-0.3cm}
-\caption{\textsl{F\#} code to create the CSP representing the eight queens puzzle.}
+\caption{\Fsharp{} code to create the CSP representing the eight queens puzzle.}
 \label{fig:queens-csp.stlx}
 \end{figure}
 
@@ -1742,7 +1742,7 @@ The result has the type \texttt{Map<string, 'V> option}:  If a solution is found
 \texttt{Some Solution}.  Otherwise, \texttt{None} is returned.
 
 In \textsl{Python}, the function \texttt{solve} first computes for every constraint the set of variables
-occurring in this constraint.  In \textsl{F\#}, this set is already part of the constraint.  The reason to
+occurring in this constraint.  In \Fsharp, this set is already part of the constraint.  The reason to
 store these sets of variables is efficiency: When we check whether a constraint $\mytt{f}$ is satisfied for a
 partial variable assignment $\mytt{Assignment}$, we only need to check the constraint $\mytt{f}$ iff all of the
 variables occurring in $\mytt{f}$ are elements of the domain of $\mytt{Assignment}$.
@@ -2059,8 +2059,8 @@ a symbolic transition system.
 
 %$
 Figure \ref{fig:Missionaries-STS.ipynb} shows how the \emph{missionaries and cannibals problem} can be
-represented as a symbolic transition system in \textsl{F\#}.  In the function \texttt{transition} 
-we use the following convention: Although \textsl{F\#} allows the character ``\texttt{'}'' in identifiers, a
+represented as a symbolic transition system in \Fsharp.  In the function \texttt{transition} 
+we use the following convention: Although \Fsharp{} allows the character ``\texttt{'}'' in identifiers, a
 prime is easily overlooked.  Therefore, we append the character $\alpha$ to the names of the original
 variables from the set $\mathcal{V}$, while we append $\beta$ to these names to get the primed versions of the
 corresponding variable.
@@ -2129,7 +2129,7 @@ Figure \ref{fig:Missionaries-STS.ipynb-2} shows how we can turn the symbolic tra
              \hspace*{1.3cm}
              \texttt{start A["M0"] A["C0"] A["B0"]}.
              \\[0.2cm]
-             As \textsl{F\#} functions are curried, $\mathtt{apply3}\;\mathtt{transition}\;A\;i$ is a function that
+             As \Fsharp{} functions are curried, $\mathtt{apply3}\;\mathtt{transition}\;A\;i$ is a function that
              still expects three more arguments.  Hence, in line 11 the expression
              \\[0.2cm]
              \hspace*{1.3cm}
@@ -2231,7 +2231,7 @@ and
 \hspace*{1.3cm}
 \texttt{open Microsoft.Z3}
 \\[0.2cm]
-\textsl{Z3} provides an interface for the \textsl{.Net} platform that can be used from \textsl{F\#}.
+\textsl{Z3} provides an interface for the \textsl{.Net} platform that can be used from \Fsharp.
 However, this interface is quite verbose.  Therefore, the file \texttt{z3.fsx} defines a thin layer on top of
 this interface that enables us to write constraints in a way that is very similar to the way constraints are
 written in the \textsl{Python} interface of \texttt{Z3}.
@@ -2275,8 +2275,8 @@ solve the given problem using \texttt{Z3}.  The code shown in this figure assume
 \begin{enumerate}
 \item Lines 1 and 2 create the \texttt{Z3} variables \mytt{boys} and \mytt{girls} as integer valued variables.
       The function \mytt{Int} takes one argument, which has to be a string.  This string is the name of the
-      variable.  We store these variables in \textsl{F\#} variables of the same name.  It would be possible to use
-      different names for the \textsl{F\#} variables, but that would be very confusing.
+      variable.  We store these variables in \Fsharp{} variables of the same name.  It would be possible to use
+      different names for the \Fsharp{} variables, but that would be very confusing.
 \item Line 4 creates a new solver object.  This is the constraint solver provided by \texttt{Z3}.
 \item Lines 6 and 7 add the constraints expressing that
       \begin{enumerate}[(a)]
@@ -2285,7 +2285,7 @@ solve the given problem using \texttt{Z3}.  The code shown in this figure assume
       \end{enumerate}
       as constraints to the solver \texttt{S}.  The operator ``\texttt{.=}'' is defined in \texttt{z3.fsx}.  It
       creates an equation between two \texttt{Z3} expressions.  We cannot use the operator ``\texttt{=}'' here,
-      since in \textsl{F\#} this operator compares two values and returns a Boolean value.  Similarly, the
+      since in \Fsharp{} this operator compares two values and returns a Boolean value.  Similarly, the
       file \texttt{z3.fsx} defines the operators ``\texttt{.<>}'', ``\texttt{.<}'', ``\texttt{.<=}'',
       ``\texttt{.>}'', and ``\texttt{.>=}''.  The arithmetical operators ``\texttt{+}'', ``\texttt{-}'', and
       ``\texttt{*}'' can be used directly with \texttt{Z3} expressions.
@@ -2300,7 +2300,7 @@ solve the given problem using \texttt{Z3}.  The code shown in this figure assume
       solution that is computed via the property \mytt{Model} in line 9.  
 \item In order to extract the values that have been computed by \texttt{Z3} for the variables \mytt{boys} and
       \mytt{girls}, we use the function \mytt{intValue} that is defined in \texttt{z3.fsx}.  It takes a model and
-      a \texttt{Z3} variable and returns the value of this variable in the model as an \textsl{F\#} integer.
+      a \texttt{Z3} variable and returns the value of this variable in the model as an \Fsharp{} integer.
 \end{enumerate}
 
 \exerciseEng

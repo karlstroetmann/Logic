@@ -100,7 +100,7 @@ The rest of this chapter is structured as follows:
       propositional formulas.
 
       This is known as the \blue{syntax} of propositional formulas.
-\item Next, we discuss the \blue{evaluation} of propositional formulas and implement the evaluation in \textsl{F\#}.
+\item Next, we discuss the \blue{evaluation} of propositional formulas and implement the evaluation in \Fsharp.
 
       This is known as the \blue{semantics} of propositional formulas.
 \item Then we formally define the notions \blue{tautology} and \blue{satisfiability} for propositional formulas.   
@@ -161,7 +161,7 @@ In this section we first cover the \blue{syntax} of propositional formulas.  Aft
 and how we can combine formulas into a \blue{proof}.  The  \blue{semantics}\index{semantics} of propositional
 logic is concerned with the  \blue{meaning} of propositional formulas.
 We will first define the semantics of propositional logic with the help of set theory.
-Then, we implement this semantics in \textsl{F\#}.
+Then, we implement this semantics in \Fsharp.
 
 \subsection{The Syntax of Propositional Formulas}
 We define propositional formulas as strings.  To this end we assume a set  $\mathcal{P}$ \index{$\mathcal{P}$, set of propositional variables} 
@@ -232,7 +232,7 @@ In order to save parentheses we agree on the following rules:
       \hspace*{1.3cm} $p \wedge q \wedge r$ \quad instead of \quad $(p \wedge q) \wedge r$.
 \item \underline{\textbf{\red{In this lecture}}} the logical operators 
       $\wedge$ and $\vee$ have the \underline{same} precedence.  This is different from the programming
-      language  \textsl{F\#}.  In \textsl{F\#} the operator ``\texttt{\&\&}'' has a higher precedence than
+      language  \Fsharp.  In \Fsharp{} the operator ``\texttt{\&\&}'' has a higher precedence than
       the  operator ``\texttt{||}''.
       
       In the programming languages  \texttt{C}, \textsl{Java}, and \textsl{Python} the logical and also has a higher
@@ -394,14 +394,14 @@ $ \eox
 Note that we only evaluated some parts of the formula.  The reason is that as soon as we know that the first
 argument of $\circright$ is \texttt{false} the value of the corresponding formula is already determined.
 Nevertheless, this approach is too cumbersome.  In practice, we do not evaluate large propositional formulas
-ourselves.  Instead, we will next implement an \textsl{F\#} program that evaluates these formulas for us.
+ourselves.  Instead, we will next implement an \Fsharp{} program that evaluates these formulas for us.
 
 \subsection{Implementation} 
-In this section we develop an \textsl{F\#} program that can evaluate propositional formulas.
+In this section we develop an \Fsharp{} program that can evaluate propositional formulas.
 Every time we develop a program to compute something useful we have to decide which data structures are
 most appropriate to represent the information that is to be processed by the program.  In this case we want to
 process propositional formulas.  Therefore, we have to decide how to represent propositional formulas in
-\textsl{F\#}.  One obvious possibility would be to use strings.  However, this would be a bad choice as it
+\Fsharp.  One obvious possibility would be to use strings.  However, this would be a bad choice as it
 would then be difficult to access the parts of a given formula.  It is far more suitable to represent
 propositional formulas as values of a \blue{discriminated union}. \index{discriminated union}
 A discriminated union is a type whose values are built from a fixed set of \blue{constructors}.
@@ -461,10 +461,10 @@ The type \texttt{Formula} also has a constructor \texttt{Xor} for the \blue{excl
 true iff exactly one of the formulas $f$ and $g$ is true.
 The type \texttt{Formula} is \blue{recursive}: the arguments of the constructors \texttt{Not}, \texttt{And},
 etc.~are again formulas.  In contrast to a representation of formulas as strings or as nested tuples, the
-\textsl{F\#} compiler checks that every value of type \texttt{Formula} is a well-formed formula.  For example, it is
+\Fsharp{} compiler checks that every value of type \texttt{Formula} is a well-formed formula.  For example, it is
 impossible to apply \texttt{Not} to two arguments.
 
-When choosing the representation of a formula in \textsl{F\#} we have a lot of freedom.
+When choosing the representation of a formula in \Fsharp{} we have a lot of freedom.
 We could as well have represented formulas as objects of different classes.  A good representation should have
 the following properties:
 \begin{enumerate}
@@ -490,10 +490,10 @@ to \texttt{true} by $\mathcal{I}$:
 \hspace*{1.3cm}
 $\textsl{rep}(\mathcal{I}) := \bigl\{ x \in \mathcal{P} \mid \mathcal{I}(x) = \texttt{true} \bigr\}$.
 \\[0.2cm]
-Hence, in \textsl{F\#} a propositional valuation has the type \texttt{Set<string>}.
+Hence, in \Fsharp{} a propositional valuation has the type \texttt{Set<string>}.
 This enables us to implement a simple function that evaluates a propositional formula $f$ with a given
 propositional valuation $\mathcal{I}$.
-The \textsl{F\#} function \mytt{evaluate} is shown in Figure \ref{fig:evaluate.py} on page
+The \Fsharp{} function \mytt{evaluate} is shown in Figure \ref{fig:evaluate.py} on page
 \pageref{fig:evaluate.py}.  It is defined in the notebook
 \href{https://github.com/karlstroetmann/Logic/blob/master/F-Sharp/Chapter-4/01-Evaluate.ipynb}{\texttt{01-Evaluate.ipynb}}.
 The function \texttt{evaluate} takes two arguments.
@@ -539,7 +539,7 @@ Next, we discuss the implementation of the function \texttt{evaluate}.
       i.e.~it calls itself.
 \item The function is defined by \blue{pattern matching}: The \texttt{match} expression in line 2 compares
       the formula $f$ with the patterns given in the following lines.  There is one pattern for every
-      constructor of the type \texttt{Formula}.  The \textsl{F\#} compiler checks that the patterns cover all
+      constructor of the type \texttt{Formula}.  The \Fsharp{} compiler checks that the patterns cover all
       constructors.  If we forgot a case, the compiler would issue a warning.
 \item Line 3 deals with the case that the argument $f$ is a propositional variable $p$.
       In this case we have to check whether the variable $p$ is an element of the set $I$, because $p$ is
@@ -548,13 +548,13 @@ Next, we discuss the implementation of the function \texttt{evaluate}.
 \item If $f$ is $\falsum$, then evaluating $f$ always yields \texttt{false}. 
 \item If $f$ has the form $\neg g$, we recursively evaluate $g$ given the valuation $I$ and negate the result.
 \item If $f$ has the form $g \wedge h$, we recursively evaluate
-      $g$ and $h$ using $I$.  The results are then combined with the \textsl{F\#} operator
+      $g$ and $h$ using $I$.  The results are then combined with the \Fsharp{} operator
       ``\texttt{\&\&}''.
 \item If $f$ has the form $g \vee h$, we recursively evaluate
-      $g$ and $h$ using $I$.  The results are then combined with the \textsl{F\#} operator
+      $g$ and $h$ using $I$.  The results are then combined with the \Fsharp{} operator
       ``\texttt{||}''.
 \item If $f$ has the form $g \rightarrow h$, we recursively evaluate
-      $g$ and $h$ using $I$.  Then we exploit the fact that in \textsl{F\#} the values \texttt{true} and
+      $g$ and $h$ using $I$.  Then we exploit the fact that in \Fsharp{} the values \texttt{true} and
       \texttt{false} are ordered and we have
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -785,8 +785,8 @@ to denote the fact that we have both
 $\models f \leftrightarrow g$ \quad and \quad  $\models g \leftrightarrow h$. \eox
 
 
-\subsection{\textsl{F\#} Implementation}
-In this section we develop an \textsl{F\#} program that is able to decide whether a given propositional
+\subsection{\texorpdfstring{\Fsharp}{F\#} Implementation}
+In this section we develop an \Fsharp{} program that is able to decide whether a given propositional
 formula $f$ is a tautology.  The idea is that the program evaluates $f$ for all possible propositional
 valuations.  Hence we have to compute the set of all propositional valuations for a given set of
 propositional variables.  We have already seen that the propositional valuations are in a 1-to-1
@@ -851,7 +851,7 @@ Now we are able to implement the function
 \hspace*{1.3cm}
 $\mathtt{tautology}: \mathcal{F} \rightarrow \texttt{Set<string> option}$
 \\[0.2cm]
-that takes a formula $f$ and checks whether $\models f$ holds.  In \textsl{F\#}, every function has a unique
+that takes a formula $f$ and checks whether $\models f$ holds.  In \Fsharp, every function has a unique
 result type.  Therefore, the result of \texttt{tautology} has the type \texttt{Set<string> option}.  A value of
 this type has one of two forms:
 \begin{enumerate}[(a)]
@@ -1149,7 +1149,7 @@ We demonstrate the procedure using the example of the formula\\[0.2cm]
 \end{enumerate}
 The formula is now converted to CNF.
 
-\subsection{Computing the Conjunctive Normal Form in \textsl{F\#}}
+\subsection{Computing the Conjunctive Normal Form in \texorpdfstring{\Fsharp}{F\#}}
 Next, we specify a number of functions that can be used to convert a given 
 formula $f$ into conjunctive normal form.  These functions are part of the Jupyter notebook
 \\[0.2cm]
@@ -1157,7 +1157,7 @@ formula $f$ into conjunctive normal form.  These functions are part of the Jupyt
 \href{https://github.com/karlstroetmann/Logic/blob/master/F-Sharp/Chapter-4/04-CNF.ipynb}{F-Sharp/Chapter-4/04-CNF.ipynb}.
 \\[0.2cm]
 A formula in conjunctive normal form is represented in set notation, i.e.~as a set of clauses, where every
-clause is a set of literals.  In \textsl{F\#} we define the following types:
+clause is a set of literals.  In \Fsharp{} we define the following types:
 
 \begin{minted}[ frame         = lines, 
                 framesep      = 0.3cm, 
@@ -1180,10 +1180,10 @@ type \texttt{Set<Literal>}.
 
 The first two steps of the transformation into conjunctive normal form eliminate the operators
 ``$\leftrightarrow$'' and ``$\rightarrow$''.  Our type \texttt{Formula} also contains the operator
-``$\oplus$''.  As the \textsl{F\#} compiler checks that a pattern match covers all constructors of a type, we
+``$\oplus$''.  As the \Fsharp{} compiler checks that a pattern match covers all constructors of a type, we
 have to eliminate this operator, too.  We call a formula \blue{pure}\index{pure formula} if it is
 built from propositional variables and the constants $\verum$ and $\falsum$ using only the operators
-``$\neg$'', ``$\wedge$'', and ``$\vee$''.  In \textsl{F\#}, pure formulas are represented by the following type:
+``$\neg$'', ``$\wedge$'', and ``$\vee$''.  In \Fsharp, pure formulas are represented by the following type:
 
 \begin{minted}[ frame         = lines,
                 framesep      = 0.3cm,
@@ -1203,7 +1203,7 @@ built from propositional variables and the constants $\verum$ and $\falsum$ usin
 
 \noindent
 The constructors of \texttt{PureFormula} are the constructors of the type \texttt{Formula} except for
-\texttt{Imp}, \texttt{Iff}, and \texttt{Xor}.  Hence, the type checker of \textsl{F\#} guarantees that a value of
+\texttt{Imp}, \texttt{Iff}, and \texttt{Xor}.  Hence, the type checker of \Fsharp{} guarantees that a value of
 type \texttt{PureFormula} contains none of the operators ``$\rightarrow$'', ``$\leftrightarrow$'', and
 ``$\oplus$''.  The attribute \texttt{[<RequireQualifiedAccess>]} requires that the constructors of
 \texttt{PureFormula} are always qualified with the name of the type, e.g.~we have to write
@@ -1333,7 +1333,7 @@ function \texttt{purify}. \index{\texttt{purify}}
 Next, we present the functions for calculating the negation normal form.  A formula is in negation normal form
 if it is pure and the negation operator ``$\neg$'' is only applied to propositional variables.  Hence, a
 formula in negation normal form is built from literals and the constants $\verum$ and $\falsum$ using the
-operators ``$\wedge$'' and ``$\vee$''.  In \textsl{F\#}, these formulas are represented by the following type:
+operators ``$\wedge$'' and ``$\vee$''.  In \Fsharp, these formulas are represented by the following type:
 
 \begin{minted}[ frame         = lines,
                 framesep      = 0.3cm,
@@ -1359,7 +1359,7 @@ contain the negation operator only in front of a propositional variable.  The at
 Figure
 \ref{fig:nnf} on page \pageref{fig:nnf} shows the implementation of the functions
 \texttt{nnf} and \texttt{neg},
-which call each other.  In \textsl{F\#}, \blue{mutually recursive} functions have to be defined together
+which call each other.  In \Fsharp, \blue{mutually recursive} functions have to be defined together
 using the keywords ``\texttt{let rec} $\cdots$ \texttt{and} $\cdots$''.  Here, \texttt{nnf($f$)} calculates the
 negation normal form of the pure formula $f$, while
 \texttt{neg($f$)} calculates the negation normal form of $\neg f$, so the following holds
@@ -1578,7 +1578,7 @@ how the functions that have been shown above interact.
 The types of the functions \texttt{purify}, \texttt{nnf}, and \texttt{cnf} guarantee that they are applied in
 the right order: \texttt{purify} maps a \texttt{Formula} to a \texttt{PureFormula}, \texttt{nnf} maps a
 \texttt{PureFormula} to an \texttt{NNF}, and \texttt{cnf} maps an \texttt{NNF} to a \texttt{CNF}.  For example,
-if we forgot to call \texttt{nnf}, the \textsl{F\#} compiler would reject the function \texttt{normalize}.
+if we forgot to call \texttt{nnf}, the \Fsharp{} compiler would reject the function \texttt{normalize}.
 
 The complete program for calculating the conjunctive normal form can be found as the file
 \\[0.2cm]
@@ -2254,7 +2254,7 @@ We first discuss the auxiliary procedures shown in Figure \ref{fig:Completeness.
       \hspace*{1.3cm}
       $\{q, \neg q\}$ \quad as well as the clause \quad $\{p, \neg p \}$
       \\[0.2cm]
-      using the cut rule.  In \textsl{F\#}, the operator ``\texttt{-}'' computes the difference of two sets,
+      using the cut rule.  In \Fsharp, the operator ``\texttt{-}'' computes the difference of two sets,
       while ``\texttt{+}'' computes their union.
 \end{enumerate}
 
@@ -2304,7 +2304,7 @@ is \blue{saturated} under the application of the cut rule, meaning:
 \end{enumerate}
 
 We now explain the implementation of the function \texttt{saturate}.  In \textsl{Python}, this function is
-implemented with a \texttt{while} loop.  In \textsl{F\#}, it is more natural to implement it as a recursive
+implemented with a \texttt{while} loop.  In \Fsharp, it is more natural to implement it as a recursive
 function:  Every recursive call corresponds to one iteration of the loop.
 \begin{enumerate}
 \item In line 19, the set \texttt{Derived} is defined as the set of clauses that can be inferred using the
@@ -3080,7 +3080,7 @@ The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pa
 \end{figure} 
 \begin{enumerate}
 \item Initially, we store the set \texttt{Clauses} in the mutable variable \texttt{S}.
-      As \textsl{F\#} sets are immutable, the argument \texttt{Clauses} is not changed when we assign new sets
+      As \Fsharp{} sets are immutable, the argument \texttt{Clauses} is not changed when we assign new sets
       to the variable \texttt{S}.
 \item Then, in line 3, we compute the set \texttt{Units} of all unit clauses.  The function \texttt{Set.filter}
       returns the set of all elements that satisfy the given predicate.
@@ -3090,7 +3090,7 @@ The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pa
 \item As long as the set \texttt{Units} of unit clauses is not empty, we select in line 6
       an arbitrary unit clause \texttt{unit} from the set \texttt{Units} using the function $\texttt{arb}$.
       The function $\texttt{arb}$ returns an arbitrary element of the set passed to it as an argument.  As
-      \textsl{F\#} sets are ordered, \texttt{arb} simply returns the smallest element.
+      \Fsharp{} sets are ordered, \texttt{arb} simply returns the smallest element.
 \item In line 7, we add the clause \texttt{unit} to the set
       \texttt{Used} of used clauses.
 \item In line 8, we extract the literal \texttt{l} from the clause
@@ -3116,7 +3116,7 @@ $\textsl{reduce}(\texttt{Cs},l)  =
        \,\cup\, \Bigl\{\, C \in \texttt{Cs} \mid \komplement{l} \not\in C \wedge l \not\in C \Bigr\} \cup \Bigl\{\{l\}\Bigr\}
 $
 \\[0.2cm]
-A direct implementation of this formula would rebuild the complete set of clauses.  For \textsl{F\#} sets this
+A direct implementation of this formula would rebuild the complete set of clauses.  For \Fsharp{} sets this
 is expensive, since inserting a clause into a set of clauses requires comparing the clause with other clauses.
 However, only those clauses that contain $l$ or $\komplement{l}$ are affected by \texttt{reduce}.  Therefore, the
 implementation first computes the set \texttt{Affected} of these clauses.  The clauses in \texttt{Affected} are
@@ -3474,7 +3474,7 @@ variables are simultaneously true can be written as a set of clauses in the form
 \hspace*{1.3cm}
 $\bigl\{\, \{ \neg p, \neg q \} \;|\; p \in V \wedge\ q \in V \wedge p \neq q \bigr\}$
 \\[0.2cm]
-We implement these ideas in an \textsl{F\#} function. The function \texttt{atMostOne} shown in Figure
+We implement these ideas in an \Fsharp{} function. The function \texttt{atMostOne} shown in Figure
 \ref{fig:atMostOne} receives as input a set $S$ of propositional variables. The call $\texttt{atMostOne}\;S$
 calculates a set of clauses. These clauses are true if and only if at most one of the variables in $S$
 has the value \texttt{true}.  The condition \texttt{p < q} ensures that every pair of different variables is
@@ -3532,7 +3532,7 @@ When we write this formula in set notation as a set of clauses, we obtain
 $\bigl\{ \{\texttt{Q<1,c>} , \texttt{Q<2,c>} , \texttt{Q<3,c>} , \texttt{Q<4,c>} , \texttt{Q<5,c>} ,
 \texttt{Q<6,c>} , \texttt{Q<7,c>} , \texttt{Q<8,c>} \}\bigr\}$.
 \\[0.2cm]
-Figure \ref{fig:oneInColumn} shows an \textsl{F\#} function that calculates the corresponding set of clauses for a given column
+Figure \ref{fig:oneInColumn} shows an \Fsharp{} function that calculates the corresponding set of clauses for a given column
 \texttt{col} and a given board size \texttt{n}.
 We return a set containing  a single clause because our implementation of the Davis and Putnam algorithm
 works with a set of clauses.
@@ -4354,7 +4354,7 @@ $V$ is \texttt{true}.  Note that in set notation we have
 $\texttt{atLeastOne}(V) = \bigl\{ V \bigr\}$.
 \\[0.2cm]
 The reason is that in set notation  $V$ is interpreted as a clause, i.e.~as a disjunction of its variables.
-In \textsl{F\#} we have to transform the variables of $V$ into literals using the constructor \texttt{Pos}.
+In \Fsharp{} we have to transform the variables of $V$ into literals using the constructor \texttt{Pos}.
 Using these two functions we can then define a function \texttt{exactlyOne} that
 takes a set of variables $V$ and returns a set of clauses that is \texttt{true} iff exactly one of the variables
 in $V$ is \texttt{true}.  The implementation is shown in Figure \ref{fig:sudoku-exactly}.
@@ -4452,7 +4452,7 @@ $\bigl\{ \{Q_{2,3,3}\} \bigr\}$.
 Of course, we have to take the union of all these formulas.  This leads to the code shown in Figure
 \ref{fig:sudoku-constraintsFromPuzzle} on page \pageref{fig:sudoku-constraintsFromPuzzle}.
 Note that we have to provide \texttt{row + 1} and \texttt{col + 1} as arguments to the function \texttt{var} since
-in \textsl{F\#} array indices start with $0$.
+in \Fsharp{} array indices start with $0$.
 
 \begin{figure}[!ht]
 \centering
@@ -4569,7 +4569,7 @@ which is in conjunctive normal form, is represented by the following file:
         -1 -2 3 0
         1 2 -3 0
 \end{verbatim}
-In \textsl{F\#}, we represent a formula in this format as a list of lists of integers:
+In \Fsharp, we represent a formula in this format as a list of lists of integers:
 \\[0.2cm]
 \hspace*{1.3cm}
 \texttt{let f = [ [1; -2; 3]; [-1; 2; -3]; [-1; -2; 3]; [1; 2; -3] ]}
@@ -4702,7 +4702,7 @@ available at:
 \begin{enumerate}[(a)]
 \item How have we defined the set of propositional logic formulas?
 \item How have we defined the semantics of propositional logic formulas?
-\item How do we represent propositional logic formulas in \textsl{F\#}?
+\item How do we represent propositional logic formulas in \Fsharp?
 \item What is a tautology?
 \item How can we transform a propositional logic formula into conjunctive normal
       form?

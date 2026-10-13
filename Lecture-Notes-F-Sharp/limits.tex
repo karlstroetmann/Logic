@@ -17,7 +17,7 @@ Before we give a formal proof that the halting problem is undecidable, let us
 discuss one example that shows why it is indeed difficult to decide whether a program always
 terminates.  Consider the program shown in Figure \ref{fig:legendre.stlx} on page
 \pageref{fig:legendre.stlx}.  This program is written in the programming language
-\href{https://fsharp.org}{\textsl{F\#}}.  The function \texttt{findCounterExample} that is
+\href{https://fsharp.org}{\Fsharp}.  The function \texttt{findCounterExample} that is
 defined in line 13 calls itself recursively in line 15 as long as the expression
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -103,14 +103,14 @@ iff $t$ has the form {\em\\[0.2cm]
 \hspace*{1.3cm} \texttt{let $f$ (x: string) =} \\
 \hspace*{1.8cm} \textsl{body}        \\
 \hspace*{1.3cm} \texttt{\symbol{34}\symbol{34}\symbol{34}}}         \\[0.2cm]
-and, furthermore, the string $t$ can be compiled as an \textsl{F\#} function, that is the evaluation of
+and, furthermore, the string $t$ can be compiled as an \Fsharp{} function, that is the evaluation of
 the expression
 \\[0.2cm]
 \hspace*{1.3cm}
 $\texttt{exec}\;t$
 \\[0.2cm]
-does not yield an error.  Here, \texttt{exec} is a function that compiles and executes the \textsl{F\#} code
-given as a string.  It is defined in the notebook \texttt{Turing.ipynb}.  Note that in \textsl{F\#}
+does not yield an error.  Here, \texttt{exec} is a function that compiles and executes the \Fsharp{} code
+given as a string.  It is defined in the notebook \texttt{Turing.ipynb}.  Note that in \Fsharp{}
 compiling a function includes \blue{type checking}.  Hence, a string that is syntactically correct but
 contains a type error is not a test function.  By definition, the argument \texttt{x} of a test function is
 a string.  
@@ -154,7 +154,7 @@ $\mathtt{name}(t) = f$. \hspace*{\fill} $\Box$
       \end{verbatim}
       \vspace*{-0.8cm}
 
-      Then $s_3$ is not a test function.  The reason is that \textsl{F\#} does not support the operator
+      Then $s_3$ is not a test function.  The reason is that \Fsharp{} does not support the operator
       ``\texttt{++}''.  Therefore, 
       \\[0.2cm]
       \hspace*{1.3cm}
@@ -178,7 +178,7 @@ In order to be able to formalize the halting problem succinctly, we introduce th
 notations.
 
 \begin{Notation}[$\leadsto$, $\downarrow$, $\uparrow$]
-If $n$ is the name of an \textsl{F\#} function that takes $k$ arguments $a_1$, $\cdots$, $a_k$,
+If $n$ is the name of an \Fsharp{} function that takes $k$ arguments $a_1$, $\cdots$, $a_k$,
 then we write 
 \\[0.2cm]
 \hspace*{1.3cm}
@@ -207,8 +207,8 @@ This notation is read as ``\emph{evaluation of $n(a_1, \cdots, a_k)$ \blue{diver
 \end{enumerate}
 
 \noindent
-The \blue{halting problem} \index{halting problem} for \textsl{F\#} functions is the question whether there is an
-\textsl{F\#} function \\[0.2cm]
+The \blue{halting problem} \index{halting problem} for \Fsharp{} functions is the question whether there is an
+\Fsharp{} function \\[0.2cm]
 \hspace*{1.3cm} \texttt{let stops (t: string) (a: string) : int =} \\
 \hspace*{2.3cm} $\vdots$
 \\[0.2cm] 
@@ -232,8 +232,8 @@ that takes as input a test function $t$ and a string $a$ and that satisfies the 
       diverges, then 
       \texttt{stops $t$ $a$} returns the number $0$.
 \end{enumerate}
-If there was an \textsl{F\#} function \texttt{stops} that did satisfy the specification given above,
-then the halting problem for \textsl{F\#} would be \blue{decidable}.
+If there was an \Fsharp{} function \texttt{stops} that did satisfy the specification given above,
+then the halting problem for \Fsharp{} would be \blue{decidable}.
 \index{decidable}
 
 \begin{Theorem}[\href{http://en.wikipedia.org/wiki/Alan_Turing}{Alan Turing}, 1937]
@@ -250,7 +250,7 @@ exist and we will then show that this assumption leads to a contradiction.  This
 leave us with the conclusion that there can be no function \texttt{stops} that satisfies
 the specification given above and that, therefore, the halting problem is undecidable.
 
-In order to proceed, let us assume that an \textsl{F\#} function \texttt{stops}
+In order to proceed, let us assume that an \Fsharp{} function \texttt{stops}
 satisfying the specification given above exists and let us define the string
 \textsl{turing} as shown in Figure \ref{fig:turing-string} below.
 
@@ -356,7 +356,7 @@ As we have obtained contradictions in both cases, the assumption that there is a
 \noindent
 \textbf{Remark}:
 The proof of the fact that the halting problem is undecidable was published in 1937 by Alan Turing (1912 -- 1954)
-\cite{turing:1937}.  Of course, Turing did not solve the problem for \textsl{F\#} but rather
+\cite{turing:1937}.  Of course, Turing did not solve the problem for \Fsharp{} but rather
 for the so-called 
 \href{https://en.wikipedia.org/wiki/Turing_machine}{\emph{Turing machines}}.  
 A \blue{Turing machine} \index{turing machine} 
@@ -369,9 +369,9 @@ algorithm will always terminate.
 \textbf{Remark}:
 At this point you might wonder whether there might be another programming language
 that is more powerful so that it would be possible to solve the halting problem if we use this more powerful
-programming language.  However, if you check the proof given for \textsl{F\#} you will easily
+programming language.  However, if you check the proof given for \Fsharp{} you will easily
 see that this proof can be adapted to any other programming language that is at least as powerful as
-\textsl{F\#}. \eox
+\Fsharp. \eox
 
 Of course, if a programming language is very restricted, then it might be possible to check the
 halting problem for this weak programming language.  But for any programming language that supports
@@ -440,7 +440,7 @@ same result.  To state this more formally, we need the following definition.
 
 
 \begin{Definition}[$\simeq$] 
-Assume $n_1$ and $n_2$ are the names of two \textsl{F\#} functions that take arguments
+Assume $n_1$ and $n_2$ are the names of two \Fsharp{} functions that take arguments
   $a_1$, $\cdots$, $a_k$.  Let us define \\[0.2cm]
 \hspace*{1.3cm} 
 $n_1(a_1,\cdots,a_k) \simeq n_2(a_1,\cdots,a_k)$ 
@@ -462,7 +462,7 @@ If $n_1(a_1,\cdots,a_k) \simeq n_2(a_1,\cdots,a_k)$ holds, then the expressions 
 \end{Definition}
 
 \noindent
-We are now ready to state the \blue{equivalence problem}.  An \textsl{F\#} function \texttt{equal} solves the
+We are now ready to state the \blue{equivalence problem}.  An \Fsharp{} function \texttt{equal} solves the
 \emph{equivalence problem} \index{equivalence problem} if it is defined as
 \\[0.2cm]
 \hspace*{1.3cm} \texttt{let equal (p1: string) (p2: string) (a: string) : int =}               \\
