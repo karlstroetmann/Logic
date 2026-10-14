@@ -2972,10 +2972,13 @@ the set $\texttt{Clauses}$. If the set $\texttt{Clauses}$ is not satisfiable, th
 \\[0.2cm]
 returns the set $\bigl\{ \{\} \bigr\}$, as the empty clause represents the unsatisfiable formula $\falsum$.
 
-The real work is done by the function \texttt{solveRecursive}.  This function takes two additional arguments:
-\texttt{Variables} is the set of all variables occurring in \texttt{Clauses}, while \texttt{UsedVars} is the set of
-those variables that have already been used for case distinctions.  We need the set \texttt{UsedVars} in order to
-keep track of which variables we have already used for case distinctions during the recursive calls.
+The real work is done by the function \texttt{solveRecursive}, which solves the set
+$\texttt{Clauses} \cup \texttt{Units}$.  Besides \texttt{Clauses}, this function takes three arguments:
+\texttt{Units} is a set of unit clauses that have not yet been used for unit cuts and unit subsumptions, while all
+other unit clauses of \texttt{Clauses} have already been used.  \texttt{Variables} is the set of all variables
+occurring in \texttt{Clauses}, and \texttt{UsedVars} is the set of those variables that have already been used for
+case distinctions.  We need the set \texttt{UsedVars} in order to keep track of which variables we have already
+used for case distinctions during the recursive calls.
 
 \begin{figure}[!ht]
   \centering
@@ -2987,8 +2990,9 @@ keep track of which variables we have already used for case distinctions during 
                 xleftmargin   = 0.0cm,
                 xrightmargin  = 0.0cm
               ]{fsharp}
-    let rec solveRecursive (Clauses: CNF) (Variables: Set<string>) (UsedVars: Set<string>) : CNF =
-        let S      = saturate Clauses
+    let rec solveRecursive (Clauses: CNF) (Units: CNF) (Variables: Set<string>)
+                           (UsedVars: Set<string>) : CNF =
+        let S      = saturate Clauses Units
         let Falsum = set [ Set.empty ]
         if S.Contains Set.empty then                             // S is inconsistent
             Falsum
@@ -2998,58 +3002,68 @@ keep track of which variables we have already used for case distinctions during 
             let l       = selectLiteral S Variables UsedVars
             let lBar    = complement l
             let newUsed = UsedVars.Add (extractVariable l)
-            let Result  = solveRecursive (S.Add (set [ l ])) Variables newUsed
+            let Result  = solveRecursive S (set [ set [ l ] ]) Variables newUsed
             if Result <> Falsum then
                 Result
             else
-                solveRecursive (S.Add (set [ lBar ])) Variables newUsed
+                solveRecursive S (set [ set [ lBar ] ]) Variables newUsed
 
     let solve (Clauses: CNF) : CNF =
         let Variables = set [ for C in Clauses do for l in C -> extractVariable l ]
-        solveRecursive Clauses Variables Set.empty
+        let Units     = Set.filter (fun (C: Clause) -> C.Count = 1) Clauses
+        solveRecursive Clauses Units Variables Set.empty
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{solve}.}
   \label{fig:solve}
 \end{figure} 
 \begin{enumerate}
-\item In line 2, we reduce the given set of clauses \texttt{Clauses} as much as possible using the function \texttt{saturate},
-      applying unit cuts and removing all clauses that are subsumed by unit clauses.
-\item Next, we test in line 4 if the simplified set of clauses \texttt{S}
-      contains the empty clause, and if so, we return the set 
+\item In line 3, we reduce the set of clauses $\texttt{Clauses} \cup \texttt{Units}$ as much as possible using the
+      function \texttt{saturate}, applying unit cuts and removing all clauses that are subsumed by unit clauses.
+      The function \texttt{saturate} uses the unit clauses from the set \texttt{Units} and the unit clauses that
+      are created by these reductions.
+\item Next, we test in line 5 if the simplified set of clauses \texttt{S}
+      contains the empty clause, and if so, we return the set
       $\bigl\{\{\}\bigr\}$ as the result.
-\item Then, in line 6, we check if all clauses $C$ from the set
+\item Then, in line 7, we check if all clauses $C$ from the set
       \texttt{S} are unit clauses. If this is the case,
       the set \texttt{S} is trivial and we return this set as the result.  The function \texttt{Set.forall}
       checks whether all elements of a set satisfy the given predicate.
-\item Otherwise, in line 9 we select a literal $l$ that appears in a clause from the set \texttt{S} 
+\item Otherwise, in line 10 we select a literal $l$ that appears in a clause from the set \texttt{S}
       but whose variable has not yet been used.
-      We then recursively investigate in line 12 whether the set \\[0.2cm]
+      We then recursively investigate in line 13 whether the set \\[0.2cm]
       \hspace*{1.3cm} 
       $\texttt{S} \cup \bigl\{\{\texttt{l}\}\bigr\}$ 
       \\[0.2cm]
-      is solvable. There are two cases:
+      is solvable.  As \texttt{S} is saturated, all unit clauses of \texttt{S} have already been used.  Hence,
+      the new unit clause $\{\texttt{l}\}$ is the only unit clause that has not been used yet and we pass the
+      set $\bigl\{\{\texttt{l}\}\bigr\}$ as the argument \texttt{Units}.  There are two cases:
       \begin{enumerate}
       \item If this set is solvable, we return the solution of this set as the result.
 
       \item Otherwise, we recursively check whether the set 
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\texttt{S} \cup \Bigl\{ \bigl\{ \komplement{\texttt{l}} \bigr\} \Bigr\}$ 
+            $\texttt{S} \cup \Bigl\{ \bigl\{ \komplement{\texttt{l}} \bigr\} \Bigr\}$
             \\[0.2cm]
-            is solvable. If this set is solvable, then this solution is also a
+            is solvable.  This time, $\bigl\{\komplement{\texttt{l}}\bigr\}$ is the only unit clause that has not
+            been used yet.  If this set is solvable, then this solution is also a
             solution of the set $\texttt{Clauses}$, and we return this solution. If the
             set is unsolvable, then the set $\texttt{Clauses}$ must also be unsolvable.
       \end{enumerate}
-\item The function \texttt{solve} computes the set of all variables occurring in \texttt{Clauses}.
-      Then it calls the function \texttt{solveRecursive}.  Initially, no variable has been used for a case distinction.
+\item The function \texttt{solve} computes the set of all variables occurring in \texttt{Clauses} and the set of
+      all unit clauses of \texttt{Clauses}.  Then it calls the function \texttt{solveRecursive}.  Initially, no
+      unit clause has been used for a reduction and no variable has been used for a case distinction.
 \end{enumerate}
 
 We now discuss the auxiliary procedures used in the implementation of the function
 \texttt{solve}.
 First, we discuss the function \texttt{saturate}. This function receives a
-set $S$ of clauses as input and performs all possible unit cuts and
-unit subsumptions.
+set \texttt{Clauses} of clauses and a set \texttt{Units} of unit clauses that have not yet been used for unit
+cuts and unit subsumptions.  It performs all possible unit cuts and unit subsumptions on the set
+$\texttt{Clauses} \cup \texttt{Units}$.  Every unit clause $\{l\}$ of \texttt{Clauses} that is not an element of
+\texttt{Units} must already have been used, i.e.~neither $l$ nor $\komplement{l}$ occurs in any other clause of
+\texttt{Clauses}.  The function \texttt{solveRecursive} guarantees this.
 The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pageref{fig:saturate}.
 
 \begin{figure}[!ht]
@@ -3062,16 +3076,15 @@ The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pa
                 xleftmargin   = 0.3cm,
                 xrightmargin  = 0.3cm
               ]{fsharp}
-    let saturate (Clauses: CNF) : CNF =
-        let mutable S     = Clauses
-        let mutable Units = Set.filter (fun (C: Clause) -> C.Count = 1) S
-        let mutable Used  : Set<Clause> = Set.empty
-        while not Units.IsEmpty do
-            let unit = arb Units
-            Used  <- Used.Add unit
-            let l = arb unit
-            S     <- reduce S l
-            Units <- Set.filter (fun (C: Clause) -> C.Count = 1) S - Used
+    let saturate (Clauses: CNF) (Units: CNF) : CNF =
+        let mutable S       = Clauses + Units
+        let mutable Pending = Units
+        while not Pending.IsEmpty && not (S.Contains Set.empty) do
+            let unit = arb Pending
+            let l    = arb unit
+            let (Simplified, NewUnits) = reduce S l
+            S       <- Simplified
+            Pending <- Pending.Remove unit + NewUnits
         S
 \end{minted}
 \vspace*{-0.3cm}
@@ -3079,31 +3092,34 @@ The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pa
   \label{fig:saturate}
 \end{figure} 
 \begin{enumerate}
-\item Initially, we store the set \texttt{Clauses} in the mutable variable \texttt{S}.
+\item Initially, we store the set $\texttt{Clauses} \cup \texttt{Units}$ in the mutable variable \texttt{S}.
       As \Fsharp{} sets are immutable, the argument \texttt{Clauses} is not changed when we assign new sets
       to the variable \texttt{S}.
-\item Then, in line 3, we compute the set \texttt{Units} of all unit clauses.  The function \texttt{Set.filter}
-      returns the set of all elements that satisfy the given predicate.
-\item Next, in line 4, we initialize the set \texttt{Used} as an empty set.
-      In this set, we record which unit clauses we have already used for unit cuts and
-      subsumptions.
-\item As long as the set \texttt{Units} of unit clauses is not empty, we select in line 6
-      an arbitrary unit clause \texttt{unit} from the set \texttt{Units} using the function $\texttt{arb}$.
+\item Then, in line 3, we initialize the mutable variable \texttt{Pending} with the set \texttt{Units}.
+      The set \texttt{Pending} contains those unit clauses of \texttt{S} that have not yet been used for unit cuts
+      and subsumptions.
+\item As long as the set \texttt{Pending} is not empty and \texttt{S} does not contain the empty clause, we
+      select in line 5 an arbitrary unit clause \texttt{unit} from the set \texttt{Pending} using the function
+      $\texttt{arb}$.
       The function $\texttt{arb}$ returns an arbitrary element of the set passed to it as an argument.  As
       \Fsharp{} sets are ordered, \texttt{arb} simply returns the smallest element.
-\item In line 7, we add the clause \texttt{unit} to the set
-      \texttt{Used} of used clauses.
-\item In line 8, we extract the literal \texttt{l} from the clause
+\item In line 6, we extract the literal \texttt{l} from the clause
       \texttt{unit}.  As this clause contains only one element, this element is returned by \texttt{arb}.
-\item In line 9, the actual work is done by a call to the function
+\item In line 7, the actual work is done by a call to the function
       \texttt{reduce}. This function performs all possible unit cuts with the
       unit clause $\{\texttt{l}\}$ and also removes all clauses that
-      are subsumed by the unit clause $\{\texttt{l}\}$.
-\item When the unit cuts with the unit clause $\{\texttt{l}\}$ are computed, new
-      unit clauses can emerge, which we collect in line 10.  Of course, we collect only those unit clauses
-      that have not yet been used.
-\item The loop in lines 5 -- 10 is continued as long as we
-      find unit clauses that have not been used.
+      are subsumed by the unit clause $\{\texttt{l}\}$.  It returns a pair: The first component is the
+      simplified set of clauses, which we store in \texttt{S} in line 8.  The second component is the set
+      \texttt{NewUnits} of those unit clauses that are created by the unit cuts.
+\item In line 9, we remove the clause \texttt{unit} from the set \texttt{Pending}, since it has now been used, and
+      add the new unit clauses.  Note that we never have to search the set \texttt{S} for new unit clauses, since
+      all of them are returned by \texttt{reduce}.  This is important for efficiency, as \texttt{S} may contain
+      thousands of clauses.  Furthermore, every unit clause has to be used only once:  After the reduction with
+      the unit clause $\{\texttt{l}\}$, neither $\texttt{l}$ nor $\komplement{\texttt{l}}$ occurs in any other
+      clause of \texttt{S}.  As later reductions only remove or shorten clauses, this remains true.
+\item The loop in lines 4 -- 9 is continued as long as there are
+      unit clauses that have not been used.  As soon as \texttt{S} contains the empty clause, \texttt{S} is
+      unsatisfiable and the loop stops, since further reductions are pointless.
 \item At the end, the remaining set of clauses is returned.
 \end{enumerate}
 The function $\texttt{reduce}$  is shown in Figure \ref{fig:reduce}.
@@ -3129,6 +3145,11 @@ removed from \texttt{Clauses} and replaced by
 Clauses that contain $l$ are subsumed by the unit clause $\{l\}$ and are therefore dropped.  The result is the
 same set of clauses as specified by the formula given above.
 
+In addition to this set of clauses, the function \texttt{reduce} returns the set \texttt{NewUnits} of those unit
+clauses that are created by the unit cuts with $\{l\}$.  As all clauses that are not in \texttt{Affected} remain
+unchanged, these unit clauses are elements of the set \texttt{Reduced}.  Hence, \texttt{reduce Clauses l} returns
+the pair consisting of $\textsl{reduce}(\texttt{Clauses},l)$ and the set \texttt{NewUnits}.
+
 \begin{figure}[!ht]
   \centering
 \begin{minted}[ frame         = lines, 
@@ -3139,11 +3160,12 @@ same set of clauses as specified by the formula given above.
                   xleftmargin   = 0.0cm,
                   xrightmargin  = 0.0cm
                 ]{fsharp}
-    let reduce (Clauses: CNF) (l: Literal) : CNF =
+    let reduce (Clauses: CNF) (l: Literal) : CNF * CNF =
         let lBar     = complement l
         let Affected = Set.filter (fun (C: Clause) -> C.Contains l || C.Contains lBar) Clauses
         let Reduced  = set [ for C in Affected do if not (C.Contains l) then C.Remove lBar ]
-        (Clauses - Affected) + Reduced + set [ set [ l ] ]
+        let NewUnits = Set.filter (fun (C: Clause) -> C.Count = 1) Reduced
+        ((Clauses - Affected) + Reduced + set [ set [ l ] ], NewUnits)
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{reduce}. \index{\texttt{reduce}}}
@@ -4528,8 +4550,9 @@ The Jupyter notebook showing the resulting program is available at:
 \pagebreak
 
 \subsection{Using an External SAT Solver}
-Unfortunately, solving the resulting set of clauses with our implementation of the algorithm of Davis and
-Putnam takes several minutes.  Fortunately, there are versions of the Davis-Putnam algorithm that are
+Our implementation of the algorithm of Davis and Putnam needs about a second to solve the resulting set of
+clauses.  For larger problems, however, it is much too slow.  Fortunately, there are versions of the Davis-Putnam
+algorithm that are
 implemented in \texttt{C} or \texttt{C++} and that, furthermore, incorporate a number of improvements to the
 original algorithm.  Such programs are called \blue{SAT solvers}.  \index{SAT solver}
 One of these solvers is \href{https://github.com/arminbiere/cadical}{CaDiCaL}, which has been implemented by
