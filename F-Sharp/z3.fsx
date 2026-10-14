@@ -215,21 +215,21 @@ let boolValue (m: Model) (p: BoolExpr) : bool =
 // Displaying expressions in infix notation
 
 let private infixOps =
-    Map [ Z3_decl_kind.Z3_OP_ADD, ("+", 4); Z3_decl_kind.Z3_OP_SUB, ("-", 4)
-          Z3_decl_kind.Z3_OP_MUL, ("*", 5); Z3_decl_kind.Z3_OP_DIV, ("/", 5)
-          Z3_decl_kind.Z3_OP_IDIV, ("/", 5); Z3_decl_kind.Z3_OP_MOD, ("%", 5)
-          Z3_decl_kind.Z3_OP_POWER, ("**", 6)
-          Z3_decl_kind.Z3_OP_EQ, ("=", 3); Z3_decl_kind.Z3_OP_LE, ("≤", 3)
-          Z3_decl_kind.Z3_OP_LT, ("<", 3); Z3_decl_kind.Z3_OP_GE, ("≥", 3)
-          Z3_decl_kind.Z3_OP_GT, (">", 3)
-          Z3_decl_kind.Z3_OP_AND, ("∧", 2); Z3_decl_kind.Z3_OP_OR, ("∨", 1)
-          Z3_decl_kind.Z3_OP_IMPLIES, ("→", 0); Z3_decl_kind.Z3_OP_IFF, ("↔", 0)
-          Z3_decl_kind.Z3_OP_BADD, ("+", 4); Z3_decl_kind.Z3_OP_BSUB, ("-", 4)
-          Z3_decl_kind.Z3_OP_BMUL, ("*", 5)
-          Z3_decl_kind.Z3_OP_ULEQ, ("≤ᵤ", 3); Z3_decl_kind.Z3_OP_SLEQ, ("≤", 3)
-          Z3_decl_kind.Z3_OP_ULT, ("<ᵤ", 3); Z3_decl_kind.Z3_OP_SLT, ("<", 3)
-          Z3_decl_kind.Z3_OP_UGT, (">ᵤ", 3); Z3_decl_kind.Z3_OP_SGT, (">", 3)
-          Z3_decl_kind.Z3_OP_UGEQ, ("≥ᵤ", 3); Z3_decl_kind.Z3_OP_SGEQ, ("≥", 3) ]
+    Map [Z3_decl_kind.Z3_OP_ADD, ("+", 4); Z3_decl_kind.Z3_OP_SUB, ("-", 4)
+         Z3_decl_kind.Z3_OP_MUL, ("*", 5); Z3_decl_kind.Z3_OP_DIV, ("/", 5)
+         Z3_decl_kind.Z3_OP_IDIV, ("/", 5); Z3_decl_kind.Z3_OP_MOD, ("%", 5)
+         Z3_decl_kind.Z3_OP_POWER, ("**", 6)
+         Z3_decl_kind.Z3_OP_EQ, ("=", 3); Z3_decl_kind.Z3_OP_LE, ("≤", 3)
+         Z3_decl_kind.Z3_OP_LT, ("<", 3); Z3_decl_kind.Z3_OP_GE, ("≥", 3)
+         Z3_decl_kind.Z3_OP_GT, (">", 3)
+         Z3_decl_kind.Z3_OP_AND, ("∧", 2); Z3_decl_kind.Z3_OP_OR, ("∨", 1)
+         Z3_decl_kind.Z3_OP_IMPLIES, ("→", 0); Z3_decl_kind.Z3_OP_IFF, ("↔", 0)
+         Z3_decl_kind.Z3_OP_BADD, ("+", 4); Z3_decl_kind.Z3_OP_BSUB, ("-", 4)
+         Z3_decl_kind.Z3_OP_BMUL, ("*", 5)
+         Z3_decl_kind.Z3_OP_ULEQ, ("≤ᵤ", 3); Z3_decl_kind.Z3_OP_SLEQ, ("≤", 3)
+         Z3_decl_kind.Z3_OP_ULT, ("<ᵤ", 3); Z3_decl_kind.Z3_OP_SLT, ("<", 3)
+         Z3_decl_kind.Z3_OP_UGT, (">ᵤ", 3); Z3_decl_kind.Z3_OP_SGT, (">", 3)
+         Z3_decl_kind.Z3_OP_UGEQ, ("≥ᵤ", 3); Z3_decl_kind.Z3_OP_SGEQ, ("≥", 3)]
 
 /// If `rationalToDecimal` is true, rational numbers are displayed as decimal
 /// numbers with `precision` decimal places.  Irrational algebraic numbers, e.g.
@@ -263,7 +263,7 @@ let z3ToString (e: Expr) : string =
             toStr env e.Args[0] outer
         elif e :? Quantifier then
             let q     = e :?> Quantifier
-            let names = [ for n in q.BoundVariableNames -> n.ToString() ]
+            let names = [for n in q.BoundVariableNames -> n.ToString()]
             let env'  = List.rev names @ env
             let s     = (if q.IsUniversal then "∀" else "∃") + String.concat ", " names + ": " + toStr env' q.Body 0
             if outer > 0 then "(" + s + ")" else s
@@ -276,7 +276,7 @@ let z3ToString (e: Expr) : string =
             | Some (op, prec) when a.Length >= 2 ->
                 // the operators +, -, *, /, ∧, and ∨ are left associative, hence their
                 // first argument does not need parentheses if it has the same precedence
-                let leftAssoc = List.contains op [ "+"; "-"; "*"; "/"; "∧"; "∨" ]
+                let leftAssoc = List.contains op ["+"; "-"; "*"; "/"; "∧"; "∨"]
                 let s = a |> Array.mapi (fun i x -> toStr env x (if i = 0 && leftAssoc then prec else prec + 1))
                           |> String.concat (" " + op + " ")
                 if prec < outer then "(" + s + ")" else s
@@ -291,8 +291,8 @@ let z3ToString (e: Expr) : string =
 /// `modelToString m` converts a model into a string of the form `[x = 1, y = 2]`.
 let modelToString (m: Model) : string =
     let entries =
-        [ for d in m.ConstDecls ->
-            sprintf "%s = %s" (d.Name.ToString()) (z3ToString (m.ConstInterp d)) ]
+        [for d in m.ConstDecls ->
+           sprintf "%s = %s" (d.Name.ToString()) (z3ToString (m.ConstInterp d))]
     "[" + String.concat ", " entries + "]"
 
 registerShow (fun (o: obj) ->
@@ -303,7 +303,7 @@ registerShow (fun (o: obj) ->
                               | Status.SATISFIABLE   -> "sat"
                               | Status.UNSATISFIABLE -> "unsat"
                               | _                    -> "unknown")
-    | :? Solver as s -> Some ("[" + String.concat ", " [ for a in s.Assertions -> z3ToString a ] + "]")
+    | :? Solver as s -> Some ("[" + String.concat ", " [for a in s.Assertions -> z3ToString a] + "]")
     | _              -> None)
 
 // ---------------------------------------------------------------------------

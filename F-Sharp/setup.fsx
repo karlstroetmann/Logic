@@ -54,14 +54,14 @@ let rec show (x: obj) : string =
     | _ ->
     let t = x.GetType()
     let name = if t.IsGenericType then t.GetGenericTypeDefinition().Name else t.Name
-    let elements (xs: obj) = [ for e in (xs :?> IEnumerable) -> show e ] |> String.concat "; "
+    let elements (xs: obj) = [for e in (xs :?> IEnumerable) -> show e] |> String.concat "; "
     if name = "FSharpSet`1" then
         sprintf "set [%s]" (elements x)
     elif name = "FSharpMap`2" then
-        let pairs = [ for kv in (x :?> IEnumerable) ->
-                        let p = kv.GetType()
-                        sprintf "(%s, %s)" (show (p.GetProperty("Key").GetValue kv))
-                                           (show (p.GetProperty("Value").GetValue kv)) ]
+        let pairs = [for kv in (x :?> IEnumerable) ->
+                       let p = kv.GetType()
+                       sprintf "(%s, %s)" (show (p.GetProperty("Key").GetValue kv))
+                                          (show (p.GetProperty("Value").GetValue kv))]
         sprintf "map [%s]" (String.concat "; " pairs)
     elif name = "FSharpList`1" then
         sprintf "[%s]" (elements x)
@@ -132,31 +132,31 @@ let private importedNotebooks = Collections.Generic.HashSet<string>()
 /// the code cells of the notebook stored in `path`
 let private codeCells (path: string) : string list =
     use doc = JsonDocument.Parse(File.ReadAllText path)
-    [ for cell in doc.RootElement.GetProperty("cells").EnumerateArray() do
-        if cell.GetProperty("cell_type").GetString() = "code" then
-            let src = cell.GetProperty("source")
-            if src.ValueKind = JsonValueKind.Array then
-                String.concat "" [ for line in src.EnumerateArray() -> line.GetString() ]
-            else
-                src.GetString() ]
+    [for cell in doc.RootElement.GetProperty("cells").EnumerateArray() do
+       if cell.GetProperty("cell_type").GetString() = "code" then
+           let src = cell.GetProperty("source")
+           if src.ValueKind = JsonValueKind.Array then
+               String.concat "" [for line in src.EnumerateArray() -> line.GetString()]
+           else
+               src.GetString()]
 
 /// the lines of `code` that are neither empty nor comments
 let private significantLines (code: string) : string list =
-    [ for line in code.Split('\n') do
-        let l = line.Trim()
-        if l <> "" && not (l.StartsWith "//") then l ]
+    [for line in code.Split('\n') do
+       let l = line.Trim()
+       if l <> "" && not (l.StartsWith "//") then l]
 
 let private isDefinition (code: string) : bool =
     match significantLines code with
     | first :: _ ->
-        [ "let "; "type "; "open "; "module "; "exception "; "do "; "#r "; "[<" ]
+        ["let "; "type "; "open "; "module "; "exception "; "do "; "#r "; "[<"]
         |> List.exists (fun keyword -> first.StartsWith keyword)
     | [] -> false
 
 /// If `code` is a call of `importNotebook`, the name of the imported notebook is returned.
 let private importedName (code: string) : string option =
     match significantLines code with
-    | [ line ] when line.StartsWith "importNotebook \"" ->
+    | [line] when line.StartsWith "importNotebook \"" ->
         Some (line.Substring("importNotebook \"".Length).TrimEnd('"'))
     | _ -> None
 
@@ -170,10 +170,10 @@ let rec private collectDefinitions (path: string) : (string * string) list =
         importedNotebooks.Add fullPath |> ignore
         let dir  = Path.GetDirectoryName fullPath
         let name = Path.GetFileName fullPath
-        [ for code in codeCells fullPath do
-            match importedName code with
-            | Some other -> yield! collectDefinitions (Path.Combine(dir, other))
-            | None       -> if isDefinition code then yield (name, code) ]
+        [for code in codeCells fullPath do
+           match importedName code with
+           | Some other -> yield! collectDefinitions (Path.Combine(dir, other))
+           | None       -> if isDefinition code then yield (name, code)]
 
 /// Type check the given cells.  Every cell is wrapped into a module of its own,
 /// which is then opened.  The `open` declarations of a cell are repeated after
@@ -201,15 +201,15 @@ let private typeCheck (kernel: Kernel) (cells: (string * string) list) : string 
     let code   = String.concat "\n" (Seq.append directives body)
     let offset = directives.Count
     let result = kernel.SendAsync(RequestDiagnostics(code)).Result
-    [ for event in result.Events do
-        match event with
-        | :? DiagnosticsProduced as d ->
-            for diag in d.Diagnostics do
-                if string diag.Severity = "Error" then
-                    let line = diag.LinePositionSpan.Start.Line - offset
-                    let where = if 0 <= line && line < origin.Count then origin[line] else ""
-                    yield sprintf "%s\n    in %s" diag.Message where
-        | _ -> () ]
+    [for event in result.Events do
+       match event with
+       | :? DiagnosticsProduced as d ->
+           for diag in d.Diagnostics do
+               if string diag.Severity = "Error" then
+                   let line = diag.LinePositionSpan.Start.Line - offset
+                   let where = if 0 <= line && line < origin.Count then origin[line] else ""
+                   yield sprintf "%s\n    in %s" diag.Message where
+       | _ -> ()]
 
 /// `importNotebook path` executes the definitions of the notebook stored in `path`.
 let importNotebook (path: string) : unit =
@@ -224,7 +224,7 @@ let importNotebook (path: string) : unit =
         // forget the definitions once the current cell is finished.
         use _ = ExecutionContext.SuppressFlow()
         Task.Run(fun () ->
-            let tasks = [ for (_, code) in cells -> kernel.SendAsync(SubmitCode(code)) ]
+            let tasks = [for (_, code) in cells -> kernel.SendAsync(SubmitCode(code))]
             Task.WhenAll(tasks) :> Task) |> ignore
         if not names.IsEmpty then
             printfn "imported %s" (String.concat ", " names)
