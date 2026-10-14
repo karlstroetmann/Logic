@@ -49,13 +49,25 @@
 \usepackage{stmaryrd}
 \usepackage{alltt}
 \usepackage{theorem}
-\usepackage{minted}
+% TeX Live 2025 and later ship minted 3, which draws bgcolor differently (no padding,
+% hides the line numbers at numbersep = -0.2cm).  minted2 is the frozen minted 2.9.
+\IfFileExists{minted2.sty}{\usepackage{minted2}}{\usepackage{minted}}
+% fvextra 1.11 and later move every line of a listing up by backgroundcolorboxoverlap = 0.25pt,
+% even when fvextra draws no background (minted2 draws its own).
+\makeatletter
+\@ifundefined{KV@FV@backgroundcolorboxoverlap}{}{\fvset{backgroundcolorboxoverlap=0pt}}
+\makeatother
 \usepackage{makeidx}
 \usepackage{epigraph}
 \setlength{\epigraphwidth}{0.7\textwidth}
 
 \usepackage{hyperref}
 \usepackage[all]{hypcap}
+% hyperref 7.01 (TeX Live 2026) expands the active UTF-8 characters in PDF strings,
+% which fails for the characters of utf8x.  Skip this step when ucs is loaded.
+\makeatletter
+\@ifpackageloaded{ucs}{\def\HyPsd@expand@utfviii{}}{}
+\makeatother
 \hypersetup{
   colorlinks = true, 
   linkcolor  = blue,
