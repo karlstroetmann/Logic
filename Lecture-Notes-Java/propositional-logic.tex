@@ -3063,25 +3063,27 @@ returns the set $\bigl\{ \{\} \bigr\}$, as the empty clause represents the unsat
     RecursiveSet<RecursiveSet<Literal>> solve(
             RecursiveSet<RecursiveSet<Literal>> Clauses) {
         var Variables = flatMap(Clauses, C -> C.map(l -> extractVariable(l)));
-        return solveRecursive(Clauses, Variables, set());
+        var Units     = Clauses.filter(C -> C.size() == 1);
+        return solveRecursive(Clauses, Units, Variables, set());
     }
 
     RecursiveSet<RecursiveSet<Literal>> solveRecursive(
             RecursiveSet<RecursiveSet<Literal>> Clauses,
+            RecursiveSet<RecursiveSet<Literal>> Units,
             RecursiveSet<String> Variables,
             RecursiveSet<String> UsedVars) {
-        var S = saturate(Clauses);
+        var S = saturate(Clauses, Units);
         RecursiveSet<Literal> EmptyClause = set();
         if (S.contains(EmptyClause))     { return set(EmptyClause); }
         if (S.every(C -> C.size() == 1)) { return S;                }
         var p = arb(Variables.difference(UsedVars));
         var nextUsedVars = UsedVars.union(set(p));
-        var Result1 = solveRecursive(S.union(set(set(new Var(p)))),
+        var Result1 = solveRecursive(S, set(set(new Var(p))),
                                      Variables,
                                      nextUsedVars);
         if (!Result1.contains(EmptyClause)) { return Result1; }
         Literal pBar = new Neg(p);
-        return solveRecursive(S.union(set(set(pBar))),
+        return solveRecursive(S, set(set(pBar)),
                               Variables,
                               nextUsedVars);
     }
@@ -3089,7 +3091,7 @@ returns the set $\bigl\{ \{\} \bigr\}$, as the empty clause represents the unsat
 \vspace*{-0.3cm}
   \caption{The function \texttt{solve}.}
   \label{fig:solve}
-\end{figure} 
+\end{figure}
 
 The implementations of \texttt{solve} and the auxiliary function \texttt{solveRecursive} are shown in Figure
 \ref{fig:solve} on page \pageref{fig:solve}.
@@ -3097,44 +3099,56 @@ The implementations of \texttt{solve} and the auxiliary function \texttt{solveRe
 \item The function \texttt{solve} serves as the entry point. In line 3, it first computes the set
   \texttt{Variables} containing the names of all propositional variables that occur in the given set of
   \texttt{Clauses}. It does this by mapping \texttt{extractVariable} over all literals and computing the union of
-  these sets. 
-\item In line 4, it calls the helper function \texttt{solveRecursive}, passing the original \texttt{Clauses},
-  the complete set of \texttt{Variables}, and an empty set \texttt{set()} to initialize \texttt{UsedVars}.
-  This is the set of variables that have already been used in case distinctions.  Initially, this set is empty.
-\item The real work is done in the function \texttt{solveRecursive}. In line 11, we reduce the given set of
-  clauses as much as possible by calling the function \texttt{saturate}. This applies all possible unit cuts
-  and removes clauses subsumed by unit clauses, storing the result in \texttt{S}. 
-\item In line 12, we define \texttt{EmptyClause} to represent an empty set of literals.
-\item In line 13, we check whether the saturated set \texttt{S} contains the empty clause. If it does, the set
-  is contradictory, and we return the set containing the empty clause (which represents $\falsum$). 
-\item In line 14, we check if all clauses in \texttt{S} are unit clauses (i.e., their size is exactly 1). If
-  this is the case, the set \texttt{S} is trivial and represents a valid solution, so we return \texttt{S}. 
-\item If the set is neither contradictory nor a trivial solution, we must make a case distinction. In line 15,
+  these sets.
+\item In line 4, it computes the set \texttt{Units} of all unit clauses of \texttt{Clauses}.
+\item In line 5, it calls the helper function \texttt{solveRecursive}, passing the original \texttt{Clauses},
+  the set \texttt{Units}, the complete set of \texttt{Variables}, and an empty set \texttt{set()} to initialize
+  \texttt{UsedVars}.  This is the set of variables that have already been used in case distinctions.
+  Initially, no unit clause has been used for a reduction and no variable has been used for a case
+  distinction.
+\item The real work is done in the function \texttt{solveRecursive}, which solves the set
+  $\texttt{Clauses} \cup \texttt{Units}$.  Here, \texttt{Units} is a set of unit clauses that have not yet
+  been used for unit cuts and unit subsumptions, while all other unit clauses of \texttt{Clauses} have already
+  been used.  In line 13, we reduce the set of clauses $\texttt{Clauses} \cup \texttt{Units}$ as much as
+  possible by calling the function \texttt{saturate}. This applies all possible unit cuts and removes clauses
+  subsumed by unit clauses, storing the result in \texttt{S}.  The function \texttt{saturate} uses the unit
+  clauses from the set \texttt{Units} and the unit clauses that are created by these reductions.
+\item In line 14, we define \texttt{EmptyClause} to represent an empty set of literals.
+\item In line 15, we check whether the saturated set \texttt{S} contains the empty clause. If it does, the set
+  is contradictory, and we return the set containing the empty clause (which represents $\falsum$).
+\item In line 16, we check if all clauses in \texttt{S} are unit clauses (i.e., their size is exactly 1). If
+  this is the case, the set \texttt{S} is trivial and represents a valid solution, so we return \texttt{S}.
+\item If the set is neither contradictory nor a trivial solution, we must make a case distinction. In line 17,
   we select an arbitrary variable \texttt{p} from the set of \texttt{Variables} that has not yet been used
   (i.e., it is not in \texttt{UsedVars}).  Note that \texttt{p} is the name of the variable, i.e.~it is a
   string.  It is very important to use the function \texttt{arb} here, as
   \texttt{arb} picks a random element from a set.  If we instead used a function that always picks the
   first element of a given set, the performance of the implementation would degrade seriously.
-\item In line 16, we create the set \texttt{nextUsedVars} by adding the chosen variable \texttt{p} to the set
-  of \texttt{UsedVars}. 
-\item In lines 17--19, we recursively try to solve the set of clauses assuming \texttt{p} is \texttt{true}. We
+\item In line 18, we create the set \texttt{nextUsedVars} by adding the chosen variable \texttt{p} to the set
+  of \texttt{UsedVars}.
+\item In lines 19--21, we recursively try to solve the set of clauses assuming \texttt{p} is \texttt{true}. We
   do this by adding the unit clause \texttt{\{p\}} to \texttt{S} and calling \texttt{solveRecursive}.  As
-  \texttt{p} is a string, the positive literal $p$ is represented as \texttt{new Var(p)}.  The
-  result is stored in \texttt{Result1}. 
-\item In line 20, we check if this first attempt was successful. If \texttt{Result1} does not contain the empty
-  clause, we have found a valid solution and we return \texttt{Result1}. 
-\item If the first attempt failed, we must try the opposite assignment. In line 21, we compute the complement
-  of the literal $p$, which is $\neg p$, and store it in \texttt{pBar}. 
-\item Finally, in lines 22--24, we recursively call \texttt{solveRecursive} again, this time adding the unit
+  \texttt{p} is a string, the positive literal $p$ is represented as \texttt{new Var(p)}.  As \texttt{S} is
+  saturated, all unit clauses of \texttt{S} have already been used.  Hence, the new unit clause
+  \texttt{\{p\}} is the only unit clause that has not been used yet and we pass the set
+  \texttt{set(set(new Var(p)))} as the argument \texttt{Units}.  The result is stored in \texttt{Result1}.
+\item In line 22, we check if this first attempt was successful. If \texttt{Result1} does not contain the empty
+  clause, we have found a valid solution and we return \texttt{Result1}.
+\item If the first attempt failed, we must try the opposite assignment. In line 23, we compute the complement
+  of the literal $p$, which is $\neg p$, and store it in \texttt{pBar}.
+\item Finally, in lines 24--26, we recursively call \texttt{solveRecursive} again, this time adding the unit
   clause \texttt{\{pBar\}} to \texttt{S} to simulate the assignment where \texttt{p} is \texttt{false}. We
-  return the result of this call; if this alternative also fails, the set of clauses is unsatisfiable. 
+  return the result of this call; if this alternative also fails, the set of clauses is unsatisfiable.
 \end{enumerate}
 
 We now discuss the auxiliary procedures used in the implementation of the function
 \texttt{solve}.
 First, we discuss the function \texttt{saturate}. This function receives a
-set $S$ of clauses as input and performs all possible unit cuts and
-unit subsumptions.
+set \texttt{Clauses} of clauses and a set \texttt{Units} of unit clauses that have not yet been used for unit
+cuts and unit subsumptions.  It performs all possible unit cuts and unit subsumptions on the set
+$\texttt{Clauses} \cup \texttt{Units}$.  Every unit clause $\{l\}$ of \texttt{Clauses} that is not an element of
+\texttt{Units} must already have been used, i.e.~neither $l$ nor $\komplement{l}$ occurs in any other clause of
+\texttt{Clauses}.  The function \texttt{solveRecursive} guarantees this.
 The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pageref{fig:saturate}.
 
 \begin{figure}[!ht]
@@ -3148,15 +3162,17 @@ The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pa
                 xrightmargin  = 0.8cm
               ]{java}
     RecursiveSet<RecursiveSet<Literal>> saturate(
-            RecursiveSet<RecursiveSet<Literal>> Clauses) {
-        var S = Clauses;
-        RecursiveSet<RecursiveSet<Literal>> Used = set();
-        while (true) {
-            var Units = S.filter(C -> C.size() == 1 && !Used.contains(C));
-            if (Units.isEmpty()) { break; }
-            var unit = arb(Units);
-            Used.add(unit);
-            S = reduce(S, first(unit));
+            RecursiveSet<RecursiveSet<Literal>> Clauses,
+            RecursiveSet<RecursiveSet<Literal>> Units) {
+        var S       = Clauses.union(Units);
+        var Pending = Units.clone();
+        RecursiveSet<Literal> EmptyClause = set();
+        while (!Pending.isEmpty() && !S.contains(EmptyClause)) {
+            var unit = arb(Pending);
+            Pending.remove(unit);
+            var reduction = reduce(S, first(unit));
+            S = reduction.clauses();
+            Pending.addAll(reduction.newUnits());
         }
         return S;
     }
@@ -3164,20 +3180,33 @@ The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pa
 \vspace*{-0.3cm}
   \caption{The function \texttt{saturate}. \index{\texttt{saturate}}}
   \label{fig:saturate}
-\end{figure} 
+\end{figure}
 \begin{enumerate}
-\item In line 3, we assign the set \texttt{Clauses} to the variable \texttt{S}.  Later, the variable \texttt{S}
-  is assigned new sets that are computed by the function \texttt{reduce}.  As \texttt{reduce} creates a new set,
-  the original set \texttt{Clauses} is not changed.
-\item In line 4, we initialize the set \texttt{Used} as an empty set. In this set, we record which unit clauses
-  we have already used for unit cuts and subsumptions. 
-\item In line 5, we begin a \texttt{while} loop that is continued as long as we find unit clauses that have not been used.
-\item In line 6, we compute the set \texttt{Units} of all unit clauses. We collect only those unit clauses that have a size of 1 and have not yet been used.
-\item In line 7, we check if the set \texttt{Units} is empty, and if so, we break out of the loop.
-\item In line 8, we select an arbitrary unit clause from the set \texttt{Units} and store it in the variable \texttt{unit}.
-\item In line 9, we add the clause \texttt{unit} to the set \texttt{Used} of used clauses.
-\item In line 10, the actual work is done by a call to the function \texttt{reduce}. By extracting the literal with \texttt{first(unit)}, this function performs all possible unit cuts with the unit clause and also removes all clauses that are subsumed by the unit clause.
-\item At the end, in line 12, the remaining set of clauses \texttt{S} is returned.
+\item In line 4, we assign the set $\texttt{Clauses} \cup \texttt{Units}$ to the variable \texttt{S}.  Later, the
+  variable \texttt{S} is assigned new sets that are computed by the function \texttt{reduce}.  As
+  \texttt{union} and \texttt{reduce} create new sets, the original set \texttt{Clauses} is not changed.
+\item In line 5, we initialize the variable \texttt{Pending} with a copy of the set \texttt{Units}.  The set
+  \texttt{Pending} contains those unit clauses of \texttt{S} that have not yet been used for unit cuts and
+  subsumptions.  We have to copy the set \texttt{Units}, since we will remove elements from \texttt{Pending}
+  and the function \texttt{saturate} should not change its arguments.
+\item In line 6, we define \texttt{EmptyClause} to represent the empty clause.
+\item In line 7, we begin a \texttt{while} loop that is continued as long as there are unit clauses that have
+  not been used and \texttt{S} does not contain the empty clause.  As soon as \texttt{S} contains the empty
+  clause, \texttt{S} is unsatisfiable and further reductions are pointless.
+\item In line 8, we select an arbitrary unit clause from the set \texttt{Pending} and store it in the variable
+  \texttt{unit}.  In line 9, we remove this clause from \texttt{Pending}, since it is used now.
+\item In line 10, the actual work is done by a call to the function \texttt{reduce}. By extracting the literal
+  with \texttt{first(unit)}, this function performs all possible unit cuts with the unit clause and also
+  removes all clauses that are subsumed by the unit clause.  It returns a record with two components: The
+  component \texttt{clauses} is the simplified set of clauses, which we store in \texttt{S} in line 11.  The
+  component \texttt{newUnits} is the set of those unit clauses that are created by the unit cuts.
+\item In line 12, we add the new unit clauses to the set \texttt{Pending}.  Note that we never have to search
+  the set \texttt{S} for new unit clauses, since all of them are returned by \texttt{reduce}.  This is
+  important for efficiency, as \texttt{S} may contain thousands of clauses.  Furthermore, every unit clause
+  has to be used only once:  After the reduction with a unit clause $\{l\}$, neither $l$ nor $\komplement{l}$
+  occurs in any other clause of \texttt{S}.  As later reductions only remove or shorten clauses, this remains
+  true.
+\item At the end, in line 14, the remaining set of clauses \texttt{S} is returned.
 \end{enumerate}
 
 
@@ -3202,27 +3231,37 @@ $
                   xleftmargin   = 0.8cm,
                   xrightmargin  = 0.8cm
                 ]{java}
-    RecursiveSet<RecursiveSet<Literal>> reduce(
+    record Reduction(RecursiveSet<RecursiveSet<Literal>> clauses,
+                     RecursiveSet<RecursiveSet<Literal>> newUnits) {}
+
+    Reduction reduce(
             RecursiveSet<RecursiveSet<Literal>> Clauses, Literal l) {
-        var lBar   = complement(l);
-        var result = Clauses.filterMap(
+        var lBar     = complement(l);
+        var result   = Clauses.filterMap(
             cl -> !cl.contains(l),
             cl -> cl.contains(lBar) ? cl.difference(set(lBar)) : cl
         );
-        result.add(set(l));    
-        return result;
+        result.add(set(l));
+        var newUnits = Clauses.filterMap(
+            cl -> cl.size() == 2 && cl.contains(lBar) && !cl.contains(l),
+            cl -> cl.difference(set(lBar))
+        );
+        return new Reduction(result, newUnits);
     }
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{reduce}. \index{\texttt{reduce}}}
   \label{fig:reduce}
-\end{figure} 
+\end{figure}
 \begin{enumerate}
 \item The function \texttt{reduce} takes a set of clauses \texttt{Clauses} and a literal \texttt{l} as arguments.
-\item In line 3, it computes the complement of the literal \texttt{l} using the helper function
-  \texttt{complement} and stores it in the variable \texttt{lBar}. 
-\item In lines 4 to 7, the method \texttt{filterMap} is applied to the set \texttt{Clauses} to perform both
-  unit subsumptions and unit cuts simultaneously. 
+  It returns a record of the class \texttt{Reduction}, which is defined in lines 1 and 2.  The component
+  \texttt{clauses} of this record is the reduced set of clauses, the component \texttt{newUnits} is the set of
+  those unit clauses that are created by the unit cuts.
+\item In line 6, it computes the complement of the literal \texttt{l} using the helper function
+  \texttt{complement} and stores it in the variable \texttt{lBar}.
+\item In lines 7 to 10, the method \texttt{filterMap} is applied to the set \texttt{Clauses} to perform both
+  unit subsumptions and unit cuts simultaneously.
 \item The first argument to \texttt{filterMap}, \texttt{cl -> !cl.contains(l)}, acts as a filter. It retains only
   those clauses that do not contain the literal \texttt{l}. This implements unit subsumption, as any clause
   containing \texttt{l} is already satisfied and can be discarded. 
@@ -3234,9 +3273,19 @@ $
   maps the remaining clauses. If a clause contains the complementary literal \texttt{lBar}, this literal is
   removed using the \texttt{difference} method, which implements the unit cut. Otherwise, the clause remains
   unchanged. The modified set of clauses is stored in the variable \texttt{result}. 
-\item In line 8, the unit clause containing just the literal \texttt{l} is explicitly added back to the
-  \texttt{result} set. 
-\item Finally, in line 9, the function returns the fully reduced set of clauses \texttt{result}.
+\item In line 11, the unit clause containing just the literal \texttt{l} is explicitly added back to the
+  \texttt{result} set.
+\item In lines 12 to 15, we compute the set \texttt{newUnits}.  A unit cut with the unit clause $\{l\}$ creates
+  the unit clause $\{k\}$ from every clause of the form $\{\komplement{l}, k\}$ where $k \not= l$.  These clauses
+  are selected by the filter
+  \\[0.2cm]
+  \hspace*{1.3cm}
+  \texttt{cl -> cl.size() == 2 \&\& cl.contains(lBar) \&\& !cl.contains(l)}
+  \\[0.2cm]
+  and the literal \texttt{lBar} is removed from them.  As all other clauses either remain unchanged or are
+  removed, \texttt{newUnits} contains exactly those unit clauses that are created by the unit cuts.
+\item Finally, in line 16, the function returns the fully reduced set of clauses \texttt{result} together with
+  the set \texttt{newUnits}.
 \end{enumerate}
 
 
@@ -3396,25 +3445,20 @@ To utilize this heuristic, we must integrate it into our main recursive solving 
               ]{java}
     RecursiveSet<RecursiveSet<Literal>> solveRecursive(
             RecursiveSet<RecursiveSet<Literal>> Clauses,
+            RecursiveSet<RecursiveSet<Literal>> Units,
             RecursiveSet<String> Variables,
             RecursiveSet<String> UsedVars)
     {
-        var S = saturate(Clauses);
+        var S = saturate(Clauses, Units);
         RecursiveSet<Literal> EmptyClause = set();
         if (S.contains(EmptyClause))     { return set(EmptyClause); }
         if (S.every(C -> C.size() == 1)) { return S; }
         var l = selectLiteral(S, Variables, UsedVars);
         var nextUsedVars = UsedVars.union(set(extractVariable(l)));
-        var Result1 = solveRecursive(
-            S.union(set(set(l))),
-            Variables,
-            nextUsedVars);
+        var Result1 = solveRecursive(S, set(set(l)), Variables, nextUsedVars);
         if (!Result1.contains(EmptyClause)) { return Result1; }
         var lBar = complement(l);
-        return solveRecursive(
-            S.union(set(set(lBar))),
-            Variables,
-            nextUsedVars);
+        return solveRecursive(S, set(set(lBar)), Variables, nextUsedVars);
     }
 \end{minted}
 \vspace*{-0.3cm}
@@ -3424,13 +3468,14 @@ To utilize this heuristic, we must integrate it into our main recursive solving 
 
 The base cases for handling contradiction and trivial solutions remain identical to our previous implementation. The significant changes occur during the case distinction phase:
 \begin{enumerate}
-\item In line 10, instead of picking an arbitrary variable, we now call \texttt{selectLiteral} to find the most
-  promising literal \texttt{l} based on the Jeroslow-Wang score. 
-\item In line 11, we compute the set \texttt{nextUsedVars}. Since \texttt{selectLiteral} returns a literal, we must extract the underlying propositional variable using \texttt{extractVariable(l)} before adding it to \texttt{UsedVars}.
-\item In lines 12--15, we perform the first recursive descent. We add the unit clause \texttt{set(l)} to the saturated set \texttt{S}. Because \texttt{selectLiteral} returns a specific literal (which could already be negative), we directly enforce this literal rather than simply assuming a positive variable.
-\item In line 16, we check if the first recursive call yielded a valid solution. If it did, we return it.
-\item In line 17, if the first path failed to find a solution, we compute the complement of our chosen literal, storing it in \texttt{lBar}.
-\item Finally, in lines 18--21, we recursively explore the alternative path by enforcing the complementary literal \texttt{lBar}.
+\item In line 11, instead of picking an arbitrary variable, we now call \texttt{selectLiteral} to find the most
+  promising literal \texttt{l} based on the Jeroslow-Wang score.
+\item In line 12, we compute the set \texttt{nextUsedVars}. Since \texttt{selectLiteral} returns a literal, we must extract the underlying propositional variable using \texttt{extractVariable(l)} before adding it to \texttt{UsedVars}.
+\item In line 13, we perform the first recursive descent. We pass the saturated set \texttt{S} together with the
+  unit clause \texttt{set(l)}, which is the only unit clause that has not been used yet. Because \texttt{selectLiteral} returns a specific literal (which could already be negative), we directly enforce this literal rather than simply assuming a positive variable.
+\item In line 14, we check if the first recursive call yielded a valid solution. If it did, we return it.
+\item In line 15, if the first path failed to find a solution, we compute the complement of our chosen literal, storing it in \texttt{lBar}.
+\item Finally, in line 16, we recursively explore the alternative path by enforcing the complementary literal \texttt{lBar}.
 \end{enumerate}
 You can find the Jupyter notebook implementing the Davis-Putnam algorithm with the Jeroslow-Wang heuristic at:
 \\[0.2cm]
@@ -4798,7 +4843,7 @@ The Jupyter notebook showing the resulting program is available at:
 \section{Sudoku and SAT4J}
 In our previous examples, we modeled the Sudoku puzzle using propositional logic and solved it using our own
 implementation of the Davis-Putnam algorithm in the notebook. Although our algorithm
-is logically correct, solving the resulting set of over 10,000 clauses takes about 15 minutes on a modern
+is logically correct, solving the resulting set of over 10,000 clauses takes about three minutes on a modern
 computer. To solve such problems efficiently, we can rely on industrial-strength SAT solvers. 
 
 \href{https://www.sat4j.org}{\texttt{SAT4J}} is a boolean satisfiability solver that is implemented in Java.
@@ -5112,7 +5157,7 @@ every variable.  The positive literals in this array are the variables that are 
 be computed with the function \texttt{variableName}.
 
 Executing this entire program yields a huge performance improvement.  While the Davis-Putnam
-algorithm spent about 15 minutes laboring through the SAT derivation, the Jupyter notebook that uses
+algorithm spent about three minutes laboring through the SAT derivation, the Jupyter notebook that uses
 \texttt{SAT4J} accomplishes the same goal in roughly 30 milliseconds.  
 The Jupyter notebook showing the resulting program is available at:
 \\[0.2cm]

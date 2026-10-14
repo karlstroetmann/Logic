@@ -2895,23 +2895,36 @@ Next, we provide the implementation of the function
 \href{https://github.com/karlstroetmann/Logic/blob/master/SetlX/davis-putnam.stlx}{\texttt{solve}}, 
 which can answer the question of whether a set of clauses is satisfiable. The
 implementation is shown in Figure \ref{fig:solve} on page \pageref{fig:solve}.
-The function receives two arguments: The sets \texttt{Clauses} and \texttt{Variables}.
-Here, \texttt{Clauses} is a set of clauses and \texttt{Variables} is a set of
-variables. If the set \texttt{Clauses} is satisfiable, then the call
+The function receives three arguments: The sets \texttt{Clauses}, \texttt{Units}, and \texttt{Variables}.
+Here, \texttt{Clauses} is a set of clauses, \texttt{Units} is a set of unit clauses, and \texttt{Variables} is
+a set of variables.  The function solves the set $\texttt{Clauses} \cup \texttt{Units}$.  If this set is
+satisfiable, then the call
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{solve(Clauses, Variables)} \index{\texttt{solve}}
+\texttt{solve(Clauses, Units, Variables)} \index{\texttt{solve}}
 \\[0.2cm]
 returns a set of unit clauses \texttt{Result}, such
 that any valuation $\I$, which satisfies all unit clauses from \texttt{Result}, also satisfies all clauses from
-the set $\texttt{Clauses}$. If the set $\texttt{Clauses}$ is not satisfiable, the call
+the set $\texttt{Clauses} \cup \texttt{Units}$. If the set $\texttt{Clauses} \cup \texttt{Units}$ is not
+satisfiable, the call
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{solve(Clauses, Variables)} 
+\texttt{solve(Clauses, Units, Variables)}
 \\[0.2cm]
 returns the set $\bigl\{ \{\} \bigr\}$, as the empty clause represents the unsatisfiable formula $\falsum$.
 
-You might wonder why we need the set \texttt{Variables} in the function \texttt{solve}. The reason is that we need to keep track of which variables we have already used for case distinctions during the recursive calls. These variables are collected in the set \texttt{Variables}.
+You might wonder why we need the sets \texttt{Units} and \texttt{Variables} in the function \texttt{solve}.
+\texttt{Units} is a set of unit clauses that have not yet been used for unit cuts and unit subsumptions, while
+all other unit clauses of \texttt{Clauses} have already been used.  This information enables the function
+\texttt{saturate} to use every unit clause only once.  We need the set \texttt{Variables} in order to keep
+track of which variables we have already used for case distinctions during the recursive calls. These
+variables are collected in the set \texttt{Variables}.  Initially, no unit clause has been used for a
+reduction and no variable has been used for a case distinction.  Therefore, a set of clauses \texttt{Clauses}
+is solved by the call
+\\[0.2cm]
+\hspace*{1.3cm}
+\texttt{solve(Clauses, \{ C for C in Clauses if len(C) == 1 \}, set())}.
+\\[0.2cm]\mbox{}
 
 \begin{figure}[!ht]
   \centering
@@ -2923,30 +2936,32 @@ You might wonder why we need the set \texttt{Variables} in the function \texttt{
                 xleftmargin   = 0.2cm,
                 xrightmargin  = 0.2cm
               ]{python3}
-    def solve(Clauses, Variables):
-        S      = saturate(Clauses)
+    def solve(Clauses, Units, Variables):
+        S      = saturate(Clauses, Units)
         Empty  = frozenset()
         Falsum = { Empty }
         if Empty in S:                  # S is inconsistent
-            return Falsum           
+            return Falsum
         if all(len(C) == 1 for C in S): # S is trivial
             return S
         l       = selectLiteral(S, Variables)
         lBar    = complement(l)
         p       = extractVariable(l)
         newVars = Variables | { p }
-        Result  = solve(S | { frozenset({l}) }, newVars)
+        Result  = solve(S, { frozenset({l}) }, newVars)
         if Result != Falsum:
             return Result
-        return solve(S | { frozenset({lBar}) }, newVars)
+        return solve(S, { frozenset({lBar}) }, newVars)
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{solve}.}
   \label{fig:solve}
-\end{figure} 
+\end{figure}
 \begin{enumerate}
-\item In line 2, we reduce the given set of clauses \texttt{Clauses} as much as possible using the method \texttt{saturate},
-      applying unit cuts and removing all clauses that are subsumed by unit clauses.
+\item In line 2, we reduce the set of clauses $\texttt{Clauses} \cup \texttt{Units}$ as much as possible using the
+      function \texttt{saturate}, applying unit cuts and removing all clauses that are subsumed by unit clauses.
+      The function \texttt{saturate} uses the unit clauses from the set \texttt{Units} and the unit clauses that
+      are created by these reductions.
 \item Next, we test in line 5 if the simplified set of clauses \texttt{S}
       contains the empty clause, and if so, we return the set 
       $\bigl\{\{\}\bigr\}$ as the result.
@@ -2959,26 +2974,32 @@ You might wonder why we need the set \texttt{Variables} in the function \texttt{
       \hspace*{1.3cm} 
       $\texttt{S} \cup \bigl\{\{\texttt{l}\}\bigr\}$ 
       \\[0.2cm]
-      is solvable. There are two cases:
+      is solvable.  As \texttt{S} is saturated, all unit clauses of \texttt{S} have already been used.  Hence,
+      the new unit clause $\{\texttt{l}\}$ is the only unit clause that has not been used yet and we pass the
+      set $\bigl\{\{\texttt{l}\}\bigr\}$ as the argument \texttt{Units}.  There are two cases:
       \begin{enumerate}
       \item If this set is solvable, we return the solution of this set as the result.
 
-      \item Otherwise, we recursively check whether the set 
+      \item Otherwise, we recursively check whether the set
             \\[0.2cm]
             \hspace*{1.3cm}
-            $\texttt{S} \cup \Bigl\{ \bigl\{ \komplement{\texttt{l}} \bigr\} \Bigr\}$ 
+            $\texttt{S} \cup \Bigl\{ \bigl\{ \komplement{\texttt{l}} \bigr\} \Bigr\}$
             \\[0.2cm]
-            is solvable. If this set is solvable, then this solution is also a
-            solution of the set $\texttt{Clauses}$, and we return this solution. If the
-            set is unsolvable, then the set $\texttt{Clauses}$ must also be unsolvable.
+            is solvable.  This time, $\bigl\{\komplement{\texttt{l}}\bigr\}$ is the only unit clause that has not
+            been used yet.  If this set is solvable, then this solution is also a
+            solution of the set $\texttt{Clauses} \cup \texttt{Units}$, and we return this solution. If the
+            set is unsolvable, then the set $\texttt{Clauses} \cup \texttt{Units}$ must also be unsolvable.
       \end{enumerate}
 \end{enumerate}
 
 We now discuss the auxiliary procedures used in the implementation of the function
 \texttt{solve}.
 First, we discuss the function \texttt{saturate}. This function receives a
-set $S$ of clauses as input and performs all possible unit cuts and
-unit subsumptions.
+set \texttt{Clauses} of clauses and a set \texttt{Units} of unit clauses that have not yet been used for unit
+cuts and unit subsumptions.  It performs all possible unit cuts and unit subsumptions on the set
+$\texttt{Clauses} \cup \texttt{Units}$.  Every unit clause $\{l\}$ of \texttt{Clauses} that is not an element of
+\texttt{Units} must already have been used, i.e.~neither $l$ nor $\komplement{l}$ occurs in any other clause of
+\texttt{Clauses}.  The function \texttt{solve} guarantees this.
 The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pageref{fig:saturate}.
 
 \begin{figure}[!ht]
@@ -2991,47 +3012,50 @@ The function \texttt{saturate} is shown in Figure \ref{fig:saturate} on page \pa
                 xleftmargin   = 0.8cm,
                 xrightmargin  = 0.8cm
               ]{python3}
-    def saturate(Clauses):
-        S     = Clauses.copy()
-        Units = { C for C in S if len(C) == 1 }
-        Used  = set()
-        while len(Units) > 0:
-            unit  = Units.pop()
-            Used |= { unit }
-            l     = arb(unit)
-            S     = reduce(S, l)
-            Units = { C for C in S if len(C) == 1 } - Used        
+    def saturate(Clauses, Units):
+        S       = Clauses | Units
+        Pending = Units.copy()
+        Empty   = frozenset()
+        while len(Pending) > 0 and Empty not in S:
+            unit        = Pending.pop()
+            l           = arb(unit)
+            S, NewUnits = reduce(S, l)
+            Pending    |= NewUnits
         return S
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{saturate}. \index{\texttt{saturate}}}
   \label{fig:saturate}
-\end{figure} 
+\end{figure}
 \begin{enumerate}
-\item Initially, we copy the set \texttt{Clauses} into the variable \texttt{S}.
-      This is necessary because we will later modify the set \texttt{S}. The function
-      \texttt{saturate} should not alter the argument \texttt{Clauses} and therefore
-      it has to create a copy of the set \texttt{Clauses}.
-\item Then, in line 3, we compute the set \texttt{Units} of all unit clauses.
-\item Next, in line 4, we initialize the set \texttt{Used} as an empty set.
-      In this set, we record which unit clauses we have already used for unit cuts and
-      subsumptions.
-\item As long as the set \texttt{Units} of unit clauses is not empty, we select in line 6
-      an arbitrary unit clause \texttt{unit} from the set \texttt{Units} using the function $\texttt{pop}$, and remove this unit clause from the set \texttt{Units}.
-\item In line 7, we add the clause \texttt{unit} to the set
-      \texttt{Used} of used clauses.
-\item In line 8, we extract the literal \texttt{l} from the clause
-      \texttt{Unit} using the function \texttt{arb}. The function $\texttt{arb}$ returns an arbitrary element of the set passed to it as an argument. If this set contains only one element, then
+\item Initially, we store the set $\texttt{Clauses} \cup \texttt{Units}$ in the variable \texttt{S}.
+      As the operator ``\texttt{|}'' creates a new set, the argument \texttt{Clauses} is not changed when we
+      assign new sets to the variable \texttt{S}.
+\item Then, in line 3, we initialize the variable \texttt{Pending} with a copy of the set \texttt{Units}.
+      The set \texttt{Pending} contains those unit clauses of \texttt{S} that have not yet been used for unit cuts
+      and subsumptions.  We have to copy the set \texttt{Units}, since we will remove elements from
+      \texttt{Pending} and the function \texttt{saturate} should not alter its arguments.
+\item As long as the set \texttt{Pending} is not empty and \texttt{S} does not contain the empty clause
+      \texttt{Empty}, which is defined in line 4, we select in line 6 an arbitrary unit clause \texttt{unit} from the set \texttt{Pending} using the method
+      $\texttt{pop}$, which also removes this unit clause from the set \texttt{Pending}.
+\item In line 7, we extract the literal \texttt{l} from the clause
+      \texttt{unit} using the function \texttt{arb}. The function $\texttt{arb}$ returns an arbitrary element of the set passed to it as an argument. If this set contains only one element, then
       that element is returned.
-\item In line 9, the actual work is done by a call to the function
+\item In line 8, the actual work is done by a call to the function
       \texttt{reduce}. This function performs all possible unit cuts with the
       unit clause $\{\texttt{l}\}$ and also removes all clauses that
-      are subsumed by the unit clause $\{\texttt{l}\}$.
-\item When the unit cuts with the unit clause $\{\texttt{l}\}$ are computed, new
-      unit clauses can emerge, which we collect in line 10.  Of course, we collect only those unit clauses
-      that have not yet been used.
-\item The loop in lines 5 -- 10 is continued as long as we
-      find unit clauses that have not been used.
+      are subsumed by the unit clause $\{\texttt{l}\}$.  It returns a pair: The first component is the
+      simplified set of clauses, which we store in \texttt{S}.  The second component is the set
+      \texttt{NewUnits} of those unit clauses that are created by the unit cuts.
+\item In line 9, we add the new unit clauses to the set \texttt{Pending}.  Note that we never have to search
+      the set \texttt{S} for new unit clauses, since all of them are returned by \texttt{reduce}.  This is
+      important for efficiency, as \texttt{S} may contain thousands of clauses.  Furthermore, every unit clause
+      has to be used only once:  After the reduction with the unit clause $\{\texttt{l}\}$, neither
+      $\texttt{l}$ nor $\komplement{\texttt{l}}$ occurs in any other clause of \texttt{S}.  As later reductions
+      only remove or shorten clauses, this remains true.
+\item The loop in lines 5 -- 9 is continued as long as there are
+      unit clauses that have not been used.  As soon as \texttt{S} contains the empty clause, \texttt{S} is
+      unsatisfiable and the loop stops, since further reductions are pointless.
 \item At the end, the remaining set of clauses is returned.
 \end{enumerate}
 The function $\texttt{reduce}$  is shown in Figure \ref{fig:reduce}.
@@ -3044,23 +3068,32 @@ $\textsl{reduce}(\texttt{Cs},l)  =
        \,\cup\, \Bigl\{\, C \in \texttt{Cs} \mid \komplement{l} \not\in C \wedge l \not\in C \Bigr\} \cup \Bigl\{\{l\}\Bigr\}
 $
 \\[0.2cm]
-The code is an immediate implementation of this definition.
+The set \texttt{Result} computed in lines 5 -- 7 is an immediate implementation of this definition:  The set \texttt{Cuts}
+computed in line 3 contains the clauses that result from the unit cuts with $\{l\}$.  In addition to this set of
+clauses, the function \texttt{reduce} returns the set \texttt{NewUnits} of those unit clauses that are created by
+the unit cuts.  As all clauses that are not in \texttt{Cuts} either remain unchanged or are removed, these unit
+clauses are those clauses in \texttt{Cuts} that contain exactly one literal.  They are computed in line 4.  Hence,
+\texttt{reduce(Clauses, l)} returns the pair consisting of $\textsl{reduce}(\texttt{Clauses},l)$ and the set
+\texttt{NewUnits}.
 
 \begin{figure}[!ht]
   \centering
-\begin{minted}[ frame         = lines, 
-                  framesep      = 0.3cm, 
+\begin{minted}[ frame         = lines,
+                  framesep      = 0.3cm,
                   numbers       = left,
                   numbersep     = -0.2cm,
                   bgcolor       = sepia,
-                  xleftmargin   = 0.8cm,
-                  xrightmargin  = 0.8cm
+                  xleftmargin   = 0.3cm,
+                  xrightmargin  = 0.3cm
                 ]{python3}
     def reduce(Clauses, l):
-        lBar = complement(l)
-        return   { C - { lBar } for C in Clauses if lBar in C }          \
-               | { C for C in Clauses if lBar not in C and l not in C }  \
-               | { frozenset({l}) }
+        lBar     = complement(l)
+        Cuts     = { C - { lBar } for C in Clauses if lBar in C }
+        NewUnits = { C for C in Cuts if len(C) == 1 }
+        Result   =   Cuts \
+                   | { C for C in Clauses if lBar not in C and l not in C } \
+                   | { frozenset({l}) }
+        return Result, NewUnits
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{reduce}. \index{\texttt{reduce}}}
@@ -3627,7 +3660,8 @@ The complete program is available as a Jupyter Notebook on GitHub as
     def queens(n):
         "Solve the n queens problem."
         Clauses  = allClauses(n)
-        Solution = solve(Clauses, set())
+        Units    = { C for C in Clauses if len(C) == 1 }
+        Solution = solve(Clauses, Units, set())
         if Solution != { frozenset() }:
             return Solution
         else:
@@ -3666,7 +3700,7 @@ The complete program is available as a Jupyter Notebook on GitHub as
 \label{fig:printBoard}
 \end{figure}
 
-The set \texttt{solution} calculated by the call $\texttt{solve}(\textsl{Clauses}, \{\})$ contains for each of the variables $\texttt{Q<}r\texttt{,}c\texttt{>}$
+The set \texttt{solution} calculated by the call $\texttt{solve}(\textsl{Clauses}, \textsl{Units}, \{\})$ contains for each of the variables $\texttt{Q<}r\texttt{,}c\texttt{>}$
 either the unit clause $\{\texttt{Q<}r\texttt{,}c\texttt{>}\}$ (if there is a queen on this square) or
 the unit clause $\{ \texttt{(¬, Q<}r\texttt{,}c\texttt{>)}\}$ (if the square remains empty).
 A graphical representation of a computed solution can be seen in Figure \ref{fig:8-queens.pdf}.
@@ -4441,7 +4475,8 @@ The Jupyter notebook showing the resulting program is available at:
 \pagebreak
 
 \subsection{PicoSat}
-Unfortunately, solving the resulting set of clauses takes about 10 minutes.  Fortunately, there is a version
+Our implementation of the algorithm of Davis and Putnam needs between one and twenty seconds to solve the
+resulting set of clauses.  For larger problems, however, it is much too slow.  Fortunately, there is a version
 of the Davis-Putnam algorithm that is implemented in \texttt{C} and that, furthermore, incorporates a number of
 improvements to the original algorithm.  This solver is called \href{https://fmv.jku.at/picosat/}{PicoSat}
 and has been implemented by \href{https://cca.informatik.uni-freiburg.de/biere/}{Armin Biere}.

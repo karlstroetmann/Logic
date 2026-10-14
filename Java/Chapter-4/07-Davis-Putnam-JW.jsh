@@ -63,37 +63,50 @@ Literal selectLiteral(RecursiveSet<RecursiveSet<Literal>> Clauses,
     return maxLiteral;
 }
 
+// The result of reduce: the reduced set of clauses and the set of those unit
+// clauses that are created by the unit cuts.
+record Reduction(RecursiveSet<RecursiveSet<Literal>> clauses,
+                 RecursiveSet<RecursiveSet<Literal>> newUnits) {}
+
 // Perform all unit cuts and unit subsumptions with the unit clause {l}.
-RecursiveSet<RecursiveSet<Literal>> reduce(RecursiveSet<RecursiveSet<Literal>> Clauses, Literal l) {
-    var lBar   = complement(l);
-    var result = Clauses.filterMap(
+Reduction reduce(RecursiveSet<RecursiveSet<Literal>> Clauses, Literal l) {
+    var lBar     = complement(l);
+    var result   = Clauses.filterMap(
         cl -> !cl.contains(l),
         cl -> cl.contains(lBar) ? cl.difference(set(lBar)) : cl
     );
     result.add(set(l));
-    return result;
+    var newUnits = Clauses.filterMap(
+        cl -> cl.size() == 2 && cl.contains(lBar) && !cl.contains(l),
+        cl -> cl.difference(set(lBar))
+    );
+    return new Reduction(result, newUnits);
 }
 
-// Apply unit cuts and unit subsumptions as long as possible.
-RecursiveSet<RecursiveSet<Literal>> saturate(RecursiveSet<RecursiveSet<Literal>> Clauses) {
-    var S = Clauses;
-    RecursiveSet<RecursiveSet<Literal>> Used = set();
-    while (true) {
-        var Units = S.filter(C -> C.size() == 1 && !Used.contains(C));
-        if (Units.isEmpty()) {
-            break;
-        }
-        var unit = first(Units);
-        Used.add(unit);
-        S = reduce(S, first(unit));
+// Apply unit cuts and unit subsumptions to Clauses ∪ Units as long as possible.
+// Units contains the unit clauses that have not been used yet; all other unit
+// clauses of Clauses have already been used.
+RecursiveSet<RecursiveSet<Literal>> saturate(RecursiveSet<RecursiveSet<Literal>> Clauses,
+                                             RecursiveSet<RecursiveSet<Literal>> Units) {
+    var S       = Clauses.union(Units);
+    var Pending = Units.clone();   // the unit clauses of S that have not been used yet
+    RecursiveSet<Literal> EmptyClause = set();
+    while (!Pending.isEmpty() && !S.contains(EmptyClause)) {
+        var unit = first(Pending);
+        Pending.remove(unit);
+        var reduction = reduce(S, first(unit));
+        S = reduction.clauses();
+        Pending.addAll(reduction.newUnits());
     }
     return S;
 }
 
+// Solve Clauses ∪ Units.  Units contains the unit clauses that have not been used yet.
 RecursiveSet<RecursiveSet<Literal>> solveRecursive(RecursiveSet<RecursiveSet<Literal>> Clauses,
+                                                   RecursiveSet<RecursiveSet<Literal>> Units,
                                                    RecursiveSet<String> Variables,
                                                    RecursiveSet<String> UsedVars) {
-    var S = saturate(Clauses);
+    var S = saturate(Clauses, Units);
     RecursiveSet<Literal> EmptyClause = set();
     if (S.contains(EmptyClause)) {        // S is inconsistent
         return set(EmptyClause);
@@ -103,15 +116,16 @@ RecursiveSet<RecursiveSet<Literal>> solveRecursive(RecursiveSet<RecursiveSet<Lit
     }
     var l            = selectLiteral(S, Variables, UsedVars);
     var nextUsedVars = UsedVars.union(set(extractVariable(l)));
-    var Result1      = solveRecursive(S.union(set(set(l))), Variables, nextUsedVars);
+    var Result1      = solveRecursive(S, set(set(l)), Variables, nextUsedVars);
     if (!Result1.contains(EmptyClause)) {
         return Result1;
     }
     var lBar = complement(l);
-    return solveRecursive(S.union(set(set(lBar))), Variables, nextUsedVars);
+    return solveRecursive(S, set(set(lBar)), Variables, nextUsedVars);
 }
 
 RecursiveSet<RecursiveSet<Literal>> solve(RecursiveSet<RecursiveSet<Literal>> Clauses) {
     var Variables = flatMap(Clauses, C -> C.map(l -> extractVariable(l)));
-    return solveRecursive(Clauses, Variables, set());
+    var Units     = Clauses.filter(C -> C.size() == 1);
+    return solveRecursive(Clauses, Units, Variables, set());
 }

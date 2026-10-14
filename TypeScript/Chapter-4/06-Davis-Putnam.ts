@@ -39,35 +39,40 @@ function selectVariable(
     return null;
 }
 
-function reduce(Clauses: Clauses, l: Literal): Clauses {
-    const lBar   = complement(l);
-    const result = Clauses.filterMap(
+function reduce(Clauses: Clauses, l: Literal): [Clauses, Clauses] {
+    const lBar     = complement(l);
+    const result   = Clauses.filterMap(
         cl => !cl.has(l),
         cl => cl.has(lBar) ? cl.difference(set(lBar)) : cl
     );
-    result.add(set(l));    
-    return result;
+    result.add(set(l));
+    const newUnits = Clauses.filterMap(
+        cl => cl.size == 2 && cl.has(lBar) && !cl.has(l),
+        cl => cl.difference(set(lBar))
+    );
+    return [result, newUnits];
 }
 
-function saturate(Clauses: Clauses): Clauses {
-    let S = Clauses;
-    const Used = set<Clause>(); 
-    while (true) {
-        const Units = S.filter(C => C.size == 1 && !Used.has(C));
-        if (Units.size == 0) { break; }
-        const unit = arb(Units);
-        Used.add(unit);
-        S = reduce(S, arb(unit));
+function saturate(Clauses: Clauses, Units: Clauses): Clauses {
+    let S       = Clauses.union(Units);
+    let Pending = Units;
+    const EmptyClause = set<Literal>();
+    while (Pending.size > 0 && !S.has(EmptyClause)) {
+        const unit = arb(Pending);
+        const [Reduced, NewUnits] = reduce(S, arb(unit));
+        S       = Reduced;
+        Pending = Pending.difference(set(unit)).union(NewUnits);
     }
     return S;
 }
 
 function solveRecursive(
-    Clauses: Clauses, 
+    Clauses:   Clauses, 
+    Units:     Clauses, 
     Variables: Set<Variable>, 
     UsedVars:  Set<Variable>
 ): Clauses {
-    const S = saturate(Clauses);
+    const S = saturate(Clauses, Units);
     const EmptyClause = set<Literal>();
     if (S.has(EmptyClause)) { // S is inconsistent
         return set(EmptyClause); // return {{}};
@@ -77,18 +82,18 @@ function solveRecursive(
     }
     const p = arb(Variables.difference(UsedVars));
     const nextUsedVars = UsedVars.union(set(p));
-    const Result1 = solveRecursive(S.union(set(set(p))), 
+    const Result1 = solveRecursive(S, set(set(p)), 
                                    Variables, 
                                    nextUsedVars);
     if (!Result1.has(EmptyClause)) { return Result1; }
     const pBar = complement(p);
-    return solveRecursive(S.union(set(set(pBar))), 
+    return solveRecursive(S, set(set(pBar)), 
                           Variables, 
                           nextUsedVars);
 }
 
 export function solve(Clauses: Set<Clause>): Set<Clause> {
     const Variables = flatMap(Clauses, cl => cl.map(extractVariable));
-    return solveRecursive(Clauses, Variables, set());
+    const Units     = Clauses.filter(C => C.size == 1);
+    return solveRecursive(Clauses, Units, Variables, set());
 }
-
