@@ -628,7 +628,7 @@ We discuss this program next.
               ]{fsharp}
     importNotebook "Propositional-Logic-Parser.ipynb"
 
-    let P = set [ "a"; "b"; "c" ]
+    let P = set ["a"; "b"; "c"]
     // Aaron, Bernard, or Caine is guilty.
     let f1 = "a ∨ b ∨ c"
     // If Aaron is guilty, he has exactly one accomplice.
@@ -640,13 +640,13 @@ We discuss this program next.
     let f5 = "¬(¬c ∧ a ∧ b)"
     // If Caine is innocent, then Aaron is guilty.
     let f6 = "¬c → a"
-    let Fs = set [ f1; f2; f3; f4; f5; f6 ]
+    let Fs = set [f1; f2; f3; f4; f5; f6]
     let Gs = Set.map parse Fs
 
     let allTrue (Gs: Set<Formula>) (I: Set<string>) : bool =
         Set.forall (fun f -> evaluate f I) Gs
 
-    [ for I in allSubsets P do if allTrue Gs I then I ]
+    [for I in allSubsets P do if allTrue Gs I then I]
 \end{minted}
 \vspace*{-0.3cm}
   \caption{A program to investigate the burglary.}
@@ -835,7 +835,7 @@ union of two sets.
               ]{fsharp}
     let rec collectVars (f: Formula) : Set<string> =
         match f with
-        | Var p            -> set [ p ]
+        | Var p            -> set [p]
         | Verum | Falsum   -> Set.empty
         | Not g            -> collectVars g
         | And (g, h) | Or (g, h) | Imp (g, h) | Iff (g, h) | Xor (g, h) 
@@ -899,11 +899,11 @@ shows the implementation.
               ]{fsharp}
     let rec allSubsets (M: Set<'T>) : Set<'T> list =
         if M.IsEmpty then
-            [ Set.empty ]
+            [Set.empty]
         else
             let x = Set.minElement M
             let L = allSubsets (M.Remove x)
-            L @ [ for K in L -> K.Add x ]
+            L @ [for K in L -> K.Add x]
 
     let tautology (f: Formula) : Set<string> option =
         let P = collectVars f
@@ -1550,11 +1550,11 @@ The operator ``\texttt{+}'' computes the union of two sets.
                 ]{fsharp}
     let rec cnf (f: NNF) : CNF =
         match f with
-        | NNF.Lit l      -> set [ set [ l ] ]
+        | NNF.Lit l      -> set [set [l]]
         | NNF.Verum      -> Set.empty
-        | NNF.Falsum     -> set [ Set.empty ]
+        | NNF.Falsum     -> set [Set.empty]
         | NNF.And (g, h) -> cnf g + cnf h
-        | NNF.Or  (g, h) -> set [ for k1 in cnf g do for k2 in cnf h -> k1 + k2 ]
+        | NNF.Or  (g, h) -> set [for k1 in cnf g do for k2 in cnf h -> k1 + k2]
 \end{minted}
 \vspace*{-0.3cm}
   \caption{Computing the conjunctive normal form. \index{\texttt{cnf}}}
@@ -2206,12 +2206,12 @@ online.
         | Neg p -> p
 
     let collectVariables (M: CNF) : Set<string> =
-        set [ for C in M do for l in C -> extractVariable l ]
+        set [for C in M do for l in C -> extractVariable l]
 
     let cutRule (C1: Clause) (C2: Clause) : Set<Clause> =
-        set [ for l in C1 do
-                if C2.Contains (complement l) then
-                    (C1 - set [ l ]) + (C2 - set [ complement l ]) ]
+        set [for l in C1 do
+               if C2.Contains (complement l) then
+                   (C1 - set [l]) + (C2 - set [complement l])]
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Auxiliary functions that are used in Figure \ref{fig:Completeness.ipynb-2}.}
@@ -2270,11 +2270,11 @@ We first discuss the auxiliary procedures shown in Figure \ref{fig:Completeness.
                 xrightmargin  = 0.0cm,
               ]{fsharp}
     let rec saturate (Clauses: CNF) : CNF =
-        let Derived = set [ for C1 in Clauses do
-                              for C2 in Clauses do
-                                yield! cutRule C1 C2 ]
+        let Derived = set [for C1 in Clauses do
+                             for C2 in Clauses do
+                               yield! cutRule C1 C2]
         if Derived.Contains Set.empty then
-            set [ Set.empty ]               // This is the set notation of ⊥.
+            set [Set.empty]                 // This is the set notation of ⊥.
         else
             let New = Derived - Clauses     // Remove clauses that were already present.
             if New.IsEmpty then             // No new clauses have been found.
@@ -2364,7 +2364,7 @@ will terminate after at most $2^{2 \cdot n}$ recursive calls.
             for p in Variables do
                 let Complements = Set.map complement Literals
                 if Clauses |> Set.exists (fun C -> C.Contains (Pos p) && 
-                                                   (C - set [ Pos p ]).IsSubsetOf Complements) then
+                                                   (C - set [Pos p]).IsSubsetOf Complements) then
                     Literals <- Literals.Add (Pos p)
                 else
                     Literals <- Literals.Add (Neg p)
@@ -2993,7 +2993,7 @@ used for case distinctions during the recursive calls.
     let rec solveRecursive (Clauses: CNF) (Units: CNF) (Variables: Set<string>)
                            (UsedVars: Set<string>) : CNF =
         let S      = saturate Clauses Units
-        let Falsum = set [ Set.empty ]
+        let Falsum = set [Set.empty]
         if S.Contains Set.empty then                             // S is inconsistent
             Falsum
         elif Set.forall (fun (C: Clause) -> C.Count = 1) S then  // S is trivial
@@ -3002,14 +3002,14 @@ used for case distinctions during the recursive calls.
             let l       = selectLiteral S Variables UsedVars
             let lBar    = complement l
             let newUsed = UsedVars.Add (extractVariable l)
-            let Result  = solveRecursive S (set [ set [ l ] ]) Variables newUsed
+            let Result  = solveRecursive S (set [set [l]]) Variables newUsed
             if Result <> Falsum then
                 Result
             else
-                solveRecursive S (set [ set [ lBar ] ]) Variables newUsed
+                solveRecursive S (set [set [lBar]]) Variables newUsed
 
     let solve (Clauses: CNF) : CNF =
-        let Variables = set [ for C in Clauses do for l in C -> extractVariable l ]
+        let Variables = set [for C in Clauses do for l in C -> extractVariable l]
         let Units     = Set.filter (fun (C: Clause) -> C.Count = 1) Clauses
         solveRecursive Clauses Units Variables Set.empty
 \end{minted}
@@ -3163,9 +3163,9 @@ the pair consisting of $\textsl{reduce}(\texttt{Clauses},l)$ and the set \texttt
     let reduce (Clauses: CNF) (l: Literal) : CNF * CNF =
         let lBar     = complement l
         let Affected = Set.filter (fun (C: Clause) -> C.Contains l || C.Contains lBar) Clauses
-        let Reduced  = set [ for C in Affected do if not (C.Contains l) then C.Remove lBar ]
+        let Reduced  = set [for C in Affected do if not (C.Contains l) then C.Remove lBar]
         let NewUnits = Set.filter (fun (C: Clause) -> C.Count = 1) Reduced
-        ((Clauses - Affected) + Reduced + set [ set [ l ] ], NewUnits)
+        ((Clauses - Affected) + Reduced + set [set [l]], NewUnits)
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{reduce}. \index{\texttt{reduce}}}
@@ -3479,10 +3479,10 @@ and the clause on the right side of this equivalence can be written in set notat
                 xrightmargin  = 0.8cm
               ]{fsharp}
     let atMostOne (S: Set<string>) : CNF =
-        set [ for p in S do
-                for q in S do
-                    if p < q then
-                        set [ Neg p; Neg q ] ]
+        set [for p in S do
+               for q in S do
+                   if p < q then
+                       set [Neg p; Neg q]]
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{atMostOne}.}
@@ -3529,7 +3529,7 @@ as a set of clauses.
                 xrightmargin  = 0.8cm
               ]{fsharp}
     let atMostOneInRow (row: int) (n: int) : CNF =
-        atMostOne (set [ for col in 1 .. n -> var row col ])
+        atMostOne (set [for col in 1 .. n -> var row col])
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The function \texttt{atMostOneInRow}.}
@@ -3570,7 +3570,7 @@ works with a set of clauses.
                 xrightmargin  = 0.8cm
               ]{fsharp}
     let oneInColumn (col: int) (n: int) : CNF =
-        set [ set [ for row in 1 .. n -> Pos (var row col) ] ]
+        set [set [for row in 1 .. n -> Pos (var row col)]]
 \end{minted}
 \vspace*{-0.3cm}
   \caption{The Function \texttt{oneInColumn}}
@@ -3613,10 +3613,10 @@ function \texttt{atMostOneInRisingDiagonal}. This function is shown in Figure
                 xrightmargin  = 0.0cm
               ]{fsharp}
     let atMostOneInRisingDiagonal (k: int) (n: int) : CNF =
-        let S = set [ for row in 1 .. n do
-                        for col in 1 .. n do
-                            if row + col = k then
-                                var row col ]
+        let S = set [for row in 1 .. n do
+                       for col in 1 .. n do
+                           if row + col = k then
+                               var row col]
         atMostOne S
 \end{minted}
 \vspace*{-0.3cm}
@@ -3650,10 +3650,10 @@ function \texttt{atMostOneInFallingDiagonal}. This function is shown in Figure
                 xrightmargin  = 0.0cm
             ]{fsharp}
     let atMostOneInFallingDiagonal (k: int) (n: int) : CNF =
-        let S = set [ for row in 1 .. n do
-                        for col in 1 .. n do
-                            if row - col = k then
-                                var row col ]
+        let S = set [for row in 1 .. n do
+                       for col in 1 .. n do
+                           if row - col = k then
+                               var row col]
         atMostOne S
 \end{minted}
 \vspace*{-0.3cm}
@@ -3690,10 +3690,10 @@ and not a list of sets of clauses. Therefore, in line 6 we compute the union of 
                 xrightmargin  = 0.3cm
               ]{fsharp}
     let allClauses (n: int) : CNF =
-        let All = [ for row in 1 .. n             -> atMostOneInRow row n           ]
-                @ [ for k in -(n - 2) .. (n - 2)  -> atMostOneInFallingDiagonal k n ]
-                @ [ for k in 3 .. 2*n - 1         -> atMostOneInRisingDiagonal k n  ]
-                @ [ for col in 1 .. n             -> oneInColumn col n              ]
+        let All = [for row in 1 .. n             -> atMostOneInRow row n]
+                @ [for k in -(n - 2) .. (n - 2)  -> atMostOneInFallingDiagonal k n]
+                @ [for k in 3 .. 2*n - 1         -> atMostOneInRisingDiagonal k n]
+                @ [for col in 1 .. n             -> oneInColumn col n]
         Set.unionMany All
 \end{minted}
 \vspace*{-0.3cm}
@@ -3735,7 +3735,7 @@ The complete program is available as a Jupyter Notebook on GitHub as
     let queens (n: int) : CNF option =
         let Clauses  = allClauses n
         let Solution = solve Clauses
-        if Solution <> set [ Set.empty ] then
+        if Solution <> set [Set.empty] then
             Some Solution
         else
             printfn "The problem is not solvable for %d queens!" n
@@ -3762,11 +3762,11 @@ The complete program is available as a Jupyter Notebook on GitHub as
         (int parts[0], int parts[1])
 
     let queenPositions (Solution: CNF) : (int * int) list =
-        [ for C in Solution do
-            for l in C do
-                match l with
-                | Pos p -> extractRowCol p
-                | Neg _ -> () ]
+        [for C in Solution do
+           for l in C do
+               match l with
+               | Pos p -> extractRowCol p
+               | Neg _ -> ()]
 
     let showSolution (Solution: CNF) (width: string) =
         let positions = queenPositions Solution
@@ -3936,7 +3936,7 @@ integer $i \in \{1,\cdots,5\}$ and returns the string $f\langle i\rangle$.
                  xrightmargin  = 0.8cm,
                ]{fsharp}
     let somewhere (x: string) : Clause =
-        set [ for i in 1 .. 5 -> Pos (var x i) ]
+        set [for i in 1 .. 5 -> Pos (var x i)]
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{somewhere}.}
@@ -3995,7 +3995,7 @@ makes use of the function \texttt{atMostOne} that is shown in Figure
                  xrightmargin  = 0.8cm,
                  ]{fsharp}
     let onePerHouse (S: Set<string>) : CNF =
-        set [ for x in S -> somewhere x ] + Set.unionMany [ for i in 1 .. 5 -> atMostOneAt S i ]
+        set [for x in S -> somewhere x] + Set.unionMany [for i in 1 .. 5 -> atMostOneAt S i]
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{onePerHouse}.}
@@ -4023,7 +4023,7 @@ clauses that express the fact that these five persons live in different houses.
                  xrightmargin  = 0.8cm,
                ]{fsharp}
     let sameHouse (a: string) (b: string) : CNF =
-        Set.unionMany [ for i in 1 .. 5 -> parseKNF (sprintf "%s ↔ %s" (var a i) (var b i)) ]
+        Set.unionMany [for i in 1 .. 5 -> parseKNF (sprintf "%s ↔ %s" (var a i) (var b i))]
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{sameHouse}.}
@@ -4058,8 +4058,8 @@ yields the string \texttt{"p ↔ q"}.
                ]{fsharp}
   let nextTo (a: string) (b: string) : CNF =
       parseKNF (sprintf "%s → %s" (var a 1) (var b 2))
-      + Set.unionMany [ for i in 2 .. 4 ->
-                          parseKNF (sprintf "%s → %s ∨ %s" (var a i) (var b (i-1)) (var b (i+1))) ]
+      + Set.unionMany [for i in 2 .. 4 ->
+                         parseKNF (sprintf "%s → %s ∨ %s" (var a i) (var b (i-1)) (var b (i+1)))]
       + parseKNF (sprintf "%s → %s" (var a 5) (var b 4))
 \end{minted}
 \vspace*{-0.3cm}
@@ -4084,7 +4084,7 @@ specifies that the Japanese guy lives next to the guy who keeps a dog.
                  xrightmargin  = 0.8cm,
                ]{fsharp}
     let leftTo (a: string) (b: string) : CNF =
-        Set.unionMany [ for i in 1 .. 4 -> parseKNF (sprintf "%s ↔ %s" (var a i) (var b (i+1))) ]
+        Set.unionMany [for i in 1 .. 4 -> parseKNF (sprintf "%s ↔ %s" (var a i) (var b (i+1)))]
         + parseKNF (sprintf "¬%s" (var a 5))
 \end{minted}
 \vspace*{-0.3cm}
@@ -4109,11 +4109,11 @@ Japanese guy lives in the house to the left of the house where there is a dog.
                  xleftmargin   = 0.3cm,
                  xrightmargin  = 0.3cm,
                ]{fsharp}
-  let Nations = set [ "English"; "Spanish"; "Ukrainian"; "Norwegian"; "Japanese" ]
-  let Drinks  = set [ "Coffee"; "Tea"; "Milk"; "OrangeJuice"; "Water" ]
-  let Pets    = set [ "Dog"; "Snails"; "Horse"; "Fox"; "Zebra" ]
-  let Brands  = set [ "LuckyStrike"; "Parliaments"; "Kools"; "Chesterfields"; "OldGold" ]
-  let Colours = set [ "Red"; "Green"; "Ivory"; "Yellow"; "Blue" ]
+  let Nations = set ["English"; "Spanish"; "Ukrainian"; "Norwegian"; "Japanese"]
+  let Drinks  = set ["Coffee"; "Tea"; "Milk"; "OrangeJuice"; "Water"]
+  let Pets    = set ["Dog"; "Snails"; "Horse"; "Fox"; "Zebra"]
+  let Brands  = set ["LuckyStrike"; "Parliaments"; "Kools"; "Chesterfields"; "OldGold"]
+  let Colours = set ["Red"; "Green"; "Ivory"; "Yellow"; "Blue"]
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Definition of the properties.}
@@ -4393,7 +4393,7 @@ in $V$ is \texttt{true}.  The implementation is shown in Figure \ref{fig:sudoku-
                  xrightmargin  = 0.3cm,
                ]{fsharp}
     let atLeastOne (S: Set<string>) : CNF =
-        set [ Set.map Pos S ]
+        set [Set.map Pos S]
 
     let exactlyOne (S: Set<string>) : CNF =
         atMostOne S + atLeastOne S
@@ -4426,8 +4426,8 @@ The function \texttt{Set.unionMany} computes the union of a list of sets.
                  xrightmargin  = 0.3cm,
                ]{fsharp}
     let allDifferent (L: (int * int) list) : CNF =
-        Set.unionMany [ for digit in 1 .. 9 ->
-                          exactlyOne (set [ for (row, col) in L -> var row col digit ]) ]
+        Set.unionMany [for digit in 1 .. 9 ->
+                         exactlyOne (set [for (row, col) in L -> var row col digit])]
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{allDifferent}.}
@@ -4454,7 +4454,7 @@ is \texttt{true}. The implementation is shown in Figure \ref{fig:sudoku-exactlyO
                  xrightmargin  = 0.3cm,
                ]{fsharp}
     let exactlyOneDigit (row: int) (col: int) : CNF =
-        exactlyOne (set [ for digit in 1 .. 9 -> var row col digit ])
+        exactlyOne (set [for digit in 1 .. 9 -> var row col digit])
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{exactlyOneDigit}.}
@@ -4488,10 +4488,10 @@ in \Fsharp{} array indices start with $0$.
                  xrightmargin  = 0.3cm,
                ]{fsharp}
     let constraintsFromPuzzle () : CNF =
-        set [ for row in 0 .. 8 do
-                for col in 0 .. 8 do
-                    if puzzle[row][col] <> 0 then
-                        set [ Pos (var (row + 1) (col + 1) (puzzle[row][col])) ] ]
+        set [for row in 0 .. 8 do
+               for col in 0 .. 8 do
+                   if puzzle[row][col] <> 0 then
+                       set [Pos (var (row + 1) (col + 1) (puzzle[row][col]))]]
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{constraintsFromPuzzle}}
@@ -4513,7 +4513,7 @@ Finally, we have to combine all constraints of the puzzle.  This is done with th
                  xrightmargin  = 0.3cm,
                ]{fsharp}
     let allConstraints () : CNF =
-        let L = [ 1 .. 9 ]
+        let L = [1 .. 9]
         // the constraints from the puzzle have to be satisfied
         let mutable Clauses = constraintsFromPuzzle ()
         // there is exactly one digit in every field
@@ -4522,15 +4522,15 @@ Finally, we have to combine all constraints of the puzzle.  This is done with th
                 Clauses <- Clauses + exactlyOneDigit row col
         // all entries in a row are unique
         for row in L do
-            Clauses <- Clauses + allDifferent [ for col in L -> (row, col) ]
+            Clauses <- Clauses + allDifferent [for col in L -> (row, col)]
         // all entries in a column are unique
         for col in L do
-            Clauses <- Clauses + allDifferent [ for row in L -> (row, col) ]
+            Clauses <- Clauses + allDifferent [for row in L -> (row, col)]
         // all entries in a 3x3 box are unique
         for r in 0 .. 2 do
             for c in 0 .. 2 do
-                Clauses <- Clauses + allDifferent [ for row in 1 .. 3 do
-                                                      for col in 1 .. 3 -> (r * 3 + row, c * 3 + col) ]
+                Clauses <- Clauses + allDifferent [for row in 1 .. 3 do
+                                                     for col in 1 .. 3 -> (r * 3 + row, c * 3 + col)]
         Clauses
 \end{minted}
 \vspace*{-0.3cm}
@@ -4595,7 +4595,7 @@ which is in conjunctive normal form, is represented by the following file:
 In \Fsharp, we represent a formula in this format as a list of lists of integers:
 \\[0.2cm]
 \hspace*{1.3cm}
-\texttt{let f = [ [1; -2; 3]; [-1; 2; -3]; [-1; -2; 3]; [1; 2; -3] ]}
+\texttt{let f = [[1; -2; 3]; [-1; 2; -3]; [-1; -2; 3]; [1; 2; -3]]}
 \\[0.2cm]
 The notebook
 \href{https://github.com/karlstroetmann/Logic/blob/master/F-Sharp/Chapter-4/11-PicoSat-Sudoku.ipynb}{\texttt{11-PicoSat-Sudoku.ipynb}}
@@ -4627,11 +4627,11 @@ occurring in this set.
                  xrightmargin  = 0.3cm,
                ]{fsharp}
     let findVariables (Clauses: CNF) : Set<string> =
-        set [ for C in Clauses do
-                for l in C do
-                    match l with
-                    | Pos p -> p
-                    | Neg p -> p ]
+        set [for C in Clauses do
+               for l in C do
+                   match l with
+                   | Pos p -> p
+                   | Neg p -> p]
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The function \texttt{findVariables}.}
@@ -4660,9 +4660,9 @@ The function \texttt{List.indexed} turns a list \texttt{[x0; x1; $\cdots$]} into
                  xrightmargin  = 0.3cm,
                ]{fsharp}
     let numberVariables (Clauses: CNF) : Map<string, int> * Map<int, string> =
-        let numbered = [ for (i, p) in List.indexed (Set.toList (findVariables Clauses)) -> (p, i + 1) ]
+        let numbered = [for (i, p) in List.indexed (Set.toList (findVariables Clauses)) -> (p, i + 1)]
         let Var2Int  = Map numbered
-        let Int2Var  = Map [ for (p, n) in numbered -> (n, p) ]
+        let Int2Var  = Map [for (p, n) in numbered -> (n, p)]
         (Var2Int, Int2Var)
 \end{minted}
 \vspace*{-0.3cm}
@@ -4701,11 +4701,11 @@ formula represented as a set of clauses into the format of CaDiCaL.
         | Neg p -> -Var2Int[p]
 
     let clausesToInts (Clauses: CNF) (Var2Int: Map<string, int>) : int list list =
-        [ for C in Clauses -> [ for l in C -> literalToInt l Var2Int ] ]
+        [for C in Clauses -> [for l in C -> literalToInt l Var2Int]]
 
     let intsToUnitClauses (Numbers: int list) (Int2Var: Map<int, string>) : CNF =
-        set [ for n in Numbers ->
-                if n > 0 then set [ Pos Int2Var[n] ] else set [ Neg Int2Var[-n] ] ]
+        set [for n in Numbers ->
+               if n > 0 then set [Pos Int2Var[n]] else set [Neg Int2Var[-n]]]
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Some auxiliary functions to transform clauses into the format of CaDiCaL.}

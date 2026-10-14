@@ -722,7 +722,7 @@ we will never know for sure that there are no odd perfect numbers.
                 xrightmargin  = 0.3cm
               ]{fsharp}
     let perfect (n: int) : bool =
-        List.sum [ for t in 1 .. n - 1 do if n % t = 0 then t ] = n
+        List.sum [for t in 1 .. n - 1 do if n % t = 0 then t] = n
 
     let findOddPerfect () : int =
         let rec search (n: int) =
@@ -983,14 +983,14 @@ implementation of the structure $\mathcal{Z}$.
           Functions  : Map<string, Map<int list, int>>
           Predicates : Map<string, Set<int list>> }
 
-    let U = set [ 0; 1 ]
-    let NeutralElement : Map<int list, int> = Map [ ([], 0) ]
-    let Product  = Map [ ([0; 0], 0); ([0; 1], 1); ([1; 0], 1); ([1; 1], 0) ]
-    let Identity = set [ for x in U -> [x; x] ]
+    let U = set [0; 1]
+    let NeutralElement : Map<int list, int> = Map [([], 0)]
+    let Product  = Map [([0; 0], 0); ([0; 1], 1); ([1; 0], 1); ([1; 1], 0)]
+    let Identity = set [for x in U -> [x; x]]
     let S = { Universe   = U
-              Functions  = Map [ ("E", NeutralElement); ("Multiply", Product) ]
-              Predicates = Map [ ("Equals", Identity) ] }
-    let I = Map [ ("x", 0); ("y", 1); ("z", 0) ]
+              Functions  = Map [("E", NeutralElement); ("Multiply", Product)]
+              Predicates = Map [("Equals", Identity)] }
+    let I = Map [("x", 0); ("y", 1); ("z", 0)]
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Implementation of a structure for group theory.}
@@ -1040,7 +1040,7 @@ implementation of the structure $\mathcal{Z}$.
         | Var x        -> I[x]
         | Fun (f, args) ->
             let fJ      = S.Functions[f]                          // interpretation of f
-            let ArgVals = [ for arg in args -> evalTerm arg S I ] // evaluate arguments
+            let ArgVals = [for arg in args -> evalTerm arg S I]   // evaluate arguments
             fJ[ArgVals]
 \end{minted}
 \vspace*{-0.3cm}
@@ -1079,7 +1079,7 @@ $\mytt{evalTerm}$, which takes as arguments a term $t$, a
               ]{fsharp}
     let evalAtomic (p: string) (args: Term list) (S: Structure) (I: Map<string, int>) : bool =
         let pJ      = S.Predicates[p]                       // interpretation of p
-        let ArgVals = [ for arg in args -> evalTerm arg S I ]
+        let ArgVals = [for arg in args -> evalTerm arg S I]
         pJ.Contains ArgVals
 \end{minted}
 \vspace*{-0.3cm}
@@ -1657,19 +1657,20 @@ constraints of the form $x \not= y$ occur very often, the function \texttt{diffe
                 xrightmargin  = 0.0cm,
               ]{fsharp}
     let queensCSP () : CSP<int> =
-        let S = [ 1 .. 8 ]           // used as indices
+        let S = [1 .. 8]           // used as indices
         let Q i = sprintf "Q%d" i
-        let DifferentColumns   = [ for i in S do
-                                 for j in S do
-                                   if i < j then different (Q i) (Q j) ]
-    let DifferentDiagonals = [ for i in S do
-                                 for j in S do
-                                   if j < i then
-                                     constr (sprintf "|Q%d - Q%d| ≠ %d" i j (i - j))
-                                            [ Q i; Q j ]
-                                            (fun A -> abs (A[Q i] - A[Q j]) <> i - j) ]
-    { Variables   = [ for i in S -> Q i ]
-          Values      = [ 1 .. 8 ]
+        let DifferentColumns =
+            [for i in S do
+               for j in S do
+                 if i < j then different (Q i) (Q j)]
+        let DifferentDiagonals =
+            [for i in S do
+               for j in S do
+                 if j < i then
+                   constr (sprintf "|Q%d - Q%d| ≠ %d" i j (i - j)) [Q i; Q j]
+                          (fun A -> abs (A[Q i] - A[Q j]) <> i - j)]
+        { Variables   = [for i in S -> Q i]
+          Values      = [1 .. 8]
           Constraints = DifferentColumns @ DifferentDiagonals }
 \end{minted}
 \vspace*{-0.3cm}
@@ -2078,18 +2079,18 @@ corresponding variable.
                 xrightmargin  = 0.0cm,
               ]{fsharp}
     let missionariesCSP (n: int) : CSP<int> =
-        let vars i = [ sprintf "M%d" i; sprintf "C%d" i; sprintf "B%d" i ]
+        let vars i = [sprintf "M%d" i; sprintf "C%d" i; sprintf "B%d" i]
         let apply3 (f: int -> int -> int -> 'R) (A: Map<string, int>) (i: int) : 'R =
             f A[sprintf "M%d" i] A[sprintf "C%d" i] A[sprintf "B%d" i]
         let text name xs = sprintf "%s(%s)" name (String.concat ", " xs)
         let Start = constr (text "start" (vars 0)) (vars 0) (fun A -> apply3 start A 0)
         let Goal  = constr (text "goal"  (vars n)) (vars n) (fun A -> apply3 goal  A n)
-        let Rest  = [ for i in 0 .. n - 1 do
-                        constr (text "invariant" (vars i)) (vars i) (fun A -> apply3 invariant A i)
-                        constr (text "transition" (vars i @ vars (i+1))) (vars i @ vars (i+1))
-                               (fun A -> apply3 (apply3 transition A i) A (i+1)) ]
-        { Variables   = List.concat [ for i in 0 .. n -> vars i ]
-          Values      = [ 0; 1; 2; 3 ]
+        let Rest  = [for i in 0 .. n - 1 do
+                       constr (text "invariant" (vars i)) (vars i) (fun A -> apply3 invariant A i)
+                       constr (text "transition" (vars i @ vars (i+1))) (vars i @ vars (i+1))
+                              (fun A -> apply3 (apply3 transition A i) A (i+1))]
+        { Variables   = List.concat [for i in 0 .. n -> vars i]
+          Values      = [0; 1; 2; 3]
           Constraints = Start :: Goal :: Rest }
 
     let findSolution () : int * Map<string, int> =
@@ -2429,25 +2430,25 @@ Next, we have to formulate the constraints.  In this case, there are two kinds o
     let bvNonNegative (x: BitVecExpr) : BoolExpr =
         ctx.MkBVSGE(x, ctx.MkBV(0, x.SortSize))
 
-    let S = [ 1; 2; -1; -2 ]
-    let DeltaSet = [ for x in S do for y in S do if abs x <> abs y then (x, y) ]
+    let S = [1; 2; -1; -2]
+    let DeltaSet = [for x in S do for y in S do if abs x <> abs y then (x, y)]
 
     let isKnightMove (row: BitVecExpr) (col: BitVecExpr)
                      (rowX: BitVecExpr) (colX: BitVecExpr) : BoolExpr =
-        Or [ for (dr, dc) in DeltaSet -> And [ rowX .= bvAdd row dr; colX .= bvAdd col dc ] ]
+        Or [for (dr, dc) in DeltaSet -> And [rowX .= bvAdd row dr; colX .= bvAdd col dc]]
 
     let allDifferent (Rows: BitVecExpr[]) (Cols: BitVecExpr[]) : BoolExpr list =
-        [ for i in 0 .. 62 do
-            for j in i + 1 .. 63 ->
-                Or [ Rows[i] .<> Rows[j]; Cols[i] .<> Cols[j] ] ]
+        [for i in 0 .. 62 do
+           for j in i + 1 .. 63 ->
+               Or [Rows[i] .<> Rows[j]; Cols[i] .<> Cols[j]]]
 
     let allConstraints (Rows: BitVecExpr[]) (Cols: BitVecExpr[]) : BoolExpr list =
         allDifferent Rows Cols
-        @ [ Rows[0] .= BitVecVal 0L 4; Cols[0] .= BitVecVal 0L 4 ]
-        @ [ for i in 0 .. 62 -> isKnightMove Rows[i] Cols[i] Rows[i+1] Cols[i+1] ]
-        @ [ for i in 0 .. 63 do
-              yield bvNonNegative Rows[i]
-              yield bvNonNegative Cols[i] ]
+        @ [Rows[0] .= BitVecVal 0L 4; Cols[0] .= BitVecVal 0L 4]
+        @ [for i in 0 .. 62 -> isKnightMove Rows[i] Cols[i] Rows[i+1] Cols[i+1]]
+        @ [for i in 0 .. 63 do
+             yield bvNonNegative Rows[i]
+             yield bvNonNegative Cols[i]]
 \end{minted}
 \vspace*{-0.3cm}
 \caption{The Knight's Tour: Computing the constraints.}
@@ -2554,8 +2555,8 @@ Figure \ref{fig:Knight's Tour with Z3.ipynb-1} shows how we can formulate the pu
         match S.Check() with
         | Status.SATISFIABLE ->
             let Model = S.Model
-            Map ([ for i in 0 .. 63 -> (row i, intValue Model Rows[i]) ]
-                 @ [ for i in 0 .. 63 -> (col i, intValue Model Cols[i]) ])
+            Map ([for i in 0 .. 63 -> (row i, intValue Model Rows[i])]
+                 @ [for i in 0 .. 63 -> (col i, intValue Model Cols[i])])
         | Status.UNSATISFIABLE ->
             printfn "The problem is not solvable."
             Map.empty
@@ -2674,29 +2675,29 @@ that has already been discussed earlier.
     let B = Int "B"
 
     let start (M: IntExpr) (C: IntExpr) (B: IntExpr) : BoolExpr =
-        And [ M .= 3; C .= 3; B .= 1 ]
+        And [M .= 3; C .= 3; B .= 1]
 
     let goal (M: IntExpr) (C: IntExpr) (B: IntExpr) : BoolExpr =
-        And [ M .= 0; C .= 0; B .= 0 ]
+        And [M .= 0; C .= 0; B .= 0]
 
     let invariant (M: IntExpr) (C: IntExpr) (B: IntExpr) : BoolExpr list =
-        [ Or [ M .= 0; M .= 3; M .= C ]
-          0 .<= M; M .<= 3
-          0 .<= C; C .<= 3
-          0 .<= B; B .<= 1 ]
+        [Or [M .= 0; M .= 3; M .= C]
+         0 .<= M; M .<= 3
+         0 .<= C; C .<= 3
+         0 .<= B; B .<= 1]
 
     let boatOK (M|$\alpha$|: IntExpr) (C|$\alpha$|: IntExpr) (B|$\alpha$|: IntExpr)
                (M|$\beta$|: IntExpr) (C|$\beta$|: IntExpr) (B|$\beta$|: IntExpr) : BoolExpr =
-        Implies(B|$\alpha$| .= 1, And [ 1 .<= M|$\alpha$| - M|$\beta$| + C|$\alpha$| - C|$\beta$|
-                               2 .>= M|$\alpha$| - M|$\beta$| + C|$\alpha$| - C|$\beta$|
-                               M|$\beta$| .<= M|$\alpha$|
-                               C|$\beta$| .<= C|$\alpha$| ])
+        Implies(B|$\alpha$| .= 1, And [1 .<= M|$\alpha$| - M|$\beta$| + C|$\alpha$| - C|$\beta$|
+                              2 .>= M|$\alpha$| - M|$\beta$| + C|$\alpha$| - C|$\beta$|
+                              M|$\beta$| .<= M|$\alpha$|
+                              C|$\beta$| .<= C|$\alpha$|])
 
     let transition (M|$\alpha$|: IntExpr) (C|$\alpha$|: IntExpr) (B|$\alpha$|: IntExpr)
                    (M|$\beta$|: IntExpr) (C|$\beta$|: IntExpr) (B|$\beta$|: IntExpr) : BoolExpr list =
-        [ B|$\beta$| .= 1 - B|$\alpha$|
-          boatOK M|$\alpha$| C|$\alpha$| B|$\alpha$| M|$\beta$| C|$\beta$| B|$\beta$|
-          boatOK M|$\beta$| C|$\beta$| B|$\beta$| M|$\alpha$| C|$\alpha$| B|$\alpha$| ]
+        [B|$\beta$| .= 1 - B|$\alpha$|
+         boatOK M|$\alpha$| C|$\alpha$| B|$\alpha$| M|$\beta$| C|$\beta$| B|$\beta$|
+         boatOK M|$\beta$| C|$\beta$| B|$\beta$| M|$\alpha$| C|$\alpha$| B|$\alpha$|]
 \end{minted}
 \vspace*{-0.3cm}
 \caption{Solving The Missionaries-and-Cannibals-Problem with \texttt{Z3}, part \texttt{I}.}
@@ -2758,16 +2759,16 @@ the associated symbolic transition system using the constraint solver \texttt{Z3
         let Ms = [| for i in 0 .. n -> Int (sprintf "M%d" i) |]
         let Cs = [| for i in 0 .. n -> Int (sprintf "C%d" i) |]
         let Bs = [| for i in 0 .. n -> Int (sprintf "B%d" i) |]
-        let Constraints = [ start Ms[0] Cs[0] Bs[0]    // start state
-                            goal  Ms[n] Cs[n] Bs[n]    // goal state
-                            for i in 0 .. n - 1 do
-                                yield! invariant Ms[i] Cs[i] Bs[i]
-                                yield! transition Ms[i] Cs[i] Bs[i] Ms[i+1] Cs[i+1] Bs[i+1] ]
+        let Constraints = [start Ms[0] Cs[0] Bs[0]    // start state
+                           goal  Ms[n] Cs[n] Bs[n]    // goal state
+                           for i in 0 .. n - 1 do
+                               yield! invariant Ms[i] Cs[i] Bs[i]
+                               yield! transition Ms[i] Cs[i] Bs[i] Ms[i+1] Cs[i+1] Bs[i+1]]
         S.Add(Array.ofList Constraints)
         if S.Check() = Status.SATISFIABLE then
             let m = S.Model
-            Some (Map [ for (name, X) in [ ("M", Ms); ("C", Cs); ("B", Bs) ] do
-                          for i in 0 .. n -> (sprintf "%s%d" name i, intValue m X[i]) ])
+            Some (Map [for (name, X) in [("M", Ms); ("C", Cs); ("B", Bs)] do
+                         for i in 0 .. n -> (sprintf "%s%d" name i, intValue m X[i])])
         else
             None
 
