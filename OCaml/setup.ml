@@ -18,3 +18,17 @@ let () =
   Sys.interactive := false;
   ignore (Toploop.use_silently Format.err_formatter (Toploop.File "topfind"));
   Sys.interactive := true;;
+
+(* Functions that are available in every notebook.  They are defined via use_silently,
+   so that loading this file does not print their types. *)
+let () =
+  ignore (Toploop.use_silently Format.err_formatter (Toploop.String {|
+    (* time label f computes f (), prints the processor time used by this computation,
+       and returns the result of f ().  It plays the role of console.time and
+       console.timeEnd in TypeScript. *)
+    let time (label : string) (f : unit -> 'a) : 'a =
+      let start  = Sys.time () in
+      let result = f () in
+      Printf.printf "%s: %.3f seconds\n" label (Sys.time () -. start);
+      result
+  |}));;

@@ -1,8 +1,8 @@
 # OCaml Notebooks for the Lecture on Logic
 
 This directory contains OCaml translations of the TypeScript notebooks in `../TypeScript`.
-The subdirectories correspond to the chapters of the lecture notes.  So far, `Chapter-2` has
-been translated.
+The subdirectories correspond to the chapters of the lecture notes.  So far, `Chapter-2` and
+`Chapter-3` have been translated.
 
 ## Installation
 
@@ -48,7 +48,10 @@ definition has to be terminated by `;;`.
   `#require "zarith.top"`;
 - adds the compiler libraries to the search path, so that the module `Toploop` is available.
   `Eval.ipynb` and `Turing.ipynb` use `Toploop.use_input` to execute OCaml code given as a
-  string.
+  string;
+- defines the function `time label f`, which computes `f ()`, prints the processor time this
+  took, and returns the result (the counterpart of `console.time` in TypeScript).  It is
+  defined via `Toploop.use_silently`, so that the first cell of a notebook prints nothing.
 
 Cells that fail on purpose (e.g. type errors) are tagged `raises-exception`, and cells that do
 not terminate are tagged `skip-execution`, so that the notebooks can be executed headless with
