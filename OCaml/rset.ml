@@ -1,9 +1,7 @@
-(* rset.ml: finite sets that can be nested.  This module is the OCaml counterpart of
-   the TypeScript library recursive-set.  A notebook loads it with
-
-     import_file "../rset.ml"
-
-   where import_file is defined in setup.ml.
+(* rset.ml: finite sets that can be nested and finite maps.  The modules RSet and RMap
+   are the OCaml counterparts of the classes RecursiveSet and RecursiveMap of the
+   TypeScript library recursive-set.  The file setup.ml loads this file, so both modules
+   are available in every notebook.
 
    The module Set of the standard library is not suitable for our purposes:
    - Set.Make has to be applied to a module for every element type, i.e. we would
@@ -241,3 +239,122 @@ end = struct
 end;;
 
 #install_printer RSet.pp;;
+
+(* RMap implements finite maps, i.e. functions with a finite domain, from keys of type
+   'k to values of type 'v.  A map is represented as a list of pairs (key, value) that
+   is sorted by the keys in ascending order, where every key occurs only once.  As with
+   RSet, every map has exactly one representation.  Therefore = and compare work for
+   maps, and maps can be elements of sets or keys of other maps.  find, add, and remove
+   take time linear in the size of the map. *)
+module RMap : sig
+  type (+'k, +'v) t
+
+  val empty     : ('k, 'v) t                          (* the empty map *)
+  val singleton : 'k -> 'v -> ('k, 'v) t              (* the map {k ↦ v} *)
+  val of_list   : ('k * 'v) list -> ('k, 'v) t        (* for duplicate keys, the last pair wins *)
+  val to_list   : ('k, 'v) t -> ('k * 'v) list        (* the pairs, ordered by their keys *)
+
+  val is_empty  : ('k, 'v) t -> bool
+  val cardinal  : ('k, 'v) t -> int                   (* the number of keys *)
+  val mem       : 'k -> ('k, 'v) t -> bool            (* mem k m iff k is a key of m *)
+  val find      : 'k -> ('k, 'v) t -> 'v              (* raises Not_found if k is no key *)
+  val find_opt  : 'k -> ('k, 'v) t -> 'v option
+  val keys      : ('k, 'v) t -> 'k RSet.t             (* the domain of the map *)
+  val values    : ('k, 'v) t -> 'v list               (* the values, ordered by their keys *)
+
+  val add       : 'k -> 'v -> ('k, 'v) t -> ('k, 'v) t   (* replaces an old value of k *)
+  val remove    : 'k -> ('k, 'v) t -> ('k, 'v) t
+  val map       : ('v -> 'w) -> ('k, 'v) t -> ('k, 'w) t
+  val filter    : ('k -> 'v -> bool) -> ('k, 'v) t -> ('k, 'v) t
+  val for_all   : ('k -> 'v -> bool) -> ('k, 'v) t -> bool
+  val exists    : ('k -> 'v -> bool) -> ('k, 'v) t -> bool
+  val fold      : ('k -> 'v -> 'acc -> 'acc) -> ('k, 'v) t -> 'acc -> 'acc
+  val iter      : ('k -> 'v -> unit) -> ('k, 'v) t -> unit
+
+  val to_string : ('k -> string) -> ('v -> string) -> ('k, 'v) t -> string
+  val pp        : (Format.formatter -> 'k -> unit) -> (Format.formatter -> 'v -> unit)
+                  -> Format.formatter -> ('k, 'v) t -> unit
+end = struct
+  type ('k, 'v) t = ('k * 'v) list
+
+  let empty         = []
+  let singleton k v = [(k, v)]
+  let to_list m     = m
+  let is_empty m    = m = []
+  let cardinal      = List.length
+
+  (* The pairs are sorted by their keys with a stable sort, so that pairs with the same
+     key keep their order.  Of every group of pairs with the same key, the last one is
+     kept. *)
+  let of_list l =
+    let sorted = List.stable_sort (fun (k1, _) (k2, _) -> Stdlib.compare k1 k2) l in
+    let rec last_of_each = function
+      | (k1, _) :: ((k2, _) :: _ as rest) when Stdlib.compare k1 k2 = 0 -> last_of_each rest
+      | pair :: rest -> pair :: last_of_each rest
+      | [] -> []
+    in
+    last_of_each sorted
+
+  let rec find_opt k = function
+    | [] -> None
+    | (k', v) :: rest ->
+        let c = Stdlib.compare k k' in
+        if c = 0 then Some v else if c < 0 then None else find_opt k rest
+
+  let find k m = match find_opt k m with Some v -> v | None -> raise Not_found
+  let mem k m  = find_opt k m <> None
+
+  let keys m   = RSet.of_list (List.map fst m)    (* already sorted, hence linear *)
+  let values m = List.map snd m
+
+  let[@tail_mod_cons] rec add k v = function
+    | [] -> [(k, v)]
+    | ((k', _) as pair) :: rest ->
+        let c = Stdlib.compare k k' in
+        if c < 0 then (k, v) :: pair :: rest
+        else if c = 0 then (k, v) :: rest
+        else pair :: add k v rest
+
+  let[@tail_mod_cons] rec remove k = function
+    | [] -> []
+    | ((k', _) as pair) :: rest ->
+        let c = Stdlib.compare k k' in
+        if c < 0 then pair :: rest
+        else if c = 0 then rest
+        else pair :: remove k rest
+
+  let map f m        = List.map (fun (k, v) -> (k, f v)) m
+  let filter p m     = List.filter (fun (k, v) -> p k v) m
+  let for_all p m    = List.for_all (fun (k, v) -> p k v) m
+  let exists p m     = List.exists (fun (k, v) -> p k v) m
+  let fold f m acc   = List.fold_left (fun acc (k, v) -> f k v acc) acc m
+  let iter f m       = List.iter (fun (k, v) -> f k v) m
+
+  let to_string key_to_string value_to_string m =
+    "{" ^ String.concat ", "
+            (List.map (fun (k, v) -> key_to_string k ^ " ↦ " ^ value_to_string v) m) ^ "}"
+
+  (* pp is the printer that the toplevel uses for maps.  As for sets, every pair is
+     first printed into a string, so that printing stops at the first pair whose value
+     the toplevel abbreviates as "...". *)
+  let pp pp_key pp_value fmt m =
+    let pair_to_string (k, v) =
+      let buffer = Buffer.create 16 in
+      let f      = Format.formatter_of_buffer buffer in
+      Format.pp_set_margin f 1_000_000;
+      Format.fprintf f "%a ↦ %a" pp_key k pp_value v;
+      Format.pp_print_flush f ();
+      Buffer.contents buffer
+    in
+    let rec print_pairs first = function
+      | []        -> ()
+      | p :: rest ->
+          if not first then Format.fprintf fmt ",@ ";
+          let str = pair_to_string p in
+          Format.pp_print_string fmt str;
+          if not (String.ends_with ~suffix:"..." str) then print_pairs false rest
+    in
+    Format.fprintf fmt "@[<hov 1>{%a}@]" (fun _ -> print_pairs true) m
+end;;
+
+#install_printer RMap.pp;;

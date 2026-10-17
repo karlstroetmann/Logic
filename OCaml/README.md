@@ -1,8 +1,8 @@
 # OCaml Notebooks for the Lecture on Logic
 
 This directory contains OCaml translations of the TypeScript notebooks in `../TypeScript`.
-The subdirectories correspond to the chapters of the lecture notes.  So far, `Chapter-2`,
-`Chapter-3`, and `Chapter-4` have been translated.
+The subdirectories correspond to the chapters of the lecture notes.  So far, `Chapter-2` to
+`Chapter-5` have been translated.
 
 ## Installation
 
@@ -10,14 +10,18 @@ The notebooks run on the Jupyter kernel [ocaml-jupyter](https://github.com/akabe
 (version 3.0.1, which needs OCaml 5.2 or newer) and use the library
 [Zarith](https://github.com/ocaml/Zarith) for big integers and rational numbers.  The notebooks
 `Chapter-4/11-MiniSat-Sudoku.ipynb` and `Chapter-4/Queens-Bishop.ipynb` use the library
-[minisat](https://github.com/c-cube/ocaml-minisat), which contains the SAT solver MiniSat.  On a
-Mac with Homebrew, they have been installed as follows:
+[minisat](https://github.com/c-cube/ocaml-minisat), which contains the SAT solver MiniSat.  The
+Z3 notebooks of `Chapter-5` use the OCaml binding of the SMT solver
+[Z3](https://github.com/Z3Prover/z3) (opam package `z3`).  On a Mac with Homebrew, they have
+been installed as follows:
 
 ```
 brew install opam
 opam init --no-setup -y --compiler=ocaml-base-compiler.5.4.1
 eval $(opam env --switch=default)
 opam install jupyter zarith minisat merlin
+brew install llvm@17 zstd
+opam install --assume-depexts z3
 ocaml-jupyter-opam-genspec
 jupyter kernelspec install --user --name ocaml-jupyter "$(opam var share)/jupyter"
 ```
@@ -27,6 +31,9 @@ jupyter kernelspec install --user --name ocaml-jupyter "$(opam var share)/jupyte
   does not install it itself, install it with Homebrew, e.g. `brew install zlib`; for zlib also
   `export PKG_CONFIG_PATH=/opt/homebrew/opt/zlib/lib/pkgconfig` before `opam install`.
 - `merlin` is optional.  It provides tab completion in the notebooks.
+- The opam package `z3` compiles Z3 from its C++ sources (about 3 minutes on an M1 Max).  On
+  macOS it requires the Homebrew packages `llvm@17` and `zstd`.  opam also asks for the
+  Homebrew package `python@3.9`, but any Python 3 works; `--assume-depexts` skips this check.
 - The generated kernel specification calls `opam` and therefore only works if `opam` is in the
   `PATH` of the Jupyter server.  To be independent of the `PATH`, replace `opam env` by
   `/opt/homebrew/bin/opam env` in
@@ -62,11 +69,15 @@ definition has to be terminated by `;;`.
   since importing it again would create new types that are incompatible with the old ones;
 - loads the file `rset.ml` (see below).
 
-`rset.ml` defines the module `RSet`, the counterpart of the TypeScript library
-`recursive-set`.  A value of type `'a RSet.t` is an immutable set with elements of type `'a`.
-It is represented as a sorted list without duplicates, so that `=` and `compare` work
-correctly for sets of sets (this is not the case for the sets of the functor `Set.Make`).
-The file installs a printer, so that the toplevel prints sets as `{1, 2, 3}`.
+`rset.ml` defines the modules `RSet` and `RMap`, the counterparts of the classes `RecursiveSet`
+and `RecursiveMap` of the TypeScript library `recursive-set`.  A value of type `'a RSet.t` is
+an immutable set with elements of type `'a`, a value of type `('k, 'v) RMap.t` is an
+immutable map from keys of type `'k` to values of type `'v`.  Sets are represented as sorted
+lists without duplicates, maps as lists of pairs sorted by their keys, so that `=` and
+`compare` work correctly, e.g. for sets of sets (this is not the case for the sets and maps
+of the functors `Set.Make` and `Map.Make`).  The file installs printers, so that the
+toplevel prints sets as `{1, 2, 3}` and maps as `{"x" ↦ 1, "y" ↦ 2}`.  Insertion, deletion,
+and lookup take linear time.
 
 In `Chapter-4`, the notebook `Propositional-Logic-Parser.ipynb` (a notebook instead of the
 TypeScript file `PropositionalLogicParser.ts`) defines the type `formula` and the function
@@ -76,6 +87,23 @@ notebooks import it.  `11-Logic-Solver-Sudoku.ipynb` of the TypeScript edition i
 `The-Visit`, and `Zweistein` are ignored by git, as in the TypeScript edition; the exercise
 notebooks `*-Frame.ipynb` fail at the cells that students have to complete (marked by
 `failwith "your code here"`).
+
+In `Chapter-5`, the constraints of the backtracking solver
+(`02-Backtracking-Constraint-Solver.ipynb`) are strings of OCaml code like `"x + y = z"`, as
+in TypeScript.  The solver compiles every constraint once with `Toploop.use_silently` into a
+function of type `(string, int) RMap.t -> bool`; a constraint that is not an OCaml expression
+of type `bool` is rejected when the CSP is solved.  The variables of a CSP have to be OCaml
+identifiers, i.e. they start with a lower case letter, and the values are integers.
+
+The Z3 notebooks load the file `z3_helpers.ml` via `import_file "../z3_helpers.ml"`.  It
+loads the library `z3` and defines a thin layer on top of its verbose API: the context
+`ctx`, constructors like `int_const "x"` and `int_val 3`, operators `+: -: *: =: <>: <: <=:`
+etc., `and_`, `or_`, `not_`, `implies`, `distinct`, `new_solver`, `solver_model`, `eval_int`,
+and printers for expressions, models, and solvers.  The comment at the beginning of the file
+documents all of them.  The kernel `ocaml-jupyter` does not contain the module
+`CamlinternalMod` of the standard library, which the library `z3` needs.  Therefore,
+`z3_helpers.ml` compiles this module from its source code (which every OCaml installation
+contains) into the directory for temporary files and loads it before `#require "z3"`.
 
 Cells that fail on purpose (e.g. type errors) are tagged `raises-exception`, and cells that do
 not terminate are tagged `skip-execution`, so that the notebooks can be executed headless with
