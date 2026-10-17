@@ -1,8 +1,9 @@
 # OCaml Notebooks for the Lecture on Logic
 
 This directory contains OCaml translations of the TypeScript notebooks in `../TypeScript`.
-The subdirectories correspond to the chapters of the lecture notes.  So far, `Chapter-2` to
-`Chapter-5` have been translated.
+The subdirectories correspond to the chapters of the lecture notes.  `Chapter-2` to
+`Chapter-6` have been translated.  The TypeScript notebook `Chapter-6/Algebrite.ipynb`, an
+overview of the JavaScript computer algebra system Algebrite, has no OCaml counterpart.
 
 ## Installation
 
@@ -104,6 +105,13 @@ documents all of them.  The kernel `ocaml-jupyter` does not contain the module
 `CamlinternalMod` of the standard library, which the library `z3` needs.  Therefore,
 `z3_helpers.ml` compiles this module from its source code (which every OCaml installation
 contains) into the directory for temporary files and loads it before `#require "z3"`.
+
+`Chapter-5/FOL-Parser.ipynb` and `Chapter-6/FOL-Parser.ipynb` are identical copies.  The
+parser defines the types `term` and `formula` and the functions `parse`, `parse_term`,
+`term_to_string`, and `formula_to_string`.  In `Chapter-6`, `01-FOL-CNF.ipynb` defines the
+types `literal`, `clause`, and `cnf` and the function `normalize`; as in `Chapter-4/04-CNF`,
+every intermediate form (`Pure.t`, `NNF.t`, `Matrix.t`) has its own type.  `03-Prover.ipynb`
+imports `01-FOL-CNF.ipynb` and `02-Unification.ipynb`.
 
 Cells that fail on purpose (e.g. type errors) are tagged `raises-exception`, and cells that do
 not terminate are tagged `skip-execution`, so that the notebooks can be executed headless with
