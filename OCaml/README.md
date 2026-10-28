@@ -105,8 +105,11 @@ The Z3 notebooks load the file `z3_helpers.ml` via `import_file "../z3_helpers.m
 loads the library `z3` and defines a thin layer on top of its verbose API: the context
 `ctx`, constructors like `int_const "x"` and `int_val 3`, operators `+: -: *: =: <>: <: <=:`
 etc., `and_`, `or_`, `not_`, `implies`, `distinct`, `new_solver`, `solver_model`, `eval_int`,
-and printers for expressions, models, and solvers.  The comment at the beginning of the file
-documents all of them.  The kernel `ocaml-jupyter` does not contain the module
+and printers for expressions, models, and solvers.  The functions `expr` and `constraints`
+read expressions given as strings, e.g. `constraints ["boys - 1 = girls"; "2 * (girls - 1) =
+boys"]`; variables are referred to by the names given to `int_const` etc., or by names bound
+with the optional argument `~vars`.  The comment at the beginning of the file documents all of
+them, including the syntax of the strings.  The kernel `ocaml-jupyter` does not contain the module
 `CamlinternalMod` of the standard library, which the library `z3` needs.  Therefore,
 `z3_helpers.ml` compiles this module from its source code (which every OCaml installation
 contains) into the directory for temporary files and loads it before `#require "z3"`.

@@ -21,6 +21,9 @@
      uge, ugt, ule, and ult compare bit vectors as unsigned numbers.
    - and_ [...], or_ [...], not_ f, implies f g, iff f g, ite c a b, distinct [...],
      and sum [...] build compound expressions.
+   - expr "2 * (girls - 1) = boys" reads an expression that is given as a string, and
+     constraints [...] reads a list of such strings.  The syntax of these strings is
+     described in the section "Expressions given as strings" below.
    - new_solver () creates a solver; solver_model s returns the model of s after a
      successful check.  The solver itself is used with the functions of the module
      Z3.Solver, e.g. Z3.Solver.add and Z3.Solver.check.
@@ -66,11 +69,25 @@ let () =
 (* All Z3 objects belong to a context.  We use one global context. *)
 let ctx : Z3.context = Z3.mk_context []
 
-(* Variables and constants *)
-let int_const    (name : string) : Z3.Expr.expr = Z3.Arithmetic.Integer.mk_const_s ctx name
-let real_const   (name : string) : Z3.Expr.expr = Z3.Arithmetic.Real.mk_const_s ctx name
-let bool_const   (name : string) : Z3.Expr.expr = Z3.Boolean.mk_const_s ctx name
-let bitvec_const (name : string) (bits : int) : Z3.Expr.expr = Z3.BitVector.mk_const_s ctx name bits
+(* Variables and constants.  Every variable is also recorded under its name in the table
+   Z3_variables.table, so that expressions given as strings can refer to it.  If two
+   variables have the same name, the one declared last is recorded. *)
+module Z3_variables = struct
+  let table : (string, Z3.Expr.expr) Hashtbl.t = Hashtbl.create 64
+
+  let record (name : string) (x : Z3.Expr.expr) : Z3.Expr.expr =
+    Hashtbl.replace table name x;
+    x
+end
+
+let int_const (name : string) : Z3.Expr.expr =
+  Z3_variables.record name (Z3.Arithmetic.Integer.mk_const_s ctx name)
+let real_const (name : string) : Z3.Expr.expr =
+  Z3_variables.record name (Z3.Arithmetic.Real.mk_const_s ctx name)
+let bool_const (name : string) : Z3.Expr.expr =
+  Z3_variables.record name (Z3.Boolean.mk_const_s ctx name)
+let bitvec_const (name : string) (bits : int) : Z3.Expr.expr =
+  Z3_variables.record name (Z3.BitVector.mk_const_s ctx name bits)
 
 let int_val    (n : int)   : Z3.Expr.expr = Z3.Arithmetic.Integer.mk_numeral_i ctx n
 let real_val   (x : float) : Z3.Expr.expr = Z3.Arithmetic.Real.mk_numeral_s ctx (Printf.sprintf "%.15g" x)
@@ -107,6 +124,293 @@ let implies (f : Z3.Expr.expr) (g : Z3.Expr.expr) : Z3.Expr.expr = Z3.Boolean.mk
 let iff (f : Z3.Expr.expr) (g : Z3.Expr.expr) : Z3.Expr.expr = Z3.Boolean.mk_iff ctx f g
 let ite (c : Z3.Expr.expr) (a : Z3.Expr.expr) (b : Z3.Expr.expr) : Z3.Expr.expr = Z3.Boolean.mk_ite ctx c a b
 let distinct (es : Z3.Expr.expr list) : Z3.Expr.expr = Z3.Boolean.mk_distinct ctx es
+
+(* Expressions given as strings
+
+   expr text reads the expression in the string text and returns it as a Z3 expression;
+   constraints texts does the same for every string in the list texts.  For example,
+
+     Z3.Solver.add s (constraints ["boys - 1 = girls"; "2 * (girls - 1) = boys"])
+
+   The strings use the following syntax, from the weakest to the strongest binding:
+
+     a <=> b                  equivalence, also written a ↔ b
+     a => b                   implication, also written a → b; a => b => c is a => (b => c)
+     a || b                   disjunction, also written a ∨ b
+     a && b                   conjunction, also written a ∧ b
+     not a                    negation, also written ¬a; not x = y is not (x = y)
+     x = y, x <> y, x < y,    comparisons; <> is also written != or ≠, <= and >= also
+     x <= y, x > y, x >= y    ≤ and ≥.  A chain like 0 <= x <= 3 means 0 <= x && x <= 3.
+     x + y, x - y             sums and differences
+     x * y, x / y, x mod y    products, quotients, and remainders; mod is also written %
+     -x                       negation of a number
+     42, 0.5, true, false     numbers and truth values
+     boys                     a variable, i.e. the name of a variable declared with
+                              int_const, real_const, bool_const, or bitvec_const
+     if c then x else y       a conditional expression, like ite c x y
+     distinct(x, y, ...)      all arguments are different
+     abs(x)                   the absolute value of an integer or a real number
+     (x)                      parentheses
+
+   - The optional argument vars is a list of pairs (name, x): in text, the name stands for
+     the Z3 expression x.  These names take precedence over the names of the variables.
+     They are used to write constraints for variables that are parameters of a function,
+     e.g. constraints ~vars:[("a", a); ("b", b)] ["a <= b"].
+   - A number gets the sort of the other operands: In "speed + 5", where speed is a real
+     variable, 5 is a real number, and if x is a bit vector with 4 bits, the 1 in "x + 1"
+     is a bit vector with 4 bits, too.  Numbers like 0.5 are real numbers, other numbers
+     whose sort is not determined by an operand are integers.
+   - / is the integer division for integers and bit vectors and the division for real
+     numbers.  Bit vectors are compared as unsigned numbers.
+   - expr and constraints raise the exception Failure if a string contains a syntax error,
+     an unknown name, or operands whose sorts do not fit. *)
+module Z3_parser = struct
+  type token =
+    | Number of string     (* a number like 42 or 0.5 *)
+    | Name   of string     (* the name of a variable or a function *)
+    | Symbol of string     (* an operator, a parenthesis, a comma, or a keyword *)
+    | End                  (* the end of the string *)
+
+  (* the position of the error in the string and a description of the error *)
+  exception Syntax_error of int * string
+
+  let keywords = ["mod"; "not"; "if"; "then"; "else"; "true"; "false"]
+
+  (* the spellings of the operators, each together with its canonical spelling.  Longer
+     spellings come first, so that "<=" is not read as "<" followed by "=". *)
+  let symbols =
+    [("<=>", "<=>"); ("<=", "<="); (">=", ">="); ("<>", "<>"); ("!=", "<>"); ("=>", "=>");
+     ("&&", "&&"); ("||", "||");
+     ("↔", "<=>"); ("→", "=>"); ("≤", "<="); ("≥", ">="); ("≠", "<>");
+     ("∧", "&&"); ("∨", "||"); ("¬", "not");
+     ("+", "+"); ("-", "-"); ("*", "*"); ("/", "/"); ("%", "mod");
+     ("=", "="); ("<", "<"); (">", ">"); ("(", "("); (")", ")"); (",", ",")]
+
+  (* tokenize text returns the tokens of text, each together with its position, i.e. the
+     number of characters in front of it.  The last token is End. *)
+  let tokenize (text : string) : (token * int) list =
+    let n = String.length text in
+    let is_digit c  = '0' <= c && c <= '9' in
+    let is_letter c = ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c = '_' in
+    let rec skip (p : char -> bool) (i : int) : int = if i < n && p text.[i] then skip p (i + 1) else i in
+    let starts_at (i : int) (s : string) : bool =
+      i + String.length s <= n && String.sub text i (String.length s) = s
+    in
+    (* the number of characters in front of the byte i; a character of UTF-8 starts with a
+       byte that does not have the form 10xxxxxx *)
+    let position (i : int) : int =
+      String.fold_left (fun k c -> if Char.code c land 0xC0 <> 0x80 then k + 1 else k) 0 (String.sub text 0 i)
+    in
+    let rec scan (i : int) (tokens : (token * int) list) : (token * int) list =
+      if i >= n then
+        List.rev ((End, position n) :: tokens)
+      else if String.contains " \t\n\r" text.[i] then
+        scan (i + 1) tokens
+      else if is_digit text.[i] then
+        let j = skip (fun c -> is_digit c || c = '.') i in
+        scan j ((Number (String.sub text i (j - i)), position i) :: tokens)
+      else if is_letter text.[i] then
+        let j = skip (fun c -> is_letter c || is_digit c || c = '\'') i in
+        let word = String.sub text i (j - i) in
+        let token = if List.mem word keywords then Symbol word else Name word in
+        scan j ((token, position i) :: tokens)
+      else
+        match List.find_opt (fun (s, _) -> starts_at i s) symbols with
+        | Some (s, op) -> scan (i + String.length s) ((Symbol op, position i) :: tokens)
+        | None         -> raise (Syntax_error (position i, "unexpected character"))
+    in
+    scan 0 []
+
+  (* the syntax tree of an expression *)
+  type ast =
+    | Num  of string                (* a number *)
+    | Var  of string                (* a variable *)
+    | Bool of bool                  (* true or false *)
+    | Neg  of ast                   (* -x *)
+    | Not  of ast                   (* not a *)
+    | Op   of string * ast * ast    (* x op y, where op is the canonical spelling *)
+    | If   of ast * ast * ast       (* if c then x else y *)
+    | Call of string * ast list     (* f(x, ...) *)
+
+  let describe (t : token) : string =
+    match t with
+    | Number s | Name s | Symbol s -> s
+    | End                          -> "end of string"
+
+  (* parse text returns the syntax tree of the expression in text.  It is a recursive
+     descent parser: every level of the syntax has its own function, which calls the
+     function of the next stronger binding level for the operands. *)
+  let parse (text : string) : ast =
+    let tokens = Array.of_list (tokenize text) in
+    let pos    = ref 0 in
+    let peek () = fst tokens.(!pos) in
+    let advance () = incr pos in
+    let error (message : string) = raise (Syntax_error (snd tokens.(!pos), message)) in
+    let expect (s : string) =
+      if peek () = Symbol s then advance ()
+      else error (Printf.sprintf "expected %s instead of %s" s (describe (peek ())))
+    in
+    (* left_assoc ops next parses operands with next that are separated by the operators
+       ops, e.g. x + y - z, and combines them from left to right *)
+    let left_assoc (ops : string list) (next : unit -> ast) : ast =
+      let rec loop (left : ast) : ast =
+        match peek () with
+        | Symbol op when List.mem op ops -> advance (); loop (Op (op, left, next ()))
+        | _                              -> left
+      in
+      loop (next ())
+    in
+    let rec equivalence () : ast = left_assoc ["<=>"] implication
+    and implication () : ast =
+      let left = disjunction () in
+      if peek () = Symbol "=>" then (advance (); Op ("=>", left, implication ())) else left
+    and disjunction () : ast = left_assoc ["||"] conjunction
+    and conjunction () : ast = left_assoc ["&&"] negation
+    and negation () : ast =
+      if peek () = Symbol "not" then (advance (); Not (negation ())) else comparison ()
+    and comparison () : ast =
+      (* chain x returns the comparisons that follow the operand x *)
+      let rec chain (x : ast) : ast list =
+        match peek () with
+        | Symbol ("=" | "<>" | "<" | "<=" | ">" | ">=" as op) ->
+            advance ();
+            let y = sum () in
+            Op (op, x, y) :: chain y
+        | _ -> []
+      in
+      let first = sum () in
+      match chain first with
+      | []      -> first
+      | c :: cs -> List.fold_left (fun a b -> Op ("&&", a, b)) c cs
+    and sum () : ast = left_assoc ["+"; "-"] product
+    and product () : ast = left_assoc ["*"; "/"; "mod"] unary
+    and unary () : ast =
+      if peek () = Symbol "-" then (advance (); Neg (unary ())) else atom ()
+    and atom () : ast =
+      match peek () with
+      | Number s       -> advance (); Num s
+      | Symbol "true"  -> advance (); Bool true
+      | Symbol "false" -> advance (); Bool false
+      | Name f when fst tokens.(!pos + 1) = Symbol "(" ->
+          advance (); advance ();
+          Call (f, arguments ())
+      | Name x         -> advance (); Var x
+      | Symbol "("     ->
+          advance ();
+          let e = equivalence () in
+          expect ")";
+          e
+      | Symbol "if"    ->
+          advance ();
+          let c = equivalence () in
+          expect "then";
+          let x = equivalence () in
+          expect "else";
+          If (c, x, equivalence ())
+      | t -> error ("unexpected " ^ describe t)
+    and arguments () : ast list =
+      let e = equivalence () in
+      if peek () = Symbol "," then (advance (); e :: arguments ()) else (expect ")"; [e])
+    in
+    let e = equivalence () in
+    if peek () <> End then error ("unexpected " ^ describe (peek ()));
+    e
+
+  (* lookup vars name returns the expression for which name stands: the expression paired
+     with name in vars or else the variable with this name. *)
+  let lookup (vars : (string * Z3.Expr.expr) list) (name : string) : Z3.Expr.expr =
+    match List.assoc_opt name vars with
+    | Some x -> x
+    | None   ->
+        match Hashtbl.find_opt Z3_variables.table name with
+        | Some x -> x
+        | None   -> failwith ("unknown variable " ^ name)
+
+  (* numeral sort s returns the number s as an expression of the sort sort, if a sort is
+     given, and otherwise as an integer or, if s contains a decimal point, as a real. *)
+  let numeral (sort : Z3.Sort.sort option) (s : string) : Z3.Expr.expr =
+    match Option.map Z3.Sort.get_sort_kind sort with
+    | Some Z3enums.BV_SORT   -> Z3.BitVector.mk_numeral ctx s (Z3.BitVector.get_size (Option.get sort))
+    | Some Z3enums.REAL_SORT -> Z3.Arithmetic.Real.mk_numeral_s ctx s
+    | _ when String.contains s '.' -> Z3.Arithmetic.Real.mk_numeral_s ctx s
+    | _                      -> Z3.Arithmetic.Integer.mk_numeral_s ctx s
+
+  (* sort_of lookup e returns the sort of the term e if it is determined by a variable or a
+     real number in e.  Numbers in formulas, e.g. in comparisons, get their sorts from
+     their own operands, so formulas have no sort here. *)
+  let rec sort_of (lookup : string -> Z3.Expr.expr) (e : ast) : Z3.Sort.sort option =
+    match e with
+    | Var x -> Some (Z3.Expr.get_sort (lookup x))
+    | Num s -> if String.contains s '.' then Some (Z3.Arithmetic.Real.mk_sort ctx) else None
+    | Neg x | Call ("abs", [x]) -> sort_of lookup x
+    | Op (("+" | "-" | "*" | "/" | "mod"), x, y) | If (_, x, y) ->
+        List.find_map (sort_of lookup) [x; y]
+    | _ -> None
+
+  (* translate lookup sort e returns the Z3 expression for e.  sort is the sort expected by
+     the context; numbers get this sort unless their operands determine another one. *)
+  let rec translate (lookup : string -> Z3.Expr.expr) (sort : Z3.Sort.sort option) (e : ast)
+          : Z3.Expr.expr =
+    let formula = translate lookup None in
+    (* operand es x translates x, which is one of the operands es *)
+    let operand (es : ast list) (x : ast) : Z3.Expr.expr =
+      let s = match List.find_map (sort_of lookup) es with Some s -> Some s | None -> sort in
+      translate lookup s x
+    in
+    (* operands op e returns the operands of a chain like a && b && c, where op is "&&" *)
+    let rec operands (op : string) (e : ast) : ast list =
+      match e with
+      | Op (o, a, b) when o = op -> operands op a @ operands op b
+      | _                        -> [e]
+    in
+    match e with
+    | Num s  -> numeral sort s
+    | Var x  -> lookup x
+    | Bool b -> Z3.Boolean.mk_val ctx b
+    | Neg (Num s) -> numeral sort ("-" ^ s)
+    | Neg x  ->
+        let x = operand [x] x in
+        if Z3.BitVector.is_bv x then Z3.BitVector.mk_neg ctx x else Z3.Arithmetic.mk_unary_minus ctx x
+    | Not a            -> Z3.Boolean.mk_not ctx (formula a)
+    | Op ("&&", _, _)  -> Z3.Boolean.mk_and ctx (List.map formula (operands "&&" e))
+    | Op ("||", _, _)  -> Z3.Boolean.mk_or ctx (List.map formula (operands "||" e))
+    | Op ("=>", a, b)  -> Z3.Boolean.mk_implies ctx (formula a) (formula b)
+    | Op ("<=>", a, b) -> Z3.Boolean.mk_iff ctx (formula a) (formula b)
+    | Op (op, x, y) ->
+        let x = operand [x; y] x and y = operand [x; y] y in
+        let bv = Z3.BitVector.is_bv x in
+        (match op with
+         | "+"   -> if bv then Z3.BitVector.mk_add ctx x y  else Z3.Arithmetic.mk_add ctx [x; y]
+         | "-"   -> if bv then Z3.BitVector.mk_sub ctx x y  else Z3.Arithmetic.mk_sub ctx [x; y]
+         | "*"   -> if bv then Z3.BitVector.mk_mul ctx x y  else Z3.Arithmetic.mk_mul ctx [x; y]
+         | "/"   -> if bv then Z3.BitVector.mk_udiv ctx x y else Z3.Arithmetic.mk_div ctx x y
+         | "mod" -> if bv then Z3.BitVector.mk_urem ctx x y else Z3.Arithmetic.Integer.mk_mod ctx x y
+         | "="   -> Z3.Boolean.mk_eq ctx x y
+         | "<>"  -> Z3.Boolean.mk_not ctx (Z3.Boolean.mk_eq ctx x y)
+         | "<"   -> if bv then Z3.BitVector.mk_ult ctx x y else Z3.Arithmetic.mk_lt ctx x y
+         | "<="  -> if bv then Z3.BitVector.mk_ule ctx x y else Z3.Arithmetic.mk_le ctx x y
+         | ">"   -> if bv then Z3.BitVector.mk_ugt ctx x y else Z3.Arithmetic.mk_gt ctx x y
+         | ">="  -> if bv then Z3.BitVector.mk_uge ctx x y else Z3.Arithmetic.mk_ge ctx x y
+         | _     -> failwith ("unknown operator " ^ op))
+    | If (c, x, y) -> Z3.Boolean.mk_ite ctx (formula c) (operand [x; y] x) (operand [x; y] y)
+    | Call ("distinct", xs) -> Z3.Boolean.mk_distinct ctx (List.map (operand xs) xs)
+    | Call ("abs", [x]) ->
+        let x = operand [x] x in
+        let zero = numeral (Some (Z3.Expr.get_sort x)) "0" in
+        Z3.Boolean.mk_ite ctx (Z3.Arithmetic.mk_ge ctx x zero) x (Z3.Arithmetic.mk_unary_minus ctx x)
+    | Call (f, _) -> failwith ("unknown function " ^ f)
+end
+
+let expr ?(vars : (string * Z3.Expr.expr) list = []) (text : string) : Z3.Expr.expr =
+  let fail (message : string) = failwith (Printf.sprintf "expr \"%s\": %s" text message) in
+  match Z3_parser.translate (Z3_parser.lookup vars) None (Z3_parser.parse text) with
+  | x -> x
+  | exception Z3_parser.Syntax_error (i, message) -> fail (Printf.sprintf "%s at position %d" message i)
+  | exception Failure message -> fail message
+  | exception Z3.Error message -> fail message
+
+let constraints ?(vars : (string * Z3.Expr.expr) list = []) (texts : string list) : Z3.Expr.expr list =
+  List.map (expr ~vars) texts
 
 (* Solvers and models *)
 let new_solver () : Z3.Solver.solver = Z3.Solver.mk_solver ctx None
