@@ -24,8 +24,8 @@ let () =
 let () =
   ignore (Toploop.use_silently Format.err_formatter (Toploop.String {|
     (* time label f computes f (), prints the processor time used by this computation,
-       and returns the result of f ().  It plays the role of console.time and
-       console.timeEnd in TypeScript. *)
+       and returns the result of f ().  Sys.time returns the processor time, like
+       clock in C and time.process_time in Python. *)
     let time (label : string) (f : unit -> 'a) : 'a =
       let start  = Sys.time () in
       let result = f () in
@@ -90,7 +90,7 @@ let () =
 
 (* import_file path and import_notebook path make the definitions of an OCaml source
    file and of another notebook available in the current notebook.  import_notebook
-   plays the role of an import statement in TypeScript.  It works as follows:
+   plays the role of an import statement in Python.  It works as follows:
 
    - The code cells of the notebook are split into phrases by the OCaml parser.  Only
      phrases that are *definitions* are executed, i.e. let, type, module, open, and

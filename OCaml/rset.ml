@@ -1,7 +1,7 @@
 (* rset.ml: finite sets that can be nested and finite maps.  The modules RSet and RMap
-   are the OCaml counterparts of the classes RecursiveSet and RecursiveMap of the
-   TypeScript library recursive-set.  The file setup.ml loads this file, so both modules
-   are available in every notebook.
+   play the roles of the Python types frozenset and dict, but the maps of RMap can not be
+   changed either.  The file setup.ml loads this file, so both modules are available in
+   every notebook.
 
    The module Set of the standard library is not suitable for our purposes:
    - Set.Make has to be applied to a module for every element type, i.e. we would
