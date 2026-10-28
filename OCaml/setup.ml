@@ -33,6 +33,61 @@ let () =
       result
   |}));;
 
+(* compile_error code type-checks the OCaml code in the string code without executing it,
+   prints the error message of the compiler, and fails if code contains no error.  The
+   notebooks use it to show code that the compiler rejects, so that no cell fails.
+
+   - The phrases of code are type-checked one after the other in the current environment
+     of the toplevel, so code can use earlier definitions.  The definitions in code are
+     discarded afterwards, and Btype.backtrack undoes the changes of the type checker.
+   - While code is checked, the input of the toplevel is code, so that the error message
+     quotes the line of code that contains the error and marks the error with ^^^.
+   - Printing an error message changes the state of the module Location.  Afterwards, the
+     kernel would start every result with an empty line, unless Location.reset () is
+     called.
+
+   The plain ocaml toplevel only contains the modules of the standard library and of the
+   toplevel itself, but not the type checker.  There, the definition fails, and compile_error
+   is not defined.  As the definition is compiled with a formatter that discards all output,
+   no error message is printed in this case. *)
+let () =
+  let discard = Format.make_formatter (fun _ _ _ -> ()) (fun () -> ()) in
+  ignore (Toploop.use_silently discard (Toploop.String {|
+    let compile_error (code : string) : unit =
+      let saved_name   = !Location.input_name
+      and saved_lexbuf = !Location.input_lexbuf
+      and saved_phrase = !Location.input_phrase_buffer in
+      let lexbuf = Lexing.from_string code in
+      let phrase = Buffer.create (String.length code) in
+      Buffer.add_string phrase code;
+      Location.init lexbuf "//toplevel//";
+      Location.input_name          := "//toplevel//";
+      Location.input_lexbuf        := Some lexbuf;
+      Location.input_phrase_buffer := Some phrase;
+      let snapshot = Btype.snapshot () in
+      let rec check env = function
+        | [] -> ()
+        | Parsetree.Ptop_def items :: rest ->
+            let (_, _, _, _, env') = Typemod.type_toplevel_phrase env items in
+            check env' rest
+        | _ :: rest -> check env rest      (* directives are not checked *)
+      in
+      Typecore.reset_delayed_checks ();
+      let error =
+        match check !Toploop.toplevel_env (!Toploop.parse_use_file lexbuf) with
+        | ()            -> None
+        | exception exn -> Some exn
+      in
+      Btype.backtrack snapshot;
+      Typecore.reset_delayed_checks ();
+      Option.iter (Location.report_exception Format.std_formatter) error;
+      Location.input_name          := saved_name;
+      Location.input_lexbuf        := saved_lexbuf;
+      Location.input_phrase_buffer := saved_phrase;
+      Location.reset ();
+      if Option.is_none error then failwith "compile_error: the code contains no error"
+  |}));;
+
 (* import_file path and import_notebook path make the definitions of an OCaml source
    file and of another notebook available in the current notebook.  import_notebook
    plays the role of an import statement in TypeScript.  It works as follows:

@@ -62,6 +62,11 @@ definition has to be terminated by `;;`.
 - defines the function `time label f`, which computes `f ()`, prints the processor time this
   took, and returns the result (the counterpart of `console.time` in TypeScript).  It is
   defined via `Toploop.use_silently`, so that the first cell of a notebook prints nothing;
+- defines the function `compile_error code`, which type-checks the OCaml code in the string
+  `code` without executing it, prints the error message of the compiler, and fails if `code`
+  contains no error.  The notebooks use it to show code that the compiler rejects.  It calls
+  the type checker (`Typemod`) directly, which the Jupyter kernel contains, but the plain
+  `ocaml` toplevel does not; there, `compile_error` is not defined;
 - defines the functions `import_notebook "Name.ipynb"` and `import_file "name.ml"`.
   `import_notebook` plays the role of an `import` in TypeScript: It executes the definitions
   (`let`, `type`, `module`, `open`, `exception`, and directives like `#require`) of the code
@@ -113,6 +118,8 @@ types `literal`, `clause`, and `cnf` and the function `normalize`; as in `Chapte
 every intermediate form (`Pure.t`, `NNF.t`, `Matrix.t`) has its own type.  `03-Prover.ipynb`
 imports `01-FOL-CNF.ipynb` and `02-Unification.ipynb`.
 
-Cells that fail on purpose (e.g. type errors) are tagged `raises-exception`, and cells that do
-not terminate are tagged `skip-execution`, so that the notebooks can be executed headless with
-`nbclient`.
+No cell demonstrates an error by failing: code that the compiler rejects is shown with
+`compile_error "..."`, and exceptions are caught with `try ... with`, so that the cell shows the
+exception and its message.  Cells that do not terminate are tagged `skip-execution`, so that the
+notebooks can be executed headless with `nbclient`.  (A compile error in a cell also changes the
+state of the kernel: afterwards, every result starts with an empty line.)
